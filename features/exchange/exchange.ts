@@ -9,7 +9,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -38,6 +38,8 @@ interface Tx {
 }
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
+
+export type ExchangeType = 'defaultExchange' | 'noFeesExchange' | 'lowerFeesExchange'
 
 type TokenMetadata = {
   address: string
@@ -135,7 +137,6 @@ export function getQuote$(
         fromToken.decimals,
       )
       const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
-
       return {
         ...responseBase,
         collateralAmount: amountFromWei(
@@ -170,10 +171,13 @@ export function createExchangeQuote$(
   slippage: BigNumber,
   amount: BigNumber,
   action: ExchangeAction,
+  exchangeType: ExchangeType,
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokens, exchange } = context
+      const { tokens } = context
+      const exchange = (context as any)[exchangeType]
+
       const dai = getTokenMetaData('DAI', tokens)
       const collateral = getTokenMetaData(token, tokens)
 

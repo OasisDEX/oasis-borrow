@@ -179,7 +179,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
     it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
@@ -299,7 +299,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().progress!()
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
     it('should open vault successfully and progress to editing', () => {
@@ -319,9 +319,9 @@ describe('open multiply vault', () => {
       )
       state().updateDeposit!(depositAmount)
       state().progress!()
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('openSuccess')
+      expect(state().stage).to.deep.equal('txSuccess')
       expect(state().id!).to.deep.equal(new BigNumber('3281'))
       state().progress!()
       expect(state().stage).to.deep.equal('editing')
@@ -342,7 +342,7 @@ describe('open multiply vault', () => {
       )
       state().progress!()
       state().progress!()
-      expect(state().stage).to.deep.equal('openFailure')
+      expect(state().stage).to.deep.equal('txFailure')
       state().regress!()
       expect(state().stage).to.deep.equal('editing')
     })
@@ -407,7 +407,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().progress!()
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
     it('should open vault successfully and progress to editing', () => {
@@ -427,9 +427,9 @@ describe('open multiply vault', () => {
       )
       state().updateDeposit!(depositAmount)
       state().progress!()
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('openSuccess')
+      expect(state().stage).to.deep.equal('txSuccess')
       expect(state().id!).to.deep.equal(new BigNumber('3281'))
       state().progress!()
       expect(state().stage).to.deep.equal('editing')
@@ -450,7 +450,7 @@ describe('open multiply vault', () => {
       )
       state().progress!()
       state().progress!()
-      expect(state().stage).to.deep.equal('openFailure')
+      expect(state().stage).to.deep.equal('txFailure')
       state().regress!()
       expect(state().stage).to.deep.equal('editing')
     })
@@ -488,7 +488,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().updateRequiredCollRatio!(requiredCollRatio)
       state().progress!()
-      expect(state().stage).to.deep.equal('openWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
 
       state().clear()
       expect(state().stage).to.deep.equal('editing')
@@ -657,8 +657,8 @@ describe('open multiply vault', () => {
       const stateSnap = state()
 
       expect(stateSnap.afterCollateralizationRatio.toPrecision(18)).to.eq('2.00000000000000000')
-      expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('8.95549616432420170')
-      expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('18955.4961643242017')
+      expect(stateSnap.buyingCollateral.toPrecision(18)).to.eq('8.97078651685393258')
+      expect(stateSnap.afterOutstandingDebt.toPrecision(18)).to.eq('18970.7865168539326')
     })
 
     it('should not allow to update risk when deposited not enough collateral', () => {

@@ -1,5 +1,4 @@
 import { icons as daiUiIcons } from '@makerdao/dai-ui-icons'
-// @ts-ignore
 import { icons as brandingIcons } from '@makerdao/dai-ui-icons-branding'
 import React from 'react'
 
@@ -776,17 +775,38 @@ const customLandingIcons = {
   multiply_transition: {
     path: (
       <>
-        <rect x="78" y="28" width="230" height="163" rx="16" fill="url(#paint0_linear)" />
-        <rect x="78" y="28" width="230" height="163" rx="16" fill="url(#paint1_radial)" />
-        <rect x="78" y="28" width="230" height="163" rx="16" fill="url(#paint2_radial)" />
-        <g filter="url(#filter0_d)">
+        <rect
+          x="78"
+          y="28"
+          width="230"
+          height="163"
+          rx="16"
+          fill="url(#paint0_linear_4681_33045)"
+        />
+        <rect
+          x="78"
+          y="28"
+          width="230"
+          height="163"
+          rx="16"
+          fill="url(#paint1_radial_4681_33045)"
+        />
+        <rect
+          x="78"
+          y="28"
+          width="230"
+          height="163"
+          rx="16"
+          fill="url(#paint2_radial_4681_33045)"
+        />
+        <g filter="url(#filter0_d_4681_33045)">
           <rect x="8" y="43" width="140" height="134" rx="8" fill="white" />
         </g>
         <rect x="22" y="57" width="113" height="22" rx="11" fill="#F3F7F9" />
-        <g filter="url(#filter1_d)">
+        <g filter="url(#filter1_d_4681_33045)">
           <rect x="22" y="57" width="44" height="22" rx="11" fill="white" />
         </g>
-        <rect x="22.5" y="94.5" width="112" height="25" rx="3.5" stroke="#EAEAEA" />
+        <rect x="22.5" y="94.5" width="112" height="25" rx="3.5" stroke="#EAEAEA" fill="white" />
         <circle cx="34" cy="107" r="2" fill="#787A9B" />
         <circle cx="43" cy="107" r="2" fill="#787A9B" />
         <circle cx="52" cy="107" r="2" fill="#787A9B" />
@@ -795,24 +815,20 @@ const customLandingIcons = {
           fillRule="evenodd"
           clipRule="evenodd"
           d="M209.814 113.084C210.388 112.686 210.388 111.837 209.814 111.44L197.569 102.957C196.906 102.497 196 102.972 196 103.779V120.744C196 121.551 196.906 122.026 197.569 121.566L209.814 113.084ZM187 115.26C188.657 115.26 190 113.917 190 112.26C190 110.604 188.657 109.26 187 109.26C185.343 109.26 184 110.604 184 112.26C184 113.917 185.343 115.26 187 115.26ZM179 112.26C179 113.917 177.657 115.26 176 115.26C174.343 115.26 173 113.917 173 112.26C173 110.604 174.343 109.26 176 109.26C177.657 109.26 179 110.604 179 112.26ZM165 115.26C166.657 115.26 168 113.917 168 112.26C168 110.604 166.657 109.26 165 109.26C163.343 109.26 162 110.604 162 112.26C162 113.917 163.343 115.26 165 115.26Z"
-          fill="url(#paint3_linear)"
+          fill="url(#paint3_linear_4681_33045)"
         />
-        <g filter="url(#filter2_d)">
+        <g filter="url(#filter2_d_4681_33045)">
           <rect x="222" y="8" width="190" height="203" rx="8" fill="white" />
         </g>
         <rect opacity="0.8" x="240" y="171" width="154" height="22" rx="11" fill="#25273D" />
-        <g
-          style={{
-            mixBlendMode: 'hard-light',
-          }}
-        >
+        <g style={{ mixBlendMode: 'hard-light' }}>
           <path
             d="M222 16C222 11.5817 225.582 8 230 8H404C408.418 8 412 11.5817 412 16V19H222V16Z"
-            fill="url(#paint4_linear)"
+            fill="url(#paint4_linear_4681_33045)"
           />
         </g>
         <rect x="240" y="36" width="154" height="26" rx="13" fill="#F3F7F9" />
-        <g filter="url(#filter3_d)">
+        <g filter="url(#filter3_d_4681_33045)">
           <rect x="240" y="36" width="77" height="26" rx="13" fill="white" />
         </g>
         <rect x="240" y="134" width="27" height="3" rx="1.5" fill="#EAEAEA" />
@@ -827,10 +843,10 @@ const customLandingIcons = {
         <rect x="367" y="85" width="27" height="3" rx="1.5" fill="#787A9B" />
         <rect x="239" y="109" width="155" height="3" rx="1.5" fill="#EAEAEA" />
         <rect x="239" y="109" width="81" height="3" rx="1.5" fill="#D8D9FE" />
-        <circle cx="317" cy="111" r="5" fill="url(#paint5_linear)" />
+        <circle cx="317" cy="111" r="5" fill="url(#paint5_linear_4681_33045)" />
         <defs>
           <filter
-            id="filter0_d"
+            id="filter0_d_4681_33045"
             x="0"
             y="35"
             width="156"
@@ -848,11 +864,20 @@ const customLandingIcons = {
             <feOffset />
             <feGaussianBlur stdDeviation="4" />
             <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_4681_33045"
+            />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_4681_33045"
+              result="shape"
+            />
           </filter>
           <filter
-            id="filter1_d"
+            id="filter1_d_4681_33045"
             x="18"
             y="53"
             width="52"
@@ -870,11 +895,20 @@ const customLandingIcons = {
             <feOffset />
             <feGaussianBlur stdDeviation="2" />
             <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_4681_33045"
+            />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_4681_33045"
+              result="shape"
+            />
           </filter>
           <filter
-            id="filter2_d"
+            id="filter2_d_4681_33045"
             x="214"
             y="0"
             width="206"
@@ -892,11 +926,20 @@ const customLandingIcons = {
             <feOffset />
             <feGaussianBlur stdDeviation="4" />
             <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_4681_33045"
+            />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_4681_33045"
+              result="shape"
+            />
           </filter>
           <filter
-            id="filter3_d"
+            id="filter3_d_4681_33045"
             x="236"
             y="32"
             width="85"
@@ -914,11 +957,20 @@ const customLandingIcons = {
             <feOffset />
             <feGaussianBlur stdDeviation="2" />
             <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.15 0" />
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow" />
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape" />
+            <feBlend
+              mode="normal"
+              in2="BackgroundImageFix"
+              result="effect1_dropShadow_4681_33045"
+            />
+            <feBlend
+              mode="normal"
+              in="SourceGraphic"
+              in2="effect1_dropShadow_4681_33045"
+              result="shape"
+            />
           </filter>
           <linearGradient
-            id="paint0_linear"
+            id="paint0_linear_4681_33045"
             x1="181.409"
             y1="191"
             x2="182.322"
@@ -930,7 +982,7 @@ const customLandingIcons = {
             <stop offset="1" stopColor="#FCEFF1" />
           </linearGradient>
           <radialGradient
-            id="paint1_radial"
+            id="paint1_radial_4681_33045"
             cx="0"
             cy="0"
             r="1"
@@ -941,7 +993,7 @@ const customLandingIcons = {
             <stop offset="0.336378" stopColor="#FEFFC7" stopOpacity="0" />
           </radialGradient>
           <radialGradient
-            id="paint2_radial"
+            id="paint2_radial_4681_33045"
             cx="0"
             cy="0"
             r="1"
@@ -952,7 +1004,7 @@ const customLandingIcons = {
             <stop offset="1" stopColor="#CEFFE6" stopOpacity="0.767746" />
           </radialGradient>
           <linearGradient
-            id="paint3_linear"
+            id="paint3_linear_4681_33045"
             x1="162"
             y1="122"
             x2="206.568"
@@ -963,7 +1015,7 @@ const customLandingIcons = {
             <stop offset="1" stopColor="#25273D" />
           </linearGradient>
           <linearGradient
-            id="paint4_linear"
+            id="paint4_linear_4681_33045"
             x1="316.159"
             y1="-0.555554"
             x2="345.867"
@@ -975,7 +1027,7 @@ const customLandingIcons = {
             <stop offset="1" stopColor="#30C1FF" />
           </linearGradient>
           <linearGradient
-            id="paint5_linear"
+            id="paint5_linear_4681_33045"
             x1="312"
             y1="106"
             x2="321.55"
@@ -989,6 +1041,34 @@ const customLandingIcons = {
       </>
     ),
     viewBox: '0 0 420 219',
+  },
+  slippage_limit: {
+    path: (
+      <>
+        <rect y="3.25" width="6" height="11.375" fill="#25273D" />
+        <rect x="2.57153" width="0.857143" height="17.875" fill="#25273D" />
+        <rect x="9" y="9.38068" width="6" height="12.9261" fill="#25273D" />
+        <rect x="11.5715" y="5.6875" width="0.857143" height="20.3125" fill="#25273D" />
+      </>
+    ),
+    viewBox: '0 0 15 26',
+  },
+  settings: {
+    path: (
+      <>
+        <path
+          d="M7.99998 10C9.10455 10 9.99998 9.10457 9.99998 8C9.99998 6.89543 9.10455 6 7.99998 6C6.89541 6 5.99998 6.89543 5.99998 8C5.99998 9.10457 6.89541 10 7.99998 10Z"
+          fill="#25273D"
+        />
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M7.00009 0C5.89552 0 5.00009 0.89543 5.00009 2V2.80289L4.30386 2.40181C3.34728 1.84952 2.1241 2.17727 1.57181 3.13386L0.571811 4.86591C0.0195261 5.82249 0.347277 7.04567 1.30386 7.59796L2.00009 7.99993L1.30402 8.40204C0.347432 8.95432 0.019682 10.1775 0.571967 11.1341L1.57197 12.8661C2.12425 13.8227 3.34743 14.1505 4.30402 13.5982L4.9994 13.1967L5.00009 14C5.00009 15.1046 5.89552 16 7.00009 16H9.00009C10.1047 16 11.0001 15.1046 11.0001 14V13.1971L11.001 13.1966L11.6962 13.598C12.6528 14.1502 13.8759 13.8225 14.4282 12.8659L15.4282 11.1339C15.9805 10.1773 15.6528 8.95409 14.6962 8.40181L14.0003 8.00004L14.6963 7.59819C15.6529 7.04591 15.9807 5.82273 15.4284 4.86614L14.4284 3.13409C13.8761 2.17751 12.6529 1.84976 11.6963 2.40204L11.0011 2.80345L11.0001 2.80289V2C11.0001 0.89543 10.1047 0 9.00009 0H7.00009ZM7.00009 2H9.00009V3.41604C9.00009 3.81352 9.23549 4.17326 9.59972 4.3324C9.87537 4.45283 10.1351 4.60363 10.3747 4.78074C10.6947 5.01727 11.1245 5.04157 11.4691 4.8426L12.6963 4.13409L13.6963 5.86614L12.4692 6.57465C12.1252 6.77323 11.9314 7.15656 11.9753 7.5513C11.9917 7.69826 12.0001 7.84796 12.0001 8C12.0001 8.15207 11.9917 8.30178 11.9753 8.44877C11.9313 8.84351 12.1252 9.22685 12.4691 9.42544L13.6962 10.1339L12.6962 11.8659L11.4691 11.1574C11.1245 10.9585 10.6947 10.9828 10.3747 11.2193C10.1351 11.3964 9.87535 11.5472 9.59972 11.6676C9.23549 11.8267 9.00009 12.1865 9.00009 12.584V14H7.00009V12.584C7.00009 12.1865 6.76469 11.8267 6.40046 11.6676C6.12489 11.5472 5.86519 11.3965 5.62565 11.2194C5.30565 10.9829 4.87588 10.9586 4.53128 11.1576L3.30402 11.8661L2.30402 10.1341L3.53106 9.42566C3.87504 9.22706 4.06888 8.8437 4.02492 8.44894C4.00854 8.3019 4.00009 8.15213 4.00009 8C4.00009 7.8479 4.00854 7.69814 4.02491 7.55112C4.06887 7.15637 3.87503 6.77302 3.53105 6.57443L2.30386 5.86591L3.30386 4.13386L4.53121 4.84247C4.87582 5.04143 5.30559 5.01714 5.62559 4.78063C5.86516 4.60357 6.12487 4.45281 6.40046 4.3324C6.76469 4.17326 7.00009 3.81352 7.00009 3.41604V2Z"
+          fill="#25273D"
+        />
+      </>
+    ),
+    viewBox: '0 0 16 16',
   },
 }
 

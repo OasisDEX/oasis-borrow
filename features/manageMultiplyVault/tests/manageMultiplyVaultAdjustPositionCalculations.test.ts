@@ -78,9 +78,9 @@ describe('Adjust multiply calculations', () => {
     const expectedNetValueUSD = new BigNumber('2500')
 
     const afterCollRatio = new BigNumber('2')
-    const expectedAfterCollateralDelta = new BigNumber('4.58067535578901113454')
-    const expectedAfterCollateralDeltaUSD = new BigNumber('4580.67535578901113454')
-    const expectedAfterNetValueUSD = new BigNumber('2463.719490631428618727573395')
+    const expectedAfterCollateralDelta = new BigNumber('4.59317941753432925909')
+    const expectedAfterCollateralDeltaUSD = new BigNumber('4593.17941753432925909159')
+    const expectedAfterNetValueUSD = new BigNumber('2467.78331069865700920477')
 
     const state = getStateUnpacker(
       mockManageMultiplyVault$({
@@ -96,14 +96,18 @@ describe('Adjust multiply calculations', () => {
     )
 
     // expect to have different market price and oracle price for this test
-    expect(state().priceInfo.currentCollateralPrice).to.not.deep.equal(state().marketPrice)
+    expect(state().priceInfo.currentCollateralPrice.decimalPlaces(20)).to.not.deep.equal(
+      state().marketPrice,
+    )
     expect(state().collateralDelta).to.deep.equal(zero)
     expect(state().collateralDeltaUSD).to.deep.equal(zero)
-    expect(state().netValueUSD).to.deep.equal(expectedNetValueUSD)
+    expect(state().netValueUSD.decimalPlaces(20)).to.deep.equal(expectedNetValueUSD)
 
     state().updateRequiredCollRatio!(afterCollRatio)
-    expect(state().collateralDelta).to.deep.equal(expectedAfterCollateralDelta)
-    expect(state().collateralDeltaUSD).to.deep.equal(expectedAfterCollateralDeltaUSD)
-    expect(state().afterNetValueUSD).to.deep.equal(expectedAfterNetValueUSD)
+    expect(state().collateralDelta!.decimalPlaces(20)).to.deep.equal(expectedAfterCollateralDelta)
+    expect(state().collateralDeltaUSD!.decimalPlaces(20)).to.deep.equal(
+      expectedAfterCollateralDeltaUSD,
+    )
+    expect(state().afterNetValueUSD.decimalPlaces(20)).to.deep.equal(expectedAfterNetValueUSD)
   })
 })

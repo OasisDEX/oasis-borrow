@@ -3,16 +3,20 @@ import { maxUint256 } from 'blockchain/calls/erc20'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
+import { createProxy } from 'features/proxy/createProxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
 import {
   applyExchange,
   createExchangeChange$,
@@ -44,18 +48,12 @@ import {
 import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,
-  createProxy,
   multiplyVault,
   OpenVaultTransactionChange,
   setAllowance,
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
-import {
-  OpenMultiplyVaultErrorMessage,
-  OpenMultiplyVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './openMultiplyVaultValidations'
+import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -98,23 +96,28 @@ function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
   return applyOpenVaultSummary(s10)
 }
 
-export type OpenMultiplyVaultStage =
-  | 'editing'
+export type ProxyStages =
   | 'proxyWaitingForConfirmation'
   | 'proxyWaitingForApproval'
   | 'proxyInProgress'
   | 'proxyFailure'
   | 'proxySuccess'
+export type AllowanceStages =
   | 'allowanceWaitingForConfirmation'
   | 'allowanceWaitingForApproval'
   | 'allowanceInProgress'
   | 'allowanceFailure'
   | 'allowanceSuccess'
-  | 'openWaitingForConfirmation'
-  | 'openWaitingForApproval'
-  | 'openInProgress'
-  | 'openFailure'
-  | 'openSuccess'
+
+export type TxStage =
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
+
+export type EditingStage = 'editing'
+export type OpenMultiplyVaultStage = EditingStage | ProxyStages | AllowanceStages | TxStage
 
 export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
@@ -160,7 +163,7 @@ interface OpenMultiplyVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -172,8 +175,8 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
   OpenMultiplyVaultEnvironment &
   OpenMultiplyVaultConditions &
   OpenMultiplyVaultTxInfo & {
-    errorMessages: OpenMultiplyVaultErrorMessage[]
-    warningMessages: OpenMultiplyVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
@@ -252,7 +255,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openWaitingForConfirmation' || state.stage === 'openFailure') {
+  if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
       progress: () => multiplyVault(txHelpers, context, change, state),
@@ -260,7 +263,7 @@ function addTransitions(
     }
   }
 
-  if (state.stage === 'openSuccess') {
+  if (state.stage === 'txSuccess') {
     return {
       ...state,
       progress: () =>
@@ -293,8 +296,10 @@ export function createOpenMultiplyVault$(
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
+  slippageLimit$: Observable<UserSettingsState>,
   ilk: string,
 ): Observable<OpenMultiplyVaultState> {
   return ilks$.pipe(
@@ -302,9 +307,9 @@ export function createOpenMultiplyVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkData$(ilk)).pipe(
+        combineLatest(context$, txHelpers$, ilkData$(ilk), slippageLimit$).pipe(
           first(),
-          switchMap(([context, txHelpers, ilkData]) => {
+          switchMap(([context, txHelpers, ilkData, { slippage }]) => {
             const { token } = ilkData
             const account = context.account
             return combineLatest(
@@ -349,7 +354,7 @@ export function createOpenMultiplyVault$(
                       errorMessages: [],
                       warningMessages: [],
                       summary: defaultOpenVaultSummary,
-                      slippage: SLIPPAGE,
+                      slippage,
                       totalSteps,
                       currentStep: 1,
                       exchangeError: false,
@@ -364,8 +369,9 @@ export function createOpenMultiplyVault$(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
                       createIlkDataChange$(ilkData$, ilk),
-                      createInitialQuoteChange(exchangeQuote$, token),
+                      createInitialQuoteChange(exchangeQuote$, token, slippage),
                       createExchangeChange$(exchangeQuote$, stateSubject$),
+                      slippageChange$(slippageLimit$),
                     )
 
                     const connectedProxyAddress$ = proxyAddress$(account)

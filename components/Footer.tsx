@@ -1,4 +1,3 @@
-// @ts-ignore
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
@@ -10,6 +9,7 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
+import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
@@ -106,13 +106,7 @@ const LangSelectComponents: Partial<SelectComponents<{
       }}
     >
       {children}
-      <Icon
-        name={menuIsOpen ? 'chevron_up' : 'chevron_down'}
-        size="auto"
-        width="10px"
-        height="7px"
-        sx={{ ml: 1, position: 'relative', top: '1px' }}
-      />
+      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="10px" height="7px" />
     </Box>
   ),
 }
@@ -167,7 +161,7 @@ export function Footer() {
               <AppLink href="https://twitter.com/oasisdotapp">
                 <Icon name="twitter" size="auto" width="18px" height="16px" />
               </AppLink>
-              <AppLink href="https://discord.gg/Kc2bBB59GC" sx={{ mx: 3 }}>
+              <AppLink href="https://discord.gg/oasisapp" sx={{ mx: 3 }}>
                 <Icon name="discord" size="auto" width="20px" height="23px" />
               </AppLink>
               <AppLink href="https://github.com/OasisDEX/oasis-borrow/">

@@ -3,6 +3,7 @@
  */
 
 import * as mixpanel from 'mixpanel-browser'
+import { Config, Mixpanel } from 'mixpanel-browser'
 import getConfig from 'next/config'
 
 const env =
@@ -23,7 +24,7 @@ export const config = {
   prod: {
     mixpanel: {
       token,
-      config: { ip: false, api_host: 'https://mpp.oasis.app' },
+      config: { ip: false, api_host: 'https://mpp.oasis.app', opt_out_tracking_by_default: true },
     },
   },
 }[env]
@@ -37,8 +38,7 @@ export function mixpanelInit() {
 }
 
 export function mixpanelIdentify(id: string, props: any) {
-  // @ts-ignore
-  if (!mixpanel.config) return
+  if (!(mixpanel as Mixpanel & { config: Config }).config) return
   console.debug(
     `[Mixpanel] Identifying as ${id} ${
       props && props.walletType ? `using wallet ${props.walletType}` : ''

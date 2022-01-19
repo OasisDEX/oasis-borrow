@@ -1,6 +1,8 @@
+import { Abi } from 'helpers/types'
 import Web3 from 'web3'
+import { AbiItem } from 'web3-utils'
 
-const argentABI = [
+const argentABI: Abi[] = [
   {
     inputs: [
       { internalType: 'bytes32', name: '_message', type: 'bytes32' },
@@ -13,7 +15,7 @@ const argentABI = [
   },
 ]
 
-const walletDetectorABI = [
+const walletDetectorABI: Abi[] = [
   {
     inputs: [{ internalType: 'address', name: '_wallet', type: 'address' }],
     name: 'isArgentWallet',
@@ -28,8 +30,10 @@ const WALLET_DETECTOR_ADDRESS = {
 }
 
 export async function isArgentWallet(web3: Web3, address: string): Promise<boolean> {
-  // @ts-ignore
-  const walletDetector = new web3.eth.Contract(walletDetectorABI, WALLET_DETECTOR_ADDRESS[1])
+  const walletDetector = new web3.eth.Contract(
+    walletDetectorABI as AbiItem[],
+    WALLET_DETECTOR_ADDRESS[1],
+  )
 
   return walletDetector.methods.isArgentWallet(address).call()
 }
@@ -40,8 +44,7 @@ export async function isValidSignature(
   message: string,
   signature: string,
 ): Promise<boolean> {
-  // @ts-ignore
-  const wallet = new web3.eth.Contract(argentABI, address)
+  const wallet = new web3.eth.Contract(argentABI as AbiItem[], address)
   const messageBytes32 = web3.eth.accounts.hashMessage(message)
 
   try {

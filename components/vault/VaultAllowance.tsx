@@ -1,6 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { OpenGuniVaultState } from 'features/openGuniVault/openGuniVault'
 import { OpenMultiplyVaultState } from 'features/openMultiplyVault/openMultiplyVault'
 import { OpenVaultState } from 'features/openVault/openVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -22,7 +23,7 @@ export function VaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: OpenVaultState | OpenMultiplyVaultState) {
+}: OpenVaultState | OpenMultiplyVaultState | OpenGuniVaultState) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'
@@ -71,7 +72,7 @@ export function VaultAllowance({
                 value={
                   allowanceAmount && isCustom
                     ? formatAmount(allowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,

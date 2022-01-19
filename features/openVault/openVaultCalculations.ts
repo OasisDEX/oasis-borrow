@@ -53,8 +53,8 @@ export function applyOpenVaultCalculations(state: OpenVaultState): OpenVaultStat
 
   const afterFreeCollateral = depositAmount ? depositAmount.minus(afterBackingCollateral) : zero
 
-  const maxDepositAmount = collateralBalance
-  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
+  const maxDepositAmount = collateralBalance // form values
+  const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice) // form values
 
   const daiYieldFromDepositingCollateral = depositAmount
     ? depositAmount.times(currentCollateralPrice).div(liquidationRatio)

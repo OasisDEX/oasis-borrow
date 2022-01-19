@@ -13,15 +13,15 @@ import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useObservableWithError } from 'helpers/observableHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import React, { ComponentProps, useCallback } from 'react'
-import { Box, Button, Card, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
+import { Hero } from '../homepage/HomepageView'
 import { FeaturedIlks, FeaturedIlksPlaceholder } from './FeaturedIlks'
-import { TypeformWidget } from './TypeformWidget'
+//import { TypeformWidget } from './TypeformWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -135,58 +135,6 @@ const ilksColumns: ColumnDef<IlkWithBalance, IlksFilterState>[] = [
   },
 ]
 
-export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
-  const { t } = useTranslation()
-
-  return (
-    <Flex
-      sx={{
-        ...sx,
-        justifySelf: 'center',
-        alignItems: 'center',
-        textAlign: 'center',
-        my: 5,
-        flexDirection: 'column',
-      }}
-    >
-      <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
-        {t('landing.hero.headline')}
-      </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
-        <Trans i18nKey="landing.hero.subheader" components={[<br />]} />
-      </Text>
-      <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />
-      {!isConnected && (
-        <AppLink
-          href="/connect"
-          variant="primary"
-          sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
-          }}
-        >
-          {t('connect-wallet')}
-          <Icon
-            name="arrow_right"
-            sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
-            }}
-          />
-        </AppLink>
-      )}
-    </Flex>
-  )
-}
-
 function LandingCard({ href, cardKey }: { href: string; cardKey: 'dai' | 'faq' }) {
   const { t } = useTranslation()
 
@@ -230,21 +178,22 @@ function LandingCards() {
 export function LandingView() {
   const { landing$, context$ } = useAppContext()
   const context = useObservable(context$)
-  const { value: landing, error: landingError } = useObservableWithError(landing$)
+  const { value: landingValue, error: landingError } = useObservableWithError(landing$)
+
   const { t } = useTranslation()
   const redirectToOpenVault = useRedirectToOpenVault()
 
   const onIlkSearch = useCallback(
     (search: string) => {
-      landing?.ilks.filters.change({ kind: 'search', search })
+      landingValue?.ilks.filters.change({ kind: 'search', search })
     },
-    [landing?.ilks.filters],
+    [landingValue?.ilks.filters],
   )
   const onIlksTagChange = useCallback(
     (tagFilter: TagFilter) => {
-      landing?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
+      landingValue?.ilks.filters.change({ kind: 'tagFilter', tagFilter })
     },
-    [landing?.ilks.filters],
+    [landingValue?.ilks.filters],
   )
 
   return (
@@ -268,7 +217,7 @@ export function LandingView() {
       >
         <FeaturedIlksPlaceholder
           sx={
-            landing !== undefined
+            landingValue !== undefined
               ? {
                   ...fadeInAnimation,
                   animationDirection: 'backwards',
@@ -277,18 +226,20 @@ export function LandingView() {
               : {}
           }
         />
-        {landing !== undefined && <FeaturedIlks sx={fadeInAnimation} ilks={landing.featuredIlks} />}
+        {landingValue !== undefined && (
+          <FeaturedIlks sx={fadeInAnimation} ilks={landingValue.featuredIlks} />
+        )}
       </Box>
-      <WithErrorHandler error={landingError}>
+      <WithErrorHandler error={[landingError]}>
         <WithLoadingIndicator
-          value={landing}
+          value={[landingValue]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
             </Flex>
           }
         >
-          {(landing) => (
+          {([landing]) => (
             <Box sx={{ ...slideInAnimation, position: 'relative' }}>
               <FiltersWithPopular
                 onSearch={onIlkSearch}
@@ -321,7 +272,8 @@ export function LandingView() {
         </WithLoadingIndicator>
       </WithErrorHandler>
       <LandingCards />
-      <TypeformWidget />
+      {/* Typeform is hidden right now - but can be re-enabled later by uncommenting the Typeform related comments in this file.
+      <TypeformWidget />*/}
       <Box mb={5}>
         <NewsletterSection />
       </Box>

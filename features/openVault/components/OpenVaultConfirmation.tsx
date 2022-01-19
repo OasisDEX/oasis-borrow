@@ -8,7 +8,7 @@ import { OpenVaultState } from '../openVault'
 import { OpenVaultChangesInformation } from './OpenVaultChangesInformation'
 
 export function OpenVaultConfirmation(props: OpenVaultState) {
-  return props.stage === 'openInProgress' ? (
+  return props.stage === 'txInProgress' ? (
     <OpenVaultAnimation />
   ) : (
     <>
@@ -21,7 +21,7 @@ export function OpenVaultConfirmation(props: OpenVaultState) {
 export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultState) {
   const { t } = useTranslation()
 
-  if (stage === 'openInProgress') {
+  if (stage === 'txInProgress') {
     return (
       <TxStatusCardProgress
         text={t('creating-your-vault')}
@@ -31,7 +31,7 @@ export function OpenVaultStatus({ stage, id, etherscan, openTxHash }: OpenVaultS
     )
   }
 
-  if (stage === 'openSuccess') {
+  if (stage === 'txSuccess') {
     return (
       <TxStatusCardSuccess
         text={t('vault-created', { id: id?.toString() })}

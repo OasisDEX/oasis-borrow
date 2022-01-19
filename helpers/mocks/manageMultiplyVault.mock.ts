@@ -15,15 +15,19 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
+import { mockedMultiplyEvents } from '../multiply/calculations.test'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
+export const MOCK_CHAIN_ID = new BigNumber(2137)
 
 export interface MockManageMultiplyVaultProps {
   _context$?: Observable<Context>
@@ -32,6 +36,7 @@ export interface MockManageMultiplyVaultProps {
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
+  _vaultMultiplyHistory$?: Observable<VaultHistoryEvent[]>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
@@ -56,6 +61,7 @@ export function mockManageMultiplyVault$({
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
+  _vaultMultiplyHistory$,
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
@@ -103,6 +109,10 @@ export function mockManageMultiplyVault$({
     return _proxyAddress$ || of(proxyAddress)
   }
 
+  function vaultMultiplyHistory$() {
+    return _vaultMultiplyHistory$ || of(mockedMultiplyEvents)
+  }
+
   function allowance$(_token: string) {
     return _token === 'DAI'
       ? _daiAllowance$ || daiAllowance
@@ -139,6 +149,8 @@ export function mockManageMultiplyVault$({
     vault$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
+    slippageLimitMock(),
+    vaultMultiplyHistory$,
     MOCK_VAULT_ID,
   )
 }

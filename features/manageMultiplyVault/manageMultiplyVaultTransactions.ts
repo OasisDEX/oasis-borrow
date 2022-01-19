@@ -16,10 +16,12 @@ import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { zero } from 'helpers/zero'
+import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
+import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
@@ -32,7 +34,7 @@ type ProxyChange =
     }
   | {
       kind: 'proxyFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'proxyConfirming'
@@ -51,7 +53,7 @@ type CollateralAllowanceChange =
     }
   | {
       kind: 'collateralAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'collateralAllowanceSuccess'
@@ -66,14 +68,14 @@ type DaiAllowanceChange =
     }
   | {
       kind: 'daiAllowanceFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'daiAllowanceSuccess'
       daiAllowance: BigNumber
     }
 
-type ManageChange =
+export type ManageChange =
   | { kind: 'manageWaitingForApproval' }
   | {
       kind: 'manageInProgress'
@@ -81,7 +83,7 @@ type ManageChange =
     }
   | {
       kind: 'manageFailure'
-      txError?: any
+      txError?: TxError
     }
   | {
       kind: 'manageSuccess'
@@ -229,7 +231,7 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, exchange }: Context,
+  { tokens, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -250,7 +252,7 @@ export function adjustPosition(
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
-          exchange.address,
+          defaultExchange.address,
           oneInchAmount,
           slippage,
           exchangeAction!,
@@ -532,7 +534,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, exchange }: Context,
+  { tokens, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -554,7 +556,7 @@ export function closeVault(
         getQuote$(
           getTokenMetaData('DAI', tokens),
           getTokenMetaData(token, tokens),
-          exchange.address,
+          defaultExchange.address,
           fromTokenAmount,
           slippage,
           'SELL_COLLATERAL',
@@ -620,8 +622,6 @@ export function applyEstimateGas(
       shouldPaybackAll,
       vault: { ilk, token, id, lockedCollateral, debt, debtOffset },
       requiredCollRatio,
-      debtDelta,
-      collateralDelta,
       account,
       swap,
       slippage,
@@ -633,11 +633,25 @@ export function applyEstimateGas(
 
     if (proxyAddress) {
       if (requiredCollRatio) {
+        const daiAmount =
+          swap?.status === 'SUCCESS'
+            ? exchangeAction === 'BUY_COLLATERAL'
+              ? swap.daiAmount.div(one.minus(OAZO_FEE))
+              : swap.daiAmount
+            : zero
+
+        const collateralAmount =
+          swap?.status === 'SUCCESS'
+            ? exchangeAction === 'BUY_COLLATERAL'
+              ? swap.collateralAmount.times(one.minus(SLIPPAGE))
+              : swap.collateralAmount
+            : zero
+
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
-          requiredDebt: debtDelta?.abs() || zero,
-          borrowedCollateral: collateralDelta?.abs() || zero,
+          requiredDebt: daiAmount,
+          borrowedCollateral: collateralAmount,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',

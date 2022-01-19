@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultHeader } from 'components/vault/VaultHeader'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
@@ -14,16 +14,16 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
 
+import { VaultErrors } from '../../components/vault/VaultErrors'
+import { VaultWarnings } from '../../components/vault/VaultWarnings'
+import { ManageVaultCollateralAllowance } from '../openMultiplyVault/common/ManageVaultCollateralAllowance'
+import { ManageVaultDaiAllowance } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
 import { ManageVaultState } from './manageVault'
 import { createManageVaultAnalytics$ } from './manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
-import { ManageVaultCollateralAllowance } from './ManageVaultCollateralAllowance'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
-import { ManageVaultDaiAllowance } from './ManageVaultDaiAllowance'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
-import { ManageVaultErrors } from './ManageVaultErrors'
-import { ManageVaultWarnings } from './ManageVaultWarnings'
 
 function TextWithCheckmark({ children }: WithChildren) {
   return (
@@ -73,7 +73,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
     </Grid>
   ) : (
     <Box>
-      <Icon name="multiply_transition" size="auto" width="420" height="219" />
+      <Icon name="multiply_transition" size="auto" />
     </Box>
   )
 }
@@ -103,8 +103,8 @@ function ManageVaultForm(props: ManageVaultState) {
       {isMultiplyTransitionStage && <ManageVaultMultiplyTransition {...props} />}
       {accountIsConnected && (
         <>
-          <ManageVaultErrors {...props} />
-          <ManageVaultWarnings {...props} />
+          <VaultErrors {...props} />
+          <VaultWarnings {...props} />
           {stage === 'manageSuccess' && <VaultChangesWithADelayCard />}
           <ManageVaultButton {...props} />
         </>
@@ -154,7 +154,7 @@ export function ManageVaultContainer({
 
   return (
     <>
-      <VaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails {...manageVault} />

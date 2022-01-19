@@ -4,17 +4,24 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { ExchangeAction, Quote } from 'features/exchange/exchange'
+import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { SLIPPAGE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { TxError } from '../../helpers/types'
+import { VaultErrorMessage } from '../form/errorMessagesHandler'
+import { VaultWarningMessage } from '../form/warningMessagesHandler'
+import { SelectedDaiAllowanceRadio } from '../openMultiplyVault/common/ManageVaultDaiAllowance'
+import { BaseManageVaultStage } from '../openMultiplyVault/common/types/BaseManageVaultStage'
 import { BalanceInfo, balanceInfoChange$ } from '../shared/balanceInfo'
+import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
+import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
 import {
   applyExchange,
   createExchangeChange$,
@@ -60,12 +67,7 @@ import {
   ManageVaultTransitionChange,
   progressAdjust,
 } from './manageMultiplyVaultTransitions'
-import {
-  ManageVaultErrorMessage,
-  ManageVaultWarningMessage,
-  validateErrors,
-  validateWarnings,
-} from './manageMultiplyVaultValidations'
+import { validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -112,28 +114,7 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
 
 export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
 
-export type ManageMultiplyVaultStage =
-  | ManageMultiplyVaultEditingStage
-  | 'proxyWaitingForConfirmation'
-  | 'proxyWaitingForApproval'
-  | 'proxyInProgress'
-  | 'proxyFailure'
-  | 'proxySuccess'
-  | 'collateralAllowanceWaitingForConfirmation'
-  | 'collateralAllowanceWaitingForApproval'
-  | 'collateralAllowanceInProgress'
-  | 'collateralAllowanceFailure'
-  | 'collateralAllowanceSuccess'
-  | 'daiAllowanceWaitingForConfirmation'
-  | 'daiAllowanceWaitingForApproval'
-  | 'daiAllowanceInProgress'
-  | 'daiAllowanceFailure'
-  | 'daiAllowanceSuccess'
-  | 'manageWaitingForConfirmation'
-  | 'manageWaitingForApproval'
-  | 'manageInProgress'
-  | 'manageFailure'
-  | 'manageSuccess'
+export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | BaseManageVaultStage
 
 export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'
@@ -162,7 +143,7 @@ export interface MutableManageMultiplyVaultState {
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
-  selectedDaiAllowanceRadio: 'unlimited' | 'paybackAmount' | 'custom'
+  selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
 
   requiredCollRatio?: BigNumber
   buyAmount?: BigNumber
@@ -186,6 +167,7 @@ export interface ManageVaultEnvironment {
   swap?: Quote
   exchangeError: boolean
   slippage: BigNumber
+  vaultHistory: VaultHistoryEvent[]
 }
 
 interface ManageVaultFunctions {
@@ -236,7 +218,7 @@ interface ManageVaultTxInfo {
   daiAllowanceTxHash?: string
   proxyTxHash?: string
   manageTxHash?: string
-  txError?: any
+  txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
   safeConfirmations: number
@@ -248,8 +230,8 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
   ManageVaultEnvironment &
   ManageVaultFunctions &
   ManageVaultTxInfo & {
-    errorMessages: ManageVaultErrorMessage[]
-    warningMessages: ManageVaultWarningMessage[]
+    errorMessages: VaultErrorMessage[]
+    warningMessages: VaultWarningMessage[]
     summary: ManageVaultSummary
     initialTotalSteps: number
     totalSteps: number
@@ -427,20 +409,23 @@ export function createManageMultiplyVault$(
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  vault$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   exchangeQuote$: (
     token: string,
     slippage: BigNumber,
     amount: BigNumber,
     action: ExchangeAction,
+    exchangeType: ExchangeType,
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
+  slippageLimit$: Observable<UserSettingsState>,
+  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
-      return vault$(id).pipe(
+      return vault$(id, context.chainId).pipe(
         first(),
         switchMap((vault) => {
           return combineLatest(
@@ -448,9 +433,10 @@ export function createManageMultiplyVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
+            slippageLimit$,
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, { slippage }]) => {
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -486,6 +472,7 @@ export function createManageMultiplyVault$(
                     ...defaultManageMultiplyVaultConditions,
                     vault,
                     priceInfo,
+                    vaultHistory: [],
                     balanceInfo,
                     ilkData,
                     account,
@@ -497,7 +484,7 @@ export function createManageMultiplyVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage: SLIPPAGE,
+                    slippage,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -513,9 +500,11 @@ export function createManageMultiplyVault$(
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id),
-                    createInitialQuoteChange(exchangeQuote$, vault.token),
+                    createVaultChange$(vault$, id, context.chainId),
+                    createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
+                    slippageChange$(slippageLimit$),
+                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
