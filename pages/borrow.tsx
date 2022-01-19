@@ -1,6 +1,10 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import React from 'react'
 
+import { WithConnection } from '../components/connectWallet/ConnectWallet'
+import { ProductPagesLayout } from '../components/Layouts'
+import { BorrowView } from '../features/borrow/BorrowView'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
@@ -9,7 +13,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function Borrow() {
+export default function BorrowPage() {
   const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
   if (!assetLandingPagesEnabled) {
     const router = useRouter()
@@ -17,5 +21,12 @@ export default function Borrow() {
       void router.push('/')
     }
   }
-  return 'hello from borrow page'
+
+  const enabled = useFeatureToggle('MultiplyAndBorrowPage')
+  const view = enabled ? <BorrowView /> : null
+
+  return <WithConnection>{view}</WithConnection>
 }
+
+BorrowPage.layout = ProductPagesLayout
+BorrowPage.theme = 'Landing'

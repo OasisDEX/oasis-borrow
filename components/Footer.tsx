@@ -10,6 +10,7 @@ import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
@@ -188,6 +189,7 @@ export function Footer() {
         </Grid>
       </Container>
       <TemporaryFooter />
+      <FooterBackground />
     </Box>
   )
 }
