@@ -46,12 +46,12 @@ function TabContent(props: {
             >
               {props.paraText}
             </Text>
-            <ProductCardsLayout
-              productCards={landingPageCardsData({
+            <Grid columns={[1, 2, 3]}>
+              {landingPageCardsData({
                 productCardsData,
                 product: props.type,
               }).map((cardData) => props.renderProductCard({ cardData }))}
-            />
+            </Grid>
           </>
         )}
       </WithLoadingIndicator>

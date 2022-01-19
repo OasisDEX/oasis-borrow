@@ -40,12 +40,10 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           top: '19px',
           left: '50%',
           transform: 'translateX(-50%)',
+          width: 'calc(100% - 32px)',
         }}
       >
-        <Flex
-          sx={{ flexDirection: 'column', alignItems: 'center', width: ['240px', '280px'] }}
-          ref={dataContainer}
-        >
+        <Flex sx={{ flexDirection: 'column', alignItems: 'center' }} ref={dataContainer}>
           <Text sx={{ color: 'text.subtitle' }} variant="paragraph2">
             {title}
           </Text>
@@ -144,21 +142,5 @@ export function ProductCard({
         </Box>
       </Flex>
     </Card>
-  )
-}
-
-export function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
-  return (
-    <Grid
-      sx={{
-        gap: '17px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
-        width: '100%',
-        boxSizing: 'border-box',
-        justifyContent: 'center',
-      }}
-    >
-      {props.productCards}
-    </Grid>
   )
 }
