@@ -18,7 +18,7 @@ ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const adjustPosition = `vaultEditingController${stage !== 'adjustPosition' ? 'Inactive' : ''}`
   const otherActions = `vaultEditingController${stage !== 'otherActions' ? 'Inactive' : ''}`
-  const borrow = `vaultEditingController${stage !== 'borrowTransitionEditing' ? 'Inactive' : ''}`
+  const borrow = `vaultEditingController${!isBorrowTransitionStage ? 'Inactive' : ''}`
 
   function handleToggle(stage: ManageMultiplyVaultEditingStage) {
     toggle!(stage)
