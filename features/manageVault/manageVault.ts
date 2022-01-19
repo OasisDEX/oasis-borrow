@@ -194,25 +194,6 @@ export type ManageVaultState = MutableManageVaultState &
   } & HasGasEstimation
 
 
-function setVaultTypeToMultiply(
-  saveVaultType$: SaveVaultType,
-  change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
-) {
-  saveVaultTypeForAccount(
-    saveVaultType$,
-    state.account as string,
-    state.vault.id,
-    VaultType.Multiply,
-    state.vault.chainId,
-    () => {
-      window.location.reload()
-      change({ kind: 'multiplyTransitionSuccess'})
-    },
-    () => change({ kind: 'multiplyTransitionFailure'}),
-    () => change({ kind: 'multiplyTransitionInProgress'})
-  )
-}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -237,7 +218,21 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => setVaultTypeToMultiply(saveVaultType$, change, state),
+      progress: () => {
+        saveVaultTypeForAccount(
+          saveVaultType$,
+          state.account as string,
+          state.vault.id,
+          VaultType.Multiply,
+          state.vault.chainId,
+          () => {
+            window.location.reload()
+            change({ kind: 'multiplyTransitionSuccess'})
+          },
+          () => change({ kind: 'multiplyTransitionFailure'}),
+          () => change({ kind: 'multiplyTransitionInProgress'})
+        )
+      },
       regress: () => change({ kind: 'backToEditing' }),
     }
   }

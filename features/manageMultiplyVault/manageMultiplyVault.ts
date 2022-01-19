@@ -245,26 +245,6 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     currentStep: number
   } & HasGasEstimation
 
-function setVaultTypeToBorrow(
-  saveVaultType$: SaveVaultType,
-  change: (ch: ManageMultiplyVaultChange) => void,
-  state: ManageMultiplyVaultState,
-) {
-  saveVaultTypeForAccount(
-    saveVaultType$,
-    state.account as string,
-    state.vault.id,
-    VaultType.Borrow,
-    state.vault.chainId,
-    () => {
-      window.location.reload()
-      change({ kind: 'borrowTransitionSuccess'})
-    },
-    () => change({ kind: 'borrowTransitionFailure'}),
-    () => change({ kind: 'borrowTransitionInProgress'})
-  )
-}
-
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   context: Context,
@@ -289,7 +269,21 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => setVaultTypeToBorrow(saveVaultType$, change, state),
+      progress: () => {
+        saveVaultTypeForAccount(
+          saveVaultType$,
+          state.account as string,
+          state.vault.id,
+          VaultType.Borrow,
+          state.vault.chainId,
+          () => {
+            window.location.reload()
+            change({ kind: 'borrowTransitionSuccess'})
+          },
+          () => change({ kind: 'borrowTransitionFailure'}),
+          () => change({ kind: 'borrowTransitionInProgress'})
+        )
+      },
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
