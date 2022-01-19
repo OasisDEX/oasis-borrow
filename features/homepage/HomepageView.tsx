@@ -16,6 +16,7 @@ import { landingPageCardsData, ProductCardData } from '../../helpers/productCard
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
   paraText: JSX.Element
@@ -234,6 +235,9 @@ export function HomepageView() {
           backgroundImage="/static/img/info_cards/safe.png"
         />
       </Grid>
+      <Box mb={5} mt={5}>
+        <NewsletterSection />
+      </Box>
     </Box>
   )
 }
