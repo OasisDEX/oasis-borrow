@@ -1,11 +1,9 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import {
-  createGeneralManageVault$,
-  VaultType,
-} from 'features/generalManageVault/generalManageVault'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   defaultMutableManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
