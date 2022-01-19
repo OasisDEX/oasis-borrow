@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
