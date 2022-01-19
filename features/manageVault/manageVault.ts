@@ -4,15 +4,14 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { VaultType, saveVaultTypeForAccount } from 'features/generalManageVault/vaultType'
+import { saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
 import { SaveVaultType } from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TxError } from '../../helpers/types'
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
@@ -193,8 +192,6 @@ export type ManageVaultState = MutableManageVaultState &
     currentStep: number
   } & HasGasEstimation
 
-
-
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
@@ -227,10 +224,10 @@ function addTransitions(
           state.vault.chainId,
           () => {
             window.location.reload()
-            change({ kind: 'multiplyTransitionSuccess'})
+            change({ kind: 'multiplyTransitionSuccess' })
           },
-          () => change({ kind: 'multiplyTransitionFailure'}),
-          () => change({ kind: 'multiplyTransitionInProgress'})
+          () => change({ kind: 'multiplyTransitionFailure' }),
+          () => change({ kind: 'multiplyTransitionInProgress' }),
         )
       },
       regress: () => change({ kind: 'backToEditing' }),

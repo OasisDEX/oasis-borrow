@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
-import { Observable, of } from 'rxjs'
-import { delay, map, catchError, startWith } from 'rxjs/operators'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { Observable, of } from 'rxjs'
+import { catchError, delay, map, startWith } from 'rxjs/operators'
 
 export function checkVaultTypeLocalStorage$(id: BigNumber): Observable<VaultType> {
   const vaultType = localStorage.getItem(`vault-type/${id.toFixed(0)}`) || VaultType.Borrow
@@ -29,7 +29,7 @@ export function saveVaultTypeForAccount(
   chainId: number,
   onSuccess: Function,
   onFailure: Function,
-  onProgress: Function
+  onProgress: Function,
 ) {
   // assume that user went through ToS flow and can interact with application
   const token = jwtAuthGetToken(account)
@@ -46,7 +46,6 @@ export function saveVaultTypeForAccount(
     onFailure()
   }
 }
-
 
 /**
  * @deprecated The method should not be used unless for some reason there will be requirement

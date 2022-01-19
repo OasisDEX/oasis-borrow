@@ -20,7 +20,6 @@ import {
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
 
-
 type ManageVaultBorrowTransitionChange =
   | {
       kind: 'progressBorrowTransition'
@@ -38,7 +37,7 @@ type ManageVaultBorrowTransitionChange =
 export type ManageVaultTransitionChange =
   | ManageVaultBorrowTransitionChange
   | {
-      kind: 'toggleEditing',
+      kind: 'toggleEditing'
       stage: ManageMultiplyVaultEditingStage
     }
   | {
@@ -71,8 +70,6 @@ export function applyManageVaultTransition(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (change.kind === 'toggleEditing') {
-    const { stage } = state
-
     return {
       ...state,
       ...manageVaultFormDefaults,

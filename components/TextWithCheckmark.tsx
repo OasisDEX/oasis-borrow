@@ -1,7 +1,7 @@
-import React from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Flex, Text } from 'theme-ui'
 import { WithChildren } from 'helpers/types'
+import React from 'react'
+import { Flex, Text } from 'theme-ui'
 
 export function TextWithCheckmark({ children }: WithChildren) {
   return (

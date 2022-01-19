@@ -1,10 +1,9 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import { TextWithCheckmark } from 'components/TextWithCheckmark'
+import { ManageMultiplyVaultState } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
-import { useTranslation } from 'next-i18next'
-import { Icon } from '@makerdao/dai-ui-icons'
-
-import { ManageMultiplyVaultState } from 'features/manageMultiplyVault/manageMultiplyVault'
-import { TextWithCheckmark } from 'components/TextWithCheckmark'
 
 export function DefaultManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVaultState) {
   const { t } = useTranslation()

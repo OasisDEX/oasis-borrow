@@ -1,11 +1,11 @@
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
+import { ManageMultiplyVaultEditingStage } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultHeaderAllowance } from '../../../common/ManageVaultHeaderAllowance'
-import { ManageMultiplyVaultEditingStage } from 'features/manageMultiplyVault/manageMultiplyVault'
-import { useTranslation } from 'next-i18next'
 
 function DefaultManageMultiplyVaultEditingController({
   stage,
@@ -54,7 +54,9 @@ export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultS
 
   return (
     <Box>
-      {(isEditingStage || isBorrowTransitionStage) && <DefaultManageMultiplyVaultEditingController {...props} />}
+      {(isEditingStage || isBorrowTransitionStage) && (
+        <DefaultManageMultiplyVaultEditingController {...props} />
+      )}
       {!isEditingStage && !isBorrowTransitionStage && <ManageVaultHeaderAllowance {...props} />}
     </Box>
   )

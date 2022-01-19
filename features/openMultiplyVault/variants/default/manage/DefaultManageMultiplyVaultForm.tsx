@@ -14,10 +14,10 @@ import {
 } from '../../../common/ManageMultiplyVaultConfirmation'
 import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
+import { DefaultManageMultiplyVaultBorrowTransition } from './DefaultManageMultiplyVaultBorrowTransition'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
 import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'
-import { DefaultManageMultiplyVaultBorrowTransition } from './DefaultManageMultiplyVaultBorrowTransition'
 
 export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   const {

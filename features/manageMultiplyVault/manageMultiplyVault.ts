@@ -5,7 +5,11 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { SaveVaultType, saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
+import {
+  SaveVaultType,
+  saveVaultTypeForAccount,
+  VaultType,
+} from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -113,9 +117,12 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   return applyManageVaultSummary(s10)
 }
 
-export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions' | 'borrowTransitionEditing'
+export type ManageMultiplyVaultEditingStage =
+  | 'adjustPosition'
+  | 'otherActions'
+  | 'borrowTransitionEditing'
 
-export type ManageMultiplyVaultStage = 
+export type ManageMultiplyVaultStage =
   | ManageMultiplyVaultEditingStage
   | BaseManageVaultStage
   | 'borrowTransitionWaitingForConfirmation'
@@ -278,10 +285,10 @@ function addTransitions(
           state.vault.chainId,
           () => {
             window.location.reload()
-            change({ kind: 'borrowTransitionSuccess'})
+            change({ kind: 'borrowTransitionSuccess' })
           },
-          () => change({ kind: 'borrowTransitionFailure'}),
-          () => change({ kind: 'borrowTransitionInProgress'})
+          () => change({ kind: 'borrowTransitionFailure' }),
+          () => change({ kind: 'borrowTransitionInProgress' }),
         )
       },
       regress: () => change({ kind: 'backToEditing' }),
@@ -555,8 +562,16 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                    map(state => addTransitions(txHelpers$, context, connectedProxyAddress$,
-                      saveVaultType$, change, state)),
+                    map((state) =>
+                      addTransitions(
+                        txHelpers$,
+                        context,
+                        connectedProxyAddress$,
+                        saveVaultType$,
+                        change,
+                        state,
+                      ),
+                    ),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),
