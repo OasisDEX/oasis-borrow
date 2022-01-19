@@ -9,6 +9,7 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
@@ -137,6 +138,7 @@ export function TemporaryFooter() {
 
 export function Footer() {
   const { t } = useTranslation()
+  const assetLpEnabled = useFeatureToggle('AssetLandingPages')
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
@@ -182,7 +184,7 @@ export function Footer() {
               ))}
             </Grid>
           ))}
-          <NewsletterSection small />
+          {assetLpEnabled && <NewsletterSection small />}
         </Grid>
       </Container>
       <TemporaryFooter />

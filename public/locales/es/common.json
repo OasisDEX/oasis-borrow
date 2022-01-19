@@ -743,6 +743,19 @@
   "wyre-purchase-description-recent-failed": "Fallo la compra {{ order }} con Wyre",
   "wyre-purchase-notification": "Compra con Wyre",
   "wyre-purchase-notification-past": "Comprado con Wyre",
+  "newsletter": {
+    "title": "Stay up to date with Oasis.app",
+    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "placeholder": "Email Address",
+    "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
+    "errors": {
+      "unknown": "Something went wrong. Please try again.",
+      "email-is-invalid": "Please enter a valid email address",
+      "email-already-exists": "Email is already subscribed to mailing list.",
+      "email-pending": "Opt-in email already sent for this address - please check your inbox."
+    }
+  },
   "product-card": {
     "borrow": {
       "description": "A Vault designed for borrowing against {{token}}."
