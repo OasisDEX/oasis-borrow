@@ -706,6 +706,78 @@ describe('manageMultiplyVault', () => {
         expect(state().stage).to.deep.equal('otherActions')
       })
     })
+
+    describe('multiply to borrow transitions', () => {
+      beforeEach(() => localStorage.clear())
+
+      it('should handle previously selected editing stage when going back and forth from borrow transition stages', () => {
+        const state = getStateUnpacker(mockManageMultiplyVault$())
+        expect(state().stage).to.be.equal('adjustPosition')
+
+        state().toggle!('borrowTransitionEditing')
+        expect(state().stage).to.be.equal('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().regress!()
+        expect(state().stage).to.be.equal('adjustPosition')
+        state().toggle!('otherActions')
+        expect(state().stage).to.be.equal('otherActions')
+        state().toggle!('borrowTransitionEditing')
+        expect(state().stage).to.be.equal('borrowTransitionEditing')
+        state().regress!()
+        expect(state().stage).to.be.equal('otherActions')
+      })
+
+      it('should fail when JWT token is not present', () => {
+        const state = getStateUnpacker(mockManageMultiplyVault$())
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionFailure')
+      })
+
+      it('should handle multiply transition error', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionInProgress')
+        _saveVaultType$.error('error')
+        expect(state().stage).to.be.equal('borrowTransitionFailure')
+      })
+
+      it('should handle borrow transition success', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionInProgress')
+        _saveVaultType$.next()
+        expect(state().stage).to.be.equal('borrowTransitionSuccess')
+      })
+    })
   })
 
   it('should add meaningful message when ledger throws error with disabled contract data', () => {
