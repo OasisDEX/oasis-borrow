@@ -235,7 +235,7 @@ export function HomepageView() {
           backgroundImage="/static/img/info_cards/safe.png"
         />
       </Grid>
-      <Box mb={5} mt={5}>
+      <Box mb={5} mt={7}>
         <NewsletterSection />
       </Box>
     </Box>
