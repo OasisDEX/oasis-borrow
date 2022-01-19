@@ -323,7 +323,8 @@
     "button-success": "Transition completed, refreshing..."
   },
   "multiply-to-borrow": {
-    "title": "View your Vault in the borrow UI",
+    "title1": "View your Vault in the borrow UI",
+    "title2": "You will go back to the Borrow interface",
     "checkmark1": "Specifically designed for borrowing positions",
     "checkmark2": "You can change back to the Multiply UI anytime",
     "checkmark3": "This does not require a transaction",

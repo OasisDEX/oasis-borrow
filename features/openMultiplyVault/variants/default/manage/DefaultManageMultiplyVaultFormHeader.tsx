@@ -2,7 +2,7 @@ import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { ManageMultiplyVaultEditingStage } from 'features/manageMultiplyVault/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Grid } from 'theme-ui'
+import { Box, Button, Grid, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../../../../manageMultiplyVault/manageMultiplyVault'
 import { ManageVaultHeaderAllowance } from '../../../common/ManageVaultHeaderAllowance'
@@ -12,6 +12,7 @@ function DefaultManageMultiplyVaultEditingController({
   toggle,
   currentStep,
   totalSteps,
+  isBorrowTransitionStage
 }: // accountIsController,
 ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -42,15 +43,16 @@ ManageMultiplyVaultState) {
           {t('manage-multiply-vault.action-tabs.borrow')}
         </Button>
       </Grid>
-      <Box mt={3} mb={-3}>
+      {!isBorrowTransitionStage && <Box mt={3} mb={-3}>
         <WithVaultFormStepIndicator {...{ totalSteps, currentStep }} />
-      </Box>
+      </Box>}
     </Box>
   )
 }
 
 export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultState) {
-  const { isEditingStage, isBorrowTransitionStage } = props
+  const { isEditingStage, isBorrowTransitionStage, stage, totalSteps, currentStep } = props
+  const { t } = useTranslation()
 
   return (
     <Box>
@@ -58,6 +60,15 @@ export function DefaultManageMultiplyVaultFormHeader(props: ManageMultiplyVaultS
         <DefaultManageMultiplyVaultEditingController {...props} />
       )}
       {!isEditingStage && !isBorrowTransitionStage && <ManageVaultHeaderAllowance {...props} />}
+      {!isEditingStage && isBorrowTransitionStage && <Box mt={4}>
+        <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
+          <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+            {stage === 'borrowTransitionEditing'
+              ? t('multiply-to-borrow.title1')
+              : t('multiply-to-borrow.title2')}
+          </Text>
+        </WithVaultFormStepIndicator>
+        </Box>}
     </Box>
   )
 }
