@@ -491,6 +491,14 @@ export const trackingEvents = {
     })
   },
 
+  newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
+    mixpanel.track('btn-click', {
+      id: 'NewsletterSubscribe',
+      product,
+      section,
+    })
+  },
+
   multiply: {
     confirmOpenMultiplyConfirm: (
       ilk: string,

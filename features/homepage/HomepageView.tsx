@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { AppLink } from '../../components/Links'
@@ -16,6 +16,7 @@ import { landingPageCardsData, ProductCardData } from '../../helpers/productCard
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { slideInAnimation } from '../../theme/animations'
+import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
   paraText: JSX.Element
@@ -118,6 +119,9 @@ export function HomepageView() {
         }}
         wideTabsSx={{ display: ['none', 'block'] }}
       />
+      <Box mb={5} mt={5}>
+        <NewsletterSection />
+      </Box>
     </Grid>
   )
 }
