@@ -73,9 +73,10 @@ function Pill(props: PillProps) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 140,
+        minWidth: 140,
         background: 'rgba(255, 255, 255, 0.67)',
         mx: 2,
+        my: 2,
         borderRadius: 'round',
         variant: 'text.paragraph2',
         fontWeight: 'semiBold',
@@ -90,7 +91,7 @@ function Pill(props: PillProps) {
 }
 function Pills({ sx }: { sx?: SxProps }) {
   return (
-    <Flex sx={{ width: '100%', justifyContent: 'center', ...sx }}>
+    <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
       {PILLS.map((pill) => (
         <Pill label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
