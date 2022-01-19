@@ -8,7 +8,7 @@ import { Box, Grid } from 'theme-ui'
 export function DefaultManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   return stage === 'borrowTransitionEditing' ? (
-    <Grid mt={-3}>
+    <Grid mt={-3} mb={3}>
       <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
         <TextWithCheckmark>{t('multiply-to-borrow.checkmark1')}</TextWithCheckmark>
         <TextWithCheckmark>{t('multiply-to-borrow.checkmark2')}</TextWithCheckmark>
@@ -17,7 +17,7 @@ export function DefaultManageMultiplyVaultBorrowTransition({ stage }: ManageMult
     </Grid>
   ) : (
     <Box>
-      <Icon name="multiply_transition" size="auto" />
+      <Icon name="borrow_transition" size="auto" sx={{ fill: 'none' }} />
     </Box>
   )
 }
