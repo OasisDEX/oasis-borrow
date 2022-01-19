@@ -757,8 +757,41 @@
       "link": "Learn more about Earn ->"
     }
   },
+  "learn-more": "Learn more",
   "assets": {
     "eth": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "btc": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "dai": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "usdc": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "lp-tokens": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "yfi": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "link": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "matic": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "mana": {
       "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
       "link": ""
     }
