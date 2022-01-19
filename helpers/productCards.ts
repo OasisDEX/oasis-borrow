@@ -20,6 +20,7 @@ export interface ProductCardData {
   stabilityFee: BigNumber
   currentCollateralPrice: BigNumber
   bannerIcon: string
+  bannerGif: string
   background: string
   name: string
 }
@@ -175,6 +176,7 @@ export function createProductCardsData$(
                 stabilityFee: ilk.stabilityFee,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
                 bannerIcon: tokenMeta.bannerIconAssetFeature,
+                bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.backgroundAssetFeature,
                 name: tokenMeta.name,
               }),
