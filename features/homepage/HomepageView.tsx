@@ -125,7 +125,7 @@ export function HomepageView() {
         sx={{
           maxWidth: '854px',
           margin: 'auto',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))',
+          gridTemplateColumns: ['1fr', '1fr 1fr'],
         }}
       >
         <InfoCard
