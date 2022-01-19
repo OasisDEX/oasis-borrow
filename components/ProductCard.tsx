@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
+import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
 
@@ -12,14 +13,14 @@ interface ProductCardBannerProps {
 
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   const dataContainer = useRef<HTMLDivElement>(null)
-  const [bigContainer, setBigCointainer] = useState(false)
+  const [contentHeight, setContentHeight] = useState(0)
   const size = useWindowSize()
 
   useEffect(() => {
     if (dataContainer.current) {
-      setBigCointainer(dataContainer.current.getBoundingClientRect().height > 75)
+      setContentHeight(dataContainer.current.getBoundingClientRect().height)
     }
-  }, [size])
+  }, [size, description])
 
   return (
     <Box sx={{ position: 'relative', pb: '24px' }}>
@@ -28,7 +29,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: bigContainer ? '116px' : '88px',
+          minHeight: contentHeight > 100 ? '140px' : contentHeight > 75 ? '116px' : '88px',
           border: 'unset',
         }}
       />
@@ -90,6 +91,7 @@ export function ProductCard({
         maxWidth: '378px',
         minHeight: '608px',
         position: 'relative',
+        ...fadeInAnimation,
       }}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>

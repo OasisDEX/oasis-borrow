@@ -739,5 +739,22 @@
     "earn": {
       "description": "Earn {{value}} {{token}} a year"
     }
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
+    }
   }
 }

@@ -24,6 +24,45 @@ export interface ProductCardData {
   name: string
 }
 
+export const productCardsConfig = {
+  borrow: {
+    cardsFilters: [
+      { name: 'Featured', icon: 'star_circle' },
+      { name: 'ETH', icon: 'eth_circle' },
+      { name: 'BTC', icon: 'btc_circle' },
+      { name: 'UNI LP', icon: 'uni_lp_circle' },
+      { name: 'LINK', icon: 'link_circle' },
+      { name: 'UNI', icon: 'uni_circle' },
+      { name: 'YFI', icon: 'yfi_circle' },
+      { name: 'MANA', icon: 'mana_circle' },
+      { name: 'MATIC', icon: 'matic_circle' },
+      { name: 'GUSD', icon: 'gusd_circle' },
+    ],
+    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+  },
+  multiply: {
+    cardsFilters: [
+      { name: 'Featured', icon: 'star_circle' },
+      { name: 'ETH', icon: 'eth_circle' },
+      { name: 'BTC', icon: 'btc_circle' },
+      { name: 'UNI LP', icon: 'uni_lp_circle' },
+      { name: 'LINK', icon: 'link_circle' },
+      { name: 'UNI', icon: 'uni_circle' },
+      { name: 'YFI', icon: 'yfi_circle' },
+      { name: 'MANA', icon: 'mana_circle' },
+      { name: 'MATIC', icon: 'matic_circle' },
+    ],
+    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+  },
+  landing: {
+    featuredCards: {
+      multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
+      borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],
+      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+    },
+  },
+}
+
 function btcProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => BTC_TOKENS.includes(ilk.token))
 }
@@ -32,9 +71,14 @@ function ethProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
 }
 
+const notSupportedAnymoreLpTokens = ['UNIV2ETHUSDT', 'UNIV2LINKETH', 'UNIV2AAVEETH', 'UNIV2DAIUSDT']
+
 function uniLpProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter(
-    (ilk) => LP_TOKENS.includes(ilk.token) && !ONLY_MULTIPLY_TOKENS.includes(ilk.token),
+    (ilk) =>
+      LP_TOKENS.includes(ilk.token) &&
+      !ONLY_MULTIPLY_TOKENS.includes(ilk.token) &&
+      !notSupportedAnymoreLpTokens.includes(ilk.token),
   )
 }
 
@@ -45,68 +89,72 @@ export function landingPageCardsData({
   productCardsData: ProductCardData[]
   product?: 'multiply' | 'borrow' | 'earn'
 }) {
-  const landingCardsMap = {
-    multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
-    borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],
-    earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
-  }
-
-  return productCardsData.filter((ilk) => landingCardsMap[product].includes(ilk.ilk))
+  return productCardsData.filter((ilk) =>
+    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
+  )
 }
 
 export function multiplyPageCardsData({
   productCardsData,
-  token,
+  cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  token?: string
+  cardsFilter?: string
 }) {
-  const featuredCards = ['ETH-A', 'WBTC-A', 'LINK-A']
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
 
-  if (!token) {
-    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
+  if (cardsFilter === 'Featured') {
+    return productCardsData.filter((ilk) =>
+      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
+    )
   }
 
-  if (token === 'BTC') {
+  // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
+  if (cardsFilter === 'UNI LP') {
+    return productCardsData.filter(
+      (data) => data.ilk === 'GUNIV3DAIUSDC1-A' || data.ilk === 'GUNIV3DAIUSDC2-A',
+    )
+  }
+
+  if (cardsFilter === 'BTC') {
     return btcProductCards(productCardsData)
   }
 
-  if (token === 'ETH') {
+  if (cardsFilter === 'ETH') {
     return ethProductCards(productCardsData)
   }
 
-  return multiplyTokens.filter((ilk) => ilk.token === token)
+  return multiplyTokens.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function borrowPageCardsData({
   productCardsData,
-  token,
+  cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  token?: string
+  cardsFilter?: string
 }) {
-  const featuredCards = ['ETH-A', 'WBTC-A', 'ETH-C']
-
-  if (!token) {
-    return productCardsData.filter((ilk) => featuredCards.includes(ilk.ilk))
+  if (cardsFilter === 'Featured') {
+    return productCardsData.filter((ilk) =>
+      productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
+    )
   }
 
-  if (token === 'UNI-LP') {
+  if (cardsFilter === 'UNI LP') {
     return uniLpProductCards(productCardsData)
   }
 
-  if (token === 'BTC') {
+  if (cardsFilter === 'BTC') {
     return btcProductCards(productCardsData)
   }
 
-  if (token === 'ETH') {
+  if (cardsFilter === 'ETH') {
     return ethProductCards(productCardsData)
   }
 
-  return productCardsData.filter((ilk) => ilk.token === token)
+  return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function createProductCardsData$(

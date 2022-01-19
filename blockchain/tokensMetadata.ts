@@ -22,7 +22,7 @@ export interface TokenConfig {
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
-const tokens = [
+export const tokens = [
   {
     symbol: 'ETH',
     precision: 18,

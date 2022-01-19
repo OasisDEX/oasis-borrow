@@ -68,6 +68,7 @@ const oasisBaseTheme = {
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
     actionInputHover: '#E5E7E8',
+    selected: '#EDEDFF',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -615,6 +616,13 @@ const oasisBaseTheme = {
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
+    },
+    unStyled: {
+      background: 'unset',
+      border: 'unset',
+      color: 'inherit',
+      cursor: 'pointer',
+      fontFamily: 'body',
     },
   },
   links: {
