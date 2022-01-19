@@ -16,6 +16,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
+      tokenGif={cardData.bannerGif}
       title={cardData.ilk}
       description={t(`product-card.multiply.description`, {
         token: cardData.token,
