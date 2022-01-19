@@ -1,4 +1,5 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
+import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -211,6 +212,9 @@ export interface ManageVaultConditions {
   withdrawCollateralOnVaultUnderDebtFloor: boolean
 
   hasToDepositCollateralOnEmptyVault: boolean
+
+  highSlippage: boolean
+  invalidSlippage: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -267,6 +271,9 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   withdrawCollateralOnVaultUnderDebtFloor: false,
 
   hasToDepositCollateralOnEmptyVault: false,
+
+  highSlippage: false,
+  invalidSlippage: false,
 }
 
 export function applyManageVaultConditions(
@@ -317,7 +324,10 @@ export function applyManageVaultConditions(
     exchangeError,
     otherAction,
     originalEditingStage,
+    slippage,
     txError,
+
+    invalidSlippage,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -516,6 +526,8 @@ export function applyManageVaultConditions(
     paybackAmount,
   })
 
+  const highSlippage = exchangeDataRequired && slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -535,7 +547,8 @@ export function applyManageVaultConditions(
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
       shouldShowExchangeError ||
-      hasToDepositCollateralOnEmptyVault)
+      hasToDepositCollateralOnEmptyVault ||
+      invalidSlippage)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -630,5 +643,7 @@ export function applyManageVaultConditions(
     withdrawCollateralOnVaultUnderDebtFloor,
 
     hasToDepositCollateralOnEmptyVault,
+
+    highSlippage,
   }
 }

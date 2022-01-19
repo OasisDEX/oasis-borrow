@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { AccountButton } from 'features/account/Account'
+import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -11,13 +12,15 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
+import { useSharedUI } from './SharedUIProvider'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
@@ -88,6 +91,7 @@ export function BackArrow() {
 }
 
 function ConnectedHeader() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
@@ -107,26 +111,60 @@ function ConnectedHeader() {
       variant="appContainer"
     >
       <>
-        <Logo sx={{ position: ['absolute', 'static', 'static'], left: 3, top: 3 }} />
-        <Flex sx={{ ml: 'auto', zIndex: 1, mt: [3, 0, 0] }}>
-          <AppLink
-            variant="nav"
-            sx={{ mr: 4 }}
-            href={`/owner/${(context as ContextConnected)?.account}`}
-            onClick={() => trackingEvents.yourVaults()}
-          >
-            {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-          </AppLink>
-          <AppLink
-            variant="nav"
-            sx={{ mr: [0, 4, 4] }}
-            href="/vaults/list"
-            onClick={() => trackingEvents.createNewVault(firstCDP)}
-          >
-            {t('open-new-vault')}
-          </AppLink>
+        <Flex
+          sx={{
+            alignItems: 'center',
+            justifyContent: ['space-between', 'flex-start'],
+            width: ['100%', 'auto'],
+          }}
+        >
+          <Logo />
+          <Flex sx={{ ml: 5, zIndex: 1 }}>
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${(context as ContextConnected)?.account}`}
+              onClick={() => trackingEvents.yourVaults()}
+            >
+              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+            </AppLink>
+            <AppLink
+              variant="nav"
+              sx={{ mr: [0, 4] }}
+              href="/vaults/list"
+              onClick={() => trackingEvents.createNewVault(firstCDP)}
+            >
+              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
+              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
+                <Icon name="plus_header" size="auto" width="18px" height="18px" />
+              </Box>
+            </AppLink>
+          </Flex>
         </Flex>
-        <AccountButton />
+        <Flex
+          sx={{
+            position: ['fixed', 'relative'],
+            bottom: 0,
+            left: 0,
+            right: 0,
+            bg: ['rgba(255,255,255,0.9)', 'transparent'],
+            p: [3, 0],
+            justifyContent: 'space-between',
+            gap: 2,
+          }}
+        >
+          <Flex>
+            <UserSettingsButton />
+            <AccountButton />
+          </Flex>
+          {vaultFormToggleTitle && (
+            <Box sx={{ display: ['flex', 'none'] }}>
+              <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+                <Box>{vaultFormToggleTitle}</Box>
+              </Button>
+            </Box>
+          )}
+        </Flex>
       </>
     </BasicHeader>
   )
@@ -136,6 +174,8 @@ const HEADER_LINKS = {
   'dai-wallet': `${apiHost}/daiwallet`,
   learn: 'https://kb.oasis.app',
   blog: 'https://blog.oasis.app',
+  multiply: `/multiply`,
+  borrow: `/borrow`,
 }
 
 function HeaderDropdown({
@@ -271,7 +311,7 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
   ),
 }
 
-const MOBILE_MENU_SECTIONS = [
+const MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES = [
   {
     titleKey: 'nav.products',
     links: [
@@ -288,10 +328,34 @@ const MOBILE_MENU_SECTIONS = [
   },
 ]
 
+const MOBILE_MENU_SECTIONS = [
+  {
+    titleKey: 'nav.products',
+    links: [
+      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+    ],
+  },
+  {
+    titleKey: 'nav.resources',
+    links: [
+      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
+      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+    ],
+  },
+]
+
 function MobileMenu() {
   const { t } = useTranslation()
+  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
   const [isOpen, setIsOpen] = useState(false)
 
+  const mobileMenuEntries = assetLandingPagesFeatureEnabled
+    ? MOBILE_MENU_SECTIONS
+    : MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES
+
+  const closeMenu = useCallback(() => setIsOpen(false), [])
   return (
     <>
       {isOpen && (
@@ -301,6 +365,7 @@ function MobileMenu() {
               overflow: 'hidden',
               height: '100vh',
               position: 'fixed',
+              width: '100vw',
             },
           })}
         />
@@ -322,7 +387,7 @@ function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {MOBILE_MENU_SECTIONS.map((section) => (
+          {mobileMenuEntries.map((section) => (
             <Grid key={section.titleKey}>
               <Text variant="links.navHeader">{t(section.titleKey)}</Text>
               {section.links.map((link) =>
@@ -332,6 +397,7 @@ function MobileMenu() {
                     variant="text.paragraph1"
                     sx={{ textDecoration: 'none' }}
                     href={link.url}
+                    onClick={closeMenu}
                   >
                     {t(link.labelKey)}
                   </AppLink>
@@ -365,31 +431,53 @@ function MobileMenu() {
 
 function DisconnectedHeader() {
   const { t } = useTranslation()
-
+  const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
+  const menuBarLandingPagesDisabled = (
+    <>
+      <HeaderDropdown title={t('nav.products')}>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
+          {t('nav.dai-wallet')}
+        </AppLink>
+        <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
+          {t('nav.borrow')}
+        </Text>
+      </HeaderDropdown>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
+        {t('nav.learn')}
+      </AppLink>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
+        {t('nav.blog')}
+      </AppLink>
+    </>
+  )
+  const menuBarLandingPagesEnabled = (
+    <>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply}>
+        {t('nav.multiply')}
+      </AppLink>
+      <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
+        {t('nav.borrow')}
+      </AppLink>
+      <HeaderDropdown title={t('nav.more')}>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
+          {t('nav.dai-wallet')}
+        </AppLink>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
+          {t('nav.learn')}
+        </AppLink>
+        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
+          {t('nav.blog')}
+        </AppLink>
+      </HeaderDropdown>
+    </>
+  )
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
             <Logo />
-            <HeaderDropdown title={t('nav.products')}>
-              <AppLink
-                variant="links.nav"
-                sx={{ fontWeight: 'body' }}
-                href={HEADER_LINKS['dai-wallet']}
-              >
-                {t('nav.dai-wallet')}
-              </AppLink>
-              <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
-                {t('nav.borrow')}
-              </Text>
-            </HeaderDropdown>
-            <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
-              {t('nav.learn')}
-            </AppLink>
-            <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
-              {t('nav.blog')}
-            </AppLink>
+            {assetLandingPagesEnabled ? menuBarLandingPagesEnabled : menuBarLandingPagesDisabled}
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink

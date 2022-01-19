@@ -205,8 +205,10 @@
       "trade": "Intercambia"
     },
     "hero": {
-      "headline": "Genera Dai usando cripto como colateral",
-      "subheader": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu cartera para comenzar"
+      "headlinePreAssetLandingPages": "Genera Dai usando cripto como colateral",
+      "subheaderPreAssetLandingPages": "Abre un Vault de Maker y genera Dai depositando tu colateral. Conecta tu cartera para comenzar",
+      "headline": "Pide prestado y multiplica tus activos con tus cripto favoritas",
+      "subheader": "ETH, WBTC, más de 30 activos para poner a trabajar desde 1,50% por año.<0/> Conecta una cartera para comenzar"
     },
     "cards": {
       "dai": {
@@ -325,7 +327,9 @@
     "knowledge-centre": "Centro de Conocimiento",
     "oracles": "Oráculos",
     "dai-wallet": "Dai Wallet",
-    "borrow": "Borrow"
+    "borrow": "Borrow",
+    "multiply": "Multiply",
+    "more": "More"
   },
   "new-to-ethereum": "¿Nuevo en Ethereum? ",
   "next": "Siguiente",
@@ -435,7 +439,10 @@
     "stability-fee": "Tasa de estabilidad",
     "type": "Tipo",
     "vault-dai-debt": "Deuda de Dai del Vault",
-    "vault-id": "Número de Vault"
+    "vault-id": "Número de Vault",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "token-balance": "Saldo de {{token}} ",
   "token-depositing": "Depositando {{token}} {{amount}}",
@@ -735,5 +742,22 @@
   "wyre-purchase-description-recent": "Compra {{ order }} con Wyre",
   "wyre-purchase-description-recent-failed": "Fallo la compra {{ order }} con Wyre",
   "wyre-purchase-notification": "Compra con Wyre",
-  "wyre-purchase-notification-past": "Comprado con Wyre"
+  "wyre-purchase-notification-past": "Comprado con Wyre",
+  "product-card": {
+    "borrow": {
+      "description": "A Vault designed for borrowing against {{token}}."
+    },
+    "multiply": {
+      "description": "A Vault designed for multiple exposure to {{token}}."
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": {
+      "description": "Borrow up to {{value}} {{token}}"
+    },
+    "multiply": {
+      "description": "Get up to {{value}} {{token}} exposure"
+    }
+  }
 }

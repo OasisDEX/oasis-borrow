@@ -38,6 +38,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(284.73deg, #C993FF 3.42%, #4962E1 97.28%), linear-gradient(284.73deg, #9658D3 3.42%, #415FFF 97.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/eth.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     tags: [],
   },
   {
@@ -51,6 +53,8 @@ const tokens = [
     color: '#ff4625',
     background: 'linear-gradient(133.6deg, #F75E18 21.52%, #F48C5C 98.44%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bat.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -68,7 +72,10 @@ const tokens = [
     color: '#f09242',
     background: 'linear-gradient(147.66deg, #F48702 0%, #FEA013 88.25%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wbtc.svg'),
+    backgroundAssetFeature: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
     tags: [],
+    rootToken: 'BTC',
   },
   {
     symbol: 'RENBTC',
@@ -85,7 +92,10 @@ const tokens = [
     color: '#838489',
     background: 'linear-gradient(156.14deg, #222121 12.76%, #8E8E8E 93.58%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/renbtc.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
     tags: [],
+    rootToken: 'BTC',
   },
   {
     symbol: 'TUSD',
@@ -98,6 +108,8 @@ const tokens = [
     color: '#195aff',
     background: 'linear-gradient(145.44deg, #0060CD 17.44%, #6AADFA 91.11%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/tusd.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['stablecoin'],
   },
   {
@@ -111,6 +123,8 @@ const tokens = [
     color: '#30cb9e',
     background: 'linear-gradient(141.71deg, #00AF87 17.09%, #1ACCA4 81.72%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/knc.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -124,6 +138,8 @@ const tokens = [
     color: '#f05',
     background: 'linear-gradient(285.4deg, #FFBC5B 1.26%, #FF2D55 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/mana.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
     tags: [],
   },
   {
@@ -137,6 +153,8 @@ const tokens = [
     color: '#005121',
     background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/pax.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['stablecoin'],
   },
   {
@@ -150,6 +168,8 @@ const tokens = [
     color: '259c77',
     background: 'linear-gradient(152.36deg, #25A680 17.19%, #66C5A9 95.07%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdt.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['stablecoin'],
   },
   {
@@ -164,6 +184,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(290.37deg, #54D8B1 0%, #2DAA7D 96.14%), linear-gradient(290.37deg, #4BCFA8 0%, #139D8D 96.14%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/comp.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -177,6 +199,8 @@ const tokens = [
     color: '#1c60ff',
     background: 'linear-gradient(143.13deg, #3758FD 17.87%, #A1ADEA 91.53%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/lrc.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -190,6 +214,8 @@ const tokens = [
     color: '#375bd2',
     background: 'linear-gradient(141.5deg, #164BE1 14.6%, #8DA6EC 89.62%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/link.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
     tags: [],
   },
   {
@@ -203,6 +229,8 @@ const tokens = [
     color: '#25ddfb',
     background: 'linear-gradient(144.58deg, #00B4CC 15.16%, #93E9F4 89.41%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/gusd.svg'),
+    backgroundAssetFeature: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/gusd.png'),
     tags: ['stablecoin'],
   },
   {
@@ -216,6 +244,8 @@ const tokens = [
     color: '#000',
     background: 'linear-gradient(156.14deg, #222121 12.76%, #8E8E8E 93.58%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/zerox.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -232,6 +262,8 @@ const tokens = [
     color: '#2775ca',
     background: 'linear-gradient(152.45deg, #0666CE 8.53%, #61A9F8 91.7%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdc.svg'),
+    backgroundAssetFeature: 'linear-gradient(152.45deg, #0666CE 8.53%, #61A9F8 91.7%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/usdc.png'),
     tags: ['stablecoin'],
   },
   {
@@ -246,6 +278,8 @@ const tokens = [
     color: '#000',
     background: 'linear-gradient(156.14deg, #222121 12.76%, #8E8E8E 93.58%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bal.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: [],
   },
   {
@@ -260,6 +294,8 @@ const tokens = [
     color: '#0657f9',
     background: 'linear-gradient(145.44deg, #0060CD 17.44%, #6AADFA 91.11%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/yfi.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
     tags: [],
   },
   {
@@ -275,6 +311,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
     tags: [],
   },
   {
@@ -287,8 +325,8 @@ const tokens = [
     iconCircle: 'aave_circle_color',
     iconColor: 'aave_circle_color',
     color: '#ff077d',
-    background: 'linear-gradient(286.73deg, #B6509E 2.03%, #2EBAC6 100%)',
-    bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
+    backgroundAssetFeature: 'linear-gradient(286.73deg, #B6509E 2.03%, #2EBAC6 100%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
     tags: [],
   },
   {
@@ -304,6 +342,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.png'),
     tags: ['lp-token'],
   },
   {
@@ -319,6 +359,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.png'),
     tags: ['lp-token'],
   },
   {
@@ -334,6 +376,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     tags: ['lp-token'],
   },
   {
@@ -349,8 +393,11 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.png'),
     tags: ['lp-token'],
   },
+  // TODO TO BE REMOVED
   {
     symbol: 'UNIV2ETHUSDT',
     precision: 18,
@@ -364,6 +411,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['lp-token'],
   },
   {
@@ -379,8 +428,11 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.png'),
     tags: ['lp-token'],
   },
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2LINKETH',
     precision: 18,
@@ -394,6 +446,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['lp-token'],
   },
   {
@@ -409,8 +463,11 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
     tags: ['lp-token'],
   },
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2AAVEETH',
     precision: 18,
@@ -424,8 +481,11 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['lp-token'],
   },
+  // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
   {
     symbol: 'UNIV2DAIUSDT',
     precision: 18,
@@ -439,6 +499,8 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['lp-token'],
   },
   {
@@ -454,6 +516,9 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature:
+      'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
@@ -471,6 +536,9 @@ const tokens = [
     background:
       'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.05) 100%), linear-gradient(99.1deg, #FA46A7 0%, #FF599F 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
+    backgroundAssetFeature:
+      'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
@@ -487,6 +555,8 @@ const tokens = [
     color: '#ff077d',
     background: 'linear-gradient(106.31deg, #8246E4 0%, #DB45F3 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
+    backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
     tags: [],
   },
   {
@@ -502,20 +572,11 @@ const tokens = [
     background:
       'linear-gradient(99.1deg, #00A3FF 0%, #4EB7F2 36.72%, #5DBAEF 43.67%, #0A98E8 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wsteth.svg'),
+    backgroundAssetFeature: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
     tags: [],
+    rootToken: 'ETH',
   },
-  // {
-  //   symbol: 'WETH',
-  //   precision: 18,
-  //   digits: 5,
-  //   maxSell: '10000000',
-  //   name: 'Wrapped Ether',
-  //   icon: AvatarSimple(ethSvg),
-  //   // iconInverse: AvatarSimple(ethCircleSvg),
-  //   iconCircle: AvatarSimple(ethCircleSvg),
-  //   iconColor: AvatarSimple(ethCircleSvg),
-  //   ticker: 'eth-ethereum',
-  // },
   {
     symbol: 'DAI',
     precision: 18,
@@ -528,33 +589,12 @@ const tokens = [
     ticker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
     color: '#fdc134',
+    bannerIcon: '',
+    background: '',
+    bannerIconAssetFeature: '',
+    backgroundAssetFeature: '',
     tags: ['stablecoin'],
   },
-  // {
-
-  // },
-  // {
-  //   symbol: 'CHAI',
-  //   precision: 18,
-  //   digits: 4,
-  //   maxSell: '10000000',
-  //   name: 'Maker',
-  //   icon: AvatarSimple(mkrSvg),
-  //   iconCircle: AvatarSimple(mkrSvg),
-  //   iconColor: AvatarSimple(mkrSvg),
-  //   ticker: '',
-  // },
-  // {
-  //   symbol: 'MKR',
-  //   precision: 18,
-  //   digits: 4,
-  //   maxSell: '10000000',
-  //   name: 'Maker',
-  //   icon: AvatarSimple(mkrSvg),
-  //   iconCircle: AvatarSimple(mkrSvg),
-  //   iconColor: AvatarSimple(mkrSvg),
-  //   ticker: 'usdc-usd-coin',
-  // },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
@@ -572,5 +612,17 @@ export const ALLOWED_MULTIPLY_TOKENS = tokens
     (token) => !(token.tags as CoinTag[]).some((tag) => tag === 'lp-token' || tag === 'stablecoin'),
   )
   .map((token) => token.symbol)
+
+export const LP_TOKENS = tokens
+  .filter((token) => (token.tags as CoinTag[]).includes('lp-token'))
+  .map((lpToken) => lpToken.symbol)
+
+export const BTC_TOKENS = tokens
+  .filter((token) => token.rootToken === 'BTC' || token.symbol === 'BTC')
+  .map((btcToken) => btcToken.symbol)
+
+export const ETH_TOKENS = tokens
+  .filter((token) => token.rootToken === 'ETH' || token.symbol === 'ETH')
+  .map((ethToken) => ethToken.symbol)
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']

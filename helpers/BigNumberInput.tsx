@@ -7,6 +7,7 @@ export const BigNumberInput = ({
   value,
   pipe,
   onChange,
+  sx,
   ...props
 }: MaskedInputProps & {
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void
@@ -48,7 +49,7 @@ export const BigNumberInput = ({
       guide={false}
       defaultValue=""
       pipe={maskPipe}
-      render={(ref, xprops) => <Input ref={ref} {...xprops} />}
+      render={(ref, xprops) => <Input ref={ref} {...xprops} sx={sx} />}
     />
   )
 }
