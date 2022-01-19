@@ -40,7 +40,7 @@ export const ASSETS_PAGES = [
     ilks: [],
   },
   {
-    slug: 'lp-tokens',
+    slug: 'lp-token',
     header: 'LP tokens',
     symbol: 'UNIV2',
     icon: getToken('UNI').iconCircle,

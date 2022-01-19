@@ -8,15 +8,13 @@ import React from 'react'
 import { useRouter } from 'next/router'
 
 import { BackgroundLight } from 'theme/BackgroundLight'
-import { AssetView } from '../../features/asset/AssetView'
+import { LpAssetsView } from 'features/asset/LpTokenView'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const content: AssetPageContent | undefined =
-    assetsPageContentBySlug[ctx.query.asset.toString().toLocaleLowerCase()]
+  const content: AssetPageContent | undefined = assetsPageContentBySlug['lp-token']
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      asset: ctx.query.asset || null,
       content,
     },
   }
@@ -33,7 +31,7 @@ export default function AssetPage({ content }: { content: AssetPageContent }) {
   return (
     <WithConnection>
       <WithTermsOfService>
-        <AssetView content={content} />
+        <LpAssetsView content={content} />
         <BackgroundLight />
       </WithTermsOfService>
     </WithConnection>
