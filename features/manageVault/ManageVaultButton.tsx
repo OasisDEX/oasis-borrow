@@ -122,7 +122,7 @@ function manageVaultSecondaryButtonText(state: ManageVaultState): string {
     case 'multiplyTransitionEditing':
     case 'multiplyTransitionWaitingForConfirmation':
     case 'multiplyTransitionFailure':
-      return 'Decide later'
+      return t('decide-later')
     default:
       return t('edit-vault-details')
   }

@@ -139,10 +139,19 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
   }
 
   const buttonText = manageMultiplyVaultButtonText(props)
-  const secondaryButtonText =
-    stage === 'daiAllowanceFailure' || stage === 'collateralAllowanceFailure'
-      ? t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
-      : t('edit-vault-details')
+  const secondaryButtonText = (() => {
+    switch(stage) {
+      case 'daiAllowanceFailure':
+      case 'collateralAllowanceFailure':
+        return t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
+      case 'borrowTransitionEditing':
+      case 'borrowTransitionWaitingForConfirmation':
+      case 'borrowTransitionFailure':
+          return t('decide-later')
+      default:
+        return t('edit-vault-details')
+    }
+  })()
 
   function trackEvents() {
     // if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {

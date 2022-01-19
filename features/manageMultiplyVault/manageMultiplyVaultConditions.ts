@@ -573,6 +573,9 @@ export function applyManageVaultConditions(
     'daiAllowanceFailure',
     'manageWaitingForConfirmation',
     'manageFailure',
+    'borrowTransitionEditing',
+    'borrowTransitionWaitingForConfirmation',
+    'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   return {
