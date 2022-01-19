@@ -5,6 +5,7 @@ import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultOtherActionsValidations', () => {
   it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
@@ -22,7 +23,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().updateDepositAmount!(depositAmountExceeds)
     expect(state().errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
     state().updateDepositAmount!(depositAmountAll)
@@ -50,7 +51,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('withdrawDai')
     state().updateGenerateAmount!(generateAmountAboveCeiling)
     expect(state().errorMessages).to.deep.equal(['generateAmountExceedsDebtCeiling'])
@@ -84,7 +85,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('withdrawDai')
     state().updateGenerateAmount!(generateAmountExceedsYield)
     expect(state().errorMessages).to.deep.equal([
@@ -137,7 +138,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('withdrawCollateral')
     state().updateWithdrawAmount!(withdrawAmountExceedsFreeCollateral)
     expect(state().errorMessages).to.deep.equal(['withdrawAmountExceedsFreeCollateral'])
@@ -172,7 +173,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().updateDepositAmount!(depositAmount)
 
     state().progress!()
@@ -201,7 +202,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('depositDai')
     state().updatePaybackAmount!(paybackAmount)
 
@@ -231,7 +232,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('depositDai')
     state().updatePaybackAmount!(paybackAmountExceedsVaultDebt)
 
@@ -258,7 +259,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('depositDai')
     state().updatePaybackAmount!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
@@ -293,7 +294,7 @@ describe('manageVaultOtherActionsValidations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('withdrawCollateral')
 
     state().updateWithdrawAmount!(withdrawAmount)

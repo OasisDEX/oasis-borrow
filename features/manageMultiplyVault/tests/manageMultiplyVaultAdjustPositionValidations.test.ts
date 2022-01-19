@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultAdjustPositionValidations', () => {
   // TO DO, calculations are off at current price
@@ -92,7 +93,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     )
 
     expect(state().errorMessages).to.deep.eq([])
-    state().toggle!()
+    legacyToggle(state())
     expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
     expect(state().canProgress).to.deep.eq(false)
   })

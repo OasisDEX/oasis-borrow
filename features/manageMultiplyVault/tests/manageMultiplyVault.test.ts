@@ -12,6 +12,7 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
+import { legacyToggle } from './legacyToggle'
 
 type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }
 ;(global as GlobalMock).document = {
@@ -100,7 +101,7 @@ describe('manageMultiplyVault', () => {
         const state = getStateUnpacker(mockManageMultiplyVault$())
 
         expect(state().stage).to.deep.equal('adjustPosition')
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
       })
 
@@ -117,7 +118,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
         expect(state().otherAction).to.deep.equal('depositCollateral')
 
@@ -148,7 +149,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('withdrawCollateral')
         expect(state().otherAction).to.deep.equal('withdrawCollateral')
 
@@ -168,7 +169,7 @@ describe('manageMultiplyVault', () => {
 
         const state = getStateUnpacker(mockManageMultiplyVault$())
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('withdrawDai')
         expect(state().otherAction).to.deep.equal('withdrawDai')
 
@@ -195,7 +196,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         expect(state().otherAction).to.deep.equal('depositDai')
 
@@ -219,7 +220,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('closeVault')
         expect(state().closeVaultTo).to.deep.equal('collateral')
         state().setCloseVaultTo!('dai')
@@ -262,7 +263,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
@@ -299,7 +300,7 @@ describe('manageMultiplyVault', () => {
         )
 
         expect(state().totalSteps).to.deep.equal(2)
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
         state().progress!()
@@ -321,7 +322,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()
@@ -350,7 +351,7 @@ describe('manageMultiplyVault', () => {
         )
 
         expect(state().totalSteps).to.deep.equal(2)
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
 
@@ -481,7 +482,7 @@ describe('manageMultiplyVault', () => {
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
 
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
@@ -513,7 +514,7 @@ describe('manageMultiplyVault', () => {
 
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         state().updatePaybackAmount!(paybackAmount)
 
@@ -640,7 +641,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
 
         state().updateDepositAmount!(depositAmount)
         state().progress!()
@@ -678,7 +679,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
         state().setOtherAction!('depositDai')
 
