@@ -70,11 +70,15 @@ export function applyManageVaultTransition(
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
   if (change.kind === 'toggleEditing') {
+    const { stage } = state
+
     return {
       ...state,
       ...manageVaultFormDefaults,
       stage: change.stage,
-      originalEditingStage: change.stage,
+      originalEditingStage: change.stage === 'borrowTransitionEditing'
+          ? (stage as ManageMultiplyVaultEditingStage)
+          : change.stage,
     }
   }
 
