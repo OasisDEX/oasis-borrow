@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
@@ -61,6 +61,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
 
 export interface ProductCardProps {
   tokenImage: string
+  tokenGif: string
   title: string
   description: string
   banner: { title: string; description: string }
@@ -73,6 +74,7 @@ export interface ProductCardProps {
 
 export function ProductCard({
   tokenImage,
+  tokenGif,
   title,
   description,
   banner,
@@ -82,6 +84,11 @@ export function ProductCard({
   background,
   floatingLabelText,
 }: ProductCardProps) {
+  const [hover, setHover] = useState(false)
+
+  const handleMouseEnter = useCallback(() => setHover(true), [])
+  const handleMouseLeave = useCallback(() => setHover(false), [])
+
   return (
     <Card
       sx={{
@@ -93,6 +100,8 @@ export function ProductCard({
         position: 'relative',
         ...fadeInAnimation,
       }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box>
@@ -100,7 +109,7 @@ export function ProductCard({
             <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
           )}
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-            <Image src={tokenImage} sx={{ height: '200px' }} />
+            <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
             <Heading
               variant="header2"
               as="h3"
