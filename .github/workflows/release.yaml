@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@v2
         with: 
           token: ${{ secrets.PAT }}
+          fetch-depth: 0
       - name: 'Determine Release Type'
         run: |
           if ${{ contains(github.event.inputs.release_type, 'major') }}; then
