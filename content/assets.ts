@@ -15,7 +15,7 @@ export const ASSETS_PAGES = [
     slug: 'btc',
     header: 'Bitcoin',
     symbol: 'BTC',
-    icon: 'wbtc_circle_color',
+    icon: 'btc_circle_color',
     descriptionKey: 'assets.btc.description',
     link: 'assets.btc.link',
     ilks: ['WBTC-A', 'WBTC-B', 'WBTC-C', 'RENBTC-A'],
