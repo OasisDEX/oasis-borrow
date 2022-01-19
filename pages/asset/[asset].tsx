@@ -4,10 +4,10 @@ import { AssetPageContent, assetsPageContentBySlug } from 'content/assets'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
 import { useRouter } from 'next/router'
-
+import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
+
 import { AssetView } from '../../features/asset/AssetView'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -17,7 +17,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
       asset: ctx.query.asset || null,
-      content,
+      content: content || null,
     },
   }
 }
@@ -26,7 +26,7 @@ export default function AssetPage({ content }: { content: AssetPageContent }) {
   const { replace } = useRouter()
 
   if (!content) {
-    replace('/404')
+    void replace('/404')
     return null
   }
 
