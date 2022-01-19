@@ -547,7 +547,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature:
       'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.gif'),
     tags: ['lp-token'],
     token0: 'DAI',
@@ -568,7 +568,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature:
       'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.gif'),
     tags: ['lp-token'],
     token0: 'DAI',
