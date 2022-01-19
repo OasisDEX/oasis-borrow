@@ -116,7 +116,10 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCardsData({ productCardsData: state() })
+    const multiplyPageData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'Featured',
+    })
 
     expect(multiplyPageData).to.eql([
       {
@@ -191,7 +194,10 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state() })
+    const borrowPageData = borrowPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'Featured',
+    })
 
     expect(borrowPageData).to.eql([
       {
@@ -215,14 +221,14 @@ describe('createProductCardsData$', () => {
         name: 'Ether',
       },
       {
-        token: ethC.token,
-        ilk: ethC.ilk,
-        liquidationRatio: ethC.liquidationRatio,
-        stabilityFee: ethC.stabilityFee,
+        token: linkA.token,
+        ilk: linkA.ilk,
+        liquidationRatio: linkA.liquidationRatio,
+        stabilityFee: linkA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/eth.png',
-        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-        name: 'Ether',
+        bannerIcon: '/static/img/tokens/link.png',
+        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
+        name: 'Chainlink',
       },
     ])
   })
