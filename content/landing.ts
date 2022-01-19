@@ -17,10 +17,10 @@ export const PILLS = [
   {
     icon: 'usdc_circle_color',
     label: 'USDC',
-    link: '/asset/btc',
+    link: '/asset/usdc',
   },
   {
-    icon: 'lp_tokens_circle_color',
+    icon: 'uni_lp_circle_color',
     label: 'UNI LP',
     link: '/asset/lp-token',
   },

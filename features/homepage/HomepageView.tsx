@@ -67,7 +67,8 @@ interface PillProps {
 
 function Pill(props: PillProps) {
   return (
-    <Box
+    <AppLink
+      href={props.link}
       sx={{
         display: 'flex',
         justifyContent: 'center',
@@ -84,7 +85,7 @@ function Pill(props: PillProps) {
     >
       <Icon name={props.icon} size="26px" sx={{ mr: 2 }} />
       {props.label}
-    </Box>
+    </AppLink>
   )
 }
 function Pills({ sx }: { sx?: SxProps }) {
