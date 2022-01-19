@@ -135,7 +135,7 @@ export function ProductPagesLayout({ children }: WithChildren) {
 
   return (
     <>
-      <ProductBackground variant="top" />
+      <ProductBackground />
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}

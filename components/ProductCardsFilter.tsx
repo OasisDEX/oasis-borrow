@@ -49,7 +49,10 @@ export function ProductCardsFilter({ filters, children }: TokenTabsProps) {
                     sx={{
                       variant: 'paragraph2',
                       fontWeight: 'semiBold',
-                      color: tab.name === currentFilter ? 'primary' : 'text.subtitle',
+                      color:
+                        tab.name === currentFilter || hover === tab.name
+                          ? 'primary'
+                          : 'text.subtitle',
                     }}
                   >
                     {tab.name}
