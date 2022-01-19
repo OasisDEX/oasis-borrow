@@ -3,6 +3,8 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { WithArrow } from 'components/WithArrow'
+import { AssetPageContent, assetsPageContentBySlug } from 'content/assets'
 import { getAddress } from 'ethers/lib/utils'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
@@ -10,9 +12,11 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
 import { GetServerSidePropsContext } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { Box, Flex, Grid, Heading } from 'theme-ui'
+
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 function Summary({ address }: { address: string }) {
@@ -45,29 +49,39 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function AssetView({ asset }: { asset: string }) {
-  const token = getToken(asset.toUpperCase())
-
-  console.log(token)
+function AssetView({ content }: { content: AssetPageContent }) {
+  const { t } = useTranslation()
 
   return (
     <Grid sx={{ zIndex: 1, width: '100%' }}>
       <Flex sx={{ justifyContent: 'center', alignItems: 'baseline' }}>
-        <Icon name={token.iconCircle} size="36px" sx={{ mr: 2 }} />
-        <Heading variant="header1">{token.name}</Heading>
+        <Icon name={content.icon} size="36px" sx={{ mr: 2 }} />
+        <Heading variant="header1">{content.header}</Heading>
         <Heading sx={{ ml: 2 }} variant="header3">
-          ({token.symbol})
+          ({content.symbol})
         </Heading>
+      </Flex>
+      <Flex sx={{ justifyContent: 'center' }}>
+        <Box sx={{ textAlign: 'center', maxWidth: 900 }}>
+          <Text sx={{ display: 'inline' }} variant="paragraph1">
+            {t(content.descriptionKey)}
+          </Text>
+          <WithArrow sx={{ display: 'inline' }}>
+            <Text sx={{ display: 'inline' }}>Learn more</Text>
+          </WithArrow>
+        </Box>
       </Flex>
     </Grid>
   )
 }
 
 export default function AssetPage({ asset }: { asset: string }) {
-  return asset ? (
+  const content: AssetPageContent | undefined = assetsPageContentBySlug[asset.toLocaleLowerCase()]
+
+  return content ? (
     <WithConnection>
       <WithTermsOfService>
-        <AssetView asset={asset} />
+        <AssetView content={content} />
         <BackgroundLight />
       </WithTermsOfService>
     </WithConnection>

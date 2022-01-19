@@ -717,5 +717,11 @@
     "multiply": {
       "description": "Get up to {{value}} {{token}} exposure"
     }
+  },
+  "assets": {
+    "eth": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    }
   }
 }
