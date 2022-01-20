@@ -10,14 +10,6 @@ describe('adressesUtils', () => {
     expect(actual.length).to.be.equal(1)
     expect(actual[0]).to.be.equal('ETH')
   })
-  it('should form correct OSM', async function () {
-    const uniqueAssets = supportedIlks
-      .map((x) => x.substring(0, x.indexOf('-') > 0 ? x.indexOf('-') : x.length))
-      .filter((v, i, a) => a.indexOf(v) === i /* distinct equivalent */)
-
-    const osms = getOsms(mainnet, supportedIlks)
-    expect(Object.keys(osms).length).to.be.equal(uniqueAssets.length)
-  })
   it('should filter collateral tokens correctly', async function () {
     const collaterals = getCollaterals(mainnet, supportedIlks)
     const tokens = getCollateralTokens(mainnet, supportedIlks)
