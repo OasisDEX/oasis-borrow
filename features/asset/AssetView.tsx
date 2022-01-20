@@ -14,6 +14,14 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
+function Loader() {
+  return (
+    <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+      <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+    </Flex>
+  )
+}
+
 function TabContent(props: {
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
@@ -26,14 +34,7 @@ function TabContent(props: {
 
   return (
     <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator
-        value={[productCardsDataValue]}
-        customLoader={
-          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-          </Flex>
-        }
-      >
+      <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
         {([productCardsData]) => (
           <Grid columns={[1, 2, 3]}>
             {props.ilks
@@ -58,14 +59,7 @@ function LpCards() {
 
   return (
     <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator
-        value={[productCardsDataValue]}
-        customLoader={
-          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-          </Flex>
-        }
-      >
+      <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
         {([productCardsData]) => (
           <Grid sx={{ margin: '0 auto' }} columns={[1, 2, 3]}>
             {uniLpProductCards(productCardsData).map((cardData) => (
