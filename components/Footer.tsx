@@ -18,6 +18,13 @@ const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
 } = getConfig()
 
+const ROUTES = {
+  CONTACT: `${apiHost}/daiwallet/contact`,
+  SUPPORT: '/support',
+  TWITTER: 'https://twitter.com/oasisdotapp',
+  DISCORD: 'https://discord.gg/Kc2bBB59GC',
+}
+
 const FOOTER_SECTIONS = [
   {
     titleKey: 'nav.about',
@@ -137,6 +144,28 @@ export function TemporaryFooter() {
   )
 }
 
+function SocialWithLogo() {
+  return (
+    <Grid gap={3}>
+      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} sx={{ height: '27px' }} />
+      <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
+        <AppLink href={ROUTES.TWITTER}>
+          <Icon name="twitter" size="auto" width="18px" height="16px" />
+        </AppLink>
+        <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
+          <Icon name="discord" size="auto" width="20px" height="23px" />
+        </AppLink>
+        <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+          <Icon name="github" size="auto" width="21px" />
+        </AppLink>
+      </Flex>
+      <Flex sx={{ justifyContent: ['center', 'flex-start'] }}>
+        <LanguageSelect components={LangSelectComponents} />
+      </Flex>
+    </Grid>
+  )
+}
+
 export function Footer() {
   const { t } = useTranslation()
   const assetLpEnabled = useFeatureToggle('AssetLandingPages')
@@ -148,31 +177,14 @@ export function Footer() {
           sx={{
             pl: 0,
             alignItems: 'flex-start',
-            '@media screen and (max-width: 64em)': {
-              gridTemplateColumns: '150px 1fr 1fr 1fr',
-            },
-            '@media screen and (max-width: 48em)': {
-              gridTemplateColumns: '1fr 1fr',
-            },
+            justifyItems: ['flex-start', 'center'],
           }}
-          columns="1fr 1fr 1fr 1fr 378px"
+          columns={[2, '150px 1fr 1fr 1fr', '150px 1fr 1fr 1fr 378px']}
           gap={[4, null, 5]}
         >
-          <Grid gap={3}>
-            <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
-            <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-              <AppLink href="https://twitter.com/oasisdotapp">
-                <Icon name="twitter" size="auto" width="18px" height="16px" />
-              </AppLink>
-              <AppLink href="https://discord.gg/oasisapp" sx={{ mx: 3 }}>
-                <Icon name="discord" size="auto" width="20px" height="23px" />
-              </AppLink>
-              <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
-                <Icon name="github" size="auto" width="21px" />
-              </AppLink>
-            </Flex>
-            <LanguageSelect components={LangSelectComponents} />
-          </Grid>
+          <Box sx={{ display: ['none', 'block'] }}>
+            <SocialWithLogo />
+          </Box>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
               <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
@@ -185,8 +197,20 @@ export function Footer() {
               ))}
             </Grid>
           ))}
-          {assetLpEnabled && <NewsletterSection small />}
+          {assetLpEnabled && (
+            <Box sx={{ display: ['none', 'none', 'flex'] }}>
+              <NewsletterSection small />
+            </Box>
+          )}
         </Grid>
+        {assetLpEnabled && (
+          <Flex sx={{ display: ['flex', 'flex', 'none'], mt: 5 }}>
+            <NewsletterSection small />
+          </Flex>
+        )}
+        <Flex sx={{ justifyContent: 'center', pt: 5, display: ['flex', 'none'] }}>
+          <SocialWithLogo />
+        </Flex>
       </Container>
       <TemporaryFooter />
       <FooterBackground />
