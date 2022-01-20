@@ -1,4 +1,4 @@
-export const PILLS = [
+export const LANDING_PILLS = [
   {
     icon: 'ether_circle_color',
     label: 'ETH',
