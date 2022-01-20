@@ -231,7 +231,7 @@ export function applyManageVaultTransaction(
 
 export function adjustPosition(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     account,
@@ -250,8 +250,8 @@ export function adjustPosition(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          getTokenMetaData('DAI', tokens),
-          getTokenMetaData(token, tokens),
+          getTokenMetaData('DAI', tokensMainnet),
+          getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
           oneInchAmount,
           slippage,
@@ -534,7 +534,7 @@ export function createProxy(
 
 export function closeVault(
   txHelpers$: Observable<TxHelpers>,
-  { tokens, defaultExchange }: Context,
+  { tokensMainnet, defaultExchange }: Context,
   change: (ch: ManageMultiplyVaultChange) => void,
   {
     proxyAddress,
@@ -554,8 +554,8 @@ export function closeVault(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         getQuote$(
-          getTokenMetaData('DAI', tokens),
-          getTokenMetaData(token, tokens),
+          getTokenMetaData('DAI', tokensMainnet),
+          getTokenMetaData(token, tokensMainnet),
           defaultExchange.address,
           fromTokenAmount,
           slippage,
