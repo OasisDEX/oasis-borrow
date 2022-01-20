@@ -16,7 +16,7 @@ describe('adressesUtils', () => {
       .filter((v, i, a) => a.indexOf(v) === i /* distinct equivalent */)
 
     const osms = getOsms(mainnet, supportedIlks)
-    expect(Object.keys(osms).length).to.be.equal(uniqueAssets.length - 1 /* DAI excluded */)
+    expect(Object.keys(osms).length).to.be.equal(uniqueAssets.length)
   })
   it('should filter collateral tokens correctly', async function () {
     const collaterals = getCollaterals(mainnet, supportedIlks)
