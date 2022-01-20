@@ -9,14 +9,14 @@ import { Observable } from 'rxjs'
 import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import automationBot from '../../../blockchain/abi/automation-bot.json'
+
 // TODO - ŁW - Implement tests for this file
 function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
-  const intf = new Interface(abi)
-  const parsedEvent = intf.parseLog(ev) as any
+  const event = new Interface(abi).parseLog(ev)
   return {
-    triggerId: parseInt(parsedEvent.args['triggerId'].toString()),
-    triggerType: parseInt(parsedEvent.args['triggerType'].toString()),
-    executionParams: parsedEvent.args['commandAddress'],
+    triggerId: parseInt(event.args['triggerId'].toString()),
+    commandAddress: event.args['commandAddress'],
+    executionParams: event.args['triggerData'],
   }
 }
 
@@ -27,8 +27,8 @@ async function getEvents(
   blockNumber: number,
 ): Promise<TriggersData> {
   const abi = [
-    'event TriggerAdded( uint256 indexed triggerId, address indexed commandAddress, uint256 indexed cdpId,  bytes triggerData)',
-    'event TriggerRemoved ( uint256 indexed cdpId, uint256 indexed triggerId)',
+    'event TriggerAdded(uint256 indexed triggerId, address indexed commandAddress, uint256 indexed cdpId, bytes triggerData)',
+    'event TriggerRemoved(uint256 indexed cdpId, uint256 indexed triggerId)',
   ]
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
 
@@ -63,8 +63,8 @@ async function getEvents(
 
 export interface TriggerRecord {
   triggerId: number
-  triggerType: number
-  executionParams: string /* bytes triggerData  from TriggerAdded event*/
+  commandAddress: string
+  executionParams: string // bytes triggerData from TriggerAdded event
 }
 
 export interface TriggersData {
