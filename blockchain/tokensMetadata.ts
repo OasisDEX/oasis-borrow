@@ -40,6 +40,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/eth.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
     tags: [],
   },
   {
@@ -55,6 +56,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bat.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -74,6 +76,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wbtc.svg'),
     backgroundAssetFeature: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/wbtc.gif'),
     tags: [],
     rootToken: 'BTC',
   },
@@ -94,6 +97,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/renbtc.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/renBTC.gif'),
     tags: [],
     rootToken: 'BTC',
   },
@@ -110,6 +114,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/tusd.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['stablecoin'],
   },
   {
@@ -125,6 +130,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/knc.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -140,6 +146,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/mana.svg'),
     backgroundAssetFeature: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/mana.gif'),
     tags: [],
   },
   {
@@ -155,6 +162,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/pax.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['stablecoin'],
   },
   {
@@ -170,6 +178,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdt.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['stablecoin'],
   },
   {
@@ -186,6 +195,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/comp.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -201,6 +211,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/lrc.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -216,6 +227,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/link.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/link.gif'),
     tags: [],
   },
   {
@@ -231,6 +243,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/gusd.svg'),
     backgroundAssetFeature: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/gusd.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/gusd.gif'),
     tags: ['stablecoin'],
   },
   {
@@ -246,6 +259,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/zerox.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -264,6 +278,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/usdc.svg'),
     backgroundAssetFeature: 'linear-gradient(152.45deg, #0666CE 8.53%, #61A9F8 91.7%)',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/usdc.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/usdc.gif'),
     tags: ['stablecoin'],
   },
   {
@@ -280,6 +295,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/bal.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: [],
   },
   {
@@ -296,6 +312,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/yfi.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/yfi.gif'),
     tags: [],
   },
   {
@@ -313,6 +330,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old.gif'),
     tags: [],
   },
   {
@@ -327,6 +345,7 @@ export const tokens = [
     color: '#ff077d',
     backgroundAssetFeature: 'linear-gradient(286.73deg, #B6509E 2.03%, #2EBAC6 100%)',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
+    bannerGif: '',
     tags: [],
   },
   {
@@ -344,6 +363,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_usdc_eth.gif'),
     tags: ['lp-token'],
   },
   {
@@ -361,6 +381,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_usdc.gif'),
     tags: ['lp-token'],
   },
   {
@@ -378,6 +399,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_eth.gif'),
     tags: ['lp-token'],
   },
   {
@@ -395,6 +417,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_dai_eth.gif'),
     tags: ['lp-token'],
   },
   // TODO TO BE REMOVED
@@ -413,6 +436,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['lp-token'],
   },
   {
@@ -430,6 +454,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_uni_eth.gif'),
     tags: ['lp-token'],
   },
   // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
@@ -448,6 +473,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['lp-token'],
   },
   {
@@ -465,6 +491,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old_wbtc_dai.gif'),
     tags: ['lp-token'],
   },
   // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
@@ -483,6 +510,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['lp-token'],
   },
   // TODO TO BE REMOVED WHEN LANDING PAGE WILL BE READY
@@ -501,6 +529,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['lp-token'],
   },
   {
@@ -518,7 +547,8 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature:
       'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.gif'),
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
@@ -538,7 +568,8 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/uni.svg'),
     backgroundAssetFeature:
       'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni.png'),
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/dai_uni_old.gif'),
     tags: ['lp-token'],
     token0: 'DAI',
     token1: 'USDC',
@@ -557,6 +588,7 @@ export const tokens = [
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/matic.svg'),
     backgroundAssetFeature: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/matic.gif'),
     tags: [],
   },
   {
@@ -573,7 +605,8 @@ export const tokens = [
       'linear-gradient(99.1deg, #00A3FF 0%, #4EB7F2 36.72%, #5DBAEF 43.67%, #0A98E8 95.28%), linear-gradient(99.1deg, #FF077D 0%, #FF5B79 95.28%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/wsteth.svg'),
     backgroundAssetFeature: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
-    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerIconAssetFeature: staticFilesRuntimeUrl('/static/img/tokens/wstETH.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/wstETH.gif'),
     tags: [],
     rootToken: 'ETH',
   },
@@ -593,6 +626,7 @@ export const tokens = [
     background: '',
     bannerIconAssetFeature: '',
     backgroundAssetFeature: '',
+    bannerGif: '',
     tags: ['stablecoin'],
   },
 ]

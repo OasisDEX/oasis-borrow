@@ -1,4 +1,5 @@
 import { useTranslation } from 'next-i18next'
+import EthGif from 'public/static/img/tokens/eth.gif'
 import EthImage from 'public/static/img/tokens/eth.png'
 import React from 'react'
 
@@ -10,6 +11,7 @@ export const Borrow = () => {
   return (
     <ProductCard
       tokenImage={EthImage}
+      tokenGif={EthGif}
       title="ETH-A"
       description={t(`product-card.borrow.description`, { token: 'ETH' })}
       banner={{
@@ -32,6 +34,7 @@ export const Multiply = () => {
   return (
     <ProductCard
       tokenImage={EthImage}
+      tokenGif={EthGif}
       title="ETH-A"
       description={t(`product-card.multiply.description`, { token: 'ETH' })}
       banner={{

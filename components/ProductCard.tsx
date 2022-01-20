@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Card, Flex, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
@@ -41,12 +41,10 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           top: '19px',
           left: '50%',
           transform: 'translateX(-50%)',
+          width: 'calc(100% - 32px)',
         }}
       >
-        <Flex
-          sx={{ flexDirection: 'column', alignItems: 'center', width: ['240px', '280px'] }}
-          ref={dataContainer}
-        >
+        <Flex sx={{ flexDirection: 'column', alignItems: 'center' }} ref={dataContainer}>
           <Text sx={{ color: 'text.subtitle' }} variant="paragraph2">
             {title}
           </Text>
@@ -61,6 +59,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
 
 export interface ProductCardProps {
   tokenImage: string
+  tokenGif: string
   title: string
   description: string
   banner: { title: string; description: string }
@@ -73,6 +72,7 @@ export interface ProductCardProps {
 
 export function ProductCard({
   tokenImage,
+  tokenGif,
   title,
   description,
   banner,
@@ -82,6 +82,11 @@ export function ProductCard({
   background,
   floatingLabelText,
 }: ProductCardProps) {
+  const [hover, setHover] = useState(false)
+
+  const handleMouseEnter = useCallback(() => setHover(true), [])
+  const handleMouseLeave = useCallback(() => setHover(false), [])
+
   return (
     <Card
       sx={{
@@ -93,6 +98,8 @@ export function ProductCard({
         position: 'relative',
         ...fadeInAnimation,
       }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
         <Box>
@@ -100,7 +107,7 @@ export function ProductCard({
             <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
           )}
           <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-            <Image src={tokenImage} sx={{ height: '200px' }} />
+            <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
             <Heading
               variant="header2"
               as="h3"
@@ -146,21 +153,5 @@ export function ProductCard({
         </Box>
       </Flex>
     </Card>
-  )
-}
-
-export function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
-  return (
-    <Grid
-      sx={{
-        gap: '17px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
-        width: '100%',
-        boxSizing: 'border-box',
-        justifyContent: 'center',
-      }}
-    >
-      {props.productCards}
-    </Grid>
   )
 }
