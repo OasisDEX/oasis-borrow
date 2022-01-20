@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardsLayout } from 'components/ProductCard'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
@@ -11,6 +10,8 @@ import { useObservableWithError } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+
+import { uniLpProductCards } from '../../helpers/productCards'
 
 function Cards() {
   const { productCardsData$ } = useAppContext()
@@ -29,16 +30,11 @@ function Cards() {
         }
       >
         {([productCardsData]) => (
-          <>
-            <ProductCardsLayout
-              sx={{ width: '100%', mt: 3 }}
-              productCards={productCardsData
-                .filter((cardData) => cardData.ilk.startsWith('UNIV2'))
-                .map((cardData) => (
-                  <ProductCardBorrow cardData={cardData} />
-                ))}
-            />
-          </>
+          <Grid columns={[1, 2, 3]}>
+            {uniLpProductCards(productCardsData).map((cardData) => (
+              <ProductCardBorrow cardData={cardData} />
+            ))}
+          </Grid>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>

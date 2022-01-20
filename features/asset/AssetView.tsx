@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardsLayout } from 'components/ProductCard'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
 import { TabSwitcher } from 'components/TabSwitcher'
@@ -36,18 +35,15 @@ function TabContent(props: {
         }
       >
         {([productCardsData]) => (
-          <>
-            <ProductCardsLayout
-              sx={{ width: '100%', mt: 3 }}
-              productCards={props.ilks
-                .map((ilk) => productCardsData.find((card) => card.ilk === ilk))
-                .filter(
-                  (cardData: ProductCardData | undefined): cardData is ProductCardData =>
-                    cardData !== null,
-                )
-                .map((cardData) => props.renderProductCard({ cardData }))}
-            />
-          </>
+          <Grid columns={[1, 2, 3]}>
+            {props.ilks
+              .map((ilk) => productCardsData.find((card) => card.ilk === ilk))
+              .filter(
+                (cardData: ProductCardData | undefined): cardData is ProductCardData =>
+                  cardData !== null,
+              )
+              .map((cardData) => props.renderProductCard({ cardData }))}
+          </Grid>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
