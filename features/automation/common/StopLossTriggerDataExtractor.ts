@@ -9,10 +9,13 @@ import { useEffect } from 'react'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggersTypes } from './enums/TriggersTypes'
 
-function getSLLevel(rawBytes: string): BigNumber {
+function decodeTriggerData(rawBytes: string) {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'bool', 'uint256'], rawBytes)
-  const slLevel = new BigNumber(values[2].toString()).dividedBy(100)
-  return slLevel
+  return {
+    cdpId: new BigNumber(values[0].toString()),
+    isToCollateral: values[1],
+    stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
+  }
 }
 
 export interface StopLossTriggerData {
@@ -25,13 +28,19 @@ export interface StopLossTriggerData {
 export function extractSLData(data: TriggersData): StopLossTriggerData {
   const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
   if (doesStopLossExist) {
-    const slRecord = last(data.triggers)
-    if (!slRecord) throw data /* TODO: This is logically unreachable, revrite so typecheck works */
+    const stopLossRecord = last(data.triggers)
+
+    // TODO: This is logically unreachable, rewrite so typecheck works
+    if (!stopLossRecord) {
+      throw data
+    }
+
+    const { stopLossLevel, isToCollateral } = decodeTriggerData(stopLossRecord.executionParams)
     return {
       isStopLossEnabled: true,
-      stopLossLevel: getSLLevel(slRecord.executionParams),
-      isToCollateral: slRecord.triggerType === TriggersTypes.StopLossToCollateral,
-      triggerId: slRecord.triggerId,
+      stopLossLevel,
+      isToCollateral,
+      triggerId: stopLossRecord.triggerId,
     } as StopLossTriggerData
   } else {
     return {
