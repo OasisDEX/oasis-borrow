@@ -13,7 +13,7 @@ function decodeTriggerData(rawBytes: string) {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'uint16', 'uint256'], rawBytes)
   return {
     cdpId: new BigNumber(values[0].toString()),
-    triggerType: (new BigNumber(values[0].toString())).toNumber(),
+    triggerType: new BigNumber(values[0].toString()).toNumber(),
     stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
   }
 }
@@ -39,7 +39,7 @@ export function extractSLData(data: TriggersData): StopLossTriggerData {
     return {
       isStopLossEnabled: true,
       stopLossLevel,
-      isToCollateral: triggerType == TriggersTypes.StopLossToCollateral,
+      isToCollateral: triggerType === TriggersTypes.StopLossToCollateral,
       triggerId: stopLossRecord.triggerId,
     } as StopLossTriggerData
   } else {
@@ -65,11 +65,11 @@ export function prepareTriggerData(
   const slLevel: number = stopLossLevel.toNumber()
   const networkConfig = networksById[vaultData.chainId]
   const triggerTypeVaue = isCloseToCollateral
-  ? new BigNumber(TriggersTypes.StopLossToCollateral)
-  : new BigNumber(TriggersTypes.StopLossToDai);
+    ? new BigNumber(TriggersTypes.StopLossToCollateral)
+    : new BigNumber(TriggersTypes.StopLossToDai)
   return {
     cdpId: vaultData.id,
-    triggerType: triggerTypeVaue ,
+    triggerType: triggerTypeVaue,
     proxyAddress: vaultData.owner,
     serviceRegistry: networkConfig.serviceRegistry,
     triggerData: buildTriggerData(vaultData.id, triggerTypeVaue.toNumber(), slLevel),
