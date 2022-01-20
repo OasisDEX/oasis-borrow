@@ -30,7 +30,7 @@ function Cards() {
         }
       >
         {([productCardsData]) => (
-          <Grid columns={[1, 2, 3]}>
+          <Grid sx={{ margin: '0 auto' }} columns={[1, 2, 3]}>
             {uniLpProductCards(productCardsData).map((cardData) => (
               <ProductCardBorrow cardData={cardData} />
             ))}

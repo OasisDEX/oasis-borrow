@@ -81,6 +81,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
             display: ['block', 'none'],
             maxWidth: '343px',
             width: '100%',
+            mb: 4,
           }}
           wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
           tabs={[
