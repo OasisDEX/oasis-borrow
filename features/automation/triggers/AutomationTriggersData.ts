@@ -16,7 +16,7 @@ function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
   return {
     triggerId: parseInt(parsedEvent.args['triggerId'].toString()),
     triggerType: parseInt(parsedEvent.args['triggerType'].toString()),
-    executionParams: parsedEvent.args['triggerData'],
+    executionParams: parsedEvent.args['commandAddress'],
   }
 }
 
@@ -27,8 +27,8 @@ async function getEvents(
   blockNumber: number,
 ): Promise<TriggersData> {
   const abi = [
-    'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
-    'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',
+    'event TriggerAdded( uint256 indexed triggerId, address indexed commandAddress, uint256 indexed cdpId,  bytes triggerData)',
+    'event TriggerRemoved ( uint256 indexed cdpId, uint256 indexed triggerId)',
   ]
   const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
 
