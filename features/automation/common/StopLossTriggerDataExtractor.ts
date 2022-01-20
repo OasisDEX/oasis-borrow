@@ -12,6 +12,7 @@ import { TriggersTypes } from './enums/TriggersTypes'
 function decodeTriggerData(rawBytes: string) {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'bool', 'uint256'], rawBytes)
   return {
+    cdpId: new BigNumber(values[0].toString()),
     isToCollateral: values[1],
     stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
   }
