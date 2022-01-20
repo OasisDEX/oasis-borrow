@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { PILLS } from 'content/landing'
+import { LANDING_PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
@@ -92,8 +92,8 @@ function Pill(props: PillProps) {
 function Pills({ sx }: { sx?: SxProps }) {
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {PILLS.map((pill) => (
-        <Pill label={pill.label} link={pill.link} icon={pill.icon} />
+      {LANDING_PILLS.map((pill) => (
+        <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
     </Flex>
   )

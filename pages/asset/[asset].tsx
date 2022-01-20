@@ -1,12 +1,11 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
-import { AppLayout } from 'components/Layouts'
+import { ProductPagesLayout } from 'components/Layouts'
 import { AssetPageContent, assetsPageContentBySlug } from 'content/assets'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { AssetView } from '../../features/asset/AssetView'
 
@@ -34,10 +33,9 @@ export default function AssetPage({ content }: { content: AssetPageContent }) {
     <WithConnection>
       <WithTermsOfService>
         <AssetView content={content} />
-        <BackgroundLight />
       </WithTermsOfService>
     </WithConnection>
   )
 }
 
-AssetPage.layout = AppLayout
+AssetPage.layout = ProductPagesLayout
