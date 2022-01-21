@@ -835,5 +835,48 @@
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
       "link": "Learn more about Earn ->"
     }
+  },
+  "learn-more": "Learn more",
+  "assets": {
+    "eth": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it. We can think about it as the \"fuel\" of the network. Users may exchange other cryptocurrencies for ether tokens, but ether tokens cannot be substituted with other cryptocurrencies to provide computing power for Ethereum transactions.",
+      "link": "https://ethereum.org/en/eth/"
+    },
+    "btc": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "dai": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "usdc": {
+      "description": "USDC is a 1:1 USD-backed centralized stablecoin, fully regulated. USDC is natively supported on multiple layer 1 blockchains including Ethereum as an ERC-20 token, Algorand as an ASA token, Solana as a SPL token, TRON as an TRC-20 token, and Stellar as a native asset. It is operated by Circle.",
+      "link": "https://www.circle.com/en/about-circle"
+    },
+    "lp-token": {
+      "description": "When tokens are deposited into a crypto liquidity pool, the platform automatically generates a new token that represents the share the depositor owns of that pool. This is called a liquidity provider (LP) token, and it can be used for a multitude of functions both within its native platform and other decentralized finance (DeFi) apps. This has the effect of multiplying the liquidity available in the DeFi ecosystem.",
+      "link": ""
+    },
+    "yfi": {
+      "description": "Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return.",
+      "link": "https://yearn.finance/ "
+    },
+    "uni": {
+      "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community of UNI token holders and their delegates who propose and vote on upgrades to the protocol. Uniswap is a crypto trading protocol for swapping ERC20 tokens.",
+      "link": "https://uniswap.org/"
+    },
+    "link": {
+      "description": "Loopring is an Ethereum token that describes itself as “an open-sourced, audited, and non-custodial exchange protocol.” It aims to allow anyone to build non-custodial, order book-based exchanges on Ethereum by leveraging zero-knowledge proofs.",
+      "link": "https://loopring.org/#/"
+    },
+    "matic": {
+      "description": "Polygon (MATIC) is an Ethereum token that powers the Polygon Network, a scaling solution for Ethereum. Polygon is a protocol and a framework for building and connecting Ethereum-compatible blockchain networks. Aggregating scalable solutions on Ethereum supporting a multi-chain Ethereum ecosystem.",
+      "link": "https://polygon.technology/"
+    },
+    "mana": {
+      "description": "MANA is the ERC-20 token built for Decentraland, a virtual reality platform powered by the ethereum blockchain. It is primarily used to buy goods, services and LAND (an NFT token) within Decentraland.",
+      "link": "https://decentraland.org/"
+    }
   }
 }

@@ -28,3 +28,5 @@ export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {
   stateMutability?: string // 'pure' | 'view' | 'nonpayable' | 'payable'
   inputs?: (AbiInput & { internalType?: string })[]
 }
+
+export type Unbox<T> = T extends Promise<infer U> ? U : T extends Array<infer Y> ? Y : never

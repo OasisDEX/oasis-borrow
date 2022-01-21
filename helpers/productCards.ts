@@ -101,7 +101,7 @@ function ethProductCards(productCardsData: ProductCardData[]) {
 
 const notSupportedAnymoreLpTokens = ['UNIV2ETHUSDT', 'UNIV2LINKETH', 'UNIV2AAVEETH', 'UNIV2DAIUSDT']
 
-function uniLpProductCards(productCardsData: ProductCardData[]) {
+export function uniLpProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter(
     (ilk) =>
       LP_TOKENS.includes(ilk.token) &&
