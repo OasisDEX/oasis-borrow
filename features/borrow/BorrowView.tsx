@@ -29,7 +29,10 @@ export function BorrowView() {
       <ProductHeader
         title={t('product-page.borrow.title')}
         description={t('product-page.borrow.description')}
-        link={{ href: '', text: t('product-page.borrow.link') }}
+        link={{
+          href: 'https://kb.oasis.app/help/what-is-oasis-borrow ',
+          text: t('product-page.borrow.link'),
+        }}
       />
 
       <WithErrorHandler error={[productCardsDataError]}>

@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatPercent } from '../helpers/formatters/format'
-import { ProductCardData } from '../helpers/productCards'
+import { cardDescriptionsKeys, ProductCardData } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
@@ -18,7 +18,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
       title={cardData.ilk}
-      description={t(`product-card.multiply.description`, {
+      description={t(`product-card.${cardDescriptionsKeys[cardData.ilk]}.description`, {
         token: cardData.token,
       })}
       banner={{

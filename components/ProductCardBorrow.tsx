@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatPercent } from '../helpers/formatters/format'
-import { ProductCardData } from '../helpers/productCards'
+import { cardDescriptionsKeys, ProductCardData } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
@@ -24,7 +24,9 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
       title={cardData.ilk}
-      description={t(`product-card.borrow.description`, { token: cardData.token })}
+      description={t(`product-card.${cardDescriptionsKeys[cardData.ilk]}.description`, {
+        token: cardData.token,
+      })}
       banner={{
         title: t('product-card-banner.with', {
           value: hardcodedTokenAmount,

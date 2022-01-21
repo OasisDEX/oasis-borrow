@@ -223,12 +223,12 @@
     "tabs": {
       "borrow": {
         "tabLabel": "Borrow on Oasis",
-        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
         "tabParaLinkContent": "See all Borrow collateral types →"
       },
       "multiply": {
         "tabLabel": "Multiply on Oasis",
-        "tabParaContent": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
+        "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
         "tabParaLinkContent": "See all Multiply collateral types →"
       }
     },
@@ -237,7 +237,7 @@
       "learn": {
         "learn": "Learn",
         "deep-dive": "Deep dive into oasis.app functionalities and glossary",
-        "get-started":"Get started",
+        "get-started": "Get started",
         "tutorials": "Tutorials",
         "key-concepts": "Key concepts"
       },
@@ -795,10 +795,16 @@
       "description": "A Vault designed for borrowing against {{token}}."
     },
     "multiply": {
-      "description": "A Vault designed for multiple exposure to {{token}}."
+      "description": "A Vault designed to multiply your exposure to {{token}}."
     },
     "earn": {
       "description": "A great way to earn a stable long term yield on your {{token}}"
+    },
+    "borrow-and-multiply": {
+      "description": "A vault for both multiplying your exposure or borrowing against {{token}}"
+    },
+    "lp-tokens": {
+      "description": "A vault for multiplying your exposure to {{token}}"
     }
   },
   "product-card-banner": {
@@ -821,7 +827,7 @@
     },
     "borrow": {
       "title": "Oasis Borrow",
-      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products.",
       "link": "Learn more about Borrow ->"
     },
     "earn": {

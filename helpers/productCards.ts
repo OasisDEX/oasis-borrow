@@ -64,6 +64,33 @@ export const productCardsConfig = {
   },
 }
 
+export const cardDescriptionsKeys: Record<string, string> = {
+  'WBTC-B': 'multiply',
+  'ETH-B': 'multiply',
+  'ETH-C': 'borrow',
+  'WBTC-C': 'borrow',
+  'GUSD-A': 'borrow',
+
+  'ETH-A': 'borrow-and-multiply',
+  'WBTC-A': 'borrow-and-multiply',
+  'LINK-A': 'borrow-and-multiply',
+  'UNI-A': 'borrow-and-multiply',
+  'YFI-A': 'borrow-and-multiply',
+  'MANA-A': 'borrow-and-multiply',
+  'MATIC-A': 'borrow-and-multiply',
+  'WSTETH-A': 'borrow-and-multiply',
+  'RENBTC-A': 'borrow-and-multiply',
+
+  'GUNIV3DAIUSDC1-A': 'lp-tokens',
+  'GUNIV3DAIUSDC2-A': 'lp-tokens',
+  'UNIV2DAIETH-A': 'lp-tokens',
+  'UNIV2WBTCETH-A': 'lp-tokens',
+  'UNIV2USDCETH-A': 'lp-tokens',
+  'UNIV2DAIUSDC-A': 'lp-tokens',
+  'UNIV2UNIETH-A': 'lp-tokens',
+  'UNIV2WBTCDAI-A': 'lp-tokens',
+}
+
 function btcProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => BTC_TOKENS.includes(ilk.token))
 }
