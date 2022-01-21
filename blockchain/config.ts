@@ -106,7 +106,8 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: 'http://localhost:3001/v1',
+  // cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
 }
 
 export type NetworkConfig = typeof protoMain

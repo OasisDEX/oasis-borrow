@@ -4,11 +4,13 @@ import { networksById } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
+import { GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import automationBot from '../../../blockchain/abi/automation-bot.json'
+import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 // TODO - ŁW - Implement tests for this file
 function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
   const intf = new Interface(abi)
@@ -26,6 +28,13 @@ async function getEvents(
   provider: ethers.providers.Provider,
   blockNumber: number,
 ): Promise<TriggersData> {
+
+  const activeTriggersForVault = getAllActiveTriggers(new GraphQLClient('http://localhost:3001/v1'), '46')
+  console.log('activeTriggersForVault')
+  console.log(activeTriggersForVault)
+
+  
+  // to be deleted 
   const abi = [
     'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
     'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',

@@ -20,8 +20,10 @@ query activeTriggersForVault($vaultId: BigFloat){
 }
 `
 // vaultId is string here because gql expects type BigFloat but can only parse string values
-async function getAllActiveTriggers(client: GraphQLClient, vaultId: string): Promise<AutomationBaseTriggerData[]> {
-    const data = await client.request(query, { cdpId: vaultId })
+export async function getAllActiveTriggers(client: GraphQLClient, vaultId: string): Promise<AutomationBaseTriggerData[]> {
+  console.log('vaultId')
+  console.log(vaultId)
+    const data = await client.request(query, { vaultId: vaultId })
   
     return data.allActiveTriggers.nodes as AutomationBaseTriggerData[]
   }
