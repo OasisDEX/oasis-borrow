@@ -7,7 +7,7 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   defaultMutableManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
-} from 'features/manageMultiplyVault/manageMultiplyVault'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import {
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,

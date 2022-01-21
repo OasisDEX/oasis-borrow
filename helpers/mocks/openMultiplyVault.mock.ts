@@ -9,7 +9,7 @@ import { mockIlkData$, MockIlkDataProps } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
 import { Observable, of } from 'rxjs'
 
-import { createOpenMultiplyVault$ } from '../../features/openMultiplyVault/openMultiplyVault'
+import { createOpenMultiplyVault$ } from '../../features/multiply/open/pipes/openMultiplyVault'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { slippageLimitMock } from './slippageLimit.mock'

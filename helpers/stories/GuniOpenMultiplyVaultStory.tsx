@@ -3,7 +3,7 @@ import { SharedUIContext } from 'components/SharedUIProvider'
 import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
-} from 'features/openMultiplyVault/openMultiplyVault'
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import { MockOpenMultiplyVaultProps } from 'helpers/mocks/openMultiplyVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
@@ -12,7 +12,7 @@ import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
-import { GuniOpenVaultView } from '../../features/openMultiplyVault/variants/guni/open/GuniOpenVaultView'
+import { GuniOpenVaultView } from '../../features/earn/guni/open/containers/GuniOpenVaultView'
 import { mockGuniOpenMultiplyVault } from '../mocks/guniOpenMultiplyVault.mock'
 
 type GuniOpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps

@@ -1,6 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
+import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
