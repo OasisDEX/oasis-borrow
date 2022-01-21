@@ -16,7 +16,7 @@ import { useObservable, useObservableWithError } from '../../helpers/observableH
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { slideInAnimation } from '../../theme/animations'
+import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
@@ -30,33 +30,42 @@ function TabContent(props: {
   )
 
   return (
-    <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator
-        value={[productCardsDataValue]}
-        customLoader={
-          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-          </Flex>
-        }
-      >
-        {([productCardsData]) => (
-          <>
-            <Text
-              variant="paragraph2"
-              sx={{ mt: 4, color: 'lavender', maxWidth: 617, textAlign: 'center', mb: 4 }}
-            >
-              {props.paraText}
-            </Text>
-            <Grid columns={[1, 2, 3]}>
-              {landingPageCardsData({
-                productCardsData,
-                product: props.type,
-              }).map((cardData) => props.renderProductCard({ cardData }))}
-            </Grid>
-          </>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <WithErrorHandler error={[productCardsDataError]}>
+        <WithLoadingIndicator
+          value={[productCardsDataValue]}
+          customLoader={
+            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+            </Flex>
+          }
+        >
+          {([productCardsData]) => (
+            <>
+              <Text
+                variant="paragraph2"
+                sx={{
+                  mt: 4,
+                  color: 'lavender',
+                  maxWidth: 617,
+                  textAlign: 'center',
+                  mb: 4,
+                  ...fadeInAnimation,
+                }}
+              >
+                {props.paraText}
+              </Text>
+              <Grid columns={[1, 2, 3]} sx={fadeInAnimation}>
+                {landingPageCardsData({
+                  productCardsData,
+                  product: props.type,
+                }).map((cardData) => props.renderProductCard({ cardData }))}
+              </Grid>
+            </>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
+    </Flex>
   )
 }
 
