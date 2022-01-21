@@ -31,7 +31,7 @@ export function TabSwitcher(props: {
         {props.tabs.map(({ tabLabel }, index) => {
           return (
             <Button
-              key={index}
+              key={tabLabel}
               onClick={selectTab}
               value={index}
               variant={
@@ -101,7 +101,23 @@ export function TabSwitcher(props: {
       }}
     >
       <NarrowTabSelector />
-      <WideTabSelector />
+      {/*<WideTabSelector />*/}
+      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
+        {props.tabs.map(({ tabLabel }, index) => {
+          return (
+            <Button
+              key={tabLabel}
+              onClick={selectTab}
+              value={index}
+              variant={
+                selectedTab === index.toString() ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
+              }
+            >
+              {tabLabel}
+            </Button>
+          )
+        })}
+      </Grid>
       {props.tabs[parseInt(selectedTab)].tabContent}
     </Flex>
   )
