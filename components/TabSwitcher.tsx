@@ -12,6 +12,34 @@ type TabSwitcherTab = {
   tabContent: ReactNode
 }
 
+const WideTabSelector = (props: {
+  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  wideTabsSx: SxStyleProp
+  selectedTab: string
+  selectTab: (event: MouseEvent<HTMLButtonElement>) => void
+}) => {
+  return (
+    <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
+      {props.tabs.map(({ tabLabel }, index) => {
+        return (
+          <Button
+            key={tabLabel}
+            onClick={props.selectTab}
+            value={index}
+            variant={
+              props.selectedTab === index.toString()
+                ? 'tabSwitcherTabActive'
+                : 'tabSwitcherTabInactive'
+            }
+          >
+            {tabLabel}
+          </Button>
+        )
+      })}
+    </Grid>
+  )
+}
+
 export function TabSwitcher(props: {
   tabs: ArrayWithAtLeastOne<TabSwitcherTab>
   narrowTabsSx: SxStyleProp
@@ -24,27 +52,6 @@ export function TabSwitcher(props: {
       setSelectedTab((event.currentTarget.value as unknown) as string),
     [],
   )
-
-  const WideTabSelector = () => {
-    return (
-      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
-        {props.tabs.map(({ tabLabel }, index) => {
-          return (
-            <Button
-              key={tabLabel}
-              onClick={selectTab}
-              value={index}
-              variant={
-                selectedTab === index.toString() ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
-              }
-            >
-              {tabLabel}
-            </Button>
-          )
-        })}
-      </Grid>
-    )
-  }
 
   const NarrowTabSelector = () => {
     return (
@@ -101,23 +108,12 @@ export function TabSwitcher(props: {
       }}
     >
       <NarrowTabSelector />
-      {/*<WideTabSelector />*/}
-      <Grid columns={props.tabs.length} variant="tabSwitcher" sx={props.wideTabsSx}>
-        {props.tabs.map(({ tabLabel }, index) => {
-          return (
-            <Button
-              key={tabLabel}
-              onClick={selectTab}
-              value={index}
-              variant={
-                selectedTab === index.toString() ? 'tabSwitcherTabActive' : 'tabSwitcherTabInactive'
-              }
-            >
-              {tabLabel}
-            </Button>
-          )
-        })}
-      </Grid>
+      <WideTabSelector
+        wideTabsSx={props.wideTabsSx}
+        selectTab={selectTab}
+        selectedTab={selectedTab}
+        tabs={props.tabs}
+      />
       {props.tabs[parseInt(selectedTab)].tabContent}
     </Flex>
   )
