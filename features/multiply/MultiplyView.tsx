@@ -29,7 +29,10 @@ export function MultiplyView() {
       <ProductHeader
         title={t('product-page.multiply.title')}
         description={t('product-page.multiply.description')}
-        link={{ href: '', text: t('product-page.multiply.link') }}
+        link={{
+          href: 'https://kb.oasis.app/help/what-is-multiply',
+          text: t('product-page.multiply.link'),
+        }}
       />
 
       <WithErrorHandler error={[productCardsDataError]}>

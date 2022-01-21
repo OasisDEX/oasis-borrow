@@ -81,7 +81,7 @@ export function HomepageView() {
               <TabContent
                 paraText={
                   <>
-                    {t('landing.tabs.borrow.tabParaContent')}{' '}
+                    <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
                     <AppLink href="/borrow" variant="inText">
                       {t('landing.tabs.borrow.tabParaLinkContent')}
                     </AppLink>
