@@ -133,7 +133,11 @@ function addTransitions(
     return {
       ...state,
       progress: () => change({ kind: 'progressEditing' }),
-      setCloseVaultTo: () => change({ kind: 'toggleEditing' }),
+      setCloseVaultTo: () =>
+        change({
+          kind: 'toggleEditing',
+          stage: state.stage === 'adjustPosition' ? 'otherActions' : 'adjustPosition',
+        }),
     }
   }
 

@@ -6,6 +6,8 @@ import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
 
+import { legacyToggle } from './legacyToggle'
+
 describe('Other actions calculations', () => {
   it('Should calculate initial parameters for closeTo actions correctly', () => {
     const state = getStateUnpacker(
@@ -17,7 +19,7 @@ describe('Other actions calculations', () => {
       }),
     )
 
-    state().toggle!()
+    legacyToggle(state())
     state().setOtherAction!('closeVault')
 
     expect(state().afterDebt).to.be.deep.equal(zero)

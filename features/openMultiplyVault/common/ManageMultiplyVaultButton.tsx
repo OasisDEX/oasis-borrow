@@ -83,7 +83,16 @@ function manageMultiplyVaultButtonText(state: ManageMultiplyVaultState): string 
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')
-
+    case 'borrowTransitionEditing':
+      return t('multiply-to-borrow.button-start')
+    case 'borrowTransitionWaitingForConfirmation':
+      return t('multiply-to-borrow.button-confirm')
+    case 'borrowTransitionInProgress':
+      return t('multiply-to-borrow.button-progress')
+    case 'borrowTransitionFailure':
+      return t('multiply-to-borrow.button-failure')
+    case 'borrowTransitionSuccess':
+      return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(state.stage)
   }
@@ -123,17 +132,26 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
 
   function handleClose() {
     if (stage !== 'otherActions') {
-      toggle!()
+      toggle!('otherActions')
     }
 
     setOtherAction!('closeVault')
   }
 
   const buttonText = manageMultiplyVaultButtonText(props)
-  const secondaryButtonText =
-    stage === 'daiAllowanceFailure' || stage === 'collateralAllowanceFailure'
-      ? t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
-      : t('edit-vault-details')
+  const secondaryButtonText = (() => {
+    switch (stage) {
+      case 'daiAllowanceFailure':
+      case 'collateralAllowanceFailure':
+        return t('edit-token-allowance', { token: isCollateralAllowanceStage ? token : 'DAI' })
+      case 'borrowTransitionEditing':
+      case 'borrowTransitionWaitingForConfirmation':
+      case 'borrowTransitionFailure':
+        return t('decide-later')
+      default:
+        return t('edit-vault-details')
+    }
+  })()
 
   function trackEvents() {
     // if (stage === 'daiEditing' && generateAmount && generateAmount.gt(0)) {

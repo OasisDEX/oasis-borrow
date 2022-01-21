@@ -4,6 +4,8 @@ import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 
+import { legacyToggle } from './legacyToggle'
+
 describe('manageVaultAdjustPositionValidations', () => {
   // TO DO, calculations are off at current price
   it('validates if required collateralization ratio is putting vault at risk, danger or exceeding day yield', () => {
@@ -92,7 +94,7 @@ describe('manageVaultAdjustPositionValidations', () => {
     )
 
     expect(state().errorMessages).to.deep.eq([])
-    state().toggle!()
+    legacyToggle(state())
     expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
     expect(state().canProgress).to.deep.eq(false)
   })

@@ -86,22 +86,22 @@ function manageVaultButtonText(state: ManageVaultState): string {
         ALLOWED_MULTIPLY_TOKENS.includes(state.vault.token) ||
         ONLY_MULTIPLY_TOKENS.includes(state.vault.token)
       ) {
-        return 'Multiply this Vault'
+        return t('borrow-to-multiply.button-start')
       } else {
-        return `Not supported for ${state.vault.token}`
+        return t('borrow-to-multiply.button-not-supported', { token: state.vault.token })
       }
 
     case 'multiplyTransitionWaitingForConfirmation':
-      return 'Take me to the Multiply interface'
+      return t('borrow-to-multiply.button-confirm')
 
     case 'multiplyTransitionInProgress':
-      return 'Transition in progress...'
+      return t('borrow-to-multiply.button-progress')
 
     case 'multiplyTransitionFailure':
-      return 'Something went wrong, try again'
+      return t('borrow-to-multiply.button-failure')
 
     case 'multiplyTransitionSuccess':
-      return 'Transition completed, refreshing...'
+      return t('borrow-to-multiply.button-success')
 
     default:
       throw new UnreachableCaseError(state.stage)
@@ -122,7 +122,7 @@ function manageVaultSecondaryButtonText(state: ManageVaultState): string {
     case 'multiplyTransitionEditing':
     case 'multiplyTransitionWaitingForConfirmation':
     case 'multiplyTransitionFailure':
-      return 'Decide later'
+      return t('decide-later')
     default:
       return t('edit-vault-details')
   }

@@ -4,15 +4,14 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { VaultType } from 'features/generalManageVault/generalManageVault'
-import { SaveVaultType } from 'features/generalManageVault/vaultTypeLocalStorage'
+import { saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
+import { SaveVaultType } from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
-import { catchError, first, map, scan, shareReplay, startWith, switchMap } from 'rxjs/operators'
+import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { TxError } from '../../helpers/types'
 import { VaultErrorMessage } from '../form/errorMessagesHandler'
@@ -193,30 +192,6 @@ export type ManageVaultState = MutableManageVaultState &
     currentStep: number
   } & HasGasEstimation
 
-function saveVaultType(
-  saveVaultType$: SaveVaultType,
-  change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
-) {
-  // assume that user went through ToS flow and can interact with application
-  const token = jwtAuthGetToken(state.account as string)
-
-  if (token) {
-    saveVaultType$(state.vault.id, token, VaultType.Multiply, state.vault.chainId)
-      .pipe<ManageVaultChange>(
-        map(() => {
-          window.location.reload()
-          return { kind: 'multiplyTransitionSuccess' } as ManageVaultChange
-        }),
-        catchError(() => of({ kind: 'multiplyTransitionFailure' } as ManageVaultChange)),
-        startWith({ kind: 'multiplyTransitionInProgress' } as ManageVaultChange),
-      )
-      .subscribe((ch) => change(ch))
-  } else {
-    change({ kind: 'multiplyTransitionFailure' })
-  }
-}
-
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
@@ -240,7 +215,21 @@ function addTransitions(
     return {
       ...state,
       toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-      progress: () => saveVaultType(saveVaultType$, change, state),
+      progress: () => {
+        saveVaultTypeForAccount(
+          saveVaultType$,
+          state.account as string,
+          state.vault.id,
+          VaultType.Multiply,
+          state.vault.chainId,
+          () => {
+            window.location.reload()
+            change({ kind: 'multiplyTransitionSuccess' })
+          },
+          () => change({ kind: 'multiplyTransitionFailure' }),
+          () => change({ kind: 'multiplyTransitionInProgress' }),
+        )
+      },
       regress: () => change({ kind: 'backToEditing' }),
     }
   }

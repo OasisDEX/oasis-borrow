@@ -5,6 +5,11 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import {
+  SaveVaultType,
+  saveVaultTypeForAccount,
+  VaultType,
+} from 'features/generalManageVault/vaultType'
 import { calculateInitialTotalSteps } from 'features/openVault/openVaultConditions'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
@@ -112,9 +117,18 @@ function apply(state: ManageMultiplyVaultState, change: ManageMultiplyVaultChang
   return applyManageVaultSummary(s10)
 }
 
-export type ManageMultiplyVaultEditingStage = 'adjustPosition' | 'otherActions'
+export type ManageMultiplyVaultEditingStage =
+  | 'adjustPosition'
+  | 'otherActions'
+  | 'borrowTransitionEditing'
 
-export type ManageMultiplyVaultStage = ManageMultiplyVaultEditingStage | BaseManageVaultStage
+export type ManageMultiplyVaultStage =
+  | ManageMultiplyVaultEditingStage
+  | BaseManageVaultStage
+  | 'borrowTransitionWaitingForConfirmation'
+  | 'borrowTransitionInProgress'
+  | 'borrowTransitionFailure'
+  | 'borrowTransitionSuccess'
 
 export type MainAction = 'buy' | 'sell'
 export type CloseVaultTo = 'collateral' | 'dai'
@@ -173,7 +187,7 @@ export interface ManageVaultEnvironment {
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggle?: () => void
+  toggle?: (stage: ManageMultiplyVaultEditingStage) => void
 
   updateDepositAmount?: (depositAmount?: BigNumber) => void
   updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
@@ -242,9 +256,45 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   context: Context,
   proxyAddress$: Observable<string | undefined>,
+  saveVaultType$: SaveVaultType,
   change: (ch: ManageMultiplyVaultChange) => void,
   state: ManageMultiplyVaultState,
 ): ManageMultiplyVaultState {
+  if (state.stage === 'borrowTransitionEditing') {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => change({ kind: 'progressBorrowTransition' }),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
+  if (
+    state.stage === 'borrowTransitionWaitingForConfirmation' ||
+    state.stage === 'borrowTransitionFailure'
+  ) {
+    return {
+      ...state,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+      progress: () => {
+        saveVaultTypeForAccount(
+          saveVaultType$,
+          state.account as string,
+          state.vault.id,
+          VaultType.Borrow,
+          state.vault.chainId,
+          () => {
+            window.location.reload()
+            change({ kind: 'borrowTransitionSuccess' })
+          },
+          () => change({ kind: 'borrowTransitionFailure' }),
+          () => change({ kind: 'borrowTransitionInProgress' }),
+        )
+      },
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   if (state.stage === 'adjustPosition' || state.stage === 'otherActions') {
     return {
       ...state,
@@ -274,7 +324,7 @@ function addTransitions(
       setCloseVaultTo: (closeVaultTo: CloseVaultTo) =>
         change({ kind: 'closeVaultTo', closeVaultTo }),
 
-      toggle: () => change({ kind: 'toggleEditing' }),
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       progress: () => change({ kind: 'progressEditing' }),
       toggleSliderController: () => change({ kind: 'toggleSliderController' }),
       updateRequiredCollRatio: (requiredCollRatio: BigNumber) =>
@@ -420,6 +470,7 @@ export function createManageMultiplyVault$(
   addGasEstimation$: AddGasEstimationFunction,
   slippageLimit$: Observable<UserSettingsState>,
   vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  saveVaultType$: SaveVaultType,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -514,7 +565,16 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                    map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
+                    map((state) =>
+                      addTransitions(
+                        txHelpers$,
+                        context,
+                        connectedProxyAddress$,
+                        saveVaultType$,
+                        change,
+                        state,
+                      ),
+                    ),
                     tap((state) => stateSubject$.next(state)),
                   )
                 }),

@@ -419,6 +419,7 @@ export function setupAppContext() {
         addGasEstimation$,
         userSettings$,
         vaultMultiplyHistory$,
+        saveVaultUsingApi$,
         id,
       ),
     bigNumberTostring,

@@ -20,9 +20,25 @@ import {
   manageVaultWithdrawAndPayback,
 } from './manageMultiplyVaultTransactions'
 
+type ManageVaultBorrowTransitionChange =
+  | {
+      kind: 'progressBorrowTransition'
+    }
+  | {
+      kind: 'borrowTransitionInProgress'
+    }
+  | {
+      kind: 'borrowTransitionFailure'
+    }
+  | {
+      kind: 'borrowTransitionSuccess'
+    }
+
 export type ManageVaultTransitionChange =
+  | ManageVaultBorrowTransitionChange
   | {
       kind: 'toggleEditing'
+      stage: ManageMultiplyVaultEditingStage
     }
   | {
       kind: 'progressEditing'
@@ -55,18 +71,15 @@ export function applyManageVaultTransition(
 ): ManageMultiplyVaultState {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
-    const currentEditing = stage
-    const otherEditing = ([
-      'adjustPosition',
-      'otherActions',
-    ] as ManageMultiplyVaultEditingStage[]).find(
-      (editingStage) => editingStage !== currentEditing,
-    ) as ManageMultiplyVaultEditingStage
+
     return {
       ...state,
       ...manageVaultFormDefaults,
-      stage: otherEditing,
-      originalEditingStage: otherEditing,
+      stage: change.stage,
+      originalEditingStage:
+        change.stage === 'borrowTransitionEditing'
+          ? (stage as ManageMultiplyVaultEditingStage)
+          : change.stage,
     }
   }
 
@@ -197,6 +210,34 @@ export function applyManageVaultTransition(
       return { ...state, stage: 'daiAllowanceWaitingForConfirmation' }
     }
     return { ...state, stage: originalEditingStage }
+  }
+
+  if (change.kind === 'progressBorrowTransition') {
+    return {
+      ...state,
+      stage: 'borrowTransitionWaitingForConfirmation',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionInProgress') {
+    return {
+      ...state,
+      stage: 'borrowTransitionInProgress',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionFailure') {
+    return {
+      ...state,
+      stage: 'borrowTransitionFailure',
+    }
+  }
+
+  if (change.kind === 'borrowTransitionSuccess') {
+    return {
+      ...state,
+      stage: 'borrowTransitionSuccess',
+    }
   }
 
   if (change.kind === 'clear') {

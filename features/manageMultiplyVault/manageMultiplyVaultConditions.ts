@@ -40,6 +40,7 @@ const defaultManageVaultStageCategories = {
   isCollateralAllowanceStage: false,
   isDaiAllowanceStage: false,
   isManageStage: false,
+  isBorrowTransitionStage: false,
 }
 
 export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
@@ -136,6 +137,18 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
         totalSteps,
         currentStep: totalSteps,
       }
+    case 'borrowTransitionEditing':
+    case 'borrowTransitionWaitingForConfirmation':
+    case 'borrowTransitionInProgress':
+    case 'borrowTransitionFailure':
+    case 'borrowTransitionSuccess':
+      return {
+        ...state,
+        ...defaultManageVaultStageCategories,
+        isBorrowTransitionStage: true,
+        totalSteps: 2,
+        currentStep: stage === 'borrowTransitionEditing' ? 1 : 2,
+      }
     default:
       throw new UnreachableCaseError(stage)
   }
@@ -147,6 +160,7 @@ export interface ManageVaultConditions {
   isCollateralAllowanceStage: boolean
   isDaiAllowanceStage: boolean
   isManageStage: boolean
+  isBorrowTransitionStage: boolean
 
   canProgress: boolean
   canRegress: boolean
@@ -501,6 +515,8 @@ export function applyManageVaultConditions(
     'daiAllowanceInProgress',
     'manageInProgress',
     'manageWaitingForApproval',
+    'borrowTransitionInProgress',
+    'borrowTransitionSuccess',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
@@ -570,6 +586,9 @@ export function applyManageVaultConditions(
     'daiAllowanceFailure',
     'manageWaitingForConfirmation',
     'manageFailure',
+    'borrowTransitionEditing',
+    'borrowTransitionWaitingForConfirmation',
+    'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
   return {

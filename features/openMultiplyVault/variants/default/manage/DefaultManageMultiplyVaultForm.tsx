@@ -14,6 +14,7 @@ import {
 } from '../../../common/ManageMultiplyVaultConfirmation'
 import { ManageVaultCollateralAllowance } from '../../../common/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../common/ManageVaultDaiAllowance'
+import { DefaultManageMultiplyVaultBorrowTransition } from './DefaultManageMultiplyVaultBorrowTransition'
 import { DefaultManageMultiplyVaultChangesInformation } from './DefaultManageMultiplyVaultChangesInformation'
 import { DefaultManageMultiplyVaultEditing } from './DefaultManageMultiplyVaultEditing'
 import { DefaultManageMultiplyVaultFormHeader } from './DefaultManageMultiplyVaultFormHeader'
@@ -25,6 +26,7 @@ export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) 
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isManageStage,
+    isBorrowTransitionStage,
     accountIsConnected,
     accountIsController,
     daiAllowanceTxHash,
@@ -51,6 +53,7 @@ export function DefaultManageMultiplyVaultForm(props: ManageMultiplyVaultState) 
           {(state) => <DefaultManageMultiplyVaultChangesInformation {...state} />}
         </ManageMultiplyVaultConfirmation>
       )}
+      {isBorrowTransitionStage && <DefaultManageMultiplyVaultBorrowTransition {...props} />}
       {shouldDisplayActionButton && (
         <>
           <VaultErrors {...props} />

@@ -9,7 +9,7 @@ import { Container } from 'theme-ui'
 
 import { DefaultManageMultiplyVaultContainer } from '../openMultiplyVault/variants/default/manage/DefaultManageMultiplyVaultContainer'
 import { GuniManageMultiplyVaultCointainer } from '../openMultiplyVault/variants/guni/manage/GuniManageMultiplyVaultCointainer'
-import { VaultType } from './generalManageVault'
+import { VaultType } from './vaultType'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()

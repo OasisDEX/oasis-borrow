@@ -91,6 +91,7 @@
   "dai-paying-back": "Dai paying back ({{amount}})",
   "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
+  "decide-later": "Decide later",
   "deposit": "Deposit",
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
@@ -349,7 +350,38 @@
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+    },
+    "action-tabs": {
+      "adjust": "Adjust",
+      "other": "Other",
+      "borrow": "Borrow"
     }
+  },
+  "borrow-to-multiply": {
+    "checkmark1": "Multiply your exposure on your {{token}}",
+    "checkmark2": "Adjust risk and exposure in 1 click",
+    "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+    "checkmark4": "You can review the details of the changes on your vault before execution",
+    "subheader2": "Important",
+    "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks.",
+    "button-not-supported": "Not supported for {{token}}",
+    "button-start": "Multiply this Vault",
+    "button-confirm": "Take me to the Multiply interface",
+    "button-progress": "Transition in progress...",
+    "button-failure": "Something went wrong, try again",
+    "button-success": "Transition completed, refreshing..."
+  },
+  "multiply-to-borrow": {
+    "title1": "View your Vault in the borrow UI",
+    "title2": "You will go back to the Borrow interface",
+    "checkmark1": "Specifically designed for borrowing positions",
+    "checkmark2": "You can change back to the Multiply UI anytime",
+    "checkmark3": "This does not require a transaction",
+    "button-start" : "Go to Borrow interface",
+    "button-confirm": "Take me to the Borrow interface",
+    "button-progress": "Transition in progress...",
+    "button-failure": "Something went wrong, try again",
+    "button-success": "Transition completed, refreshing..."
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
@@ -683,14 +715,8 @@
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. This is a one directional change and you will not be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait.",
-      "checkmark1": "Multiply your exposure on your {{token}}",
-      "checkmark2": "Adjust risk and exposure in 1 click",
-      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
-      "checkmark4": "You can review the details of the changes on your vault before execution",
-      "subheader2": "Important",
-      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
-    }
+      "modified": "Your Vault is currently being updated. Please wait."
+     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
   "creating-your-vault-multiply": "Creating your {{token}} Multiply Vault!",

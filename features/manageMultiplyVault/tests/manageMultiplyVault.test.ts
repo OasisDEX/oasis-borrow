@@ -13,6 +13,8 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
+import { legacyToggle } from './legacyToggle'
+
 type GlobalMock = NodeJS.Global & { document: { getElementById: () => void } }
 ;(global as GlobalMock).document = {
   getElementById: () => null,
@@ -100,7 +102,7 @@ describe('manageMultiplyVault', () => {
         const state = getStateUnpacker(mockManageMultiplyVault$())
 
         expect(state().stage).to.deep.equal('adjustPosition')
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
       })
 
@@ -117,7 +119,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
         expect(state().otherAction).to.deep.equal('depositCollateral')
 
@@ -148,7 +150,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('withdrawCollateral')
         expect(state().otherAction).to.deep.equal('withdrawCollateral')
 
@@ -168,7 +170,7 @@ describe('manageMultiplyVault', () => {
 
         const state = getStateUnpacker(mockManageMultiplyVault$())
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('withdrawDai')
         expect(state().otherAction).to.deep.equal('withdrawDai')
 
@@ -195,7 +197,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         expect(state().otherAction).to.deep.equal('depositDai')
 
@@ -219,7 +221,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('closeVault')
         expect(state().closeVaultTo).to.deep.equal('collateral')
         state().setCloseVaultTo!('dai')
@@ -262,7 +264,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
@@ -299,7 +301,7 @@ describe('manageMultiplyVault', () => {
         )
 
         expect(state().totalSteps).to.deep.equal(2)
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
         state().progress!()
@@ -321,7 +323,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()
@@ -350,7 +352,7 @@ describe('manageMultiplyVault', () => {
         )
 
         expect(state().totalSteps).to.deep.equal(2)
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         expect(state().totalSteps).to.deep.equal(3)
 
@@ -481,7 +483,7 @@ describe('manageMultiplyVault', () => {
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
 
-        state().toggle!()
+        legacyToggle(state())
         state().updateDepositAmount!(depositAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
@@ -513,7 +515,7 @@ describe('manageMultiplyVault', () => {
 
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
-        state().toggle!()
+        legacyToggle(state())
         state().setOtherAction!('depositDai')
         state().updatePaybackAmount!(paybackAmount)
 
@@ -640,7 +642,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
 
         state().updateDepositAmount!(depositAmount)
         state().progress!()
@@ -678,7 +680,7 @@ describe('manageMultiplyVault', () => {
           }),
         )
 
-        state().toggle!()
+        legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
         state().setOtherAction!('depositDai')
 
@@ -703,6 +705,78 @@ describe('manageMultiplyVault', () => {
         expect(state().stage).to.deep.equal('daiAllowanceSuccess')
         state().progress!()
         expect(state().stage).to.deep.equal('otherActions')
+      })
+    })
+
+    describe('multiply to borrow transitions', () => {
+      beforeEach(() => localStorage.clear())
+
+      it('should handle previously selected editing stage when going back and forth from borrow transition stages', () => {
+        const state = getStateUnpacker(mockManageMultiplyVault$())
+        expect(state().stage).to.be.equal('adjustPosition')
+
+        state().toggle!('borrowTransitionEditing')
+        expect(state().stage).to.be.equal('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().regress!()
+        expect(state().stage).to.be.equal('adjustPosition')
+        state().toggle!('otherActions')
+        expect(state().stage).to.be.equal('otherActions')
+        state().toggle!('borrowTransitionEditing')
+        expect(state().stage).to.be.equal('borrowTransitionEditing')
+        state().regress!()
+        expect(state().stage).to.be.equal('otherActions')
+      })
+
+      it('should fail when JWT token is not present', () => {
+        const state = getStateUnpacker(mockManageMultiplyVault$())
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionFailure')
+      })
+
+      it('should handle multiply transition error', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionInProgress')
+        _saveVaultType$.error('error')
+        expect(state().stage).to.be.equal('borrowTransitionFailure')
+      })
+
+      it('should handle borrow transition success', () => {
+        localStorage.setItem('token-b/0x123', 'xxx')
+        const _saveVaultType$ = new Subject<void>()
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            _saveVaultType$,
+            account: '0x123',
+          }),
+        )
+
+        state().toggle!('borrowTransitionEditing')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionWaitingForConfirmation')
+        state().progress!()
+        expect(state().stage).to.be.equal('borrowTransitionInProgress')
+        _saveVaultType$.next()
+        expect(state().stage).to.be.equal('borrowTransitionSuccess')
       })
     })
   })

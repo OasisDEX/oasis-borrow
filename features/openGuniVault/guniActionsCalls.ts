@@ -15,7 +15,7 @@ import { DssGuniProxyActions as GuniProxyActions } from 'types/ethers-contracts/
 import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
 import { TxError } from '../../helpers/types'
-import { VaultType } from '../generalManageVault/generalManageVault'
+import { VaultType } from '../generalManageVault/vaultType'
 import { saveVaultUsingApi$ } from '../shared/vaultApi'
 import { jwtAuthGetToken } from '../termsOfService/jwt'
 

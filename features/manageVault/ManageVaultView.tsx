@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
@@ -9,10 +10,9 @@ import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/manageVault/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Divider, Flex, Grid, Text } from 'theme-ui'
+import { Box, Divider, Grid, Text } from 'theme-ui'
 
 import { VaultErrors } from '../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../components/vault/VaultWarnings'
@@ -25,49 +25,25 @@ import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './Manage
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
-function TextWithCheckmark({ children }: WithChildren) {
-  return (
-    <Flex sx={{ alignItems: 'center' }}>
-      <Flex
-        sx={{
-          width: '20px',
-          height: '20px',
-          border: '2px solid',
-          borderColor: 'onSuccess',
-          borderRadius: '50%',
-          mr: 3,
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'onSuccess',
-          flexShrink: 0,
-        }}
-      >
-        <Icon name="checkmark" size="auto" width="11px" sx={{ position: 'relative', top: '1px' }} />
-      </Flex>
-      <Text>{children}</Text>
-    </Flex>
-  )
-}
-
 function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
       <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
         <TextWithCheckmark>
-          {t('vault-form.subtext.checkmark1', { token: vault.token.toUpperCase() })}
+          {t('borrow-to-multiply.checkmark1', { token: vault.token.toUpperCase() })}
         </TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark2')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark3')}</TextWithCheckmark>
-        <TextWithCheckmark>{t('vault-form.subtext.checkmark4')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark2')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark3')}</TextWithCheckmark>
+        <TextWithCheckmark>{t('borrow-to-multiply.checkmark4')}</TextWithCheckmark>
       </Grid>
       <Divider />
       <Grid gap={2}>
         <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-          {t('vault-form.subtext.subheader2')}
+          {t('borrow-to-multiply.subheader2')}
         </Text>
         <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          {t('vault-form.subtext.paragraph2')}
+          {t('borrow-to-multiply.paragraph2')}
         </Text>
       </Grid>
     </Grid>
