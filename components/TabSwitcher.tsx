@@ -40,6 +40,58 @@ const WideTabSelector = (props: {
   )
 }
 
+const NarrowTabSelector = (props: {
+  narrowTabsSx: SxStyleProp
+  selectedTab: string
+  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  setSelectedTab: (tab: string) => void
+}) => {
+  return (
+    <Box sx={props.narrowTabsSx}>
+      <ReactSelect
+        value={{
+          value: parseInt(props.selectedTab),
+          label: props.tabs[parseInt(props.selectedTab)].tabLabel,
+        }}
+        options={props.tabs.map(({ tabLabel }, index) => ({ label: tabLabel, value: index }))}
+        onChange={(option) =>
+          option && 'value' in option && props.setSelectedTab(option.value.toString())
+        }
+        components={{
+          IndicatorsContainer: ({ selectProps: { menuIsOpen } }) => (
+            <Flex
+              sx={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                mr: 3,
+                transform: `rotate(${menuIsOpen ? '180deg' : 0})`,
+                transition: 'transform 0.2s ease-in-out',
+              }}
+            >
+              <Icon name="chevron_down" />
+            </Flex>
+          ),
+          Control: ({ children, innerProps }) => (
+            <Flex
+              sx={{
+                border: 'light',
+                px: 2,
+                py: 3,
+                borderRadius: 'medium',
+                cursor: 'pointer',
+                background: 'white',
+              }}
+              {...innerProps}
+            >
+              {children}
+            </Flex>
+          ),
+        }}
+      />
+    </Box>
+  )
+}
+
 export function TabSwitcher(props: {
   tabs: ArrayWithAtLeastOne<TabSwitcherTab>
   narrowTabsSx: SxStyleProp
@@ -53,53 +105,6 @@ export function TabSwitcher(props: {
     [],
   )
 
-  const NarrowTabSelector = () => {
-    return (
-      <Box sx={props.narrowTabsSx}>
-        <ReactSelect
-          value={{
-            value: parseInt(selectedTab),
-            label: props.tabs[parseInt(selectedTab)].tabLabel,
-          }}
-          options={props.tabs.map(({ tabLabel }, index) => ({ label: tabLabel, value: index }))}
-          onChange={(option) =>
-            option && 'value' in option && setSelectedTab(option.value.toString())
-          }
-          components={{
-            IndicatorsContainer: ({ selectProps: { menuIsOpen } }) => (
-              <Flex
-                sx={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  mr: 3,
-                  transform: `rotate(${menuIsOpen ? '180deg' : 0})`,
-                  transition: 'transform 0.2s ease-in-out',
-                }}
-              >
-                <Icon name="chevron_down" />
-              </Flex>
-            ),
-            Control: ({ children, innerProps }) => (
-              <Flex
-                sx={{
-                  border: 'light',
-                  px: 2,
-                  py: 3,
-                  borderRadius: 'medium',
-                  cursor: 'pointer',
-                  background: 'white',
-                }}
-                {...innerProps}
-              >
-                {children}
-              </Flex>
-            ),
-          }}
-        />
-      </Box>
-    )
-  }
-
   return (
     <Flex
       sx={{
@@ -107,7 +112,12 @@ export function TabSwitcher(props: {
         alignItems: 'center',
       }}
     >
-      <NarrowTabSelector />
+      <NarrowTabSelector
+        selectedTab={selectedTab}
+        tabs={props.tabs}
+        setSelectedTab={setSelectedTab}
+        narrowTabsSx={props.narrowTabsSx}
+      />
       <WideTabSelector
         wideTabsSx={props.wideTabsSx}
         selectTab={selectTab}
