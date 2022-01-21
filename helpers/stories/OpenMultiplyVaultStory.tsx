@@ -1,10 +1,10 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
+import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
-} from 'features/openMultiplyVault/openMultiplyVault'
-import { DefaultMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultMultiplyVaultView'
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import {
   mockOpenMultiplyVault,
   MockOpenMultiplyVaultProps,
@@ -92,7 +92,7 @@ const OpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: 
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <DefaultMultiplyVaultView ilk={ilk} />
+        <OpenMultiplyVaultView ilk={ilk} />
       </Grid>
     </Container>
   )

@@ -1,5 +1,5 @@
 import { ConnectionKind } from '@oasisdex/web3-context'
-import { CloseVaultTo } from 'features/manageMultiplyVault/manageMultiplyVault'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import * as mixpanelBrowser from 'mixpanel-browser'
 import getConfig from 'next/config'
 

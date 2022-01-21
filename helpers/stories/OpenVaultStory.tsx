@@ -1,7 +1,10 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import { OpenVaultView } from 'features/openVault/components/OpenVaultView'
-import { defaultMutableOpenVaultState, MutableOpenVaultState } from 'features/openVault/openVault'
+import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
+import {
+  defaultMutableOpenVaultState,
+  MutableOpenVaultState,
+} from 'features/borrow/open/pipes/openVault'
 import { mockOpenVault$, MockOpenVaultProps } from 'helpers/mocks/openVault.mock'
 import { AppContext } from 'next/app'
 import React from 'react'
