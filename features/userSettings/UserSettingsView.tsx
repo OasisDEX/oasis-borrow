@@ -88,12 +88,12 @@ function SlippageLimitMessages({
   return (
     <Grid gap={2} mb={2}>
       {warnings.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onWarning' }}>
+        <Text sx={{ ...validationMessageStyles, color: 'onWarning' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
       {errors.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onError' }}>
+        <Text sx={{ ...validationMessageStyles, color: 'onError' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}

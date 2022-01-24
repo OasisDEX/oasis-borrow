@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { LANDING_PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Heading, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
@@ -59,6 +60,46 @@ function TabContent(props: {
   )
 }
 
+interface PillProps {
+  label: string
+  link: string
+  icon: string
+}
+
+function Pill(props: PillProps) {
+  return (
+    <AppLink
+      href={props.link}
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minWidth: 140,
+        background: 'rgba(255, 255, 255, 0.67)',
+        mx: 2,
+        my: 2,
+        borderRadius: 'round',
+        variant: 'text.paragraph2',
+        fontWeight: 'semiBold',
+        color: 'text.subtitle',
+        py: 2,
+      }}
+    >
+      <Icon name={props.icon} size="26px" sx={{ mr: 2 }} />
+      {props.label}
+    </AppLink>
+  )
+}
+function Pills({ sx }: { sx?: SxProps }) {
+  return (
+    <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
+      {LANDING_PILLS.map((pill) => (
+        <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
+      ))}
+    </Flex>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
   const { context$ } = useAppContext()
@@ -73,6 +114,9 @@ export function HomepageView() {
         isConnected={context?.status === 'connected'}
         sx={{ ...slideInAnimation, position: 'relative' }}
       />
+
+      <Pills sx={{ mb: 5 }} />
+
       <TabSwitcher
         tabs={[
           {

@@ -7,7 +7,7 @@ import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
-} from 'features/manageMultiplyVault/manageMultiplyVault'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'

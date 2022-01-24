@@ -1,7 +1,7 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { DefaultMultiplyVaultView } from 'features/openMultiplyVault/variants/default/open/DefaultMultiplyVaultView'
-import { GuniOpenVaultView } from 'features/openMultiplyVault/variants/guni/open/GuniOpenVaultView'
+import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
+import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -29,7 +29,7 @@ export default function OpenVault({ ilk }: { ilk: string }) {
         {multiplyContainerMap[ilk] ? (
           multiplyContainerMap[ilk](ilk)
         ) : (
-          <DefaultMultiplyVaultView ilk={ilk} />
+          <OpenMultiplyVaultView ilk={ilk} />
         )}
       </WithTermsOfService>
     </WithWalletConnection>

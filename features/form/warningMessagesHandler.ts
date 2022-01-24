@@ -6,6 +6,7 @@ export type VaultWarningMessage =
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
   | 'debtIsLessThanDebtFloor'
   | 'highSlippage'
+  | 'customSlippageOverridden'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -15,6 +16,7 @@ interface WarningMessagesHandler {
   vaultWillBeAtRiskLevelWarningAtNextPrice?: boolean
   debtIsLessThanDebtFloor?: boolean
   highSlippage?: boolean
+  customSlippageOverridden?: boolean
 }
 
 export function warningMessagesHandler({
@@ -25,6 +27,7 @@ export function warningMessagesHandler({
   vaultWillBeAtRiskLevelWarningAtNextPrice,
   debtIsLessThanDebtFloor,
   highSlippage,
+  customSlippageOverridden,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -54,6 +57,10 @@ export function warningMessagesHandler({
 
   if (highSlippage) {
     warningMessages.push('highSlippage')
+  }
+
+  if (customSlippageOverridden) {
+    warningMessages.push('customSlippageOverridden')
   }
 
   return warningMessages

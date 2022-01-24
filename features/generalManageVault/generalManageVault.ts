@@ -4,8 +4,8 @@ import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
-import { ManageMultiplyVaultState } from '../manageMultiplyVault/manageMultiplyVault'
-import { ManageVaultState } from '../manageVault/manageVault'
+import { ManageVaultState } from '../borrow/manage/pipes/manageVault'
+import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
 type WithToggle<T> = T & { toggleVaultType: () => void }
