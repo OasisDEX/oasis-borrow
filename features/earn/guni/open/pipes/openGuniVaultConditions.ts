@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
@@ -12,7 +13,6 @@ import {
 } from '../../../../form/commonValidators'
 import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from '../../../../userSettings/userSettings'
 import { OpenGuniVaultState, Stage } from './openGuniVault'
-import BigNumber from 'bignumber.js'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,

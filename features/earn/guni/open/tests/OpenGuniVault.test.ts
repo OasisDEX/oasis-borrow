@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
@@ -6,15 +7,12 @@ import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
-import { expect } from 'chai'
 
 import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.mock'
 import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
 import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
-import { createOpenGuniVault$ } from '../pipes/openGuniVault'
-import { VaultWarningMessage } from '../../../../form/warningMessagesHandler'
-import { tap } from 'rxjs/operators'
 import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
+import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function proxyAddress$(address: string) {
