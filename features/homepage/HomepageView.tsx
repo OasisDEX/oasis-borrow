@@ -18,6 +18,7 @@ import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimationDelay, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
+import { slideIn } from '../../theme/keyframes'
 
 function TabContent(props: {
   paraText: JSX.Element
@@ -47,7 +48,7 @@ function TabContent(props: {
             >
               {props.paraText}
             </Text>
-            <Grid columns={[1, 2, 3]}>
+            <Grid columns={[1, 2, 3]} sx={{ ...slideInAnimation, position: 'relative' }}>
               {landingPageCardsData({
                 productCardsData,
                 product: props.type,
