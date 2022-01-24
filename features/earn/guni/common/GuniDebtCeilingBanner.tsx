@@ -15,7 +15,7 @@ export function GuniDebtCeilingBanner() {
           <>
             {t('vault-banners.debt-ceiling-rise.header', { from: '10M', to: '500M' })}
             <AppLink href="/" sx={{ fontSize: 4, fontWeight: 'bold', color: 'onWarning' }}>
-              here
+              {t('here')}
             </AppLink>
             .
           </>
