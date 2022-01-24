@@ -3,7 +3,6 @@ import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
-import { useState } from 'react'
 import { Heading } from 'theme-ui'
 
 export const guniExistingVaults = [
