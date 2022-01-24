@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { GuniTempBanner } from 'features/banners/guniTempBanner'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { GetServerSidePropsContext } from 'next'
@@ -33,6 +34,7 @@ export default function Vault({ id }: { id: string }) {
           {isValidVaultId ? (
             <>
               <VaultBannersView id={vaultId} />
+              <GuniTempBanner id={vaultId} />
               <GeneralManageVaultView id={vaultId} />
             </>
           ) : (
