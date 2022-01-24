@@ -115,11 +115,6 @@ export function ManageVaultContainer({
   } = manageVault
   const { t } = useTranslation()
 
-  console.log(`
-  proxy: ${manageVault.vault.owner}
-  anddress: ${manageVault.vault.controller}
-  `)
-
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
       manageVault$(id),
