@@ -13,7 +13,7 @@ interface GuniDebtCeilingBannerProps {
 
 export function GuniDebtCeilingBanner({ id }: GuniDebtCeilingBannerProps) {
   const { t } = useTranslation()
-  console.log(id?.toString())
+
   const showBanner = id ? !guniExistingVaults.includes(id.toString()) : true
 
   return showBanner ? (
