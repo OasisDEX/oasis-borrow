@@ -377,7 +377,7 @@
     "checkmark1": "Specifically designed for borrowing positions",
     "checkmark2": "You can change back to the Multiply UI anytime",
     "checkmark3": "This does not require a transaction",
-    "button-start" : "Go to Borrow interface",
+    "button-start": "Go to Borrow interface",
     "button-confirm": "Take me to the Borrow interface",
     "button-progress": "Transition in progress...",
     "button-failure": "Something went wrong, try again",
@@ -716,7 +716,7 @@
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
       "modified": "Your Vault is currently being updated. Please wait."
-     }
+    }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
   "creating-your-vault-multiply": "Creating your {{token}} Multiply Vault!",
@@ -878,5 +878,6 @@
       "description": "MANA is the ERC-20 token built for Decentraland, a virtual reality platform powered by the ethereum blockchain. It is primarily used to buy goods, services and LAND (an NFT token) within Decentraland.",
       "link": "https://decentraland.org/"
     }
-  }
+  },
+  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in "
 }
