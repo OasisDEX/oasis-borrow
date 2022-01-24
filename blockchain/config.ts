@@ -282,7 +282,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||
