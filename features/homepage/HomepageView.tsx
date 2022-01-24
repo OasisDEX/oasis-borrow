@@ -16,7 +16,7 @@ import { useObservable, useObservableWithError } from '../../helpers/observableH
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { slideInAnimation } from '../../theme/animations'
+import { fadeInAnimationDelay, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
@@ -51,7 +51,11 @@ function TabContent(props: {
               {landingPageCardsData({
                 productCardsData,
                 product: props.type,
-              }).map((cardData) => props.renderProductCard({ cardData }))}
+              }).map((cardData, index) => (
+                <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5) }}>
+                  {props.renderProductCard({ cardData })}
+                </Box>
+              ))}
             </Grid>
           </>
         )}
