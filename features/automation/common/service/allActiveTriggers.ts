@@ -9,7 +9,6 @@ const query = gql`
         triggerId
         triggerType
         triggerData
-  
       }
     }
   }
@@ -22,16 +21,14 @@ export async function getAllActiveTriggers(
 
   const data = await client.request(query, { vaultId: vaultId })
 
-  let returnedRecords = [] as TriggerRecord[]
+  const returnedRecords = [] as TriggerRecord[]
   data.allActiveTriggers.nodes.forEach((record: { triggerId: number; triggerType: number; triggerData: string }) => {
     returnedRecords.push({
       triggerId: record.triggerId,
       triggerType: record.triggerType,
       executionParams: record.triggerData
     })
-  }); {
-    
-  }
+  });
 
   return returnedRecords
 }

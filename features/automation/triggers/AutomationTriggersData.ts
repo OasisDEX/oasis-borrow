@@ -48,8 +48,6 @@ export interface TriggersData {
   triggers: List<TriggerRecord> | undefined
 }
 
-
-
 export function createAutomationTriggersData(
   context$: Observable<ContextConnected>,
   onEveryBlock$: Observable<number>,
