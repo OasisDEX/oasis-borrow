@@ -9,7 +9,6 @@ import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-import automationBot from '../../../blockchain/abi/automation-bot.json'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 // TODO - ŁW - Implement tests for this file
 function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
@@ -22,52 +21,20 @@ function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
   }
 }
 
-async function getEvents(
+async function loadTriggerDataFromCache(
   vaultId: number,
-  botAddress: string,
-  provider: ethers.providers.Provider,
-  blockNumber: number,
+  cacheApi: string
 ): Promise<TriggersData> {
+  const activeTriggersForVault = getAllActiveTriggers(
+    new GraphQLClient(cacheApi),
+    vaultId.toFixed(0),
+  )
 
-  const activeTriggersForVault = getAllActiveTriggers(new GraphQLClient('http://localhost:3001/v1'), '46')
-  console.log('activeTriggersForVault')
-  console.log(activeTriggersForVault)
-
-  
-  // to be deleted 
-  const abi = [
-    'event TriggerAdded( uint256 indexed triggerId, uint256 triggerType, uint256 indexed cdpId,  bytes triggerData)',
-    'event TriggerRemoved ( uint256 cdpId, uint256 triggerId)',
-  ]
-  const contract = new ethers.Contract(botAddress ?? '', new Interface(automationBot), provider)
-
-  const removedEventsList = await loadRemoveEvents()
-  const addedEventsList = await loadAddEvents()
-
-  if (removedEventsList.length > 0) {
-    return returnFilteredAddTriggerEvents(removedEventsList, addedEventsList, abi)
-  }
-  return returnAllAddTriggerEvents(addedEventsList, abi)
-
-  async function loadAddEvents() {
-    const filterFromTriggerAdded = contract.filters.TriggerAdded(null, null, vaultId, null)
-    const addedEventsList = await contract.queryFilter(
-      filterFromTriggerAdded,
-      process.env.DEPLOYMENT_BLOCK,
-      blockNumber,
-    )
-    return addedEventsList
+  return {
+    isAutomationEnabled: (await activeTriggersForVault).length > 0,
+    triggers: await activeTriggersForVault
   }
 
-  async function loadRemoveEvents() {
-    const filterFromTriggerRemoved = contract.filters.TriggerRemoved(vaultId, null)
-    const removedEventsList = await contract.queryFilter(
-      filterFromTriggerRemoved,
-      process.env.DEPLOYMENT_BLOCK,
-      blockNumber,
-    )
-    return removedEventsList
-  }
 }
 
 export interface TriggerRecord {
@@ -81,31 +48,7 @@ export interface TriggersData {
   triggers: List<TriggerRecord> | undefined
 }
 
-function returnAllAddTriggerEvents(addedEventsList: ethers.Event[], abi: string[]) {
-  const events = addedEventsList.map((singleEvent) => parseEvent(abi, singleEvent))
-  return {
-    triggers: events,
-    isAutomationEnabled: events.length !== 0,
-  }
-}
 
-function returnFilteredAddTriggerEvents(
-  removedEventsList: ethers.Event[],
-  addedEventsList: ethers.Event[],
-  abi: string[],
-) {
-  const newestRemoveEvent = removedEventsList.reduce((latest, event) =>
-    latest?.blockNumber > event.blockNumber ? latest : event,
-  )
-  const filteredAddedEvents = addedEventsList.filter((event) => {
-    return newestRemoveEvent.blockNumber < event.blockNumber
-  })
-  const events = filteredAddedEvents.map((singleEvent) => parseEvent(abi, singleEvent))
-  return {
-    triggers: events,
-    isAutomationEnabled: events.length !== 0,
-  }
-}
 
 export function createAutomationTriggersData(
   context$: Observable<ContextConnected>,
@@ -114,17 +57,12 @@ export function createAutomationTriggersData(
   id: BigNumber,
 ): Observable<TriggersData> {
   return onEveryBlock$.pipe(
-    withLatestFrom(context$, vauit$(id /*,context.chainId*/)),
-    mergeMap(([blockNumber, , vault]) => {
-      /* TODO: In future replace with oasis-cache query */
+    withLatestFrom(context$, vauit$(id)),
+    mergeMap(([, , vault]) => {
       const networkConfig = networksById[(vault as Vault).chainId]
-      /* TODO: find proper current provider */
-      var testProvider = new ethers.providers.Web3Provider((window as any).ethereum)
-      return getEvents(
+      return loadTriggerDataFromCache(
         (vault as Vault).id.toNumber() as number,
-        networkConfig.automationBot.address,
-        testProvider,
-        blockNumber,
+        networkConfig.cacheApi
       )
     }),
     distinctUntilChanged((s1, s2) => {
