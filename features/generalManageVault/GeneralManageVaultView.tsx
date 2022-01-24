@@ -67,7 +67,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 ),
                 'GUNIV3DAIUSDC2-A': (
                   <>
-                    <GuniDebtCeilingBanner />
+                    <GuniDebtCeilingBanner id={id} />
                     <ManageMultiplyVaultContainer
                       vaultHistory={vaultMultiplyHistory}
                       manageVault={generalManageVault.state}
