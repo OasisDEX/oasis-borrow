@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
+import { fadeInAnimation, slideInAnimation } from '../theme/animations'
 
 type ArrayWithAtLeastOne<T> = {
   0: T
@@ -124,7 +125,19 @@ export function TabSwitcher(props: {
         selectedTab={selectedTab}
         tabs={props.tabs}
       />
-      {props.tabs[parseInt(selectedTab)].tabContent}
+      {props.tabs.map(({ tabLabel, tabContent }) => (
+        <Box
+          key={tabLabel}
+          sx={{
+            ...slideInAnimation,
+            display: tabLabel === props.tabs[parseInt(selectedTab)].tabLabel ? 'block' : 'none',
+          }}
+        >
+          {tabContent}
+        </Box>
+      ))}
+      <Box></Box>
+      {/*{props.tabs[parseInt(selectedTab)].tabContent}*/}
     </Flex>
   )
 }
