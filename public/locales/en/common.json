@@ -881,5 +881,6 @@
       "description": "MANA is the ERC-20 token built for Decentraland, a virtual reality platform powered by the ethereum blockchain. It is primarily used to buy goods, services and LAND (an NFT token) within Decentraland.",
       "link": "https://decentraland.org/"
     }
-  }
+  },
+  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in "
 }
