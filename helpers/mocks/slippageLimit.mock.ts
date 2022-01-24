@@ -1,8 +1,10 @@
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { Observable, of } from 'rxjs'
 
-export function slippageLimitMock(): Observable<UserSettingsState> {
-  return of({
+export function slippageLimitMock(
+  mockUserData?: Partial<UserSettingsState>,
+): Observable<UserSettingsState> {
+  const defaultSlippageMockData: UserSettingsState = {
     stage: 'editing',
     slippage: SLIPPAGE_DEFAULT,
     slippageInput: SLIPPAGE_DEFAULT,
@@ -11,5 +13,6 @@ export function slippageLimitMock(): Observable<UserSettingsState> {
     canProgress: true,
     errors: [],
     warnings: [],
-  })
+  }
+  return of({ ...defaultSlippageMockData, ...mockUserData })
 }

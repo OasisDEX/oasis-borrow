@@ -60,6 +60,7 @@ export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultSt
     isEditingStage,
     potentialGenerateAmountLessThanDebtFloor,
     highSlippage,
+    customSlippageOverridden,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
@@ -71,8 +72,10 @@ export function validateGuniWarnings(state: OpenGuniVaultState): OpenGuniVaultSt
       ...warningMessagesHandler({
         potentialGenerateAmountLessThanDebtFloor,
         highSlippage,
+        customSlippageOverridden,
       }),
     )
   }
+
   return { ...state, warningMessages }
 }
