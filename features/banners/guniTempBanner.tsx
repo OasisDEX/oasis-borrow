@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export function GuniTempBanner({ id }: { id: BigNumber }) {
   const [isOpen, setIsOpen] = useState(true)
