@@ -670,7 +670,7 @@
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
     },
     "debt-ceiling-rise": {
-      "header": "On 2022-01-24 the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position will shrink significanly. Read more on the blog "
+      "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
     }
   },
   "view": "View",
