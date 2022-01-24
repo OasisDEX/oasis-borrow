@@ -1,7 +1,7 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { VaultType } from 'features/generalManageVault/generalManageVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { Observable } from 'rxjs'

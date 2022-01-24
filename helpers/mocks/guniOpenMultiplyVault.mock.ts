@@ -6,10 +6,11 @@ import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { Observable, of } from 'rxjs'
 
-import { createOpenGuniVault$ } from '../../features/openGuniVault/openGuniVault'
+import { createOpenGuniVault$ } from '../../features/earn/guni/open/pipes/openGuniVault'
 import { mockExchangeQuote$ } from './exchangeQuote.mock'
 import { MockOpenMultiplyVaultProps } from './openMultiplyVault.mock'
 import { addGasEstimationMock } from './openVault.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 
 const mockOnEveryBlock = new Observable<number>()
 
@@ -98,5 +99,6 @@ export function mockGuniOpenMultiplyVault({
     ilk,
     token1Balance$,
     getGuniMintAmount$,
+    slippageLimitMock(),
   )
 }

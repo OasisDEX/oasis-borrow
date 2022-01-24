@@ -173,7 +173,7 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onChange}
-              value={amount ? formatBigNumber(amount, tokenDigits) : null}
+              value={amount ? formatBigNumber(amount, tokenDigits) : undefined}
               placeholder={`0 ${tokenSymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
@@ -187,7 +187,9 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onAuxiliaryChange}
-              value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : null}
+              value={
+                auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : undefined
+              }
               placeholder={`0 ${auxiliarySymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />

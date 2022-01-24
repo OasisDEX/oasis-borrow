@@ -2,7 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useEffect, useReducer, useState } from 'react'
 import { Observable } from 'rxjs'
 
-type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
+export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
 export function useUIChanges<S, A>(
   handler: (state: S, action: A) => S,
