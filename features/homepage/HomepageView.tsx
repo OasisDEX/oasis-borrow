@@ -19,7 +19,6 @@ import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
-import { slideIn } from '../../theme/keyframes'
 
 function TabContent(props: {
   paraText: JSX.Element
