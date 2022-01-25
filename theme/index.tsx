@@ -248,7 +248,6 @@ const oasisBaseTheme = {
     },
     landingContainer: {
       variant: 'layout.appContainer',
-      // maxWidth: '1200px',
     },
     termsContainer: {
       variant: 'layout.appContainer',
