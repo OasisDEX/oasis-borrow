@@ -10,7 +10,7 @@ import { TxMetaKind } from './txMeta'
 export type AutomationBaseTriggerData = {
   cdpId: BigNumber
   triggerType: BigNumber
-  serviceRegistry: string
+  commandAddress: string
   triggerData: string
   proxyAddress: string
 }
@@ -32,7 +32,6 @@ function getAddAutomationTriggerCallData(
   return contract<AutomationBot>(automationBot).methods.addTrigger(
     data.cdpId,
     data.triggerType,
-    data.serviceRegistry,
     data.triggerData,
   ) as any
 }
@@ -53,12 +52,12 @@ function getRemoveAutomationTriggerCallData(
 ) {
   const { contract, automationBot } = context
   // TODO ŁW allowance! But contract has it this way
-  const removeAllowence = false
+  const removeAllowance = false
   return contract<AutomationBot>(automationBot).methods.removeTrigger(
     data.cdpId,
     data.triggerId,
-    data.serviceRegistry,
-    removeAllowence,
+    data.commandAddress,
+    removeAllowance,
     data.triggerData,
   ) as any
 }
