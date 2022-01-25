@@ -48,7 +48,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           <Text sx={{ color: 'text.subtitle' }} variant="paragraph2">
             {title}
           </Text>
-          <Text variant="paragraph1" sx={{ textAlign: 'center' }}>
+          <Text variant="paragraph1" sx={{ textAlign: 'center', fontWeight: 'semiBold' }}>
             {description}
           </Text>
         </Flex>
@@ -111,7 +111,7 @@ export function ProductCard({
             <Heading
               variant="header2"
               as="h3"
-              sx={{ fontSize: '28px', pb: 3, textAlign: 'center' }}
+              sx={{ fontSize: '28px', pb: 3, textAlign: 'center', fontWeight: 'semiBold' }}
             >
               {title}
             </Heading>
@@ -130,13 +130,15 @@ export function ProductCard({
               <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
                 {leftSlot.title}
               </Text>
-              <Text variant="paragraph1">{leftSlot.value}</Text>
+              <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+                {leftSlot.value}
+              </Text>
             </div>
             <div>
               <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
                 {rightSlot.title}
               </Text>
-              <Text variant="paragraph1" sx={{ textAlign: 'right' }}>
+              <Text variant="paragraph1" sx={{ textAlign: 'right', fontWeight: 'semiBold' }}>
                 {rightSlot.value}
               </Text>
             </div>
@@ -145,7 +147,17 @@ export function ProductCard({
             <AppLink
               href={button.link}
               variant="primary"
-              sx={{ width: '100%', fontWeight: 'body', textAlign: 'center' }}
+              sx={{
+                width: '100%',
+                fontWeight: 'body',
+                textAlign: 'center',
+                boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+                '&:hover': {
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                  transition: '0.2s ease-in',
+                  backgroundColor: 'primary',
+                },
+              }}
             >
               {button.text}
             </AppLink>

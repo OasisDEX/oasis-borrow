@@ -148,7 +148,10 @@ function NewsletterForm({ small }: { small?: boolean }) {
             color: 'primary',
             '&:disabled': {
               opacity: 0.7,
-              cursor: 'not-allowed',
+            },
+            '&:hover:not([disabled])': { opacity: 1 },
+            '&:hover svg': {
+              transform: 'translateX(4px)',
             },
           }}
           type="submit"
@@ -159,7 +162,12 @@ function NewsletterForm({ small }: { small?: boolean }) {
           ) : (
             <Flex sx={{ alignItems: 'center' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
-              <Icon size="auto" height="14px" name="arrow_right" />
+              <Icon
+                name="arrow_right"
+                size="auto"
+                height="14px"
+                sx={{ ml: 1, position: 'relative', transition: 'ease-in-out 0.2s', left: 0 }}
+              />
             </Flex>
           )}
         </Button>

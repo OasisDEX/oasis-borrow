@@ -795,10 +795,10 @@
   "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app.",
   "product-card": {
     "borrow": {
-      "description": "A Vault designed for borrowing against {{token}}."
+      "description": "A Vault designed for borrowing against {{token}}"
     },
     "multiply": {
-      "description": "A Vault designed to multiply your exposure to {{token}}."
+      "description": "A Vault designed to multiply your exposure to {{token}}"
     },
     "earn": {
       "description": "A great way to earn a stable long term yield on your {{token}}"

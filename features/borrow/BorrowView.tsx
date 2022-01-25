@@ -5,6 +5,7 @@ import { Flex, Grid } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardsFilter } from '../../components/ProductCardsFilter'
+import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
@@ -46,13 +47,17 @@ export function BorrowView() {
         >
           {([productCardsData]) => (
             <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
-              {(cardsFilter) => (
-                <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
-                  {borrowPageCardsData({ productCardsData, cardsFilter }).map((cardData) => (
-                    <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
-                  ))}
-                </Grid>
-              )}
+              {(cardsFilter) => {
+                const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
+
+                return (
+                  <ProductCardsWrapper cardsNumber={filteredCards.length}>
+                    {filteredCards.map((cardData) => (
+                      <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
+                    ))}
+                  </ProductCardsWrapper>
+                )
+              }}
             </ProductCardsFilter>
           )}
         </WithLoadingIndicator>
