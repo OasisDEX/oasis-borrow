@@ -445,8 +445,8 @@ export const tokenIcons = {
             y2="2.99991"
             gradientUnits="userSpaceOnUse"
           >
-            <stop stop-color="#FFBE78" />
-            <stop offset="1" stop-color="#F89F40" />
+            <stop stopColor="#FFBE78" />
+            <stop offset="1" stopColor="#F89F40" />
           </linearGradient>
         </defs>
       </>
