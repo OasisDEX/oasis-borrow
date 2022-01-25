@@ -82,6 +82,7 @@ const NarrowTabSelector = (props: {
                 borderRadius: 'medium',
                 cursor: 'pointer',
                 background: 'white',
+                fontWeight: '600',
               }}
               {...innerProps}
             >
