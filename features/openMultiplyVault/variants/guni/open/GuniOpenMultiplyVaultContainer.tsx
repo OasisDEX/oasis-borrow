@@ -1,11 +1,11 @@
-import { GuniVaultHeader } from 'features/openMultiplyVault/variants/guni/GuniVaultHeader'
-import { GuniOpenMultiplyVaultDetails } from 'features/openMultiplyVault/variants/guni/open/GuniOpenMultiplyVaultDetails'
-import { GuniOpenMultiplyVaultForm } from 'features/openMultiplyVault/variants/guni/open/GuniOpenMultiplyVaultForm'
-import React from 'react'
 
-import { VaultHeading } from '../../../../../components/vault/VaultHeading'
-import { OpenGuniVaultState } from '../../../../openGuniVault/openGuniVault'
-import { OpenMultiplyVaultContainer } from '../../../common/OpenMultiplyVaultContainer'
+import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
+import { VaultHeading } from 'components/vault/VaultHeading'
+import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
+import { GuniOpenMultiplyVaultDetails } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultDetails'
+import { GuniOpenMultiplyVaultForm } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultForm'
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import React from 'react'
 
 export function GuniOpenMultiplyVaultContainer(props: OpenGuniVaultState) {
   return (
