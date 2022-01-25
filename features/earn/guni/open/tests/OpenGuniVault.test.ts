@@ -75,7 +75,7 @@ describe('OpenGuniVault', () => {
     console.log(state)
   })
 
-  it('uses default GUNI slippage and shows a warning when custom slippage is different', () => {
+  it('uses default GUNI slippage', () => {
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -96,34 +96,6 @@ describe('OpenGuniVault', () => {
 
     const state = getStateUnpacker(openGuniVault$)()
 
-    expect(state.warningMessages[0]).to.equal('customSlippageOverridden')
-    expect(state.slippage).to.equal(GUNI_SLIPPAGE)
-  })
-
-  it(`uses default GUNI slippage and does not show warning when custom slippage is the same as GUNI slippage`, () => {
-    const openGuniVault$ = createOpenGuniVault$(
-      of(mockContextConnected),
-      of(protoTxHelpers),
-      proxyAddress$,
-      allowance$,
-      (token: string) => mockPriceInfo$({ token }),
-      (address?: string) => mockBalanceInfo$({ address }),
-      ilks$(),
-      () => ilkData$(),
-      mockExchangeQuote$(),
-      mockOnEveryBlock,
-      addGasEstimationMock,
-      'GUNIV3DAIUSDC1',
-      token1Balance$,
-      getGuniMintAmount$,
-      slippageLimitMock({
-        slippage: GUNI_SLIPPAGE,
-      }),
-    )
-
-    const state = getStateUnpacker(openGuniVault$)()
-
-    expect(state.warningMessages.length).to.eq(0)
     expect(state.slippage).to.equal(GUNI_SLIPPAGE)
   })
 })
