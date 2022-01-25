@@ -26,8 +26,6 @@ export function warningMessagesHandler({
   vaultWillBeAtRiskLevelWarning,
   vaultWillBeAtRiskLevelWarningAtNextPrice,
   debtIsLessThanDebtFloor,
-  highSlippage,
-  customSlippageOverridden,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -55,13 +53,13 @@ export function warningMessagesHandler({
     warningMessages.push('debtIsLessThanDebtFloor')
   }
 
-  if (highSlippage) {
-    warningMessages.push('highSlippage')
-  }
+  // if (highSlippage) {
+  //   warningMessages.push('highSlippage')
+  // }
 
-  if (customSlippageOverridden) {
-    warningMessages.push('customSlippageOverridden')
-  }
+  // if (customSlippageOverridden) {
+  //   warningMessages.push('customSlippageOverridden')
+  // }
 
   return warningMessages
 }
