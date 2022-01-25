@@ -3,7 +3,7 @@ import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
-import {  slideInAnimation } from '../theme/animations'
+import { slideInAnimation } from '../theme/animations'
 
 type ArrayWithAtLeastOne<T> = {
   0: T
@@ -78,7 +78,7 @@ const NarrowTabSelector = (props: {
               sx={{
                 border: 'light',
                 px: 2,
-                py: 3,
+                py: 2,
                 borderRadius: 'medium',
                 cursor: 'pointer',
                 background: 'white',
