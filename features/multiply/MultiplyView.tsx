@@ -51,7 +51,7 @@ export function MultiplyView() {
                 const filteredCards = multiplyPageCardsData({ productCardsData, cardsFilter })
 
                 return (
-                  <ProductCardsWrapper cardsNumber={filteredCards.length}>
+                  <ProductCardsWrapper>
                     {filteredCards.map((cardData) => (
                       <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
                     ))}

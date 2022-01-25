@@ -62,7 +62,7 @@ function TabContent(props: {
                 >
                   {props.paraText}
                 </Text>
-                <ProductCardsWrapper cardsNumber={landingCards.length}>
+                <ProductCardsWrapper>
                   {landingCards.map((cardData) => props.renderProductCard({ cardData }))}
                 </ProductCardsWrapper>
               </>
