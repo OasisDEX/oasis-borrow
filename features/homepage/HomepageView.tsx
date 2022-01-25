@@ -53,7 +53,7 @@ function TabContent(props: {
                 productCardsData,
                 product: props.type,
               }).map((cardData, index) => (
-                <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5) }}>
+                <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5) }} key={cardData.ilk}>
                   {props.renderProductCard({ cardData })}
                 </Box>
               ))}
