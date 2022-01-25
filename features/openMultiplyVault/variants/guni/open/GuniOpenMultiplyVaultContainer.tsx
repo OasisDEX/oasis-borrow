@@ -1,4 +1,3 @@
-
 import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
 import { VaultHeading } from 'components/vault/VaultHeading'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'

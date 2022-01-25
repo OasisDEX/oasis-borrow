@@ -1,8 +1,12 @@
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
+  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
+  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
