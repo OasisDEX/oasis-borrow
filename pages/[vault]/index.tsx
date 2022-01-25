@@ -48,10 +48,10 @@ export default function Vault({ id }: { id: string }) {
                   tabLabel:'Overview',
                   tabContent:(<GeneralManageVaultView id={vaultId} />)
                 },{
-                  tabLabel:'Protection',
+                  tabLabel:'History',
                   tabContent:(<h1>TODO History</h1>)
                 },{
-                  tabLabel:'History',
+                  tabLabel:'Protection',
                   tabContent:(<DefaultVaultLayout
                     detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
                     editForm={<AdjustSlFormControl id={vaultId} />}
