@@ -34,7 +34,7 @@ export function Background() {
         sx={{
           userSelect: 'none',
           pointerEvents: 'none',
-          maxHeight: '100vh',
+          maxHeight: 'calc(100vh + 200px)',
         }}
       >
         <svg
