@@ -1,9 +1,7 @@
-import { Interface } from '@ethersproject/abi'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { ethers } from 'ethers'
 import { GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
 import { Observable } from 'rxjs'
@@ -13,10 +11,7 @@ import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 
 // TODO - ŁW - Implement tests for this file
 
-async function loadTriggerDataFromCache(
-  vaultId: number,
-  cacheApi: string
-): Promise<TriggersData> {
+async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Promise<TriggersData> {
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
     vaultId.toFixed(0),
@@ -24,9 +19,8 @@ async function loadTriggerDataFromCache(
 
   return {
     isAutomationEnabled: activeTriggersForVault.length > 0,
-    triggers: activeTriggersForVault
+    triggers: activeTriggersForVault,
   }
-
 }
 
 export interface TriggerRecord {
@@ -53,7 +47,7 @@ export function createAutomationTriggersData(
       const networkConfig = networksById[(vault as Vault).chainId]
       return loadTriggerDataFromCache(
         (vault as Vault).id.toNumber() as number,
-        networkConfig.cacheApi
+        networkConfig.cacheApi,
       )
     }),
     distinctUntilChanged((s1, s2) => {
