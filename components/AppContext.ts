@@ -54,7 +54,7 @@ import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
-import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
@@ -347,7 +347,25 @@ export function setupAppContext() {
   )
 
   const exchangeQuote$ = memoize(
-    curry(createExchangeQuote$)(context$),
+    (
+      token: string,
+      slippage: BigNumber,
+      amount: BigNumber,
+      action: ExchangeAction,
+      exchangeType: ExchangeType,
+    ) => createExchangeQuote$(context$, undefined, token, slippage, amount, action, exchangeType),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
+  )
+
+  const psmExchangeQuote$ = memoize(
+    (
+      token: string,
+      slippage: BigNumber,
+      amount: BigNumber,
+      action: ExchangeAction,
+      exchangeType: ExchangeType,
+    ) => createExchangeQuote$(context$, 'PSM', token, slippage, amount, action, exchangeType),
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
@@ -382,7 +400,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      exchangeQuote$,
+      psmExchangeQuote$,
       onEveryBlock$,
       addGasEstimation$,
       ilk,
@@ -457,7 +475,7 @@ export function setupAppContext() {
         balanceInfo$,
         ilkData$,
         vault$,
-        exchangeQuote$,
+        psmExchangeQuote$,
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,
