@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
-import { networksById } from 'blockchain/config'
 import { Vault } from 'blockchain/vaults'
-import { ethers } from 'ethers'
+import { constants, ethers } from 'ethers'
 import { last } from 'lodash'
 import { useEffect } from 'react'
 
@@ -63,7 +62,6 @@ export function prepareTriggerData(
   stopLossLevel: BigNumber,
 ): AutomationBaseTriggerData {
   const slLevel: number = stopLossLevel.toNumber()
-  const networkConfig = networksById[vaultData.chainId]
   const triggerTypeVaue = isCloseToCollateral
     ? new BigNumber(TriggersTypes.StopLossToCollateral)
     : new BigNumber(TriggersTypes.StopLossToDai)
@@ -71,7 +69,7 @@ export function prepareTriggerData(
     cdpId: vaultData.id,
     triggerType: triggerTypeVaue,
     proxyAddress: vaultData.owner,
-    serviceRegistry: networkConfig.serviceRegistry,
+    commandAddress: constants.AddressZero, // TODO: add command addresses
     triggerData: buildTriggerData(vaultData.id, triggerTypeVaue.toNumber(), slLevel),
   }
 }
