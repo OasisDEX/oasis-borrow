@@ -213,7 +213,7 @@ export function Footer() {
         </Flex>
       </Container>
       <TemporaryFooter />
-      <FooterBackground />
+      {assetLpEnabled && <FooterBackground />}
     </Box>
   )
 }

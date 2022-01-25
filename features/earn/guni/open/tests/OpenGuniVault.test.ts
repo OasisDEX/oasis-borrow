@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
 import { mockBalanceInfo$ } from 'helpers/mocks/balanceInfo.mock'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
@@ -10,6 +11,7 @@ import { Observable, of } from 'rxjs'
 import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.mock'
 import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
 import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
+import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
 import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -48,7 +50,7 @@ function getGuniMintAmount$() {
   })
 }
 
-describe('test', () => {
+describe('OpenGuniVault', () => {
   it('playground', () => {
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
@@ -71,5 +73,57 @@ describe('test', () => {
     const state = getStateUnpacker(openGuniVault$)
 
     console.log(state)
+  })
+
+  it('uses default GUNI slippage and shows a warning when custom slippage is different', () => {
+    const openGuniVault$ = createOpenGuniVault$(
+      of(mockContextConnected),
+      of(protoTxHelpers),
+      proxyAddress$,
+      allowance$,
+      (token: string) => mockPriceInfo$({ token }),
+      (address?: string) => mockBalanceInfo$({ address }),
+      ilks$(),
+      () => ilkData$(),
+      mockExchangeQuote$(),
+      mockOnEveryBlock,
+      addGasEstimationMock,
+      'GUNIV3DAIUSDC1',
+      token1Balance$,
+      getGuniMintAmount$,
+      slippageLimitMock(),
+    )
+
+    const state = getStateUnpacker(openGuniVault$)()
+
+    expect(state.warningMessages[0]).to.equal('customSlippageOverridden')
+    expect(state.slippage).to.equal(GUNI_SLIPPAGE)
+  })
+
+  it(`uses default GUNI slippage and does not show warning when custom slippage is the same as GUNI slippage`, () => {
+    const openGuniVault$ = createOpenGuniVault$(
+      of(mockContextConnected),
+      of(protoTxHelpers),
+      proxyAddress$,
+      allowance$,
+      (token: string) => mockPriceInfo$({ token }),
+      (address?: string) => mockBalanceInfo$({ address }),
+      ilks$(),
+      () => ilkData$(),
+      mockExchangeQuote$(),
+      mockOnEveryBlock,
+      addGasEstimationMock,
+      'GUNIV3DAIUSDC1',
+      token1Balance$,
+      getGuniMintAmount$,
+      slippageLimitMock({
+        slippage: GUNI_SLIPPAGE,
+      }),
+    )
+
+    const state = getStateUnpacker(openGuniVault$)()
+
+    expect(state.warningMessages.length).to.eq(0)
+    expect(state.slippage).to.equal(GUNI_SLIPPAGE)
   })
 })
