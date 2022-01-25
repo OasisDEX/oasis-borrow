@@ -42,7 +42,6 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
               header={
                 <DefaultVaultHeader
                   {...openVault}
-                  header={t('vault.open-vault', { ilk: openVault.ilk })}
                 />
               }
               details={<OpenMultiplyVaultDetails {...openVault} />}

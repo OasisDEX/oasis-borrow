@@ -43,7 +43,6 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               header={
                 <GuniVaultHeader
                   {...openVault}
-                  header={t('vault.open-vault', { ilk: openVault.ilk })}
                 />
               }
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
