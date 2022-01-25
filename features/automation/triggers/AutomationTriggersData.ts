@@ -25,14 +25,14 @@ async function loadTriggerDataFromCache(
   vaultId: number,
   cacheApi: string
 ): Promise<TriggersData> {
-  const activeTriggersForVault = getAllActiveTriggers(
+  const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
     vaultId.toFixed(0),
   )
 
   return {
-    isAutomationEnabled: (await activeTriggersForVault).length > 0,
-    triggers: await activeTriggersForVault
+    isAutomationEnabled: activeTriggersForVault.length > 0,
+    triggers: activeTriggersForVault
   }
 
 }
