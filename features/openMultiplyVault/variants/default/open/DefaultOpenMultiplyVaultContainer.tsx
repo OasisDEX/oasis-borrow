@@ -1,11 +1,9 @@
+import { OpenMultiplyVaultContainer } from 'components/vault/commonMultiply/OpenMultiplyVaultContainer'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import React from 'react'
 
 import { DefaultVaultHeader } from '../../../../../components/vault/DefaultVaultHeader'
 import { VaultHeading } from '../../../../../components/vault/VaultHeading'
-import { OpenMultiplyVaultContainer } from '../../../common/OpenMultiplyVaultContainer'
-import { OpenMultiplyVaultState } from '../../../openMultiplyVault'
-import { DefaultOpenMultiplyVaultDetails } from './DefaultOpenMultiplyVaultDetails'
-import { DefaultOpenMultiplyVaultForm } from './DefaultOpenMultiplyVaultForm'
 
 export function DefaultOpenMultiplyVaultContainer(props: OpenMultiplyVaultState) {
   return (
@@ -16,7 +14,7 @@ export function DefaultOpenMultiplyVaultContainer(props: OpenMultiplyVaultState)
           <DefaultVaultHeader {...props} />
         </>
       }
-      details={<DefaultOpenMultiplyVaultDetails {...props} />}
+      details={<DefaultOpenMultiplyVaultContainer {...props} />}
       form={<DefaultOpenMultiplyVaultForm {...props} />}
       clear={props.clear}
     />
