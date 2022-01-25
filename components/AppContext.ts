@@ -35,6 +35,7 @@ import {
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import {
   createGasPrice$,
@@ -53,18 +54,18 @@ import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
+import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
+import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
+import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$ } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
 import { createLanding$ } from 'features/landing/landing'
-import { createManageMultiplyVault$ } from 'features/manageMultiplyVault/manageMultiplyVault'
-import { createManageVault$ } from 'features/manageVault/manageVault'
-import { createOpenGuniVault$ } from 'features/openGuniVault/openGuniVault'
-import { createOpenMultiplyVault$ } from 'features/openMultiplyVault/openMultiplyVault'
-import { createOpenVault$ } from 'features/openVault/openVault'
+import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
@@ -74,6 +75,11 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
+import { createUserSettings$ } from 'features/userSettings/userSettings'
+import {
+  checkUserSettingsLocalStorage$,
+  saveUserSettingsLocalStorage$,
+} from 'features/userSettings/userSettingsLocal'
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
@@ -103,13 +109,20 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { getTotalSupply, getUnderlyingBalances } from '../features/manageGuniVault/guniActionsCalls'
-import { createManageGuniVault$ } from '../features/manageGuniVault/manageGuniVault'
-import { getGuniMintAmount, getToken1Balance } from '../features/openGuniVault/guniActionsCalls'
+import {
+  getTotalSupply,
+  getUnderlyingBalances,
+} from '../features/earn/guni/manage/pipes/guniActionsCalls'
+import { createManageGuniVault$ } from '../features/earn/guni/manage/pipes/manageGuniVault'
+import {
+  getGuniMintAmount,
+  getToken1Balance,
+} from '../features/earn/guni/open/pipes/guniActionsCalls'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
+import { createProductCardsData$ } from '../helpers/productCards'
 
 export type TxData =
   | OpenData
@@ -299,6 +312,7 @@ export function setupAppContext() {
     curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
+  const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
@@ -360,6 +374,11 @@ export function setupAppContext() {
     account: string | undefined,
   ) => Observable<BalanceInfo>
 
+  const userSettings$ = createUserSettings$(
+    checkUserSettingsLocalStorage$,
+    saveUserSettingsLocalStorage$,
+  )
+
   const openVault$ = memoize((ilk: string) =>
     createOpenVault$(
       connectedContext$,
@@ -394,6 +413,7 @@ export function setupAppContext() {
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
+      userSettings$,
       ilk,
     ),
   )
@@ -417,6 +437,7 @@ export function setupAppContext() {
       ilk,
       token1Balance$,
       getGuniMintAmount$,
+      userSettings$,
     ),
   )
 
@@ -451,7 +472,9 @@ export function setupAppContext() {
         vault$,
         exchangeQuote$,
         addGasEstimation$,
+        userSettings$,
         vaultMultiplyHistory$,
+        saveVaultUsingApi$,
         id,
       ),
     bigNumberTostring,
@@ -487,6 +510,7 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,
+        userSettings$,
         id,
       ),
     bigNumberTostring,
@@ -507,6 +531,9 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
+
+  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
   const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
@@ -527,7 +554,7 @@ export function setupAppContext() {
     curry(createReclaimCollateral$)(context$, txHelpers$, proxyAddress$),
     bigNumberTostring,
   )
-  const accountData$ = createAccountData(web3Context$, balance$, vaults$)
+  const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
@@ -570,10 +597,12 @@ export function setupAppContext() {
     openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
+    userSettings$,
     openGuniVault$,
     ilkDataList$,
     uiChanges,
     connectedContext$,
+    productCardsData$,
   }
 }
 

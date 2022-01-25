@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Box, IconButton } from 'theme-ui'
+import { Box, IconButton, SxProps } from 'theme-ui'
 
 type Closable = {
   close: React.MouseEventHandler<any>
+  sx?: SxProps
 }
 type BannerProps = WithChildren & Closable
 
-export function Banner({ children, close }: BannerProps) {
+export function Banner({ children, close, sx }: BannerProps) {
   return (
     <Box
       sx={{
@@ -20,6 +21,7 @@ export function Banner({ children, close }: BannerProps) {
         boxShadow: 'banner',
         position: 'relative',
         background: 'white',
+        ...sx,
       }}
     >
       <IconButton

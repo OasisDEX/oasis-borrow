@@ -10,16 +10,8 @@ import { Observable } from 'rxjs'
 import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
+
 // TODO - ŁW - Implement tests for this file
-function parseEvent(abi: Array<string>, ev: ethers.Event): TriggerRecord {
-  const intf = new Interface(abi)
-  const parsedEvent = intf.parseLog(ev) as any
-  return {
-    triggerId: parseInt(parsedEvent.args['triggerId'].toString()),
-    triggerType: parseInt(parsedEvent.args['triggerType'].toString()),
-    executionParams: parsedEvent.args['triggerData'],
-  }
-}
 
 async function loadTriggerDataFromCache(
   vaultId: number,
@@ -40,7 +32,8 @@ async function loadTriggerDataFromCache(
 export interface TriggerRecord {
   triggerId: number
   triggerType: number
-  executionParams: string /* bytes triggerData  from TriggerAdded event*/
+  commandAddress: string | undefined // TODO: Temp solution as yet we don't have it in cache ~ŁW
+  executionParams: string // bytes triggerData from TriggerAdded event
 }
 
 export interface TriggersData {

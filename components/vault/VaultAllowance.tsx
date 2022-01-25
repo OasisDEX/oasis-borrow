@@ -1,9 +1,9 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
-import { OpenGuniVaultState } from 'features/openGuniVault/openGuniVault'
-import { OpenMultiplyVaultState } from 'features/openMultiplyVault/openMultiplyVault'
-import { OpenVaultState } from 'features/openVault/openVault'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -72,14 +72,13 @@ export function VaultAllowance({
                 value={
                   allowanceAmount && isCustom
                     ? formatAmount(allowanceAmount, getToken(token).symbol)
-                    : null
+                    : undefined
                 }
                 mask={createNumberMask({
                   allowDecimal: true,
                   decimalLimit: getToken(token).digits,
                   prefix: '',
                 })}
-                // @ts-ignore TODO PROVIDE PROPER TYPING
                 onChange={handleNumericInput(updateAllowanceAmount!)}
               />
               <Text sx={{ fontSize: 1 }}>{token}</Text>

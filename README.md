@@ -66,6 +66,16 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 <br>
 
+### Run staging site locally
+
+You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database, by running:
+
+```sh
+./scripts/dev-with-staging.sh
+```
+
+It will pull an additional docker container with the current staging site and will make it available at <http://0.0.0.0:3000>
+
 ### Storybook
 
 We utilise storybook for visualising some of our UI components in isolation. This makes development
@@ -150,6 +160,10 @@ at _run time_
 
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
   the user signs the Terms of Service.
+
+- `MAILCHIMP_ENDPOINT` - Mailchimp endpoint with audience ID used to integrate Mailchimp newsletter.
+
+- `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the proces that runs the application with the `run-time` vars._

@@ -7,7 +7,7 @@ import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   createManageMultiplyVault$,
   ManageMultiplyVaultState,
-} from 'features/manageMultiplyVault/manageMultiplyVault'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -23,6 +23,7 @@ import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
@@ -39,6 +40,7 @@ export interface MockManageMultiplyVaultProps {
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
+  _saveVaultType$?: Observable<void>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
@@ -64,6 +66,7 @@ export function mockManageMultiplyVault$({
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
+  _saveVaultType$,
 
   ilkData,
   priceInfo,
@@ -137,6 +140,10 @@ export function mockManageMultiplyVault$({
     )
   }
 
+  function saveVaultType$() {
+    return _saveVaultType$ || of(undefined)
+  }
+
   return createManageMultiplyVault$(
     context$ as Observable<Context>,
     txHelpers$,
@@ -148,7 +155,9 @@ export function mockManageMultiplyVault$({
     vault$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
+    slippageLimitMock(),
     vaultMultiplyHistory$,
+    saveVaultType$,
     MOCK_VAULT_ID,
   )
 }

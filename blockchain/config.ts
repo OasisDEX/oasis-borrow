@@ -4,6 +4,7 @@ import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
 import * as automationBot from './abi/automation-bot.json'
+import { Abi } from '../helpers/types'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
@@ -35,7 +36,7 @@ import { default as goerliAddresses } from './addresses/goerli.json'
 import { default as kovanAddresses } from './addresses/kovan.json'
 import { default as mainnetAddresses } from './addresses/mainnet.json'
 
-export function contractDesc(abi: any, address: string): ContractDesc {
+export function contractDesc(abi: Abi[], address: string): ContractDesc {
   return { abi, address }
 }
 
@@ -44,6 +45,55 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
+export const supportedIlks = [
+  /* export just for test purposes */ 'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'BAT-A',
+  'DAI',
+  'USDC-A',
+  'USDC-B',
+  'WBTC-A',
+  'RENBTC-A',
+  'TUSD-A',
+  'ZRX-A',
+  'KNC-A',
+  'MANA-A',
+  'USDT-A',
+  'PAXUSD-A',
+  'COMP-A',
+  'LRC-A',
+  'LINK-A',
+  'BAL-A',
+  'YFI-A',
+  'GUSD-A',
+  'UNI-A',
+  'AAVE-A',
+  'UNIV2DAIETH-A',
+  'UNIV2WBTCETH-A',
+  'UNIV2USDCETH-A',
+  'UNIV2DAIUSDC-A',
+  'UNIV2ETHUSDT-A',
+  'UNIV2LINKETH-A',
+  'UNIV2UNIETH-A',
+  'UNIV2WBTCDAI-A',
+  'UNIV2AAVEETH-A',
+  'UNIV2DAIUSDT-A',
+  'MATIC-A',
+  'GUNIV3DAIUSDC1-A',
+  'GUNIV3DAIUSDC2-A',
+  'WSTETH-A',
+  'WBTC-B',
+  'WBTC-C',
+]
+
+const tokensMainnet = {
+  ...getCollateralTokens(mainnetAddresses, supportedIlks),
+  GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
+  GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
+  WETH: contractDesc(eth, mainnetAddresses['ETH']),
+  DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+} as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
   name: 'main',
@@ -52,19 +102,14 @@ const protoMain = {
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
-  collaterals: getCollaterals(mainnetAddresses),
-  tokens: {
-    ...getCollateralTokens(mainnetAddresses),
-    GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
-    GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
-    WETH: contractDesc(eth, mainnetAddresses['ETH']),
-    DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
-  } as Dictionary<ContractDesc>,
+  collaterals: getCollaterals(mainnetAddresses, supportedIlks),
+  tokens: tokensMainnet,
+  tokensMainnet,
   joins: {
-    ...getCollateralJoinContracts(mainnetAddresses),
+    ...getCollateralJoinContracts(mainnetAddresses, supportedIlks),
   },
   getCdps: contractDesc(getCdps, mainnetAddresses.GET_CDPS),
-  mcdOsms: getOsms(mainnetAddresses),
+  mcdOsms: getOsms(mainnetAddresses, supportedIlks),
   mcdJug: contractDesc(mcdJug, mainnetAddresses.MCD_JUG),
   mcdPot: contractDesc(mcdPot, mainnetAddresses.MCD_POT),
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
@@ -89,7 +134,7 @@ const protoMain = {
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: mainnetAddresses.MCD_FLASH,
   etherscan: {
     url: 'https://etherscan.io',
     apiUrl: 'https://api.etherscan.io/api',
@@ -120,18 +165,18 @@ const kovan: NetworkConfig = {
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
-  collaterals: getCollaterals(kovanAddresses),
+  collaterals: getCollaterals(kovanAddresses, supportedIlks),
   tokens: {
-    ...getCollateralTokens(kovanAddresses),
+    ...getCollateralTokens(kovanAddresses, supportedIlks),
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
   },
   joins: {
-    ...getCollateralJoinContracts(kovanAddresses),
+    ...getCollateralJoinContracts(kovanAddresses, supportedIlks),
   },
   getCdps: contractDesc(getCdps, kovanAddresses.GET_CDPS),
-  mcdOsms: getOsms(kovanAddresses),
+  mcdOsms: getOsms(kovanAddresses, supportedIlks),
   mcdPot: contractDesc(mcdPot, kovanAddresses.MCD_POT),
   mcdJug: contractDesc(mcdJug, kovanAddresses.MCD_JUG),
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
@@ -156,7 +201,7 @@ const kovan: NetworkConfig = {
   defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
   lowerFeesExchange: contractDesc(exchange, '0x0'),
   noFeesExchange: contractDesc(exchange, '0x0'),
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: '0x',
   etherscan: {
     url: 'https://kovan.etherscan.io',
     apiUrl: 'https://api-kovan.etherscan.io/api',
@@ -166,6 +211,7 @@ const kovan: NetworkConfig = {
     url: 'https://ethtx.info/kovan',
   },
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
+  tokensMainnet: protoMain.tokensMainnet,
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
     apiKey: '',
@@ -181,17 +227,18 @@ const goerli: NetworkConfig = {
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
-  collaterals: getCollaterals(goerliAddresses),
+  collaterals: getCollaterals(goerliAddresses, supportedIlks),
   tokens: {
-    ...getCollateralTokens(goerliAddresses),
+    ...getCollateralTokens(goerliAddresses, supportedIlks),
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
   },
+  tokensMainnet: protoMain.tokensMainnet,
   joins: {
-    ...getCollateralJoinContracts(goerliAddresses),
+    ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
   },
   getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
-  mcdOsms: getOsms(goerliAddresses),
+  mcdOsms: getOsms(goerliAddresses, supportedIlks),
   mcdPot: contractDesc(mcdPot, goerliAddresses.MCD_POT),
   mcdJug: contractDesc(mcdJug, goerliAddresses.MCD_JUG),
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
@@ -204,22 +251,21 @@ const goerli: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
-  // Currently this is not supported on Goerli - no deployed contract
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
+    '0x24E54706B100e2061Ed67fAe6894791ec421B421',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
-  automationBot: contractDesc(automationBot, '0x62fab0FfcC439c75a7d31F94f5B34bE31F3e08E7'),
+  automationBot: contractDesc(automationBot, '0xF179347e7eFBc9e41aB8A0eF70779E4BA69DbBf7'),
   serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
-  lowerFeesExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
-  noFeesExchange: contractDesc(exchange, '0x21261F47b3CFEa595c80bdc016AD0fea0Ef086eA'),
+  defaultExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  noFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
   // Currently this is not supported on Goerli - no deployed contract
-  fmm: '0x1EB4CF3A948E7D72A198fe073cCb8C7a948cD853',
+  fmm: goerliAddresses.MCD_FLASH,
   etherscan: {
     url: 'https://goerli.etherscan.io',
     apiUrl: 'https://api-goerli.etherscan.io/api',

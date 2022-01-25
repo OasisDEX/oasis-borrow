@@ -1,21 +1,14 @@
-import { ModalCloseIcon, ModalHTMLOverflow } from 'components/Modal'
+import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { WithChildren } from 'helpers/types'
 import React, { useEffect } from 'react'
-import ReactDOM from 'react-dom'
-import { Box, Card, Divider, Grid } from 'theme-ui'
-import { useBreakpointIndex } from 'theme/useBreakpointIndex'
-
-function VaultFormPortal({ children, mobile }: WithChildren & { mobile: boolean }) {
-  return mobile ? ReactDOM.createPortal(children, document.body) : children
-}
+import { Box, Card, Grid } from 'theme-ui'
 
 export function VaultFormContainer({
   children,
   toggleTitle,
 }: WithChildren & { toggleTitle: string }) {
   const { vaultFormOpened, setVaultFormOpened, setVaultFormToggleTitle } = useSharedUI()
-  const breakpoint = useBreakpointIndex()
 
   useEffect(() => {
     setVaultFormToggleTitle(toggleTitle)
@@ -29,7 +22,7 @@ export function VaultFormContainer({
   const onClose = () => setVaultFormOpened(false)
 
   return (
-    <VaultFormPortal mobile={breakpoint === 0}>
+    <MobileSidePanelPortal>
       <Box
         sx={{
           display: 'block',
@@ -47,33 +40,13 @@ export function VaultFormContainer({
           zIndex: ['modal', 0],
         }}
       >
-        {breakpoint === 0 && (
-          <Box>
-            {vaultFormOpened && <ModalHTMLOverflow />}
-            <Box
-              sx={{
-                display: ['flex', 'none'],
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-                py: 3,
-                my: 2,
-              }}
-            >
-              <ModalCloseIcon
-                close={onClose}
-                sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
-                size={3}
-              />
-            </Box>
-            <Divider variant="styles.hrVaultFormTop" sx={{ mt: 0, pt: 0 }} />
-          </Box>
-        )}
+        <MobileSidePanelClose opened={vaultFormOpened} onClose={onClose} />
         <Card variant="vaultFormContainer">
           <Grid gap={4} p={[0, 2]}>
             {children}
           </Grid>
         </Card>
       </Box>
-    </VaultFormPortal>
+    </MobileSidePanelPortal>
   )
 }

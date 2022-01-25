@@ -1,4 +1,5 @@
 {
+  "get-started-button": "Get started on Oasis",
   "404-button": "Go to homepage",
   "404-message": "Sorry, page not found.",
   "about": {
@@ -92,6 +93,7 @@
   "dai-paying-back": "Dai paying back ({{amount}})",
   "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
+  "decide-later": "Decide later",
   "deposit": "Deposit",
   "disconnect": "Disconnect",
   "disconnect-magic": "Log out",
@@ -205,8 +207,10 @@
   "keyWithCount_plural": "{{count}} items",
   "landing": {
     "hero": {
-      "headline": "Borrow Dai and Multiply your exposure to crypto",
-      "subheader": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start."
+      "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
+      "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -216,6 +220,52 @@
       "faq": {
         "title": "Have a question?",
         "description": "Learn more about Oasis, Dai and DeFi at our FAQ’s page"
+      }
+    },
+    "tabs": {
+      "borrow": {
+        "tabLabel": "Borrow on Oasis",
+        "tabParaContent": "Borrow Dai against your favorite crypto assets. Use the Dai however you like.",
+        "tabParaLinkContent": "See all Borrow collateral types →"
+      },
+      "multiply": {
+        "tabLabel": "Multiply on Oasis",
+        "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
+        "tabParaLinkContent": "See all Multiply collateral types →"
+      }
+    },
+    "info-cards": {
+      "have-some-questions": "Have some questions?",
+      "learn": {
+        "learn": "Learn",
+        "deep-dive": "Deep dive into oasis.app functionalities and glossary",
+        "get-started": "Get started",
+        "tutorials": "Tutorials",
+        "key-concepts": "Key concepts"
+      },
+      "support": {
+        "support": "Support",
+        "contact-whenever": "Contact Oasis.app team whenever you need",
+        "faq": "FAQ",
+        "discord": "Discord",
+        "contact-us": "Contact us",
+        "twitter": "Twitter"
+      },
+      "get-started": "Get started with Oasis.app",
+      "multiply": {
+        "multiply": "Multiply your assets",
+        "subtitle": "In a single transaction you can open a Maker vault, generate DAI, and spend them for more collateral.",
+        "open-vault": "Open vault"
+      },
+      "borrow": {
+        "borrow-dai": "Borrow Dai",
+        "choose-your-preferred-token": "Choose your preferred token as collateral and open a Maker vault to get DAI",
+        "open-vault": "Open vault"
+      },
+      "manage": {
+        "manage-your-vault": "Manage your vault",
+        "make-actions": "Make actions on your vault whenever you want",
+        "connect-your-wallet": "Connect your wallet"
       }
     },
     "cookie-banner": {
@@ -310,7 +360,38 @@
       "above-liquidation-price": "above liquidation price",
       "on-next-price": "on next price",
       "up-to": "up to"
+    },
+    "action-tabs": {
+      "adjust": "Adjust",
+      "other": "Other",
+      "borrow": "Borrow"
     }
+  },
+  "borrow-to-multiply": {
+    "checkmark1": "Multiply your exposure on your {{token}}",
+    "checkmark2": "Adjust risk and exposure in 1 click",
+    "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
+    "checkmark4": "You can review the details of the changes on your vault before execution",
+    "subheader2": "Important",
+    "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks.",
+    "button-not-supported": "Not supported for {{token}}",
+    "button-start": "Multiply this Vault",
+    "button-confirm": "Take me to the Multiply interface",
+    "button-progress": "Transition in progress...",
+    "button-failure": "Something went wrong, try again",
+    "button-success": "Transition completed, refreshing..."
+  },
+  "multiply-to-borrow": {
+    "title1": "View your Vault in the borrow UI",
+    "title2": "You will go back to the Borrow interface",
+    "checkmark1": "Specifically designed for borrowing positions",
+    "checkmark2": "You can change back to the Multiply UI anytime",
+    "checkmark3": "This does not require a transaction",
+    "button-start": "Go to Borrow interface",
+    "button-confirm": "Take me to the Borrow interface",
+    "button-progress": "Transition in progress...",
+    "button-failure": "Something went wrong, try again",
+    "button-success": "Transition completed, refreshing..."
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
@@ -335,7 +416,10 @@
     "oracles": "Oracles",
     "dai-wallet": "Dai Wallet",
     "borrow": "Borrow",
-    "oasis-borrow": "Oasis Borrow"
+    "oasis-borrow": "Oasis Borrow",
+    "multiply": "Multiply",
+    "more": "More",
+    "earn": "Earn"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -478,7 +562,8 @@
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
     "oracle-price": "Oracle Price",
-    "market-price": "Market Price"
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -537,7 +622,8 @@
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
-    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+    "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
+    "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -618,6 +704,9 @@
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
       "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
+    },
+    "debt-ceiling-rise": {
+      "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
     }
   },
   "view": "View",
@@ -662,16 +751,10 @@
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
-      "confirm": "This will update your vault to a multiply vault. It does not require a transaction. This is a one directional change and you will not be able to switch it back to the Borrow view.",
+      "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
       "review-manage": "Here you can review the details of the changes to your vault.",
       "confirm-in-progress": "Your Vault is currently being created.",
-      "modified": "Your Vault is currently being updated. Please wait.",
-      "checkmark1": "Multiply your exposure on your {{token}}",
-      "checkmark2": "Adjust risk and exposure in 1 click",
-      "checkmark3": "Actions like using a flash loan, and buying or selling collateral are grouped into a single transaction for greater efficiency and savings",
-      "checkmark4": "You can review the details of the changes on your vault before execution",
-      "subheader2": "Important",
-      "paragraph2": "When you multiply your vault, you acquire collateral for funds you have borrowed against your own collateral. Make sure you understand the associated risks."
+      "modified": "Your Vault is currently being updated. Please wait."
     }
   },
   "creating-your-vault": "Creating your {{token}} Vault!",
@@ -713,8 +796,132 @@
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting stop loss"
   },
+  "newsletter": {
+    "title": "Stay up to date with Oasis.app",
+    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "placeholder": "Email Address",
+    "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
+    "errors": {
+      "unknown": "Something went wrong. Please try again.",
+      "email-is-invalid": "Please enter a valid email address",
+      "email-already-exists": "Email is already subscribed to mailing list.",
+      "email-pending": "Opt-in email already sent for this address - please check your inbox."
+    }
+  },
+  "user-settings": {
+    "button-menu": "Slippage",
+    "slippage-limit": {
+      "preset-title": "Slippage settings",
+      "preset-description": "Select the amount of slippage you would like.",
+      "read-more": "Read more about slippage.",
+      "custom-title": "Set custom slippage amount",
+      "custom-label": "Slippage amount",
+      "errors": {
+        "invalid-slippage": "Invalid slippage. Slippage should be in 20%, 0.1% range"
+      },
+      "warnings": {
+        "high-slippage": "Warning. You have set a high slippage limit which can result in you getting a price quite far from your quoted price. Only continue if you understand this risk."
+      }
+    },
+    "button": "Update settings",
+    "button-in-progress": "Updating settings",
+    "update-success": "Settings updated",
+    "update-failure": "Something went wrong"
+  },
   "modal-trezor-eip1559-title": "Trezor with Metamask does not support EIP-1559",
   "modal-trezor-eip1559-paragraph1": "Oasis.app has recently updated all transactions to support EIP-1559. Doing EIP-1559 transactions with Trezor through metamask is currently not supported, see <0>here</0>.",
   "modal-trezor-eip1559-paragraph2": "You can continue to use Metamask with Trezor with legacy transactions on our environment here: <0>legacy.oasis.app</0>.",
-  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app."
+  "modal-trezor-eip1559-paragraph3": "Alternatively, if you have a Model T Trezor you can <0>connect</0> directly to Oasis.app.",
+  "product-card": {
+    "borrow": {
+      "description": "A Vault designed for borrowing against {{token}}."
+    },
+    "multiply": {
+      "description": "A Vault designed to multiply your exposure to {{token}}."
+    },
+    "earn": {
+      "description": "A great way to earn a stable long term yield on your {{token}}"
+    },
+    "borrow-and-multiply": {
+      "description": "A vault for both multiplying your exposure or borrowing against {{token}}"
+    },
+    "lp-tokens": {
+      "description": "A vault for multiplying your exposure to {{token}}"
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": {
+      "description": "Borrow up to {{value}} DAI"
+    },
+    "multiply": {
+      "description": "Get up to {{value}} {{token}} exposure"
+    },
+    "earn": {
+      "description": "Earn {{value}} {{token}} a year"
+    }
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Borrow Dai against your favorite crypto assets. Use the Dai however you like. Browse the featured, or select an asset to view our products.",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
+    }
+  },
+  "learn-more": "Learn more",
+  "assets": {
+    "eth": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it. We can think about it as the \"fuel\" of the network. Users may exchange other cryptocurrencies for ether tokens, but ether tokens cannot be substituted with other cryptocurrencies to provide computing power for Ethereum transactions.",
+      "link": "https://ethereum.org/en/eth/"
+    },
+    "btc": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "dai": {
+      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
+      "link": ""
+    },
+    "usdc": {
+      "description": "USDC is a 1:1 USD-backed centralized stablecoin, fully regulated. USDC is natively supported on multiple layer 1 blockchains including Ethereum as an ERC-20 token, Algorand as an ASA token, Solana as a SPL token, TRON as an TRC-20 token, and Stellar as a native asset. It is operated by Circle.",
+      "link": "https://www.circle.com/en/about-circle"
+    },
+    "lp-token": {
+      "description": "When tokens are deposited into a crypto liquidity pool, the platform automatically generates a new token that represents the share the depositor owns of that pool. This is called a liquidity provider (LP) token, and it can be used for a multitude of functions both within its native platform and other decentralized finance (DeFi) apps. This has the effect of multiplying the liquidity available in the DeFi ecosystem.",
+      "link": ""
+    },
+    "yfi": {
+      "description": "Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return.",
+      "link": "https://yearn.finance/ "
+    },
+    "uni": {
+      "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community of UNI token holders and their delegates who propose and vote on upgrades to the protocol. Uniswap is a crypto trading protocol for swapping ERC20 tokens.",
+      "link": "https://uniswap.org/"
+    },
+    "link": {
+      "description": "Loopring is an Ethereum token that describes itself as “an open-sourced, audited, and non-custodial exchange protocol.” It aims to allow anyone to build non-custodial, order book-based exchanges on Ethereum by leveraging zero-knowledge proofs.",
+      "link": "https://loopring.org/#/"
+    },
+    "matic": {
+      "description": "Polygon (MATIC) is an Ethereum token that powers the Polygon Network, a scaling solution for Ethereum. Polygon is a protocol and a framework for building and connecting Ethereum-compatible blockchain networks. Aggregating scalable solutions on Ethereum supporting a multi-chain Ethereum ecosystem.",
+      "link": "https://polygon.technology/"
+    },
+    "mana": {
+      "description": "MANA is the ERC-20 token built for Decentraland, a virtual reality platform powered by the ethereum blockchain. It is primarily used to buy goods, services and LAND (an NFT token) within Decentraland.",
+      "link": "https://decentraland.org/"
+    }
+  },
+  "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
+  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in "
 }
