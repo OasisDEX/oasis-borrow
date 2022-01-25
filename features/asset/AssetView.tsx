@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
+import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { TabSwitcher } from 'components/TabSwitcher'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
@@ -35,17 +36,20 @@ function TabContent(props: {
   return (
     <WithErrorHandler error={[productCardsDataError]}>
       <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
-        {([productCardsData]) => (
-          <Grid columns={[1, 2, 3]}>
-            {props.ilks
-              .map((ilk) => productCardsData.find((card) => card.ilk === ilk))
-              .filter(
-                (cardData: ProductCardData | undefined): cardData is ProductCardData =>
-                  cardData !== null,
-              )
-              .map((cardData) => props.renderProductCard({ cardData }))}
-          </Grid>
-        )}
+        {([productCardsData]) => {
+          const filteredCards = props.ilks
+            .map((ilk) => productCardsData.find((card) => card.ilk === ilk))
+            .filter(
+              (cardData: ProductCardData | undefined): cardData is ProductCardData =>
+                cardData !== null,
+            )
+
+          return (
+            <ProductCardsWrapper cardsNumber={filteredCards.length}>
+              {filteredCards.map((cardData) => props.renderProductCard({ cardData }))}
+            </ProductCardsWrapper>
+          )
+        }}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
@@ -60,13 +64,17 @@ function LpCards() {
   return (
     <WithErrorHandler error={[productCardsDataError]}>
       <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
-        {([productCardsData]) => (
-          <Grid sx={{ margin: '0 auto' }} columns={[1, 2, 3]}>
-            {uniLpProductCards(productCardsData).map((cardData) => (
-              <ProductCardBorrow cardData={cardData} />
-            ))}
-          </Grid>
-        )}
+        {([productCardsData]) => {
+          const uniLpCards = uniLpProductCards(productCardsData)
+
+          return (
+            <ProductCardsWrapper cardsNumber={uniLpCards.length}>
+              {uniLpCards.map((cardData) => (
+                <ProductCardBorrow cardData={cardData} />
+              ))}
+            </ProductCardsWrapper>
+          )
+        }}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

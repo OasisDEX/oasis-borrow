@@ -9,6 +9,7 @@ import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
+import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
@@ -40,29 +41,32 @@ function TabContent(props: {
             </Flex>
           }
         >
-          {([productCardsData]) => (
-            <>
-              <Text
-                variant="paragraph2"
-                sx={{
-                  mt: 4,
-                  color: 'lavender',
-                  maxWidth: 617,
-                  textAlign: 'center',
-                  mb: 4,
-                  ...fadeInAnimation,
-                }}
-              >
-                {props.paraText}
-              </Text>
-              <Grid columns={[1, 2, 3]} sx={fadeInAnimation}>
-                {landingPageCardsData({
-                  productCardsData,
-                  product: props.type,
-                }).map((cardData) => props.renderProductCard({ cardData }))}
-              </Grid>
-            </>
-          )}
+          {([productCardsData]) => {
+            const landingCards = landingPageCardsData({
+              productCardsData,
+              product: props.type,
+            })
+            return (
+              <>
+                <Text
+                  variant="paragraph2"
+                  sx={{
+                    mt: 4,
+                    color: 'lavender',
+                    maxWidth: 617,
+                    textAlign: 'center',
+                    mb: 4,
+                    ...fadeInAnimation,
+                  }}
+                >
+                  {props.paraText}
+                </Text>
+                <ProductCardsWrapper cardsNumber={landingCards.length}>
+                  {landingCards.map((cardData) => props.renderProductCard({ cardData }))}
+                </ProductCardsWrapper>
+              </>
+            )
+          }}
         </WithLoadingIndicator>
       </WithErrorHandler>
     </Flex>
