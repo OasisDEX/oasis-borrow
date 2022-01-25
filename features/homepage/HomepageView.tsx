@@ -55,7 +55,7 @@ function TabContent(props: {
                     color: 'lavender',
                     maxWidth: 617,
                     textAlign: 'center',
-                    mb: 4,
+                    mb: 5,
                     ...fadeInAnimation,
                   }}
                 >
