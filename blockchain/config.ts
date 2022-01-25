@@ -258,8 +258,8 @@ const goerli: NetworkConfig = {
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
-  automationBot: contractDesc(automationBot, '0xF179347e7eFBc9e41aB8A0eF70779E4BA69DbBf7'),
-  serviceRegistry: '0x2a49Eae5CCa3f050eBEC729Cf90CC910fADAf7A2', // TODO: add address
+  automationBot: contractDesc(automationBot, '0x4Feb6D454dB228Aa311e4Ca759d2b0c4841A66Fb'),
+  serviceRegistry: '0x5a33eaA4521ad09Bfe571D2d8Bf9693f0840D671',
   // Currently this is not supported on Goerli - no deployed contract
   defaultExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
   lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),

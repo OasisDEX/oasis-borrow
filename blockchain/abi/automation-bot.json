@@ -46,7 +46,6 @@
     "inputs": [
       { "internalType": "uint256", "name": "cdpId", "type": "uint256" },
       { "internalType": "uint256", "name": "triggerType", "type": "uint256" },
-      { "internalType": "address", "name": "_serviceRegistry", "type": "address" },
       { "internalType": "bytes", "name": "triggerData", "type": "bytes" }
     ],
     "name": "addRecord",
@@ -58,7 +57,6 @@
     "inputs": [
       { "internalType": "uint256", "name": "cdpId", "type": "uint256" },
       { "internalType": "uint256", "name": "triggerType", "type": "uint256" },
-      { "internalType": "address", "name": "_serviceRegistry", "type": "address" },
       { "internalType": "bytes", "name": "triggerData", "type": "bytes" }
     ],
     "name": "addTrigger",
@@ -87,10 +85,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "triggerType", "type": "uint256" },
-      { "internalType": "address", "name": "_serviceRegistry", "type": "address" }
-    ],
+    "inputs": [{ "internalType": "uint256", "name": "triggerType", "type": "uint256" }],
     "name": "getCommandAddress",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
@@ -122,7 +117,6 @@
       { "internalType": "uint256", "name": "cdpId", "type": "uint256" },
       { "internalType": "uint256", "name": "triggerId", "type": "uint256" },
       { "internalType": "address", "name": "commandAddress", "type": "address" },
-      { "internalType": "address", "name": "_serviceRegistry", "type": "address" },
       { "internalType": "bytes", "name": "triggerData", "type": "bytes" }
     ],
     "name": "removeRecord",
@@ -136,7 +130,6 @@
       { "internalType": "uint256", "name": "triggerId", "type": "uint256" },
       { "internalType": "address", "name": "commandAddress", "type": "address" },
       { "internalType": "bool", "name": "removeAllowence", "type": "bool" },
-      { "internalType": "address", "name": "_serviceRegistry", "type": "address" },
       { "internalType": "bytes", "name": "triggerData", "type": "bytes" }
     ],
     "name": "removeTrigger",
