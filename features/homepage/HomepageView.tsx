@@ -125,7 +125,12 @@ export function HomepageView() {
     >
       <Hero
         isConnected={context?.status === 'connected'}
-        sx={{ ...slideInAnimation, position: 'relative' }}
+        sx={{
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: '0.7s',
+          animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
+        }}
       />
 
       <Pills sx={{ mb: 5 }} />
