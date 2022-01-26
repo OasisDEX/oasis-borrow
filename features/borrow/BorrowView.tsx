@@ -24,7 +24,7 @@ export function BorrowView() {
       sx={{
         flex: 1,
         position: 'relative',
-        mb: ['123px', '343px'],
+        mb: ['123px', '187px'],
       }}
     >
       <ProductHeader

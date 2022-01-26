@@ -105,7 +105,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
           </AppLink>
         </Box>
       </Flex>
-      <Grid sx={{ flex: 1, position: 'relative', mt: 5 }}>
+      <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
         {content.slug === 'lp-token' ? (
           <LpCards />
         ) : (

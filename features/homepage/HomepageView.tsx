@@ -31,7 +31,7 @@ function TabContent(props: {
   )
 
   return (
-    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center' }}>
+    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
       <WithErrorHandler error={[productCardsDataError]}>
         <WithLoadingIndicator
           value={[productCardsDataValue]}
@@ -322,7 +322,7 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Box mb={5} mt={7}>
+      <Box mb={5} mt={7} sx={{ justifyContent: 'center' }}>
         <NewsletterSection />
       </Box>
     </Box>

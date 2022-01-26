@@ -229,8 +229,11 @@ const oasisBaseTheme = {
   },
   layout: {
     container: {
-      maxWidth: '1232px',
+      maxWidth: '1200px',
       px: 3,
+      '@media screen and (min-width: 1232px)': {
+        px: 0,
+      },
     },
     appContainer: {
       variant: 'layout.container',
@@ -244,7 +247,6 @@ const oasisBaseTheme = {
     },
     landingContainer: {
       variant: 'layout.appContainer',
-      maxWidth: '1200px',
     },
     termsContainer: {
       variant: 'layout.appContainer',
