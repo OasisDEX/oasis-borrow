@@ -82,7 +82,7 @@ const NarrowTabSelector = (props: {
                 borderRadius: 'medium',
                 cursor: 'pointer',
                 background: 'white',
-                fontWeight: '600',
+                fontWeight: 'semiBold',
               }}
               {...innerProps}
             >
@@ -138,8 +138,6 @@ export function TabSwitcher(props: {
           {tabContent}
         </Box>
       ))}
-      <Box></Box>
-      {/*{props.tabs[parseInt(selectedTab)].tabContent}*/}
     </Flex>
   )
 }
