@@ -68,6 +68,7 @@ describe('createProductCardsData$', () => {
       name: 'Wrapped Bitcoin',
       stabilityFee: new BigNumber(0.045),
       token: 'WBTC',
+      isFull: true,
     })
   })
 
@@ -89,6 +90,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: true,
       },
       {
         token: ethA.token,
@@ -100,6 +102,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: true,
       },
       {
         token: linkA.token,
@@ -111,6 +114,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/link.gif',
         background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
         name: 'Chainlink',
+        isFull: true,
       },
     ])
   })
@@ -136,6 +140,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: true,
       },
       {
         token: ethA.token,
@@ -147,6 +152,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: true,
       },
       {
         token: linkA.token,
@@ -158,6 +164,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/link.gif',
         background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
         name: 'Chainlink',
+        isFull: true,
       },
     ])
   })
@@ -183,6 +190,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: true,
       },
       {
         token: wsteth.token,
@@ -194,6 +202,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wstETH.gif',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
         name: 'WSTETH',
+        isFull: true,
       },
     ])
   })
@@ -219,6 +228,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: true,
       },
       {
         token: ethA.token,
@@ -230,6 +240,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: true,
       },
       {
         token: linkA.token,
@@ -241,6 +252,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/link.gif',
         background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
         name: 'Chainlink',
+        isFull: true,
       },
     ])
   })
@@ -265,6 +277,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: true,
       },
       {
         token: renbtc.token,
@@ -276,6 +289,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/renBTC.gif',
         background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
         name: 'renBTC',
+        isFull: true,
       },
     ])
   })
