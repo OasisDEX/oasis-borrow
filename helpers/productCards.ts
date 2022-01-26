@@ -39,7 +39,7 @@ export const productCardsConfig = {
       { name: 'MATIC', icon: 'matic_circle' },
       { name: 'GUSD', icon: 'gusd_circle' },
     ],
-    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+    featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
   },
   multiply: {
     cardsFilters: [
@@ -53,12 +53,12 @@ export const productCardsConfig = {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
     ],
-    featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+    featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
   },
   landing: {
     featuredCards: {
-      multiply: ['ETH-A', 'WBTC-A', 'LINK-A'],
-      borrow: ['ETH-A', 'WBTC-A', 'LINK-A'],
+      borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'LINK-A'],
       earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
     },
   },
