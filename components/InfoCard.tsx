@@ -40,13 +40,11 @@ export function InfoCard({
           {subtitle}
         </Text>
         {links.map(({ href, text }, i) => (
-          <AppLink
-            key={i}
-            href={href}
-            sx={{ pb: 3, fontSize: 3, color: 'primary', display: 'block' }}
-          >
-            {text} -&gt;
-          </AppLink>
+          <Box sx={{ pb: 3 }}>
+            <AppLink key={i} href={href} sx={{ fontSize: 3, color: 'primary' }}>
+              {text} -&gt;
+            </AppLink>
+          </Box>
         ))}
       </Box>
     </Card>
