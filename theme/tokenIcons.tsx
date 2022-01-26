@@ -27,6 +27,17 @@ export function InjectTokenIconsDefs() {
           <stop offset="1" stopColor="#2EBAC6" />
         </linearGradient>
         <linearGradient
+          id="paint0_linear_dai"
+          x1="12"
+          y1="-0.833333"
+          x2="12"
+          y2="24.1"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#F9A606" />
+          <stop offset="1" stopColor="#FBCC5F" />
+        </linearGradient>
+        <linearGradient
           id="bal_paint0_linear"
           x1="13.0055"
           y1="2.99988"
