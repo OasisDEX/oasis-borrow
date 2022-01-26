@@ -234,7 +234,7 @@ export function HomepageView() {
                 text: t('landing.info-cards.support.faq'),
               },
               {
-                href: 'https://discord.gg/Kc2bBB59GC',
+                href: 'https://discord.gg/oasisapp',
                 text: t('landing.info-cards.support.discord'),
               },
               {
