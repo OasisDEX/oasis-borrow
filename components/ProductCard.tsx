@@ -93,9 +93,9 @@ export function ProductCard({
         background,
         border: 'unset',
         p: 4,
-        maxWidth: '378px',
         minHeight: '608px',
         position: 'relative',
+        width: '100%',
         ...fadeInAnimation,
       }}
       onMouseEnter={handleMouseEnter}

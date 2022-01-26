@@ -198,7 +198,7 @@ export function Footer() {
             </Grid>
           ))}
           {assetLpEnabled && (
-            <Box sx={{ display: ['none', 'none', 'flex'] }}>
+            <Box sx={{ display: ['none', 'none', 'flex'], width: '100%' }}>
               <NewsletterSection small />
             </Box>
           )}
