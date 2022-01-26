@@ -10,7 +10,7 @@ import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { ProductCardData, uniLpProductCards } from 'helpers/productCards'
+import { ProductCardData } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -54,36 +54,11 @@ function TabContent(props: {
     </WithErrorHandler>
   )
 }
-
-function LpCards() {
-  const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
-    productCardsData$,
-  )
-
-  return (
-    <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
-        {([productCardsData]) => {
-          const uniLpCards = uniLpProductCards(productCardsData)
-
-          return (
-            <ProductCardsWrapper>
-              {uniLpCards.map((cardData) => (
-                <ProductCardBorrow cardData={cardData} />
-              ))}
-            </ProductCardsWrapper>
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  )
-}
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
 
   return (
-    <Grid sx={{ zIndex: 1, width: '100%' }}>
+    <Grid sx={{ zIndex: 1, width: '100%', mt: 4 }}>
       <Flex sx={{ justifyContent: 'center', alignItems: 'baseline' }}>
         <Icon name={content.icon} size="44px" sx={{ mr: 2, alignSelf: 'center' }} />
         <Heading variant="header1">{content.header}</Heading>
@@ -92,7 +67,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Heading>
       </Flex>
       <Flex sx={{ justifyContent: 'center' }}>
-        <Box sx={{ textAlign: 'center', maxWidth: 900 }}>
+        <Box sx={{ textAlign: 'center', maxWidth: 980 }}>
           <Text sx={{ display: 'inline', color: 'text.subtitle' }} variant="paragraph1">
             {t(content.descriptionKey)}
           </Text>
@@ -106,41 +81,37 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Box>
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
-        {content.slug === 'lp-token' ? (
-          <LpCards />
-        ) : (
-          <TabSwitcher
-            narrowTabsSx={{
-              display: ['block', 'none'],
-              maxWidth: '343px',
-              width: '100%',
-              mb: 4,
-            }}
-            wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
-            tabs={[
-              {
-                tabLabel: t('landing.tabs.multiply.tabLabel'),
-                tabContent: (
-                  <TabContent
-                    ilks={content.ilks}
-                    type="multiply"
-                    renderProductCard={ProductCardMultiply}
-                  />
-                ),
-              },
-              {
-                tabLabel: t('landing.tabs.borrow.tabLabel'),
-                tabContent: (
-                  <TabContent
-                    ilks={content.ilks}
-                    type="borrow"
-                    renderProductCard={ProductCardBorrow}
-                  />
-                ),
-              },
-            ]}
-          />
-        )}
+        <TabSwitcher
+          narrowTabsSx={{
+            display: ['block', 'none'],
+            maxWidth: '343px',
+            width: '100%',
+            mb: 4,
+          }}
+          wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
+          tabs={[
+            {
+              tabLabel: t('landing.tabs.multiply.tabLabel'),
+              tabContent: (
+                <TabContent
+                  ilks={content.ilks ? content.ilks : content.multiplyIlks}
+                  type="multiply"
+                  renderProductCard={ProductCardMultiply}
+                />
+              ),
+            },
+            {
+              tabLabel: t('landing.tabs.borrow.tabLabel'),
+              tabContent: (
+                <TabContent
+                  ilks={content.ilks ? content.ilks : content.borrowIlks}
+                  type="borrow"
+                  renderProductCard={ProductCardBorrow}
+                />
+              ),
+            },
+          ]}
+        />
       </Grid>
     </Grid>
   )

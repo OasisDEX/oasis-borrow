@@ -88,7 +88,7 @@ function Pill(props: PillProps) {
         justifyContent: 'center',
         alignItems: 'center',
         minWidth: 140,
-        background: 'rgba(255, 255, 255, 0.67)',
+        background: 'rgba(255, 255, 255, 0.5)',
         mx: 2,
         my: 2,
         borderRadius: 'round',
@@ -96,6 +96,12 @@ function Pill(props: PillProps) {
         fontWeight: 'semiBold',
         color: 'text.subtitle',
         py: 2,
+        border: '1px solid',
+        borderColor: 'border',
+        transition: 'background 0.2s ease-in-out',
+        '&:hover': {
+          background: 'rgba(255, 255, 255, 0.8)',
+        },
       }}
     >
       <Icon name={props.icon} size="26px" sx={{ mr: 2 }} />
@@ -133,7 +139,7 @@ export function HomepageView() {
         }}
       />
 
-      <Pills sx={{ mb: 5 }} />
+      <Pills sx={{ mb: 6 }} />
       <Box
         sx={{
           ...slideInAnimation,
