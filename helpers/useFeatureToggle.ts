@@ -7,7 +7,7 @@ type Features = 'TestFeature' | 'AnotherTestFeature' | 'AssetLandingPages'
 const configuredFeatures: Record<Features, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  AssetLandingPages: false,
+  AssetLandingPages: true,
   // your feature here....
 }
 

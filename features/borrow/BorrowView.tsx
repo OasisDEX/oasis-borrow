@@ -51,7 +51,7 @@ export function BorrowView() {
                 const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
 
                 return (
-                  <ProductCardsWrapper cardsNumber={filteredCards.length}>
+                  <ProductCardsWrapper>
                     {filteredCards.map((cardData) => (
                       <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
                     ))}

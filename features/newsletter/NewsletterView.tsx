@@ -112,6 +112,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           border: 'light',
           borderColor: 'newsletterInputBorder',
           height: small ? '38px' : 'initial',
+          justifyContent: 'space-between',
           px: 2,
         }}
       >
@@ -122,7 +123,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             borderRadius: 'inherit',
             border: 'none',
             px: 3,
-            flex: 1,
+            width: '70%',
             fontSize: small ? 2 : 3,
             lineHeight: 1.2,
           }}
@@ -159,7 +160,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           {stage === 'inProgress' ? (
             <AppSpinner sx={{ color: 'primary' }} variant="styles.spinner.large" />
           ) : (
-            <Flex sx={{ alignItems: 'center' }}>
+            <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
               <Icon
                 name="arrow_right"
