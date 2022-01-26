@@ -102,7 +102,9 @@ export function TabSwitcher(props: {
     >
       <NarrowTabSelector />
       <WideTabSelector />
-      {props.tabs[parseInt(selectedTab)].tabContent}
+      <React.Fragment key={selectedTab}>
+        {props.tabs[parseInt(selectedTab)].tabContent}
+      </React.Fragment>
     </Flex>
   )
 }
