@@ -40,7 +40,7 @@ export const productCardsConfig = {
       { name: 'GUSD', icon: 'gusd_circle' },
     ],
     featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
-    inactiveIlks: ['ETH-A'] as string[],
+    inactiveIlks: [] as string[],
   },
   multiply: {
     cardsFilters: [
