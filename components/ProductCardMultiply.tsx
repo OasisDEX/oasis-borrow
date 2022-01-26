@@ -45,6 +45,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       }}
       background={cardData.background}
       inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
+      isFull={cardData.isFull}
     />
   )
 }

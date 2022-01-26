@@ -12,6 +12,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { zero } from './zero'
 
 export interface ProductCardData {
   token: string
@@ -23,6 +24,7 @@ export interface ProductCardData {
   bannerGif: string
   background: string
   name: string
+  isFull: boolean
 }
 
 export const productCardsConfig = {
@@ -208,6 +210,7 @@ export function createProductCardsData$(
                 bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.backgroundAssetFeature,
                 name: tokenMeta.name,
+                isFull: ilk.ilkDebtAvailable.gt(zero),
               }),
             ),
           )

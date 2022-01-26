@@ -170,6 +170,7 @@
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
+  "full": "Full",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
     "auction_started": "Auction started, <0>{{collateralAmount}} {{token}}</0> taken to cover <0>{{daiAmount}} Dai</0>",
