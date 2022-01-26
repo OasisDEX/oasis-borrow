@@ -839,7 +839,7 @@
       "link": "Learn more about Earn ->"
     }
   },
-  "learn-more": "Learn more",
+  "learn-more-about": "Learn more about",
   "assets": {
     "eth": {
       "description": "ETH facilitates operations on the Ethereum network. It is used by network participants to execute their requested operations on it. We can think about it as the \"fuel\" of the network. You can maximize your ETH utility by Multiplying your exposure or Borrowing against your ETH.",
