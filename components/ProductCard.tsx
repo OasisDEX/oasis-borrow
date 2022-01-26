@@ -157,6 +157,7 @@ export function ProductCard({
         position: 'relative',
         width: '100%',
         minHeight: '608px',
+        height: '100%',
       }}
     >
       <Card

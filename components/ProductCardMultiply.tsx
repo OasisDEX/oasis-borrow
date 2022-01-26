@@ -10,7 +10,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
+  const maxMultiple = one.plus(one.div(cardData.liquidationRatio.minus(one)))
 
   return (
     <ProductCard

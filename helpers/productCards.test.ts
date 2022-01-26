@@ -19,6 +19,20 @@ const wbtcA = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
+const wbtcB = mockIlkData({
+  token: 'WBTC',
+  ilk: 'WBTC-B',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
+const wbtcC = mockIlkData({
+  token: 'WBTC',
+  ilk: 'WBTC-C',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
 const renbtc = mockIlkData({
   token: 'RENBTC',
   ilk: 'RENBTC-A',
@@ -29,6 +43,13 @@ const renbtc = mockIlkData({
 const ethA = mockIlkData({
   token: 'ETH',
   ilk: 'ETH-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
+const ethB = mockIlkData({
+  token: 'ETH',
+  ilk: 'ETH-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
 })()
@@ -74,17 +95,17 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
 
     expect(landingPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcB.token,
+        ilk: wbtcB.ilk,
+        liquidationRatio: wbtcB.liquidationRatio,
+        stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
         bannerGif: '/static/img/tokens/wbtc.gif',
@@ -93,10 +114,10 @@ describe('createProductCardsData$', () => {
         isFull: true,
       },
       {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
+        token: ethB.token,
+        ilk: ethB.ilk,
+        liquidationRatio: ethB.liquidationRatio,
+        stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
         bannerGif: '/static/img/tokens/eth.gif',
@@ -121,7 +142,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -131,10 +152,10 @@ describe('createProductCardsData$', () => {
 
     expect(multiplyPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcB.token,
+        ilk: wbtcB.ilk,
+        liquidationRatio: wbtcB.liquidationRatio,
+        stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
         bannerGif: '/static/img/tokens/wbtc.gif',
@@ -143,10 +164,10 @@ describe('createProductCardsData$', () => {
         isFull: true,
       },
       {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
+        token: ethB.token,
+        ilk: ethB.ilk,
+        liquidationRatio: ethB.liquidationRatio,
+        stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
         bannerGif: '/static/img/tokens/eth.gif',
@@ -209,7 +230,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct borrow page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -219,10 +240,10 @@ describe('createProductCardsData$', () => {
 
     expect(borrowPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcC.token,
+        ilk: wbtcC.ilk,
+        liquidationRatio: wbtcC.liquidationRatio,
+        stabilityFee: wbtcC.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
         bannerGif: '/static/img/tokens/wbtc.gif',
@@ -231,10 +252,10 @@ describe('createProductCardsData$', () => {
         isFull: true,
       },
       {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
+        token: ethC.token,
+        ilk: ethC.ilk,
+        liquidationRatio: ethC.liquidationRatio,
+        stabilityFee: ethC.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
         bannerGif: '/static/img/tokens/eth.gif',
