@@ -29,7 +29,7 @@ const oasisBaseTheme = {
 
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
-    border: '#DDDEE6',
+    border: '#EAEAEA',
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
