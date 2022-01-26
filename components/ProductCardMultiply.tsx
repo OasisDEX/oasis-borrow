@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatPercent } from '../helpers/formatters/format'
-import { cardDescriptionsKeys, ProductCardData } from '../helpers/productCards'
+import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
@@ -44,6 +44,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
         text: t('nav.multiply'),
       }}
       background={cardData.background}
+      inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
     />
   )
 }

@@ -40,6 +40,7 @@ export const productCardsConfig = {
       { name: 'GUSD', icon: 'gusd_circle' },
     ],
     featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+    inactiveIlks: [] as string[],
   },
   multiply: {
     cardsFilters: [
@@ -54,6 +55,7 @@ export const productCardsConfig = {
       { name: 'MATIC', icon: 'matic_circle' },
     ],
     featuredCards: ['ETH-A', 'WBTC-A', 'LINK-A'],
+    inactiveIlks: [] as string[],
   },
   landing: {
     featuredCards: {
