@@ -4,6 +4,7 @@ import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { WithChildren } from '../helpers/types'
 import { AppLink } from './Links'
+import { Icon } from '@makerdao/dai-ui-icons'
 
 function CardContent({
   title,
@@ -70,8 +71,23 @@ export function InfoCard(props: InfoCardProps) {
           sx={{ display: 'block', p: 4, cursor: 'pointer' }}
         >
           <CardContent title={props.title} subtitle={props.subtitle}>
-            <Box sx={{ pb: 3, fontSize: 3, color: 'primary', fontWeight: 'semiBold' }}>
-              {props.links[0].text} -&gt;
+            <Box
+              sx={{
+                pb: 3,
+                fontSize: 3,
+                color: 'primary',
+                fontWeight: 'semiBold',
+                '&:hover svg': {
+                  transform: 'translateX(8px)',
+                },
+              }}
+            >
+              {props.links[0].text}
+              <Icon
+                name="arrow_right"
+                size="15px"
+                sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
+              />
             </Box>
           </CardContent>
         </AppLink>
@@ -83,8 +99,22 @@ export function InfoCard(props: InfoCardProps) {
         <CardContent title={props.title} subtitle={props.subtitle}>
           {props.links.map(({ href, text }) => (
             <Box sx={{ pb: 3 }} key={href}>
-              <AppLink href={href} sx={{ fontSize: 3, color: 'primary' }}>
-                {text} -&gt;
+              <AppLink
+                href={href}
+                sx={{
+                  fontSize: 3,
+                  color: 'primary',
+                  '&:hover svg': {
+                    transform: 'translateX(8px)',
+                  },
+                }}
+              >
+                {text}
+                <Icon
+                  name="arrow_right"
+                  size="15px"
+                  sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
+                />
               </AppLink>
             </Box>
           ))}
