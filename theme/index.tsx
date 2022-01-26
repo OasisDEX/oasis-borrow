@@ -637,7 +637,6 @@ const oasisBaseTheme = {
   links: {
     unStyled: {
       all: 'unset',
-      cursor: 'pointer',
     },
     inText: {
       textDecoration: 'none',

@@ -64,7 +64,11 @@ export function InfoCard(props: InfoCardProps) {
   if (props.links.length === 1) {
     return (
       <CardWrapper {...props} sx={{ ...props.sx, p: 0 }}>
-        <AppLink href={props.links[0].href} variant="unStyled" sx={{ display: 'block', p: 4 }}>
+        <AppLink
+          href={props.links[0].href}
+          variant="unStyled"
+          sx={{ display: 'block', p: 4, cursor: 'pointer' }}
+        >
           <CardContent title={props.title} subtitle={props.subtitle}>
             <Box sx={{ pb: 3, fontSize: 3, color: 'primary', fontWeight: 'semiBold' }}>
               {props.links[0].text} -&gt;
