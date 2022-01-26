@@ -1,9 +1,9 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
-import { AppLink } from './Links'
 import { WithChildren } from '../helpers/types'
+import { AppLink } from './Links'
 
 function CardContent({
   title,
