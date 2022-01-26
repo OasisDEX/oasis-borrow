@@ -25,6 +25,8 @@ export interface StopLossTriggerData {
 }
 
 export function extractSLData(data: TriggersData): StopLossTriggerData {
+  console.log('data inside extractSLData')
+  console.log(data)
   const doesStopLossExist = data.triggers ? data.triggers.length > 0 : false
   if (doesStopLossExist) {
     const stopLossRecord = last(data.triggers)

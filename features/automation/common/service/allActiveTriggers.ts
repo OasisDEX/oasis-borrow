@@ -21,20 +21,17 @@ export async function getAllActiveTriggers(
   const data = await client.request(query, { vaultId: vaultId })
   console.log("data returned from gql")
   console.log(data)
-  let returnedRecords = [] as TriggerRecord[]
-  returnedRecords = data.allActiveTriggers.nodes.map(
+  
+  const returnedRecords = data.allActiveTriggers.nodes.map(
     (record: { triggerId: number; commandAddress: string; triggerData: string }) => {
-      console.log('returned records')
-      console.log(returnedRecords)
-      console.log('record')
-      console.log(record)
-      returnedRecords.push({
+      return {
         triggerId: record.triggerId,
         commandAddress: record.commandAddress,
         executionParams: record.triggerData,
-      })
+      }
     },
   )
-
-  return returnedRecords
+  console.log('returned records after map')
+  console.log(returnedRecords)
+    return returnedRecords
 }

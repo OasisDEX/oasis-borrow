@@ -17,6 +17,8 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
     vaultId.toFixed(0),
   )
 
+  console.log('activeTriggersForVault in loadTriggerDataFromCache')
+  console.log(activeTriggersForVault)
   return {
     isAutomationEnabled: activeTriggersForVault.length > 0,
     triggers: activeTriggersForVault,
