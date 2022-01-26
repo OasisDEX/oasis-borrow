@@ -1,10 +1,10 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { Box, Card, Heading, SxStyleProp, Text } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { WithChildren } from '../helpers/types'
 import { AppLink } from './Links'
-import { Icon } from '@makerdao/dai-ui-icons'
 
 function CardContent({
   title,
@@ -44,6 +44,7 @@ function CardWrapper({
         backgroundImage: `url(${staticFilesRuntimeUrl(backgroundImage)}), ${backgroundGradient}`,
         backgroundPosition: 'bottom 0px right 0px',
         backgroundRepeat: 'no-repeat',
+        // backgroundSize: '50%',
         minHeight: ['414px', 'unset'],
       }}
     >
