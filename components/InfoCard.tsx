@@ -44,7 +44,7 @@ function CardWrapper({
         backgroundImage: `url(${staticFilesRuntimeUrl(backgroundImage)}), ${backgroundGradient}`,
         backgroundPosition: 'bottom 0px right 0px',
         backgroundRepeat: 'no-repeat',
-        // backgroundSize: '50%',
+        backgroundSize: '50%, cover',
         minHeight: ['414px', 'unset'],
       }}
     >
