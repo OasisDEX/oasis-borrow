@@ -146,6 +146,7 @@ export function HomepageView() {
           position: 'relative',
           animationDuration: '0.3s',
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
+          width: '100%',
         }}
       >
         <TabSwitcher
@@ -328,9 +329,9 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Box mb={5} mt={7} sx={{ justifyContent: 'center' }}>
+      <Flex mb={5} mt={7} sx={{ justifyContent: 'center' }}>
         <NewsletterSection />
-      </Box>
+      </Flex>
     </Box>
   )
 }

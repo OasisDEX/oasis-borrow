@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
-import { cardDescriptionsKeys, ProductCardData } from '../helpers/productCards'
+import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
@@ -71,6 +71,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       }}
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
       background={cardData.background}
+      inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}
     />
   )
 }

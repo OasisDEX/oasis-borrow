@@ -133,6 +133,7 @@ export function TabSwitcher(props: {
           sx={{
             ...slideInAnimation,
             display: tabLabel === props.tabs[parseInt(selectedTab)].tabLabel ? 'block' : 'none',
+            width: '100%',
           }}
         >
           {tabContent}
