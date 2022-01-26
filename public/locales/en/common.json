@@ -849,10 +849,6 @@
       "description": "Bitcoin itself cannot be used directly, but needs to be moved onto the Ethereum Blockchain to use it in DeFi. Both wrapped Bitcoin (wbtc) and renBTC deliver the power of Bitcoin with the flexibility of an ERC20 token. Get the most of your Bitcoin Multiplying your exposure or Borrowing.",
       "link": "https://wbtc.network/"
     },
-    "dai": {
-      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
-      "link": "https://wbtc.network/"
-    },
     "usdc": {
       "description": "USDC is a 1:1 USD-backed centralized stablecoin, fully regulated. USDC is natively supported on multiple layer 1 blockchains including Ethereum as an ERC-20 token, Algorand as an ASA token, Solana as a SPL token, TRON as an TRC-20 token, and Stellar as a native asset. It is operated by Circle.",
       "link": "https://www.circle.com/en/about-circle"
