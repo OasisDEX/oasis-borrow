@@ -1,26 +1,31 @@
 import React, { ReactNode } from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
-import { slideInAnimation } from '../theme/animations'
+import { fadeInAnimationDelay, slideInAnimation } from '../theme/animations'
 
 interface ProductCardWrapperProps {
-  cardsNumber: number
-  children: ReactNode
+  children: Array<ReactNode>
 }
 
-export function ProductCardsWrapper({ cardsNumber, children }: ProductCardWrapperProps) {
+export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
+  const productCards = children
   return (
     <Grid
-      columns={cardsNumber < 2 ? 1 : [1, 2, 3]}
+      columns={productCards.length < 2 ? 1 : [1, 2, 3]}
       sx={{
         justifyItems: 'center',
         ...slideInAnimation,
-        width: ['100%', cardsNumber < 2 ? '378px' : '100%'],
+        position: 'relative',
+        width: ['100%', productCards.length < 2 ? '378px' : '100%'],
         gap: 4,
         margin: '0 auto',
       }}
     >
-      {children}
+      {React.Children.toArray(
+        productCards.map((productCard, index) => (
+          <Box sx={{ ...fadeInAnimationDelay(index === 0 ? 0 : 0.5) }}>{productCard}</Box>
+        )),
+      )}
     </Grid>
   )
 }

@@ -45,7 +45,7 @@ function TabContent(props: {
             )
 
           return (
-            <ProductCardsWrapper cardsNumber={filteredCards.length}>
+            <ProductCardsWrapper>
               {filteredCards.map((cardData) => props.renderProductCard({ cardData }))}
             </ProductCardsWrapper>
           )
