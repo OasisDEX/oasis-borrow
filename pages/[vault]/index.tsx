@@ -6,7 +6,9 @@ import { TabSwitchLayout, VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderControl'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { AdjustSlFormControl } from 'features/automation/controls/AdjustSlFormControl'
+import { CancelSlFormControl } from 'features/automation/controls/CancelSlFormControl'
 import { ProtectionDetailsControl } from 'features/automation/controls/ProtectionDetailsControl'
+import { ProtectionFormControl } from 'features/automation/controls/ProtectionFormControl'
 import { GuniTempBanner } from 'features/banners/guniTempBanner'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
@@ -42,30 +44,24 @@ export default function Vault({ id }: { id: string }) {
             <>
               <VaultBannersView id={vaultId} />
               <GuniTempBanner id={vaultId} />
-
-              <TabSwitcher
-                tabs={[{
-                  tabLabel:'Overview',
-                  tabContent:(<GeneralManageVaultView id={vaultId} />)
-                },{
-                  tabLabel:'History',
-                  tabContent:(<h1>TODO History</h1>)
-                },{
-                  tabLabel:'Protection',
-                  tabContent:(<DefaultVaultLayout
-                    detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                    editForm={<AdjustSlFormControl id={vaultId} />}
-                    headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
-                  />)
-                }]}
-                narrowTabsSx={{
-                  display: ['block', 'none'],
-                  maxWidth: '343px',
-                  width: '100%',
-                  mb: 4,
-                }}
-                wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
-              />
+              {/* TODO Replace with TabSwitcher ~ŁW */}
+              <TabSwitchLayout
+              defaultMode={VaultViewMode.Overview}
+              overViewControl={<GeneralManageVaultView id={vaultId} />}
+              historyControl={<h1>TODO History</h1>}
+              protectionControl={
+                <DefaultVaultLayout
+                  detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
+                  editForm={
+                    <ProtectionFormControl
+                      adjustForm={<AdjustSlFormControl id={vaultId} />}
+                      cancelForm={<CancelSlFormControl id={vaultId} />}
+                    />
+                  }
+                  headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
+                />
+              }
+            />
             </>
           ) : (
             <Box sx={{ position: 'relative', zIndex: 1 }}>
