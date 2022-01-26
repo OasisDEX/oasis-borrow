@@ -152,23 +152,6 @@ export function HomepageView() {
         <TabSwitcher
           tabs={[
             {
-              tabLabel: t('landing.tabs.borrow.tabLabel'),
-              tabContent: (
-                <TabContent
-                  paraText={
-                    <>
-                      <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
-                      <AppLink href="/borrow" variant="inText">
-                        {t('landing.tabs.borrow.tabParaLinkContent')}
-                      </AppLink>
-                    </>
-                  }
-                  type="borrow"
-                  renderProductCard={ProductCardBorrow}
-                />
-              ),
-            },
-            {
               tabLabel: t('landing.tabs.multiply.tabLabel'),
               tabContent: (
                 <TabContent
@@ -182,6 +165,23 @@ export function HomepageView() {
                   }
                   type="multiply"
                   renderProductCard={ProductCardMultiply}
+                />
+              ),
+            },
+            {
+              tabLabel: t('landing.tabs.borrow.tabLabel'),
+              tabContent: (
+                <TabContent
+                  paraText={
+                    <>
+                      <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                      <AppLink href="/borrow" variant="inText">
+                        {t('landing.tabs.borrow.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  type="borrow"
+                  renderProductCard={ProductCardBorrow}
                 />
               ),
             },
@@ -241,7 +241,7 @@ export function HomepageView() {
                 text: t('landing.info-cards.support.faq'),
               },
               {
-                href: 'https://discord.gg/Kc2bBB59GC',
+                href: 'https://discord.gg/oasisapp',
                 text: t('landing.info-cards.support.discord'),
               },
               {

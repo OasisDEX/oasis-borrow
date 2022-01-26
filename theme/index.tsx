@@ -635,6 +635,9 @@ const oasisBaseTheme = {
     },
   },
   links: {
+    unStyled: {
+      all: 'unset',
+    },
     inText: {
       textDecoration: 'none',
       color: '#585CF5',
