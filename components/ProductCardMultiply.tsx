@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { formatPercent } from '../helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
@@ -10,7 +10,10 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const maxMultiple = one.plus(one.div(cardData.liquidationRatio.minus(one)))
+  const isGuniToken = cardData.token === 'GUNIV3DAIUSDC1' || cardData.token === 'GUNIV3DAIUSDC2'
+  const maxMultiple = !isGuniToken
+    ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
+    : one.div(cardData.liquidationRatio.minus(one))
 
   return (
     <ProductCard
@@ -23,13 +26,18 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: '100',
-          token: cardData.token,
+          value: isGuniToken ? '100,000' : '100',
+          token: isGuniToken ? 'DAI' : cardData.token,
         }),
-        description: t(`product-card-banner.multiply.description`, {
-          value: maxMultiple.times(100).toFixed(2),
-          token: cardData.token,
-        }),
+        description: !isGuniToken
+          ? t(`product-card-banner.multiply.description`, {
+              value: formatCryptoBalance(maxMultiple.times(100)),
+              token: cardData.token,
+            })
+          : t(`product-card-banner.guni.description`, {
+              value: formatCryptoBalance(maxMultiple.times(100000)),
+              token: cardData.token,
+            }),
       }}
       leftSlot={{
         title: t('system.max-multiple'),

@@ -83,8 +83,8 @@ export const cardDescriptionsKeys: Record<string, string> = {
   'WSTETH-A': 'borrow-and-multiply',
   'RENBTC-A': 'borrow-and-multiply',
 
-  'GUNIV3DAIUSDC1-A': 'lp-tokens',
-  'GUNIV3DAIUSDC2-A': 'lp-tokens',
+  'GUNIV3DAIUSDC1-A': 'guni',
+  'GUNIV3DAIUSDC2-A': 'guni',
   'UNIV2DAIETH-A': 'lp-tokens',
   'UNIV2WBTCETH-A': 'lp-tokens',
   'UNIV2USDCETH-A': 'lp-tokens',

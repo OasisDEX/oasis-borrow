@@ -808,6 +808,9 @@
     },
     "lp-tokens": {
       "description": "A vault for multiplying your exposure to {{token}}"
+    },
+    "guni": {
+      "description": "A vault for multiplying your exposure to {{token}}. Enter with Dai"
     }
   },
   "product-card-banner": {
@@ -820,6 +823,9 @@
     },
     "earn": {
       "description": "Earn {{value}} {{token}} a year"
+    },
+    "guni": {
+      "description": "Get up to {{value}} DAI {{token}} exposure"
     }
   },
   "product-page": {
