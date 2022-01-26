@@ -101,7 +101,6 @@ function NewsletterForm({ small }: { small?: boolean }) {
       as="form"
       onSubmit={onSubmit}
       sx={{
-        maxWidth: '610px',
         width: '100%',
         mx: 'auto',
       }}
@@ -190,12 +189,13 @@ export function NewsletterSection({ small }: { small?: boolean }) {
     <Box
       sx={{
         ...(small && {
-          '@media screen and (max-width: 1024px)': {
-            gridColumn: '1/-1',
-            maxWidth: '480px',
+          '@media screen and (max-width: 1124px)': {
+            maxWidth: '100%',
             ml: '0',
           },
         }),
+        width: '100%',
+        maxWidth: ['100%', '604px'],
       }}
     >
       <Grid sx={{ textAlign: small ? 'left' : 'center' }} gap={1} mb={small ? 3 : 4}>
