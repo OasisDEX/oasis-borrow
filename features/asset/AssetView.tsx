@@ -45,7 +45,7 @@ function TabContent(props: {
             )
 
           return (
-            <ProductCardsWrapper cardsNumber={filteredCards.length}>
+            <ProductCardsWrapper>
               {filteredCards.map((cardData) => props.renderProductCard({ cardData }))}
             </ProductCardsWrapper>
           )
@@ -68,7 +68,7 @@ function LpCards() {
           const uniLpCards = uniLpProductCards(productCardsData)
 
           return (
-            <ProductCardsWrapper cardsNumber={uniLpCards.length}>
+            <ProductCardsWrapper>
               {uniLpCards.map((cardData) => (
                 <ProductCardBorrow cardData={cardData} />
               ))}
