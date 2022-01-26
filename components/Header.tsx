@@ -90,18 +90,115 @@ export function BackArrow() {
   )
 }
 
+interface UserAccountProps {
+  position: 'fixed' | 'relative'
+}
+
+function UserAccount({ position }: UserAccountProps) {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+
+  return (
+    <Flex
+      sx={{
+        position,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        bg: ['rgba(255,255,255,0.9)', 'transparent'],
+        p: [3, 0],
+        justifyContent: 'space-between',
+        gap: 2,
+        zIndex: 3,
+      }}
+    >
+      <Flex>
+        <UserSettingsButton />
+        <AccountButton />
+      </Flex>
+      {vaultFormToggleTitle && (
+        <Box sx={{ display: ['block', 'none'] }}>
+          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+            <Box>{vaultFormToggleTitle}</Box>
+          </Button>
+        </Box>
+      )}
+    </Flex>
+  )
+}
+
 function ConnectedHeader() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
+  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
 
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
   const firstCDP = numberOfVaults ? numberOfVaults === 0 : undefined
 
-  return (
+  return assetLandingPagesFeatureEnabled ? (
+    <>
+      <Box sx={{ display: ['none', 'block'], mb: 5 }}>
+        <BasicHeader
+          sx={{
+            position: 'relative',
+            alignItems: 'center',
+            zIndex: 1,
+          }}
+          variant="appContainer"
+        >
+          <>
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: ['space-between', 'flex-start'],
+                width: ['100%', 'auto'],
+              }}
+            >
+              <Logo />
+              <Flex sx={{ ml: 5, zIndex: 1 }}>
+                <AppLink
+                  variant="nav"
+                  sx={{ mr: 4 }}
+                  href={`/owner/${(context as ContextConnected)?.account}`}
+                  onClick={() => trackingEvents.yourVaults()}
+                >
+                  {t('your-vaults')}{' '}
+                  {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+                </AppLink>
+                <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply} sx={{ mr: 4 }}>
+                  {t('nav.multiply')}
+                </AppLink>
+                <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
+                  {t('nav.borrow')}
+                </AppLink>
+              </Flex>
+            </Flex>
+            <UserAccount position="relative" />
+          </>
+        </BasicHeader>
+      </Box>
+      <Box sx={{ display: ['block', 'none'], mb: 5 }}>
+        <BasicHeader variant="appContainer">
+          <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Logo />
+            <AppLink
+              variant="nav"
+              sx={{ mr: 4 }}
+              href={`/owner/${(context as ContextConnected)?.account}`}
+              onClick={() => trackingEvents.yourVaults()}
+            >
+              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+            </AppLink>
+          </Flex>
+          <MobileMenu />
+          <UserAccount position="fixed" />
+        </BasicHeader>
+      </Box>
+    </>
+  ) : (
     <BasicHeader
       sx={{
         position: 'relative',
@@ -328,7 +425,7 @@ const MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES = [
   },
 ]
 
-const MOBILE_MENU_SECTIONS = [
+const MOBILE_MENU_DISCONNECTED_SECTIONS = [
   {
     titleKey: 'nav.products',
     links: [
@@ -346,13 +443,27 @@ const MOBILE_MENU_SECTIONS = [
   },
 ]
 
+const MOBILE_MENU_CONNECTED_SECTIONS = [
+  {
+    titleKey: 'nav.products',
+    links: [
+      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+    ],
+  },
+]
+
 function MobileMenu() {
   const { t } = useTranslation()
   const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
   const [isOpen, setIsOpen] = useState(false)
+  const { context$ } = useAppContext()
+  const context = useObservable(context$)
+
+  const isConnected = !!(context as ContextConnected)?.account
 
   const mobileMenuEntries = assetLandingPagesFeatureEnabled
-    ? MOBILE_MENU_SECTIONS
+    ? MOBILE_MENU_DISCONNECTED_SECTIONS
     : MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -387,32 +498,61 @@ function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {mobileMenuEntries.map((section) => (
-            <Grid key={section.titleKey}>
-              <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-              {section.links.map((link) =>
-                link.url ? (
-                  <AppLink
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ textDecoration: 'none' }}
-                    href={link.url}
-                    onClick={closeMenu}
-                  >
-                    {t(link.labelKey)}
-                  </AppLink>
-                ) : (
-                  <Text
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ fontWeight: 'semiBold' }}
-                  >
-                    {t(link.labelKey)}
-                  </Text>
-                ),
-              )}
-            </Grid>
-          ))}
+          {!isConnected &&
+            mobileMenuEntries.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ textDecoration: 'none' }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
+          {isConnected &&
+            assetLandingPagesFeatureEnabled &&
+            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ textDecoration: 'none' }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
           <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
             <LanguageSelect components={LangSelectMobileComponents} />

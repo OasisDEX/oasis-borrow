@@ -2,21 +2,44 @@ import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { formatPercent } from '../helpers/formatters/format'
+import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { cardDescriptionsKeys, ProductCardData } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-const hardcodedTokenAmount = 1
+function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
+  const hardcodedTokenAmount = one
+  const maxBorrowDisplayAmount = new BigNumber(1000000)
+
+  const maxBorrowAmount = one
+    .div(liquidationRatio)
+    .multipliedBy(currentCollateralPrice.times(hardcodedTokenAmount))
+
+  // this condition handles cases for LP tokens with very high conversion ratio
+  if (maxBorrowAmount.gt(maxBorrowDisplayAmount)) {
+    const hardcodedMaxBorrow = new BigNumber(250000)
+    const tokenFraction = hardcodedMaxBorrow.div(maxBorrowAmount)
+
+    return {
+      maxBorrow: formatCryptoBalance(hardcodedMaxBorrow),
+      tokenAmount: tokenFraction.toFixed(4),
+    }
+  }
+
+  return {
+    maxBorrow: formatCryptoBalance(maxBorrowAmount),
+    tokenAmount: hardcodedTokenAmount.toFixed(0),
+  }
+}
 
 export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
-  const maxBorrowAmount = new BigNumber(
-    one
-      .div(cardData.liquidationRatio)
-      .multipliedBy(cardData.currentCollateralPrice.times(hardcodedTokenAmount)),
-  ).toFixed(0)
+
+  const { maxBorrow, tokenAmount } = bannerValues(
+    cardData.liquidationRatio,
+    cardData.currentCollateralPrice,
+  )
 
   return (
     <ProductCard
@@ -29,11 +52,11 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: hardcodedTokenAmount,
+          value: tokenAmount,
           token: cardData.token,
         }),
         description: t(`product-card-banner.borrow.description`, {
-          value: maxBorrowAmount,
+          value: maxBorrow,
         }),
       }}
       leftSlot={{

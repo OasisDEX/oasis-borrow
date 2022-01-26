@@ -57,7 +57,8 @@ const FOOTER_SECTIONS = [
         url: `${apiHost}/daiwallet`,
         target: '_self',
       },
-      { labelKey: 'nav.borrow', url: '/' },
+      { labelKey: 'nav.borrow', url: '/borrow' },
+      { labelKey: 'nav.multiply', url: '/multiply' },
     ],
   },
 ]
