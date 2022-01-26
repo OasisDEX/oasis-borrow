@@ -69,7 +69,15 @@ export function InfoCard(props: InfoCardProps) {
         <AppLink
           href={props.links[0].href}
           variant="unStyled"
-          sx={{ display: 'block', p: 4, cursor: 'pointer' }}
+          sx={{
+            display: 'block',
+            p: 4,
+            cursor: 'pointer',
+            height: '100%',
+            '&:hover svg': {
+              transform: 'translateX(8px)',
+            },
+          }}
         >
           <CardContent title={props.title} subtitle={props.subtitle}>
             <Box
@@ -78,9 +86,6 @@ export function InfoCard(props: InfoCardProps) {
                 fontSize: 3,
                 color: 'primary',
                 fontWeight: 'semiBold',
-                '&:hover svg': {
-                  transform: 'translateX(8px)',
-                },
               }}
             >
               {props.links[0].text}
