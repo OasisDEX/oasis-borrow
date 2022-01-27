@@ -93,6 +93,7 @@ export const productCardsConfig: {
   landing: {
     featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
   }
+  descriptionCustomKeys: Record<Ilk, string>
 } = {
   borrow: {
     cardsFilters: [
