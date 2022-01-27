@@ -8,18 +8,6 @@ import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-function minBorrowValues(singleTokenMaxBorrow: BigNumber, minBorrowDisplayAmount: BigNumber) {
-  let borrowAmount = singleTokenMaxBorrow
-  let singleTokenMultiplier = one
-
-  while (borrowAmount.lt(minBorrowDisplayAmount)) {
-    singleTokenMultiplier = singleTokenMultiplier.plus(one)
-    borrowAmount = singleTokenMaxBorrow.multipliedBy(singleTokenMultiplier)
-  }
-
-  return { borrowAmount, singleTokenMultiplier }
-}
-
 function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
@@ -44,14 +32,15 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   }
 
   if (singleTokenMaxBorrow.lt(minBorrowDisplayAmount)) {
-    const { borrowAmount, singleTokenMultiplier } = minBorrowValues(
-      singleTokenMaxBorrow,
-      minBorrowDisplayAmount,
-    )
+    const tokenAmount = minBorrowDisplayAmount.div(singleTokenMaxBorrow)
+
+    const roundedTokenAmount = new BigNumber(Math.ceil(tokenAmount.toNumber()))
 
     return {
-      maxBorrow: formatCryptoBalance(roundToThousand(borrowAmount)),
-      tokenAmount: formatCryptoBalance(singleTokenMultiplier),
+      maxBorrow: formatCryptoBalance(
+        roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+      ),
+      tokenAmount: formatCryptoBalance(roundedTokenAmount),
     }
   }
 
