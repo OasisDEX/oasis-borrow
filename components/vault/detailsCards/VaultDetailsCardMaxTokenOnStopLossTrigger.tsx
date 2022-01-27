@@ -8,11 +8,15 @@ import { ModalProps, useModal } from '../../../helpers/modalHook'
 import { zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
-function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close }: ModalProps) {
+function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalProps) {
+  const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">Max Token On Stop Loss Trigger</Heading>
+        <Heading variant="header3">
+          {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
+        </Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
           VaultDetailsCardMaxTokenOnStopLossTriggerModal dummy modal
         </Text>
@@ -45,8 +49,8 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   lockedCollateral?: BigNumber
   vaultDebt?: BigNumber
 } & AfterPillProps) {
-  const openModal = useModal()
   const { t } = useTranslation()
+  const openModal = useModal()
   const ethDuringLiquidation = !liquidationPrice.isZero()
     ? debt.times(liquidationRatio).div(liquidationPrice)
     : zero
@@ -65,7 +69,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
       : zero
 
   const afterMaxEth =
-    lockedCollateral && debt && !afterDynamicStopPrice.isZero()
+    lockedCollateral && debt && lockedCollateral.times(afterDynamicStopPrice).minus(debt).gt(zero)
       ? lockedCollateral.times(afterDynamicStopPrice).minus(debt).div(afterDynamicStopPrice)
       : zero
 
@@ -90,7 +94,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
         !maxEth.isZero() &&
         `${t('manage-multiply-vault.card.up-to')} $${formatAmount(afterMaxEth, token)} ${token}`
       }
-      openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal)}
+      openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, { token })}
       afterPillColors={afterPillColors}
     />
   )

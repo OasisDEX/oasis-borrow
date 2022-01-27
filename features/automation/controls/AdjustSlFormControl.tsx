@@ -121,6 +121,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
 
+    console.log('currentCollRatio')
+    console.log(currentCollRatio.toFixed(2))
+
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
@@ -141,6 +144,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       collateralTokenSymbol: token,
       collateralTokenIconCircle: tokenData.iconCircle,
     }
+
+    console.log('maxBoundry')
+    console.log(maxBoundry.toFixed(2))
 
     const sliderProps: SliderValuePickerProps = {
       disabled: false,

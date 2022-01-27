@@ -1,6 +1,7 @@
 import {
   AfterPillProps,
   getAfterPillColors,
+  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'

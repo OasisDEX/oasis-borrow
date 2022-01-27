@@ -1,10 +1,14 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
+  VaultDetailsCardCollateralLocked,
+  VaultDetailsCardCollaterlizationRatioModal,
+  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
