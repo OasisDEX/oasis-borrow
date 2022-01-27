@@ -57,6 +57,8 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
     cardData.currentCollateralPrice,
   )
 
+  const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
+
   return (
     <ProductCard
       key={cardData.ilk}
@@ -89,6 +91,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       background={cardData.background}
       inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}
       isFull={cardData.isFull}
+      floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`) : ''}
     />
   )
 }

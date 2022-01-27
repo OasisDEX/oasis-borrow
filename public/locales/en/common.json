@@ -804,7 +804,12 @@
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
-    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3"
+    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "tags": {
+      "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
+      "staking-rewards": "Staking rewards",
+      "max-exposure": "Max {{token}} exposure"
+    }
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",

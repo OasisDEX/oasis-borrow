@@ -15,6 +15,8 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
+  const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
+
   return (
     <ProductCard
       key={cardData.ilk}
@@ -54,6 +56,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       background={cardData.background}
       inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
       isFull={cardData.isFull}
+      floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''}
     />
   )
 }
