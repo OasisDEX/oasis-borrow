@@ -85,7 +85,7 @@ type ProductPageType = {
   featuredCards: Array<Ilk>
   inactiveIlks: Array<Ilk>
   ordering: { [Key in ProductLandingPagesFiltersKeys]?: Array<Ilk> }
-  tags: Record<string, string>
+  tags: Partial<Record<Ilk, string>>
 }
 
 export const productCardsConfig: {
@@ -141,6 +141,8 @@ export const productCardsConfig: {
     },
     tags: {
       'WBTC-B': 'max-exposure',
+      'ETH-B': 'max-exposure',
+      'WSTETH-A': 'staking-rewards',
     },
   },
   landing: {
