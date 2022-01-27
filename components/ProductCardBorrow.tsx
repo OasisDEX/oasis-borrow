@@ -12,9 +12,7 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
 
-  const singleTokenMaxBorrow = one
-    .div(liquidationRatio)
-    .multipliedBy(currentCollateralPrice.times(one))
+  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
 
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
