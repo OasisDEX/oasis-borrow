@@ -123,7 +123,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     console.log('currentCollRatio')
     console.log(currentCollRatio.toFixed(2))
-    
 
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio

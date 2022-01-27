@@ -19,9 +19,9 @@ export async function getAllActiveTriggers(
   vaultId: string,
 ): Promise<List<TriggerRecord>> {
   const data = await client.request(query, { vaultId: vaultId })
-  console.log("data returned from gql")
+  console.log('data returned from gql')
   console.log(data)
-  
+
   const returnedRecords = data.allActiveTriggers.nodes.map(
     (record: { triggerId: number; commandAddress: string; triggerData: string }) => {
       return {
@@ -33,5 +33,5 @@ export async function getAllActiveTriggers(
   )
   console.log('returned records after map')
   console.log(returnedRecords)
-    return returnedRecords
+  return returnedRecords
 }

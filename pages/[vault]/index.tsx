@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { TabSwitcher } from 'components/TabSwitcher'
 import { TabSwitchLayout, VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaultVaultHeaderControl } from 'components/vault/DefaultVaultHeaderControl'
 import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
@@ -46,22 +45,23 @@ export default function Vault({ id }: { id: string }) {
               <GuniTempBanner id={vaultId} />
               {/* TODO Replace with TabSwitcher ~ŁW */}
               <TabSwitchLayout
-              defaultMode={VaultViewMode.Overview}
-              overViewControl={<GeneralManageVaultView id={vaultId} />}
-              historyControl={<h1>TODO History</h1>}
-              protectionControl={
-                <DefaultVaultLayout
-                  detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                  editForm={
-                    <ProtectionFormControl
-                      adjustForm={<AdjustSlFormControl id={vaultId} />}
-                      cancelForm={<CancelSlFormControl id={vaultId} />}
-                    />
-                  }
-                  headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
-                />
-              }
-            />
+                defaultMode={VaultViewMode.Overview}
+                // TODO param to show overview or history ~ŁW
+                overViewControl={<GeneralManageVaultView id={vaultId} />}
+                historyControl={<h1>TODO History</h1>}
+                protectionControl={
+                  <DefaultVaultLayout
+                    detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
+                    editForm={
+                      <ProtectionFormControl
+                        adjustForm={<AdjustSlFormControl id={vaultId} />}
+                        cancelForm={<CancelSlFormControl id={vaultId} />}
+                      />
+                    }
+                    headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
+                  />
+                }
+              />
             </>
           ) : (
             <Box sx={{ position: 'relative', zIndex: 1 }}>
