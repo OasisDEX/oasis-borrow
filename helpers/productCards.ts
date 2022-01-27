@@ -244,9 +244,7 @@ export function multiplyPageCardsData({
 
   // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
   if (cardsFilter === 'UNI LP') {
-    return productCardsData.filter(
-      (data) => data.ilk === 'GUNIV3DAIUSDC1-A' || data.ilk === 'GUNIV3DAIUSDC2-A',
-    )
+    return productCardsData.filter((data) => data.ilk === 'GUNIV3DAIUSDC2-A')
   }
 
   if (cardsFilter === 'BTC') {
