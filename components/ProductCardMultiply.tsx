@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -5,6 +6,19 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
+
+function bannerValues(maxMultiple: BigNumber, currentCollateralPrice: BigNumber) {
+  const target = new BigNumber(150000) // 150k $ of collateral as input
+  const tokenAmount = target.div(currentCollateralPrice)
+
+  const roundedTokenAmount = new BigNumber(Math.ceil(tokenAmount.toNumber()))
+  const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2))
+
+  return {
+    tokenAmount: roundedTokenAmount,
+    exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
+  }
+}
 
 export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
@@ -14,6 +28,8 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const maxMultiple = !isGuniToken
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
+
+  const { tokenAmount, exposure } = bannerValues(maxMultiple, cardData.currentCollateralPrice)
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 
@@ -28,12 +44,12 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: isGuniToken ? '100,000' : '100',
+          value: isGuniToken ? '100,000' : formatCryptoBalance(tokenAmount),
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
           ? t(`product-card-banner.multiply`, {
-              value: formatCryptoBalance(maxMultiple.times(100)),
+              value: formatCryptoBalance(exposure),
               token: cardData.token,
             })
           : t(`product-card-banner.guni`, {
