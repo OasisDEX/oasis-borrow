@@ -139,7 +139,7 @@ export function HomepageView() {
         }}
       />
 
-      <Pills sx={{ mb: 6 }} />
+      <Pills sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
       <Box
         sx={{
           ...slideInAnimation,
@@ -361,7 +361,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       {greyCircles}
