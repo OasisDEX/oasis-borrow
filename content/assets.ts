@@ -19,7 +19,8 @@ export const ASSETS_PAGES = [
     icon: 'btc_circle_color',
     descriptionKey: 'assets.btc.description',
     link: 'assets.btc.link',
-    ilks: ['WBTC-A', 'RENBTC-A', 'WBTC-B', 'WBTC-C'],
+    multiplyIlks: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
+    borrowIlks: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
   },
   {
     slug: 'lp-token',
