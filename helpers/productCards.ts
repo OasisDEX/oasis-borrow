@@ -128,7 +128,7 @@ export const productCardsConfig: {
     featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
     inactiveIlks: [],
     ordering: {
-      BTC: ['ETH-C', 'ETH-A', 'ETH-B'],
+      BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
     },
   },
   landing: {
@@ -203,8 +203,25 @@ export function multiplyPageCardsData({
   cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  cardsFilter?: string
+  cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
+  if (cardsFilter) {
+    productCardsData = sortBy(productCardsData, (productCard) => {
+      const orderForFilter = productCardsConfig.multiply.ordering[cardsFilter]
+
+      if (orderForFilter) {
+        const order = orderForFilter.indexOf(productCard.ilk)
+        if (order >= 0) {
+          return order
+        } else {
+          return Infinity
+        }
+      }
+
+      return 0
+    })
+  }
+
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )

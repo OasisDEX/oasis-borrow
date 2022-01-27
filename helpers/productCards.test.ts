@@ -303,12 +303,11 @@ describe('createProductCardsData$', () => {
 
   it('should custom sort the cards', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB]), () =>
-        mockPriceInfo$(),
+      createProductCardsData$(
+        of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB, wbtcB, wbtcC]),
+        () => mockPriceInfo$(),
       ),
     )
-
-    //  ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
 
     const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
 
@@ -317,13 +316,15 @@ describe('createProductCardsData$', () => {
     expect(borrowPageData[2].ilk).to.eql(wsteth.ilk)
     expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
 
-    // const multiplyCardData = multiplyPageCardsData({
-    //   productCardsData: state(),
-    //   cardsFilter: 'BTC',
-    // })
-    //
-    // expect(multiplyCardData[0].ilk).to.eql(ethC.ilk)
-    // expect(multiplyCardData[1].ilk).to.eql(ethA.ilk)
+    const multiplyCardData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'BTC',
+    })
+
+    expect(multiplyCardData[0].ilk).to.eql(wbtcB.ilk)
+    expect(multiplyCardData[1].ilk).to.eql(wbtcA.ilk)
+    expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
+    expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
   })
 
   it('does not sort product cards that have no custom ordering')
