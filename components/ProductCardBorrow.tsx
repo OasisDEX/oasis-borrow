@@ -72,6 +72,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
       background={cardData.background}
       inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}
+      isFull={cardData.isFull}
     />
   )
 }

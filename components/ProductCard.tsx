@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Card, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Image, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
@@ -125,6 +126,7 @@ export interface ProductCardProps {
   rightSlot: { title: string; value: string }
   button: { link: string; text: string }
   background: string
+  isFull: boolean
   floatingLabelText?: string
   inactive?: boolean
 }
@@ -139,10 +141,12 @@ export function ProductCard({
   rightSlot,
   button,
   background,
+  isFull,
   floatingLabelText,
   inactive,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
+  const { t } = useTranslation()
 
   const handleMouseEnter = useCallback(() => setHover(true), [])
   const handleMouseLeave = useCallback(() => setHover(false), [])
@@ -210,23 +214,25 @@ export function ProductCard({
               </div>
             </Flex>
             <Flex>
-              <AppLink
-                href={button.link}
-                variant="primary"
-                sx={{
-                  width: '100%',
-                  fontWeight: 'semiBold',
-                  textAlign: 'center',
-                  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                  backgroundColor: inactive ? '#80818A' : 'primary',
-                  '&:hover': {
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                    transition: '0.2s ease-in',
-                    backgroundColor: 'primary',
-                  },
-                }}
-              >
-                {button.text}
+              <AppLink href={button.link} disabled={isFull} sx={{ width: '100%' }}>
+                <Button
+                  variant="primary"
+                  sx={{
+                    width: '100%',
+                    fontWeight: 'semiBold',
+                    textAlign: 'center',
+                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+                    backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                    '&:hover': {
+                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                      transition: '0.2s ease-in',
+                      backgroundColor: isFull ? '#80818A' : 'primary',
+                      cursor: isFull ? 'default' : 'pointer',
+                    },
+                  }}
+                >
+                  {isFull ? t('full') : button.text}
+                </Button>
               </AppLink>
             </Flex>
           </Box>

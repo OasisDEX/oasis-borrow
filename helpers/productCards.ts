@@ -23,6 +23,7 @@ export interface ProductCardData {
   bannerGif: string
   background: string
   name: string
+  isFull: boolean
 }
 
 export const productCardsConfig = {
@@ -208,6 +209,7 @@ export function createProductCardsData$(
                 bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.backgroundAssetFeature,
                 name: tokenMeta.name,
+                isFull: ilk.ilkDebtAvailable.isZero(),
               }),
             ),
           )
