@@ -9,7 +9,8 @@ export const ASSETS_PAGES = [
     icon: 'ether_circle_color',
     descriptionKey: 'assets.eth.description',
     link: 'assets.eth.link',
-    ilks: ['ETH-A', 'WSTETH-A', 'ETH-B', 'ETH-C'],
+    multiplyIlks: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
+    borrowIlks: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
   },
   {
     slug: 'btc',
