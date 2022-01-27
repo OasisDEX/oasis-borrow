@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -15,7 +16,7 @@ import { PriceInfo } from '../features/shared/priceInfo'
 
 export interface ProductCardData {
   token: string
-  ilk: string
+  ilk: Ilk
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   currentCollateralPrice: BigNumber
@@ -26,7 +27,74 @@ export interface ProductCardData {
   isFull: boolean
 }
 
-export const productCardsConfig = {
+export type ProductLandingPagesFiltersKeys =
+  | 'Featured'
+  | 'ETH'
+  | 'BTC'
+  | 'UNI LP'
+  | 'LINK'
+  | 'UNI'
+  | 'YFI'
+  | 'MANA'
+  | 'MATIC'
+  | 'GUSD'
+
+type ProductLandingPagesFiltersIcons =
+  | 'star_circle'
+  | 'eth_circle'
+  | 'btc_circle'
+  | 'uni_lp_circle'
+  | 'link_circle'
+  | 'uni_circle'
+  | 'yfi_circle'
+  | 'mana_circle'
+  | 'matic_circle'
+  | 'gusd_circle'
+
+export type ProductLandingPagesFilter = {
+  name: ProductLandingPagesFiltersKeys
+  icon: ProductLandingPagesFiltersIcons
+}
+
+type Ilk =
+  | 'WBTC-B'
+  | 'ETH-B'
+  | 'ETH-C'
+  | 'WBTC-C'
+  | 'GUSD-A'
+  | 'ETH-A'
+  | 'WBTC-A'
+  | 'LINK-A'
+  | 'UNI-A'
+  | 'YFI-A'
+  | 'MANA-A'
+  | 'MATIC-A'
+  | 'WSTETH-A'
+  | 'RENBTC-A'
+  | 'GUNIV3DAIUSDC1-A'
+  | 'GUNIV3DAIUSDC2-A'
+  | 'UNIV2DAIETH-A'
+  | 'UNIV2WBTCETH-A'
+  | 'UNIV2USDCETH-A'
+  | 'UNIV2DAIUSDC-A'
+  | 'UNIV2UNIETH-A'
+  | 'UNIV2WBTCDAI-A'
+
+type ProductPageType = {
+  cardsFilters: Array<ProductLandingPagesFilter>
+  featuredCards: Array<Ilk>
+  inactiveIlks: Array<Ilk>
+  ordering: { [Key in ProductLandingPagesFiltersKeys]?: Array<Ilk> }
+}
+
+export const productCardsConfig: {
+  borrow: ProductPageType
+  multiply: ProductPageType
+  landing: {
+    featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
+  }
+  descriptionCustomKeys: Record<Ilk, string>
+} = {
   borrow: {
     cardsFilters: [
       { name: 'Featured', icon: 'star_circle' },
@@ -41,7 +109,11 @@ export const productCardsConfig = {
       { name: 'GUSD', icon: 'gusd_circle' },
     ],
     featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
-    inactiveIlks: [] as string[],
+    inactiveIlks: [],
+    ordering: {
+      ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
+      BTC: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
+    },
   },
   multiply: {
     cardsFilters: [
@@ -56,7 +128,11 @@ export const productCardsConfig = {
       { name: 'MATIC', icon: 'matic_circle' },
     ],
     featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
-    inactiveIlks: [] as string[],
+    inactiveIlks: [],
+    ordering: {
+      ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
+      BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
+    },
   },
   landing: {
     featuredCards: {
@@ -123,13 +199,39 @@ export function landingPageCardsData({
   )
 }
 
+function sortCards(
+  productCardsData: ProductCardData[],
+  sortingConfig: ProductPageType['ordering'],
+  cardsFilter?: ProductLandingPagesFiltersKeys,
+) {
+  if (cardsFilter) {
+    productCardsData = sortBy(productCardsData, (productCard) => {
+      const orderForFilter = sortingConfig[cardsFilter]
+
+      if (orderForFilter) {
+        const order = orderForFilter.indexOf(productCard.ilk)
+        if (order >= 0) {
+          return order
+        } else {
+          return Infinity
+        }
+      }
+
+      return 0
+    })
+  }
+  return productCardsData
+}
+
 export function multiplyPageCardsData({
   productCardsData,
   cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  cardsFilter?: string
+  cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
+  productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
+
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
@@ -163,8 +265,10 @@ export function borrowPageCardsData({
   cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  cardsFilter?: string
+  cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
+  productCardsData = sortCards(productCardsData, productCardsConfig.borrow.ordering, cardsFilter)
+
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
       productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
@@ -199,7 +303,7 @@ export function createProductCardsData$(
             switchMap((priceInfo) =>
               of({
                 token: ilk.token,
-                ilk: ilk.ilk,
+                ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
                 stabilityFee: ilk.stabilityFee,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,

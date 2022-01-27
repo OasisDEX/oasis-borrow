@@ -9,7 +9,8 @@ export const ASSETS_PAGES = [
     icon: 'ether_circle_color',
     descriptionKey: 'assets.eth.description',
     link: 'assets.eth.link',
-    ilks: ['ETH-A', 'WSTETH-A', 'ETH-B', 'ETH-C'],
+    multiplyIlks: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
+    borrowIlks: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
   },
   {
     slug: 'btc',
@@ -18,7 +19,8 @@ export const ASSETS_PAGES = [
     icon: 'btc_circle_color',
     descriptionKey: 'assets.btc.description',
     link: 'assets.btc.link',
-    ilks: ['WBTC-A', 'RENBTC-A', 'WBTC-B', 'WBTC-C'],
+    multiplyIlks: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
+    borrowIlks: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
   },
   {
     slug: 'lp-token',

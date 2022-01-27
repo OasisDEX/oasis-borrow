@@ -289,18 +289,6 @@ describe('createProductCardsData$', () => {
 
     expect(borrowPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/wbtc.png',
-        bannerGif: '/static/img/tokens/wbtc.gif',
-        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-        name: 'Wrapped Bitcoin',
-        isFull: false,
-      },
-      {
         token: renbtc.token,
         ilk: renbtc.ilk,
         liquidationRatio: renbtc.liquidationRatio,
@@ -312,6 +300,46 @@ describe('createProductCardsData$', () => {
         name: 'renBTC',
         isFull: false,
       },
+      {
+        token: wbtcA.token,
+        ilk: wbtcA.ilk,
+        liquidationRatio: wbtcA.liquidationRatio,
+        stabilityFee: wbtcA.stabilityFee,
+        currentCollateralPrice: new BigNumber('550'),
+        bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
+        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+        name: 'Wrapped Bitcoin',
+        isFull: false,
+      },
     ])
   })
+
+  it('should custom sort the cards', () => {
+    const state = getStateUnpacker(
+      createProductCardsData$(
+        of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB, wbtcB, wbtcC]),
+        () => mockPriceInfo$(),
+      ),
+    )
+
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
+
+    expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
+    expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
+    expect(borrowPageData[2].ilk).to.eql(wsteth.ilk)
+    expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
+
+    const multiplyCardData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'BTC',
+    })
+
+    expect(multiplyCardData[0].ilk).to.eql(wbtcB.ilk)
+    expect(multiplyCardData[1].ilk).to.eql(wbtcA.ilk)
+    expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
+    expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
+  })
+
+  it('does not sort product cards that have no custom ordering')
 })
