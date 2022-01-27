@@ -4,12 +4,9 @@ import React from 'react'
 
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../helpers/productCards'
+import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
-
-function roundToThousand(value: BigNumber) {
-  return new BigNumber(Math.floor(value.div(1000).toNumber()).toFixed(0)).multipliedBy(1000)
-}
 
 function minBorrowValues(singleTokenMaxBorrow: BigNumber, minBorrowDisplayAmount: BigNumber) {
   let borrowAmount = singleTokenMaxBorrow
