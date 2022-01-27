@@ -111,7 +111,7 @@ const oasisBaseTheme = {
       fontFamily: 'heading',
       fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: '40px',
+      fontSize: '52px',
       color: 'primary',
     },
     header2: {
