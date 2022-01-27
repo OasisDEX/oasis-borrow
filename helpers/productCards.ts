@@ -128,6 +128,7 @@ export const productCardsConfig: {
     featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
     inactiveIlks: [],
     ordering: {
+      ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
       BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
     },
   },
