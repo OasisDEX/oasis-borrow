@@ -85,6 +85,7 @@ type ProductPageType = {
   featuredCards: Array<Ilk>
   inactiveIlks: Array<Ilk>
   ordering: { [Key in ProductLandingPagesFiltersKeys]?: Array<Ilk> }
+  tags: Partial<Record<Ilk, string>>
 }
 
 export const productCardsConfig: {
@@ -114,6 +115,11 @@ export const productCardsConfig: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
       BTC: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
     },
+    tags: {
+      'ETH-C': 'lowest-fees-for-borrowing',
+      'WBTC-C': 'lowest-fees-for-borrowing',
+      'WSTETH-A': 'staking-rewards',
+    },
   },
   multiply: {
     cardsFilters: [
@@ -132,6 +138,11 @@ export const productCardsConfig: {
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
       BTC: ['WBTC-B', 'WBTC-A', 'RENBTC-A', 'WBTC-C'],
+    },
+    tags: {
+      'WBTC-B': 'max-exposure',
+      'ETH-B': 'max-exposure',
+      'WSTETH-A': 'staking-rewards',
     },
   },
   landing: {
