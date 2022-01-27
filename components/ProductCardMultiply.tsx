@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
-import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../helpers/productCards'
+import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
@@ -21,7 +21,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
       title={cardData.ilk}
-      description={t(`product-card.${cardDescriptionsKeys[cardData.ilk]}.description`, {
+      description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
       banner={{
@@ -30,11 +30,11 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
-          ? t(`product-card-banner.multiply.description`, {
+          ? t(`product-card-banner.multiply`, {
               value: formatCryptoBalance(maxMultiple.times(100)),
               token: cardData.token,
             })
-          : t(`product-card-banner.guni.description`, {
+          : t(`product-card-banner.guni`, {
               value: formatCryptoBalance(maxMultiple.times(100000)),
               token: cardData.token,
             }),
