@@ -7,28 +7,60 @@ import { cardDescriptionsKeys, ProductCardData, productCardsConfig } from '../he
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
+function roundToThousand(value: BigNumber) {
+  return new BigNumber(Math.floor(value.div(1000).toNumber()).toFixed(0)).multipliedBy(1000)
+}
+
+function minBorrowValues(singleTokenMaxBorrow: BigNumber, minBorrowDisplayAmount: BigNumber) {
+  let borrowAmount = singleTokenMaxBorrow
+  let singleTokenMultiplier = one
+
+  while (borrowAmount.lt(minBorrowDisplayAmount)) {
+    singleTokenMultiplier = singleTokenMultiplier.plus(one)
+    borrowAmount = singleTokenMaxBorrow.multipliedBy(singleTokenMultiplier)
+  }
+
+  return { borrowAmount, singleTokenMultiplier }
+}
+
 function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
-  const hardcodedTokenAmount = one
-  const maxBorrowDisplayAmount = new BigNumber(1000000)
+  const maxBorrowDisplayAmount = new BigNumber(250000)
+  const minBorrowDisplayAmount = new BigNumber(150000)
 
-  const maxBorrowAmount = one
+  const singleTokenMaxBorrow = one
     .div(liquidationRatio)
-    .multipliedBy(currentCollateralPrice.times(hardcodedTokenAmount))
+    .multipliedBy(currentCollateralPrice.times(one))
 
-  // this condition handles cases for LP tokens with very high conversion ratio
-  if (maxBorrowAmount.gt(maxBorrowDisplayAmount)) {
-    const hardcodedMaxBorrow = new BigNumber(250000)
-    const tokenFraction = hardcodedMaxBorrow.div(maxBorrowAmount)
+  if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
+    const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
+
+    const roundedTokenAmount = new BigNumber(
+      Math.floor(tokenAmount.multipliedBy(10000).toNumber()).toFixed(4),
+    ).div(10000)
 
     return {
-      maxBorrow: formatCryptoBalance(hardcodedMaxBorrow),
-      tokenAmount: tokenFraction.toFixed(4),
+      maxBorrow: formatCryptoBalance(
+        roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+      ),
+      tokenAmount: formatCryptoBalance(roundedTokenAmount),
+    }
+  }
+
+  if (singleTokenMaxBorrow.lt(minBorrowDisplayAmount)) {
+    const { borrowAmount, singleTokenMultiplier } = minBorrowValues(
+      singleTokenMaxBorrow,
+      minBorrowDisplayAmount,
+    )
+
+    return {
+      maxBorrow: formatCryptoBalance(roundToThousand(borrowAmount)),
+      tokenAmount: formatCryptoBalance(singleTokenMultiplier),
     }
   }
 
   return {
-    maxBorrow: formatCryptoBalance(maxBorrowAmount),
-    tokenAmount: hardcodedTokenAmount.toFixed(0),
+    maxBorrow: formatCryptoBalance(singleTokenMaxBorrow),
+    tokenAmount: formatCryptoBalance(one),
   }
 }
 
