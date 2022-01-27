@@ -207,8 +207,8 @@
     "hero": {
       "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
       "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
-      "headline": "Borrow and multiply using your favourite cryptos",
-      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
+      "headline": "Deploy your crypto into Defi",
+      "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -831,7 +831,7 @@
   "product-page": {
     "multiply": {
       "title": "Oasis Multiply",
-      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "description": "Multiply your exposure to your favorite crypto assets. Browse our featured products or select a asset.",
       "link": "Learn more about Multiply ->"
     },
     "borrow": {
@@ -845,34 +845,30 @@
       "link": "Learn more about Earn ->"
     }
   },
-  "learn-more": "Learn more",
+  "learn-more-about": "Learn more about",
   "assets": {
     "eth": {
-      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it. We can think about it as the \"fuel\" of the network. Users may exchange other cryptocurrencies for ether tokens, but ether tokens cannot be substituted with other cryptocurrencies to provide computing power for Ethereum transactions.",
+      "description": "ETH facilitates operations on the Ethereum network. It is used by network participants to execute their requested operations on it. We can think about it as the \"fuel\" of the network. You can maximize your ETH utility by Multiplying your exposure or Borrowing against your ETH.",
       "link": "https://ethereum.org/en/eth/"
     },
     "btc": {
-      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
-      "link": ""
-    },
-    "dai": {
-      "description": "ETH is the transactional token that facilitates operations on the Ethereum network, being a form of payment for network participants to execute their requested operations on it.",
-      "link": ""
+      "description": "Bitcoin itself cannot be used directly, but needs to be moved onto the Ethereum Blockchain to use it in DeFi. Both wrapped Bitcoin (wbtc) and renBTC deliver the power of Bitcoin with the flexibility of an ERC20 token. Get the most of your Bitcoin Multiplying your exposure or Borrowing.",
+      "link": "https://wbtc.network/"
     },
     "usdc": {
       "description": "USDC is a 1:1 USD-backed centralized stablecoin, fully regulated. USDC is natively supported on multiple layer 1 blockchains including Ethereum as an ERC-20 token, Algorand as an ASA token, Solana as a SPL token, TRON as an TRC-20 token, and Stellar as a native asset. It is operated by Circle.",
       "link": "https://www.circle.com/en/about-circle"
     },
     "lp-token": {
-      "description": "When tokens are deposited into a crypto liquidity pool, the platform automatically generates a new token that represents the share the depositor owns of that pool. This is called a liquidity provider (LP) token, and it can be used for a multitude of functions both within its native platform and other decentralized finance (DeFi) apps. This has the effect of multiplying the liquidity available in the DeFi ecosystem.",
-      "link": ""
+      "description": "Tokens deposited into a liquidity pool, automatically generates a new token that represents the share the depositor owns of that pool. This is called a liquidity provider (LP) token, and it can be used to borrow against. This has the effect of multiplying your liquidity share in the pool.",
+      "link": "https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/providing-liquidity"
     },
     "yfi": {
-      "description": "Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return.",
-      "link": "https://yearn.finance/ "
+      "description": "Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return. Multiply your exposure to YFI, or borrow against it.",
+      "link": "https://yearn.finance/"
     },
     "uni": {
-      "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community of UNI token holders and their delegates who propose and vote on upgrades to the protocol. Uniswap is a crypto trading protocol for swapping ERC20 tokens.",
+      "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
       "link": "https://uniswap.org/"
     },
     "link": {
