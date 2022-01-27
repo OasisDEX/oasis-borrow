@@ -289,18 +289,6 @@ describe('createProductCardsData$', () => {
 
     expect(borrowPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/wbtc.png',
-        bannerGif: '/static/img/tokens/wbtc.gif',
-        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-        name: 'Wrapped Bitcoin',
-        isFull: false,
-      },
-      {
         token: renbtc.token,
         ilk: renbtc.ilk,
         liquidationRatio: renbtc.liquidationRatio,
@@ -310,6 +298,18 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/renBTC.gif',
         background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
         name: 'renBTC',
+        isFull: false,
+      },
+      {
+        token: wbtcA.token,
+        ilk: wbtcA.ilk,
+        liquidationRatio: wbtcA.liquidationRatio,
+        stabilityFee: wbtcA.stabilityFee,
+        currentCollateralPrice: new BigNumber('550'),
+        bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
+        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+        name: 'Wrapped Bitcoin',
         isFull: false,
       },
     ])
