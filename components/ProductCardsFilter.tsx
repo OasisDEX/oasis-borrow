@@ -2,22 +2,23 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React, { ReactNode, useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
+import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from '../helpers/productCards'
 import { ProductCardsSelect } from './ProductCardsSelect'
 
 interface TokenTabsProps {
-  filters: { name: string; icon: string }[]
-  children: (token: string) => ReactNode
+  filters: Array<ProductLandingPagesFilter>
+  children: (token: ProductLandingPagesFiltersKeys) => ReactNode
 }
 
 export function ProductCardsFilter({ filters, children }: TokenTabsProps) {
   const [currentFilter, setCurrentFilter] = useState(filters[0].name)
   const [hover, setHover] = useState('')
 
-  function handleTabClick(token: string) {
+  function handleTabClick(token: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(token)
   }
 
-  function handleSelectChange(filter: string) {
+  function handleSelectChange(filter: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(filter)
   }
 

@@ -10,7 +10,11 @@ import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import {
+  borrowPageCardsData,
+  productCardsConfig,
+  ProductLandingPagesFiltersKeys,
+} from '../../helpers/productCards'
 
 export function BorrowView() {
   const { t } = useTranslation()
@@ -47,7 +51,7 @@ export function BorrowView() {
         >
           {([productCardsData]) => (
             <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
-              {(cardsFilter) => {
+              {(cardsFilter: ProductLandingPagesFiltersKeys) => {
                 const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
 
                 return (

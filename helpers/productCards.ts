@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { IlkData, IlkDataList } from '../blockchain/ilks'
+import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
@@ -12,7 +13,6 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
-import { sortBy } from 'lodash'
 
 export interface ProductCardData {
   token: string
@@ -26,7 +26,7 @@ export interface ProductCardData {
   name: string
 }
 
-type ProductLandingPagesFilters =
+export type ProductLandingPagesFiltersKeys =
   | 'Featured'
   | 'ETH'
   | 'BTC'
@@ -49,6 +49,11 @@ type ProductLandingPagesFiltersIcons =
   | 'mana_circle'
   | 'matic_circle'
   | 'gusd_circle'
+
+export type ProductLandingPagesFilter = {
+  name: ProductLandingPagesFiltersKeys
+  icon: ProductLandingPagesFiltersIcons
+}
 
 type Ilk =
   | 'WBTC-B'
@@ -75,10 +80,10 @@ type Ilk =
   | 'UNIV2WBTCDAI-A'
 
 type ProductPageType = {
-  cardsFilters: Array<{ name: ProductLandingPagesFilters; icon: ProductLandingPagesFiltersIcons }>
+  cardsFilters: Array<ProductLandingPagesFilter>
   featuredCards: Array<Ilk>
   inactiveIlks: Array<Ilk>
-  ordering: { [Key in ProductLandingPagesFilters]?: Array<Ilk> }
+  ordering: { [Key in ProductLandingPagesFiltersKeys]?: Array<Ilk> }
 }
 
 export const productCardsConfig: {
@@ -233,7 +238,7 @@ export function borrowPageCardsData({
   cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  cardsFilter?: ProductLandingPagesFilters
+  cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
   if (cardsFilter) {
     productCardsData = sortBy(productCardsData, (productCard) => {
