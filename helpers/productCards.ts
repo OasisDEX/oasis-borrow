@@ -198,16 +198,14 @@ export function landingPageCardsData({
   )
 }
 
-export function multiplyPageCardsData({
-  productCardsData,
-  cardsFilter,
-}: {
-  productCardsData: ProductCardData[]
-  cardsFilter?: ProductLandingPagesFiltersKeys
-}) {
+function sortCards(
+  productCardsData: ProductCardData[],
+  sortingConfig: ProductPageType['ordering'],
+  cardsFilter?: ProductLandingPagesFiltersKeys,
+) {
   if (cardsFilter) {
     productCardsData = sortBy(productCardsData, (productCard) => {
-      const orderForFilter = productCardsConfig.multiply.ordering[cardsFilter]
+      const orderForFilter = sortingConfig[cardsFilter]
 
       if (orderForFilter) {
         const order = orderForFilter.indexOf(productCard.ilk)
@@ -221,6 +219,17 @@ export function multiplyPageCardsData({
       return 0
     })
   }
+  return productCardsData
+}
+
+export function multiplyPageCardsData({
+  productCardsData,
+  cardsFilter,
+}: {
+  productCardsData: ProductCardData[]
+  cardsFilter?: ProductLandingPagesFiltersKeys
+}) {
+  productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
 
   const multiplyTokens = productCardsData.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
@@ -257,22 +266,8 @@ export function borrowPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
-  if (cardsFilter) {
-    productCardsData = sortBy(productCardsData, (productCard) => {
-      const orderForFilter = productCardsConfig.borrow.ordering[cardsFilter]
+  productCardsData = sortCards(productCardsData, productCardsConfig.borrow.ordering, cardsFilter)
 
-      if (orderForFilter) {
-        const order = orderForFilter.indexOf(productCard.ilk)
-        if (order >= 0) {
-          return order
-        } else {
-          return Infinity
-        }
-      }
-
-      return 0
-    })
-  }
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
       productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
