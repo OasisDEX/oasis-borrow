@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { IlkDataList } from '../blockchain/ilks'
+import { IlkData, IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
@@ -12,10 +12,11 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { sortBy } from 'lodash'
 
 export interface ProductCardData {
   token: string
-  ilk: string
+  ilk: Ilk
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
   currentCollateralPrice: BigNumber
@@ -25,7 +26,68 @@ export interface ProductCardData {
   name: string
 }
 
-export const productCardsConfig = {
+type ProductLandingPagesFilters =
+  | 'Featured'
+  | 'ETH'
+  | 'BTC'
+  | 'UNI LP'
+  | 'LINK'
+  | 'UNI'
+  | 'YFI'
+  | 'MANA'
+  | 'MATIC'
+  | 'GUSD'
+
+type ProductLandingPagesFiltersIcons =
+  | 'star_circle'
+  | 'eth_circle'
+  | 'btc_circle'
+  | 'uni_lp_circle'
+  | 'link_circle'
+  | 'uni_circle'
+  | 'yfi_circle'
+  | 'mana_circle'
+  | 'matic_circle'
+  | 'gusd_circle'
+
+type Ilk =
+  | 'WBTC-B'
+  | 'ETH-B'
+  | 'ETH-C'
+  | 'WBTC-C'
+  | 'GUSD-A'
+  | 'ETH-A'
+  | 'WBTC-A'
+  | 'LINK-A'
+  | 'UNI-A'
+  | 'YFI-A'
+  | 'MANA-A'
+  | 'MATIC-A'
+  | 'WSTETH-A'
+  | 'RENBTC-A'
+  | 'GUNIV3DAIUSDC1-A'
+  | 'GUNIV3DAIUSDC2-A'
+  | 'UNIV2DAIETH-A'
+  | 'UNIV2WBTCETH-A'
+  | 'UNIV2USDCETH-A'
+  | 'UNIV2DAIUSDC-A'
+  | 'UNIV2UNIETH-A'
+  | 'UNIV2WBTCDAI-A'
+
+type ProductPageType = {
+  cardsFilters: Array<{ name: ProductLandingPagesFilters; icon: ProductLandingPagesFiltersIcons }>
+  featuredCards: Array<Ilk>
+  inactiveIlks: Array<Ilk>
+  ordering: { [Key in ProductLandingPagesFilters]?: Array<Ilk> }
+}
+
+export const productCardsConfig: {
+  borrow: ProductPageType
+  multiply: ProductPageType
+  landing: {
+    featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
+  }
+} = {
   borrow: {
     cardsFilters: [
       { name: 'Featured', icon: 'star_circle' },
@@ -40,7 +102,11 @@ export const productCardsConfig = {
       { name: 'GUSD', icon: 'gusd_circle' },
     ],
     featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
-    inactiveIlks: [] as string[],
+    inactiveIlks: [],
+    ordering: {
+      ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
+      BTC: ['WBTC-C', 'RENBTC-A', 'WBTC-A', 'WBTC-B'],
+    },
   },
   multiply: {
     cardsFilters: [
@@ -55,7 +121,10 @@ export const productCardsConfig = {
       { name: 'MATIC', icon: 'matic_circle' },
     ],
     featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
-    inactiveIlks: [] as string[],
+    inactiveIlks: [],
+    ordering: {
+      BTC: ['ETH-C', 'ETH-A', 'ETH-B'],
+    },
   },
   landing: {
     featuredCards: {
@@ -66,7 +135,7 @@ export const productCardsConfig = {
   },
 }
 
-export const cardDescriptionsKeys: Record<string, string> = {
+export const cardDescriptionsKeys: Record<Ilk, string> = {
   'WBTC-B': 'multiply',
   'ETH-B': 'multiply',
   'ETH-C': 'borrow',
@@ -164,8 +233,24 @@ export function borrowPageCardsData({
   cardsFilter,
 }: {
   productCardsData: ProductCardData[]
-  cardsFilter?: string
+  cardsFilter?: ProductLandingPagesFilters
 }) {
+  if (cardsFilter) {
+    productCardsData = sortBy(productCardsData, (productCard) => {
+      const orderForFilter = productCardsConfig.borrow.ordering[cardsFilter]
+
+      if (orderForFilter) {
+        const order = orderForFilter.indexOf(productCard.ilk)
+        if (order >= 0) {
+          return order
+        } else {
+          return Infinity
+        }
+      }
+
+      return 0
+    })
+  }
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
       productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
@@ -200,7 +285,7 @@ export function createProductCardsData$(
             switchMap((priceInfo) =>
               of({
                 token: ilk.token,
-                ilk: ilk.ilk,
+                ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
                 stabilityFee: ilk.stabilityFee,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,

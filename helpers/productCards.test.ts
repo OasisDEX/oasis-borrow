@@ -300,4 +300,31 @@ describe('createProductCardsData$', () => {
       },
     ])
   })
+
+  it('should custom sort the cards', () => {
+    const state = getStateUnpacker(
+      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB]), () =>
+        mockPriceInfo$(),
+      ),
+    )
+
+    //  ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
+
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
+
+    expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
+    expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
+    expect(borrowPageData[2].ilk).to.eql(wsteth.ilk)
+    expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
+
+    // const multiplyCardData = multiplyPageCardsData({
+    //   productCardsData: state(),
+    //   cardsFilter: 'BTC',
+    // })
+    //
+    // expect(multiplyCardData[0].ilk).to.eql(ethC.ilk)
+    // expect(multiplyCardData[1].ilk).to.eql(ethA.ilk)
+  })
+
+  it('does not sort product cards that have no custom ordering')
 })
