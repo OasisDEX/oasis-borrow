@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -6,14 +7,29 @@ import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
+function bannerValues(maxMultiple: BigNumber, currentCollateralPrice: BigNumber) {
+  const dollarWorthInputColllateral = new BigNumber(150000)
+  const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
+
+  const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
+  const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
+
+  return {
+    tokenAmount: roundedTokenAmount,
+    exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
+  }
+}
+
 export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const isGuniToken = cardData.token === 'GUNIV3DAIUSDC1' || cardData.token === 'GUNIV3DAIUSDC2'
+  const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2'
   const maxMultiple = !isGuniToken
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
+
+  const { tokenAmount, exposure } = bannerValues(maxMultiple, cardData.currentCollateralPrice)
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 
@@ -28,12 +44,12 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: isGuniToken ? '100,000' : '100',
+          value: isGuniToken ? '100,000' : formatCryptoBalance(tokenAmount),
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
           ? t(`product-card-banner.multiply`, {
-              value: formatCryptoBalance(maxMultiple.times(100)),
+              value: formatCryptoBalance(exposure),
               token: cardData.token,
             })
           : t(`product-card-banner.guni`, {
@@ -43,7 +59,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       }}
       leftSlot={{
         title: t('system.max-multiple'),
-        value: `${maxMultiple.toFixed(2)}x`,
+        value: `${maxMultiple.toFixed(2, 1)}x`,
       }}
       rightSlot={{
         title: t(t('system.stability-fee')),

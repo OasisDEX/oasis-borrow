@@ -17,9 +17,9 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
 
-    const roundedTokenAmount = new BigNumber(
-      Math.floor(tokenAmount.multipliedBy(10000).toNumber()).toFixed(4),
-    ).div(10000)
+    const roundedTokenAmount = new BigNumber(tokenAmount.multipliedBy(10000).toFixed(4, 3)).div(
+      10000,
+    )
 
     return {
       maxBorrow: formatCryptoBalance(
@@ -32,7 +32,7 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   if (singleTokenMaxBorrow.lt(minBorrowDisplayAmount)) {
     const tokenAmount = minBorrowDisplayAmount.div(singleTokenMaxBorrow)
 
-    const roundedTokenAmount = new BigNumber(Math.ceil(tokenAmount.toNumber()))
+    const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 2))
 
     return {
       maxBorrow: formatCryptoBalance(
