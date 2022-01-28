@@ -62,7 +62,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
         value: `${maxMultiple.toFixed(2, 1)}x`,
       }}
       rightSlot={{
-        title: t(t('system.stability-fee')),
+        title: t(t('system.variable-annual-fee')),
         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
       }}
       button={{
