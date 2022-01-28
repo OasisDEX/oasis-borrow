@@ -320,7 +320,7 @@ export function createProductCardsData$(
                 bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.backgroundAssetFeature,
                 name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.isZero(),
+                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
               }),
             ),
           )
