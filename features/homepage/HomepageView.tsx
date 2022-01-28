@@ -295,6 +295,7 @@ export function HomepageView() {
             backgroundImage="/static/img/info_cards/pills.png"
             sx={{
               gridArea: [null, 'left'],
+              backgroundSize: ['70%, cover', '300px, cover'],
             }}
           />
           <InfoCard
