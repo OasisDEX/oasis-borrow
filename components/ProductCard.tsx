@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Button, Card, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
@@ -146,10 +146,14 @@ export function ProductCard({
   inactive,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
+  const [clicked, setClicked] = useState(false)
+
   const { t } = useTranslation()
 
   const handleMouseEnter = useCallback(() => setHover(true), [])
   const handleMouseLeave = useCallback(() => setHover(false), [])
+
+  const handleClick = useCallback(() => setClicked(true), [])
 
   return (
     <Box
@@ -214,13 +218,21 @@ export function ProductCard({
               </div>
             </Flex>
             <Flex>
-              <AppLink href={button.link} disabled={isFull} sx={{ width: '100%' }}>
+              <AppLink
+                href={button.link}
+                disabled={isFull}
+                sx={{ width: '100%' }}
+                onClick={handleClick}
+              >
                 <Button
                   variant="primary"
                   sx={{
                     width: '100%',
+                    height: '54px',
                     fontWeight: 'semiBold',
-                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
                     backgroundColor: inactive || isFull ? '#80818A' : 'primary',
                     '&:hover': {
@@ -231,7 +243,17 @@ export function ProductCard({
                     },
                   }}
                 >
-                  {isFull ? t('full') : button.text}
+                  {isFull ? t('full') : !clicked ? button.text : ''}
+                  {clicked && (
+                    <Spinner
+                      variant="styles.spinner.medium"
+                      size={20}
+                      sx={{
+                        color: 'white',
+                        boxSizing: 'content-box',
+                      }}
+                    />
+                  )}
                 </Button>
               </AppLink>
             </Flex>

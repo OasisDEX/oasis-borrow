@@ -84,7 +84,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
         })}`,
       }}
       rightSlot={{
-        title: t(t('system.stability-fee')),
+        title: t(t('system.variable-annual-fee')),
         value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
       }}
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}

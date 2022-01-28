@@ -422,7 +422,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
               <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
             </Text>
             <AppLink
-              href="/vaults/list"
+              href="/"
               variant="primary"
               sx={{
                 display: 'flex',
