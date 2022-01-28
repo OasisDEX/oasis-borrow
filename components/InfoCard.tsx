@@ -38,14 +38,14 @@ function CardWrapper({
   return (
     <Card
       sx={{
-        ...sx,
         borderRadius: 'large',
         border: 'none',
         backgroundImage: `url(${staticFilesRuntimeUrl(backgroundImage)}), ${backgroundGradient}`,
         backgroundPosition: 'bottom 0px right 0px',
         backgroundRepeat: 'no-repeat',
-        backgroundSize: '50%, cover',
+        backgroundSize: ['70%, cover', '220px, cover'],
         minHeight: ['414px', 'unset'],
+        ...sx,
       }}
     >
       {children}
