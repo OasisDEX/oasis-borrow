@@ -3,16 +3,27 @@ import { AppLayout } from 'components/Layouts'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
-import { GetServerSidePropsContext } from 'next'
+import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
+  return {
+    paths: [
+      { params: { ilk: 'ETH-B' } },
+      { params: { ilk: 'ETH-A' } },
+      { params: { ilk: 'ETH-C' } },
+    ], //indicates that no page needs be created at build time
+    fallback: 'blocking', //indicates the type of fallback
+  }
+}
+
+export async function getStaticProps(ctx: GetServerSidePropsContext & { params: { ilk: string } }) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      ilk: ctx.query.ilk || null,
+      ilk: ctx.params.ilk || null,
     },
   }
 }
