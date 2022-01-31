@@ -17,6 +17,7 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
+import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { ChevronUpDown } from './ChevronUpDown'
@@ -300,7 +301,7 @@ function HeaderDropdown({
     <Box
       sx={{
         position: 'relative',
-        top: '-1px',
+        top: '0',
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
@@ -320,9 +321,9 @@ function HeaderDropdown({
         <Card
           sx={{
             borderRadius: 'medium',
-            minWidth: 6,
+            width: 'max-content',
             pl: 3,
-            pr: 4,
+            pr: 3,
             py: 3,
             boxShadow: 'cardLanding',
             border: 'none',
@@ -337,6 +338,30 @@ function HeaderDropdown({
         </Card>
       </Box>
     </Box>
+  )
+}
+
+function AssetsDropdown() {
+  const { t } = useTranslation()
+  return (
+    <HeaderDropdown title={t('nav.assets')}>
+      <Grid
+        columns="minmax(50px, auto) minmax(50px, auto)"
+        sx={{ columnGap: '48px', rowGap: '24px' }}
+      >
+        {LANDING_PILLS.map((asset) => (
+          <AppLink
+            href={asset.link}
+            key={asset.label}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            variant="links.nav"
+          >
+            <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
+            <Text>{asset.label}</Text>
+          </AppLink>
+        ))}
+      </Grid>
+    </HeaderDropdown>
   )
 }
 
@@ -630,17 +655,7 @@ function DisconnectedHeader() {
       >
         {t('nav.borrow')}
       </AppLink>
-      <HeaderDropdown title={t('nav.more')}>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
-          {t('nav.dai-wallet')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
-          {t('nav.learn')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
-          {t('nav.blog')}
-        </AppLink>
-      </HeaderDropdown>
+      <AssetsDropdown />
     </>
   )
   return (
