@@ -60,7 +60,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
   return (
     <Grid sx={{ zIndex: 1, width: '100%', mt: 4 }}>
       <Flex sx={{ justifyContent: 'center', alignItems: 'baseline' }}>
-        <Icon name={content.icon} size="44px" sx={{ mr: 2, alignSelf: 'center' }} />
+        <Icon name={content.icon} size="64px" sx={{ mr: 2, alignSelf: 'center' }} />
         <Heading variant="header1">{content.header}</Heading>
         <Heading sx={{ ml: 2 }} variant="header3">
           ({content.symbol})
