@@ -126,7 +126,12 @@ function UserAccount({ position }: UserAccountProps) {
   )
 }
 
+function navLinkColor(isActive: boolean) {
+  return isActive ? 'primary' : 'lavender'
+}
+
 function ConnectedHeader() {
+  const { pathname } = useRouter()
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
@@ -160,18 +165,29 @@ function ConnectedHeader() {
               <Logo />
               <Flex sx={{ ml: 5, zIndex: 1 }}>
                 <AppLink
-                  variant="nav"
-                  sx={{ mr: 4 }}
+                  variant="links.navHeader"
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
                   href={`/owner/${(context as ContextConnected)?.account}`}
                   onClick={() => trackingEvents.yourVaults()}
                 >
                   {t('your-vaults')}{' '}
                   {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
                 </AppLink>
-                <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply} sx={{ mr: 4 }}>
+                <AppLink
+                  variant="links.navHeader"
+                  href={HEADER_LINKS.multiply}
+                  sx={{
+                    mr: 4,
+                    color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)),
+                  }}
+                >
                   {t('nav.multiply')}
                 </AppLink>
-                <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
+                <AppLink
+                  variant="links.navHeader"
+                  href={HEADER_LINKS.borrow}
+                  sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+                >
                   {t('nav.borrow')}
                 </AppLink>
               </Flex>
@@ -186,7 +202,7 @@ function ConnectedHeader() {
             <Logo />
             <AppLink
               variant="nav"
-              sx={{ mr: 4 }}
+              sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
               href={`/owner/${(context as ContextConnected)?.account}`}
               onClick={() => trackingEvents.yourVaults()}
             >
@@ -455,6 +471,7 @@ const MOBILE_MENU_CONNECTED_SECTIONS = [
 
 function MobileMenu() {
   const { t } = useTranslation()
+  const { pathname } = useRouter()
   const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
   const [isOpen, setIsOpen] = useState(false)
   const { context$ } = useAppContext()
@@ -507,7 +524,10 @@ function MobileMenu() {
                     <AppLink
                       key={link.labelKey}
                       variant="text.paragraph1"
-                      sx={{ textDecoration: 'none' }}
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
                       href={link.url}
                       onClick={closeMenu}
                     >
@@ -535,7 +555,10 @@ function MobileMenu() {
                     <AppLink
                       key={link.labelKey}
                       variant="text.paragraph1"
-                      sx={{ textDecoration: 'none' }}
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
                       href={link.url}
                       onClick={closeMenu}
                     >
@@ -571,6 +594,7 @@ function MobileMenu() {
 
 function DisconnectedHeader() {
   const { t } = useTranslation()
+  const { pathname } = useRouter()
   const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
   const menuBarLandingPagesDisabled = (
     <>
@@ -592,10 +616,18 @@ function DisconnectedHeader() {
   )
   const menuBarLandingPagesEnabled = (
     <>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply}>
+      <AppLink
+        variant="links.navHeader"
+        href={HEADER_LINKS.multiply}
+        sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
+      >
         {t('nav.multiply')}
       </AppLink>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
+      <AppLink
+        variant="links.navHeader"
+        href={HEADER_LINKS.borrow}
+        sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+      >
         {t('nav.borrow')}
       </AppLink>
       <HeaderDropdown title={t('nav.more')}>
