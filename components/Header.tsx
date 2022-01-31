@@ -138,6 +138,7 @@ function ConnectedHeader() {
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
   const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
+  const earnEnabled = useFeatureToggle('EarnProduct')
 
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
@@ -186,10 +187,19 @@ function ConnectedHeader() {
                 <AppLink
                   variant="links.navHeader"
                   href={HEADER_LINKS.borrow}
-                  sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
                 >
                   {t('nav.borrow')}
                 </AppLink>
+                {earnEnabled && (
+                  <AppLink
+                    variant="links.navHeader"
+                    href={HEADER_LINKS.earn}
+                    sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                  >
+                    {t('nav.earn')}
+                  </AppLink>
+                )}
               </Flex>
             </Flex>
             <UserAccount position="relative" />
@@ -289,6 +299,7 @@ const HEADER_LINKS = {
   blog: 'https://blog.oasis.app',
   multiply: `/multiply`,
   borrow: `/borrow`,
+  earn: '/earn',
 }
 
 function HeaderDropdown({
@@ -424,64 +435,36 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
   ),
 }
 
-const MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES = [
-  {
-    titleKey: 'nav.products',
-    links: [
-      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-      { labelKey: 'nav.oasis-borrow' },
-    ],
-  },
-  {
-    titleKey: 'nav.resources',
-    links: [
-      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
-    ],
-  },
-]
-
-const MOBILE_MENU_DISCONNECTED_SECTIONS = [
-  {
-    titleKey: 'nav.products',
-    links: [
-      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-    ],
-  },
-  {
-    titleKey: 'nav.resources',
-    links: [
-      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
-    ],
-  },
-]
-
-const MOBILE_MENU_CONNECTED_SECTIONS = [
-  {
-    titleKey: 'nav.products',
-    links: [
-      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-    ],
-  },
-]
-
 function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
+  const earnProductEnabled = useFeatureToggle('EarnProduct')
   const [isOpen, setIsOpen] = useState(false)
-  const { context$ } = useAppContext()
-  const context = useObservable(context$)
 
-  const isConnected = !!(context as ContextConnected)?.account
-
-  const mobileMenuEntries = assetLandingPagesFeatureEnabled
-    ? MOBILE_MENU_DISCONNECTED_SECTIONS
-    : MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES
+  const mobileMenuEntries = [
+    {
+      titleKey: 'nav.products',
+      links: assetLandingPagesFeatureEnabled
+        ? [
+            { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+            { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+            ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+            { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+          ]
+        : [
+            { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+            { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+          ],
+    },
+    {
+      titleKey: 'nav.resources',
+      links: [
+        { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
+        { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+      ],
+    },
+  ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
   return (
@@ -515,67 +498,35 @@ function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {!isConnected &&
-            mobileMenuEntries.map((section) => (
-              <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
-          {isConnected &&
-            assetLandingPagesFeatureEnabled &&
-            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
-              <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
+          {mobileMenuEntries.map((section) => (
+            <Grid key={section.titleKey}>
+              <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+              {section.links.map((link) =>
+                link.url ? (
+                  <AppLink
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{
+                      textDecoration: 'none',
+                      color: navLinkColor(pathname.includes(link.url)),
+                    }}
+                    href={link.url}
+                    onClick={closeMenu}
+                  >
+                    {t(link.labelKey)}
+                  </AppLink>
+                ) : (
+                  <Text
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{ fontWeight: 'semiBold' }}
+                  >
+                    {t(link.labelKey)}
+                  </Text>
+                ),
+              )}
+            </Grid>
+          ))}
           <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
             <LanguageSelect components={LangSelectMobileComponents} />
@@ -596,6 +547,7 @@ function DisconnectedHeader() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
+  const earnEnabled = useFeatureToggle('EarnProduct')
   const menuBarLandingPagesDisabled = (
     <>
       <HeaderDropdown title={t('nav.products')}>
@@ -630,6 +582,15 @@ function DisconnectedHeader() {
       >
         {t('nav.borrow')}
       </AppLink>
+      {earnEnabled && (
+        <AppLink
+          variant="links.navHeader"
+          href={HEADER_LINKS.earn}
+          sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+        >
+          {t('nav.earn')}
+        </AppLink>
+      )}
       <HeaderDropdown title={t('nav.more')}>
         <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
           {t('nav.dai-wallet')}
