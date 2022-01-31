@@ -53,6 +53,7 @@
   "connect-email": "Connect with email",
   "connect-error": "Please authorize this website to access your Ethereum account.",
   "connect-wallet": "Connect a wallet",
+  "see-products": "See products",
   "connect-wallet-button": "Connect Wallet",
   "connect-with": "{{ connectionKind }}",
   "connect-install-metamask": "Install Metamask",
