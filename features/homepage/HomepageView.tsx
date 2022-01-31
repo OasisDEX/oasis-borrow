@@ -366,33 +366,31 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       {greyCircles}
-      {!isConnected && (
-        <AppLink
-          href="/connect"
-          variant="primary"
+      <AppLink
+        href={isConnected ? '/#product-cards-wrapper' : '/connect'}
+        variant="primary"
+        sx={{
+          display: 'flex',
+          margin: '0 auto',
+          px: '40px',
+          py: 2,
+          alignItems: 'center',
+          '&:hover svg': {
+            transform: 'translateX(10px)',
+          },
+        }}
+      >
+        {isConnected ? t('see-products') : t('connect-wallet')}
+        <Icon
+          name="arrow_right"
           sx={{
-            display: 'flex',
-            margin: '0 auto',
-            px: '40px',
-            py: 2,
-            alignItems: 'center',
-            '&:hover svg': {
-              transform: 'translateX(10px)',
-            },
+            ml: 2,
+            position: 'relative',
+            left: 2,
+            transition: '0.2s',
           }}
-        >
-          {t('connect-wallet')}
-          <Icon
-            name="arrow_right"
-            sx={{
-              ml: 2,
-              position: 'relative',
-              left: 2,
-              transition: '0.2s',
-            }}
-          />
-        </AppLink>
-      )}
+        />
+      </AppLink>
     </Flex>
   )
 }
