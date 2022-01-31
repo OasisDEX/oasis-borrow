@@ -11,7 +11,7 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 import { supportedMultiplyIlks } from '../../../helpers/productCards'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
-  const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk: ilk } })) // these paths will be generated at built time
+  const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
   return {
     paths,
     fallback: true,
