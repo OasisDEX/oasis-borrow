@@ -232,6 +232,11 @@
         "tabLabel": "Multiply on Oasis",
         "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
         "tabParaLinkContent": "See all Multiply collateral types →"
+      },
+      "earn": {
+        "tabLabel": "Earn on Oasis",
+        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+        "tabParaLinkContent": "Learn more about Earn →"
       }
     },
     "info-cards": {

@@ -121,8 +121,27 @@ function Pills({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
+  const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$ } = useAppContext()
   const context = useObservable(context$)
+
+  const earnTab = {
+    tabLabel: t('landing.tabs.earn.tabLabel'),
+    tabContent: (
+      <TabContent
+        paraText={
+          <>
+            {t('landing.tabs.earn.tabParaContent')}{' '}
+            <AppLink href="/multiply" variant="inText">
+              {t('landing.tabs.earn.tabParaLinkContent')}
+            </AppLink>
+          </>
+        }
+        type="multiply"
+        renderProductCard={ProductCardMultiply}
+      />
+    ),
+  }
   return (
     <Box
       sx={{
@@ -185,6 +204,7 @@ export function HomepageView() {
                 />
               ),
             },
+            ...(isEarnEnabled ? [earnTab] : []),
           ]}
           narrowTabsSx={{
             display: ['block', 'none'],
