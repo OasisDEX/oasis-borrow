@@ -80,6 +80,50 @@ type Ilk =
   | 'UNIV2UNIETH-A'
   | 'UNIV2WBTCDAI-A'
 
+export const supportedBorrowIlks = [
+  'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'WSTETH-A',
+  'WBTC-A',
+  'WBTC-B',
+  'WBTC-C',
+  'RENBTC-A',
+  'LINK-A',
+  'GUSD-A',
+  'UNI-A',
+  'YFI-A',
+  'MANA-A',
+  'MATIC-A',
+  'UNIV2DAIETH-A',
+  'UNIV2WBTCETH-A',
+  'UNIV2USDCETH-A',
+  'UNIV2DAIUSDC-A',
+  'UNIV2UNIETH-A',
+  'UNIV2WBTCDAI-A',
+]
+
+export const supportedMultiplyIlks = [
+  'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'WSTETH-A',
+  'WBTC-A',
+  'WBTC-B',
+  'WBTC-C',
+  'RENBTC-A',
+  'GUNIV3DAIUSDC2-A',
+  'LINK-A',
+  'UNI-A',
+  'YFI-A',
+  'MANA-A',
+  'MATIC-A',
+]
+
+export const supportedIlksList = [
+  ...new Set([...supportedBorrowIlks, supportedMultiplyIlks]),
+] as Ilk[]
+
 type ProductPageType = {
   cardsFilters: Array<ProductLandingPagesFilter>
   featuredCards: Array<Ilk>

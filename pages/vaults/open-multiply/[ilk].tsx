@@ -8,13 +8,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
+import { supportedMultiplyIlks } from '../../../helpers/productCards'
+
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
+  const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk: ilk } })) // these paths will be generated at built time
   return {
-    paths: [
-      { params: { ilk: 'ETH-B' } },
-      { params: { ilk: 'WBTC-B' } },
-      { params: { ilk: 'LINK-A' } },
-    ], // these paths will be generated at built time
+    paths,
     fallback: true,
   }
 }
