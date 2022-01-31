@@ -24,7 +24,7 @@ export function MultiplyView() {
       sx={{
         flex: 1,
         position: 'relative',
-        mb: ['123px', '343px'],
+        mb: ['123px', '187px'],
       }}
     >
       <ProductHeader
@@ -51,7 +51,7 @@ export function MultiplyView() {
                 const filteredCards = multiplyPageCardsData({ productCardsData, cardsFilter })
 
                 return (
-                  <ProductCardsWrapper cardsNumber={filteredCards.length}>
+                  <ProductCardsWrapper>
                     {filteredCards.map((cardData) => (
                       <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
                     ))}

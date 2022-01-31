@@ -9,6 +9,7 @@ import ReactSelect, {
 } from 'react-select'
 import { Flex } from 'theme-ui'
 
+import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from '../helpers/productCards'
 import { theme } from '../theme'
 
 const customStyles: StylesConfig = {
@@ -36,12 +37,7 @@ const customStyles: StylesConfig = {
 
 const { Option } = components
 
-export interface ProductCardsSelectValue {
-  name: string
-  icon: string
-}
-
-function OptionWithIcon(props: OptionProps<ProductCardsSelectValue>) {
+function OptionWithIcon(props: OptionProps<ProductLandingPagesFilter>) {
   return (
     <Option {...props}>
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
@@ -52,23 +48,23 @@ function OptionWithIcon(props: OptionProps<ProductCardsSelectValue>) {
   )
 }
 
-const InputWithIcon = (props: SingleValueProps<ProductCardsSelectValue>) => {
+const InputWithIcon = (props: SingleValueProps<ProductLandingPagesFilter>) => {
   const { value } = props.selectProps
   return (
     <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
       <Icon
-        name={`${(value as ProductCardsSelectValue).icon}_color`}
+        name={`${(value as ProductLandingPagesFilter).icon}_color`}
         size="32px"
         sx={{ mr: 2, ml: 2 }}
       />
-      {(value as ProductCardsSelectValue).name}
+      {(value as ProductLandingPagesFilter).name}
     </Flex>
   )
 }
 
 interface ProductCardsSelectProps {
-  options: { name: string; icon: string }[]
-  handleChange: (tab: string) => void
+  options: Array<ProductLandingPagesFilter>
+  handleChange: (tab: ProductLandingPagesFiltersKeys) => void
   currentFilter: string
 }
 
@@ -78,8 +74,8 @@ export function ProductCardsSelect({
   currentFilter,
 }: ProductCardsSelectProps) {
   const handleSelectChange = useCallback(
-    (option: ValueType<ProductCardsSelectValue>) =>
-      handleChange((option as ProductCardsSelectValue).name),
+    (option: ValueType<ProductLandingPagesFilter>) =>
+      handleChange((option as ProductLandingPagesFilter).name),
     [],
   )
 
@@ -88,12 +84,12 @@ export function ProductCardsSelect({
   ])
 
   const isSelected = useMemo(
-    () => (option: ProductCardsSelectValue) => currentFilter === option.name,
+    () => (option: ProductLandingPagesFilter) => currentFilter === option.name,
     [currentFilter],
   )
 
   return (
-    <ReactSelect<ProductCardsSelectValue>
+    <ReactSelect<ProductLandingPagesFilter>
       options={options}
       onChange={handleSelectChange}
       styles={customStyles}

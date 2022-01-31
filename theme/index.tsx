@@ -29,7 +29,7 @@ const oasisBaseTheme = {
 
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
-    border: '#DDDEE6',
+    border: '#EAEAEA',
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
@@ -111,7 +111,7 @@ const oasisBaseTheme = {
       fontFamily: 'heading',
       fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: '40px',
+      fontSize: '52px',
       color: 'primary',
     },
     header2: {
@@ -223,15 +223,17 @@ const oasisBaseTheme = {
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
     userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-    tabSwitcherTabActive: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   layout: {
     container: {
-      maxWidth: '1232px',
+      maxWidth: '1200px',
       px: 3,
+      '@media screen and (min-width: 1232px)': {
+        px: 0,
+      },
     },
     appContainer: {
       variant: 'layout.container',
@@ -245,7 +247,6 @@ const oasisBaseTheme = {
     },
     landingContainer: {
       variant: 'layout.appContainer',
-      maxWidth: '1200px',
     },
     termsContainer: {
       variant: 'layout.appContainer',
@@ -595,17 +596,20 @@ const oasisBaseTheme = {
       bg: 'background',
       p: 3,
       color: 'primary',
-      boxShadow: 'tabSwitcherTabActive',
+      boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
       borderRadius: 'inherit',
       cursor: 'pointer',
       paddingLeft: '2em',
       paddingRight: '2em',
+      transition: TRANSITIONS.global,
     },
     tabSwitcherTabInactive: {
       fontFamily: 'body',
       fontSize: 3,
       fontWeight: 'semiBold',
+      lineHeight: 'body',
       bg: 'transparent',
+      p: 3,
       color: 'text.subtitle',
       cursor: 'pointer',
       transition: TRANSITIONS.global,
@@ -631,6 +635,9 @@ const oasisBaseTheme = {
     },
   },
   links: {
+    unStyled: {
+      all: 'unset',
+    },
     inText: {
       textDecoration: 'none',
       color: '#585CF5',

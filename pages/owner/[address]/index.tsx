@@ -7,10 +7,28 @@ import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
-import { GetServerSidePropsContext } from 'next'
+import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  }
+}
+
+export async function getStaticProps(
+  ctx: GetServerSidePropsContext & { params: { address: string } },
+) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale!, ['common'])),
+      address: ctx.params.address || null,
+    },
+  }
+}
 
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
@@ -32,15 +50,6 @@ function Summary({ address }: { address: string }) {
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
-}
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  return {
-    props: {
-      ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      address: ctx.query?.address || null,
-    },
-  }
 }
 
 export default function VaultsSummary({ address }: { address: string }) {
