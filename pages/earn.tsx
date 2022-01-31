@@ -14,7 +14,6 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function EarnPage() {
-  console.log('hi')
   const enabled = useFeatureToggle('EarnProduct')
 
   if (!enabled) {

@@ -4,13 +4,12 @@ import { Flex, Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsFilter } from '../../components/ProductCardsFilter'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import { earnPageCardsData } from '../../helpers/productCards'
 
 export function EarnView() {
   const { t } = useTranslation()
@@ -46,19 +45,11 @@ export function EarnView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.multiply.cardsFilters}>
-              {(cardsFilter) => {
-                const filteredCards = multiplyPageCardsData({ productCardsData, cardsFilter })
-
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
+            <ProductCardsWrapper>
+              {earnPageCardsData({ productCardsData }).map((cardData) => (
+                <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
+              ))}
+            </ProductCardsWrapper>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>
