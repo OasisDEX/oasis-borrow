@@ -18,7 +18,7 @@ export const getStaticPaths: GetStaticPaths<{ asset: string }> = async () => {
       { params: { asset: 'yfi' } },
       { params: { asset: 'uni' } },
     ], // these paths will be generated at built time
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 

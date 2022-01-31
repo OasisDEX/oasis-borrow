@@ -14,7 +14,7 @@ export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
       { params: { ilk: 'WBTC-C' } },
       { params: { ilk: 'LINK-A' } },
     ], // these paths will be generated at built time
-    fallback: 'blocking',
+    fallback: true,
   }
 }
 
