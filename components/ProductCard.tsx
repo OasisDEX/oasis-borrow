@@ -178,7 +178,7 @@ export function ProductCard({
         <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
           <Box>
             {floatingLabelText && (
-              <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
+              <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
             )}
             <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
               <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
