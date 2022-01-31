@@ -12,10 +12,10 @@ export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   return {
     paths: [
       { params: { ilk: 'ETH-B' } },
-      { params: { ilk: 'ETH-A' } },
-      { params: { ilk: 'ETH-C' } },
-    ], //indicates that no page needs be created at build time
-    fallback: 'blocking', //indicates the type of fallback
+      { params: { ilk: 'WBTC-B' } },
+      { params: { ilk: 'LINK-A' } },
+    ], // these paths will be generated at built time
+    fallback: 'blocking',
   }
 }
 
