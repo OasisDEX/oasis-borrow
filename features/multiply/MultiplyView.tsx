@@ -51,7 +51,7 @@ export function MultiplyView() {
           {([productCardsData]) => (
             <ProductCardsFilter
               filters={productCardsConfig.multiply.cardsFilters.filter(
-                (f) => !(earnEnabled && f.name == 'UNI LP'),
+                (f) => !(earnEnabled && f.name === 'UNI LP'),
               )}
             >
               {(cardsFilter) => {
