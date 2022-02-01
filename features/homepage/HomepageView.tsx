@@ -359,11 +359,7 @@ export function HomepageView() {
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
 
-  const [heading, subheading, greyCircles] = [
-    'landing.hero.headline',
-    'landing.hero.subheader',
-    null,
-  ]
+  const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
   return (
     <Flex
@@ -382,7 +378,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
-      {greyCircles}
       <AppLink
         href={isConnected ? '/#product-cards-wrapper' : '/connect'}
         variant="primary"
