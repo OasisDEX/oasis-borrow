@@ -278,6 +278,10 @@ function sortCards(
   return productCardsData
 }
 
+export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
+  return productCardsData.filter((data) => data.ilk === 'GUNIV3DAIUSDC2-A')
+}
+
 export function multiplyPageCardsData({
   productCardsData,
   cardsFilter,
