@@ -15,8 +15,8 @@ import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import { TokenSymbol } from '../../components/TokenSymbol'
 import { IlksFilterState } from '../ilks/ilksFilters'
-import { TokenSymbol } from '../landing/LandingView'
 import { OpenVaultOverview as OpenVaultOverviewData } from './openVaultData'
 import { useRedirectToOpenVault } from './useRedirectToOpenVault'
 

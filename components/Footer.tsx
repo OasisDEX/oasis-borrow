@@ -9,7 +9,6 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
@@ -169,7 +168,6 @@ function SocialWithLogo() {
 
 export function Footer() {
   const { t } = useTranslation()
-  const assetLpEnabled = useFeatureToggle('AssetLandingPages')
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
@@ -198,23 +196,20 @@ export function Footer() {
               ))}
             </Grid>
           ))}
-          {assetLpEnabled && (
-            <Box sx={{ display: ['none', 'none', 'flex'], width: '100%' }}>
-              <NewsletterSection small />
-            </Box>
-          )}
-        </Grid>
-        {assetLpEnabled && (
-          <Flex sx={{ display: ['flex', 'flex', 'none'], mt: 5 }}>
+
+          <Box sx={{ display: ['none', 'none', 'flex'], width: '100%' }}>
             <NewsletterSection small />
-          </Flex>
-        )}
+          </Box>
+        </Grid>
+        <Flex sx={{ display: ['flex', 'flex', 'none'], mt: 5 }}>
+          <NewsletterSection small />
+        </Flex>
         <Flex sx={{ justifyContent: 'center', pt: 5, display: ['flex', 'none'] }}>
           <SocialWithLogo />
         </Flex>
       </Container>
       <TemporaryFooter />
-      {assetLpEnabled && <FooterBackground />}
+      <FooterBackground />
     </Box>
   )
 }
