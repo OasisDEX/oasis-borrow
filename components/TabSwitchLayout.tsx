@@ -9,7 +9,7 @@ enum VaultViewMode {
   Protection,
   Overview,
 }
-//TODO: make number of tabs and labels and controls configurable
+//TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
 export function TabSwitchLayout({
   defaultMode,
   overViewControl,
