@@ -79,4 +79,4 @@ jobs:
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
     - name: Invalidate CloudFront
-      run: aws cloudfront create-invalidation --distribution-id ${{ env.CF_DIST_ID_PROD }} --paths "/*"
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_PROD }} --paths "/*"
