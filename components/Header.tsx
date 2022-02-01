@@ -132,19 +132,16 @@ function navLinkColor(isActive: boolean) {
 
 function ConnectedHeader() {
   const { pathname } = useRouter()
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
-  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
   const earnEnabled = useFeatureToggle('EarnProduct')
 
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
-  const firstCDP = numberOfVaults ? numberOfVaults === 0 : undefined
 
-  return assetLandingPagesFeatureEnabled ? (
+  return (
     <>
       <Box sx={{ display: ['none', 'block'], mb: 5 }}>
         <BasicHeader
@@ -224,72 +221,6 @@ function ConnectedHeader() {
         </BasicHeader>
       </Box>
     </>
-  ) : (
-    <BasicHeader
-      sx={{
-        position: 'relative',
-        alignItems: 'center',
-        zIndex: 1,
-      }}
-      variant="appContainer"
-    >
-      <>
-        <Flex
-          sx={{
-            alignItems: 'center',
-            justifyContent: ['space-between', 'flex-start'],
-            width: ['100%', 'auto'],
-          }}
-        >
-          <Logo />
-          <Flex sx={{ ml: 5, zIndex: 1 }}>
-            <AppLink
-              variant="nav"
-              sx={{ mr: 4 }}
-              href={`/owner/${(context as ContextConnected)?.account}`}
-              onClick={() => trackingEvents.yourVaults()}
-            >
-              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-            </AppLink>
-            <AppLink
-              variant="nav"
-              sx={{ mr: [0, 4] }}
-              href="/vaults/list"
-              onClick={() => trackingEvents.createNewVault(firstCDP)}
-            >
-              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
-              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
-                <Icon name="plus_header" size="auto" width="18px" height="18px" />
-              </Box>
-            </AppLink>
-          </Flex>
-        </Flex>
-        <Flex
-          sx={{
-            position: ['fixed', 'relative'],
-            bottom: 0,
-            left: 0,
-            right: 0,
-            bg: ['rgba(255,255,255,0.9)', 'transparent'],
-            p: [3, 0],
-            justifyContent: 'space-between',
-            gap: 2,
-          }}
-        >
-          <Flex>
-            <UserSettingsButton />
-            <AccountButton />
-          </Flex>
-          {vaultFormToggleTitle && (
-            <Box sx={{ display: ['flex', 'none'] }}>
-              <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
-                <Box>{vaultFormToggleTitle}</Box>
-              </Button>
-            </Box>
-          )}
-        </Flex>
-      </>
-    </BasicHeader>
   )
 }
 
@@ -438,30 +369,38 @@ const LangSelectMobileComponents: Partial<SelectComponents<{
 function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
-  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
-  const earnProductEnabled = useFeatureToggle('EarnProduct')
   const [isOpen, setIsOpen] = useState(false)
+  const { context$ } = useAppContext()
+  const context = useObservable(context$)
+  const earnProductEnabled = useFeatureToggle('EarnProduct')
+  const isConnected = !!(context as ContextConnected)?.account
 
-  const mobileMenuEntries = [
+  const MOBILE_MENU_DISCONNECTED_SECTIONS = [
     {
       titleKey: 'nav.products',
-      links: assetLandingPagesFeatureEnabled
-        ? [
-            { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-            { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-            ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
-            { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-          ]
-        : [
-            { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-            { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-          ],
+      links: [
+        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+        { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+      ],
     },
     {
       titleKey: 'nav.resources',
       links: [
         { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
         { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+      ],
+    },
+  ]
+
+  const MOBILE_MENU_CONNECTED_SECTIONS = [
+    {
+      titleKey: 'nav.products',
+      links: [
+        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
       ],
     },
   ]
@@ -498,35 +437,66 @@ function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {mobileMenuEntries.map((section) => (
-            <Grid key={section.titleKey}>
-              <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-              {section.links.map((link) =>
-                link.url ? (
-                  <AppLink
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{
-                      textDecoration: 'none',
-                      color: navLinkColor(pathname.includes(link.url)),
-                    }}
-                    href={link.url}
-                    onClick={closeMenu}
-                  >
-                    {t(link.labelKey)}
-                  </AppLink>
-                ) : (
-                  <Text
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ fontWeight: 'semiBold' }}
-                  >
-                    {t(link.labelKey)}
-                  </Text>
-                ),
-              )}
-            </Grid>
-          ))}
+          {!isConnected &&
+            MOBILE_MENU_DISCONNECTED_SECTIONS.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
+          {isConnected &&
+            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
           <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
             <LanguageSelect components={LangSelectMobileComponents} />
@@ -546,71 +516,52 @@ function MobileMenu() {
 function DisconnectedHeader() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
-  const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
   const earnEnabled = useFeatureToggle('EarnProduct')
-  const menuBarLandingPagesDisabled = (
-    <>
-      <HeaderDropdown title={t('nav.products')}>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
-          {t('nav.dai-wallet')}
-        </AppLink>
-        <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
-          {t('nav.borrow')}
-        </Text>
-      </HeaderDropdown>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
-        {t('nav.learn')}
-      </AppLink>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
-        {t('nav.blog')}
-      </AppLink>
-    </>
-  )
-  const menuBarLandingPagesEnabled = (
-    <>
-      <AppLink
-        variant="links.navHeader"
-        href={HEADER_LINKS.multiply}
-        sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
-      >
-        {t('nav.multiply')}
-      </AppLink>
-      <AppLink
-        variant="links.navHeader"
-        href={HEADER_LINKS.borrow}
-        sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
-      >
-        {t('nav.borrow')}
-      </AppLink>
-      {earnEnabled && (
-        <AppLink
-          variant="links.navHeader"
-          href={HEADER_LINKS.earn}
-          sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
-        >
-          {t('nav.earn')}
-        </AppLink>
-      )}
-      <HeaderDropdown title={t('nav.more')}>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
-          {t('nav.dai-wallet')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
-          {t('nav.learn')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
-          {t('nav.blog')}
-        </AppLink>
-      </HeaderDropdown>
-    </>
-  )
+
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
             <Logo />
-            {assetLandingPagesEnabled ? menuBarLandingPagesEnabled : menuBarLandingPagesDisabled}
+            <AppLink
+              variant="links.navHeader"
+              href={HEADER_LINKS.multiply}
+              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
+            >
+              {t('nav.multiply')}
+            </AppLink>
+            <AppLink
+              variant="links.navHeader"
+              href={HEADER_LINKS.borrow}
+              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+            >
+              {t('nav.borrow')}
+            </AppLink>
+            {earnEnabled && (
+              <AppLink
+                variant="links.navHeader"
+                href={HEADER_LINKS.earn}
+                sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+              >
+                {t('nav.earn')}
+              </AppLink>
+            )}
+            <HeaderDropdown title={t('nav.more')}>
+              <AppLink
+                variant="links.nav"
+                sx={{ fontWeight: 'body' }}
+                href={HEADER_LINKS['dai-wallet']}
+              >
+                {t('nav.dai-wallet')}
+              </AppLink>
+              <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
+                {t('nav.learn')}
+              </AppLink>
+              <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
+                {t('nav.blog')}
+              </AppLink>
+            </HeaderDropdown>
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink

@@ -4,7 +4,6 @@ import React from 'react'
 import { WithConnection } from '../components/connectWallet/ConnectWallet'
 import { ProductPagesLayout } from '../components/Layouts'
 import { MultiplyView } from '../features/multiply/MultiplyView'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -13,10 +12,11 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function MultiplyPage() {
-  const enabled = useFeatureToggle('AssetLandingPages')
-  const view = enabled ? <MultiplyView /> : null
-
-  return <WithConnection>{view}</WithConnection>
+  return (
+    <WithConnection>
+      <MultiplyView />
+    </WithConnection>
+  )
 }
 
 MultiplyPage.layout = ProductPagesLayout
