@@ -535,7 +535,8 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
-    "variable-annual-fee": "Variable Annual Fee"
+    "variable-annual-fee": "Variable Annual Fee",
+    "seven-day-average": "7 day average"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
