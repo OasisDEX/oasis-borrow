@@ -14,6 +14,8 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'DEPOSIT':
     case 'DEPOSIT-GENERATE':
+      if ((event as any).reclaim) return total
+
       return total.plus(event.collateralAmount.times(event.oraclePrice))
     case 'PAYBACK':
     case 'WITHDRAW-PAYBACK':
@@ -56,11 +58,11 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
 
 function getCumulativeLossesUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
-    case 'AUCTION_STARTED':
-    case 'AUCTION_STARTED_V2':
-      return event.oraclePrice
-        ? total.plus(event.collateralAmount.abs().times(event.oraclePrice))
-        : total
+    // case 'AUCTION_STARTED':
+    // case 'AUCTION_STARTED_V2':
+    //   return event.oraclePrice
+    //     ? total.plus(event.collateralAmount.abs().times(event.oraclePrice))
+    //     : total
     default:
       return total
   }
