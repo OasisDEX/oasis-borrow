@@ -4,23 +4,19 @@ import { Flex, Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsFilter } from '../../components/ProductCardsFilter'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { earnPageCardsData } from '../../helpers/productCards'
 
-export function MultiplyView() {
+export function EarnView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
     productCardsData$,
   )
-
-  const earnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <Grid
@@ -31,11 +27,11 @@ export function MultiplyView() {
       }}
     >
       <ProductHeader
-        title={t('product-page.multiply.title')}
-        description={t('product-page.multiply.description')}
+        title={t('product-page.earn.title')}
+        description={t('product-page.earn.description')}
         link={{
-          href: 'https://kb.oasis.app/help/what-is-multiply',
-          text: t('product-page.multiply.link'),
+          href: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
+          text: t('product-page.earn.link'),
         }}
       />
 
@@ -49,26 +45,11 @@ export function MultiplyView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter
-              filters={productCardsConfig.multiply.cardsFilters.filter(
-                (f) => !(earnEnabled && f.name === 'UNI LP'),
-              )}
-            >
-              {(cardsFilter) => {
-                const filteredCards = multiplyPageCardsData({
-                  productCardsData,
-                  cardsFilter,
-                })
-
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
+            <ProductCardsWrapper>
+              {earnPageCardsData({ productCardsData }).map((cardData) => (
+                <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
+              ))}
+            </ProductCardsWrapper>
           )}
         </WithLoadingIndicator>
       </WithErrorHandler>
