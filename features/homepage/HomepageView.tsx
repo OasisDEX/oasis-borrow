@@ -8,6 +8,7 @@ import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
+import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
@@ -136,11 +137,12 @@ export function HomepageView() {
             </AppLink>
           </>
         }
-        type="multiply"
-        renderProductCard={ProductCardMultiply}
+        type="earn"
+        renderProductCard={ProductCardEarn}
       />
     ),
   }
+
   return (
     <Box
       sx={{

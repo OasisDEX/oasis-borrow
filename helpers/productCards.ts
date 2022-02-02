@@ -201,7 +201,7 @@ export const productCardsConfig: {
     featuredCards: {
       borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
       multiply: ['ETH-B', 'WBTC-B', 'LINK-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      earn: ['GUNIV3DAIUSDC2-A'],
     },
   },
   descriptionCustomKeys: {
