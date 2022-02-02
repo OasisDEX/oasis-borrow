@@ -89,3 +89,6 @@ jobs:
       with:
         ecs-cluster: ${{ env.CLUSTER_NAME }}
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
+
+    - name: Invalidate CloudFront
+      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"

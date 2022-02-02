@@ -57,11 +57,8 @@ import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVaul
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
-import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
-import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
@@ -499,12 +496,9 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
-
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
 
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
-  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -525,8 +519,6 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
-
   return {
     web3Context$,
     web3ContextConnected$,
@@ -541,7 +533,6 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$,
-    landing$,
     openVault$,
     manageVault$,
     manageMultiplyVault$,
@@ -556,7 +547,6 @@ export function setupAppContext() {
     collateralPrices$,
     termsAcceptance$,
     reclaimCollateral$,
-    openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
     userSettings$,

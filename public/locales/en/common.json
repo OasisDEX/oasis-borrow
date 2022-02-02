@@ -232,6 +232,11 @@
         "tabLabel": "Multiply on Oasis",
         "tabParaContent": "Multiply your exposure to your favorite crypto assets. Browse our featured products here.",
         "tabParaLinkContent": "See all Multiply collateral types →"
+      },
+      "earn": {
+        "tabLabel": "Earn on Oasis",
+        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+        "tabParaLinkContent": "Learn more about Earn →"
       }
     },
     "info-cards": {
@@ -531,7 +536,8 @@
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
-    "variable-annual-fee": "Variable Annual Fee"
+    "variable-annual-fee": "Variable Annual Fee",
+    "seven-day-average": "7 day average"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -812,7 +818,8 @@
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
       "max-exposure": "Max {{token}} exposure"
-    }
+    },
+    "unprofitable-position": "This position is currently likely unprofitable. Proceed if you know what you are doing."
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",

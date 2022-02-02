@@ -2,12 +2,13 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { LANDING_PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Heading, Image, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
+import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
@@ -15,7 +16,6 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable, useObservableWithError } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
-import { staticFilesRuntimeUrl } from '../../helpers/staticPaths'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
@@ -121,8 +121,28 @@ function Pills({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
+  const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$ } = useAppContext()
   const context = useObservable(context$)
+
+  const earnTab = {
+    tabLabel: t('landing.tabs.earn.tabLabel'),
+    tabContent: (
+      <TabContent
+        paraText={
+          <>
+            {t('landing.tabs.earn.tabParaContent')}{' '}
+            <AppLink href="/multiply" variant="inText">
+              {t('landing.tabs.earn.tabParaLinkContent')}
+            </AppLink>
+          </>
+        }
+        type="earn"
+        renderProductCard={ProductCardEarn}
+      />
+    ),
+  }
+
   return (
     <Box
       sx={{
@@ -185,6 +205,7 @@ export function HomepageView() {
                 />
               ),
             },
+            ...(isEarnEnabled ? [earnTab] : []),
           ]}
           narrowTabsSx={{
             display: ['block', 'none'],
@@ -339,15 +360,9 @@ export function HomepageView() {
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
-  const assetLpEnabled = useFeatureToggle('AssetLandingPages')
 
-  const [heading, subheading, greyCircles] = assetLpEnabled
-    ? ['landing.hero.headline', 'landing.hero.subheader', null]
-    : [
-        'landing.hero.headlinePreAssetLandingPages',
-        'landing.hero.subheaderPreAssetLandingPages',
-        <Image sx={{ mb: 4 }} src={staticFilesRuntimeUrl('/static/img/icons_set.svg')} />,
-      ]
+  const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
+
   return (
     <Flex
       sx={{
@@ -365,7 +380,6 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
-      {greyCircles}
       <AppLink
         href={isConnected ? '/#product-cards-wrapper' : '/connect'}
         variant="primary"

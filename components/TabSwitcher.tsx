@@ -128,18 +128,19 @@ export function TabSwitcher(props: {
         selectedTab={selectedTab}
         tabs={props.tabs}
       />
-      {props.tabs.map(({ tabLabel, tabContent }) => (
-        <Box
-          key={tabLabel}
-          sx={{
-            ...slideInAnimation,
-            display: tabLabel === props.tabs[parseInt(selectedTab)].tabLabel ? 'block' : 'none',
-            width: '100%',
-          }}
-        >
-          {tabContent}
-        </Box>
-      ))}
+      {props.tabs
+        .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
+        .map(({ tabLabel, tabContent }) => (
+          <Box
+            key={tabLabel}
+            sx={{
+              ...slideInAnimation,
+              width: '100%',
+            }}
+          >
+            {tabContent}
+          </Box>
+        ))}
     </Flex>
   )
 }

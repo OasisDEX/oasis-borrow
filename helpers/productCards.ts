@@ -80,6 +80,50 @@ type Ilk =
   | 'UNIV2UNIETH-A'
   | 'UNIV2WBTCDAI-A'
 
+export const supportedBorrowIlks = [
+  'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'WSTETH-A',
+  'WBTC-A',
+  'WBTC-B',
+  'WBTC-C',
+  'RENBTC-A',
+  'LINK-A',
+  'GUSD-A',
+  'UNI-A',
+  'YFI-A',
+  'MANA-A',
+  'MATIC-A',
+  'UNIV2DAIETH-A',
+  'UNIV2WBTCETH-A',
+  'UNIV2USDCETH-A',
+  'UNIV2DAIUSDC-A',
+  'UNIV2UNIETH-A',
+  'UNIV2WBTCDAI-A',
+]
+
+export const supportedMultiplyIlks = [
+  'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'WSTETH-A',
+  'WBTC-A',
+  'WBTC-B',
+  'WBTC-C',
+  'RENBTC-A',
+  'GUNIV3DAIUSDC2-A',
+  'LINK-A',
+  'UNI-A',
+  'YFI-A',
+  'MANA-A',
+  'MATIC-A',
+]
+
+export const supportedIlksList = [
+  ...new Set([...supportedBorrowIlks, supportedMultiplyIlks]),
+] as Ilk[]
+
 type ProductPageType = {
   cardsFilters: Array<ProductLandingPagesFilter>
   featuredCards: Array<Ilk>
@@ -91,6 +135,7 @@ type ProductPageType = {
 export const productCardsConfig: {
   borrow: ProductPageType
   multiply: ProductPageType
+  earn: ProductPageType
   landing: {
     featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
   }
@@ -145,11 +190,18 @@ export const productCardsConfig: {
       'WSTETH-A': 'staking-rewards',
     },
   },
+  earn: {
+    cardsFilters: [],
+    featuredCards: [],
+    inactiveIlks: [],
+    ordering: {},
+    tags: {},
+  },
   landing: {
     featuredCards: {
       borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
       multiply: ['ETH-B', 'WBTC-B', 'LINK-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      earn: ['GUNIV3DAIUSDC2-A'],
     },
   },
   descriptionCustomKeys: {
@@ -234,6 +286,10 @@ function sortCards(
   return productCardsData
 }
 
+export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
+  return productCardsData.filter((data) => data.ilk === 'GUNIV3DAIUSDC2-A')
+}
+
 export function multiplyPageCardsData({
   productCardsData,
   cardsFilter,
@@ -316,9 +372,9 @@ export function createProductCardsData$(
                 liquidationRatio: ilk.liquidationRatio,
                 stabilityFee: ilk.stabilityFee,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
-                bannerIcon: tokenMeta.bannerIconAssetFeature,
+                bannerIcon: tokenMeta.bannerIcon,
                 bannerGif: tokenMeta.bannerGif,
-                background: tokenMeta.backgroundAssetFeature,
+                background: tokenMeta.background,
                 name: tokenMeta.name,
                 isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
               }),
