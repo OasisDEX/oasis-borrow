@@ -1,5 +1,5 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import { TabChange } from 'features/automation/common/UITypes/AddFormChange'
+import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
 import React, { useEffect, useState } from 'react'
 import { Flex } from 'theme-ui'
 
@@ -25,12 +25,9 @@ export function TabSwitchLayout({
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
   const { uiChanges } = useAppContext()
-  const subjectName = 'tabChange'
 
   useEffect(() => {
-    console.log('Subscribing to uiChanges')
-    const uiChanges$ = uiChanges.subscribe<TabChange>(subjectName)
-
+    const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
     const subscription = uiChanges$.subscribe((value) => {
       setMode(value.currentMode)
     })

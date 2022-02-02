@@ -125,7 +125,7 @@ export function ManageVaultDetails(
   return (
     <Box>
       {isVisible && (
-        <Banner close={() => setIsVisible(false)} sx={{ marginBottom: '16px' }}>
+        <Banner close={() => setIsVisible(false)} sx={{ marginBottom: 3 }}>
           <Grid columns={2}>
             <Grid>
               <Heading variant="header2" as="h1">

@@ -8,6 +8,7 @@ import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
@@ -136,7 +137,7 @@ export function ManageVaultContainer({
           <ManageVaultDetails
             {...manageVault}
             onBannerButtonClickHandler={() => {
-              uiChanges.publish('tabChange', { currentMode: VaultViewMode.Protection })
+              uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
             }}
           />
           <VaultHistoryView vaultHistory={vaultHistory} />
