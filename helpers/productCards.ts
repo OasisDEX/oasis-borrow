@@ -135,6 +135,7 @@ type ProductPageType = {
 export const productCardsConfig: {
   borrow: ProductPageType
   multiply: ProductPageType
+  earn: ProductPageType
   landing: {
     featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
   }
@@ -188,6 +189,13 @@ export const productCardsConfig: {
       'ETH-B': 'max-exposure',
       'WSTETH-A': 'staking-rewards',
     },
+  },
+  earn: {
+    cardsFilters: [],
+    featuredCards: [],
+    inactiveIlks: [],
+    ordering: {},
+    tags: {},
   },
   landing: {
     featuredCards: {
