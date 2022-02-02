@@ -817,7 +817,8 @@
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
       "max-exposure": "Max {{token}} exposure"
-    }
+    },
+    "unprofitable-position": "This position is currently likely unprofitable. Proceed if you know what you are doing."
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",
