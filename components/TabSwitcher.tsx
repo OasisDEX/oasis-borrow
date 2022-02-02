@@ -5,11 +5,11 @@ import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 import { slideInAnimation } from '../theme/animations'
 
-type ArrayWithAtLeastOne<T> = {
+export type ArrayWithAtLeastOne<T> = {
   0: T
 } & Array<T>
 
-type TabSwitcherTab = {
+export type TabSwitcherTab = {
   tabLabel: string
   tabContent: ReactNode
 }
@@ -108,6 +108,8 @@ export function TabSwitcher(props: {
     [],
   )
 
+  const isOneTab = props.tabs.length === 1
+
   return (
     <Flex
       sx={{
@@ -116,18 +118,22 @@ export function TabSwitcher(props: {
       }}
       id="product-cards-wrapper"
     >
-      <NarrowTabSelector
-        selectedTab={selectedTab}
-        tabs={props.tabs}
-        setSelectedTab={setSelectedTab}
-        narrowTabsSx={props.narrowTabsSx}
-      />
-      <WideTabSelector
-        wideTabsSx={props.wideTabsSx}
-        selectTab={selectTab}
-        selectedTab={selectedTab}
-        tabs={props.tabs}
-      />
+      {!isOneTab && (
+        <>
+          <NarrowTabSelector
+            selectedTab={selectedTab}
+            tabs={props.tabs}
+            setSelectedTab={setSelectedTab}
+            narrowTabsSx={props.narrowTabsSx}
+          />
+          <WideTabSelector
+            wideTabsSx={props.wideTabsSx}
+            selectTab={selectTab}
+            selectedTab={selectedTab}
+            tabs={props.tabs}
+          />
+        </>
+      )}
       {props.tabs.map(({ tabLabel, tabContent }) => (
         <Box
           key={tabLabel}

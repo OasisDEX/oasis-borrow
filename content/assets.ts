@@ -46,7 +46,17 @@ export const ASSETS_PAGES = [
     icon: 'yfi_circle_color',
     descriptionKey: 'assets.yfi.description',
     link: 'assets.yfi.link',
-    ilks: ['YFI-A'],
+    multiplyIlks: ['YFI-A'],
+    borrowIlks: ['YFI-A'],
+  },
+  {
+    slug: 'dai',
+    header: 'Dai',
+    symbol: 'DAI',
+    icon: 'dai_circle_color',
+    descriptionKey: 'assets.dai.description',
+    link: 'assets.dai.link',
+    earnIlks: ['GUNIV3DAIUSDC2-A'],
   },
   {
     slug: 'uni',
@@ -55,7 +65,8 @@ export const ASSETS_PAGES = [
     icon: 'uni_circle_color',
     descriptionKey: 'assets.uni.description',
     link: 'assets.uni.link',
-    ilks: ['UNI-A'],
+    multiplyIlks: ['UNI-A'],
+    borrowIlks: ['UNI-A'],
   },
   {
     slug: 'link',
@@ -64,7 +75,8 @@ export const ASSETS_PAGES = [
     icon: 'chainlink_circle_color',
     descriptionKey: 'assets.link.description',
     link: 'assets.link.link',
-    ilks: ['LINK-A'],
+    multiplyIlks: ['LINK-A'],
+    borrowIlks: ['LINK-A'],
   },
   {
     slug: 'matic',
@@ -73,7 +85,8 @@ export const ASSETS_PAGES = [
     icon: 'matic_circle_color',
     descriptionKey: 'assets.matic.description',
     link: 'assets.matic.link',
-    ilks: ['MATIC-A'],
+    multiplyIlks: ['MATIC-A'],
+    borrowIlks: ['MATIC-A'],
   },
   {
     slug: 'mana',
@@ -82,7 +95,8 @@ export const ASSETS_PAGES = [
     icon: 'mana_circle_color',
     descriptionKey: 'assets.mana.description',
     link: 'assets.mana.link',
-    ilks: ['MANA-A'],
+    multiplyIlks: ['MANA-A'],
+    borrowIlks: ['MANA-A'],
   },
 ]
 
