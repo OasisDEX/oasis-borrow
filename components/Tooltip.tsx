@@ -68,7 +68,7 @@ export function StatefulTooltip({
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      sx={{ alignItems: 'center', ...containerSx }}
+      sx={containerSx}
     >
       {children}
       {tooltipOpen && <Tooltip sx={tooltipSx}>{tooltip}</Tooltip>}

@@ -34,7 +34,7 @@ function UnprofitableSlot({ value, variant }: UnprofitableTooltipProps) {
         </Text>
       }
       tooltipSx={tooltipSxMap[variant]}
-      containerSx={containerSxMap[variant]}
+      containerSx={{ alignItems: 'center', ...containerSxMap[variant] }}
     >
       <Flex sx={{ alignItems: 'center' }}>
         {variant === 'right' && <Icon name="error" size={17} sx={{ mr: 1 }} />}
@@ -63,8 +63,8 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const sevenDayAverage = new BigNumber(0.1201) // TODO to be replaced with calculations
   const unprofitable = false // TODO to be replaced with calculations
 
-  const rightSlotValue = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
-  const leftSlotValue = formatPercent(sevenDayAverage.times(100), { precision: 2 })
+  const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
+  const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
 
   return (
     <ProductCard
@@ -88,17 +88,17 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       leftSlot={{
         title: t('system.seven-day-average'),
         value: unprofitable ? (
-          <UnprofitableSlot value={leftSlotValue} variant="left" />
+          <UnprofitableSlot value={yieldAsPercentage} variant="left" />
         ) : (
-          leftSlotValue
+          yieldAsPercentage
         ),
       }}
       rightSlot={{
         title: t(t('system.variable-annual-fee')),
         value: unprofitable ? (
-          <UnprofitableSlot value={rightSlotValue} variant="right" />
+          <UnprofitableSlot value={stabilityFeePercentage} variant="right" />
         ) : (
-          rightSlotValue
+          stabilityFeePercentage
         ),
       }}
       button={{
