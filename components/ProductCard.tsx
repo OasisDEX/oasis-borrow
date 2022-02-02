@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
@@ -122,8 +122,8 @@ export interface ProductCardProps {
   title: string
   description: string
   banner: { title: string; description: string }
-  leftSlot: { title: string; value: string }
-  rightSlot: { title: string; value: string }
+  leftSlot: { title: string; value: ReactNode }
+  rightSlot: { title: string; value: ReactNode }
   button: { link: string; text: string }
   background: string
   isFull: boolean

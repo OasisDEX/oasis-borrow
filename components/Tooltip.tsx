@@ -1,5 +1,5 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
-import { Card, SxStyleProp } from 'theme-ui'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { Card, Flex, SxStyleProp } from 'theme-ui'
 
 export function useTooltip() {
   const [tooltipOpen, setTooltipOpen] = useState(false)
@@ -32,5 +32,46 @@ export function Tooltip({ children, sx }: { children: ReactNode; sx?: SxStylePro
     >
       {children}
     </Card>
+  )
+}
+
+interface StatefulTooltipProps {
+  tooltip: ReactNode
+  children: ReactNode
+  tooltipSx?: SxStyleProp
+  containerSx?: SxStyleProp
+}
+
+export function StatefulTooltip({
+  tooltip,
+  tooltipSx,
+  containerSx,
+  children,
+}: StatefulTooltipProps) {
+  const isTouchDevice = window && 'ontouchstart' in window
+  const { tooltipOpen, setTooltipOpen } = useTooltip()
+
+  const handleMouseEnter = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(true) : undefined),
+    [isTouchDevice],
+  )
+
+  const handleMouseLeave = useMemo(
+    () => (!isTouchDevice ? () => setTooltipOpen(false) : undefined),
+    [isTouchDevice],
+  )
+
+  const handleClick = useCallback(() => tooltip && setTooltipOpen(true), [])
+
+  return (
+    <Flex
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      sx={containerSx}
+    >
+      {children}
+      {tooltipOpen && <Tooltip sx={tooltipSx}>{tooltip}</Tooltip>}
+    </Flex>
   )
 }
