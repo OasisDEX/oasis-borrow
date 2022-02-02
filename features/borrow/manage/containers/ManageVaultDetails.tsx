@@ -94,7 +94,9 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState) {
+export function ManageVaultDetails(
+  props: ManageVaultState & { onBannerButtonClickHandler: () => void },
+) {
   const {
     vault: {
       token,
@@ -130,7 +132,13 @@ export function ManageVaultDetails(props: ManageVaultState) {
                 {t('protection.banner-header')}
               </Heading>
               <Text variant="subheader">{t('protection.banner-content')}</Text>
-              <Button backgroundColor={'#EDEDFF'} sx={{ borderRadius: '6px' }}>
+              <Button
+                backgroundColor={'#EDEDFF'}
+                sx={{ borderRadius: '6px' }}
+                onClick={() => {
+                  props.onBannerButtonClickHandler()
+                }}
+              >
                 <Text color="#575CFE">{t('protection.banner-button')}</Text>
               </Button>
             </Grid>

@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { VaultViewMode } from 'components/TabSwitchLayout'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
@@ -108,7 +109,7 @@ export function ManageVaultContainer({
   manageVault: ManageVaultState
   vaultHistory: VaultHistoryEvent[]
 }) {
-  const { manageVault$, context$ } = useAppContext()
+  const { manageVault$, context$, uiChanges } = useAppContext()
   const {
     vault: { id },
     clear,
@@ -132,7 +133,12 @@ export function ManageVaultContainer({
       <DefaultVaultHeader {...manageVault} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <ManageVaultDetails {...manageVault} />
+          <ManageVaultDetails
+            {...manageVault}
+            onBannerButtonClickHandler={() => {
+              uiChanges.publish('tabChange', { currentMode: VaultViewMode.Protection })
+            }}
+          />
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>

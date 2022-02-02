@@ -1,7 +1,9 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import React, { useState } from 'react'
+import { TabChange } from 'features/automation/common/UITypes/AddFormChange'
+import React, { useEffect, useState } from 'react'
 import { Flex } from 'theme-ui'
 
+import { useAppContext } from './AppContextProvider'
 import { VaultHeading } from './vault/VaultHeading'
 
 enum VaultViewMode {
@@ -22,6 +24,20 @@ export function TabSwitchLayout({
   protectionControl?: JSX.Element
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
+  const { uiChanges } = useAppContext()
+  const subjectName = 'tabChange'
+
+  useEffect(() => {
+    console.log('Subscribing to uiChanges')
+    const uiChanges$ = uiChanges.subscribe<TabChange>(subjectName)
+
+    const subscription = uiChanges$.subscribe((value) => {
+      setMode(value.currentMode)
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
     return currentMode === activeMode ? 'tab' : 'tabInactive'
