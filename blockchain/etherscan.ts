@@ -15,7 +15,12 @@ function openPopup(url: string) {
   if (!process.browser) {
     return
   }
-  window.open(url, '_blank')
+  const open = window.open(url, '_blank')
+
+  if (open) {
+    open.opener = null
+  }
+
   window.focus()
 }
 
