@@ -376,8 +376,6 @@ function MobileMenu() {
         <Global
           styles={() => ({
             body: {
-              overflow: 'hidden',
-              height: '100vh',
               position: 'fixed',
               width: '100vw',
             },
@@ -393,10 +391,10 @@ function MobileMenu() {
           right: 0,
           zIndex: 'mobileMenu',
           transition: 'opacity ease-in 0.25s',
-          height: isOpen ? '100vh' : 0,
+          height: '100%',
+          overflowY: 'auto',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'unset' : 'none',
-          overflow: 'hidden',
           p: 5,
         }}
       >
