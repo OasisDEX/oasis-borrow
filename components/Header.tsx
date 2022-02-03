@@ -17,11 +17,11 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
+import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { ChevronUpDown } from './ChevronUpDown'
+import { AssetsSelect } from './AssetsSelect'
 import { useSharedUI } from './SharedUIProvider'
-import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -242,7 +242,7 @@ function HeaderDropdown({
     <Box
       sx={{
         position: 'relative',
-        top: '-1px',
+        top: '0',
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
@@ -262,9 +262,9 @@ function HeaderDropdown({
         <Card
           sx={{
             borderRadius: 'medium',
-            minWidth: 6,
+            width: 'max-content',
             pl: 3,
-            pr: 4,
+            pr: 3,
             py: 3,
             boxShadow: 'cardLanding',
             border: 'none',
@@ -279,6 +279,30 @@ function HeaderDropdown({
         </Card>
       </Box>
     </Box>
+  )
+}
+
+function AssetsDropdown() {
+  const { t } = useTranslation()
+  return (
+    <HeaderDropdown title={t('nav.assets')}>
+      <Grid
+        columns="minmax(50px, auto) minmax(50px, auto)"
+        sx={{ columnGap: '48px', rowGap: '24px' }}
+      >
+        {LANDING_PILLS.map((asset) => (
+          <AppLink
+            href={asset.link}
+            key={asset.label}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            variant="links.nav"
+          >
+            <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
+            <Text>{asset.label}</Text>
+          </AppLink>
+        ))}
+      </Grid>
+    </HeaderDropdown>
   )
 }
 
@@ -303,67 +327,6 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
         ))}
     </HeaderDropdown>
   )
-}
-
-const LangSelectMobileComponents: Partial<SelectComponents<{
-  value: string
-  label: string
-}>> = {
-  IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => (
-    <Flex sx={{ color: 'primary', fontWeight: 'body' }}>{children}</Flex>
-  ),
-  SingleValue: ({ children }) => <Box>{children}</Box>,
-  Option: ({ children, innerProps }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        py: 2,
-        px: 3,
-        cursor: 'pointer',
-        '&:hover': {
-          bg: 'background',
-        },
-      }}
-    >
-      {children}
-    </Box>
-  ),
-  Menu: ({ innerProps, children }) => (
-    <Card
-      {...innerProps}
-      sx={{
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        border: 'none',
-        p: 0,
-        position: 'relative',
-        top: '8px',
-      }}
-    >
-      {children}
-    </Card>
-  ),
-  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        cursor: 'pointer',
-        variant: 'links.nav',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 3,
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        py: '8px',
-        px: '16px',
-      }}
-    >
-      {children}
-      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
-    </Box>
-  ),
 }
 
 function MobileMenu() {
@@ -406,14 +369,13 @@ function MobileMenu() {
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
+
   return (
     <>
       {isOpen && (
         <Global
           styles={() => ({
             body: {
-              overflow: 'hidden',
-              height: '100vh',
               position: 'fixed',
               width: '100vw',
             },
@@ -429,10 +391,10 @@ function MobileMenu() {
           right: 0,
           zIndex: 'mobileMenu',
           transition: 'opacity ease-in 0.25s',
-          height: isOpen ? '100vh' : 0,
+          height: '100%',
+          overflowY: 'auto',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'unset' : 'none',
-          overflow: 'hidden',
           p: 5,
         }}
       >
@@ -498,8 +460,19 @@ function MobileMenu() {
               </Grid>
             ))}
           <Grid>
+            <Text variant="links.navHeader">{t('nav.assets')}</Text>
+            <AssetsSelect
+              options={LANDING_PILLS.map((asset) => ({
+                label: asset.label,
+                icon: asset.icon,
+                link: asset.link,
+              }))}
+              handleChange={closeMenu}
+            />
+          </Grid>
+          <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
-            <LanguageSelect components={LangSelectMobileComponents} />
+            <LanguageSelect />
           </Grid>
         </Grid>
       </Box>
@@ -547,21 +520,7 @@ function DisconnectedHeader() {
                 {t('nav.earn')}
               </AppLink>
             )}
-            <HeaderDropdown title={t('nav.more')}>
-              <AppLink
-                variant="links.nav"
-                sx={{ fontWeight: 'body' }}
-                href={HEADER_LINKS['dai-wallet']}
-              >
-                {t('nav.dai-wallet')}
-              </AppLink>
-              <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
-                {t('nav.learn')}
-              </AppLink>
-              <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
-                {t('nav.blog')}
-              </AppLink>
-            </HeaderDropdown>
+            <AssetsDropdown />
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink

@@ -27,35 +27,30 @@ function TabContent(props: {
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   ilks: string[]
+  productCardsData: ProductCardData[]
 }) {
-  const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
-    productCardsData$,
-  )
+  const ProductCard = props.renderProductCard
+  const filteredCards = props.ilks
+    .map((ilk) => props.productCardsData.find((card) => card.ilk === ilk))
+    .filter(
+      (cardData: ProductCardData | undefined): cardData is ProductCardData => cardData !== null,
+    )
 
   return (
-    <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
-        {([productCardsData]) => {
-          const filteredCards = props.ilks
-            .map((ilk) => productCardsData.find((card) => card.ilk === ilk))
-            .filter(
-              (cardData: ProductCardData | undefined): cardData is ProductCardData =>
-                cardData !== null,
-            )
-
-          return (
-            <ProductCardsWrapper>
-              {filteredCards.map((cardData) => props.renderProductCard({ cardData }))}
-            </ProductCardsWrapper>
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <ProductCardsWrapper>
+      {filteredCards.map((cardData) => (
+        <ProductCard cardData={cardData} key={cardData.ilk} />
+      ))}
+    </ProductCardsWrapper>
   )
 }
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
+
+  const { productCardsData$ } = useAppContext()
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+    productCardsData$,
+  )
 
   return (
     <Grid sx={{ zIndex: 1, width: '100%', mt: 4 }}>
@@ -81,37 +76,47 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Box>
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
-        <TabSwitcher
-          narrowTabsSx={{
-            display: ['block', 'none'],
-            maxWidth: '343px',
-            width: '100%',
-            mb: 4,
-          }}
-          wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
-          tabs={[
-            {
-              tabLabel: t('landing.tabs.multiply.tabLabel'),
-              tabContent: (
-                <TabContent
-                  ilks={content.ilks ? content.ilks : content.multiplyIlks}
-                  type="multiply"
-                  renderProductCard={ProductCardMultiply}
+        <WithErrorHandler error={[productCardsDataError]}>
+          <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
+            {([productCardsData]) => {
+              return (
+                <TabSwitcher
+                  narrowTabsSx={{
+                    display: ['block', 'none'],
+                    maxWidth: '343px',
+                    width: '100%',
+                    mb: 4,
+                  }}
+                  wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
+                  tabs={[
+                    {
+                      tabLabel: t('landing.tabs.multiply.tabLabel'),
+                      tabContent: (
+                        <TabContent
+                          ilks={content.ilks ? content.ilks : content.multiplyIlks}
+                          type="multiply"
+                          renderProductCard={ProductCardMultiply}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
+                    {
+                      tabLabel: t('landing.tabs.borrow.tabLabel'),
+                      tabContent: (
+                        <TabContent
+                          ilks={content.ilks ? content.ilks : content.borrowIlks}
+                          type="borrow"
+                          renderProductCard={ProductCardBorrow}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
+                  ]}
                 />
-              ),
-            },
-            {
-              tabLabel: t('landing.tabs.borrow.tabLabel'),
-              tabContent: (
-                <TabContent
-                  ilks={content.ilks ? content.ilks : content.borrowIlks}
-                  type="borrow"
-                  renderProductCard={ProductCardBorrow}
-                />
-              ),
-            },
-          ]}
-        />
+              )
+            }}
+          </WithLoadingIndicator>
+        </WithErrorHandler>
       </Grid>
     </Grid>
   )

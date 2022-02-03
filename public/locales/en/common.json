@@ -416,7 +416,9 @@
     "oasis-borrow": "Oasis Borrow",
     "multiply": "Multiply",
     "more": "More",
-    "earn": "Earn"
+    "assets": "Assets",
+    "earn": "Earn",
+    "select-an-asset": "Select an asset"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",

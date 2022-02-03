@@ -24,51 +24,35 @@ function TabContent(props: {
   paraText: JSX.Element
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
+  productCardsData: ProductCardData[]
 }) {
-  const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
-    productCardsData$,
-  )
+  const ProductCard = props.renderProductCard
+
+  const landingCards = landingPageCardsData({
+    productCardsData: props.productCardsData,
+    product: props.type,
+  })
 
   return (
     <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsDataValue]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
-          {([productCardsData]) => {
-            const landingCards = landingPageCardsData({
-              productCardsData,
-              product: props.type,
-            })
-            return (
-              <>
-                <Text
-                  variant="paragraph2"
-                  sx={{
-                    mt: 4,
-                    color: 'lavender',
-                    maxWidth: 617,
-                    textAlign: 'center',
-                    mb: 5,
-                    ...fadeInAnimation,
-                  }}
-                >
-                  {props.paraText}
-                </Text>
-                <ProductCardsWrapper>
-                  {landingCards.map((cardData) => props.renderProductCard({ cardData }))}
-                </ProductCardsWrapper>
-              </>
-            )
-          }}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <Text
+        variant="paragraph2"
+        sx={{
+          mt: 4,
+          color: 'lavender',
+          maxWidth: 617,
+          textAlign: 'center',
+          mb: 5,
+          ...fadeInAnimation,
+        }}
+      >
+        {props.paraText}
+      </Text>
+      <ProductCardsWrapper>
+        {landingCards.map((cardData) => (
+          <ProductCard cardData={cardData} key={cardData.ilk} />
+        ))}
+      </ProductCardsWrapper>
     </Flex>
   )
 }
@@ -122,26 +106,11 @@ function Pills({ sx }: { sx?: SxProps }) {
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
-  const { context$ } = useAppContext()
+  const { context$, productCardsData$ } = useAppContext()
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+    productCardsData$,
+  )
   const context = useObservable(context$)
-
-  const earnTab = {
-    tabLabel: t('landing.tabs.earn.tabLabel'),
-    tabContent: (
-      <TabContent
-        paraText={
-          <>
-            {t('landing.tabs.earn.tabParaContent')}{' '}
-            <AppLink href="/multiply" variant="inText">
-              {t('landing.tabs.earn.tabParaLinkContent')}
-            </AppLink>
-          </>
-        }
-        type="earn"
-        renderProductCard={ProductCardEarn}
-      />
-    ),
-  }
 
   return (
     <Box
@@ -169,50 +138,88 @@ export function HomepageView() {
           width: '100%',
         }}
       >
-        <TabSwitcher
-          tabs={[
-            {
-              tabLabel: t('landing.tabs.multiply.tabLabel'),
-              tabContent: (
-                <TabContent
-                  paraText={
-                    <>
-                      {t('landing.tabs.multiply.tabParaContent')}{' '}
-                      <AppLink href="/multiply" variant="inText">
-                        {t('landing.tabs.multiply.tabParaLinkContent')}
-                      </AppLink>
-                    </>
-                  }
-                  type="multiply"
-                  renderProductCard={ProductCardMultiply}
+        <WithErrorHandler error={[productCardsDataError]}>
+          <WithLoadingIndicator
+            value={[productCardsDataValue]}
+            customLoader={
+              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+                <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+              </Flex>
+            }
+          >
+            {([productCardsData]) => {
+              return (
+                <TabSwitcher
+                  tabs={[
+                    {
+                      tabLabel: t('landing.tabs.multiply.tabLabel'),
+                      tabContent: (
+                        <TabContent
+                          paraText={
+                            <>
+                              {t('landing.tabs.multiply.tabParaContent')}{' '}
+                              <AppLink href="/multiply" variant="inText">
+                                {t('landing.tabs.multiply.tabParaLinkContent')}
+                              </AppLink>
+                            </>
+                          }
+                          type="multiply"
+                          renderProductCard={ProductCardMultiply}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
+                    {
+                      tabLabel: t('landing.tabs.borrow.tabLabel'),
+                      tabContent: (
+                        <TabContent
+                          paraText={
+                            <>
+                              <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                              <AppLink href="/borrow" variant="inText">
+                                {t('landing.tabs.borrow.tabParaLinkContent')}
+                              </AppLink>
+                            </>
+                          }
+                          type="borrow"
+                          renderProductCard={ProductCardBorrow}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
+                    ...(isEarnEnabled
+                      ? [
+                          {
+                            tabLabel: t('landing.tabs.earn.tabLabel'),
+                            tabContent: (
+                              <TabContent
+                                paraText={
+                                  <>
+                                    {t('landing.tabs.earn.tabParaContent')}{' '}
+                                    <AppLink href="/multiply" variant="inText">
+                                      {t('landing.tabs.earn.tabParaLinkContent')}
+                                    </AppLink>
+                                  </>
+                                }
+                                type="earn"
+                                renderProductCard={ProductCardEarn}
+                                productCardsData={productCardsData}
+                              />
+                            ),
+                          },
+                        ]
+                      : []),
+                  ]}
+                  narrowTabsSx={{
+                    display: ['block', 'none'],
+                    width: '100%',
+                  }}
+                  wideTabsSx={{ display: ['none', 'block'] }}
                 />
-              ),
-            },
-            {
-              tabLabel: t('landing.tabs.borrow.tabLabel'),
-              tabContent: (
-                <TabContent
-                  paraText={
-                    <>
-                      <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
-                      <AppLink href="/borrow" variant="inText">
-                        {t('landing.tabs.borrow.tabParaLinkContent')}
-                      </AppLink>
-                    </>
-                  }
-                  type="borrow"
-                  renderProductCard={ProductCardBorrow}
-                />
-              ),
-            },
-            ...(isEarnEnabled ? [earnTab] : []),
-          ]}
-          narrowTabsSx={{
-            display: ['block', 'none'],
-            width: '100%',
-          }}
-          wideTabsSx={{ display: ['none', 'block'] }}
-        />
+              )
+            }}
+          </WithLoadingIndicator>
+        </WithErrorHandler>
       </Box>
       <Box
         sx={{
