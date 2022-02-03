@@ -794,7 +794,10 @@
   },
   "protection": {
     "navigate-cancel": "Cancel downside protection",
-    "navigate-adjust": "Return to adjusting stop loss"
+    "navigate-adjust": "Return to adjusting stop loss",
+    "banner-header": "Get vault protection",
+    "banner-content": "Short text to introduce vault protection.",
+    "banner-button": "Set up Vault Protection ->"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

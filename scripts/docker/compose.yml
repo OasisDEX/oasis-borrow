@@ -11,7 +11,7 @@ services:
       - POSTGRES_DB=db
     ports:
       - '5432:5432'
-   localnode:
+  localnode:
      image: oasisdexorg/multiply-proxy-actions:latest
      container_name: multiply-proxy-actions
      environment:

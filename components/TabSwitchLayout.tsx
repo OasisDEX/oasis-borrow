@@ -1,7 +1,9 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import React, { useState } from 'react'
+import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
+import React, { useEffect, useState } from 'react'
 import { Flex } from 'theme-ui'
 
+import { useAppContext } from './AppContextProvider'
 import { VaultHeading } from './vault/VaultHeading'
 
 enum VaultViewMode {
@@ -9,7 +11,7 @@ enum VaultViewMode {
   Protection,
   Overview,
 }
-//TODO: make number of tabs and labels and controls configurable
+//TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
 export function TabSwitchLayout({
   defaultMode,
   overViewControl,
@@ -22,6 +24,17 @@ export function TabSwitchLayout({
   protectionControl?: JSX.Element
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
+  const { uiChanges } = useAppContext()
+
+  useEffect(() => {
+    const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
+    const subscription = uiChanges$.subscribe((value) => {
+      setMode(value.currentMode)
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
     return currentMode === activeMode ? 'tab' : 'tabInactive'
