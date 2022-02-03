@@ -39,7 +39,10 @@ export function AppLink({
   }
 
   return (
-    <ThemeLink {...{ sx, href, variant, target: target || '_blank', onClick }}>
+    <ThemeLink
+      {...{ sx, href, variant, target: target || '_blank', onClick }}
+      rel="noopener noreferrer"
+    >
       {children}
     </ThemeLink>
   )

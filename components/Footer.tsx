@@ -134,6 +134,7 @@ export function TemporaryFooter() {
             <Link
               href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
               target="_blank"
+              rel="noopener noreferrer"
             >
               {commit}
             </Link>
