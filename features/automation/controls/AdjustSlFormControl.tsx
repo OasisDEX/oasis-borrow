@@ -177,7 +177,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       },
     }
 
-    const replacedTriggerId = slTriggerData.triggerId ? slTriggerData.triggerId : 0
+    const replacedTriggerId = slTriggerData.triggerId || 0
 
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
