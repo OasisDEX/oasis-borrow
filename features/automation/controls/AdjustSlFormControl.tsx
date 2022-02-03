@@ -42,7 +42,7 @@ function prepareAddTriggerData(
 
   return {
     ...baseTriggerData,
-    replacedTriggerId: replacedTriggerId,
+    replacedTriggerId,
     kind: TxMetaKind.addTrigger,
   }
 }
@@ -143,7 +143,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       collateralTokenSymbol: token,
       collateralTokenIconCircle: tokenData.iconCircle,
     }
-
 
     const sliderProps: SliderValuePickerProps = {
       disabled: false,

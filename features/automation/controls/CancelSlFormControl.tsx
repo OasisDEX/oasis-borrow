@@ -97,7 +97,7 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
           selectedSLValue,
           slTriggerData.triggerId,
         )
-        
+
         const waitForTx = txHelpers
           .sendWithGasEstimation(removeAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
