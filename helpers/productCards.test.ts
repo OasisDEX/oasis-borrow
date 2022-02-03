@@ -75,6 +75,13 @@ const wsteth = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
+const guni = mockIlkData({
+  token: 'GUNIV3DAIUSDC2',
+  ilk: 'GUNIV3DAIUSDC2-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
@@ -95,7 +102,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -126,15 +133,15 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
+        token: guni.token,
+        ilk: guni.ilk,
+        liquidationRatio: guni.liquidationRatio,
+        stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        bannerGif: '/static/img/tokens/link.gif',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
+        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
+        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
+        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+        name: 'GUNIV3 DAI/USDC 0.01%',
         isFull: false,
       },
     ])
@@ -142,7 +149,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -176,15 +183,15 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
+        token: guni.token,
+        ilk: guni.ilk,
+        liquidationRatio: guni.liquidationRatio,
+        stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        bannerGif: '/static/img/tokens/link.gif',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
+        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
+        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
+        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+        name: 'GUNIV3 DAI/USDC 0.01%',
         isFull: false,
       },
     ])
