@@ -417,7 +417,8 @@
     "multiply": "Multiply",
     "more": "More",
     "assets": "Assets",
-    "earn": "Earn"
+    "earn": "Earn",
+    "select-an-asset": "Select an asset"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",

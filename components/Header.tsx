@@ -20,9 +20,8 @@ import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { ChevronUpDown } from './ChevronUpDown'
+import { AssetsSelect } from './AssetsSelect'
 import { useSharedUI } from './SharedUIProvider'
-import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -330,67 +329,6 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-const LangSelectMobileComponents: Partial<SelectComponents<{
-  value: string
-  label: string
-}>> = {
-  IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => (
-    <Flex sx={{ color: 'primary', fontWeight: 'body' }}>{children}</Flex>
-  ),
-  SingleValue: ({ children }) => <Box>{children}</Box>,
-  Option: ({ children, innerProps }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        py: 2,
-        px: 3,
-        cursor: 'pointer',
-        '&:hover': {
-          bg: 'background',
-        },
-      }}
-    >
-      {children}
-    </Box>
-  ),
-  Menu: ({ innerProps, children }) => (
-    <Card
-      {...innerProps}
-      sx={{
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        border: 'none',
-        p: 0,
-        position: 'relative',
-        top: '8px',
-      }}
-    >
-      {children}
-    </Card>
-  ),
-  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        cursor: 'pointer',
-        variant: 'links.nav',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 3,
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        py: '8px',
-        px: '16px',
-      }}
-    >
-      {children}
-      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
-    </Box>
-  ),
-}
-
 function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
@@ -431,6 +369,7 @@ function MobileMenu() {
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
+
   return (
     <>
       {isOpen && (
@@ -523,8 +462,19 @@ function MobileMenu() {
               </Grid>
             ))}
           <Grid>
+            <Text variant="links.navHeader">{t('nav.assets')}</Text>
+            <AssetsSelect
+              options={LANDING_PILLS.map((asset) => ({
+                label: asset.label,
+                icon: asset.icon,
+                link: asset.link,
+              }))}
+              handleChange={closeMenu}
+            />
+          </Grid>
+          <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
-            <LanguageSelect components={LangSelectMobileComponents} />
+            <LanguageSelect />
           </Grid>
         </Grid>
       </Box>
