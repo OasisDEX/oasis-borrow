@@ -36,11 +36,13 @@ function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
+  replacedTriggerId: number,
 ): AutomationBotAddTriggerData {
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
 
   return {
     ...baseTriggerData,
+    replacedTriggerId: replacedTriggerId,
     kind: TxMetaKind.addTrigger,
   }
 }
@@ -180,6 +182,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       },
     }
 
+    const replacedTriggerId = slTriggerData.triggerId ? slTriggerData.triggerId : 0
+    console.log('slTriggerData')
+    console.log(slTriggerData)
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
@@ -188,7 +193,16 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }
-        const txData = prepareAddTriggerData(vaultData, collateralActive, selectedSLValue)
+        const txData = prepareAddTriggerData(
+          vaultData,
+          collateralActive,
+          selectedSLValue,
+          replacedTriggerId,
+        )
+        console.log('replacedTriggerId')
+        console.log(replacedTriggerId)
+        console.log('txData')
+        console.log(txData)
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)

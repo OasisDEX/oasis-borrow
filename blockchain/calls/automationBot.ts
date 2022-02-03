@@ -17,6 +17,7 @@ export type AutomationBaseTriggerData = {
 
 export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {
   kind: TxMetaKind.addTrigger
+  replacedTriggerId: number
 }
 
 export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {
@@ -32,6 +33,7 @@ function getAddAutomationTriggerCallData(
   return contract<AutomationBot>(automationBot).methods.addTrigger(
     data.cdpId,
     data.triggerType,
+    data.replacedTriggerId,
     data.triggerData,
   ) as any
 }
