@@ -123,9 +123,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
 
-    console.log('currentCollRatio')
-    console.log(currentCollRatio.toFixed(2))
-
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
@@ -147,8 +144,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       collateralTokenIconCircle: tokenData.iconCircle,
     }
 
-    console.log('maxBoundry')
-    console.log(maxBoundry.toFixed(2))
 
     const sliderProps: SliderValuePickerProps = {
       disabled: false,
@@ -183,8 +178,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     }
 
     const replacedTriggerId = slTriggerData.triggerId ? slTriggerData.triggerId : 0
-    console.log('slTriggerData')
-    console.log(slTriggerData)
+
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
@@ -199,10 +193,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           selectedSLValue,
           replacedTriggerId,
         )
-        console.log('replacedTriggerId')
-        console.log(replacedTriggerId)
-        console.log('txData')
-        console.log(txData)
+
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
