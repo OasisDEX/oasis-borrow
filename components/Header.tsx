@@ -143,7 +143,7 @@ function ConnectedHeader() {
 
   return (
     <>
-      <Box sx={{ display: ['none', 'block'], mb: 5 }}>
+      <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader
           sx={{
             position: 'relative',
@@ -197,6 +197,7 @@ function ConnectedHeader() {
                     {t('nav.earn')}
                   </AppLink>
                 )}
+                <AssetsDropdown />
               </Flex>
             </Flex>
             <UserAccount position="relative" />
@@ -241,8 +242,8 @@ function HeaderDropdown({
   return (
     <Box
       sx={{
+        display: 'flex',
         position: 'relative',
-        top: '0',
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
