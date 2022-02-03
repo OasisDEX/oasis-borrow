@@ -14,9 +14,9 @@ import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-import Web3 from 'web3'
 
 import { TxError } from '../../../../helpers/types'
+import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
 type ProxyChange =
@@ -209,24 +209,6 @@ export function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-interface Receipt {
-  logs: { topics: string[] | undefined }[]
-}
-
-export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | undefined {
-  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
-  return logs
-    .filter((log) => {
-      if (log.topics) {
-        return log.topics[0] === newCdpEventTopic
-      }
-      return false
-    })
-    .map(({ topics }) => {
-      return new BigNumber(Web3.utils.hexToNumber(topics![3]))
-    })[0]
-}
-
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
   { tokensMainnet, defaultExchange }: ContextConnected,
@@ -290,7 +272,7 @@ export function multiplyVault(
                 txState.status === TxStatus.Success && txState.receipt,
               )
 
-              const jwtToken = jwtAuthGetToken(account as string)
+              const jwtToken = jwtAuthGetToken(account)
               if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,
@@ -330,7 +312,7 @@ export function applyEstimateGas(
         depositCollateral: depositAmount,
         skipFL,
         userAddress: account,
-        proxyAddress: proxyAddress!,
+        proxyAddress,
         ilk,
         token,
         exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',
