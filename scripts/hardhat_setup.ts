@@ -15,7 +15,6 @@ import {
   GET_CDPS,
   MCD_CAT,
   MCD_DAI,
-  MCD_FLIP_ETH_A,
   MCD_JOIN_DAI,
   MCD_JOIN_ETH_A,
   MCD_JUG,
@@ -44,6 +43,7 @@ import { DsProxyRegistry } from 'types/ethers-contracts/DsProxyRegistry'
 import Web3 from 'web3'
 
 BigNumber.config({ EXPONENTIAL_AT: 100000 })
+const MCD_FLIP_ETH_A = '0xF32836B9E1f47a0515c6Ec431592D5EbC276407f'
 const ILK = utf8ToBytes32('ETH-A')
 const wad = new BigNumber(10).pow(18)
 const ray = new BigNumber(10).pow(27)

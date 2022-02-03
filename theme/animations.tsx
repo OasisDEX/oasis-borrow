@@ -1,6 +1,6 @@
 import React from 'react'
 import Lottie from 'react-lottie'
-import { Box } from 'theme-ui'
+import { Box, SxStyleProp } from 'theme-ui'
 import openVaultAnimation from 'theme/lottie/openVaultAnimation.json'
 
 import { fadeIn, slideIn } from './keyframes'
@@ -29,6 +29,13 @@ const defaultOptions = {
   rendererSettings: {
     preserveAspectRatio: 'xMidYMid slice',
   },
+}
+
+export function fadeInAnimationDelay(delaySeconds: number): SxStyleProp {
+  return {
+    ...fadeInAnimation,
+    animationDelay: `${delaySeconds}s`,
+  }
 }
 
 export function OpenVaultAnimation() {

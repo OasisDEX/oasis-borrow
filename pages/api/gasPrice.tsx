@@ -9,6 +9,7 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
   if (!time) {
     axios({
       method: 'get',
+      timeout: 1000,
       url: 'https://api.blocknative.com/gasprices/blockprices',
       responseType: 'json',
       headers: {
@@ -31,8 +32,14 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
         })
       })
       .catch((error) => {
-        console.log(error)
-        res.status(error.status)
+        res.status(200)
+        res.json({
+          time: cache.get('time'),
+          fromCache: false,
+          maxPriorityFeePerGas: 0,
+          maxFeePerGas: 0,
+          error: error.message,
+        })
       })
   } else {
     const estimatedPriceFor95PercentConfidence = cache.get('estimatedPriceFor95PercentConfidence')

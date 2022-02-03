@@ -9,7 +9,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { amountFromWei, amountToWei } from '@oasisdex/utils/lib/src/utils'
 
-const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v3.0/1/swap`
+const API_ENDPOINT = `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap`
 
 interface Response {
   fromToken: TokenDescriptor
@@ -38,6 +38,8 @@ interface Tx {
 }
 
 export type ExchangeAction = 'BUY_COLLATERAL' | 'SELL_COLLATERAL'
+
+export type ExchangeType = 'defaultExchange' | 'noFeesExchange' | 'lowerFeesExchange'
 
 type TokenMetadata = {
   address: string
@@ -76,6 +78,7 @@ export function getQuote$(
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
+  protocols?: string,
 ) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
@@ -94,7 +97,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
+    protocols: protocols || 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
 
   const responseBase = {
@@ -135,7 +138,6 @@ export function getQuote$(
         fromToken.decimals,
       )
       const normalizedToTokenAmount = amountFromWei(new BigNumber(toTokenAmount), toToken.decimals)
-
       return {
         ...responseBase,
         collateralAmount: amountFromWei(
@@ -166,18 +168,22 @@ export type Quote = ReturnType<typeof getQuote$> extends Observable<infer R> ? R
 
 export function createExchangeQuote$(
   context$: Observable<Context>,
+  protocols: string | undefined,
   token: string,
   slippage: BigNumber,
   amount: BigNumber,
   action: ExchangeAction,
+  exchangeType: ExchangeType,
 ) {
   return context$.pipe(
     switchMap((context) => {
-      const { tokens, exchange } = context
-      const dai = getTokenMetaData('DAI', tokens)
-      const collateral = getTokenMetaData(token, tokens)
+      const { tokensMainnet } = context
+      const exchange = (context as any)[exchangeType]
 
-      return getQuote$(dai, collateral, exchange.address, amount, slippage, action)
+      const dai = getTokenMetaData('DAI', tokensMainnet)
+      const collateral = getTokenMetaData(token, tokensMainnet)
+
+      return getQuote$(dai, collateral, exchange.address, amount, slippage, action, protocols)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

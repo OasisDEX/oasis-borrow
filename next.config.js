@@ -1,4 +1,3 @@
-const withSass = require('@zeit/next-sass')
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
 })
@@ -15,7 +14,7 @@ const basePath = ''
 module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
-      withSass({
+      {
         basePath,
         typescript: {
           // !! WARN !!
@@ -36,6 +35,8 @@ module.exports = withBundleAnalyzer(
           basePath,
           mixpanelEnv: process.env.MIXPANEL_ENV,
           mixpanelAPIKey: process.env.MIXPANEL_KEY,
+          adRollAdvId: process.env.ADROLL_ADV_ID,
+          adRollPixId: process.env.ADROLL_PIX_ID,
           useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
           showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
           infuraProjectId: process.env.INFURA_PROJECT_ID,
@@ -93,13 +94,8 @@ module.exports = withBundleAnalyzer(
         async redirects() {
           return [
             {
-              source: '/borrow',
-              destination: '/',
-              permanent: true,
-            },
-            {
-              source: '/borrow/:slug*',
-              destination: '/:slug*',
+              source: '/borrow/:slug(.{1,})', // wildcard redirect `:slug*` was causing an infinite redirect loop
+              destination: '/:slug',
               permanent: true,
             },
             {
@@ -114,7 +110,7 @@ module.exports = withBundleAnalyzer(
             },
           ]
         },
-      }),
+      },
     ),
   ),
 )

@@ -66,6 +66,16 @@ The application will be viewable on <http://localhost:3000> or <https://localhos
 
 <br>
 
+### Run staging site locally
+
+You can run the current staging site, (found at <https://staging.oasis.app>) alongside the database, by running:
+
+```sh
+./scripts/dev-with-staging.sh
+```
+
+It will pull an additional docker container with the current staging site and will make it available at <http://0.0.0.0:3000>
+
 ### Storybook
 
 We utilise storybook for visualising some of our UI components in isolation. This makes development
@@ -114,6 +124,12 @@ Some of the values that are used you can check in the `.env` file.
 - `MIXPANEL_KEY` - The value will be used for `production` environments. This is the project key
   that is generated from Mixpanel.
 
+- `ADROLL_PIX_ID` - The value will be used for `production` environments. This is the project key
+  that is generated from AdRoll Pixel.
+
+- `ADROLL_ADV_ID` - The value will be used for `production` environments. This is the project key
+  that is generated from AdRoll Pixel.
+
 - `USE_TERMS_OF_SERVICE` - In order to use some functionalities the user should read and accept
   Terms of Service. For development purposes, this feature can be disabled. You can disable this
   feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
@@ -144,6 +160,10 @@ at _run time_
 
 - `USER_JWT_SECRET` - Could be any value different from `CHALLENGE_JWT_SECRET`. This is used when
   the user signs the Terms of Service.
+
+- `MAILCHIMP_ENDPOINT` - Mailchimp endpoint with audience ID used to integrate Mailchimp newsletter.
+
+- `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the proces that runs the application with the `run-time` vars._
@@ -184,8 +204,8 @@ By executing one of the following commands you will run both containers at the s
 
 #### Docker Containers Configuration
 
-If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables. 
-For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory 
+If you open `docker-compose.yml` file under the `./scripts` folder, you will see that there are some environmental variables.
+For the Postgres container, you won't have the need to change them that often. Also the names are pretty explanatory
 
 The configuration params for `multiply-proxy-actions` container are as follows:
 
@@ -201,7 +221,7 @@ The configuration params for `multiply-proxy-actions` container are as follows:
 
 ## Multiply feature
 
-We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract. 
+We have added multiply functionality, where generated DAI is immediately used to swap for more collateral. This utilizes the multiply proxy actions smart contract.
 The documentation for those contracts can be found [here](https://docs.google.com/document/d/1GpPEPrOnDLNHtCgyh5YInOyZUV4XGz-1EVRJK0y-GF4/edit).
 
 ## Contributing

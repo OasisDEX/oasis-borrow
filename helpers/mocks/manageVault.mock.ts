@@ -4,7 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { createManageVault$, ManageVaultState } from 'features/manageVault/manageVault'
+import { createManageVault$, ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -20,6 +20,7 @@ import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
+export const MOCK_CHAIN_ID = new BigNumber(2137)
 
 export interface MockManageVaultProps {
   _context$?: Observable<Context>

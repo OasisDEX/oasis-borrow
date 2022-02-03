@@ -1,10 +1,10 @@
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import { OpenMultiplyVaultView } from 'features/openMultiplyVault/components/OpenMultiplyVaultView'
+import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import {
   defaultMutableOpenMultiplyVaultState,
   MutableOpenMultiplyVaultState,
-} from 'features/openMultiplyVault/openMultiplyVault'
+} from 'features/multiply/open/pipes/openMultiplyVault'
 import {
   mockOpenMultiplyVault,
   MockOpenMultiplyVaultProps,

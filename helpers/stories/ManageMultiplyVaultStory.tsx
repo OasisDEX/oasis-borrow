@@ -1,15 +1,13 @@
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
-import {
-  createGeneralManageVault$,
-  VaultType,
-} from 'features/generalManageVault/generalManageVault'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   defaultMutableManageMultiplyVaultState,
   MutableManageMultiplyVaultState,
-} from 'features/manageMultiplyVault/manageMultiplyVault'
+} from 'features/multiply/manage/pipes/manageMultiplyVault'
 import {
   MOCK_VAULT_ID,
   mockManageMultiplyVault$,
@@ -102,12 +100,16 @@ export function manageMultiplyVaultStory({
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
           () => obs$,
+          () => obs$,
           // @ts-ignore, don't need to mock regular here
           () => of(EMPTY),
           () => of(VaultType.Multiply),
+          () => of(EMPTY),
           MOCK_VAULT_ID,
         ),
       ),
+      manageMultiplyVault$: () => obs$,
+      manageGuniVault$: () => obs$,
     } as any) as AppContext
 
     return (

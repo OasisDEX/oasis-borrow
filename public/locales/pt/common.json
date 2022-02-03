@@ -87,13 +87,13 @@
     "balances": "Saldos",
     "buy": "Comprar",
     "careers": {
-        "heading": "Posições em aberto",
-        "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
-        "cta-button": "Candidatar",
-        "back-link": "Voltar para Posições",
-        "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
-        "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
-        "write-us": "Mande seu CV para "
+      "heading": "Posições em aberto",
+      "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
+      "cta-button": "Candidatar",
+      "back-link": "Voltar para Posições",
+      "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
+      "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
+      "write-us": "Mande seu CV para "
     },
     "submit": "Enviar",
     "title": "Contate a Oasis"
@@ -185,8 +185,12 @@
     "auction_finished_v2": "Leilão <0>#{{auctionId}}</0> finalizado, <0>{{remainingCollateral}} {{token}}</0> restou",
     "auction_started": "Leilão iniciado, <0>{{collateralAmount}} {{token}}</0> usado para cobrir <0>{{daiAmount}} Dai</0>",
     "auction_started_v2": "Leilão <0>#{{auctionId}}</0> iniciado, <0>{{collateralAmount}} {{token}}</0> usado para cobrir <0>{{daiAmount}} Dai</0>",
+    "bought": "Bought",
     "deposit": "Depositado <0>{{collateralAmount}} {{token}}</0> no Cofre",
+    "deposited": "Deposited",
     "generate": "Gerado <0>{{daiAmount}}</0> Dai do Cofre",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "Cofre migrado",
     "move_dest": "Movido <0>{{collateralAmount}} {{token}}</0> e <0>{{daiAmount}}</0> dívida Dai para o Cofre",
     "move_src": "Movido <0>{{collateralAmount}} {{token}}</0> e <0>{{daiAmount}}</0> dívida Dai do Cofre",
@@ -194,11 +198,13 @@
     "payback": "Pago <0>{{daiAmount}}</0> Dai para o Cofre",
     "transfer": "Cofre enviou para <0>{{transferTo}}</0> por <0>{{transferFrom}}</0>",
     "withdraw": "Retirou <0>{{collateralAmount}} {{token}}</0> do Cofre",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited Dai",
-    "closevaultexitcollateral": "Closed Vault, exited collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "A assinatura falhou",
   "jwt-auth-in-progress": "Aguardando assinatura...",
@@ -231,8 +237,10 @@
       "trade": "Negocie"
     },
     "hero": {
-      "headline": "Gerar Dai usando cripto como colateral.",
-      "subheader": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar."
+      "headlinePreAssetLandingPages": "Gerar Dai usando cripto como colateral.",
+      "subheaderPreAssetLandingPages": "Abrir um Cofre Maker, deposite seu colateral e crie Dai.<0/> Conectar uma carteira para começar.",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -319,7 +327,16 @@
       "next-price-description": "Aqui você pode ver que o próximo preço a entrar em efeito no Protocolo Maker. Compare isso com o seu Preço de Liquidação para verificar se o seu cofre pode ser liquidado na próxima atualização de preço.",
       "more-info-oracles": "Mais informações nos oráculos Maker podem ser encontradas <0>here</0>",
       "net-value": "Valor Líquido",
-      "net-value-description": "O Valor Líquido é calculado como o valor atual do colateral no seu cofre menos a dívida atual. Observação: Este valor não será exatamente igual ao valor recebido em Dai caso o cofre seja fechado. Isso ocorre devido a taxas aplicadas ao trocar o seu colateral por Dai, e porque o Valor Líquido é calculado usando o preço dos oráculos do Maker, que possuem uma hora de atraso em relação ao preço atual do colateral."
+      "unrealised-pnl": "Unrealised P&L",
+      "based-on-price": "The current net value is calculated based on the market price of",
+      "collateral-value-in-vault": "Collateral value in vault",
+      "dai-debt-in-vault": "Dai debt in vault",
+      "collateral-value": "Collateral Value",
+      "usd-value": "$ Value",
+      "gas-fees": "Gas fees",
+      "market-price-unavailable": "Market price temporally unavailable, please check later",
+      "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "max": "Máximo",
@@ -456,7 +473,10 @@
     "stability-fee": "Taxa de Estabilidade",
     "type": "Tipo",
     "vault-dai-debt": "Dívida Dai do Cofre",
-    "vault-id": "Cofre ID"
+    "vault-id": "Cofre ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "token-balance": "Saldo {{token}}",
   "token-depositing": "{{token}} depositando {{amount}}",
@@ -579,7 +599,9 @@
       "confirm-in-progress": "Cofre sendo criado",
       "modified": "Cofre sendo modificado",
       "confirm-manage": "Confirme as alterações no Cofre",
-      "review-manage": "Revisar mudanças no cofre"
+      "review-manage": "Revisar mudanças no cofre",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "Deposite ou retire do seu cofre. Economize gás ao combinar as transações.",
@@ -749,5 +771,59 @@
   "wyre-purchase-description-recent": "{{ order }} comprado com Wyre",
   "wyre-purchase-description-recent-failed": "Falha ao comprar {{ order }} com Wyre",
   "wyre-purchase-notification": "Wyre compra",
-  "wyre-purchase-notification-past": "Wyre comprado"
+  "wyre-purchase-notification-past": "Wyre comprado",
+  "newsletter": {
+    "title": "Stay up to date with Oasis.app",
+    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "placeholder": "Email Address",
+    "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
+    "errors": {
+      "unknown": "Something went wrong. Please try again.",
+      "email-is-invalid": "Please enter a valid email address",
+      "email-already-exists": "Email is already subscribed to mailing list.",
+      "email-pending": "Opt-in email already sent for this address - please check your inbox."
+    }
+  },
+  "product-card": {
+    "borrow": "A Vault designed for borrowing against {{token}}",
+    "multiply": "A Vault designed to multiply your exposure to {{token}}",
+    "borrow-and-multiply": "A vault for both multiplying your exposure or borrowing against {{token}}",
+    "lp-tokens": "A vault for multiplying your exposure to {{token}}",
+    "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
+    "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
+    "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
+    "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
+    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "tags": {
+      "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
+      "staking-rewards": "Staking rewards",
+      "max-exposure": "Max {{token}} exposure"
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": "Borrow up to {{value}} DAI",
+    "multiply": "Get up to {{value}} {{token}} exposure",
+    "earn": "Earn {{value}} {{token}} a year",
+    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
+    }
+  }
 }

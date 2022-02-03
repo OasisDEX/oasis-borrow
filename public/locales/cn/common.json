@@ -168,8 +168,12 @@
     "auction_finished_v2": "拍卖 <0>#{{auctionId}}</0>  已完成，剩余 <0>{{remainingCollateral}} {{token}}</0>。",
     "auction_started": "拍卖已开始，清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
     "auction_started_v2": "拍卖 <0>#{{auctionId}}</0> 已开始, 清算 <0>{{collateralAmount}} {{token}}</0> 以偿还 <0>{{daiAmount}} Dai</0>。",
+    "bought": "Bought",
     "deposit": "已将 <0>{{collateralAmount}} {{token}}</0> 存入金库。",
+    "deposited": "Deposited",
     "generate": "已从金库生成 <0>{{daiAmount}}</0> Dai ",
+    "exit-collateral": "Exit collateral",
+    "exit-dai": "Exit Dai",
     "migrate": "金库已迁移",
     "move_dest": "转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务到该金库。",
     "move_src": "从金库转移 <0>{{collateralAmount}} {{token}}</0> 和 <0>{{daiAmount}}</0> Dai 债务。",
@@ -177,11 +181,13 @@
     "payback": "偿还 <0>{{daiAmount}}</0> Dai 到金库",
     "transfer": "金库由 <0>{{transferFrom}}</0> 转移到 <0>{{transferTo}}</0>",
     "withdraw": "从金库取回 <0>{{collateralAmount}} {{token}}</0> ",
-    "openmultiplyvault": "Open multiply Vault",
-    "increasemultiple": "Increased multiple, bought using Dai",
-    "decreasemultiple": "Decreased multiple, sold collateral",
-    "closevaultexitdai": "Closed Vault, exited Dai",
-    "closevaultexitcollateral": "Closed Vault, exited collateral"
+    "open_multiply_vault": "Open multiply Vault",
+    "increase_multiple": "Increased multiple",
+    "decrease_multiple": "Decreased multiple",
+    "close_vault_to_dai": "Closed Vault, exited to Dai",
+    "close_vault_to_collateral": "Closed Vault, exited to collateral",
+    "sold": "Sold",
+    "total-fees": "Total fees"
   },
   "jwt-auth-failed": "签名失败",
   "jwt-auth-in-progress": "等待签名中...",
@@ -214,8 +220,10 @@
       "trade": "交易"
     },
     "hero": {
-      "headline": "抵押数字资产，生成 Dai",
-      "subheader": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。"
+      "headlinePreAssetLandingPages": "抵押数字资产，生成 Dai",
+      "subheaderPreAssetLandingPages": "开启 Maker 金库，存入抵押品，生成 Dai。<0/> 连接钱包以开始。",
+      "headline": "Borrow and multiply using your favourite cryptos",
+      "subheader": "ETH, WBTC, +30 more assets available to put to work from just 1.50% per year.<0/> Connect a wallet to get started"
     },
     "cards": {
       "dai": {
@@ -302,7 +310,16 @@
       "next-price-description": "你在这里所看见的下次价格将会在 Maker Protocol 产生影响。在与清算价格比较之后，会看出你的金库是否有可能在下一次价格更新时被清算。",
       "more-info-oracles": "在<0>这里</0>可以得到关于 Maker 喂价机的信息",
       "net-value": "净值",
-      "net-value-description": "净值的计算方式是，当前抵押品的价值减掉当前债务。注意：这不会完全等于你关闭金库并赎回的 Dai 金额，因为将原本的抵押品换成 Dai 的时候会产生手续费，而且因为净值是由延迟一小时的 Maker 喂价机价格和抵押品的实际价格做比较所计算出来。"
+      "unrealised-pnl": "Unrealised P&L",
+      "based-on-price": "The current net value is calculated based on the market price of",
+      "collateral-value-in-vault": "Collateral value in vault",
+      "dai-debt-in-vault": "Dai debt in vault",
+      "collateral-value": "Collateral Value",
+      "usd-value": "$ Value",
+      "gas-fees": "Gas fees",
+      "market-price-unavailable": "Market price temporally unavailable, please check later",
+      "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
     }
   },
   "max": "最多",
@@ -316,7 +333,9 @@
     "contact": "联系方式",
     "faq": "常见问题",
     "privacy": "隐私",
-    "terms": "条款"
+    "terms": "条款",
+    "multiply": "Multiply",
+    "more": "More"
   },
   "new-to-ethereum": "刚接触以太坊？",
   "next": "下一步",
@@ -450,7 +469,10 @@
     "stability-fee": "稳定费率",
     "type": "类型",
     "vault-dai-debt": "该金库 Dai 债务",
-    "vault-id": "金库 ID"
+    "vault-id": "金库 ID",
+    "oracle-price": "Oracle Price",
+    "market-price": "Market Price",
+    "max-multiple": "Max Multiple"
   },
   "to-the-following-address": "至此地址",
   "token-balance": "{{token}} 余额",
@@ -573,7 +595,9 @@
       "confirm-in-progress": "已开启金库",
       "modified": "已修改金库",
       "confirm-manage": "确认修改金库",
-      "review-manage": "审查金库的修改"
+      "review-manage": "审查金库的修改",
+      "multiply-transition": "Multiply your exposure on {{token}} in your vault",
+      "go-to-multiply": "Great, now you will go to the new Multiply interface"
     },
     "subtext": {
       "collateral": "在你的金库存款或提款。通过合并交易来节省手续费。",
@@ -617,6 +641,60 @@
       "header": "抵押我的 {{token}} 借款",
       "subtext": "使用 {{balance}} {{token}} 借出最高 {{maxBorrow}} DAI",
       "button": "抵押 {{token}} 借贷"
+    }
+  },
+  "newsletter": {
+    "title": "Stay up to date with Oasis.app",
+    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "placeholder": "Email Address",
+    "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
+    "errors": {
+      "unknown": "Something went wrong. Please try again.",
+      "email-is-invalid": "Please enter a valid email address",
+      "email-already-exists": "Email is already subscribed to mailing list.",
+      "email-pending": "Opt-in email already sent for this address - please check your inbox."
+    }
+  },
+  "product-card": {
+    "borrow": "A Vault designed for borrowing against {{token}}",
+    "multiply": "A Vault designed to multiply your exposure to {{token}}",
+    "borrow-and-multiply": "A vault for both multiplying your exposure or borrowing against {{token}}",
+    "lp-tokens": "A vault for multiplying your exposure to {{token}}",
+    "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
+    "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
+    "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
+    "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
+    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "tags": {
+      "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
+      "staking-rewards": "Staking rewards",
+      "max-exposure": "Max {{token}} exposure"
+    }
+  },
+  "product-card-banner": {
+    "with": "With {{value}} {{token}} \uD83D\uDC47",
+    "borrow": "Borrow up to {{value}} DAI",
+    "multiply": "Get up to {{value}} {{token}} exposure",
+    "earn": "Earn {{value}} {{token}} a year",
+    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+  },
+  "product-page": {
+    "multiply": {
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
     }
   }
 }

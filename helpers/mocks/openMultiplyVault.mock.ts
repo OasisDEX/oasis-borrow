@@ -9,9 +9,10 @@ import { mockIlkData$, MockIlkDataProps } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock'
 import { Observable, of } from 'rxjs'
 
-import { createOpenMultiplyVault$ } from '../../features/openMultiplyVault/openMultiplyVault'
+import { createOpenMultiplyVault$ } from '../../features/multiply/open/pipes/openMultiplyVault'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
 import { addGasEstimationMock } from './openVault.mock'
+import { slippageLimitMock } from './slippageLimit.mock'
 
 export interface MockOpenMultiplyVaultProps {
   _ilkData$?: Observable<IlkData>
@@ -21,6 +22,12 @@ export interface MockOpenMultiplyVaultProps {
   _allowance$?: Observable<BigNumber>
   _ilks$?: Observable<string[]>
   _txHelpers$?: Observable<TxHelpers>
+  _token1Balance$?: Observable<BigNumber>
+  _getGuniMintAmount$?: Observable<{
+    amount0: BigNumber
+    amount1: BigNumber
+    mintAmount: BigNumber
+  }>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
@@ -97,6 +104,7 @@ export function mockOpenMultiplyVault({
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
+    slippageLimitMock(),
     ilk,
   )
 }

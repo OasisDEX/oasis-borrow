@@ -2,14 +2,12 @@ import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import {
-  createGeneralManageVault$,
-  VaultType,
-} from 'features/generalManageVault/generalManageVault'
-import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
-import {
   defaultMutableManageVaultState,
   MutableManageVaultState,
-} from 'features/manageVault/manageVault'
+} from 'features/borrow/manage/pipes/manageVault'
+import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
+import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   MOCK_VAULT_ID,
   mockManageVault$,
@@ -100,11 +98,14 @@ export function manageVaultStory({
         createGeneralManageVault$(
           // @ts-ignore, don't need to mock Multiply here
           () => of(EMPTY),
+          () => of(EMPTY),
           () => obs$,
           () => of(VaultType.Borrow),
+          () => of(EMPTY),
           MOCK_VAULT_ID,
         ),
       ),
+      manageVault$: () => obs$,
     } as any) as AppContext
 
     return (

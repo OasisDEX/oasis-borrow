@@ -7,6 +7,10 @@ export const TRANSITIONS = {
   global: '150ms cubic-bezier(0.215,0.61,0.355,1)',
 }
 
+export const GRADIENTS = {
+  newsletterSuccess: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%);',
+}
+
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
@@ -25,7 +29,7 @@ const oasisBaseTheme = {
 
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
-    border: '#DDDEE6',
+    border: '#EAEAEA',
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
@@ -68,6 +72,8 @@ const oasisBaseTheme = {
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
     actionInputHover: '#E5E7E8',
+    selected: '#EDEDFF',
+    newsletterInputBorder: 'rgba(120, 122, 155, 0.25)',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -105,7 +111,7 @@ const oasisBaseTheme = {
       fontFamily: 'heading',
       fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: '40px',
+      fontSize: '52px',
       color: 'primary',
     },
     header2: {
@@ -200,6 +206,7 @@ const oasisBaseTheme = {
   shadows: {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
     cardLanding: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+    fixedBanner: '0px 0px 16px rgba(0, 0, 0, 0.1)',
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',
@@ -213,15 +220,20 @@ const oasisBaseTheme = {
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
-    actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25);',
+    actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
+    userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
+    userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
   },
   layout: {
     container: {
-      maxWidth: '1232px',
+      maxWidth: '1200px',
       px: 3,
+      '@media screen and (min-width: 1232px)': {
+        px: 0,
+      },
     },
     appContainer: {
       variant: 'layout.container',
@@ -235,7 +247,6 @@ const oasisBaseTheme = {
     },
     landingContainer: {
       variant: 'layout.appContainer',
-      maxWidth: '1200px',
     },
     termsContainer: {
       variant: 'layout.appContainer',
@@ -259,6 +270,10 @@ const oasisBaseTheme = {
       maxWidth: '792px',
       alignSelf: 'center',
       zIndex: 4,
+    },
+    buttonPair: {
+      minWidth: '200px',
+      width: 'unset',
     },
   },
   metadata: {
@@ -336,6 +351,13 @@ const oasisBaseTheme = {
       p: 3,
       bg: 'secondaryAlt',
       borderRadius: 'large',
+    },
+    cookieBanner: {
+      boxShadow: 'fixedBanner',
+      bg: 'surface',
+      borderRadius: '16px 16px 0 0',
+      padding: '24px',
+      pb: 3,
     },
   },
   badges: {
@@ -566,14 +588,60 @@ const oasisBaseTheme = {
         color: 'primary',
       },
     },
-    mobileBottomMenu: {
+    tabSwitcherTabActive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'background',
+      p: 3,
+      color: 'primary',
+      boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
+      borderRadius: 'inherit',
+      cursor: 'pointer',
+      paddingLeft: '2em',
+      paddingRight: '2em',
+      transition: TRANSITIONS.global,
+    },
+    tabSwitcherTabInactive: {
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'transparent',
+      p: 3,
+      color: 'text.subtitle',
+      cursor: 'pointer',
+      transition: TRANSITIONS.global,
+      '&:hover': {
+        color: 'primary',
+      },
+      paddingLeft: '2em',
+      paddingRight: '2em',
+    },
+    menuButton: {
       variant: 'buttons.secondary',
       bg: 'background',
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
+      minHeight: ['40px', 'auto'],
+    },
+    unStyled: {
+      background: 'unset',
+      border: 'unset',
+      color: 'inherit',
+      cursor: 'pointer',
+      fontFamily: 'body',
     },
   },
   links: {
+    unStyled: {
+      all: 'unset',
+    },
+    inText: {
+      textDecoration: 'none',
+      color: '#585CF5',
+    },
     primary: {
       px: 3,
       py: 2,
@@ -655,6 +723,18 @@ const oasisBaseTheme = {
       color: 'onSuccess',
     },
   },
+  chevronUpDown: {
+    sort: {
+      ml: 1,
+      display: 'flex',
+      width: 1,
+    },
+    select: {
+      ml: 1,
+      position: 'relative',
+      top: '1px',
+    },
+  },
   forms: {
     label: {
       fontSize: 4,
@@ -686,6 +766,16 @@ const oasisBaseTheme = {
       '&:focus': {
         borderColor: 'onError',
       },
+    },
+    inputSecondary: {
+      variant: 'forms.input',
+      bg: 'backgroundAlt',
+      borderRadius: 'small',
+      color: 'text.subtitle',
+      p: 2,
+      fontSize: 2,
+      lineHeight: 'bodyLoose',
+      borderColor: 'primaryAlt',
     },
     search: {
       fontFamily: 'body',
@@ -755,6 +845,7 @@ const oasisBaseTheme = {
     mobileMenu: 3,
     modal: 4,
     cookie: 5,
+    modalOnMobilePanel: 5,
   },
   grids: {
     vaultContainer: {
@@ -771,6 +862,11 @@ const oasisBaseTheme = {
       gridTemplateColumns: ['1fr', null, null, '1fr 1fr'],
       alignSelf: 'flex-start',
       mb: 3,
+    },
+    tabSwitcher: {
+      bg: 'backgroundAlt',
+      borderRadius: '2em',
+      gap: '0px',
     },
   },
   styles: {
@@ -852,3 +948,4 @@ const oasisBaseTheme = {
 }
 
 export const theme = oasisBaseTheme
+export type OasisTheme = typeof oasisBaseTheme
