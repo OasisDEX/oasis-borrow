@@ -1,5 +1,4 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -15,62 +14,8 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
-import { TxError } from '../../../../helpers/types'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
-
-type ProxyChange =
-  | {
-      kind: 'proxyWaitingForApproval'
-    }
-  | {
-      kind: 'proxyInProgress'
-      proxyTxHash: string
-    }
-  | {
-      kind: 'proxyFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'proxyConfirming'
-      proxyConfirmations?: number
-    }
-  | {
-      kind: 'proxySuccess'
-      proxyAddress: string
-    }
-
-type AllowanceChange =
-  | { kind: 'allowanceWaitingForApproval' }
-  | {
-      kind: 'allowanceInProgress'
-      allowanceTxHash: string
-    }
-  | {
-      kind: 'allowanceFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'allowanceSuccess'
-      allowance: BigNumber
-    }
-
-type OpenChange =
-  | { kind: 'txWaitingForApproval' }
-  | {
-      kind: 'txInProgress'
-      openTxHash: string
-    }
-  | {
-      kind: 'txFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'txSuccess'
-      id: BigNumber
-    }
-
-export type OpenVaultTransactionChange = ProxyChange | AllowanceChange | OpenChange
 
 export function applyOpenMultiplyVaultTransaction(
   change: OpenMultiplyVaultChange,

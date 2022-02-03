@@ -15,6 +15,7 @@ import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { createProxy } from '../../../proxy/createProxy'
+import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
   applyOpenVaultCalculations,
@@ -36,12 +37,7 @@ import {
   defaultOpenVaultSummary,
   OpenVaultSummary,
 } from './openVaultSummary'
-import {
-  applyEstimateGas,
-  applyOpenVaultTransaction,
-  openVault,
-  OpenVaultTransactionChange,
-} from './openVaultTransactions'
+import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 

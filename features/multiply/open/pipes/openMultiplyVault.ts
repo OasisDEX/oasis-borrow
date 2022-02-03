@@ -17,6 +17,7 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
+import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
   applyExchange,
   createExchangeChange$,
@@ -49,7 +50,6 @@ import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,
   multiplyVault,
-  OpenVaultTransactionChange,
   setAllowance,
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
