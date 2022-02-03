@@ -178,7 +178,7 @@ export const productCardsConfig: {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
     ],
-    featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
+    featuredCards: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
@@ -200,7 +200,7 @@ export const productCardsConfig: {
   landing: {
     featuredCards: {
       borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
-      multiply: ['ETH-B', 'WBTC-B', 'LINK-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
     },
   },
