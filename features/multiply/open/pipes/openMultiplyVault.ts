@@ -54,6 +54,8 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
+import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
+import { applyProxyChanges } from '../../../proxy/proxy'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -61,8 +63,8 @@ interface OpenVaultInjectedOverrideChange {
 }
 
 function applyOpenVaultInjectedOverride(
-  change: OpenMultiplyVaultChange,
   state: OpenMultiplyVaultState,
+  change: OpenMultiplyVaultChange,
 ) {
   if (change.kind === 'injectStateOverride') {
     return {
@@ -81,20 +83,6 @@ export type OpenMultiplyVaultChange =
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
   | ExchangeQuoteChanges
-
-function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
-  const s1 = applyOpenVaultInput(change, state)
-  const s2 = applyExchange(change, s1)
-  const s3 = applyOpenVaultTransition(change, s2)
-  const s4 = applyOpenMultiplyVaultTransaction(change, s3)
-  const s5 = applyOpenVaultAllowance(change, s4)
-  const s6 = applyOpenVaultEnvironment(change, s5)
-  const s7 = applyOpenVaultInjectedOverride(change, s6)
-  const s8 = applyOpenMultiplyVaultCalculations(s7)
-  const s9 = applyOpenVaultStageCategorisation(s8)
-  const s10 = applyOpenVaultConditions(s9)
-  return applyOpenVaultSummary(s10)
-}
 
 export type ProxyStages =
   | 'proxyWaitingForConfirmation'
@@ -364,6 +352,24 @@ export function createOpenMultiplyVault$(
                     }
 
                     const stateSubject$ = new Subject<OpenMultiplyVaultState>()
+
+                    const apply = combineApplyChanges<
+                      OpenMultiplyVaultState,
+                      OpenMultiplyVaultChange
+                    >(
+                      applyOpenVaultInput,
+                      applyExchange,
+                      applyOpenVaultTransition,
+                      applyProxyChanges,
+                      applyOpenMultiplyVaultTransaction,
+                      applyOpenVaultAllowance,
+                      applyOpenVaultEnvironment,
+                      applyOpenVaultInjectedOverride,
+                      applyOpenMultiplyVaultCalculations,
+                      applyOpenVaultStageCategorisation,
+                      applyOpenVaultConditions,
+                      applyOpenVaultSummary,
+                    )
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),

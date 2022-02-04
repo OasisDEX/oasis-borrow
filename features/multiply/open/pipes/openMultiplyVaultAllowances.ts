@@ -27,8 +27,8 @@ export type OpenVaultAllowanceChange =
   | AllowanceCustom
 
 export function applyOpenVaultAllowance(
-  change: OpenMultiplyVaultChange,
   state: OpenMultiplyVaultState,
+  change: OpenMultiplyVaultChange,
 ): OpenMultiplyVaultState {
   if (change.kind === 'allowance') {
     const { allowanceAmount } = change

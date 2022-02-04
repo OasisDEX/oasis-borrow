@@ -27,8 +27,8 @@ export type OpenVaultTransitionChange =
     }
 
 export function applyOpenVaultTransition(
-  change: OpenMultiplyVaultChange,
   state: OpenMultiplyVaultState,
+  change: OpenMultiplyVaultChange,
 ): OpenMultiplyVaultState {
   if (change.kind === 'progressEditing') {
     const { errorMessages, proxyAddress, depositAmount, allowance } = state
