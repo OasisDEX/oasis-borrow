@@ -21,7 +21,7 @@ import {
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { createProxy } from '../../../proxy/createProxy'
-import { applyProxyChanges } from '../../../proxy/proxy'
+import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
   applyOpenVaultCalculations,
@@ -68,6 +68,7 @@ export type OpenVaultChange =
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
   | AllowanceChanges
+  | ProxyChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
 

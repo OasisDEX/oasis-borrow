@@ -23,7 +23,7 @@ import {
 } from '../../../allowance/allowance'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
-import { applyProxyChanges } from '../../../proxy/proxy'
+import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
   applyExchange,
@@ -84,6 +84,7 @@ export type OpenMultiplyVaultChange =
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
   | AllowanceChanges
+  | ProxyChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
   | ExchangeQuoteChanges
