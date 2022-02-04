@@ -13,9 +13,6 @@ export type OpenVaultTransitionChange =
       kind: 'progressEditing'
     }
   | {
-      kind: 'progressProxy'
-    }
-  | {
       kind: 'backToEditing'
     }
   | {
@@ -48,13 +45,6 @@ export function applyOpenVaultTransition(
         ...state,
         stage,
       }
-    }
-  }
-
-  if (change.kind === 'progressProxy') {
-    return {
-      ...state,
-      stage: state.token === 'ETH' ? 'editing' : 'allowanceWaitingForConfirmation',
     }
   }
 
