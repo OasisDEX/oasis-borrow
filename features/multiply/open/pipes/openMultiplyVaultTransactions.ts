@@ -21,36 +21,6 @@ export function applyOpenMultiplyVaultTransaction(
   state: OpenMultiplyVaultState,
   change: OpenMultiplyVaultChange,
 ): OpenMultiplyVaultState {
-  if (change.kind === 'allowanceWaitingForApproval') {
-    return {
-      ...state,
-      stage: 'allowanceWaitingForApproval',
-    }
-  }
-
-  if (change.kind === 'allowanceInProgress') {
-    const { allowanceTxHash } = change
-    return {
-      ...state,
-      allowanceTxHash,
-      stage: 'allowanceInProgress',
-    }
-  }
-
-  if (change.kind === 'allowanceFailure') {
-    const { txError } = change
-    return {
-      ...state,
-      stage: 'allowanceFailure',
-      txError,
-    }
-  }
-
-  if (change.kind === 'allowanceSuccess') {
-    const { allowance } = change
-    return { ...state, stage: 'allowanceSuccess', allowance }
-  }
-
   if (change.kind === 'txWaitingForApproval') {
     return {
       ...state,

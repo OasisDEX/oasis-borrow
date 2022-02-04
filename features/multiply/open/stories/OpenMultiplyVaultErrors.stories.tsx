@@ -5,6 +5,7 @@ import { openMultiplyVaultStory } from 'helpers/stories/OpenMultiplyVaultStory'
 import { one } from 'helpers/zero'
 
 import { OpenMultiplyVaultView } from '../containers/OpenMultiplyVaultView'
+import { AllowanceOption } from '../../../allowance/allowance'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
@@ -105,7 +106,7 @@ export const CustomAllowanceEmpty = openMultiplyVaultStory({
 })({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
   allowanceAmount: undefined,
 })
 
@@ -117,7 +118,7 @@ export const CustomAllowanceAmountGreaterThanMaxUint256 = openMultiplyVaultStory
 })({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
   allowanceAmount: maxUint256.plus(one),
 })
 
@@ -130,7 +131,7 @@ export const CustomAllowanceAmountLessThanDepositAmount = openMultiplyVaultStory
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   allowanceAmount: new BigNumber('9'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
 })
 
 export const ExchangeDataFailure = openMultiplyVaultStory({

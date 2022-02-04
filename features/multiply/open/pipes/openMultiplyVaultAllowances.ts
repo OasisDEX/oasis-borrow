@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
+import { AllowanceOption } from '../../../allowance/allowance'
 
 interface AllowanceChange {
   kind: 'allowance'
@@ -42,7 +43,7 @@ export function applyOpenVaultAllowance(
     const { depositAmount } = state
     return {
       ...state,
-      selectedAllowanceRadio: 'depositAmount',
+      selectedAllowanceRadio: AllowanceOption.DEPOSIT_AMOUNT,
       allowanceAmount: depositAmount,
     }
   }
@@ -50,7 +51,7 @@ export function applyOpenVaultAllowance(
   if (change.kind === 'allowanceUnlimited') {
     return {
       ...state,
-      selectedAllowanceRadio: 'unlimited',
+      selectedAllowanceRadio: AllowanceOption.UNLIMITED,
       allowanceAmount: maxUint256,
     }
   }
@@ -58,7 +59,7 @@ export function applyOpenVaultAllowance(
   if (change.kind === 'allowanceCustom') {
     return {
       ...state,
-      selectedAllowanceRadio: 'custom',
+      selectedAllowanceRadio: AllowanceOption.CUSTOM,
       allowanceAmount: undefined,
     }
   }

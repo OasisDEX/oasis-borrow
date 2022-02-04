@@ -56,6 +56,7 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
+import { AllowanceOption, applyAllowanceChanges } from '../../../allowance/allowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -111,7 +112,7 @@ export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   id?: BigNumber
   requiredCollRatio?: BigNumber
@@ -266,7 +267,7 @@ function addTransitions(
 
 export const defaultMutableOpenMultiplyVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
-  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
   allowanceAmount: maxUint256,
 }
 
@@ -361,6 +362,7 @@ export function createOpenMultiplyVault$(
                       applyExchange,
                       applyOpenVaultTransition,
                       applyProxyChanges,
+                      applyAllowanceChanges,
                       applyOpenMultiplyVaultTransaction,
                       applyOpenVaultAllowance,
                       applyOpenVaultEnvironment,

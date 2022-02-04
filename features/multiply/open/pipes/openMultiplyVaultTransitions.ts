@@ -69,19 +69,6 @@ export function applyOpenVaultTransition(
     }
   }
 
-  if (change.kind === 'regressAllowance') {
-    return {
-      ...state,
-      ...(state.stage === 'allowanceFailure'
-        ? { stage: 'allowanceWaitingForConfirmation' }
-        : {
-            stage: 'editing',
-            allowanceAmount: maxUint256,
-            selectedAllowanceRadio: 'unlimited',
-          }),
-    }
-  }
-
   if (change.kind === 'clear') {
     return {
       ...state,
