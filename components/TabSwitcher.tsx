@@ -5,17 +5,13 @@ import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 import { slideInAnimation } from '../theme/animations'
 
-export type ArrayWithAtLeastOne<T> = {
-  0: T
-} & Array<T>
-
 export type TabSwitcherTab = {
   tabLabel: string
   tabContent: ReactNode
 }
 
 const WideTabSelector = (props: {
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   wideTabsSx: SxStyleProp
   selectedTab: string
   selectTab: (event: MouseEvent<HTMLButtonElement>) => void
@@ -45,7 +41,7 @@ const WideTabSelector = (props: {
 const NarrowTabSelector = (props: {
   narrowTabsSx: SxStyleProp
   selectedTab: string
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   setSelectedTab: (tab: string) => void
 }) => {
   return (
@@ -96,7 +92,7 @@ const NarrowTabSelector = (props: {
 }
 
 export function TabSwitcher(props: {
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   narrowTabsSx: SxStyleProp
   wideTabsSx: SxStyleProp
 }) {
@@ -108,9 +104,10 @@ export function TabSwitcher(props: {
     [],
   )
 
+  const isEmpty = !props.tabs.length
   const isOneTab = props.tabs.length === 1
 
-  return (
+  return !isEmpty ? (
     <Flex
       sx={{
         flexDirection: 'column',
@@ -148,5 +145,5 @@ export function TabSwitcher(props: {
           </Box>
         ))}
     </Flex>
-  )
+  ) : null
 }

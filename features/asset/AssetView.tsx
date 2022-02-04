@@ -4,7 +4,7 @@ import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
 import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
-import { ArrayWithAtLeastOne, TabSwitcher, TabSwitcherTab } from 'components/TabSwitcher'
+import { TabSwitcher, TabSwitcherTab } from 'components/TabSwitcher'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -59,7 +59,12 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     const borrowTab = content.borrowIlks && {
       tabLabel: t('landing.tabs.borrow.tabLabel'),
       tabContent: (
-        <TabContent ilks={content.borrowIlks} type="borrow" renderProductCard={ProductCardBorrow} productCardsData={productCardsData} />
+        <TabContent
+          ilks={content.borrowIlks}
+          type="borrow"
+          renderProductCard={ProductCardBorrow}
+          productCardsData={productCardsData}
+        />
       ),
     }
 
@@ -81,13 +86,16 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       enabled && {
         tabLabel: t('landing.tabs.earn.tabLabel'),
         tabContent: (
-          <TabContent ilks={content.earnIlks} type="earn" renderProductCard={ProductCardEarn} productCardsData={productCardsData} />
+          <TabContent
+            ilks={content.earnIlks}
+            type="earn"
+            renderProductCard={ProductCardEarn}
+            productCardsData={productCardsData}
+          />
         ),
       }
 
-      return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as ArrayWithAtLeastOne<
-        TabSwitcherTab
-        >
+    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSwitcherTab[]
   }
 
   return (

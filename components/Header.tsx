@@ -192,7 +192,7 @@ function ConnectedHeader() {
                   <AppLink
                     variant="links.navHeader"
                     href={HEADER_LINKS.earn}
-                    sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                    sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
                   >
                     {t('nav.earn')}
                   </AppLink>
