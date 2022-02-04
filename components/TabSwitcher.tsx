@@ -5,17 +5,13 @@ import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
 import { slideInAnimation } from '../theme/animations'
 
-type ArrayWithAtLeastOne<T> = {
-  0: T
-} & Array<T>
-
-type TabSwitcherTab = {
+export type TabSwitcherTab = {
   tabLabel: string
   tabContent: ReactNode
 }
 
 const WideTabSelector = (props: {
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   wideTabsSx: SxStyleProp
   selectedTab: string
   selectTab: (event: MouseEvent<HTMLButtonElement>) => void
@@ -45,7 +41,7 @@ const WideTabSelector = (props: {
 const NarrowTabSelector = (props: {
   narrowTabsSx: SxStyleProp
   selectedTab: string
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   setSelectedTab: (tab: string) => void
 }) => {
   return (
@@ -96,7 +92,7 @@ const NarrowTabSelector = (props: {
 }
 
 export function TabSwitcher(props: {
-  tabs: ArrayWithAtLeastOne<TabSwitcherTab>
+  tabs: TabSwitcherTab[]
   narrowTabsSx: SxStyleProp
   wideTabsSx: SxStyleProp
 }) {
@@ -108,25 +104,32 @@ export function TabSwitcher(props: {
     [],
   )
 
-  return (
+  const isEmpty = !props.tabs.length
+  const isOneTab = props.tabs.length === 1
+
+  return !isEmpty ? (
     <Flex
       sx={{
         flexDirection: 'column',
         alignItems: 'center',
       }}
     >
-      <NarrowTabSelector
-        selectedTab={selectedTab}
-        tabs={props.tabs}
-        setSelectedTab={setSelectedTab}
-        narrowTabsSx={props.narrowTabsSx}
-      />
-      <WideTabSelector
-        wideTabsSx={props.wideTabsSx}
-        selectTab={selectTab}
-        selectedTab={selectedTab}
-        tabs={props.tabs}
-      />
+      {!isOneTab && (
+        <>
+          <NarrowTabSelector
+            selectedTab={selectedTab}
+            tabs={props.tabs}
+            setSelectedTab={setSelectedTab}
+            narrowTabsSx={props.narrowTabsSx}
+          />
+          <WideTabSelector
+            wideTabsSx={props.wideTabsSx}
+            selectTab={selectTab}
+            selectedTab={selectedTab}
+            tabs={props.tabs}
+          />
+        </>
+      )}
       {props.tabs
         .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
         .map(({ tabLabel, tabContent }) => (
@@ -141,5 +144,5 @@ export function TabSwitcher(props: {
           </Box>
         ))}
     </Flex>
-  )
+  ) : null
 }

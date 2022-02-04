@@ -94,9 +94,13 @@ function Pill(props: PillProps) {
   )
 }
 function Pills({ sx }: { sx?: SxProps }) {
+  const enabled = useFeatureToggle('EarnProduct')
+
+  const pills = enabled ? LANDING_PILLS : LANDING_PILLS.filter((pill) => pill.label !== 'DAI')
+
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {LANDING_PILLS.map((pill) => (
+      {pills.map((pill) => (
         <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
     </Flex>

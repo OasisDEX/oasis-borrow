@@ -868,6 +868,10 @@
       "description": "Yearn.finance (YFI) is the governance token of the Yearn.finance platform. The platform is a yield optimizer that moves funds around the decentralized finance ecosystem in an effort to generate a high return. Multiply your exposure to YFI, or borrow against it.",
       "link": "https://yearn.finance/"
     },
+    "dai": {
+      "description": "To be updated",
+      "link": ""
+    },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
       "link": "https://uniswap.org/"
