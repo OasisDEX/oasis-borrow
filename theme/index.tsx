@@ -207,6 +207,7 @@ const oasisBaseTheme = {
     card: '0px 0px 8px rgba(37, 39, 61, 0.1)',
     cardLanding: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     fixedBanner: '0px 0px 16px rgba(0, 0, 0, 0.1)',
+    selectMenu: '0px 0px 16px rgba(0, 0, 0, 0.15)',
     medium: '0 2px 8px rgba(0, 0, 0, 0.17)',
     light: '0 2px 8px rgba(0, 0, 0, 0.13)',
     surface: '0px 0px 8px rgba(0, 0, 0, 0.2)',

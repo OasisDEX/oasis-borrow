@@ -209,7 +209,7 @@
     "hero": {
       "headlinePreAssetLandingPages": "Borrow Dai and Multiply your exposure to crypto",
       "subheaderPreAssetLandingPages": "Open a Maker Vault, deposit 25+ crypto collaterals. Either borrow Dai or buy additional collateral to increase your exposure.<0/> Connect a wallet to start.",
-      "headline": "Deploy your crypto into Defi",
+      "headline": "Deploy your crypto into DeFi",
       "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
     "cards": {
@@ -416,7 +416,9 @@
     "oasis-borrow": "Oasis Borrow",
     "multiply": "Multiply",
     "more": "More",
-    "earn": "Earn"
+    "assets": "Assets",
+    "earn": "Earn",
+    "select-an-asset": "Select an asset"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -817,7 +819,8 @@
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
       "max-exposure": "Max {{token}} exposure"
-    }
+    },
+    "unprofitable-position": "This position is currently likely unprofitable. Proceed if you know what you are doing."
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",

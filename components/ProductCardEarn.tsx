@@ -1,11 +1,54 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Flex, Text } from 'theme-ui'
 
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
+import { StatefulTooltip } from './Tooltip'
+
+interface UnprofitableTooltipProps {
+  value: string
+  variant: 'left' | 'right'
+}
+
+function UnprofitableSlot({ value, variant }: UnprofitableTooltipProps) {
+  const { t } = useTranslation()
+  const tooltipSxMap = {
+    right: { transform: ['translate(0, 70%)', 'translateX(-24%)'] },
+    left: { transform: ['translate(0, 70%)', 'translateX(25%)'] },
+  }
+  const containerSxMap = {
+    right: { justifyContent: 'flex-end' },
+    left: { justifyContent: 'flex-start' },
+  }
+
+  return (
+    <StatefulTooltip
+      tooltip={
+        <Text sx={{ fontWeight: 'semiBold', mb: 1, fontSize: 2, textAlign: 'left' }}>
+          {t('product-card.unprofitable-position')}
+        </Text>
+      }
+      tooltipSx={tooltipSxMap[variant]}
+      containerSx={{ alignItems: 'center', ...containerSxMap[variant] }}
+    >
+      <Flex sx={{ alignItems: 'center' }}>
+        {variant === 'right' && <Icon name="error" size={17} sx={{ mr: 1 }} />}
+        <Text
+          variant="paragraph1"
+          sx={{ textAlign: 'right', fontWeight: 'semiBold', color: '#D94A1E' }}
+        >
+          {value}
+        </Text>
+        {variant === 'left' && <Icon name="error" size={17} sx={{ ml: 1 }} />}
+      </Flex>
+    </StatefulTooltip>
+  )
+}
 
 interface ProductCardEarnProps {
   cardData: ProductCardData
@@ -16,7 +59,12 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
 
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
+
   const sevenDayAverage = new BigNumber(0.1201) // TODO to be replaced with calculations
+  const unprofitable = false // TODO to be replaced with calculations
+
+  const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
+  const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
 
   return (
     <ProductCard
@@ -39,11 +87,19 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       }}
       leftSlot={{
         title: t('system.seven-day-average'),
-        value: formatPercent(sevenDayAverage.times(100), { precision: 2 }),
+        value: unprofitable ? (
+          <UnprofitableSlot value={yieldAsPercentage} variant="left" />
+        ) : (
+          yieldAsPercentage
+        ),
       }}
       rightSlot={{
         title: t(t('system.variable-annual-fee')),
-        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+        value: unprofitable ? (
+          <UnprofitableSlot value={stabilityFeePercentage} variant="right" />
+        ) : (
+          stabilityFeePercentage
+        ),
       }}
       button={{
         // TODO to be replaced with open-earn in the future
