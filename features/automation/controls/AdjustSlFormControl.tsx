@@ -36,11 +36,13 @@ function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
+  replacedTriggerId: number,
 ): AutomationBotAddTriggerData {
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
 
   return {
     ...baseTriggerData,
+    replacedTriggerId,
     kind: TxMetaKind.addTrigger,
   }
 }
@@ -121,9 +123,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
 
     const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
 
-    console.log('currentCollRatio')
-    console.log(currentCollRatio.toFixed(2))
-
     const maxBoundry =
       currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
@@ -144,9 +143,6 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       collateralTokenSymbol: token,
       collateralTokenIconCircle: tokenData.iconCircle,
     }
-
-    console.log('maxBoundry')
-    console.log(maxBoundry.toFixed(2))
 
     const sliderProps: SliderValuePickerProps = {
       disabled: false,
@@ -180,6 +176,8 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
       },
     }
 
+    const replacedTriggerId = slTriggerData.triggerId || 0
+
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
@@ -188,7 +186,13 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
         const sendTxErrorHandler = () => {
           finishLoader(false)
         }
-        const txData = prepareAddTriggerData(vaultData, collateralActive, selectedSLValue)
+        const txData = prepareAddTriggerData(
+          vaultData,
+          collateralActive,
+          selectedSLValue,
+          replacedTriggerId,
+        )
+
         const waitForTx = txHelpers
           .sendWithGasEstimation(addAutomationBotTrigger, txData)
           .subscribe(txSendSuccessHandler, sendTxErrorHandler)
