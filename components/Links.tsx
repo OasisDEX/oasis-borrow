@@ -14,6 +14,7 @@ export interface AppLinkProps extends WithChildren, LinkProps {
   withAccountPrefix?: boolean
   onClick?: React.MouseEventHandler<HTMLAnchorElement>
   target?: string
+  hash?: string
 }
 
 export function getIsInternalLink(href: string) {
@@ -56,6 +57,7 @@ function InternalLink({
   as,
   variant,
   onClick,
+  hash,
   ...rest
 }: AppLinkProps) {
   // useRouter cannot be used with storybook. The router is undefined.
@@ -63,7 +65,13 @@ function InternalLink({
   const readOnlyHref = href
   const readOnlyAs = as
 
-  const actualHref = network ? { pathname: readOnlyHref, query: { network } } : readOnlyHref
+  const actualHref = network
+    ? {
+        pathname: readOnlyHref as string,
+        query: { network },
+        hash,
+      }
+    : { pathname: readOnlyHref as string, hash }
 
   const actualAs =
     readOnlyAs && network ? { pathname: readOnlyAs as string, query: { network } } : readOnlyAs
