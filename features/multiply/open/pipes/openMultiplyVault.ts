@@ -16,6 +16,11 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
+import {
+  AllowanceChanges,
+  AllowanceOption,
+  applyAllowanceChanges,
+} from '../../../allowance/allowance'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { applyProxyChanges } from '../../../proxy/proxy'
@@ -55,11 +60,6 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
-import {
-  AllowanceChanges,
-  AllowanceOption,
-  applyAllowanceChanges,
-} from '../../../allowance/allowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'

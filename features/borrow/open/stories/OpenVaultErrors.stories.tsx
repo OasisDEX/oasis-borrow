@@ -4,6 +4,7 @@ import { OpenVaultView } from 'features/borrow/open/containers/OpenVaultView'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { one } from 'helpers/zero'
+
 import { AllowanceOption } from '../../../allowance/allowance'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
