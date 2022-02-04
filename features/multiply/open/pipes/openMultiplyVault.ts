@@ -14,9 +14,11 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
+import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
+import { applyProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
   applyExchange,
@@ -54,8 +56,6 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
-import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
-import { applyProxyChanges } from '../../../proxy/proxy'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
