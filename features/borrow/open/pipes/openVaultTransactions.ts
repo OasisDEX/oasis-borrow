@@ -16,44 +16,6 @@ export function applyOpenVaultTransaction(
   state: OpenVaultState,
   change: OpenVaultChange,
 ): OpenVaultState {
-  if (change.kind === 'proxyWaitingForApproval') {
-    return {
-      ...state,
-      stage: 'proxyWaitingForApproval',
-    }
-  }
-
-  if (change.kind === 'proxyInProgress') {
-    const { proxyTxHash } = change
-    return {
-      ...state,
-      stage: 'proxyInProgress',
-      proxyTxHash,
-    }
-  }
-
-  if (change.kind === 'proxyFailure') {
-    const { txError } = change
-    return { ...state, stage: 'proxyFailure', txError }
-  }
-
-  if (change.kind === 'proxyConfirming') {
-    const { proxyConfirmations } = change
-    return {
-      ...state,
-      proxyConfirmations,
-    }
-  }
-
-  if (change.kind === 'proxySuccess') {
-    const { proxyAddress } = change
-    return {
-      ...state,
-      proxyAddress,
-      stage: 'proxySuccess',
-    }
-  }
-
   if (change.kind === 'allowanceWaitingForApproval') {
     return {
       ...state,

@@ -41,6 +41,7 @@ import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVa
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
+import { applyProxyChanges } from '../../../proxy/proxy'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -322,6 +323,7 @@ export function createOpenVault$(
                       applyOpenVaultInput,
                       applyOpenVaultForm,
                       applyOpenVaultTransition,
+                      applyProxyChanges,
                       applyOpenVaultTransaction,
                       applyOpenVaultAllowance,
                       applyOpenVaultEnvironment,
