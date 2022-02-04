@@ -26,7 +26,6 @@ import {
   createInitialQuoteChange,
   ExchangeQuoteChanges,
 } from './openMultiplyQuote'
-import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
   applyOpenMultiplyVaultCalculations,
   defaultOpenMultiplyVaultStateCalculations,
@@ -56,7 +55,11 @@ import {
 } from './openMultiplyVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
-import { AllowanceOption, applyAllowanceChanges } from '../../../allowance/allowance'
+import {
+  AllowanceChanges,
+  AllowanceOption,
+  applyAllowanceChanges,
+} from '../../../allowance/allowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -80,7 +83,7 @@ export type OpenMultiplyVaultChange =
   | OpenVaultInputChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
-  | OpenVaultAllowanceChange
+  | AllowanceChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
   | ExchangeQuoteChanges
@@ -364,7 +367,6 @@ export function createOpenMultiplyVault$(
                       applyProxyChanges,
                       applyAllowanceChanges,
                       applyOpenMultiplyVaultTransaction,
-                      applyOpenVaultAllowance,
                       applyOpenVaultEnvironment,
                       applyOpenVaultInjectedOverride,
                       applyOpenMultiplyVaultCalculations,
