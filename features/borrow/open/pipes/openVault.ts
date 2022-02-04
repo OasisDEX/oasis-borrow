@@ -40,13 +40,14 @@ import {
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
+import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
   stateToOverride: Partial<OpenVaultState>
 }
 
-function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaultState) {
+function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVaultChange) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -64,20 +65,6 @@ export type OpenVaultChange =
   | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
-
-function apply(state: OpenVaultState, change: OpenVaultChange) {
-  const s1 = applyOpenVaultInput(change, state)
-  const s2 = applyOpenVaultForm(change, s1)
-  const s3 = applyOpenVaultTransition(change, s2)
-  const s4 = applyOpenVaultTransaction(change, s3)
-  const s5 = applyOpenVaultAllowance(change, s4)
-  const s6 = applyOpenVaultEnvironment(change, s5)
-  const s7 = applyOpenVaultInjectedOverride(change, s6)
-  const s8 = applyOpenVaultCalculations(s7)
-  const s9 = applyOpenVaultStageCategorisation(s8)
-  const s10 = applyOpenVaultConditions(s9)
-  return applyOpenVaultSummary(s10)
-}
 
 export type OpenVaultStage =
   | 'editing'
@@ -330,6 +317,20 @@ export function createOpenVault$(
                       gasEstimationStatus: GasEstimationStatus.unset,
                       injectStateOverride,
                     }
+
+                    const apply = combineApplyChanges<OpenVaultState, OpenVaultChange>(
+                      applyOpenVaultInput,
+                      applyOpenVaultForm,
+                      applyOpenVaultTransition,
+                      applyOpenVaultTransaction,
+                      applyOpenVaultAllowance,
+                      applyOpenVaultEnvironment,
+                      applyOpenVaultInjectedOverride,
+                      applyOpenVaultCalculations,
+                      applyOpenVaultStageCategorisation,
+                      applyOpenVaultConditions,
+                      applyOpenVaultSummary,
+                    )
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),

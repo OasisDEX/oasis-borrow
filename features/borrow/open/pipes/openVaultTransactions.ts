@@ -13,8 +13,8 @@ import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
 export function applyOpenVaultTransaction(
-  change: OpenVaultChange,
   state: OpenVaultState,
+  change: OpenVaultChange,
 ): OpenVaultState {
   if (change.kind === 'proxyWaitingForApproval') {
     return {

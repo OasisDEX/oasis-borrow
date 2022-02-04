@@ -23,8 +23,8 @@ export type OpenVaultTransitionChange =
     }
 
 export function applyOpenVaultTransition(
-  change: OpenVaultChange,
   state: OpenVaultState,
+  change: OpenVaultChange,
 ): OpenVaultState {
   if (change.kind === 'progressEditing') {
     const { errorMessages, proxyAddress, depositAmount, allowance } = state
