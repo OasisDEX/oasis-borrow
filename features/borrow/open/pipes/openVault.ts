@@ -18,7 +18,6 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { createProxy } from '../../../proxy/createProxy'
 import { applyProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
-import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
 import {
   applyOpenVaultCalculations,
   defaultOpenVaultStateCalculations,
@@ -42,6 +41,11 @@ import {
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
+import {
+  AllowanceChanges,
+  AllowanceOption,
+  applyAllowanceChanges,
+} from '../../../allowance/allowance'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -63,7 +67,7 @@ export type OpenVaultChange =
   | OpenVaultFormChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
-  | OpenVaultAllowanceChange
+  | AllowanceChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
 
@@ -91,7 +95,7 @@ export interface MutableOpenVaultState {
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   showGenerateOption: boolean
-  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   id?: BigNumber
 }
@@ -245,7 +249,7 @@ function addTransitions(
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
   showGenerateOption: false,
-  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
   allowanceAmount: maxUint256,
 }
 
@@ -325,7 +329,7 @@ export function createOpenVault$(
                       applyOpenVaultTransition,
                       applyProxyChanges,
                       applyOpenVaultTransaction,
-                      applyOpenVaultAllowance,
+                      applyAllowanceChanges,
                       applyOpenVaultEnvironment,
                       applyOpenVaultInjectedOverride,
                       applyOpenVaultCalculations,

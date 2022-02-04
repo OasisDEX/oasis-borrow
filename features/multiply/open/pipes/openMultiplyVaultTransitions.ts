@@ -1,4 +1,3 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
 import {
@@ -18,9 +17,6 @@ export type OpenVaultTransitionChange =
     }
   | {
       kind: 'backToEditing'
-    }
-  | {
-      kind: 'regressAllowance'
     }
   | {
       kind: 'clear'

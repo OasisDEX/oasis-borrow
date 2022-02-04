@@ -1,4 +1,3 @@
-import { maxUint256 } from 'blockchain/calls/erc20'
 import { zero } from 'helpers/zero'
 
 import { defaultMutableOpenVaultState, OpenVaultChange, OpenVaultState } from './openVault'
@@ -14,9 +13,6 @@ export type OpenVaultTransitionChange =
     }
   | {
       kind: 'backToEditing'
-    }
-  | {
-      kind: 'regressAllowance'
     }
   | {
       kind: 'clear'
@@ -62,19 +58,6 @@ export function applyOpenVaultTransition(
     return {
       ...state,
       stage: 'editing',
-    }
-  }
-
-  if (change.kind === 'regressAllowance') {
-    return {
-      ...state,
-      ...(state.stage === 'allowanceFailure'
-        ? { stage: 'allowanceWaitingForConfirmation' }
-        : {
-            stage: 'editing',
-            allowanceAmount: maxUint256,
-            selectedAllowanceRadio: 'unlimited',
-          }),
     }
   }
 
