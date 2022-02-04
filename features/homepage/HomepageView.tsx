@@ -137,6 +137,7 @@ export function HomepageView() {
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           width: '100%',
         }}
+        id="product-cards-wrapper"
       >
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
@@ -388,7 +389,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       <AppLink
-        href={isConnected ? '/#product-cards-wrapper' : '/connect'}
+        href={isConnected ? '/' : '/connect'}
         variant="primary"
         sx={{
           display: 'flex',
@@ -400,6 +401,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
             transform: 'translateX(10px)',
           },
         }}
+        hash={isConnected ? 'product-cards-wrapper' : ''}
       >
         {isConnected ? t('see-products') : t('connect-wallet')}
         <Icon

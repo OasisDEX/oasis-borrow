@@ -114,7 +114,6 @@ export function TabSwitcher(props: {
         flexDirection: 'column',
         alignItems: 'center',
       }}
-      id="product-cards-wrapper"
     >
       <NarrowTabSelector
         selectedTab={selectedTab}
