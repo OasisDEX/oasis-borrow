@@ -3,7 +3,7 @@
   "version": "3.0.2",
   "license": "Apache-2.0",
   "engines": {
-    "node": "16.x"
+    "node": "12.x"
   },
   "scripts": {
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
