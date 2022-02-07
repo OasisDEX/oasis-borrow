@@ -3,7 +3,7 @@ import React from 'react'
 import { Flex, Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
+import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
@@ -47,7 +47,7 @@ export function EarnView() {
           {([productCardsData]) => (
             <ProductCardsWrapper>
               {earnPageCardsData({ productCardsData }).map((cardData) => (
-                <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
+                <ProductCardEarn cardData={cardData} key={cardData.ilk} />
               ))}
             </ProductCardsWrapper>
           )}

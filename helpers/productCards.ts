@@ -135,6 +135,7 @@ type ProductPageType = {
 export const productCardsConfig: {
   borrow: ProductPageType
   multiply: ProductPageType
+  earn: ProductPageType
   landing: {
     featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
   }
@@ -177,7 +178,7 @@ export const productCardsConfig: {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
     ],
-    featuredCards: ['ETH-B', 'WBTC-B', 'LINK-A'],
+    featuredCards: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
@@ -189,11 +190,18 @@ export const productCardsConfig: {
       'WSTETH-A': 'staking-rewards',
     },
   },
+  earn: {
+    cardsFilters: [],
+    featuredCards: [],
+    inactiveIlks: [],
+    ordering: {},
+    tags: {},
+  },
   landing: {
     featuredCards: {
       borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
-      multiply: ['ETH-B', 'WBTC-B', 'LINK-A'],
-      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
+      earn: ['GUNIV3DAIUSDC2-A'],
     },
   },
   descriptionCustomKeys: {

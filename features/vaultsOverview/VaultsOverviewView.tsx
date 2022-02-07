@@ -422,7 +422,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
               <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
             </Text>
             <AppLink
-              href="/#product-cards-wrapper"
+              href="/"
               variant="primary"
               sx={{
                 display: 'flex',
@@ -435,6 +435,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
                   transform: 'translateX(10px)',
                 },
               }}
+              hash="product-cards-wrapper"
             >
               {t('open-vault.title')}
               <Icon
