@@ -499,7 +499,7 @@ export function applyManageVaultCalculations(
   const isCloseAction = originalEditingStage === 'otherActions' && otherAction === 'closeVault'
 
   const marketPrice =
-    swap?.status === 'SUCCESS' && !swap.tokenPrice.isZero()
+    swap?.status === 'SUCCESS'
       ? swap.tokenPrice
       : quote?.status === 'SUCCESS'
       ? quote.tokenPrice
