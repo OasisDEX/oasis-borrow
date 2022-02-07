@@ -592,12 +592,15 @@ function WithdrawDAIAction(props: ManageMultiplyVaultState) {
 }
 
 function OtherActionsForm(props: ManageMultiplyVaultState) {
-  const { otherAction } = props
+  const {
+    otherAction,
+    vault: { debt },
+  } = props
 
   return (
     <Grid>
       <OtherActionsSelect {...props} />
-      {otherAction === 'closeVault' && <CloseVaultAction {...props} />}
+      {otherAction === 'closeVault' && !debt.isZero() && <CloseVaultAction {...props} />}
       {otherAction === 'depositCollateral' && <DepositCollateralAction {...props} />}
       {otherAction === 'withdrawCollateral' && <WithdrawCollateralAction {...props} />}
       {otherAction === 'depositDai' && <DepositDAIAction {...props} />}
