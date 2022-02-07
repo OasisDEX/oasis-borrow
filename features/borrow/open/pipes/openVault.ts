@@ -44,7 +44,7 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
+import { createApplyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -252,6 +252,9 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   showGenerateOption: false,
   selectedAllowanceRadio: AllowanceOption.UNLIMITED,
   allowanceAmount: maxUint256,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  generateAmount: undefined,
 }
 
 export function createOpenVault$(
@@ -327,7 +330,16 @@ export function createOpenVault$(
                     const apply = combineApplyChanges<OpenVaultState, OpenVaultChange>(
                       applyOpenVaultInput,
                       applyOpenVaultForm,
-                      applyOpenVaultTransition,
+                      createApplyOpenVaultTransition<
+                        OpenVaultState,
+                        MutableOpenVaultState,
+                        OpenVaultCalculations,
+                        OpenVaultConditions
+                      >(
+                        defaultMutableOpenVaultState,
+                        defaultOpenVaultStateCalculations,
+                        defaultOpenVaultConditions,
+                      ),
                       applyProxyChanges,
                       applyOpenVaultTransaction,
                       applyAllowanceChanges,

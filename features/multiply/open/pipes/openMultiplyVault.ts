@@ -273,6 +273,9 @@ export const defaultMutableOpenMultiplyVaultState: MutableOpenMultiplyVaultState
   stage: 'editing' as OpenMultiplyVaultStage,
   selectedAllowanceRadio: AllowanceOption.UNLIMITED,
   allowanceAmount: maxUint256,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  requiredCollRatio: undefined,
 }
 
 export function createOpenMultiplyVault$(

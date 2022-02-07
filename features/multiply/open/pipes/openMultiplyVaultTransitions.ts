@@ -61,9 +61,6 @@ export function applyOpenVaultTransition(
       ...defaultMutableOpenMultiplyVaultState,
       ...defaultOpenMultiplyVaultStateCalculations,
       ...defaultOpenMultiplyVaultConditions,
-      depositAmount: undefined,
-      depositAmountUSD: undefined,
-      requiredCollRatio: undefined,
     }
   }
 
