@@ -24,6 +24,10 @@ import { createProxy } from '../../../proxy/createProxy'
 import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from '../../../vaultTransitions/openVaultTransitions'
+import {
   applyOpenVaultCalculations,
   defaultOpenVaultStateCalculations,
   OpenVaultCalculations,
@@ -44,10 +48,6 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import {
-  createApplyOpenVaultTransition,
-  OpenVaultTransitionChange,
-} from '../../../vaultTransitions/openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {

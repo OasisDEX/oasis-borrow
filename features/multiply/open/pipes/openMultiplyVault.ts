@@ -26,6 +26,10 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
 import { OpenVaultTransactionChange } from '../../../shared/transactions'
 import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from '../../../vaultTransitions/openVaultTransitions'
+import {
   applyExchange,
   createExchangeChange$,
   createInitialQuoteChange,
@@ -59,10 +63,6 @@ import {
   setAllowance,
 } from './openMultiplyVaultTransactions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
-import {
-  createApplyOpenVaultTransition,
-  OpenVaultTransitionChange,
-} from '../../../vaultTransitions/openVaultTransitions'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
