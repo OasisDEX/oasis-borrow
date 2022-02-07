@@ -44,7 +44,10 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import { createApplyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
+import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from '../../../vaultTransitions/openVaultTransitions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
