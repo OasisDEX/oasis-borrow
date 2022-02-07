@@ -1,5 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { LANDING_PILLS } from 'content/landing'
+import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
@@ -119,6 +121,54 @@ function Pills({ sx }: { sx?: SxProps }) {
   )
 }
 
+function StatCell({ label, value }: { label: string; value: string }) {
+  const { getOasisStats$ } = useAppContext()
+
+  const { error: oasisStatsError, value: oasisStatsValue } = useObservableWithError(
+    getOasisStats$(),
+  )
+
+  return (
+    <Box sx={{ mb: [3, 1, 1] }}>
+      <Text
+        variant="paragraph2"
+        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'text.muted' }}
+      >
+        {label}
+      </Text>
+      <Text variant="header2" sx={{ textAlign: 'center' }}>
+        {value}
+      </Text>
+    </Box>
+  )
+}
+
+function Stats({ sx }: { sx?: SxProps }) {
+  const { t } = useTranslation()
+  const { getOasisStats$ } = useAppContext()
+
+  const { error: oasisStatsError, value: oasisStatsValue } = useObservableWithError(
+    getOasisStats$(),
+  )
+
+  return (
+    <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
+      <StatCell
+        label={t('landing.stats.30-day-volume')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(3900000000))}`}
+      />
+      <StatCell
+        label={t('landing.stats.managed-on-oasis')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(1440000000))}`}
+      />
+      <StatCell
+        label={t('landing.stats.median-vault')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(212000))}`}
+      />
+    </Grid>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
@@ -159,7 +209,10 @@ export function HomepageView() {
         }}
       />
 
-      <Pills sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+      <Pills sx={{ mb: 5, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+
+      <Stats sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+
       <Box
         sx={{
           ...slideInAnimation,
