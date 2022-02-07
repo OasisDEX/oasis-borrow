@@ -58,8 +58,11 @@ import {
   multiplyVault,
   setAllowance,
 } from './openMultiplyVaultTransactions'
-import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
+import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from '../../../vaultTransitions/openVaultTransitions'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -367,7 +370,16 @@ export function createOpenMultiplyVault$(
                     >(
                       applyOpenVaultInput,
                       applyExchange,
-                      applyOpenVaultTransition,
+                      createApplyOpenVaultTransition<
+                        OpenMultiplyVaultState,
+                        MutableOpenMultiplyVaultState,
+                        OpenMultiplyVaultCalculations,
+                        OpenMultiplyVaultConditions
+                      >(
+                        defaultMutableOpenMultiplyVaultState,
+                        defaultOpenMultiplyVaultStateCalculations,
+                        defaultOpenMultiplyVaultConditions,
+                      ),
                       applyProxyChanges,
                       applyAllowanceChanges,
                       applyOpenMultiplyVaultTransaction,
