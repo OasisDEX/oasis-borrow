@@ -15,6 +15,7 @@ import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
+import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
@@ -190,6 +191,7 @@ export type ManageVaultState = MutableManageVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
+    triggersData?: StopLossTriggerData
   } & HasGasEstimation
 
 function addTransitions(

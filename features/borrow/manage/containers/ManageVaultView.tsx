@@ -20,6 +20,7 @@ import { ManageVaultCollateralAllowance } from '../../../../components/vault/com
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
+import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
 import { ManageVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -106,9 +107,11 @@ function ManageVaultForm(props: ManageVaultState) {
 export function ManageVaultContainer({
   manageVault,
   vaultHistory,
+  automationTriggersData,
 }: {
   manageVault: ManageVaultState
   vaultHistory: VaultHistoryEvent[]
+  automationTriggersData: StopLossTriggerData
 }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
@@ -129,6 +132,8 @@ export function ManageVaultContainer({
     }
   }, [])
 
+  console.log('herhere')
+
   return (
     <>
       <DefaultVaultHeader {...manageVault} id={id} />
@@ -136,6 +141,7 @@ export function ManageVaultContainer({
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails
             {...manageVault}
+            triggersData={automationTriggersData}
             onBannerButtonClickHandler={() => {
               uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
             }}

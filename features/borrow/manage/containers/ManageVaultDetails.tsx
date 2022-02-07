@@ -9,7 +9,6 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -20,6 +19,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Button, Grid, Heading, Image, Text } from 'theme-ui'
 
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { ManageVaultState } from '../pipes/manageVault'
 
 function ManageVaultDetailsSummary({
@@ -105,6 +105,8 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
     },
+    ilkData: { liquidationRatio },
+    triggersData,
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -149,13 +151,14 @@ export function ManageVaultDetails(
       )}
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-          }}
+          liquidationPrice={liquidationPrice}
+          liquidationRatio={liquidationRatio}
+          stopLossLevel={triggersData?.stopLossLevel}
+          isStopLossEnabled={triggersData?.isStopLossEnabled}
+          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+          afterLiquidationPrice={afterLiquidationPrice}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
         />
 
         <VaultDetailsCard

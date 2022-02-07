@@ -106,6 +106,7 @@ export function VaultDetailsCard({
   afterPillColors,
   openModal,
   relevant = true,
+  extraSlot = null,
 }: {
   title: string
   value: ReactNode
@@ -113,6 +114,7 @@ export function VaultDetailsCard({
   valueAfter?: ReactNode
   openModal?: () => void
   relevant?: Boolean
+  extraSlot?: ReactNode
 } & AfterPillProps) {
   return (
     <Card
@@ -161,6 +163,7 @@ export function VaultDetailsCard({
               {valueAfter} after
             </VaultDetailsAfterPill>
           )}
+          {extraSlot}
         </Box>
         <Box sx={{ fontWeight: 'semiBold', minHeight: '1em' }}>{valueBottom}</Box>
       </Flex>
@@ -544,54 +547,6 @@ export function VaultDetailsLiquidationModal({
         )}
       </Grid>
     </VaultDetailsCardModal>
-  )
-}
-
-export function VaultDetailsCardLiquidationPrice({
-  liquidationPrice,
-  liquidationPriceCurrentPriceDifference,
-  afterLiquidationPrice,
-  afterPillColors,
-  showAfterPill,
-  relevant = true,
-}: {
-  liquidationPrice: BigNumber
-  liquidationPriceCurrentPriceDifference?: BigNumber
-  afterLiquidationPrice?: BigNumber
-  relevant?: Boolean
-} & AfterPillProps) {
-  const openModal = useModal()
-  const { t } = useTranslation()
-
-  return (
-    <VaultDetailsCard
-      title={t('system.liquidation-price')}
-      value={`$${formatAmount(liquidationPrice, 'USD')}`}
-      valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
-      valueBottom={
-        liquidationPriceCurrentPriceDifference && (
-          <>
-            {formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
-              {` ${
-                liquidationPriceCurrentPriceDifference.lt(zero) ? 'above' : 'below'
-              } current price`}
-            </Text>
-          </>
-        )
-      }
-      openModal={() =>
-        openModal(VaultDetailsLiquidationModal, {
-          liquidationPrice: liquidationPrice,
-          liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
-        })
-      }
-      relevant={relevant}
-      afterPillColors={afterPillColors}
-    />
   )
 }
 

@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Grid, Heading, Text } from 'theme-ui'
 
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
 import { zero } from '../../../helpers/zero'
+import { ProtectionPill } from '../../ProtectionPill'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface LiquidationProps {
@@ -48,25 +49,42 @@ function VaultDetailsLiquidationModal({
 
 export function VaultDetailsCardLiquidationPrice({
   liquidationPrice,
+  liquidationRatio,
   liquidationPriceCurrentPriceDifference,
   afterLiquidationPrice,
   afterPillColors,
   showAfterPill,
   relevant = true,
+  stopLossLevel,
+  isStopLossEnabled,
 }: {
   liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
   relevant?: Boolean
+  stopLossLevel?: BigNumber
+  isStopLossEnabled?: boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
+
+  const dynamicStopPrice = stopLossLevel
+    ? liquidationPrice.div(liquidationRatio).times(stopLossLevel)
+    : null
 
   return (
     <VaultDetailsCard
       title={t('system.liquidation-price')}
       value={`$${formatAmount(liquidationPrice, 'USD')}`}
       valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
+      extraSlot={
+        isStopLossEnabled && dynamicStopPrice ? (
+          <Box sx={{ mt: '6px' }}>
+            <ProtectionPill value={dynamicStopPrice} />
+          </Box>
+        ) : null
+      }
       valueBottom={
         liquidationPriceCurrentPriceDifference && (
           <>

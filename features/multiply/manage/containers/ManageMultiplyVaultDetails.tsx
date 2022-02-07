@@ -6,7 +6,6 @@ import {
   getCollRatioColor,
   VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -17,6 +16,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
@@ -80,6 +80,7 @@ function DefaultManageMultiplyVaultDetailsSummary({
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
     vault: { token, liquidationPrice },
+    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -105,13 +106,12 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-          }}
+          liquidationRatio={liquidationRatio}
+          liquidationPrice={liquidationPrice}
+          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+          afterLiquidationPrice={afterLiquidationPrice}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
         />
 
         <VaultDetailsCard

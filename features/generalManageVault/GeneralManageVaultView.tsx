@@ -9,6 +9,7 @@ import { Container } from 'theme-ui'
 
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
+import { extractSLData } from '../automation/common/StopLossTriggerDataExtractor'
 import { GuniDebtCeilingBanner } from '../earn/guni/common/GuniDebtCeilingBanner'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
@@ -19,18 +20,26 @@ import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
-  const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
+  const {
+    generalManageVault$,
+    vaultHistory$,
+    vaultMultiplyHistory$,
+    automationTriggersData$,
+  } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
+  const autoTriggersData$ = automationTriggersData$(id)
+  const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
-
+  console.log(automationTriggersDataWithError)
   return (
     <WithErrorHandler
       error={[
         manageVaultWithError.error,
         vaultHistoryWithError.error,
         vaultMultiplyHistoryWithError.error,
+        automationTriggersDataWithError.error,
       ]}
     >
       <WithLoadingIndicator
@@ -38,10 +47,11 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
           manageVaultWithError.value,
           vaultHistoryWithError.value,
           vaultMultiplyHistoryWithError.value,
+          automationTriggersDataWithError.value,
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
+        {([generalManageVault, vaultHistory, vaultMultiplyHistory, automationTriggersData]) => {
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (
@@ -49,6 +59,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                   <ManageVaultContainer
                     vaultHistory={vaultHistory}
                     manageVault={generalManageVault.state}
+                    automationTriggersData={extractSLData(automationTriggersData)}
                   />
                 </Container>
               )
