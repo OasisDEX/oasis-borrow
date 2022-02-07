@@ -132,8 +132,6 @@ export function ManageVaultContainer({
     }
   }, [])
 
-  console.log('herhere')
-
   return (
     <>
       <DefaultVaultHeader {...manageVault} id={id} />
