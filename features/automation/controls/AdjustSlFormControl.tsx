@@ -246,7 +246,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
             ilksData,
             extractSLData(triggerData),
             txHelpersWithError.value,
-            ctx.status === 'connected' ? ctx.account !== vault.controller : false,
+            ctx.status === 'connected' && ctx.account !== vault.controller,
           )
         }
       </WithLoadingIndicator>
