@@ -20,6 +20,7 @@ import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useState } from 'react'
 import React from 'react'
+import { startWith } from 'rxjs/operators'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
@@ -59,7 +60,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     ilkDataList$,
     automationTriggersData$,
     txHelpers$,
-    connectedContext$,
+    context$,
   } = useAppContext()
 
   const autoTriggersData$ = automationTriggersData$(id)
@@ -68,8 +69,10 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
   const ilksDataWithError = useObservableWithError(ilkDataList$)
   const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(connectedContext$)
+  const txHelpersWithError = useObservableWithError(
+    txHelpers$.pipe(startWith<TxHelpers | undefined>(undefined)),
+  )
+  const contextWithError = useObservableWithError(context$)
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
@@ -89,7 +92,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     collateralPriceData: CollateralPricesWithFilters,
     ilksData: IlkDataList,
     slTriggerData: StopLossTriggerData,
-    txHelpers: TxHelpers,
+    txHelpers: TxHelpers | undefined,
     isOwner: boolean,
   ) {
     const token = vaultData.token
@@ -181,6 +184,9 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        if (txHelpers === undefined) {
+          return
+        }
         const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
           transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
         const sendTxErrorHandler = () => {
@@ -229,19 +235,18 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
           collateralPricesWithError.value,
           ilksDataWithError.value,
           autoTriggerDataWithError.value,
-          txHelpersWithError.value,
           contextWithError.value,
         ]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) =>
+        {([vault, collateralPrice, ilksData, triggerData, ctx]) =>
           renderLayout(
             vault,
             collateralPrice,
             ilksData,
             extractSLData(triggerData),
-            tx,
-            ctx.account !== vault.controller,
+            txHelpersWithError.value,
+            ctx.status === 'connected' ? ctx.account !== vault.controller : false,
           )
         }
       </WithLoadingIndicator>

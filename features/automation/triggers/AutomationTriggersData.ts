@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
-import { ContextConnected } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
@@ -18,8 +18,6 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
     vaultId.toFixed(0),
   )
 
-  console.log('activeTriggersForVault in loadTriggerDataFromCache')
-  console.log(activeTriggersForVault)
   return {
     isAutomationEnabled: activeTriggersForVault.length > 0,
     triggers: activeTriggersForVault,
@@ -38,7 +36,7 @@ export interface TriggersData {
 }
 
 export function createAutomationTriggersData(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
