@@ -557,7 +557,7 @@ export function setupAppContext() {
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(connectedContext$, onEveryBlock$, vault$),
+    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
   const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
