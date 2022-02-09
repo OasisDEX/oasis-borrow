@@ -13,7 +13,9 @@ import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export function ManageVaultChangesInformation(props: ManageVaultState) {
+export function ManageVaultChangesInformation(
+  props: ManageVaultState & { isInstiVault?: boolean },
+) {
   const { t } = useTranslation()
   const {
     afterCollateralizationRatio,
@@ -32,6 +34,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
       token,
       daiYieldFromLockedCollateral,
     },
+    isInstiVault,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -108,6 +111,20 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
+      {isInstiVault && (
+        <>
+          <VaultChangesInformationItem
+            label="Some institutional info"
+            value={
+              <Flex>
+                123
+                <VaultChangesInformationArrow />
+                456
+              </Flex>
+            }
+          />
+        </>
+      )}
       <VaultChangesInformationEstimatedGasFee {...props} />
     </VaultChangesInformationContainer>
   ) : null
