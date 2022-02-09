@@ -19,6 +19,7 @@ import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
+import BigNumber from 'bignumber.js'
 
 type ManageVaultStory = { title?: string } & MockManageVaultProps
 
@@ -117,21 +118,21 @@ export function manageVaultStory({
             setVaultFormToggleTitle: () => null,
           }}
         >
-          <ManageVaultStoryContainer title={title} />
+          <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
         </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
 }
 
-const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
+const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId: BigNumber }) => {
   if (!isAppContextAvailable()) return null
 
   return (
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageVaultView id={MOCK_VAULT_ID} />
+        <GeneralManageVaultView id={vaultId} />
       </Grid>
     </Container>
   )

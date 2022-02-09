@@ -16,6 +16,9 @@ import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/Manage
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
+import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
+
+const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(27426))]
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
@@ -45,10 +48,17 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             case VaultType.Borrow:
               return (
                 <Container variant="vaultPageContainer">
-                  <ManageVaultContainer
-                    vaultHistory={vaultHistory}
-                    manageVault={generalManageVault.state}
-                  />
+                  {INSTITUTIONAL_VAULT_IDS.some((bn) => bn.eq(id)) ? (
+                    <ManageInstiVaultContainer
+                      vaultHistory={vaultHistory}
+                      manageVault={generalManageVault.state}
+                    />
+                  ) : (
+                    <ManageVaultContainer
+                      vaultHistory={vaultHistory}
+                      manageVault={generalManageVault.state}
+                    />
+                  )}
                 </Container>
               )
             case VaultType.Multiply:
