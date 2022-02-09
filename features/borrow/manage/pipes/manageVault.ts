@@ -107,23 +107,26 @@ export type ManageBorrowVaultStage =
 
 export type MainAction = 'depositGenerate' | 'withdrawPayback'
 
-export interface MutableManageVaultState {
-  stage: ManageBorrowVaultStage
-  mainAction: MainAction
-  originalEditingStage: ManageVaultEditingStage
-  showDepositAndGenerateOption: boolean
-  showPaybackAndWithdrawOption: boolean
+export interface MutableManageVaultEditingState {
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   generateAmount?: BigNumber
   paybackAmount?: BigNumber
+}
+
+export type MutableManageVaultState = {
+  stage: ManageBorrowVaultStage
+  mainAction: MainAction
+  originalEditingStage: ManageVaultEditingStage
+  showDepositAndGenerateOption: boolean
+  showPaybackAndWithdrawOption: boolean
   collateralAllowanceAmount?: BigNumber
   daiAllowanceAmount?: BigNumber
   selectedCollateralAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
-}
+} & MutableManageVaultEditingState
 
 export interface ManageVaultEnvironment {
   account?: string
@@ -137,13 +140,7 @@ export interface ManageVaultEnvironment {
   priceInfo: PriceInfo
 }
 
-interface ManageVaultFunctions {
-  progress?: () => void
-  regress?: () => void
-  toggle?: (stage: ManageVaultEditingStage) => void
-  setMainAction?: (action: MainAction) => void
-  toggleDepositAndGenerateOption?: () => void
-  togglePaybackAndWithdrawOption?: () => void
+export interface ManageVaultEditingFunctions {
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
   updateDepositMax?: () => void
@@ -154,6 +151,15 @@ interface ManageVaultFunctions {
   updateWithdrawMax?: () => void
   updatePayback?: (paybackAmount?: BigNumber) => void
   updatePaybackMax?: () => void
+  toggleDepositAndGenerateOption?: () => void
+  togglePaybackAndWithdrawOption?: () => void
+}
+
+type ManageVaultFunctions = {
+  progress?: () => void
+  regress?: () => void
+  toggle?: (stage: ManageVaultEditingStage) => void
+  setMainAction?: (action: MainAction) => void
   updateCollateralAllowanceAmount?: (amount?: BigNumber) => void
   setCollateralAllowanceAmountUnlimited?: () => void
   setCollateralAllowanceAmountToDepositAmount?: () => void
@@ -165,7 +171,7 @@ interface ManageVaultFunctions {
   clear: () => void
   injectStateOverride: (state: Partial<MutableManageVaultState>) => void
   toggleMultiplyTransition?: () => void
-}
+} & ManageVaultEditingFunctions
 
 interface ManageVaultTxInfo {
   collateralAllowanceTxHash?: string
