@@ -10,37 +10,34 @@ import { ManageVaultState } from './manageVault'
 // value in the vault (vault.debt)
 export const PAYBACK_ALL_BOUND = new BigNumber('0.01')
 
-export interface ManageVaultEditingCalculations {
+export interface ManageVaultCalculations {
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
+  maxWithdrawAmountAtCurrentPrice: BigNumber
+  maxWithdrawAmountAtNextPrice: BigNumber
   maxWithdrawAmount: BigNumber
   maxWithdrawAmountUSD: BigNumber
   maxGenerateAmount: BigNumber
+  maxGenerateAmountAtCurrentPrice: BigNumber
+  maxGenerateAmountAtNextPrice: BigNumber
   maxPaybackAmount: BigNumber
   daiYieldFromTotalCollateral: BigNumber
+  daiYieldFromTotalCollateralAtNextPrice: BigNumber
   afterDebt: BigNumber
   afterLiquidationPrice: BigNumber
   afterCollateralizationRatio: BigNumber
-  afterFreeCollateral: BigNumber
-  afterLockedCollateral: BigNumber
-}
-
-export type ManageVaultCalculations = {
-  maxWithdrawAmountAtCurrentPrice: BigNumber
-  maxWithdrawAmountAtNextPrice: BigNumber
-  maxGenerateAmountAtCurrentPrice: BigNumber
-  maxGenerateAmountAtNextPrice: BigNumber
-  daiYieldFromTotalCollateralAtNextPrice: BigNumber
   collateralizationRatioAtNextPrice: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
+  afterFreeCollateral: BigNumber
   afterFreeCollateralAtNextPrice: BigNumber
   afterBackingCollateral: BigNumber
   afterBackingCollateralAtNextPrice: BigNumber
+  afterLockedCollateral: BigNumber
   afterLockedCollateralUSD: BigNumber
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
-} & ManageVaultEditingCalculations
+}
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
   maxDepositAmount: zero,
