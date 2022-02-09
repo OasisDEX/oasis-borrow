@@ -1,5 +1,4 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -14,136 +13,14 @@ import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
-import Web3 from 'web3'
 
-import { TxError } from '../../../../helpers/types'
+import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenMultiplyVaultChange, OpenMultiplyVaultState } from './openMultiplyVault'
 
-type ProxyChange =
-  | {
-      kind: 'proxyWaitingForApproval'
-    }
-  | {
-      kind: 'proxyInProgress'
-      proxyTxHash: string
-    }
-  | {
-      kind: 'proxyFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'proxyConfirming'
-      proxyConfirmations?: number
-    }
-  | {
-      kind: 'proxySuccess'
-      proxyAddress: string
-    }
-
-type AllowanceChange =
-  | { kind: 'allowanceWaitingForApproval' }
-  | {
-      kind: 'allowanceInProgress'
-      allowanceTxHash: string
-    }
-  | {
-      kind: 'allowanceFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'allowanceSuccess'
-      allowance: BigNumber
-    }
-
-type OpenChange =
-  | { kind: 'txWaitingForApproval' }
-  | {
-      kind: 'txInProgress'
-      openTxHash: string
-    }
-  | {
-      kind: 'txFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'txSuccess'
-      id: BigNumber
-    }
-
-export type OpenVaultTransactionChange = ProxyChange | AllowanceChange | OpenChange
-
 export function applyOpenMultiplyVaultTransaction(
-  change: OpenMultiplyVaultChange,
   state: OpenMultiplyVaultState,
+  change: OpenMultiplyVaultChange,
 ): OpenMultiplyVaultState {
-  if (change.kind === 'proxyWaitingForApproval') {
-    return {
-      ...state,
-      stage: 'proxyWaitingForApproval',
-    }
-  }
-
-  if (change.kind === 'proxyInProgress') {
-    const { proxyTxHash } = change
-    return {
-      ...state,
-      stage: 'proxyInProgress',
-      proxyTxHash,
-    }
-  }
-
-  if (change.kind === 'proxyFailure') {
-    const { txError } = change
-    return { ...state, stage: 'proxyFailure', txError }
-  }
-
-  if (change.kind === 'proxyConfirming') {
-    const { proxyConfirmations } = change
-    return {
-      ...state,
-      proxyConfirmations,
-    }
-  }
-
-  if (change.kind === 'proxySuccess') {
-    const { proxyAddress } = change
-    return {
-      ...state,
-      proxyAddress,
-      stage: 'proxySuccess',
-    }
-  }
-
-  if (change.kind === 'allowanceWaitingForApproval') {
-    return {
-      ...state,
-      stage: 'allowanceWaitingForApproval',
-    }
-  }
-
-  if (change.kind === 'allowanceInProgress') {
-    const { allowanceTxHash } = change
-    return {
-      ...state,
-      allowanceTxHash,
-      stage: 'allowanceInProgress',
-    }
-  }
-
-  if (change.kind === 'allowanceFailure') {
-    const { txError } = change
-    return {
-      ...state,
-      stage: 'allowanceFailure',
-      txError,
-    }
-  }
-
-  if (change.kind === 'allowanceSuccess') {
-    const { allowance } = change
-    return { ...state, stage: 'allowanceSuccess', allowance }
-  }
-
   if (change.kind === 'txWaitingForApproval') {
     return {
       ...state,
@@ -209,24 +86,6 @@ export function setAllowance(
     .subscribe((ch) => change(ch))
 }
 
-interface Receipt {
-  logs: { topics: string[] | undefined }[]
-}
-
-export function parseVaultIdFromReceiptLogs({ logs }: Receipt): BigNumber | undefined {
-  const newCdpEventTopic = Web3.utils.keccak256('NewCdp(address,address,uint256)')
-  return logs
-    .filter((log) => {
-      if (log.topics) {
-        return log.topics[0] === newCdpEventTopic
-      }
-      return false
-    })
-    .map(({ topics }) => {
-      return new BigNumber(Web3.utils.hexToNumber(topics![3]))
-    })[0]
-}
-
 export function multiplyVault(
   { sendWithGasEstimation }: TxHelpers,
   { tokensMainnet, defaultExchange }: ContextConnected,
@@ -290,7 +149,7 @@ export function multiplyVault(
                 txState.status === TxStatus.Success && txState.receipt,
               )
 
-              const jwtToken = jwtAuthGetToken(account as string)
+              const jwtToken = jwtAuthGetToken(account)
               if (id && jwtToken) {
                 saveVaultUsingApi$(
                   id,
@@ -330,7 +189,7 @@ export function applyEstimateGas(
         depositCollateral: depositAmount,
         skipFL,
         userAddress: account,
-        proxyAddress: proxyAddress!,
+        proxyAddress,
         ilk,
         token,
         exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '0x',

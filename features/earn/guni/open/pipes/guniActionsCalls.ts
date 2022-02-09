@@ -5,7 +5,6 @@ import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
-import { parseVaultIdFromReceiptLogs } from 'features/borrow/open/pipes/openVaultTransactions'
 import { Quote } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
@@ -16,6 +15,7 @@ import { GuniToken } from 'types/ethers-contracts/GuniToken'
 
 import { TxError } from '../../../../../helpers/types'
 import { VaultType } from '../../../../generalManageVault/vaultType'
+import { parseVaultIdFromReceiptLogs } from '../../../../shared/transactions'
 import { saveVaultUsingApi$ } from '../../../../shared/vaultApi'
 import { jwtAuthGetToken } from '../../../../termsOfService/jwt'
 
@@ -147,7 +147,7 @@ export function openGuniVault<S extends TxStateDependencies>(
             txState.status === TxStatus.Success && txState.receipt,
           )
 
-          const jwtToken = jwtAuthGetToken(account as string)
+          const jwtToken = jwtAuthGetToken(account)
           if (id && jwtToken) {
             saveVaultUsingApi$(
               id,

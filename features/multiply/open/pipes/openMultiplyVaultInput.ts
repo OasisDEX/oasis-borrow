@@ -28,8 +28,8 @@ export type OpenVaultInputChange =
   | RequiredCollRatioChange
 
 export function applyOpenVaultInput(
-  change: OpenMultiplyVaultChange,
   state: OpenMultiplyVaultState,
+  change: OpenMultiplyVaultChange,
 ): OpenMultiplyVaultState {
   if (change.kind === 'deposit') {
     const { depositAmount } = change
