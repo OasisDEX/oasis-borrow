@@ -8,14 +8,10 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkDataList } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
-import { useState } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
 
+import { ContextConnected } from '../../../blockchain/network'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
@@ -24,6 +20,7 @@ import {
   prepareTriggerData,
   StopLossTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
+import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 function prepareRemoveTriggerData(
@@ -41,32 +38,30 @@ function prepareRemoveTriggerData(
   }
 }
 
-export function CancelSlFormControl({ id }: { id: BigNumber }) {
+interface CancelSlFormControlProps {
+  vault: Vault
+  collateralPrice: CollateralPricesWithFilters
+  ilksData: IlkDataList
+  triggerData: TriggersData
+  tx: TxHelpers
+  ctx: ContextConnected
+}
+
+export function CancelSlFormControl({
+  vault,
+  collateralPrice,
+  ilksData,
+  triggerData,
+  tx,
+  ctx,
+}: CancelSlFormControlProps) {
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-
-  const {
-    vault$,
-    collateralPrices$,
-    ilkDataList$,
-    automationTriggersData$,
-    txHelpers$,
-    connectedContext$,
-  } = useAppContext()
-
-  const autoTriggersData$ = automationTriggersData$(id)
-
-  const vaultDataWithError = useObservableWithError(vault$(id))
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
-  const ilksDataWithError = useObservableWithError(ilkDataList$)
-  const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(connectedContext$)
 
   function renderLayout(
     vaultData: Vault,
     collateralPriceData: CollateralPricesWithFilters,
-    ilksData: IlkDataList,
+    ilksDataList: IlkDataList,
     slTriggerData: StopLossTriggerData,
     txHelpers: TxHelpers,
     isOwner: boolean,
@@ -116,39 +111,12 @@ export function CancelSlFormControl({ id }: { id: BigNumber }) {
     return <CancelSlFormLayout {...props} />
   }
 
-  return (
-    <WithErrorHandler
-      error={[
-        vaultDataWithError.error,
-        collateralPricesWithError.error,
-        ilksDataWithError.error,
-        autoTriggerDataWithError.error,
-        txHelpersWithError.error,
-        contextWithError.error,
-      ]}
-    >
-      <WithLoadingIndicator
-        value={[
-          vaultDataWithError.value,
-          collateralPricesWithError.value,
-          ilksDataWithError.value,
-          autoTriggerDataWithError.value,
-          txHelpersWithError.value,
-          contextWithError.value,
-        ]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) => {
-          return renderLayout(
-            vault,
-            collateralPrice,
-            ilksData,
-            extractSLData(triggerData),
-            tx,
-            ctx.account !== vault.controller,
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+  return renderLayout(
+    vault,
+    collateralPrice,
+    ilksData,
+    extractSLData(triggerData),
+    tx,
+    ctx.account !== vault.controller,
   )
 }

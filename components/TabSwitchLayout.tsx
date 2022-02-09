@@ -14,12 +14,14 @@ enum VaultViewMode {
 //TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
 export function TabSwitchLayout({
   defaultMode,
+  headerControl,
   overViewControl,
   historyControl,
   protectionControl,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
+  headerControl: JSX.Element
   historyControl?: JSX.Element
   protectionControl?: JSX.Element
 }): JSX.Element {
@@ -43,7 +45,7 @@ export function TabSwitchLayout({
   return (
     <>
       <Grid gap={0} sx={{ width: '100%' }}>
-        <Flex mt={2} mb={3} sx={{ zIndex: 100 }}>
+        <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
           <VaultHeading />
         </Flex>
         <Grid
@@ -71,6 +73,7 @@ export function TabSwitchLayout({
           </Button>
         </Grid>
         <Box sx={{ zIndex: 1 }}>
+          {headerControl}
           {mode === VaultViewMode.Overview
             ? overViewControl
             : mode === VaultViewMode.Protection

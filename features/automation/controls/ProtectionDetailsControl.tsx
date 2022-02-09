@@ -3,13 +3,11 @@ import { IlkDataList } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
 import React, { useEffect, useState } from 'react'
 
 import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { TriggersData } from '../triggers/AutomationTriggersData'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
 function renderLayout(
@@ -45,20 +43,22 @@ function renderLayout(
   return <ProtectionDetailsLayout {...props} />
 }
 
-export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
+interface ProtectionDetailsControlProps {
+  ilkDataList: IlkDataList
+  automationTriggersData: TriggersData
+  collateralPrices: CollateralPricesWithFilters
+  vault: Vault
+}
+
+export function ProtectionDetailsControl({
+  ilkDataList,
+  automationTriggersData,
+  collateralPrices,
+  vault,
+}: ProtectionDetailsControlProps) {
   const uiSubjectName = 'AdjustSlForm'
-  const {
-    automationTriggersData$,
-    vault$,
-    collateralPrices$,
-    ilkDataList$,
-    uiChanges,
-  } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(id)
-  const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
-  const vaultDataWithError = useObservableWithError(vault$(id))
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
-  const ilksDataWithError = useObservableWithError(ilkDataList$)
+  const { uiChanges } = useAppContext()
+
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
   useEffect(() => {
@@ -73,35 +73,13 @@ export function ProtectionDetailsControl({ id }: { id: BigNumber }) {
     }
   }, [])
 
-  return (
-    <WithErrorHandler
-      error={[
-        automationTriggersDataWithError.error,
-        vaultDataWithError.error,
-        collateralPricesWithError.error,
-        ilksDataWithError.error,
-      ]}
-    >
-      <WithLoadingIndicator
-        value={[
-          automationTriggersDataWithError.value,
-          vaultDataWithError.value,
-          collateralPricesWithError.value,
-          ilksDataWithError.value,
-        ]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([triggersData, vaultData, collateralPrices, ilkDataList]) => {
-          console.log('rendering ProtDetailsControl')
-          return renderLayout(
-            extractSLData(triggersData),
-            vaultData,
-            collateralPrices,
-            ilkDataList,
-            lastUIState,
-          )
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+  console.log('rendering ProtDetailsControl')
+
+  return renderLayout(
+    extractSLData(automationTriggersData),
+    vault,
+    collateralPrices,
+    ilkDataList,
+    lastUIState,
   )
 }

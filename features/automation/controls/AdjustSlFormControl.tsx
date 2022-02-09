@@ -9,18 +9,15 @@ import { IlkDataList } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import { useState } from 'react'
-import React from 'react'
+import React, { useState } from 'react'
 
+import { ContextConnected } from '../../../blockchain/network'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
@@ -30,6 +27,7 @@ import {
   StopLossTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
@@ -47,29 +45,27 @@ function prepareAddTriggerData(
   }
 }
 
-export function AdjustSlFormControl({ id }: { id: BigNumber }) {
+interface AdjustSlFormControlProps {
+  vault: Vault
+  collateralPrice: CollateralPricesWithFilters
+  ilksData: IlkDataList
+  triggerData: TriggersData
+  tx: TxHelpers
+  ctx: ContextConnected
+}
+
+export function AdjustSlFormControl({
+  vault,
+  collateralPrice,
+  ilksData,
+  triggerData,
+  tx,
+  ctx,
+}: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-
-  const {
-    vault$,
-    collateralPrices$,
-    ilkDataList$,
-    automationTriggersData$,
-    txHelpers$,
-    connectedContext$,
-  } = useAppContext()
-
-  const autoTriggersData$ = automationTriggersData$(id)
-
-  const vaultDataWithError = useObservableWithError(vault$(id))
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
-  const ilksDataWithError = useObservableWithError(ilkDataList$)
-  const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(connectedContext$)
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
@@ -87,7 +83,7 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
   function renderLayout(
     vaultData: Vault,
     collateralPriceData: CollateralPricesWithFilters,
-    ilksData: IlkDataList,
+    ilksDataList: IlkDataList,
     slTriggerData: StopLossTriggerData,
     txHelpers: TxHelpers,
     isOwner: boolean,
@@ -212,39 +208,12 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     return <AdjustSlFormLayout {...props} />
   }
 
-  return (
-    <WithErrorHandler
-      error={[
-        vaultDataWithError.error,
-        collateralPricesWithError.error,
-        ilksDataWithError.error,
-        autoTriggerDataWithError.error,
-        txHelpersWithError.error,
-        contextWithError.error,
-      ]}
-    >
-      <WithLoadingIndicator
-        value={[
-          vaultDataWithError.value,
-          collateralPricesWithError.value,
-          ilksDataWithError.value,
-          autoTriggerDataWithError.value,
-          txHelpersWithError.value,
-          contextWithError.value,
-        ]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([vault, collateralPrice, ilksData, triggerData, tx, ctx]) =>
-          renderLayout(
-            vault,
-            collateralPrice,
-            ilksData,
-            extractSLData(triggerData),
-            tx,
-            ctx.account !== vault.controller,
-          )
-        }
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+  return renderLayout(
+    vault,
+    collateralPrice,
+    ilksData,
+    extractSLData(triggerData),
+    tx,
+    ctx.account !== vault.controller,
   )
 }

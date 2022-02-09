@@ -5,35 +5,25 @@ import { Box, Grid } from 'theme-ui'
 import { trackingEvents } from '../../../analytics/analytics'
 import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from '../../../features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
-import { VaultHistoryEvent } from '../../../features/vaultHistory/vaultHistory'
 import { useAppContext } from '../../AppContextProvider'
-import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 
 export interface ManageMultiplyVaultContainerProps {
   manageVault: ManageMultiplyVaultState
-  vaultHistory: VaultHistoryEvent[]
 }
 
 interface ManageMultiplyVaultContainerComponents {
-  header: (props: DefaultVaultHeaderProps) => JSX.Element
   details: (props: ManageMultiplyVaultState) => JSX.Element
   form: (props: ManageMultiplyVaultState) => JSX.Element
-  history: (props: Pick<ManageMultiplyVaultContainerProps, 'vaultHistory'>) => JSX.Element
 }
 
 export function ManageMultiplyVaultContainer({
   manageVault,
-  vaultHistory,
-  header: Header,
   details: Details,
   form: Form,
-  history: History,
 }: ManageMultiplyVaultContainerProps & ManageMultiplyVaultContainerComponents) {
   const { manageMultiplyVault$, context$, manageGuniVault$ } = useAppContext()
   const {
     vault: { id },
-    clear,
-    ilkData,
   } = manageVault
 
   useEffect(() => {
@@ -50,18 +40,15 @@ export function ManageMultiplyVaultContainer({
     ).subscribe()
 
     return () => {
-      clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      <Header id={id} ilkData={ilkData} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />
-          <History vaultHistory={vaultHistory} />
         </Grid>
         <Box>
           <Form {...manageVault} />

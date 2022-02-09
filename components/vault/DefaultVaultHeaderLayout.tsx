@@ -9,17 +9,23 @@ export interface DefaultVaultHeaderLayoutProps {
   id: BigNumber
   stabilityFee: BigNumber
   debtFloor: BigNumber
-  liquidationPenalty: BigNumber
-  liquidationRatio: BigNumber
+  liquidationPenalty?: BigNumber
+  liquidationRatio?: BigNumber
 }
 
-export function DefaultVaultHeaderLayout(props: DefaultVaultHeaderLayoutProps) {
+export function DefaultVaultHeaderLayout({
+  id,
+  stabilityFee,
+  debtFloor,
+  liquidationPenalty,
+  liquidationRatio,
+}: DefaultVaultHeaderLayoutProps) {
   const { t } = useTranslation()
   return (
-    <VaultHeader id={props.id}>
+    <VaultHeader id={id}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
-        value={`${formatPercent(props.stabilityFee.times(100), { precision: 2 })}`}
+        value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
         tooltipContent={t('manage-multiply-vault.tooltip.stabilityFee')}
         styles={{
           tooltip: {
@@ -28,25 +34,29 @@ export function DefaultVaultHeaderLayout(props: DefaultVaultHeaderLayoutProps) {
           },
         }}
       />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.liquidation-fee')}
-        value={`${formatPercent(props.liquidationPenalty.times(100))}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.liquidationFee')}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.min-collat-ratio')}
-        value={`${formatPercent(props.liquidationRatio.times(100))}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.min-collateral')}
-        styles={{
-          tooltip: {
-            left: 'auto',
-            right: ['10px', '-154px'],
-          },
-        }}
-      />
+      {liquidationPenalty && (
+        <VaultIlkDetailsItem
+          label={t('manage-vault.liquidation-fee')}
+          value={`${formatPercent(liquidationPenalty.times(100))}`}
+          tooltipContent={t('manage-multiply-vault.tooltip.liquidationFee')}
+        />
+      )}
+      {liquidationRatio && (
+        <VaultIlkDetailsItem
+          label={t('manage-vault.min-collat-ratio')}
+          value={`${formatPercent(liquidationRatio.times(100))}`}
+          tooltipContent={t('manage-multiply-vault.tooltip.min-collateral')}
+          styles={{
+            tooltip: {
+              left: 'auto',
+              right: ['10px', '-154px'],
+            },
+          }}
+        />
+      )}
       <VaultIlkDetailsItem
         label={t('manage-vault.dust-limit')}
-        value={`$${formatCryptoBalance(props.debtFloor)}`}
+        value={`$${formatCryptoBalance(debtFloor)}`}
         tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
         styles={{
           tooltip: {
