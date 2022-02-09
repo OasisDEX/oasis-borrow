@@ -9,7 +9,6 @@ import { Container } from 'theme-ui'
 
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
-import { GuniDebtCeilingBanner } from '../earn/guni/common/GuniDebtCeilingBanner'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -67,7 +66,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 ),
                 'GUNIV3DAIUSDC2-A': (
                   <>
-                    <GuniDebtCeilingBanner id={id} />
                     <ManageMultiplyVaultContainer
                       vaultHistory={vaultMultiplyHistory}
                       manageVault={generalManageVault.state}
