@@ -32,38 +32,6 @@ export function GeneralManageLayout({
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vaultId} />
       <GuniTempBanner id={vaultId} />
-      {/*
-              <TabSwitcher tabs={[
-                {
-                  tabLabel: 'Overview',
-                  tabContent: (
-                    <GeneralManageVaultView id={vaultId} />
-                  )
-                },
-                {
-                  tabLabel: 'Protection',
-                  tabContent: (
-                    <DefaultVaultLayout
-                    detailsViewControl={<ProtectionDetailsControl id={vaultId} />}
-                    editForm={
-                      <ProtectionFormControl
-                        adjustForm={<AdjustSlFormControl id={vaultId} />}
-                        cancelForm={<CancelSlFormControl id={vaultId} />}
-                      />
-                    }
-                    headerControl={<DefaultVaultHeaderControl vaultId={vaultId} />}
-                  />
-                  )
-                },
-                {
-                  tabLabel: 'History',
-                  tabContent: (
-                    <h1>TODO History</h1>
-                  )
-                }
-
-              ]} narrowTabsSx={null} wideTabsSx={null} /> */}
-
       {/* TODO Replace with TabSwitcher ~ŁW */}
       <TabSwitchLayout
         defaultMode={VaultViewMode.Overview}

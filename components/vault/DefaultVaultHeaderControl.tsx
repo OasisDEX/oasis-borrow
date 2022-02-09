@@ -10,26 +10,29 @@ export interface DefaultVaultHeaderControlProps {
 }
 
 export function DefaultVaultHeaderControl({ ilkDataList, vault }: DefaultVaultHeaderControlProps) {
-  const ilk = ilkDataList.filter((x) => x.ilk === vault.ilk)[0]
+  const ilk = ilkDataList.find((x) => x.ilk === vault.ilk)
 
-  const vaultHeaderProps = {
-    id: vault.id,
-    debtFloor: ilk.debtFloor,
-    liquidationPenalty: ilk.liquidationPenalty,
-    liquidationRatio: ilk.liquidationRatio,
-    stabilityFee: ilk.stabilityFee,
-  }
+  if (ilk) {
+    const vaultHeaderProps = {
+      id: vault.id,
+      debtFloor: ilk.debtFloor,
+      liquidationPenalty: ilk.liquidationPenalty,
+      liquidationRatio: ilk.liquidationRatio,
+      stabilityFee: ilk.stabilityFee,
+    }
 
-  const guniHeaderProps = {
-    id: vault.id,
-    stabilityFee: ilk.stabilityFee,
-    debtFloor: ilk.debtFloor,
-  }
+    const guniHeaderProps = {
+      id: vault.id,
+      stabilityFee: ilk.stabilityFee,
+      debtFloor: ilk.debtFloor,
+    }
 
-  const headerProps =
-    vault.ilk === 'GUNIV3DAIUSDC1-A' || vault.ilk === 'GUNIV3DAIUSDC2-A'
+    const headerProps = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vault.ilk)
       ? guniHeaderProps
       : vaultHeaderProps
 
-  return <DefaultVaultHeaderLayout {...headerProps} />
+    return <DefaultVaultHeaderLayout {...headerProps} />
+  }
+
+  return null
 }

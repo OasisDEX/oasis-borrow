@@ -16,10 +16,7 @@ export function ProtectionFormLayout({
     <VaultFormContainer toggleTitle="Edit Vault">
       <Grid columns={1}>
         {children}
-        <Divider
-          sx={{ width: 'calc(100% + 48px)', left: '-24px' }}
-          variant="styles.hrVaultFormBottom"
-        />
+        <Divider variant="styles.hrVaultFormBottom" />
         <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForm}>
           {currentForm === AutomationFromKind.ADJUST
             ? t('protection.navigate-cancel')

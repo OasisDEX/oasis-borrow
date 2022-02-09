@@ -1,5 +1,5 @@
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Container } from 'theme-ui'
 
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
@@ -24,28 +24,14 @@ export function GeneralManageVaultView({ generalManageVault }: GeneralManageVaul
       )
     case VaultType.Multiply:
       const vaultIlk = generalManageVault.state.ilkData.ilk
-      const multiplyContainerMap: Record<string, ReactNode> = {
-        'GUNIV3DAIUSDC1-A': (
-          <ManageMultiplyVaultContainer
-            manageVault={generalManageVault.state}
-            details={GuniManageMultiplyVaultDetails}
-            form={GuniManageMultiplyVaultForm}
-          />
-        ),
-        'GUNIV3DAIUSDC2-A': (
-          <>
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          {['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
             <ManageMultiplyVaultContainer
               manageVault={generalManageVault.state}
               details={GuniManageMultiplyVaultDetails}
               form={GuniManageMultiplyVaultForm}
             />
-          </>
-        ),
-      }
-      return (
-        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          {multiplyContainerMap[vaultIlk] ? (
-            multiplyContainerMap[vaultIlk]
           ) : (
             <ManageMultiplyVaultContainer
               manageVault={generalManageVault.state}
