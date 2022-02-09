@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from 'react'
-import { startWith } from 'rxjs/operators'
 
 import { IlkDataList } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
-import { TxHelpers } from '../../../components/AppContext'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
@@ -30,9 +28,7 @@ export function ProtectionFormControl({
 }: Props) {
   const { txHelpers$, context$ } = useAppContext()
 
-  const txHelpersWithError = useObservableWithError(
-    txHelpers$.pipe(startWith<TxHelpers | undefined>(undefined)),
-  )
+  const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(context$)
 
   const [currentForm, setForm] = useState(AutomationFromKind.ADJUST)
@@ -65,7 +61,6 @@ export function ProtectionFormControl({
             ) : (
               <CancelSlFormControl
                 vault={vault}
-                collateralPrice={collateralPrices}
                 ilksData={ilkDataList}
                 triggerData={automationTriggersData}
                 tx={txHelpersWithError.value}

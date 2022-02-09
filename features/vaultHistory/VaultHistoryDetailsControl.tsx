@@ -21,6 +21,6 @@ export function VaultHistoryDetailsControl({
     case VaultType.Multiply:
       return <VaultHistoryView vaultHistory={vaultMultiplyHistory} />
     default:
-      return <></>
+      return null
   }
 }

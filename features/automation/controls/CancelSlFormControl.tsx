@@ -8,7 +8,6 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkDataList } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import React, { useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
@@ -18,7 +17,6 @@ import {
   determineProperDefaults,
   extractSLData,
   prepareTriggerData,
-  StopLossTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
@@ -40,7 +38,6 @@ function prepareRemoveTriggerData(
 
 interface CancelSlFormControlProps {
   vault: Vault
-  collateralPrice: CollateralPricesWithFilters
   ilksData: IlkDataList
   triggerData: TriggersData
   tx?: TxHelpers
@@ -49,7 +46,6 @@ interface CancelSlFormControlProps {
 
 export function CancelSlFormControl({
   vault,
-  collateralPrice,
   ilksData,
   triggerData,
   tx,
@@ -58,68 +54,51 @@ export function CancelSlFormControl({
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
-  function renderLayout(
-    vaultData: Vault,
-    collateralPriceData: CollateralPricesWithFilters,
-    ilksDataList: IlkDataList,
-    slTriggerData: StopLossTriggerData,
-    txHelpers: TxHelpers | undefined,
-    isOwner: boolean,
-  ) {
-    const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
+  const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
+  const slTriggerData = extractSLData(triggerData)
 
-    const startingSlRatio = slTriggerData.isStopLossEnabled
-      ? slTriggerData.stopLossLevel
-      : currentIlkData.liquidationRatio
-    const [txStatus, txStatusSetter] = useState<
-      TxState<AutomationBotRemoveTriggerData> | undefined
-    >()
+  const currentIlkData = ilksData.filter((x) => x.ilk === vault.ilk)[0]
 
-    determineProperDefaults(setSelectedSLValue, startingSlRatio)
+  const startingSlRatio = slTriggerData.isStopLossEnabled
+    ? slTriggerData.stopLossLevel
+    : currentIlkData.liquidationRatio
+  const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>()
 
-    const removeTriggerConfig: RetryableLoadingButtonProps = {
-      translationKey: 'cancel-stop-loss',
-      onClick: (finishLoader: (succeded: boolean) => void) => {
-        if (txHelpers === undefined) {
-          return
-        }
-        const txSendSuccessHandler = (transactionState: TxState<AutomationBotRemoveTriggerData>) =>
-          transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+  determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
-        const sendTxErrorHandler = () => {
-          finishLoader(false)
-        }
-        const txData = prepareRemoveTriggerData(
-          vaultData,
-          collateralActive,
-          selectedSLValue,
-          slTriggerData.triggerId,
-        )
+  const removeTriggerConfig: RetryableLoadingButtonProps = {
+    translationKey: 'cancel-stop-loss',
+    onClick: (finishLoader: (succeded: boolean) => void) => {
+      if (tx === undefined) {
+        return
+      }
+      const txSendSuccessHandler = (transactionState: TxState<AutomationBotRemoveTriggerData>) =>
+        transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
 
-        const waitForTx = txHelpers
-          .sendWithGasEstimation(removeAutomationBotTrigger, txData)
-          .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-      },
-      isLoading: false,
-      isRetry: false,
-      disabled: isOwner,
-    }
+      const sendTxErrorHandler = () => {
+        finishLoader(false)
+      }
+      const txData = prepareRemoveTriggerData(
+        vault,
+        collateralActive,
+        selectedSLValue,
+        slTriggerData.triggerId,
+      )
 
-    const props: CancelSlFormLayoutProps = {
-      liquidationPrice: vaultData.liquidationPrice,
-      removeTriggerConfig: removeTriggerConfig,
-      txState: txStatus,
-    }
-
-    return <CancelSlFormLayout {...props} />
+      const waitForTx = tx
+        .sendWithGasEstimation(removeAutomationBotTrigger, txData)
+        .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+    },
+    isLoading: false,
+    isRetry: false,
+    disabled: isOwner,
   }
 
-  return renderLayout(
-    vault,
-    collateralPrice,
-    ilksData,
-    extractSLData(triggerData),
-    tx,
-    ctx.status === 'connected' && ctx.account !== vault.controller,
-  )
+  const props: CancelSlFormLayoutProps = {
+    liquidationPrice: vault.liquidationPrice,
+    removeTriggerConfig: removeTriggerConfig,
+    txState: txStatus,
+  }
+
+  return <CancelSlFormLayout {...props} />
 }

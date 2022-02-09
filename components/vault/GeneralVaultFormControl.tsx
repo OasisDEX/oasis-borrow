@@ -16,16 +16,13 @@ export function GeneralVaultFormControl({ generalManageVault }: GeneralVaultForm
       return <ManageVaultForm {...generalManageVault.state} />
     case VaultType.Multiply:
       const vaultIlk = generalManageVault.state.ilkData.ilk
-      const mutiplyFormContainerMap: Record<string, JSX.Element> = {
-        'GUNIV3DAIUSDC1-A': <GuniManageMultiplyVaultForm {...generalManageVault.state} />,
-        'GUNIV3DAIUSDC2-A': <GuniManageMultiplyVaultForm {...generalManageVault.state} />,
-      }
-      return mutiplyFormContainerMap[vaultIlk] ? (
-        mutiplyFormContainerMap[vaultIlk]
+
+      return ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
+        <GuniManageMultiplyVaultForm {...generalManageVault.state} />
       ) : (
         <ManageMultiplyVaultForm {...generalManageVault.state} />
       )
     default:
-      return <></>
+      return null
   }
 }

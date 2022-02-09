@@ -20,7 +20,7 @@ export function ProtectionControl({ vault, ilkDataList }: ProtectionControlProps
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
   const collateralPricesWithError = useObservableWithError(collateralPrices$)
-
+  console.log('asdasdas')
   return (
     <WithErrorHandler
       error={[automationTriggersDataWithError.error, collateralPricesWithError.error]}
