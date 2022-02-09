@@ -17,7 +17,7 @@ import { useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import React, { useState } from 'react'
 
-import { ContextConnected } from '../../../blockchain/network'
+import { Context } from '../../../blockchain/network'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
@@ -50,8 +50,8 @@ interface AdjustSlFormControlProps {
   collateralPrice: CollateralPricesWithFilters
   ilksData: IlkDataList
   triggerData: TriggersData
-  tx: TxHelpers
-  ctx: ContextConnected
+  tx?: TxHelpers
+  ctx: Context
 }
 
 export function AdjustSlFormControl({
@@ -85,7 +85,7 @@ export function AdjustSlFormControl({
     collateralPriceData: CollateralPricesWithFilters,
     ilksDataList: IlkDataList,
     slTriggerData: StopLossTriggerData,
-    txHelpers: TxHelpers,
+    txHelpers: TxHelpers | undefined,
     isOwner: boolean,
   ) {
     const token = vaultData.token
@@ -177,6 +177,9 @@ export function AdjustSlFormControl({
     const addTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'add-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        if (txHelpers === undefined) {
+          return
+        }
         const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
           transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
         const sendTxErrorHandler = () => {

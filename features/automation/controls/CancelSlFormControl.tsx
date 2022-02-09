@@ -11,7 +11,7 @@ import { TxHelpers } from 'components/AppContext'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import React, { useState } from 'react'
 
-import { ContextConnected } from '../../../blockchain/network'
+import { Context } from '../../../blockchain/network'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
@@ -43,8 +43,8 @@ interface CancelSlFormControlProps {
   collateralPrice: CollateralPricesWithFilters
   ilksData: IlkDataList
   triggerData: TriggersData
-  tx: TxHelpers
-  ctx: ContextConnected
+  tx?: TxHelpers
+  ctx: Context
 }
 
 export function CancelSlFormControl({
@@ -63,7 +63,7 @@ export function CancelSlFormControl({
     collateralPriceData: CollateralPricesWithFilters,
     ilksDataList: IlkDataList,
     slTriggerData: StopLossTriggerData,
-    txHelpers: TxHelpers,
+    txHelpers: TxHelpers | undefined,
     isOwner: boolean,
   ) {
     const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
@@ -80,6 +80,9 @@ export function CancelSlFormControl({
     const removeTriggerConfig: RetryableLoadingButtonProps = {
       translationKey: 'cancel-stop-loss',
       onClick: (finishLoader: (succeded: boolean) => void) => {
+        if (txHelpers === undefined) {
+          return
+        }
         const txSendSuccessHandler = (transactionState: TxState<AutomationBotRemoveTriggerData>) =>
           transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
 
@@ -117,6 +120,6 @@ export function CancelSlFormControl({
     ilksData,
     extractSLData(triggerData),
     tx,
-    ctx.account !== vault.controller,
+    ctx.status === 'connected' && ctx.account !== vault.controller,
   )
 }

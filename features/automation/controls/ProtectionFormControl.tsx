@@ -1,7 +1,9 @@
 import React, { useCallback, useState } from 'react'
+import { startWith } from 'rxjs/operators'
 
 import { IlkDataList } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
+import { TxHelpers } from '../../../components/AppContext'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
@@ -26,10 +28,12 @@ export function ProtectionFormControl({
   collateralPrices,
   vault,
 }: Props) {
-  const { txHelpers$, connectedContext$ } = useAppContext()
+  const { txHelpers$, context$ } = useAppContext()
 
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(connectedContext$)
+  const txHelpersWithError = useObservableWithError(
+    txHelpers$.pipe(startWith<TxHelpers | undefined>(undefined)),
+  )
+  const contextWithError = useObservableWithError(context$)
 
   const [currentForm, setForm] = useState(AutomationFromKind.ADJUST)
 
@@ -42,12 +46,12 @@ export function ProtectionFormControl({
   }, [currentForm])
 
   return (
-    <WithErrorHandler error={[txHelpersWithError.error, contextWithError.error]}>
+    <WithErrorHandler error={[contextWithError.error]}>
       <WithLoadingIndicator
-        value={[txHelpersWithError.value, contextWithError.value]}
+        value={[contextWithError.value]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([txHelpers, context]) => (
+        {([context]) => (
           <ProtectionFormLayout currentForm={currentForm} toggleForm={toggleForms}>
             {currentForm === AutomationFromKind.ADJUST ? (
               <AdjustSlFormControl
@@ -55,7 +59,7 @@ export function ProtectionFormControl({
                 collateralPrice={collateralPrices}
                 ilksData={ilkDataList}
                 triggerData={automationTriggersData}
-                tx={txHelpers}
+                tx={txHelpersWithError.value}
                 ctx={context}
               />
             ) : (
@@ -64,7 +68,7 @@ export function ProtectionFormControl({
                 collateralPrice={collateralPrices}
                 ilksData={ilkDataList}
                 triggerData={automationTriggersData}
-                tx={txHelpers}
+                tx={txHelpersWithError.value}
                 ctx={context}
               />
             )}
