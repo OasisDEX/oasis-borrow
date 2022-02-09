@@ -214,6 +214,6 @@ export function AdjustSlFormControl({
     ilksData,
     extractSLData(triggerData),
     tx,
-    ctx.account !== vault.controller,
+    ctx.status === 'connected' && ctx.account !== vault.controller,
   )
 }
