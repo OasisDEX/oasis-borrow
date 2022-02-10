@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { IlkDataList } from '../../blockchain/ilks'
+import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
 import { ProtectionDetailsControl } from '../../features/automation/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from '../../features/automation/controls/ProtectionFormControl'
@@ -12,10 +12,10 @@ import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ProtectionControlProps {
   vault: Vault
-  ilkDataList: IlkDataList
+  ilkData: IlkData
 }
 
-export function ProtectionControl({ vault, ilkDataList }: ProtectionControlProps) {
+export function ProtectionControl({ vault, ilkData }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
@@ -37,12 +37,12 @@ export function ProtectionControl({ vault, ilkDataList }: ProtectionControlProps
                   vault={vault}
                   automationTriggersData={automationTriggersData}
                   collateralPrices={collateralPrices}
-                  ilkDataList={ilkDataList}
+                  ilkData={ilkData}
                 />
               }
               editForm={
                 <ProtectionFormControl
-                  ilkDataList={ilkDataList}
+                  ilkData={ilkData}
                   automationTriggersData={automationTriggersData}
                   collateralPrices={collateralPrices}
                   vault={vault}

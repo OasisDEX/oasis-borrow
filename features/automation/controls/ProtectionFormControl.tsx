@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 
-import { IlkDataList } from '../../../blockchain/ilks'
+import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
@@ -14,14 +14,14 @@ import { CancelSlFormControl } from './CancelSlFormControl'
 import { ProtectionFormLayout } from './ProtectionFormLayout'
 
 interface Props {
-  ilkDataList: IlkDataList
+  ilkData: IlkData
   automationTriggersData: TriggersData
   collateralPrices: CollateralPricesWithFilters
   vault: Vault
 }
 
 export function ProtectionFormControl({
-  ilkDataList,
+  ilkData,
   automationTriggersData,
   collateralPrices,
   vault,
@@ -53,7 +53,7 @@ export function ProtectionFormControl({
               <AdjustSlFormControl
                 vault={vault}
                 collateralPrice={collateralPrices}
-                ilksData={ilkDataList}
+                ilkData={ilkData}
                 triggerData={automationTriggersData}
                 tx={txHelpersWithError.value}
                 ctx={context}
@@ -61,7 +61,7 @@ export function ProtectionFormControl({
             ) : (
               <CancelSlFormControl
                 vault={vault}
-                ilksData={ilkDataList}
+                ilkData={ilkData}
                 triggerData={automationTriggersData}
                 tx={txHelpersWithError.value}
                 ctx={context}

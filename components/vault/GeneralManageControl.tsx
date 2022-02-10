@@ -12,20 +12,17 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$, ilkDataList$ } = useAppContext()
+  const { generalManageVault$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const generalManageVaultWithError = useObservableWithError(generalManageVaultWithId$)
-  const ilksDataListWithError = useObservableWithError(ilkDataList$)
 
   return (
-    <WithErrorHandler error={[generalManageVaultWithError.error, ilksDataListWithError.error]}>
+    <WithErrorHandler error={[generalManageVaultWithError.error]}>
       <WithLoadingIndicator
-        value={[generalManageVaultWithError.value, ilksDataListWithError.value]}
+        value={[generalManageVaultWithError.value]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, ilkDataList]) => (
-          <GeneralManageLayout generalManageVault={generalManageVault} ilkDataList={ilkDataList} />
-        )}
+        {([generalManageVault]) => <GeneralManageLayout generalManageVault={generalManageVault} />}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

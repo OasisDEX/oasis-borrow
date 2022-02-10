@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkDataList } from 'blockchain/ilks'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
@@ -14,11 +14,9 @@ function renderLayout(
   triggersData: StopLossTriggerData,
   vaultData: Vault,
   collateralPrices: CollateralPricesWithFilters,
-  ilkDataList: IlkDataList,
+  ilkData: IlkData,
   lastUIState: AddFormChange | undefined,
 ) {
-  const ilk = ilkDataList.filter((x) => x.ilk === vaultData.ilk)[0]
-
   const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
 
   const props: ProtectionDetailsLayoutProps = {
@@ -29,7 +27,7 @@ function renderLayout(
     nextOraclePrice: collateralPrice.nextPrice,
     lockedCollateral: vaultData.lockedCollateral,
 
-    liquidationRatio: ilk.liquidationRatio,
+    liquidationRatio: ilkData.liquidationRatio,
     isStaticPrice: collateralPrice.isStaticPrice,
     token: vaultData.token,
 
@@ -44,14 +42,14 @@ function renderLayout(
 }
 
 interface ProtectionDetailsControlProps {
-  ilkDataList: IlkDataList
+  ilkData: IlkData
   automationTriggersData: TriggersData
   collateralPrices: CollateralPricesWithFilters
   vault: Vault
 }
 
 export function ProtectionDetailsControl({
-  ilkDataList,
+  ilkData,
   automationTriggersData,
   collateralPrices,
   vault,
@@ -79,7 +77,7 @@ export function ProtectionDetailsControl({
     extractSLData(automationTriggersData),
     vault,
     collateralPrices,
-    ilkDataList,
+    ilkData,
     lastUIState,
   )
 }

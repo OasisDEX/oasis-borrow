@@ -1,4 +1,4 @@
-import { IlkDataList } from 'blockchain/ilks'
+import { IlkData } from 'blockchain/ilks'
 import React from 'react'
 
 import { Vault } from '../../blockchain/vaults'
@@ -6,33 +6,27 @@ import { DefaultVaultHeaderLayout } from './DefaultVaultHeaderLayout'
 
 export interface DefaultVaultHeaderControlProps {
   vault: Vault
-  ilkDataList: IlkDataList
+  ilkData: IlkData
 }
 
-export function DefaultVaultHeaderControl({ ilkDataList, vault }: DefaultVaultHeaderControlProps) {
-  const ilk = ilkDataList.find((x) => x.ilk === vault.ilk)
-
-  if (ilk) {
-    const vaultHeaderProps = {
-      id: vault.id,
-      debtFloor: ilk.debtFloor,
-      liquidationPenalty: ilk.liquidationPenalty,
-      liquidationRatio: ilk.liquidationRatio,
-      stabilityFee: ilk.stabilityFee,
-    }
-
-    const guniHeaderProps = {
-      id: vault.id,
-      stabilityFee: ilk.stabilityFee,
-      debtFloor: ilk.debtFloor,
-    }
-
-    const headerProps = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vault.ilk)
-      ? guniHeaderProps
-      : vaultHeaderProps
-
-    return <DefaultVaultHeaderLayout {...headerProps} />
+export function DefaultVaultHeaderControl({ ilkData, vault }: DefaultVaultHeaderControlProps) {
+  const vaultHeaderProps = {
+    id: vault.id,
+    debtFloor: ilkData.debtFloor,
+    liquidationPenalty: ilkData.liquidationPenalty,
+    liquidationRatio: ilkData.liquidationRatio,
+    stabilityFee: ilkData.stabilityFee,
   }
 
-  return null
+  const guniHeaderProps = {
+    id: vault.id,
+    stabilityFee: ilkData.stabilityFee,
+    debtFloor: ilkData.debtFloor,
+  }
+
+  const headerProps = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vault.ilk)
+    ? guniHeaderProps
+    : vaultHeaderProps
+
+  return <DefaultVaultHeaderLayout {...headerProps} />
 }
