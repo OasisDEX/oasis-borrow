@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Button, Card, Flex, Grid, Image, Text } from 'theme-ui'
 
+import { AfterPillProps, VaultDetailsAfterPill } from '../../../components/vault/VaultDetails'
 import { WithArrow } from '../../../components/WithArrow'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
@@ -10,9 +11,22 @@ import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 interface StopLossBannerSectionProps {
   text: ReactNode
   value: ReactNode
+  afterValue?: ReactNode
 }
 
-function StopLossBannerSection({ text, value }: StopLossBannerSectionProps) {
+function StopLossBannerSection({
+  text,
+  value,
+  afterValue,
+  afterPillColors,
+  showAfterPill,
+}: StopLossBannerSectionProps & AfterPillProps) {
+  const dimmedSuccessBg = 'rgba(26, 171, 155, 0.1)'
+  const adjustedPillColors =
+    afterPillColors?.bg === 'success'
+      ? { ...afterPillColors, bg: dimmedSuccessBg }
+      : afterPillColors
+
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', mb: 2, color: 'lavender' }}>
@@ -21,21 +35,30 @@ function StopLossBannerSection({ text, value }: StopLossBannerSectionProps) {
       <Text variant="header3" sx={{ fontWeight: 'semiBold' }}>
         {value}
       </Text>
+      {afterValue && showAfterPill && (
+        <VaultDetailsAfterPill afterPillColors={adjustedPillColors}>
+          {afterValue} after
+        </VaultDetailsAfterPill>
+      )}
     </Flex>
   )
 }
 
 interface StopLossBannerLayoutProps {
   dynamicStopPrice: BigNumber
+  afterDynamicStopPrice: BigNumber
   stopLossLevel: BigNumber
   handleClick: () => void
 }
 
 export function StopLossBannerLayout({
   dynamicStopPrice,
+  afterDynamicStopPrice,
   stopLossLevel,
   handleClick,
-}: StopLossBannerLayoutProps) {
+  showAfterPill,
+  afterPillColors,
+}: StopLossBannerLayoutProps & AfterPillProps) {
   const { t } = useTranslation()
 
   return (
@@ -55,6 +78,9 @@ export function StopLossBannerLayout({
         <StopLossBannerSection
           text={t('protection.dynamic-stop-loss-price')}
           value={`$${formatAmount(dynamicStopPrice, 'USD')}`}
+          afterValue={`$${formatAmount(afterDynamicStopPrice, 'USD')}`}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
         />
         <StopLossBannerSection
           text={t('protection.stop-loss-coll-ratio')}

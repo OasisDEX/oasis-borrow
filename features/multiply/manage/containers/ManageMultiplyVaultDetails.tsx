@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
@@ -105,10 +106,14 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
 
   return (
     <Box>
+      <GetProtectionBannerControl vaultId={id} />
       <StopLossBannerControl
         vaultId={id}
         liquidationPrice={liquidationPrice}
         liquidationRatio={liquidationRatio}
+        afterLiquidationPrice={afterLiquidationPrice}
+        afterPillColors={afterPillColors}
+        showAfterPill={showAfterPill}
       />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
