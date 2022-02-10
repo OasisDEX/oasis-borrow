@@ -16,7 +16,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box,  Grid,   Text } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'

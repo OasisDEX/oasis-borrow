@@ -19,13 +19,11 @@ export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps
 
   const slData = automationTriggersData ? extractSLData(automationTriggersData) : null
 
-  return (
-    !slData?.isStopLossEnabled ? (
-      <GetProtectionBannerLayout
-        handleClick={() => {
-          uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
-        }}
-      />
-    ) : null
-  )
+  return !slData?.isStopLossEnabled ? (
+    <GetProtectionBannerLayout
+      handleClick={() => {
+        uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+      }}
+    />
+  ) : null
 }
