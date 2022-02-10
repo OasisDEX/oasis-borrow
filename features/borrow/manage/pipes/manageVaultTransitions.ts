@@ -3,6 +3,7 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
+import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 import {
   defaultMutableManageVaultState,
   ManageVaultChange,
@@ -17,7 +18,6 @@ import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
-import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 
 type ManageVaultMultiplyTransitionChange =
   | {

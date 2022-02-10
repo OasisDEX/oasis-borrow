@@ -12,13 +12,13 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { proxyActionsFactory } from '../../blockchain/calls/proxyActions'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
-import { proxyActionsFactory } from '../../blockchain/calls/proxyActions'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)

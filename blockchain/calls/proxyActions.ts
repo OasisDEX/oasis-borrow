@@ -1,3 +1,4 @@
+import { ContractDesc } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
@@ -14,7 +15,6 @@ import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
-import { ContractDesc } from '@oasisdex/web3-context'
 
 import { TxMetaKind } from './txMeta'
 
@@ -139,7 +139,6 @@ export function proxyActionsFactory(dssProxyActionsType: DssProxyActionsType): I
       },
       prepareArgs: (data, context) => {
         const dssProxyActions = resolveDssProxyActions(context)
-        const thing = getWithdrawAndPaybackCallData(data, context, dssProxyActions)
         return [
           dssProxyActions.address,
           getWithdrawAndPaybackCallData(data, context, dssProxyActions).encodeABI(),

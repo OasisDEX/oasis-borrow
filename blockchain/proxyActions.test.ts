@@ -2,8 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one, zero } from 'helpers/zero'
-import { PROXY_ACTIONS } from './addresses/mainnet.json'
+import { describe } from 'mocha'
 
+import { PROXY_ACTIONS } from './addresses/mainnet.json'
 import {
   DepositAndGenerateData,
   DssProxyActionsType,
@@ -12,7 +13,6 @@ import {
   WithdrawAndPaybackData,
 } from './calls/proxyActions'
 import { TxMetaKind } from './calls/txMeta'
-import { describe } from 'mocha'
 
 interface ConstructWithdrawAndPaybackProps {
   token: 'ETH' | 'WBTC'

@@ -13,6 +13,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -53,7 +54,6 @@ import {
   progressManage,
 } from './manageVaultTransitions'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
-import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -491,5 +491,3 @@ export function createManageVault$(
     shareReplay(1),
   )
 }
-
-const blah = curry(addTransitions)
