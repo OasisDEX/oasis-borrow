@@ -5,7 +5,7 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { IlkDataList } from 'blockchain/ilks'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
@@ -47,7 +47,7 @@ function prepareAddTriggerData(
 interface AdjustSlFormControlProps {
   vault: Vault
   collateralPrice: CollateralPricesWithFilters
-  ilksData: IlkDataList
+  ilkData: IlkData
   triggerData: TriggersData
   tx?: TxHelpers
   ctx: Context
@@ -56,7 +56,7 @@ interface AdjustSlFormControlProps {
 export function AdjustSlFormControl({
   vault,
   collateralPrice,
-  ilksData,
+  ilkData,
   triggerData,
   tx,
   ctx,
@@ -84,11 +84,10 @@ export function AdjustSlFormControl({
 
   const token = vault.token
   const tokenData = getToken(token)
-  const currentIlkData = ilksData.filter((x) => x.ilk === vault.ilk)[0]
   const currentCollateralData = collateralPrice.data.filter((x) => x.token === vault.token)[0]
   const startingSlRatio = slTriggerData.isStopLossEnabled
     ? slTriggerData.stopLossLevel
-    : currentIlkData.liquidationRatio
+    : ilkData.liquidationRatio
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData.currentPrice)
@@ -114,7 +113,7 @@ export function AdjustSlFormControl({
   const maxBoundry =
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
-  const liqRatio = currentIlkData.liquidationRatio
+  const liqRatio = ilkData.liquidationRatio
 
   determineProperDefaults(setSelectedSLValue, startingSlRatio)
 

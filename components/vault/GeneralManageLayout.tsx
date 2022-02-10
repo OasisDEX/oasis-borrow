@@ -1,7 +1,7 @@
+import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Grid } from 'theme-ui'
 
-import { IlkDataList } from '../../blockchain/ilks'
 import { GuniTempBanner } from '../../features/banners/guniTempBanner'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
@@ -13,15 +13,11 @@ import { ProtectionControl } from './ProtectionControl'
 
 interface GeneralManageAnalyticsProps {
   generalManageVault: GeneralManageVaultState
-  ilkDataList: IlkDataList
 }
 
-export function GeneralManageLayout({
-  generalManageVault,
-  ilkDataList,
-}: GeneralManageAnalyticsProps) {
+export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyticsProps) {
   const vaultId = generalManageVault.state.vault.id
-
+  const { t } = useTranslation()
   useEffect(() => {
     return () => {
       generalManageVault.state.clear()
@@ -35,16 +31,20 @@ export function GeneralManageLayout({
       {/* TODO Replace with TabSwitcher ~ŁW */}
       <TabSwitchLayout
         defaultMode={VaultViewMode.Overview}
+        heading={t('vault.header', { ilk: generalManageVault.state.ilkData.ilk, id: vaultId })}
         headerControl={
           <DefaultVaultHeaderControl
             vault={generalManageVault.state.vault}
-            ilkDataList={ilkDataList}
+            ilkData={generalManageVault.state.ilkData}
           />
         }
         overViewControl={<GeneralManageVaultView generalManageVault={generalManageVault} />}
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={
-          <ProtectionControl vault={generalManageVault.state.vault} ilkDataList={ilkDataList} />
+          <ProtectionControl
+            vault={generalManageVault.state.vault}
+            ilkData={generalManageVault.state.ilkData}
+          />
         }
       />
     </Grid>

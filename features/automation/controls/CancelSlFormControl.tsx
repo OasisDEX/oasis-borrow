@@ -5,7 +5,7 @@ import {
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { IlkDataList } from 'blockchain/ilks'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import React, { useState } from 'react'
@@ -38,7 +38,7 @@ function prepareRemoveTriggerData(
 
 interface CancelSlFormControlProps {
   vault: Vault
-  ilksData: IlkDataList
+  ilkData: IlkData
   triggerData: TriggersData
   tx?: TxHelpers
   ctx: Context
@@ -46,7 +46,7 @@ interface CancelSlFormControlProps {
 
 export function CancelSlFormControl({
   vault,
-  ilksData,
+  ilkData,
   triggerData,
   tx,
   ctx,
@@ -57,11 +57,9 @@ export function CancelSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
   const slTriggerData = extractSLData(triggerData)
 
-  const currentIlkData = ilksData.filter((x) => x.ilk === vault.ilk)[0]
-
   const startingSlRatio = slTriggerData.isStopLossEnabled
     ? slTriggerData.stopLossLevel
-    : currentIlkData.liquidationRatio
+    : ilkData.liquidationRatio
   const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>()
 
   determineProperDefaults(setSelectedSLValue, startingSlRatio)
