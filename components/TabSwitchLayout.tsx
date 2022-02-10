@@ -47,15 +47,15 @@ export function TabSwitchLayout({
     <Grid gap={0} sx={{ width: '100%' }}>
       <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
         <Heading
-            as="h1"
-            variant="heading1"
-            sx={{
-              fontWeight: 'semiBold',
-              pb: 2,
-            }}
-          >
-            {heading}
-          </Heading>
+          as="h1"
+          variant="heading1"
+          sx={{
+            fontWeight: 'semiBold',
+            pb: 2,
+          }}
+        >
+          {heading}
+        </Heading>
       </Flex>
       <Grid
         columns={3}
