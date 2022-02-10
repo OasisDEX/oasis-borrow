@@ -121,6 +121,7 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
@@ -186,6 +187,7 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -246,6 +248,7 @@ const goerli: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x24E54706B100e2061Ed67fAe6894791ec421B421',

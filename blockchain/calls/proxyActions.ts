@@ -14,6 +14,7 @@ import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
+import { ContractDesc } from '@oasisdex/web3-context'
 
 import { TxMetaKind } from './txMeta'
 
@@ -31,8 +32,9 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
+  dssProxyActions: ContractDesc,
 ) {
-  const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
+  const { dssCdpManager, mcdJoinDai, joins, contract } = context
   const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
@@ -115,14 +117,52 @@ export function getWithdrawAndPaybackCallData(
   throw new Error('Could not make correct proxyActions call')
 }
 
-export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => {
-    const { dssProxyActions } = context
-    return [dssProxyActions.address, getWithdrawAndPaybackCallData(data, context).encodeABI()]
-  },
+export interface IProxyActions {
+  withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
+  depositAndGenerate: TransactionDef<DepositAndGenerateData>
+}
+
+export type DssProxyActionsType = 'standard' | 'insti'
+
+export function proxyActionsFactory(dssProxyActionsType: DssProxyActionsType): IProxyActions {
+  function resolveDssProxyActions(context: ContextConnected) {
+    return dssProxyActionsType === 'standard'
+      ? context.dssProxyActions
+      : context.dssProxyActionsCharter
+  }
+  return {
+    withdrawAndPayback: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        const dssProxyActions = resolveDssProxyActions(context)
+        const thing = getWithdrawAndPaybackCallData(data, context, dssProxyActions)
+        return [
+          dssProxyActions.address,
+          getWithdrawAndPaybackCallData(data, context, dssProxyActions).encodeABI(),
+        ]
+      },
+    },
+    depositAndGenerate: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        const dssProxyActions = resolveDssProxyActions(context)
+        return [
+          dssProxyActions.address,
+          getDepositAndGenerateCallData(data, context, dssProxyActions).encodeABI(),
+        ]
+      },
+      options: ({ token, depositAmount }) =>
+        token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    },
+  }
 }
 
 export type DepositAndGenerateData = {
@@ -135,8 +175,12 @@ export type DepositAndGenerateData = {
   proxyAddress: string
 }
 
-function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: ContextConnected) {
-  const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
+function getDepositAndGenerateCallData(
+  data: DepositAndGenerateData,
+  context: ContextConnected,
+  dssProxyActions: ContractDesc,
+) {
+  const { dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
   const { id, token, depositAmount, generateAmount, ilk } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
@@ -189,17 +233,10 @@ function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: Co
   )
 }
 
-export const depositAndGenerate: TransactionDef<DepositAndGenerateData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => {
-    const { dssProxyActions } = context
-    return [dssProxyActions.address, getDepositAndGenerateCallData(data, context).encodeABI()]
-  },
-  options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
-}
+// this is left here because it's called directly elsewhere rather than injected
+const _oldStandardProxyFns = proxyActionsFactory('standard')
+export const depositAndGenerate = _oldStandardProxyFns.depositAndGenerate
+export const withdrawAndPayback = _oldStandardProxyFns.withdrawAndPayback
 
 export type OpenData = {
   kind: TxMetaKind.open
@@ -727,6 +764,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             shouldPaybackAll: true,
           },
           context,
+          context.dssProxyActions,
         ).encodeABI(),
       ]
     }

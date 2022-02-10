@@ -5,6 +5,7 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   depositAndGenerate,
   DepositAndGenerateData,
+  IProxyActions,
   withdrawAndPayback,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions'
@@ -227,12 +228,13 @@ export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
+  proxyActions: IProxyActions,
 ) {
   txHelpers$
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(depositAndGenerate, {
+        sendWithGasEstimation(proxyActions.depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -276,12 +278,13 @@ export function manageVaultWithdrawAndPayback(
     vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageVaultState,
+  proxyActions: IProxyActions,
 ) {
   txHelpers$
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(withdrawAndPayback, {
+        sendWithGasEstimation(proxyActions.withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,

@@ -17,6 +17,7 @@ import {
   manageVaultDepositAndGenerate,
   manageVaultWithdrawAndPayback,
 } from './manageVaultTransactions'
+import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 
 type ManageVaultMultiplyTransitionChange =
   | {
@@ -262,13 +263,14 @@ export function progressManage(
   txHelpers$: Observable<TxHelpers>,
   state: ManageVaultState,
   change: (ch: ManageVaultChange) => void,
+  proxyActions: IProxyActions,
 ) {
   const { depositAmount, generateAmount } = state
   const isDepositAndGenerate = depositAmount || generateAmount
 
   if (isDepositAndGenerate) {
-    return manageVaultDepositAndGenerate(txHelpers$, change, state)
+    return manageVaultDepositAndGenerate(txHelpers$, change, state, proxyActions)
   } else {
-    return manageVaultWithdrawAndPayback(txHelpers$, change, state)
+    return manageVaultWithdrawAndPayback(txHelpers$, change, state, proxyActions)
   }
 }

@@ -53,6 +53,7 @@ import {
   progressManage,
 } from './manageVaultTransitions'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
+import { IProxyActions } from '../../../../blockchain/calls/proxyActions'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -196,6 +197,7 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   saveVaultType$: SaveVaultType,
+  proxyActions: IProxyActions,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -347,7 +349,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers$, state, change),
+      progress: () => progressManage(txHelpers$, state, change, proxyActions),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -385,6 +387,7 @@ export function createManageVault$(
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
+  proxyActions: IProxyActions,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(
@@ -473,6 +476,7 @@ export function createManageVault$(
                         txHelpers$,
                         connectedProxyAddress$,
                         saveVaultType$,
+                        proxyActions,
                         change,
                       ),
                     ),
@@ -487,3 +491,5 @@ export function createManageVault$(
     shareReplay(1),
   )
 }
+
+const blah = curry(addTransitions)

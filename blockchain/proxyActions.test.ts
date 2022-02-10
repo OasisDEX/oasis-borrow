@@ -2,9 +2,17 @@ import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one, zero } from 'helpers/zero'
+import { PROXY_ACTIONS } from './addresses/mainnet.json'
 
-import { getWithdrawAndPaybackCallData } from './calls/proxyActions'
+import {
+  DepositAndGenerateData,
+  DssProxyActionsType,
+  getWithdrawAndPaybackCallData,
+  proxyActionsFactory,
+  WithdrawAndPaybackData,
+} from './calls/proxyActions'
 import { TxMetaKind } from './calls/txMeta'
+import { describe } from 'mocha'
 
 interface ConstructWithdrawAndPaybackProps {
   token: 'ETH' | 'WBTC'
@@ -31,10 +39,58 @@ function constructWithdrawAndPayback({
       shouldPaybackAll,
     },
     mockContextConnected,
+    mockContextConnected.dssProxyActions,
   ) as any)._method.name
 }
 
 describe('ProxyActions', () => {
+  describe('proxyActionsFactory', () => {
+    const mockWithdrawAndPaybackData: WithdrawAndPaybackData = {
+      kind: TxMetaKind.withdrawAndPayback,
+      id: new BigNumber(1),
+      token: 'ETH',
+      ilk: 'ETH-A',
+      withdrawAmount: new BigNumber(2),
+      paybackAmount: new BigNumber(3),
+      proxyAddress: PROXY_ACTIONS,
+      shouldPaybackAll: false,
+    }
+
+    const mockDepositAndGenerateData: DepositAndGenerateData = {
+      kind: TxMetaKind.depositAndGenerate,
+      id: new BigNumber(1),
+      token: 'ETH',
+      ilk: 'ETH-A',
+      depositAmount: new BigNumber(2),
+      generateAmount: new BigNumber(3),
+      proxyAddress: PROXY_ACTIONS,
+    }
+
+    function runTest(proxyActionType: DssProxyActionsType, expectedAddress: string): void {
+      const proxyAction = proxyActionsFactory(proxyActionType)
+
+      const withdrawAndPaybackArgs = proxyAction.withdrawAndPayback.prepareArgs(
+        mockWithdrawAndPaybackData,
+        mockContextConnected,
+      )
+      const depositAndGenerateArgs = proxyAction.depositAndGenerate.prepareArgs(
+        mockDepositAndGenerateData,
+        mockContextConnected,
+      )
+
+      const PROXY_ADDRESS_ARG = 0
+      expect(withdrawAndPaybackArgs[PROXY_ADDRESS_ARG]).to.eq(expectedAddress)
+      expect(depositAndGenerateArgs[PROXY_ADDRESS_ARG]).to.eq(expectedAddress)
+    }
+
+    it('uses dssProxyActions contract for standard vaults', () => {
+      runTest('standard', mockContextConnected.dssProxyActions.address)
+    })
+
+    it('uses dssProxyActionsCharter contract for institutional vaults', () => {
+      runTest('insti', mockContextConnected.dssProxyActionsCharter.address)
+    })
+  })
   describe('WithdrawAndPayback', () => {
     it('should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true', () => {
       expect(

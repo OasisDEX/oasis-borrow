@@ -18,6 +18,7 @@ import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
+import { proxyActionsFactory } from '../../blockchain/calls/proxyActions'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)
@@ -139,6 +140,7 @@ export function mockManageVault$({
     vault$,
     saveVaultType$,
     addGasEstimationMock,
+    proxyActionsFactory('standard'),
     MOCK_VAULT_ID,
   )
 }
