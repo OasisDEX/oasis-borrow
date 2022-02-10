@@ -43,7 +43,7 @@ export function Banner({ children, close, sx }: BannerProps) {
       >
         <Icon name="close_squared" size={14} />
       </IconButton>
-      <Box>{children}</Box>
+      <Box sx={{ wordBreak: 'break-all' }}>{children}</Box>
     </Box>
   )
 }
