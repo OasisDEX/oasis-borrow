@@ -410,7 +410,7 @@
     "action-tabs": {
       "adjust": "Ajustar",
       "other": "Otro",
-      "borrow": "Pedir un préstamo"
+      "borrow": "Convertir a Borrow"
     }
   },
   "borrow-to-multiply": {
@@ -721,7 +721,7 @@
       "header2": "Este Vault de Maker fue liquidado",
       "subheader1": "Este Vault de Maker fue liquidado. Una parte del colateral se subastó para pagar su deuda en Dai.",
       "subheader2": "Puede recuperar {{ amount }} {{ collateral }}",
-      "subheader3": "Este Vault de Maker fue liquidado. Una parte del colateral se subastó para pagar su deuda en Dai.",
+      "subheader3": "Este Vault de Maker fue liquidado. Una parte del colateral se subastó para pagar la deuda en Dai.",
       "subheader4": "Si este es su Vault, conéctese con la dirección {{ address }} para recuperar el colateral restante."
     },
     "debt-ceiling-rise": {
