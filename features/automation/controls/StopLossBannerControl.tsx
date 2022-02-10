@@ -22,7 +22,6 @@ export function StopLossBannerControl({
   liquidationRatio,
   afterLiquidationPrice,
   showAfterPill,
-  afterPillColors,
 }: StopLossBannerControlProps & AfterPillProps) {
   const { automationTriggersData$, uiChanges } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vaultId)
@@ -41,7 +40,6 @@ export function StopLossBannerControl({
         dynamicStopPrice={dynamicStopPrice}
         afterDynamicStopPrice={afterDynamicStopPrice}
         stopLossLevel={slData.stopLossLevel}
-        afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
         handleClick={() => {
           uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })

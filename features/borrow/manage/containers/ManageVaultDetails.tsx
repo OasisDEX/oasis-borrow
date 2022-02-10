@@ -131,7 +131,6 @@ export function ManageVaultDetails(
         liquidationPrice={liquidationPrice}
         liquidationRatio={liquidationRatio}
         afterLiquidationPrice={afterLiquidationPrice}
-        afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
       <Grid variant="vaultDetailsCardsContainer">

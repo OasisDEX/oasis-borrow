@@ -18,14 +18,9 @@ function StopLossBannerSection({
   text,
   value,
   afterValue,
-  afterPillColors,
   showAfterPill,
 }: StopLossBannerSectionProps & AfterPillProps) {
   const dimmedSuccessBg = 'rgba(26, 171, 155, 0.1)'
-  const adjustedPillColors =
-    afterPillColors?.bg === 'success'
-      ? { ...afterPillColors, bg: dimmedSuccessBg }
-      : afterPillColors
 
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
@@ -36,7 +31,7 @@ function StopLossBannerSection({
         {value}
       </Text>
       {afterValue && showAfterPill && (
-        <VaultDetailsAfterPill afterPillColors={adjustedPillColors}>
+        <VaultDetailsAfterPill afterPillColors={{ bg: dimmedSuccessBg, color: 'onSuccess' }}>
           {afterValue} after
         </VaultDetailsAfterPill>
       )}
@@ -57,7 +52,6 @@ export function StopLossBannerLayout({
   stopLossLevel,
   handleClick,
   showAfterPill,
-  afterPillColors,
 }: StopLossBannerLayoutProps & AfterPillProps) {
   const { t } = useTranslation()
 
@@ -79,7 +73,6 @@ export function StopLossBannerLayout({
           text={t('protection.dynamic-stop-loss-price')}
           value={`$${formatAmount(dynamicStopPrice, 'USD')}`}
           afterValue={`$${formatAmount(afterDynamicStopPrice, 'USD')}`}
-          afterPillColors={afterPillColors}
           showAfterPill={showAfterPill}
         />
         <StopLossBannerSection

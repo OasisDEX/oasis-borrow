@@ -112,7 +112,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         liquidationPrice={liquidationPrice}
         liquidationRatio={liquidationRatio}
         afterLiquidationPrice={afterLiquidationPrice}
-        afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
       <Grid variant="vaultDetailsCardsContainer">
