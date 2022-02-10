@@ -43,45 +43,43 @@ export function TabSwitchLayout({
   }
 
   return (
-    <>
-      <Grid gap={0} sx={{ width: '100%' }}>
-        <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
-          <VaultHeading />
-        </Flex>
-        <Grid
-          columns={3}
-          sx={{ zIndex: 1, width: '40%', backgroundColor: 'fadedWhite' }}
-          variant="vaultEditingControllerContainer"
+    <Grid gap={0} sx={{ width: '100%' }}>
+      <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
+        <VaultHeading />
+      </Flex>
+      <Grid
+        columns={3}
+        sx={{ zIndex: 1, width: '40%', backgroundColor: 'fadedWhite' }}
+        variant="vaultEditingControllerContainer"
+      >
+        <Button
+          onClick={() => setMode(VaultViewMode.Overview)}
+          variant={getVariant(mode, VaultViewMode.Overview)}
         >
-          <Button
-            onClick={() => setMode(VaultViewMode.Overview)}
-            variant={getVariant(mode, VaultViewMode.Overview)}
-          >
-            Overview
-          </Button>
-          <Button
-            onClick={() => setMode(VaultViewMode.Protection)}
-            variant={getVariant(mode, VaultViewMode.Protection)}
-          >
-            Protection
-          </Button>
-          <Button
-            onClick={() => setMode(VaultViewMode.History)}
-            variant={getVariant(mode, VaultViewMode.History)}
-          >
-            History
-          </Button>
-        </Grid>
-        <Box sx={{ zIndex: 1 }}>
-          {headerControl}
-          {mode === VaultViewMode.Overview
-            ? overViewControl
-            : mode === VaultViewMode.Protection
-            ? protectionControl
-            : historyControl}
-        </Box>
-      </Grid>{' '}
-    </>
+          Overview
+        </Button>
+        <Button
+          onClick={() => setMode(VaultViewMode.Protection)}
+          variant={getVariant(mode, VaultViewMode.Protection)}
+        >
+          Protection
+        </Button>
+        <Button
+          onClick={() => setMode(VaultViewMode.History)}
+          variant={getVariant(mode, VaultViewMode.History)}
+        >
+          History
+        </Button>
+      </Grid>
+      <Box sx={{ zIndex: 1 }}>
+        {headerControl}
+        {mode === VaultViewMode.Overview
+          ? overViewControl
+          : mode === VaultViewMode.Protection
+          ? protectionControl
+          : historyControl}
+      </Box>
+    </Grid>
   )
 }
 

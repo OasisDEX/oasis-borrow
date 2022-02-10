@@ -17,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
@@ -79,7 +80,8 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice },
+    vault: { token, liquidationPrice, id },
+    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -103,6 +105,11 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
 
   return (
     <Box>
+      <StopLossBannerControl
+        vaultId={id}
+        liquidationPrice={liquidationPrice}
+        liquidationRatio={liquidationRatio}
+      />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{

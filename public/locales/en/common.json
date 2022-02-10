@@ -797,7 +797,10 @@
     "navigate-adjust": "Return to adjusting stop loss",
     "banner-header": "Get vault protection",
     "banner-content": "Short text to introduce vault protection.",
-    "banner-button": "Set up Vault Protection ->"
+    "banner-button": "Set up Vault Protection ->",
+    "edit-vault-protection": "Edit Vault Protection",
+    "dynamic-stop-loss-price": "Dynamic Stop Loss Price",
+    "stop-loss-coll-ratio": "Stop Loss Collateral Ratio"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
