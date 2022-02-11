@@ -1,4 +1,3 @@
-// either a standard proxy action or chartered
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
@@ -8,7 +7,7 @@ import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
 
 export interface DssProxyActionsInterface {
   resolveContractAddress: (context: ContextConnected) => string
-  // for getDepositAndGenerateCallData
+
   lockETHAndDraw: (
     context: ContextConnected,
     data: DepositAndGenerateData,
@@ -34,7 +33,6 @@ export interface DssProxyActionsInterface {
     data: DepositAndGenerateData,
   ) => NonPayableTransactionObject<void>
 
-  // for getWithdrawAndPaybackCallData
   wipeAllAndFreeETH: (
     context: ContextConnected,
     data: WithdrawAndPaybackData,
