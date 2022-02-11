@@ -15,8 +15,8 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
-import { DssProxyActionsInterface } from './proxyActions/DssProxyActionsInterface'
-import { StandardDssProxyActions } from './proxyActions/standardDssProxyActions'
+import { DssProxyActionsContractWrapperInterface } from './proxyActions/DssProxyActionsContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from './proxyActions/standardDssProxyActionsContractWrapper'
 import { TxMetaKind } from './txMeta'
 
 export type WithdrawAndPaybackData = {
@@ -33,7 +33,7 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  dssProxyActions: DssProxyActionsInterface,
+  dssProxyActions: DssProxyActionsContractWrapperInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
@@ -74,7 +74,9 @@ export interface IProxyActions {
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
-export function proxyActionsFactory(dssProxyActions: DssProxyActionsInterface): IProxyActions {
+export function proxyActionsFactory(
+  dssProxyActions: DssProxyActionsContractWrapperInterface,
+): IProxyActions {
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -120,7 +122,7 @@ export type DepositAndGenerateData = {
 export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  dssProxyActions: DssProxyActionsInterface,
+  dssProxyActions: DssProxyActionsContractWrapperInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 
@@ -144,7 +146,7 @@ export function getDepositAndGenerateCallData(
 }
 
 // this is left here because it's called directly elsewhere rather than injected
-const _oldStandardProxyFns = proxyActionsFactory(StandardDssProxyActions)
+const _oldStandardProxyFns = proxyActionsFactory(StandardDssProxyActionsContractWrapper)
 export const depositAndGenerate = _oldStandardProxyFns.depositAndGenerate
 export const withdrawAndPayback = _oldStandardProxyFns.withdrawAndPayback
 
@@ -674,7 +676,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             shouldPaybackAll: true,
           },
           context,
-          StandardDssProxyActions,
+          StandardDssProxyActionsContractWrapper,
         ).encodeABI(),
       ]
     }

@@ -12,9 +12,9 @@ import {
   proxyActionsFactory,
   WithdrawAndPaybackData,
 } from './calls/proxyActions'
-import { CharteredDssProxyActions } from './calls/proxyActions/charteredDssProxyActions'
-import { DssProxyActionsInterface } from './calls/proxyActions/DssProxyActionsInterface'
-import { StandardDssProxyActions } from './calls/proxyActions/standardDssProxyActions'
+import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
+import { DssProxyActionsContractWrapperInterface } from './calls/proxyActions/DssProxyActionsContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from './calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { TxMetaKind } from './calls/txMeta'
 
 describe('ProxyActions', () => {
@@ -40,7 +40,10 @@ describe('ProxyActions', () => {
       proxyAddress: PROXY_ACTIONS,
     }
 
-    function runTest(dssProxyAction: DssProxyActionsInterface, expectedAddress: string): void {
+    function runTest(
+      dssProxyAction: DssProxyActionsContractWrapperInterface,
+      expectedAddress: string,
+    ): void {
       const proxyAction = proxyActionsFactory(dssProxyAction)
 
       const withdrawAndPaybackArgs = proxyAction.withdrawAndPayback.prepareArgs(
@@ -58,11 +61,14 @@ describe('ProxyActions', () => {
     }
 
     it('uses dssProxyActions contract for standard vaults', () => {
-      runTest(StandardDssProxyActions, mockContextConnected.dssProxyActions.address)
+      runTest(StandardDssProxyActionsContractWrapper, mockContextConnected.dssProxyActions.address)
     })
 
     it('uses dssProxyActionsCharter contract for institutional vaults', () => {
-      runTest(CharteredDssProxyActions, mockContextConnected.dssProxyActionsCharter.address)
+      runTest(
+        CharteredDssProxyActionsContractWrapper,
+        mockContextConnected.dssProxyActionsCharter.address,
+      )
     })
   })
 
@@ -92,7 +98,7 @@ describe('ProxyActions', () => {
           shouldPaybackAll,
         },
         mockContextConnected,
-        StandardDssProxyActions,
+        StandardDssProxyActionsContractWrapper,
       ) as any)._method.name
     }
 
@@ -218,7 +224,7 @@ describe('ProxyActions', () => {
           ilk: `${token}-A`,
         },
         mockContextConnected,
-        StandardDssProxyActions,
+        StandardDssProxyActionsContractWrapper,
       ) as any)._method.name
 
       it(testName, () => {

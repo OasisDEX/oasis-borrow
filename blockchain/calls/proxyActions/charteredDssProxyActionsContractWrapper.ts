@@ -1,4 +1,4 @@
-import { DssProxyActions } from '../../../types/web3-v1-contracts/dss-proxy-actions'
+import { DssProxyActionsCharter } from '../../../types/web3-v1-contracts/dss-proxy-actions-charter'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
@@ -6,18 +6,16 @@ import {
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
-import { DssProxyActionsInterface } from './DssProxyActionsInterface'
+import { DssProxyActionsContractWrapperInterface } from './DssProxyActionsContractWrapperInterface'
 
-export const StandardDssProxyActions: DssProxyActionsInterface = {
+export const CharteredDssProxyActionsContractWrapper: DssProxyActionsContractWrapperInterface = {
   resolveContractAddress(context: ContextConnected): string {
-    return context.dssProxyActions.address
+    return context.dssProxyActionsCharter.address
   },
-
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.draw(
-        context.dssCdpManager.address,
         context.mcdJug.address,
         context.mcdJoinDai.address,
         data.id.toString(),
@@ -30,9 +28,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.freeETH(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         data.id.toString(),
         amountToWei(data.withdrawAmount, data.token).toFixed(0),
@@ -44,9 +41,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.freeGem(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         data.id.toString(),
         amountToWeiRoundDown(data.withdrawAmount, data.token).toFixed(0),
@@ -55,8 +51,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
 
   lockETH(context: ContextConnected, data: DepositAndGenerateData): PayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
-      .methods.lockETH(context.dssCdpManager.address, context.joins[data.ilk], data.id.toString())
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
+      .methods.lockETH(context.joins[data.ilk], data.id.toString())
   },
 
   lockETHAndDraw(
@@ -64,9 +60,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: DepositAndGenerateData,
   ): PayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.lockETHAndDraw(
-        context.dssCdpManager.address,
         context.mcdJug.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
@@ -80,13 +75,11 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: DepositAndGenerateData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.lockGem(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         data.id.toString(),
         amountToWei(data.depositAmount, data.token).toFixed(0),
-        true,
       )
   },
 
@@ -95,24 +88,21 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: DepositAndGenerateData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.lockGemAndDraw(
-        context.dssCdpManager.address,
         context.mcdJug.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
         data.id.toString(),
         amountToWei(data.depositAmount, data.token).toFixed(0),
         amountToWei(data.generateAmount, 'DAI').toFixed(0),
-        true,
       )
   },
 
   wipe(context: ContextConnected, data: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.wipe(
-        context.dssCdpManager.address,
         context.mcdJoinDai.address,
         data.id.toString(),
         amountToWei(data.paybackAmount, 'DAI').toFixed(0),
@@ -124,12 +114,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
-      .methods.wipeAll(
-        context.dssCdpManager.address,
-        context.mcdJoinDai.address,
-        data.id.toString(),
-      )
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
+      .methods.wipeAll(context.mcdJoinDai.address, data.id.toString())
   },
 
   wipeAllAndFreeETH(
@@ -137,9 +123,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.wipeAllAndFreeETH(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
         data.id.toString(),
@@ -152,9 +137,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.wipeAllAndFreeGem(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
         data.id.toString(),
@@ -167,9 +151,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.wipeAndFreeETH(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
         data.id.toString(),
@@ -183,9 +166,8 @@ export const StandardDssProxyActions: DssProxyActionsInterface = {
     data: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return context
-      .contract<DssProxyActions>(context.dssProxyActions)
+      .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
       .methods.wipeAndFreeGem(
-        context.dssCdpManager.address,
         context.joins[data.ilk],
         context.mcdJoinDai.address,
         data.id.toString(),

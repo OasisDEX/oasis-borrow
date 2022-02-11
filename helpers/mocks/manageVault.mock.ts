@@ -13,7 +13,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { proxyActionsFactory } from '../../blockchain/calls/proxyActions'
-import { StandardDssProxyActions } from '../../blockchain/calls/proxyActions/standardDssProxyActions'
+import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
@@ -141,7 +141,7 @@ export function mockManageVault$({
     vault$,
     saveVaultType$,
     addGasEstimationMock,
-    proxyActionsFactory(StandardDssProxyActions),
+    proxyActionsFactory(StandardDssProxyActionsContractWrapper),
     MOCK_VAULT_ID,
   )
 }
