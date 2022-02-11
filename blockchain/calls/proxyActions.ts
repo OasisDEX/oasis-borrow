@@ -16,6 +16,7 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
+import { StandardDssProxyActions } from './proxyActions/standardDssProxyActions'
 import { TxMetaKind } from './txMeta'
 
 export type WithdrawAndPaybackData = {
@@ -179,57 +180,25 @@ export function getDepositAndGenerateCallData(
   context: ContextConnected,
   dssProxyActions: ContractDesc,
 ) {
-  const { dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
-  const { id, token, depositAmount, generateAmount, ilk } = data
+  const { token, depositAmount, generateAmount } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.lockETHAndDraw(
-        dssCdpManager.address,
-        mcdJug.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(generateAmount, 'DAI').toFixed(0),
-      )
+      return StandardDssProxyActions.lockETHAndDraw(context, data)
     }
-    return contract<DssProxyActions>(dssProxyActions).methods.lockGemAndDraw(
-      dssCdpManager.address,
-      mcdJug.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
-      amountToWei(generateAmount, 'DAI').toFixed(0),
-      true,
-    )
+
+    return StandardDssProxyActions.lockGemAndDraw(context, data)
   }
 
   if (depositAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.lockETH(
-        dssCdpManager.address,
-        joins[ilk],
-        id.toString(),
-      )
+      return StandardDssProxyActions.lockETH(context, data)
     }
 
-    return contract<DssProxyActions>(dssProxyActions).methods.lockGem(
-      dssCdpManager.address,
-      joins[ilk],
-      id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
-      true,
-    )
+    return StandardDssProxyActions.lockGem(context, data)
   }
 
-  return contract<DssProxyActions>(dssProxyActions).methods.draw(
-    dssCdpManager.address,
-    mcdJug.address,
-    mcdJoinDai.address,
-    id.toString(),
-    amountToWei(generateAmount, 'DAI').toFixed(0),
-  )
+  return StandardDssProxyActions.draw(context, data)
 }
 
 // this is left here because it's called directly elsewhere rather than injected
