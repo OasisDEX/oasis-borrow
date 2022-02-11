@@ -35,83 +35,34 @@ export function getWithdrawAndPaybackCallData(
   context: ContextConnected,
   dssProxyActions: ContractDesc,
 ) {
-  const { dssCdpManager, mcdJoinDai, joins, contract } = context
-  const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
+  const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
       if (shouldPaybackAll) {
-        return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeETH(
-          dssCdpManager.address,
-          joins[ilk],
-          mcdJoinDai.address,
-          id.toString(),
-          amountToWei(withdrawAmount, token).toFixed(0),
-        )
+        return StandardDssProxyActions.wipeAllAndFreeETH(context, data)
       }
-
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeETH(
-        dssCdpManager.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-        amountToWei(paybackAmount, 'DAI').toFixed(0),
-      )
+      return StandardDssProxyActions.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeGem(
-        dssCdpManager.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-      )
+      return StandardDssProxyActions.wipeAllAndFreeGem(context, data)
     }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeGem(
-      dssCdpManager.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(withdrawAmount, token).toFixed(0),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
-    )
+    return StandardDssProxyActions.wipeAndFreeGem(context, data)
   }
 
   if (withdrawAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.freeETH(
-        dssCdpManager.address,
-        joins[ilk],
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-      )
+      return StandardDssProxyActions.freeETH(context, data)
     }
-    return contract<DssProxyActions>(dssProxyActions).methods.freeGem(
-      dssCdpManager.address,
-      joins[ilk],
-      id.toString(),
-      amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
-    )
+    return StandardDssProxyActions.freeGem(context, data)
   }
 
   if (paybackAmount.gt(zero)) {
     if (shouldPaybackAll) {
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
-        dssCdpManager.address,
-        mcdJoinDai.address,
-        id.toString(),
-      )
+      return StandardDssProxyActions.wipeAll(context, data)
     }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.wipe(
-      dssCdpManager.address,
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
-    )
+    return StandardDssProxyActions.wipe(context, data)
   }
 
   // would be nice to remove this for Unreachable error case in the future
