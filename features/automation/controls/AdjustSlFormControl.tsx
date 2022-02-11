@@ -84,16 +84,16 @@ export function AdjustSlFormControl({
 
   const token = vault.token
   const tokenData = getToken(token)
-  const currentCollateralData = collateralPrice.data.filter((x) => x.token === vault.token)[0]
+  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const startingSlRatio = slTriggerData.isStopLossEnabled
     ? slTriggerData.stopLossLevel
     : ilkData.liquidationRatio
 
   const currentCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData.currentPrice)
+    .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
 
-  const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
+  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
     .multipliedBy(startingSlRatio)
     .dividedBy(currentCollRatio)
 
@@ -148,11 +148,11 @@ export function AdjustSlFormControl({
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
       const currentCollRatio = vault.lockedCollateral
-        .multipliedBy(currentCollateralData.currentPrice)
+        .multipliedBy(currentCollateralData!.currentPrice)
         .dividedBy(vault.debt)
       const computedAfterLiqPrice = slCollRatio
         .dividedBy(100)
-        .multipliedBy(currentCollateralData.currentPrice)
+        .multipliedBy(currentCollateralData!.currentPrice)
         .dividedBy(currentCollRatio)
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
