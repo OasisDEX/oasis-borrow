@@ -20,8 +20,6 @@ function StopLossBannerSection({
   afterValue,
   showAfterPill,
 }: StopLossBannerSectionProps & AfterPillProps) {
-  const dimmedSuccessBg = 'rgba(26, 171, 155, 0.1)'
-
   return (
     <Flex sx={{ flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', mb: 2, color: 'lavender' }}>
@@ -31,7 +29,7 @@ function StopLossBannerSection({
         {value}
       </Text>
       {afterValue && showAfterPill && (
-        <VaultDetailsAfterPill afterPillColors={{ bg: dimmedSuccessBg, color: 'onSuccess' }}>
+        <VaultDetailsAfterPill afterPillColors={{ bg: 'dimSuccess', color: 'onSuccess' }}>
           {afterValue} after
         </VaultDetailsAfterPill>
       )}
