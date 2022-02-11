@@ -6,7 +6,7 @@ import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
 import { DssProxyActionInterface } from './DssProxyActionInterface'
-import { DssProxyActionsCharter } from '../../../types/ethers-contracts'
+import { DssProxyActionsCharter } from '../../../types/web3-v1-contracts/dss-proxy-actions-charter'
 
 export const StandardDssProxyActions: DssProxyActionInterface = {
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
@@ -49,7 +49,7 @@ export const StandardDssProxyActions: DssProxyActionInterface = {
   lockETH(context: ContextConnected, data: DepositAndGenerateData): PayableTransactionObject<void> {
     return context
       .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)
-      .methods.lockETH(context.dssCdpManager.address, context.joins[data.ilk], data.id.toString())
+      .methods.lockETH(context.joins[data.ilk], data.id.toString())
   },
 
   lockETHAndDraw(
@@ -77,7 +77,6 @@ export const StandardDssProxyActions: DssProxyActionInterface = {
         context.joins[data.ilk],
         data.id.toString(),
         amountToWei(data.depositAmount, data.token).toFixed(0),
-        true,
       )
   },
 
@@ -94,7 +93,6 @@ export const StandardDssProxyActions: DssProxyActionInterface = {
         data.id.toString(),
         amountToWei(data.depositAmount, data.token).toFixed(0),
         amountToWei(data.generateAmount, 'DAI').toFixed(0),
-        true,
       )
   },
 
