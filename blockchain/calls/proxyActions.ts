@@ -174,7 +174,7 @@ export type DepositAndGenerateData = {
   proxyAddress: string
 }
 
-function getDepositAndGenerateCallData(
+export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
   dssProxyActions: ContractDesc,
@@ -756,7 +756,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             kind: TxMetaKind.withdrawAndPayback,
             withdrawAmount: data.totalCollateral,
             paybackAmount: new BigNumber(0),
-            proxyAddress: data.proxyAddress!,
+            proxyAddress: data.proxyAddress,
             ilk: data.ilk,
             token: data.token,
             id: data.id,
@@ -830,7 +830,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       guni: tokens[data.token].address,
       resolver: guniResolver,
       router: guniRouter,
-      otherToken: tokens[token1Symbol!].address,
+      otherToken: tokens[token1Symbol].address,
       manager: dssCdpManager.address,
       guniProxyActions: guniProxyActions.address,
       lender: fmm,

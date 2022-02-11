@@ -8,40 +8,12 @@ import { PROXY_ACTIONS } from './addresses/mainnet.json'
 import {
   DepositAndGenerateData,
   DssProxyActionsType,
+  getDepositAndGenerateCallData,
   getWithdrawAndPaybackCallData,
   proxyActionsFactory,
   WithdrawAndPaybackData,
 } from './calls/proxyActions'
 import { TxMetaKind } from './calls/txMeta'
-
-interface ConstructWithdrawAndPaybackProps {
-  token: 'ETH' | 'WBTC'
-  withdrawAmount?: BigNumber
-  paybackAmount?: BigNumber
-  shouldPaybackAll?: boolean
-}
-
-function constructWithdrawAndPayback({
-  token,
-  withdrawAmount = zero,
-  paybackAmount = zero,
-  shouldPaybackAll = false,
-}: ConstructWithdrawAndPaybackProps): string {
-  return (getWithdrawAndPaybackCallData(
-    {
-      kind: TxMetaKind.withdrawAndPayback,
-      proxyAddress: '0xProxyAddress',
-      id: one,
-      token,
-      withdrawAmount,
-      paybackAmount,
-      ilk: `${token}-A`,
-      shouldPaybackAll,
-    },
-    mockContextConnected,
-    mockContextConnected.dssProxyActions,
-  ) as any)._method.name
-}
 
 describe('ProxyActions', () => {
   describe('proxyActionsFactory', () => {
@@ -91,7 +63,37 @@ describe('ProxyActions', () => {
       runTest('insti', mockContextConnected.dssProxyActionsCharter.address)
     })
   })
-  describe('WithdrawAndPayback', () => {
+
+  describe('getWithdrawAndPaybackCallData', () => {
+    interface ConstructWithdrawAndPaybackProps {
+      token: 'ETH' | 'WBTC'
+      withdrawAmount?: BigNumber
+      paybackAmount?: BigNumber
+      shouldPaybackAll?: boolean
+    }
+
+    function constructWithdrawAndPayback({
+      token,
+      withdrawAmount = zero,
+      paybackAmount = zero,
+      shouldPaybackAll = false,
+    }: ConstructWithdrawAndPaybackProps): string {
+      return (getWithdrawAndPaybackCallData(
+        {
+          kind: TxMetaKind.withdrawAndPayback,
+          proxyAddress: '0xProxyAddress',
+          id: one,
+          token,
+          withdrawAmount,
+          paybackAmount,
+          ilk: `${token}-A`,
+          shouldPaybackAll,
+        },
+        mockContextConnected,
+        mockContextConnected.dssProxyActions,
+      ) as any)._method.name
+    }
+
     it('should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true', () => {
       expect(
         constructWithdrawAndPayback({
@@ -183,5 +185,95 @@ describe('ProxyActions', () => {
         }),
       ).to.deep.equal('wipe')
     })
+  })
+
+  describe('getDepositAndGenerateCallData', () => {
+    interface TestData {
+      testName: string
+      depositAmount: number
+      generateAmount: number
+      expectedMethodCalled: string
+      token: 'ETH' | 'WBTC'
+    }
+
+    function runTest({
+      testName,
+      depositAmount,
+      generateAmount,
+      expectedMethodCalled,
+      token,
+    }: TestData): void {
+      const depositAmountBigNumber = new BigNumber(depositAmount)
+      const generateAmountBigNumber = new BigNumber(generateAmount)
+      const actualMethodName = (getDepositAndGenerateCallData(
+        {
+          kind: TxMetaKind.depositAndGenerate,
+          proxyAddress: '0xProxyAddress',
+          id: one,
+          token,
+          depositAmount: depositAmountBigNumber,
+          generateAmount: generateAmountBigNumber,
+          ilk: `${token}-A`,
+        },
+        mockContextConnected,
+        mockContextConnected.dssProxyActions,
+      ) as any)._method.name
+
+      it(testName, () => {
+        expect(actualMethodName).to.eq(expectedMethodCalled)
+      })
+    }
+
+    const testData: TestData[] = [
+      {
+        testName:
+          'should call lockETHAndDraw() when depositAmount and generateAmount are greater than zero, token is ETH',
+        depositAmount: 1,
+        generateAmount: 1,
+        expectedMethodCalled: 'lockETHAndDraw',
+        token: 'ETH',
+      },
+      {
+        testName:
+          'should call lockGemAndDraw() when depositAmount and generateAmount are greater than zero, token is not ETH',
+        depositAmount: 1,
+        generateAmount: 1,
+        expectedMethodCalled: 'lockGemAndDraw',
+        token: 'WBTC',
+      },
+      {
+        testName:
+          'should call lockETH() when depositAmount is greater than zero and generateAmount is zero, token is ETH',
+        depositAmount: 1,
+        generateAmount: 0,
+        expectedMethodCalled: 'lockETH',
+        token: 'ETH',
+      },
+      {
+        testName:
+          'should call lockGem() when depositAmount is greater than zero and generateAmount is zero, token is not ETH',
+        depositAmount: 1,
+        generateAmount: 0,
+        expectedMethodCalled: 'lockGem',
+        token: 'WBTC',
+      },
+      {
+        testName: 'should call draw() when depositAmount and generateAmount are zero, token is ETH',
+        depositAmount: 0,
+        generateAmount: 0,
+        expectedMethodCalled: 'draw',
+        token: 'ETH',
+      },
+      {
+        testName:
+          'should call draw() when depositAmount and generateAmount are zero, token is not ETH',
+        depositAmount: 0,
+        generateAmount: 0,
+        expectedMethodCalled: 'draw',
+        token: 'WBTC',
+      },
+    ]
+
+    testData.forEach(runTest)
   })
 })
