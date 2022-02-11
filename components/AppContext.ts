@@ -90,6 +90,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
+import { StandardDssProxyActions } from '../blockchain/calls/proxyActions/standardDssProxyActions'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -421,7 +422,7 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
-        proxyActionsFactory('standard'),
+        proxyActionsFactory(StandardDssProxyActions),
         id,
       ),
     bigNumberTostring,

@@ -4,14 +4,10 @@ import {
   PayableTransactionObject,
 } from '../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../network'
-import {
-  DepositAndGenerateData,
-  DssProxyActionsType,
-  WithdrawAndPaybackData,
-} from '../proxyActions'
-import { StandardDssProxyActions } from './standardDssProxyActions'
+import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
 
-export interface DssProxyActionInterface {
+export interface DssProxyActionsInterface {
+  resolveContractAddress: (context: ContextConnected) => string
   // for getDepositAndGenerateCallData
   lockETHAndDraw: (
     context: ContextConnected,
@@ -78,12 +74,4 @@ export interface DssProxyActionInterface {
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ) => NonPayableTransactionObject<void>
-}
-
-export function proxyActionFactory(proxyType: DssProxyActionsType): DssProxyActionInterface {
-  if (proxyType === 'standard') {
-    return StandardDssProxyActions
-  } else {
-    throw 'chartered not implemented'
-  }
 }

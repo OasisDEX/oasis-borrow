@@ -1,3 +1,4 @@
+import { DssProxyActionsCharter } from '../../../types/web3-v1-contracts/dss-proxy-actions-charter'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
@@ -5,10 +6,12 @@ import {
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
-import { DssProxyActionInterface } from './DssProxyActionInterface'
-import { DssProxyActionsCharter } from '../../../types/web3-v1-contracts/dss-proxy-actions-charter'
+import { DssProxyActionsInterface } from './DssProxyActionsInterface'
 
-export const StandardDssProxyActions: DssProxyActionInterface = {
+export const CharteredDssProxyActions: DssProxyActionsInterface = {
+  resolveContractAddress(context: ContextConnected): string {
+    return context.dssProxyActionsCharter.address
+  },
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return context
       .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)

@@ -7,12 +7,14 @@ import { describe } from 'mocha'
 import { PROXY_ACTIONS } from './addresses/mainnet.json'
 import {
   DepositAndGenerateData,
-  DssProxyActionsType,
   getDepositAndGenerateCallData,
   getWithdrawAndPaybackCallData,
   proxyActionsFactory,
   WithdrawAndPaybackData,
 } from './calls/proxyActions'
+import { CharteredDssProxyActions } from './calls/proxyActions/charteredDssProxyActions'
+import { DssProxyActionsInterface } from './calls/proxyActions/DssProxyActionsInterface'
+import { StandardDssProxyActions } from './calls/proxyActions/standardDssProxyActions'
 import { TxMetaKind } from './calls/txMeta'
 
 describe('ProxyActions', () => {
@@ -38,8 +40,8 @@ describe('ProxyActions', () => {
       proxyAddress: PROXY_ACTIONS,
     }
 
-    function runTest(proxyActionType: DssProxyActionsType, expectedAddress: string): void {
-      const proxyAction = proxyActionsFactory(proxyActionType)
+    function runTest(dssProxyAction: DssProxyActionsInterface, expectedAddress: string): void {
+      const proxyAction = proxyActionsFactory(dssProxyAction)
 
       const withdrawAndPaybackArgs = proxyAction.withdrawAndPayback.prepareArgs(
         mockWithdrawAndPaybackData,
@@ -56,11 +58,11 @@ describe('ProxyActions', () => {
     }
 
     it('uses dssProxyActions contract for standard vaults', () => {
-      runTest('standard', mockContextConnected.dssProxyActions.address)
+      runTest(StandardDssProxyActions, mockContextConnected.dssProxyActions.address)
     })
 
     it('uses dssProxyActionsCharter contract for institutional vaults', () => {
-      runTest('insti', mockContextConnected.dssProxyActionsCharter.address)
+      runTest(CharteredDssProxyActions, mockContextConnected.dssProxyActionsCharter.address)
     })
   })
 
@@ -90,7 +92,7 @@ describe('ProxyActions', () => {
           shouldPaybackAll,
         },
         mockContextConnected,
-        mockContextConnected.dssProxyActions,
+        StandardDssProxyActions,
       ) as any)._method.name
     }
 
@@ -216,7 +218,7 @@ describe('ProxyActions', () => {
           ilk: `${token}-A`,
         },
         mockContextConnected,
-        mockContextConnected.dssProxyActions,
+        StandardDssProxyActions,
       ) as any)._method.name
 
       it(testName, () => {

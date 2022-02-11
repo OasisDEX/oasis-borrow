@@ -6,9 +6,13 @@ import {
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
-import { DssProxyActionInterface } from './DssProxyActionInterface'
+import { DssProxyActionsInterface } from './DssProxyActionsInterface'
 
-export const StandardDssProxyActions: DssProxyActionInterface = {
+export const StandardDssProxyActions: DssProxyActionsInterface = {
+  resolveContractAddress(context: ContextConnected): string {
+    return context.dssProxyActions.address
+  },
+
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return context
       .contract<DssProxyActions>(context.dssProxyActions)

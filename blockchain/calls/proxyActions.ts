@@ -1,11 +1,10 @@
-import { ContractDesc } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
-import { amountToWad, amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
+import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -16,6 +15,7 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
+import { DssProxyActionsInterface } from './proxyActions/DssProxyActionsInterface'
 import { StandardDssProxyActions } from './proxyActions/standardDssProxyActions'
 import { TxMetaKind } from './txMeta'
 
@@ -33,36 +33,36 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  dssProxyActions: ContractDesc,
+  dssProxyActions: DssProxyActionsInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
       if (shouldPaybackAll) {
-        return StandardDssProxyActions.wipeAllAndFreeETH(context, data)
+        return dssProxyActions.wipeAllAndFreeETH(context, data)
       }
-      return StandardDssProxyActions.wipeAndFreeETH(context, data)
+      return dssProxyActions.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
-      return StandardDssProxyActions.wipeAllAndFreeGem(context, data)
+      return dssProxyActions.wipeAllAndFreeGem(context, data)
     }
-    return StandardDssProxyActions.wipeAndFreeGem(context, data)
+    return dssProxyActions.wipeAndFreeGem(context, data)
   }
 
   if (withdrawAmount.gt(zero)) {
     if (token === 'ETH') {
-      return StandardDssProxyActions.freeETH(context, data)
+      return dssProxyActions.freeETH(context, data)
     }
-    return StandardDssProxyActions.freeGem(context, data)
+    return dssProxyActions.freeGem(context, data)
   }
 
   if (paybackAmount.gt(zero)) {
     if (shouldPaybackAll) {
-      return StandardDssProxyActions.wipeAll(context, data)
+      return dssProxyActions.wipeAll(context, data)
     }
-    return StandardDssProxyActions.wipe(context, data)
+    return dssProxyActions.wipe(context, data)
   }
 
   // would be nice to remove this for Unreachable error case in the future
@@ -74,14 +74,7 @@ export interface IProxyActions {
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
-export type DssProxyActionsType = 'standard' | 'insti'
-
-export function proxyActionsFactory(dssProxyActionsType: DssProxyActionsType): IProxyActions {
-  function resolveDssProxyActions(context: ContextConnected) {
-    return dssProxyActionsType === 'standard'
-      ? context.dssProxyActions
-      : context.dssProxyActionsCharter
-  }
+export function proxyActionsFactory(dssProxyActions: DssProxyActionsInterface): IProxyActions {
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -90,9 +83,8 @@ export function proxyActionsFactory(dssProxyActionsType: DssProxyActionsType): I
         ]
       },
       prepareArgs: (data, context) => {
-        const dssProxyActions = resolveDssProxyActions(context)
         return [
-          dssProxyActions.address,
+          dssProxyActions.resolveContractAddress(context),
           getWithdrawAndPaybackCallData(data, context, dssProxyActions).encodeABI(),
         ]
       },
@@ -104,9 +96,8 @@ export function proxyActionsFactory(dssProxyActionsType: DssProxyActionsType): I
         ]
       },
       prepareArgs: (data, context) => {
-        const dssProxyActions = resolveDssProxyActions(context)
         return [
-          dssProxyActions.address,
+          dssProxyActions.resolveContractAddress(context),
           getDepositAndGenerateCallData(data, context, dssProxyActions).encodeABI(),
         ]
       },
@@ -129,31 +120,31 @@ export type DepositAndGenerateData = {
 export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  dssProxyActions: ContractDesc,
+  dssProxyActions: DssProxyActionsInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
     if (token === 'ETH') {
-      return StandardDssProxyActions.lockETHAndDraw(context, data)
+      return dssProxyActions.lockETHAndDraw(context, data)
     }
 
-    return StandardDssProxyActions.lockGemAndDraw(context, data)
+    return dssProxyActions.lockGemAndDraw(context, data)
   }
 
   if (depositAmount.gt(zero)) {
     if (token === 'ETH') {
-      return StandardDssProxyActions.lockETH(context, data)
+      return dssProxyActions.lockETH(context, data)
     }
 
-    return StandardDssProxyActions.lockGem(context, data)
+    return dssProxyActions.lockGem(context, data)
   }
 
-  return StandardDssProxyActions.draw(context, data)
+  return dssProxyActions.draw(context, data)
 }
 
 // this is left here because it's called directly elsewhere rather than injected
-const _oldStandardProxyFns = proxyActionsFactory('standard')
+const _oldStandardProxyFns = proxyActionsFactory(StandardDssProxyActions)
 export const depositAndGenerate = _oldStandardProxyFns.depositAndGenerate
 export const withdrawAndPayback = _oldStandardProxyFns.withdrawAndPayback
 
@@ -683,7 +674,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             shouldPaybackAll: true,
           },
           context,
-          context.dssProxyActions,
+          StandardDssProxyActions,
         ).encodeABI(),
       ]
     }
