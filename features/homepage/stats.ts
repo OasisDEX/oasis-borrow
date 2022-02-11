@@ -1,8 +1,8 @@
+import { OasisStats } from 'pages/api/stats'
 import { Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
 import { map } from 'rxjs/operators'
 
-interface Stats {}
-export function getOasisStats$(): Observable<Stats> {
-  return ajax('/api/stats')
+export function getOasisStats$(): Observable<OasisStats> {
+  return ajax.get('/api/stats').pipe(map(({ response }) => response))
 }

@@ -6,6 +6,8 @@ const STATIC_OASIS_STATS = {
   medianVaultSize: 212000,
 }
 
-export default function (_: NextApiRequest, res: NextApiResponse) {
-  res.send(STATIC_OASIS_STATS)
+export type OasisStats = typeof STATIC_OASIS_STATS
+
+export default async function oasisStatsHandler(_: NextApiRequest, res: NextApiResponse) {
+  res.status(200).json(STATIC_OASIS_STATS)
 }

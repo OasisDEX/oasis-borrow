@@ -5,6 +5,7 @@ import { EmailProvider } from 'server/middleware/emails/types'
 
 import * as gasPriceHandler from '../../pages/api/gasPrice'
 import * as healthHandler from '../../pages/api/health'
+import * as getOasisStatsHandler from '../../pages/api/stats'
 import { Dependencies, getApp } from '../../server/app'
 import { Config } from '../../server/config'
 
@@ -47,6 +48,7 @@ export function setupServer(
   )
   app.get('/api/health', nextApiResolver(healthHandler))
   app.get('/api/gasPrice', nextApiResolver(gasPriceHandler))
+  app.get('/api/stats', nextApiResolver(getOasisStatsHandler))
 
   return app
 }
