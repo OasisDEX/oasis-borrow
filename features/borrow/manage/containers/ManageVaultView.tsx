@@ -3,15 +3,12 @@ import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultViewMode } from 'components/TabSwitchLayout'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
-import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
@@ -56,7 +53,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   )
 }
 
-function ManageVaultForm(props: ManageVaultState) {
+export function ManageVaultForm(props: ManageVaultState) {
   const {
     isEditingStage,
     isProxyStage,
@@ -103,17 +100,10 @@ function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-export function ManageVaultContainer({
-  manageVault,
-  vaultHistory,
-}: {
-  manageVault: ManageVaultState
-  vaultHistory: VaultHistoryEvent[]
-}) {
+export function ManageVaultContainer({ manageVault }: { manageVault: ManageVaultState }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
     vault: { id },
-    clear,
   } = manageVault
 
   useEffect(() => {
@@ -124,14 +114,12 @@ export function ManageVaultContainer({
     ).subscribe()
 
     return () => {
-      clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      <DefaultVaultHeader {...manageVault} id={id} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails
@@ -140,7 +128,6 @@ export function ManageVaultContainer({
               uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
             }}
           />
-          <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
           <ManageVaultForm {...manageVault} />

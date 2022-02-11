@@ -1,10 +1,9 @@
 import { Box, Button, Grid } from '@theme-ui/components'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
 import React, { useEffect, useState } from 'react'
-import { Flex } from 'theme-ui'
+import { Flex, Heading } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
-import { VaultHeading } from './vault/VaultHeading'
 
 enum VaultViewMode {
   History,
@@ -14,12 +13,16 @@ enum VaultViewMode {
 //TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
 export function TabSwitchLayout({
   defaultMode,
+  heading,
+  headerControl,
   overViewControl,
   historyControl,
   protectionControl,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
+  heading: JSX.Element
+  headerControl: JSX.Element
   historyControl?: JSX.Element
   protectionControl?: JSX.Element
 }): JSX.Element {
@@ -43,8 +46,17 @@ export function TabSwitchLayout({
   return (
     <>
       <Grid gap={0} sx={{ width: '100%' }}>
-        <Flex mt={2} mb={3} sx={{ zIndex: 100 }}>
-          <VaultHeading />
+        <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
+          <Heading
+            as="h1"
+            variant="heading1"
+            sx={{
+              fontWeight: 'semiBold',
+              pb: 2,
+            }}
+          >
+            {heading}
+          </Heading>
         </Flex>
         <Grid
           columns={3}
@@ -71,6 +83,7 @@ export function TabSwitchLayout({
           </Button>
         </Grid>
         <Box sx={{ zIndex: 1 }}>
+          {headerControl}
           {mode === VaultViewMode.Overview
             ? overViewControl
             : mode === VaultViewMode.Protection

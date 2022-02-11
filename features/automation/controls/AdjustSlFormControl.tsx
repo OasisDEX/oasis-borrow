@@ -5,32 +5,28 @@ import {
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
-import { IlkDataList } from 'blockchain/ilks'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservableWithError, useUIChanges } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import { useState } from 'react'
-import React from 'react'
-import { startWith } from 'rxjs/operators'
+import React, { useState } from 'react'
 
+import { Context } from '../../../blockchain/network'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
   extractSLData,
   prepareTriggerData,
-  StopLossTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
@@ -48,31 +44,30 @@ function prepareAddTriggerData(
   }
 }
 
-export function AdjustSlFormControl({ id }: { id: BigNumber }) {
+interface AdjustSlFormControlProps {
+  vault: Vault
+  collateralPrice: CollateralPricesWithFilters
+  ilkData: IlkData
+  triggerData: TriggersData
+  tx?: TxHelpers
+  ctx: Context
+}
+
+export function AdjustSlFormControl({
+  vault,
+  collateralPrice,
+  ilkData,
+  triggerData,
+  tx,
+  ctx,
+}: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
-  const {
-    vault$,
-    collateralPrices$,
-    ilkDataList$,
-    automationTriggersData$,
-    txHelpers$,
-    context$,
-  } = useAppContext()
-
-  const autoTriggersData$ = automationTriggersData$(id)
-
-  const vaultDataWithError = useObservableWithError(vault$(id))
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
-  const ilksDataWithError = useObservableWithError(ilkDataList$)
-  const autoTriggerDataWithError = useObservableWithError(autoTriggersData$)
-  const txHelpersWithError = useObservableWithError(
-    txHelpers$.pipe(startWith<TxHelpers | undefined>(undefined)),
-  )
-  const contextWithError = useObservableWithError(context$)
+  const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
+  const slTriggerData = extractSLData(triggerData)
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
@@ -87,169 +82,122 @@ export function AdjustSlFormControl({ id }: { id: BigNumber }) {
     }
   }
 
-  function renderLayout(
-    vaultData: Vault,
-    collateralPriceData: CollateralPricesWithFilters,
-    ilksData: IlkDataList,
-    slTriggerData: StopLossTriggerData,
-    txHelpers: TxHelpers | undefined,
-    isOwner: boolean,
-  ) {
-    const token = vaultData.token
-    const tokenData = getToken(token)
-    const currentIlkData = ilksData.filter((x) => x.ilk === vaultData.ilk)[0]
-    const currentCollateralData = collateralPriceData.data.filter(
-      (x) => x.token === vaultData.token,
-    )[0]
-    const startingSlRatio = slTriggerData.isStopLossEnabled
-      ? slTriggerData.stopLossLevel
-      : currentIlkData.liquidationRatio
+  const token = vault.token
+  const tokenData = getToken(token)
+  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
+  const startingSlRatio = slTriggerData.isStopLossEnabled
+    ? slTriggerData.stopLossLevel
+    : ilkData.liquidationRatio
 
-    const currentCollRatio = vaultData.lockedCollateral
-      .multipliedBy(currentCollateralData.currentPrice)
-      .dividedBy(vaultData.debt)
+  const currentCollRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.currentPrice)
+    .dividedBy(vault.debt)
 
-    const startingAfterNewLiquidationPrice = currentCollateralData.currentPrice
-      .multipliedBy(startingSlRatio)
-      .dividedBy(currentCollRatio)
+  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
+    .multipliedBy(startingSlRatio)
+    .dividedBy(currentCollRatio)
 
-    const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
-      new BigNumber(startingAfterNewLiquidationPrice),
-    )
+  const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
+    new BigNumber(startingAfterNewLiquidationPrice),
+  )
 
-    const initial: AddFormChange = {
-      collateralActive: false,
-      selectedSLValue: new BigNumber(currentCollRatio),
-    }
-
-    const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
-
-    const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
-
-    const maxBoundry =
-      currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
-
-    const liqRatio = currentIlkData.liquidationRatio
-
-    determineProperDefaults(setSelectedSLValue, startingSlRatio)
-
-    const closeProps: PickCloseStateProps = {
-      optionNames: validOptions,
-      onclickHandler: (optionName: string) => {
-        setCloseToCollateral(optionName === validOptions[0])
-        dispatch({
-          type: 'close-type',
-          toCollateral: optionName === validOptions[0],
-        })
-      },
-      isCollateralActive: collateralActive,
-      collateralTokenSymbol: token,
-      collateralTokenIconCircle: tokenData.iconCircle,
-    }
-
-    const sliderProps: SliderValuePickerProps = {
-      disabled: false,
-      leftBoundry: selectedSLValue,
-      rightBoundry: afterNewLiquidationPrice,
-      sliderKey: 'set-stoploss',
-      lastValue: selectedSLValue,
-      leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
-      leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-      rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
-      rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-      step: 0.05,
-      maxBoundry: maxBoundry.multipliedBy(100),
-      minBoundry: liqRatio.multipliedBy(100),
-      onChange: (slCollRatio) => {
-        setSelectedSLValue(slCollRatio)
-        /*TO DO: this is duplicated and can be extracted*/
-        const currentCollRatio = vaultData.lockedCollateral
-          .multipliedBy(currentCollateralData.currentPrice)
-          .dividedBy(vaultData.debt)
-        const computedAfterLiqPrice = slCollRatio
-          .dividedBy(100)
-          .multipliedBy(currentCollateralData.currentPrice)
-          .dividedBy(currentCollRatio)
-        /* END OF DUPLICATION */
-        setAfterLiqPrice(computedAfterLiqPrice)
-        dispatch({
-          type: 'stop-loss',
-          stopLoss: slCollRatio,
-        })
-      },
-    }
-
-    const replacedTriggerId = slTriggerData.triggerId || 0
-
-    const addTriggerConfig: RetryableLoadingButtonProps = {
-      translationKey: 'add-stop-loss',
-      onClick: (finishLoader: (succeded: boolean) => void) => {
-        if (txHelpers === undefined) {
-          return
-        }
-        const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
-          transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
-        const sendTxErrorHandler = () => {
-          finishLoader(false)
-        }
-        const txData = prepareAddTriggerData(
-          vaultData,
-          collateralActive,
-          selectedSLValue,
-          replacedTriggerId,
-        )
-
-        const waitForTx = txHelpers
-          .sendWithGasEstimation(addAutomationBotTrigger, txData)
-          .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-      },
-      isLoading: false,
-      isRetry: false,
-      disabled: isOwner,
-    }
-
-    const props: AdjustSlFormLayoutProps = {
-      closePickerConfig: closeProps,
-      slValuePickerConfig: sliderProps,
-      addTriggerConfig: addTriggerConfig,
-      txState: txStatus,
-    }
-
-    return <AdjustSlFormLayout {...props} />
+  const initial: AddFormChange = {
+    collateralActive: false,
+    selectedSLValue: new BigNumber(currentCollRatio),
   }
 
-  return (
-    <WithErrorHandler
-      error={[
-        vaultDataWithError.error,
-        collateralPricesWithError.error,
-        ilksDataWithError.error,
-        autoTriggerDataWithError.error,
-        txHelpersWithError.error,
-        contextWithError.error,
-      ]}
-    >
-      <WithLoadingIndicator
-        value={[
-          vaultDataWithError.value,
-          collateralPricesWithError.value,
-          ilksDataWithError.value,
-          autoTriggerDataWithError.value,
-          contextWithError.value,
-        ]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([vault, collateralPrice, ilksData, triggerData, ctx]) =>
-          renderLayout(
-            vault,
-            collateralPrice,
-            ilksData,
-            extractSLData(triggerData),
-            txHelpersWithError.value,
-            ctx.status === 'connected' && ctx.account !== vault.controller,
-          )
-        }
-      </WithLoadingIndicator>
-    </WithErrorHandler>
-  )
+  const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
+
+  const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
+
+  const maxBoundry =
+    currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
+
+  const liqRatio = ilkData.liquidationRatio
+
+  determineProperDefaults(setSelectedSLValue, startingSlRatio)
+
+  const closeProps: PickCloseStateProps = {
+    optionNames: validOptions,
+    onclickHandler: (optionName: string) => {
+      setCloseToCollateral(optionName === validOptions[0])
+      dispatch({
+        type: 'close-type',
+        toCollateral: optionName === validOptions[0],
+      })
+    },
+    isCollateralActive: collateralActive,
+    collateralTokenSymbol: token,
+    collateralTokenIconCircle: tokenData.iconCircle,
+  }
+
+  const sliderProps: SliderValuePickerProps = {
+    disabled: false,
+    leftBoundry: selectedSLValue,
+    rightBoundry: afterNewLiquidationPrice,
+    sliderKey: 'set-stoploss',
+    lastValue: selectedSLValue,
+    leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
+    leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
+    rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
+    rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
+    step: 0.05,
+    maxBoundry: maxBoundry.multipliedBy(100),
+    minBoundry: liqRatio.multipliedBy(100),
+    onChange: (slCollRatio) => {
+      setSelectedSLValue(slCollRatio)
+      /*TO DO: this is duplicated and can be extracted*/
+      const currentCollRatio = vault.lockedCollateral
+        .multipliedBy(currentCollateralData!.currentPrice)
+        .dividedBy(vault.debt)
+      const computedAfterLiqPrice = slCollRatio
+        .dividedBy(100)
+        .multipliedBy(currentCollateralData!.currentPrice)
+        .dividedBy(currentCollRatio)
+      /* END OF DUPLICATION */
+      setAfterLiqPrice(computedAfterLiqPrice)
+      dispatch({
+        type: 'stop-loss',
+        stopLoss: slCollRatio,
+      })
+    },
+  }
+
+  const replacedTriggerId = slTriggerData.triggerId || 0
+
+  const addTriggerConfig: RetryableLoadingButtonProps = {
+    translationKey: 'add-stop-loss',
+    onClick: (finishLoader: (succeded: boolean) => void) => {
+      if (tx === undefined) {
+        return
+      }
+      const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
+        transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+      const sendTxErrorHandler = () => {
+        finishLoader(false)
+      }
+      const txData = prepareAddTriggerData(
+        vault,
+        collateralActive,
+        selectedSLValue,
+        replacedTriggerId,
+      )
+
+      const waitForTx = tx
+        .sendWithGasEstimation(addAutomationBotTrigger, txData)
+        .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+    },
+    isLoading: false,
+    isRetry: false,
+    disabled: isOwner,
+  }
+
+  const props: AdjustSlFormLayoutProps = {
+    closePickerConfig: closeProps,
+    slValuePickerConfig: sliderProps,
+    addTriggerConfig: addTriggerConfig,
+    txState: txStatus,
+  }
+
+  return <AdjustSlFormLayout {...props} />
 }
