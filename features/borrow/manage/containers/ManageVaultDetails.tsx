@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { Banner } from 'components/Banner'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   AfterPillProps,
@@ -15,11 +14,12 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Box, Button, Grid, Heading, Image, Text } from 'theme-ui'
+import React from 'react'
+import { Box, Grid, Text } from 'theme-ui'
 
+import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageVaultState } from '../pipes/manageVault'
 
 function ManageVaultDetailsSummary({
@@ -99,12 +99,14 @@ export function ManageVaultDetails(
 ) {
   const {
     vault: {
+      id,
       token,
       collateralizationRatio,
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
     },
+    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -120,33 +122,17 @@ export function ManageVaultDetails(
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const [isVisible, setIsVisible] = useState(true)
 
   return (
     <Box>
-      {isVisible && (
-        <Banner close={() => setIsVisible(false)} sx={{ marginBottom: 3 }}>
-          <Grid columns={2}>
-            <Grid>
-              <Heading variant="header2" as="h1">
-                {t('protection.banner-header')}
-              </Heading>
-              <Text variant="subheader">{t('protection.banner-content')}</Text>
-              <Button
-                backgroundColor={'#EDEDFF'}
-                sx={{ borderRadius: '6px' }}
-                onClick={() => {
-                  props.onBannerButtonClickHandler()
-                }}
-              >
-                <Text color="#575CFE">{t('protection.banner-button')}</Text>
-              </Button>
-            </Grid>
-
-            <Image src={staticFilesRuntimeUrl('/static/img/automation.svg')} />
-          </Grid>
-        </Banner>
-      )}
+      <GetProtectionBannerControl vaultId={id} />
+      <StopLossBannerControl
+        vaultId={id}
+        liquidationPrice={liquidationPrice}
+        liquidationRatio={liquidationRatio}
+        afterLiquidationPrice={afterLiquidationPrice}
+        showAfterPill={showAfterPill}
+      />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{

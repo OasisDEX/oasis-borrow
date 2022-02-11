@@ -53,6 +53,7 @@ const oasisBaseTheme = {
     error: '#FDEDE8',
     onError: '#F75524',
     success: '#E7FCFA',
+    dimSuccess: 'rgba(26, 171, 155, 0.1)',
     onSuccess: '#1AAB9B',
     warning: '#FFF1CF',
     onWarning: '#D8762D',
