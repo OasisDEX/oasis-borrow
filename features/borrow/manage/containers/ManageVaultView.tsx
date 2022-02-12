@@ -54,7 +54,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   )
 }
 
-function ManageVaultForm(props: ManageVaultState) {
+function ManageVaultForm(props: ManageVaultState & { isInstiVault?: boolean }) {
   const {
     isEditingStage,
     isProxyStage,

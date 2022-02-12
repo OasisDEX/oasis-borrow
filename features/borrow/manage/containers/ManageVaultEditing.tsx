@@ -123,7 +123,7 @@ function PaybackInput({
   )
 }
 
-export function ManageVaultEditing(props: ManageVaultState) {
+export function ManageVaultEditing(props: ManageVaultState & { isInstiVault?: boolean }) {
   const { t } = useTranslation()
 
   const {
