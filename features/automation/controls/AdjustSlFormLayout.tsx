@@ -3,7 +3,8 @@ import { Box, Grid } from '@theme-ui/components'
 import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import React from 'react'
+import React, { ReactNode } from 'react'
+import { Flex } from 'theme-ui'
 
 import {
   RetryableLoadingButton,
@@ -16,6 +17,7 @@ export interface AdjustSlFormLayoutProps {
   slValuePickerConfig: SliderValuePickerProps
   addTriggerConfig: RetryableLoadingButtonProps
   txState?: TxState<AutomationBotAddTriggerData>
+  gasEstimation: ReactNode
 }
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
@@ -33,6 +35,8 @@ export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
       <Box>
         <RetryableLoadingButton {...props.addTriggerConfig} />
       </Box>
+      {/* TODO for now added as new line of text, this should be eventually included within changes information */}
+      <Flex>Gas estimation: {props.gasEstimation}</Flex>
     </Grid>
   )
 }

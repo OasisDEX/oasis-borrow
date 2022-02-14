@@ -5,7 +5,7 @@ import { AutomationBotRemoveTriggerData } from 'blockchain/calls/automationBot'
 import { MessageCard } from 'components/MessageCard'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import {
   RetryableLoadingButton,
@@ -16,6 +16,7 @@ export interface CancelSlFormLayoutProps {
   liquidationPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
   txState?: TxState<AutomationBotRemoveTriggerData>
+  gasEstimation: ReactNode
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
@@ -46,7 +47,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         {/* TODO LW implement when it will be available in addTrigger */}
         {/* https://app.shortcut.com/oazo-apps/story/3284/add-total-tx-costs-for-transactions-in-automation */}
         {/* <Box>$250.00</Box> */}
-        <Box></Box>
+        <Box>{props.gasEstimation}</Box>
       </Grid>
       <MessageCard {...{ messages, type: 'warning' }} />
       <Box>

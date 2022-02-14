@@ -603,6 +603,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    addGasEstimation$,
   }
 }
 
