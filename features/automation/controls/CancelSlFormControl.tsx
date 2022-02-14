@@ -8,10 +8,14 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
+import { useAppContext } from '../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
+import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
+import { GasEstimationStatus } from '../../../helpers/form'
+import { useObservable } from '../../../helpers/observableHook'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
@@ -53,13 +57,27 @@ export function CancelSlFormControl({
 }: CancelSlFormControlProps) {
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
+  const { triggerId, isStopLossEnabled, stopLossLevel } = extractSLData(triggerData)
+  const { addGasEstimation$ } = useAppContext()
+
+  const txData = useMemo(
+    () => prepareRemoveTriggerData(vault, collateralActive, selectedSLValue, triggerId),
+    [collateralActive, selectedSLValue, triggerId],
+  )
+
+  const gasEstimationData$ = useMemo(
+    () =>
+      addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
+        estimateGas(removeAutomationBotTrigger, txData),
+      ),
+    [txData],
+  )
+
+  const gasEstimationData = useObservable(gasEstimationData$)
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
-  const slTriggerData = extractSLData(triggerData)
 
-  const startingSlRatio = slTriggerData.isStopLossEnabled
-    ? slTriggerData.stopLossLevel
-    : ilkData.liquidationRatio
+  const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
   const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>()
 
   determineProperDefaults(setSelectedSLValue, startingSlRatio)
@@ -76,12 +94,6 @@ export function CancelSlFormControl({
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
-      const txData = prepareRemoveTriggerData(
-        vault,
-        collateralActive,
-        selectedSLValue,
-        slTriggerData.triggerId,
-      )
 
       const waitForTx = tx
         .sendWithGasEstimation(removeAutomationBotTrigger, txData)
@@ -96,6 +108,7 @@ export function CancelSlFormControl({
     liquidationPrice: vault.liquidationPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: txStatus,
+    gasEstimation: getEstimatedGasFeeText(gasEstimationData),
   }
 
   return <CancelSlFormLayout {...props} />

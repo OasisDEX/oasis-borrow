@@ -13,12 +13,15 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useUIChanges } from 'helpers/observableHook'
+import { useObservable, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
+import { useAppContext } from '../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
+import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
+import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
@@ -67,7 +70,25 @@ export function AdjustSlFormControl({
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
-  const slTriggerData = extractSLData(triggerData)
+  const { triggerId, stopLossLevel, isStopLossEnabled } = extractSLData(triggerData)
+  const { addGasEstimation$ } = useAppContext()
+
+  const replacedTriggerId = triggerId || 0
+
+  const txData = useMemo(
+    () => prepareAddTriggerData(vault, collateralActive, selectedSLValue, replacedTriggerId),
+    [collateralActive, selectedSLValue, replacedTriggerId],
+  )
+
+  const gasEstimationData$ = useMemo(
+    () =>
+      addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
+        estimateGas(addAutomationBotTrigger, txData),
+      ),
+    [txData],
+  )
+
+  const gasEstimationData = useObservable(gasEstimationData$)
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
@@ -85,9 +106,7 @@ export function AdjustSlFormControl({
   const token = vault.token
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
-  const startingSlRatio = slTriggerData.isStopLossEnabled
-    ? slTriggerData.stopLossLevel
-    : ilkData.liquidationRatio
+  const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
@@ -163,8 +182,6 @@ export function AdjustSlFormControl({
     },
   }
 
-  const replacedTriggerId = slTriggerData.triggerId || 0
-
   const addTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: 'add-stop-loss',
     onClick: (finishLoader: (succeded: boolean) => void) => {
@@ -176,12 +193,6 @@ export function AdjustSlFormControl({
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
-      const txData = prepareAddTriggerData(
-        vault,
-        collateralActive,
-        selectedSLValue,
-        replacedTriggerId,
-      )
 
       const waitForTx = tx
         .sendWithGasEstimation(addAutomationBotTrigger, txData)
@@ -197,6 +208,7 @@ export function AdjustSlFormControl({
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
     txState: txStatus,
+    gasEstimation: getEstimatedGasFeeText(gasEstimationData),
   }
 
   return <AdjustSlFormLayout {...props} />
