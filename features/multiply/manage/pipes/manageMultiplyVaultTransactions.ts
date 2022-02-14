@@ -7,7 +7,7 @@ import {
   closeVaultCall,
   DepositAndGenerateData,
   MultiplyAdjustData,
-  proxyActionsFactory,
+  withdrawPaybackDepositGenerateLogicFactory,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -318,7 +318,8 @@ export function manageVaultDepositAndGenerate(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          proxyActionsFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
+          withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
+            .depositAndGenerate,
           {
             kind: TxMetaKind.depositAndGenerate,
             generateAmount,
@@ -369,7 +370,8 @@ export function manageVaultWithdrawAndPayback(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          proxyActionsFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
+          withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
+            .withdrawAndPayback,
           {
             kind: TxMetaKind.withdrawAndPayback,
             withdrawAmount,
@@ -694,7 +696,8 @@ export function applyEstimateGas(
 
           if (isDepositAndGenerate) {
             return estimateGas(
-              proxyActionsFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
+              withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
+                .depositAndGenerate,
               {
                 kind: TxMetaKind.depositAndGenerate,
                 generateAmount: generateAmount || zero,
@@ -707,7 +710,8 @@ export function applyEstimateGas(
             )
           } else {
             return estimateGas(
-              proxyActionsFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
+              withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
+                .withdrawAndPayback,
               {
                 kind: TxMetaKind.withdrawAndPayback,
                 withdrawAmount: withdrawAmount || zero,

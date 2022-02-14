@@ -15,7 +15,7 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
-import { DssProxyActionsContractWrapperInterface } from './DssProxyActionsContractWrapperInterface'
+import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
 import { TxMetaKind } from '../txMeta'
 
@@ -33,7 +33,7 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  proxyActionsSmartContractWrapper: DssProxyActionsContractWrapperInterface,
+  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
@@ -69,14 +69,14 @@ export function getWithdrawAndPaybackCallData(
   throw new Error('Could not make correct proxyActions call')
 }
 
-export interface WithdrawPaybackDepositGenerateSmartContractLogicInterface {
+export interface WithdrawPaybackDepositGenerateLogicInterface {
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
-export function proxyActionsFactory(
-  proxyActionsSmartContractWrapper: DssProxyActionsContractWrapperInterface,
-): WithdrawPaybackDepositGenerateSmartContractLogicInterface {
+export function withdrawPaybackDepositGenerateLogicFactory(
+  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
+): WithdrawPaybackDepositGenerateLogicInterface {
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -130,7 +130,7 @@ export type DepositAndGenerateData = {
 export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  proxyActionsContract: DssProxyActionsContractWrapperInterface,
+  proxyActionsContract: DssProxyActionsSmartContractWrapperInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 

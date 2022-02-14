@@ -9,11 +9,11 @@ import {
   DepositAndGenerateData,
   getDepositAndGenerateCallData,
   getWithdrawAndPaybackCallData,
-  proxyActionsFactory,
+  withdrawPaybackDepositGenerateLogicFactory,
   WithdrawAndPaybackData,
 } from './calls/proxyActions/proxyActions'
 import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
-import { DssProxyActionsContractWrapperInterface } from './calls/proxyActions/DssProxyActionsContractWrapperInterface'
+import { DssProxyActionsSmartContractWrapperInterface } from './calls/proxyActions/DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from './calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { TxMetaKind } from './calls/txMeta'
 
@@ -41,10 +41,10 @@ describe('ProxyActions', () => {
     }
 
     function runTest(
-      dssProxyAction: DssProxyActionsContractWrapperInterface,
+      dssProxyAction: DssProxyActionsSmartContractWrapperInterface,
       expectedAddress: string,
     ): void {
-      const proxyAction = proxyActionsFactory(dssProxyAction)
+      const proxyAction = withdrawPaybackDepositGenerateLogicFactory(dssProxyAction)
 
       const withdrawAndPaybackArgs = proxyAction.withdrawAndPayback.prepareArgs(
         mockWithdrawAndPaybackData,

@@ -4,7 +4,7 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
-  WithdrawPaybackDepositGenerateSmartContractLogicInterface,
+  WithdrawPaybackDepositGenerateLogicInterface,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
@@ -226,7 +226,7 @@ export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogicInterface,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -276,7 +276,7 @@ export function manageVaultWithdrawAndPayback(
     vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogicInterface,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -451,7 +451,7 @@ export function createProxy(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
-  dssProxyActions: WithdrawPaybackDepositGenerateSmartContractLogicInterface,
+  dssProxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   state: ManageVaultState,
 ): Observable<ManageVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {

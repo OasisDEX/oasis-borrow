@@ -27,7 +27,7 @@ import {
   OpenData,
   OpenGuniMultiplyData,
   OpenMultiplyData,
-  proxyActionsFactory,
+  withdrawPaybackDepositGenerateLogicFactory,
   ReclaimData,
   WithdrawAndPaybackData,
 } from 'blockchain/calls/proxyActions/proxyActions'
@@ -422,7 +422,7 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
-        proxyActionsFactory(StandardDssProxyActionsContractWrapper),
+        withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         id,
       ),
     bigNumberTostring,

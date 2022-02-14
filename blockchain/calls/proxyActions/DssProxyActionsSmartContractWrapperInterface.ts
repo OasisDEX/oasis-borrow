@@ -5,7 +5,7 @@ import {
 import { ContextConnected } from '../../network'
 import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
 
-export interface DssProxyActionsContractWrapperInterface {
+export interface DssProxyActionsSmartContractWrapperInterface {
   resolveContractAddress: (context: ContextConnected) => string
 
   lockETHAndDraw: (
