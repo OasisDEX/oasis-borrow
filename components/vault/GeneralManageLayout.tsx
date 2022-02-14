@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Grid } from 'theme-ui'
 
-import { GuniTempBanner } from '../../features/banners/guniTempBanner'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
@@ -27,8 +26,6 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyti
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vaultId} />
-      <GuniTempBanner id={vaultId} />
-      {/* TODO Replace with TabSwitcher ~ŁW */}
       <TabSwitchLayout
         defaultMode={VaultViewMode.Overview}
         heading={t('vault.header', { ilk: generalManageVault.state.ilkData.ilk, id: vaultId })}
