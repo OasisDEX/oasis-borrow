@@ -87,13 +87,13 @@
     "balances": "Saldos",
     "buy": "Comprar",
     "careers": {
-        "heading": "Posições em aberto",
-        "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
-        "cta-button": "Candidatar",
-        "back-link": "Voltar para Posições",
-        "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
-        "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
-        "write-us": "Mande seu CV para "
+      "heading": "Posições em aberto",
+      "intro": "Nós acreditamos em talento. Junte-se a nós para construir a próxima geração de DeFi",
+      "cta-button": "Candidatar",
+      "back-link": "Voltar para Posições",
+      "no-open-positions": "Não há posições abertas no momento. Mas, estamos sempre em busca do melhor talento para se juntar a nós.",
+      "no-positions-you-like": "Não encontrou algo que te interesse? Nos conte o que deseja! Estamos sempre procurando os melhores talentos para se juntarem a nós!",
+      "write-us": "Mande seu CV para "
     },
     "submit": "Enviar",
     "title": "Contate a Oasis"
@@ -772,21 +772,58 @@
   "wyre-purchase-description-recent-failed": "Falha ao comprar {{ order }} com Wyre",
   "wyre-purchase-notification": "Wyre compra",
   "wyre-purchase-notification-past": "Wyre comprado",
+  "newsletter": {
+    "title": "Stay up to date with Oasis.app",
+    "subtitle": "Subscribe to the newsletter for Oasis updates",
+    "placeholder": "Email Address",
+    "button": "Subscribe",
+    "success": "Thank you for subscribing the newsletter!",
+    "errors": {
+      "unknown": "Something went wrong. Please try again.",
+      "email-is-invalid": "Please enter a valid email address",
+      "email-already-exists": "Email is already subscribed to mailing list.",
+      "email-pending": "Opt-in email already sent for this address - please check your inbox."
+    }
+  },
   "product-card": {
-    "borrow": {
-      "description": "A Vault designed for borrowing against {{token}}."
-    },
-    "multiply": {
-      "description": "A Vault designed for multiple exposure to {{token}}."
+    "borrow": "A Vault designed for borrowing against {{token}}",
+    "multiply": "A Vault designed to multiply your exposure to {{token}}",
+    "borrow-and-multiply": "A vault for both multiplying your exposure or borrowing against {{token}}",
+    "lp-tokens": "A vault for multiplying your exposure to {{token}}",
+    "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
+    "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
+    "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
+    "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
+    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "tags": {
+      "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
+      "staking-rewards": "Staking rewards",
+      "max-exposure": "Max {{token}} exposure"
     }
   },
   "product-card-banner": {
     "with": "With {{value}} {{token}} \uD83D\uDC47",
-    "borrow": {
-      "description": "Borrow up to {{value}} {{token}}"
-    },
+    "borrow": "Borrow up to {{value}} DAI",
+    "multiply": "Get up to {{value}} {{token}} exposure",
+    "earn": "Earn {{value}} {{token}} a year",
+    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+  },
+  "product-page": {
     "multiply": {
-      "description": "Get up to {{value}} {{token}} exposure"
+      "title": "Oasis Multiply",
+      "description": "Get Multiple exposure to your favorite crypto assets. Browse our featured products or select a asset.",
+      "link": "Learn more about Multiply ->"
+    },
+    "borrow": {
+      "title": "Oasis Borrow",
+      "description": "Get Multiply exposure to your favorite crypto assets. Select your Base Asset below. Learn more about Borrow ->",
+      "link": "Learn more about Borrow ->"
+    },
+    "earn": {
+      "title": "Oasis Earn",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "link": "Learn more about Earn ->"
     }
   }
 }

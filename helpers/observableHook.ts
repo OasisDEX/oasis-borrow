@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
 
-type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
+export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
 // In order to infer proper type of observable returned by curry from ramda which uses recursive typing
 // we need to postpone inference.

@@ -19,6 +19,20 @@ const wbtcA = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
+const wbtcB = mockIlkData({
+  token: 'WBTC',
+  ilk: 'WBTC-B',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
+const wbtcC = mockIlkData({
+  token: 'WBTC',
+  ilk: 'WBTC-C',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
 const renbtc = mockIlkData({
   token: 'RENBTC',
   ilk: 'RENBTC-A',
@@ -29,6 +43,13 @@ const renbtc = mockIlkData({
 const ethA = mockIlkData({
   token: 'ETH',
   ilk: 'ETH-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
+const ethB = mockIlkData({
+  token: 'ETH',
+  ilk: 'ETH-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
 })()
@@ -54,6 +75,13 @@ const wsteth = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
+const guni = mockIlkData({
+  token: 'GUNIV3DAIUSDC2',
+  ilk: 'GUNIV3DAIUSDC2-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
@@ -61,93 +89,110 @@ describe('createProductCardsData$', () => {
     expect(state()[0]).to.eql({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
       bannerIcon: '/static/img/tokens/wbtc.png',
+      bannerGif: '/static/img/tokens/wbtc.gif',
       currentCollateralPrice: new BigNumber(550),
       ilk: 'WBTC-A',
       liquidationRatio: new BigNumber(1.4),
       name: 'Wrapped Bitcoin',
       stabilityFee: new BigNumber(0.045),
       token: 'WBTC',
+      isFull: false,
     })
   })
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
 
     expect(landingPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcB.token,
+        ilk: wbtcB.ilk,
+        liquidationRatio: wbtcB.liquidationRatio,
+        stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: false,
       },
       {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
+        token: ethB.token,
+        ilk: ethB.ilk,
+        liquidationRatio: ethB.liquidationRatio,
+        stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
+        bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: false,
       },
       {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
+        token: guni.token,
+        ilk: guni.ilk,
+        liquidationRatio: guni.liquidationRatio,
+        stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
+        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
+        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
+        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+        name: 'GUNIV3 DAI/USDC 0.01%',
+        isFull: false,
       },
     ])
   })
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCardsData({ productCardsData: state() })
+    const multiplyPageData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'Featured',
+    })
 
     expect(multiplyPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcB.token,
+        ilk: wbtcB.ilk,
+        liquidationRatio: wbtcB.liquidationRatio,
+        stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
+        isFull: false,
       },
       {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
+        token: ethB.token,
+        ilk: ethB.ilk,
+        liquidationRatio: ethB.liquidationRatio,
+        stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
+        bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: false,
       },
       {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
+        token: guni.token,
+        ilk: guni.ilk,
+        liquidationRatio: guni.liquidationRatio,
+        stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
+        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
+        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
+        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
+        name: 'GUNIV3 DAI/USDC 0.01%',
+        isFull: false,
       },
     ])
   })
@@ -157,7 +202,10 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const multiplyPageData = multiplyPageCardsData({ productCardsData: state(), token: 'ETH' })
+    const multiplyPageData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'ETH',
+    })
 
     expect(multiplyPageData).to.eql([
       {
@@ -167,8 +215,10 @@ describe('createProductCardsData$', () => {
         stabilityFee: ethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
+        bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: false,
       },
       {
         token: wsteth.token,
@@ -176,40 +226,37 @@ describe('createProductCardsData$', () => {
         liquidationRatio: wsteth.liquidationRatio,
         stabilityFee: wsteth.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/eth.png',
+        bannerIcon: '/static/img/tokens/wstETH.png',
+        bannerGif: '/static/img/tokens/wstETH.gif',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
         name: 'WSTETH',
+        isFull: false,
       },
     ])
   })
 
   it('should return correct borrow page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state() })
+    const borrowPageData = borrowPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'Featured',
+    })
 
     expect(borrowPageData).to.eql([
       {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
+        token: wbtcC.token,
+        ilk: wbtcC.ilk,
+        liquidationRatio: wbtcC.liquidationRatio,
+        stabilityFee: wbtcC.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
-      },
-      {
-        token: ethA.token,
-        ilk: ethA.ilk,
-        liquidationRatio: ethA.liquidationRatio,
-        stabilityFee: ethA.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/eth.png',
-        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-        name: 'Ether',
+        isFull: false,
       },
       {
         token: ethC.token,
@@ -218,8 +265,22 @@ describe('createProductCardsData$', () => {
         stabilityFee: ethC.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/eth.png',
+        bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
+        isFull: false,
+      },
+      {
+        token: linkA.token,
+        ilk: linkA.ilk,
+        liquidationRatio: linkA.liquidationRatio,
+        stabilityFee: linkA.stabilityFee,
+        currentCollateralPrice: new BigNumber('550'),
+        bannerIcon: '/static/img/tokens/link.png',
+        bannerGif: '/static/img/tokens/link.gif',
+        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
+        name: 'Chainlink',
+        isFull: false,
       },
     ])
   })
@@ -231,19 +292,9 @@ describe('createProductCardsData$', () => {
       ),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), token: 'BTC' })
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'BTC' })
 
     expect(borrowPageData).to.eql([
-      {
-        token: wbtcA.token,
-        ilk: wbtcA.ilk,
-        liquidationRatio: wbtcA.liquidationRatio,
-        stabilityFee: wbtcA.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/wbtc.png',
-        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-        name: 'Wrapped Bitcoin',
-      },
       {
         token: renbtc.token,
         ilk: renbtc.ilk,
@@ -251,9 +302,51 @@ describe('createProductCardsData$', () => {
         stabilityFee: renbtc.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         bannerIcon: '/static/img/tokens/renBTC.png',
+        bannerGif: '/static/img/tokens/renBTC.gif',
         background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
         name: 'renBTC',
+        isFull: false,
+      },
+      {
+        token: wbtcA.token,
+        ilk: wbtcA.ilk,
+        liquidationRatio: wbtcA.liquidationRatio,
+        stabilityFee: wbtcA.stabilityFee,
+        currentCollateralPrice: new BigNumber('550'),
+        bannerIcon: '/static/img/tokens/wbtc.png',
+        bannerGif: '/static/img/tokens/wbtc.gif',
+        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+        name: 'Wrapped Bitcoin',
+        isFull: false,
       },
     ])
   })
+
+  it('should custom sort the cards', () => {
+    const state = getStateUnpacker(
+      createProductCardsData$(
+        of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB, wbtcB, wbtcC]),
+        () => mockPriceInfo$(),
+      ),
+    )
+
+    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
+
+    expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
+    expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
+    expect(borrowPageData[2].ilk).to.eql(wsteth.ilk)
+    expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
+
+    const multiplyCardData = multiplyPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'BTC',
+    })
+
+    expect(multiplyCardData[0].ilk).to.eql(wbtcB.ilk)
+    expect(multiplyCardData[1].ilk).to.eql(wbtcA.ilk)
+    expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
+    expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
+  })
+
+  it('does not sort product cards that have no custom ordering')
 })

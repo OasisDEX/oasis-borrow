@@ -9,6 +9,7 @@ import { Background } from 'theme/Background'
 import { BackgroundLight } from 'theme/BackgroundLight'
 import { BackgroundLighter } from 'theme/BackgroundLighter'
 
+import { ProductBackground } from '../theme/ProductBackground'
 import { GenericAnnouncement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
 
@@ -114,6 +115,27 @@ export function LandingPageLayout({ children }: WithChildren) {
   return (
     <>
       {marketingBackgrounds['default']}
+      <WithAnnouncementLayout
+        header={<AppHeader />}
+        footer={<Footer />}
+        showAnnouncement={false}
+        variant="landingContainer"
+        sx={{ position: 'relative' }}
+      >
+        {children}
+      </WithAnnouncementLayout>
+    </>
+  )
+}
+
+export function ProductPagesLayout({ children }: WithChildren) {
+  if (!isAppContextAvailable()) {
+    return null
+  }
+
+  return (
+    <>
+      <ProductBackground />
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}

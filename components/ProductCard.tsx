@@ -1,9 +1,69 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Box, Card, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
+import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
+
+function InactiveCard() {
+  return (
+    <Box sx={fadeInAnimation}>
+      <Card
+        sx={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'primary',
+          position: 'absolute',
+          top: 0,
+          zIndex: 1,
+          opacity: '0.3',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          right: '50%',
+          transform: 'translate(50%, -50%)',
+          zIndex: 2,
+        }}
+      >
+        <Box sx={{ position: 'relative', height: '40px', width: '186px' }}>
+          <Box
+            sx={{
+              backgroundColor: 'primary',
+              height: 'inherit',
+              width: 'inherit',
+              opacity: '0.6',
+              borderRadius: '24px',
+              position: 'absolute',
+              top: '50%',
+              right: '50%',
+              transform: 'translate(50%, -50%)',
+            }}
+          />
+          <Flex
+            sx={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 'inherit',
+              width: 'inherit',
+              position: 'absolute',
+            }}
+          >
+            <Icon name="lock" size="19px" />
+            <Text variant="paragraph2" sx={{ color: 'secondary', fontWeight: 'semiBold', ml: 2 }}>
+              Inactive
+            </Text>
+          </Flex>
+        </Box>
+      </Box>
+    </Box>
+  )
+}
 
 interface ProductCardBannerProps {
   title: string
@@ -12,14 +72,14 @@ interface ProductCardBannerProps {
 
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   const dataContainer = useRef<HTMLDivElement>(null)
-  const [bigContainer, setBigCointainer] = useState(false)
+  const [contentHeight, setContentHeight] = useState(0)
   const size = useWindowSize()
 
   useEffect(() => {
     if (dataContainer.current) {
-      setBigCointainer(dataContainer.current.getBoundingClientRect().height > 75)
+      setContentHeight(dataContainer.current.getBoundingClientRect().height)
     }
-  }, [size])
+  }, [size, description])
 
   return (
     <Box sx={{ position: 'relative', pb: '24px' }}>
@@ -28,7 +88,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: bigContainer ? '116px' : '88px',
+          minHeight: contentHeight > 100 ? '140px' : contentHeight > 75 ? '116px' : '88px',
           border: 'unset',
         }}
       />
@@ -40,16 +100,14 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           top: '19px',
           left: '50%',
           transform: 'translateX(-50%)',
+          width: 'calc(100% - 32px)',
         }}
       >
-        <Flex
-          sx={{ flexDirection: 'column', alignItems: 'center', width: ['240px', '280px'] }}
-          ref={dataContainer}
-        >
+        <Flex sx={{ flexDirection: 'column', alignItems: 'center' }} ref={dataContainer}>
           <Text sx={{ color: 'text.subtitle' }} variant="paragraph2">
             {title}
           </Text>
-          <Text variant="paragraph1" sx={{ textAlign: 'center' }}>
+          <Text variant="paragraph1" sx={{ textAlign: 'center', fontWeight: 'semiBold' }}>
             {description}
           </Text>
         </Flex>
@@ -60,18 +118,22 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
 
 export interface ProductCardProps {
   tokenImage: string
+  tokenGif: string
   title: string
   description: string
   banner: { title: string; description: string }
-  leftSlot: { title: string; value: string }
-  rightSlot: { title: string; value: string }
+  leftSlot: { title: string; value: ReactNode }
+  rightSlot: { title: string; value: ReactNode }
   button: { link: string; text: string }
   background: string
+  isFull: boolean
   floatingLabelText?: string
+  inactive?: boolean
 }
 
 export function ProductCard({
   tokenImage,
+  tokenGif,
   title,
   description,
   banner,
@@ -79,86 +141,126 @@ export function ProductCard({
   rightSlot,
   button,
   background,
+  isFull,
   floatingLabelText,
+  inactive,
 }: ProductCardProps) {
-  return (
-    <Card
-      sx={{
-        background,
-        border: 'unset',
-        p: 4,
-        maxWidth: '378px',
-        minHeight: '608px',
-        position: 'relative',
-      }}
-    >
-      <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-        <Box>
-          {floatingLabelText && (
-            <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-20px' }} />
-          )}
-          <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-            <Image src={tokenImage} sx={{ height: '200px' }} />
-            <Heading
-              variant="header2"
-              as="h3"
-              sx={{ fontSize: '28px', pb: 3, textAlign: 'center' }}
-            >
-              {title}
-            </Heading>
-            <Text
-              sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
-              variant="paragraph3"
-            >
-              {description}
-            </Text>
-          </Flex>
-          <ProductCardBanner {...banner} />
-        </Box>
-        <Box>
-          <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
-            <div>
-              <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                {leftSlot.title}
-              </Text>
-              <Text variant="paragraph1">{leftSlot.value}</Text>
-            </div>
-            <div>
-              <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                {rightSlot.title}
-              </Text>
-              <Text variant="paragraph1" sx={{ textAlign: 'right' }}>
-                {rightSlot.value}
-              </Text>
-            </div>
-          </Flex>
-          <Flex>
-            <AppLink
-              href={button.link}
-              variant="primary"
-              sx={{ width: '100%', fontWeight: 'body', textAlign: 'center' }}
-            >
-              {button.text}
-            </AppLink>
-          </Flex>
-        </Box>
-      </Flex>
-    </Card>
-  )
-}
+  const [hover, setHover] = useState(false)
+  const [clicked, setClicked] = useState(false)
 
-export function ProductCardsLayout(props: { productCards: Array<JSX.Element> }) {
+  const { t } = useTranslation()
+
+  const handleMouseEnter = useCallback(() => setHover(true), [])
+  const handleMouseLeave = useCallback(() => setHover(false), [])
+
+  const handleClick = useCallback(() => setClicked(true), [])
+
   return (
-    <Grid
+    <Box
       sx={{
-        gap: '17px',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(378px, max-content))',
+        position: 'relative',
         width: '100%',
-        boxSizing: 'border-box',
-        justifyContent: 'center',
+        minHeight: '608px',
+        height: '100%',
       }}
     >
-      {props.productCards}
-    </Grid>
+      <Card
+        sx={{
+          background,
+          border: 'unset',
+          p: 4,
+          height: '100%',
+          ...fadeInAnimation,
+        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+          <Box>
+            {floatingLabelText && (
+              <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
+            )}
+            <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
+              <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
+              <Heading
+                variant="header2"
+                as="h3"
+                sx={{ fontSize: '28px', pb: 3, textAlign: 'center', fontWeight: 'semiBold' }}
+              >
+                {title}
+              </Heading>
+              <Text
+                sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
+                variant="paragraph3"
+              >
+                {description}
+              </Text>
+            </Flex>
+            <ProductCardBanner {...banner} />
+          </Box>
+          <Box>
+            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
+              <div>
+                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                  {leftSlot.title}
+                </Text>
+                <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+                  {leftSlot.value}
+                </Text>
+              </div>
+              <div>
+                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                  {rightSlot.title}
+                </Text>
+                <Text variant="paragraph1" sx={{ textAlign: 'right', fontWeight: 'semiBold' }}>
+                  {rightSlot.value}
+                </Text>
+              </div>
+            </Flex>
+            <Flex>
+              <AppLink
+                href={button.link}
+                disabled={isFull}
+                sx={{ width: '100%' }}
+                onClick={handleClick}
+              >
+                <Button
+                  variant="primary"
+                  sx={{
+                    width: '100%',
+                    height: '54px',
+                    fontWeight: 'semiBold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+                    backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                    '&:hover': {
+                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                      transition: '0.2s ease-in',
+                      backgroundColor: isFull ? '#80818A' : 'primary',
+                      cursor: isFull ? 'default' : 'pointer',
+                    },
+                  }}
+                >
+                  {isFull ? t('full') : !clicked ? button.text : ''}
+                  {clicked && (
+                    <Spinner
+                      variant="styles.spinner.medium"
+                      size={20}
+                      sx={{
+                        color: 'white',
+                        boxSizing: 'content-box',
+                      }}
+                    />
+                  )}
+                </Button>
+              </AppLink>
+            </Flex>
+          </Box>
+        </Flex>
+      </Card>
+      {inactive && <InactiveCard />}
+    </Box>
   )
 }

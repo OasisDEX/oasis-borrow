@@ -17,11 +17,11 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
+import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { ChevronUpDown } from './ChevronUpDown'
+import { AssetsSelect } from './AssetsSelect'
 import { useSharedUI } from './SharedUIProvider'
-import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -90,83 +90,138 @@ export function BackArrow() {
   )
 }
 
-function ConnectedHeader() {
+interface UserAccountProps {
+  position: 'fixed' | 'relative'
+}
+
+function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+
+  return (
+    <Flex
+      sx={{
+        position,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        bg: ['rgba(255,255,255,0.9)', 'transparent'],
+        p: [3, 0],
+        justifyContent: 'space-between',
+        gap: 2,
+        zIndex: 3,
+      }}
+    >
+      <Flex>
+        <UserSettingsButton />
+        <AccountButton />
+      </Flex>
+      {vaultFormToggleTitle && (
+        <Box sx={{ display: ['block', 'none'] }}>
+          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+            <Box>{vaultFormToggleTitle}</Box>
+          </Button>
+        </Box>
+      )}
+    </Flex>
+  )
+}
+
+function navLinkColor(isActive: boolean) {
+  return isActive ? 'primary' : 'lavender'
+}
+
+function ConnectedHeader() {
+  const { pathname } = useRouter()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
+  const earnEnabled = useFeatureToggle('EarnProduct')
 
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
-  const firstCDP = numberOfVaults ? numberOfVaults === 0 : undefined
 
   return (
-    <BasicHeader
-      sx={{
-        position: 'relative',
-        alignItems: 'center',
-        zIndex: 1,
-      }}
-      variant="appContainer"
-    >
-      <>
-        <Flex
+    <>
+      <Box sx={{ display: ['none', 'block'] }}>
+        <BasicHeader
           sx={{
+            position: 'relative',
             alignItems: 'center',
-            justifyContent: ['space-between', 'flex-start'],
-            width: ['100%', 'auto'],
+            zIndex: 1,
           }}
+          variant="appContainer"
         >
-          <Logo />
-          <Flex sx={{ ml: 5, zIndex: 1 }}>
+          <>
+            <Flex
+              sx={{
+                alignItems: 'center',
+                justifyContent: ['space-between', 'flex-start'],
+                width: ['100%', 'auto'],
+              }}
+            >
+              <Logo />
+              <Flex sx={{ ml: 5, zIndex: 1 }}>
+                <AppLink
+                  variant="links.navHeader"
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
+                  href={`/owner/${(context as ContextConnected)?.account}`}
+                  onClick={() => trackingEvents.yourVaults()}
+                >
+                  {t('your-vaults')}{' '}
+                  {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+                </AppLink>
+                <AppLink
+                  variant="links.navHeader"
+                  href={HEADER_LINKS.multiply}
+                  sx={{
+                    mr: 4,
+                    color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)),
+                  }}
+                >
+                  {t('nav.multiply')}
+                </AppLink>
+                <AppLink
+                  variant="links.navHeader"
+                  href={HEADER_LINKS.borrow}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+                >
+                  {t('nav.borrow')}
+                </AppLink>
+                {earnEnabled && (
+                  <AppLink
+                    variant="links.navHeader"
+                    href={HEADER_LINKS.earn}
+                    sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                  >
+                    {t('nav.earn')}
+                  </AppLink>
+                )}
+                <AssetsDropdown />
+              </Flex>
+            </Flex>
+            <UserAccount position="relative" />
+          </>
+        </BasicHeader>
+      </Box>
+      <Box sx={{ display: ['block', 'none'], mb: 5 }}>
+        <BasicHeader variant="appContainer">
+          <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Logo />
             <AppLink
               variant="nav"
-              sx={{ mr: 4 }}
+              sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
               href={`/owner/${(context as ContextConnected)?.account}`}
               onClick={() => trackingEvents.yourVaults()}
             >
               {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
             </AppLink>
-            <AppLink
-              variant="nav"
-              sx={{ mr: [0, 4] }}
-              href="/vaults/list"
-              onClick={() => trackingEvents.createNewVault(firstCDP)}
-            >
-              <Box sx={{ display: ['none', 'block'] }}>{t('open-new-vault')}</Box>
-              <Box sx={{ display: ['block', 'none'], fontSize: '0px' }}>
-                <Icon name="plus_header" size="auto" width="18px" height="18px" />
-              </Box>
-            </AppLink>
           </Flex>
-        </Flex>
-        <Flex
-          sx={{
-            position: ['fixed', 'relative'],
-            bottom: 0,
-            left: 0,
-            right: 0,
-            bg: ['rgba(255,255,255,0.9)', 'transparent'],
-            p: [3, 0],
-            justifyContent: 'space-between',
-            gap: 2,
-          }}
-        >
-          <Flex>
-            <UserSettingsButton />
-            <AccountButton />
-          </Flex>
-          {vaultFormToggleTitle && (
-            <Box sx={{ display: ['flex', 'none'] }}>
-              <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
-                <Box>{vaultFormToggleTitle}</Box>
-              </Button>
-            </Box>
-          )}
-        </Flex>
-      </>
-    </BasicHeader>
+          <MobileMenu />
+          <UserAccount position="fixed" />
+        </BasicHeader>
+      </Box>
+    </>
   )
 }
 
@@ -176,6 +231,7 @@ const HEADER_LINKS = {
   blog: 'https://blog.oasis.app',
   multiply: `/multiply`,
   borrow: `/borrow`,
+  earn: '/earn',
 }
 
 function HeaderDropdown({
@@ -186,8 +242,8 @@ function HeaderDropdown({
   return (
     <Box
       sx={{
+        display: 'flex',
         position: 'relative',
-        top: '-1px',
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
@@ -207,9 +263,9 @@ function HeaderDropdown({
         <Card
           sx={{
             borderRadius: 'medium',
-            minWidth: 6,
+            width: 'max-content',
             pl: 3,
-            pr: 4,
+            pr: 3,
             py: 3,
             boxShadow: 'cardLanding',
             border: 'none',
@@ -224,6 +280,30 @@ function HeaderDropdown({
         </Card>
       </Box>
     </Box>
+  )
+}
+
+function AssetsDropdown() {
+  const { t } = useTranslation()
+  return (
+    <HeaderDropdown title={t('nav.assets')}>
+      <Grid
+        columns="minmax(50px, auto) minmax(50px, auto)"
+        sx={{ columnGap: '48px', rowGap: '24px' }}
+      >
+        {LANDING_PILLS.map((asset) => (
+          <AppLink
+            href={asset.link}
+            key={asset.label}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            variant="links.nav"
+          >
+            <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
+            <Text>{asset.label}</Text>
+          </AppLink>
+        ))}
+      </Grid>
+    </HeaderDropdown>
   )
 }
 
@@ -250,120 +330,53 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-const LangSelectMobileComponents: Partial<SelectComponents<{
-  value: string
-  label: string
-}>> = {
-  IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => (
-    <Flex sx={{ color: 'primary', fontWeight: 'body' }}>{children}</Flex>
-  ),
-  SingleValue: ({ children }) => <Box>{children}</Box>,
-  Option: ({ children, innerProps }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        py: 2,
-        px: 3,
-        cursor: 'pointer',
-        '&:hover': {
-          bg: 'background',
-        },
-      }}
-    >
-      {children}
-    </Box>
-  ),
-  Menu: ({ innerProps, children }) => (
-    <Card
-      {...innerProps}
-      sx={{
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        border: 'none',
-        p: 0,
-        position: 'relative',
-        top: '8px',
-      }}
-    >
-      {children}
-    </Card>
-  ),
-  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        cursor: 'pointer',
-        variant: 'links.nav',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 3,
-        boxShadow: 'table',
-        borderRadius: 'medium',
-        py: '8px',
-        px: '16px',
-      }}
-    >
-      {children}
-      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
-    </Box>
-  ),
-}
-
-const MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES = [
-  {
-    titleKey: 'nav.products',
-    links: [
-      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-      { labelKey: 'nav.oasis-borrow' },
-    ],
-  },
-  {
-    titleKey: 'nav.resources',
-    links: [
-      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
-    ],
-  },
-]
-
-const MOBILE_MENU_SECTIONS = [
-  {
-    titleKey: 'nav.products',
-    links: [
-      { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-      { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-      { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-    ],
-  },
-  {
-    titleKey: 'nav.resources',
-    links: [
-      { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-      { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
-    ],
-  },
-]
-
 function MobileMenu() {
   const { t } = useTranslation()
-  const assetLandingPagesFeatureEnabled = useFeatureToggle('AssetLandingPages')
+  const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
+  const { context$ } = useAppContext()
+  const context = useObservable(context$)
+  const earnProductEnabled = useFeatureToggle('EarnProduct')
+  const isConnected = !!(context as ContextConnected)?.account
 
-  const mobileMenuEntries = assetLandingPagesFeatureEnabled
-    ? MOBILE_MENU_SECTIONS
-    : MOBILE_MENU_SECTIONS_PRE_ASSET_LANDING_PAGES
+  const MOBILE_MENU_DISCONNECTED_SECTIONS = [
+    {
+      titleKey: 'nav.products',
+      links: [
+        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+        { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+      ],
+    },
+    {
+      titleKey: 'nav.resources',
+      links: [
+        { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
+        { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+      ],
+    },
+  ]
+
+  const MOBILE_MENU_CONNECTED_SECTIONS = [
+    {
+      titleKey: 'nav.products',
+      links: [
+        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
+        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+      ],
+    },
+  ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
+
   return (
     <>
       {isOpen && (
         <Global
           styles={() => ({
             body: {
-              overflow: 'hidden',
-              height: '100vh',
               position: 'fixed',
               width: '100vw',
             },
@@ -379,43 +392,88 @@ function MobileMenu() {
           right: 0,
           zIndex: 'mobileMenu',
           transition: 'opacity ease-in 0.25s',
-          height: isOpen ? '100vh' : 0,
+          height: '100%',
+          overflowY: 'auto',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'unset' : 'none',
-          overflow: 'hidden',
           p: 5,
         }}
       >
         <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {mobileMenuEntries.map((section) => (
-            <Grid key={section.titleKey}>
-              <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-              {section.links.map((link) =>
-                link.url ? (
-                  <AppLink
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ textDecoration: 'none' }}
-                    href={link.url}
-                    onClick={closeMenu}
-                  >
-                    {t(link.labelKey)}
-                  </AppLink>
-                ) : (
-                  <Text
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ fontWeight: 'semiBold' }}
-                  >
-                    {t(link.labelKey)}
-                  </Text>
-                ),
-              )}
-            </Grid>
-          ))}
+          {!isConnected &&
+            MOBILE_MENU_DISCONNECTED_SECTIONS.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
+          {isConnected &&
+            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
+              <Grid key={section.titleKey}>
+                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
+                {section.links.map((link) =>
+                  link.url ? (
+                    <AppLink
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{
+                        textDecoration: 'none',
+                        color: navLinkColor(pathname.includes(link.url)),
+                      }}
+                      href={link.url}
+                      onClick={closeMenu}
+                    >
+                      {t(link.labelKey)}
+                    </AppLink>
+                  ) : (
+                    <Text
+                      key={link.labelKey}
+                      variant="text.paragraph1"
+                      sx={{ fontWeight: 'semiBold' }}
+                    >
+                      {t(link.labelKey)}
+                    </Text>
+                  ),
+                )}
+              </Grid>
+            ))}
+          <Grid>
+            <Text variant="links.navHeader">{t('nav.assets')}</Text>
+            <AssetsSelect
+              options={LANDING_PILLS.map((asset) => ({
+                label: asset.label,
+                icon: asset.icon,
+                link: asset.link,
+              }))}
+              handleChange={closeMenu}
+            />
+          </Grid>
           <Grid>
             <Text variant="links.navHeader">{t('languages')}</Text>
-            <LanguageSelect components={LangSelectMobileComponents} />
+            <LanguageSelect />
           </Grid>
         </Grid>
       </Box>
@@ -431,53 +489,39 @@ function MobileMenu() {
 
 function DisconnectedHeader() {
   const { t } = useTranslation()
-  const assetLandingPagesEnabled = useFeatureToggle('AssetLandingPages')
-  const menuBarLandingPagesDisabled = (
-    <>
-      <HeaderDropdown title={t('nav.products')}>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
-          {t('nav.dai-wallet')}
-        </AppLink>
-        <Text variant="links.nav" sx={{ cursor: 'default', ':hover': { color: 'primary' } }}>
-          {t('nav.borrow')}
-        </Text>
-      </HeaderDropdown>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS['learn']}>
-        {t('nav.learn')}
-      </AppLink>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS['blog']}>
-        {t('nav.blog')}
-      </AppLink>
-    </>
-  )
-  const menuBarLandingPagesEnabled = (
-    <>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS.multiply}>
-        {t('nav.multiply')}
-      </AppLink>
-      <AppLink variant="links.navHeader" href={HEADER_LINKS.borrow}>
-        {t('nav.borrow')}
-      </AppLink>
-      <HeaderDropdown title={t('nav.more')}>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['dai-wallet']}>
-          {t('nav.dai-wallet')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['learn']}>
-          {t('nav.learn')}
-        </AppLink>
-        <AppLink variant="links.nav" sx={{ fontWeight: 'body' }} href={HEADER_LINKS['blog']}>
-          {t('nav.blog')}
-        </AppLink>
-      </HeaderDropdown>
-    </>
-  )
+  const { pathname } = useRouter()
+  const earnEnabled = useFeatureToggle('EarnProduct')
+
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader variant="appContainer">
           <Grid sx={{ alignItems: 'center', columnGap: [4, 4, 5], gridAutoFlow: 'column', mr: 3 }}>
             <Logo />
-            {assetLandingPagesEnabled ? menuBarLandingPagesEnabled : menuBarLandingPagesDisabled}
+            <AppLink
+              variant="links.navHeader"
+              href={HEADER_LINKS.multiply}
+              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
+            >
+              {t('nav.multiply')}
+            </AppLink>
+            <AppLink
+              variant="links.navHeader"
+              href={HEADER_LINKS.borrow}
+              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+            >
+              {t('nav.borrow')}
+            </AppLink>
+            {earnEnabled && (
+              <AppLink
+                variant="links.navHeader"
+                href={HEADER_LINKS.earn}
+                sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+              >
+                {t('nav.earn')}
+              </AppLink>
+            )}
+            <AssetsDropdown />
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
             <AppLink

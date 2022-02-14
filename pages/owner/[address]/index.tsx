@@ -12,6 +12,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return {
+    props: {
+      ...(await serverSideTranslations(ctx.locale!, ['common'])),
+      address: ctx.query?.address || null,
+    },
+  }
+}
+
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
@@ -32,15 +41,6 @@ function Summary({ address }: { address: string }) {
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
-}
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  return {
-    props: {
-      ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      address: ctx.query?.address || null,
-    },
-  }
 }
 
 export default function VaultsSummary({ address }: { address: string }) {

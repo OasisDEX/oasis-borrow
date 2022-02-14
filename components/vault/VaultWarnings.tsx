@@ -38,6 +38,8 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('vault-will-be-at-risk-level-warning-at-next-price')
       case 'highSlippage':
         return t('user-settings.slippage-limit.warnings.high-slippage')
+      case 'customSlippageOverridden':
+        return t('guni-slippage-overridden')
       default:
         throw new UnreachableCaseError(message)
     }

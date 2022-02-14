@@ -18,7 +18,7 @@ import { useTheme } from '../../theme/useThemeUI'
 import { VaultBannersState } from './vaultsBanners'
 
 type VaultBannerProps = {
-  status: JSX.Element
+  status?: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
 }
@@ -52,7 +52,7 @@ export function VaultBanner({
       {isVisible && (
         <Banner close={() => setIsVisible(false)}>
           <Flex sx={{ py: 2, pr: 5 }}>
-            <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>
+            {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
               <Heading as="h3" sx={{ color }}>
                 {header}

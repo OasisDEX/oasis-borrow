@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
+import { NewsletterSection } from 'features/newsletter/NewsletterView'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
@@ -8,12 +9,20 @@ import getConfig from 'next/config'
 import React from 'react'
 import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
 
+import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
 const {
   publicRuntimeConfig: { buildHash, buildDate, showBuildInfo, apiHost },
 } = getConfig()
+
+const ROUTES = {
+  CONTACT: `${apiHost}/daiwallet/contact`,
+  SUPPORT: '/support',
+  TWITTER: 'https://twitter.com/oasisdotapp',
+  DISCORD: 'https://discord.gg/Kc2bBB59GC',
+}
 
 const FOOTER_SECTIONS = [
   {
@@ -47,7 +56,8 @@ const FOOTER_SECTIONS = [
         url: `${apiHost}/daiwallet`,
         target: '_self',
       },
-      { labelKey: 'nav.borrow', url: '/' },
+      { labelKey: 'nav.borrow', url: '/borrow' },
+      { labelKey: 'nav.multiply', url: '/multiply' },
     ],
   },
 ]
@@ -123,6 +133,7 @@ export function TemporaryFooter() {
             <Link
               href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
               target="_blank"
+              rel="noopener noreferrer"
             >
               {commit}
             </Link>
@@ -134,35 +145,46 @@ export function TemporaryFooter() {
   )
 }
 
+function SocialWithLogo() {
+  return (
+    <Grid gap={3}>
+      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} sx={{ height: '27px' }} />
+      <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
+        <AppLink href={ROUTES.TWITTER}>
+          <Icon name="twitter" size="auto" width="18px" height="16px" />
+        </AppLink>
+        <AppLink href={ROUTES.DISCORD} sx={{ mx: 3 }}>
+          <Icon name="discord" size="auto" width="20px" height="23px" />
+        </AppLink>
+        <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
+          <Icon name="github" size="auto" width="21px" />
+        </AppLink>
+      </Flex>
+      <Flex sx={{ justifyContent: ['center', 'flex-start'] }}>
+        <LanguageSelect components={LangSelectComponents} />
+      </Flex>
+    </Grid>
+  )
+}
+
 export function Footer() {
   const { t } = useTranslation()
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '824px', mb: 5, pb: 4, pt: 2 }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 4, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,
             alignItems: 'flex-start',
+            justifyItems: ['flex-start', 'center'],
           }}
-          columns={[2, '150px 1fr 1fr 1fr']}
+          columns={[2, '150px 1fr 1fr 1fr', '150px 1fr 1fr 1fr 378px']}
           gap={[4, null, 5]}
         >
-          <Grid gap={3}>
-            <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} />
-            <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
-              <AppLink href="https://twitter.com/oasisdotapp">
-                <Icon name="twitter" size="auto" width="18px" height="16px" />
-              </AppLink>
-              <AppLink href="https://discord.gg/oasisapp" sx={{ mx: 3 }}>
-                <Icon name="discord" size="auto" width="20px" height="23px" />
-              </AppLink>
-              <AppLink href="https://github.com/OasisDEX/oasis-borrow/">
-                <Icon name="github" size="auto" width="21px" />
-              </AppLink>
-            </Flex>
-            <LanguageSelect components={LangSelectComponents} />
-          </Grid>
+          <Box sx={{ display: ['none', 'block'] }}>
+            <SocialWithLogo />
+          </Box>
           {FOOTER_SECTIONS.map(({ titleKey, links }) => (
             <Grid key={titleKey} as="ul" pl={0}>
               <Text sx={{ fontSize: 4, fontWeight: 'semiBold' }}>{t(titleKey)}</Text>
@@ -175,9 +197,20 @@ export function Footer() {
               ))}
             </Grid>
           ))}
+
+          <Box sx={{ display: ['none', 'none', 'flex'], width: '100%' }}>
+            <NewsletterSection small />
+          </Box>
         </Grid>
+        <Flex sx={{ display: ['flex', 'flex', 'none'], mt: 5 }}>
+          <NewsletterSection small />
+        </Flex>
+        <Flex sx={{ justifyContent: 'center', pt: 5, display: ['flex', 'none'] }}>
+          <SocialWithLogo />
+        </Flex>
       </Container>
       <TemporaryFooter />
+      <FooterBackground />
     </Box>
   )
 }

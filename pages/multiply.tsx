@@ -1,7 +1,9 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-import { LandingPageLayout } from '../components/Layouts'
+import { WithConnection } from '../components/connectWallet/ConnectWallet'
+import { ProductPagesLayout } from '../components/Layouts'
+import { MultiplyView } from '../features/multiply/MultiplyView'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -9,9 +11,13 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function Multiply() {
-  return <>hello from multiply page</>
+export default function MultiplyPage() {
+  return (
+    <WithConnection>
+      <MultiplyView />
+    </WithConnection>
+  )
 }
 
-Multiply.layout = LandingPageLayout
-Multiply.theme = 'Landing'
+MultiplyPage.layout = ProductPagesLayout
+MultiplyPage.theme = 'Landing'

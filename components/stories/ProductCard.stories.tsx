@@ -1,4 +1,5 @@
 import { useTranslation } from 'next-i18next'
+import EthGif from 'public/static/img/tokens/eth.gif'
 import EthImage from 'public/static/img/tokens/eth.png'
 import React from 'react'
 
@@ -10,11 +11,12 @@ export const Borrow = () => {
   return (
     <ProductCard
       tokenImage={EthImage}
+      tokenGif={EthGif}
       title="ETH-A"
-      description={t(`product-card.borrow.description`, { token: 'ETH' })}
+      description={t(`product-card.borrow`, { token: 'ETH' })}
       banner={{
         title: t('product-card-banner.with', { value: '100', token: 'ETH' }),
-        description: t(`product-card-banner.borrow.description`, {
+        description: t(`product-card-banner.borrow`, {
           value: '280,000',
         }),
       }}
@@ -22,6 +24,7 @@ export const Borrow = () => {
       rightSlot={{ title: t(t('system.stability-fee')), value: '2.0%' }}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open/ETH-A', text: t('nav.borrow') }}
+      isFull={false}
     />
   )
 }
@@ -32,11 +35,12 @@ export const Multiply = () => {
   return (
     <ProductCard
       tokenImage={EthImage}
+      tokenGif={EthGif}
       title="ETH-A"
-      description={t(`product-card.multiply.description`, { token: 'ETH' })}
+      description={t(`product-card.multiply`, { token: 'ETH' })}
       banner={{
         title: t('product-card-banner.with', { value: '100', token: 'ETH' }),
-        description: t(`product-card-banner.multiply.description`, {
+        description: t(`product-card-banner.multiply`, {
           value: '330',
           token: 'ETH',
         }),
@@ -46,6 +50,7 @@ export const Multiply = () => {
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open-multiply/ETH-A', text: t('nav.multiply') }}
       floatingLabelText="Get up to 3.3x ETH exposure"
+      isFull={false}
     />
   )
 }
