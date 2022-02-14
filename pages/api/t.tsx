@@ -1,3 +1,4 @@
+import { withSentry } from '@sentry/nextjs'
 import { enableMixpanelDevelopmentMode, MixpanelDevelopmentType } from 'analytics/analytics'
 import { config } from 'analytics/mixpanel'
 import Mixpanel from 'mixpanel'
@@ -8,7 +9,7 @@ let mixpanel: MixpanelType = Mixpanel.init(config.mixpanel.token, config.mixpane
 
 mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
-export default async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
+const handler = async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
   try {
     const { eventName, eventBody, distinctId } = req.body
 
@@ -23,3 +24,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse<{ statu
     res.json({ status: 500 })
   }
 }
+
+export default withSentry(handler)

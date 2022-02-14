@@ -8,11 +8,12 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
+const { withSentryConfig } = require('@sentry/nextjs')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
 
-module.exports = withBundleAnalyzer(
+const conf = withBundleAnalyzer(
   withPWA(
     withMDX(
       withSass({
@@ -115,3 +116,5 @@ module.exports = withBundleAnalyzer(
     ),
   ),
 )
+
+module.exports = withSentryConfig(conf) // sentry needs to be last for accurate sourcemaps
