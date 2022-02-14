@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
 import { CallDef } from '../../../../../blockchain/calls/callsHelpers'
-import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions'
+import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { getToken } from '../../../../../blockchain/tokensMetadata'
 import { Vault } from '../../../../../blockchain/vaults'

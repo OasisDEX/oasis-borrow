@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs'
 
-import { openGuniMultiplyVault } from '../../../../../blockchain/calls/proxyActions'
+import { openGuniMultiplyVault } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from '../../../../../components/AppContext'
 import { OAZO_LOWER_FEE, SLIPPAGE } from '../../../../../helpers/multiply/calculations'

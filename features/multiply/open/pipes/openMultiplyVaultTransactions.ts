@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
-import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions'
+import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'

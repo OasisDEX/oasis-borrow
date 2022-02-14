@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { CallDef } from 'blockchain/calls/callsHelpers'
-import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions'
+import { openGuniMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { amountToWei } from 'blockchain/utils'
 import { TxHelpers } from 'components/AppContext'
