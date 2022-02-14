@@ -10,6 +10,7 @@ import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
+import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
@@ -122,6 +123,10 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    mainnetAddresses.PROXY_ACTIONS_CHARTER,
+  ),
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
   serviceRegistry: '0x', // TODO: add address
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
@@ -189,6 +194,10 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    kovanAddresses.PROXY_ACTIONS_CHARTER,
+  ),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -251,6 +260,10 @@ const goerli: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    goerliAddresses.PROXY_ACTIONS_CHARTER,
+  ),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x24E54706B100e2061Ed67fAe6894791ec421B421',

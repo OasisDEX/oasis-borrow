@@ -5,11 +5,16 @@ import { Flex, Grid } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardsFilter } from '../../components/ProductCardsFilter'
+import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../helpers/observableHook'
-import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import {
+  borrowPageCardsData,
+  productCardsConfig,
+  ProductLandingPagesFiltersKeys,
+} from '../../helpers/productCards'
 
 export function BorrowView() {
   const { t } = useTranslation()
@@ -23,7 +28,7 @@ export function BorrowView() {
       sx={{
         flex: 1,
         position: 'relative',
-        mb: ['123px', '343px'],
+        mb: ['123px', '187px'],
       }}
     >
       <ProductHeader
@@ -46,13 +51,17 @@ export function BorrowView() {
         >
           {([productCardsData]) => (
             <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
-              {(cardsFilter) => (
-                <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
-                  {borrowPageCardsData({ productCardsData, cardsFilter }).map((cardData) => (
-                    <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
-                  ))}
-                </Grid>
-              )}
+              {(cardsFilter: ProductLandingPagesFiltersKeys) => {
+                const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
+
+                return (
+                  <ProductCardsWrapper>
+                    {filteredCards.map((cardData) => (
+                      <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
+                    ))}
+                  </ProductCardsWrapper>
+                )
+              }}
             </ProductCardsFilter>
           )}
         </WithLoadingIndicator>

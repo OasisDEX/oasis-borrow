@@ -33,7 +33,8 @@ import {
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+  withdrawPaybackDepositGenerateLogicFactory,
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
@@ -59,14 +60,11 @@ import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
-import { createExchangeQuote$ } from 'features/exchange/exchange'
+import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
-import { createFeaturedIlks$ } from 'features/landing/featuredIlksData'
-import { createLanding$ } from 'features/landing/landing'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
-import { createOpenVaultOverview$ } from 'features/openVaultOverview/openVaultData'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
@@ -97,6 +95,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
+import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -396,7 +395,25 @@ export function setupAppContext() {
   )
 
   const exchangeQuote$ = memoize(
-    curry(createExchangeQuote$)(context$),
+    (
+      token: string,
+      slippage: BigNumber,
+      amount: BigNumber,
+      action: ExchangeAction,
+      exchangeType: ExchangeType,
+    ) => createExchangeQuote$(context$, undefined, token, slippage, amount, action, exchangeType),
+    (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
+      `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
+  )
+
+  const psmExchangeQuote$ = memoize(
+    (
+      token: string,
+      slippage: BigNumber,
+      amount: BigNumber,
+      action: ExchangeAction,
+      exchangeType: ExchangeType,
+    ) => createExchangeQuote$(context$, 'PSM', token, slippage, amount, action, exchangeType),
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
@@ -431,7 +448,7 @@ export function setupAppContext() {
       balanceInfo$,
       ilks$,
       ilkData$,
-      exchangeQuote$,
+      psmExchangeQuote$,
       onEveryBlock$,
       addGasEstimation$,
       ilk,
@@ -454,6 +471,7 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
+        withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         id,
       ),
     bigNumberTostring,
@@ -506,7 +524,7 @@ export function setupAppContext() {
         balanceInfo$,
         ilkData$,
         vault$,
-        exchangeQuote$,
+        psmExchangeQuote$,
         addGasEstimation$,
         getProportions$,
         vaultMultiplyHistory$,
@@ -530,12 +548,9 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const featuredIlks$ = createFeaturedIlks$(ilkDataList$)
-
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
 
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
-  const landing$ = curry(createLanding$)(ilkDataList$, featuredIlks$)
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -560,8 +575,6 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const openVaultOverview$ = createOpenVaultOverview$(ilksWithBalance$)
-
   const uiChanges = createUIChangesSubject()
 
   return {
@@ -578,7 +591,6 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$,
-    landing$,
     openVault$,
     manageVault$,
     manageMultiplyVault$,
@@ -594,7 +606,6 @@ export function setupAppContext() {
     collateralPrices$,
     termsAcceptance$,
     reclaimCollateral$,
-    openVaultOverview$,
     openMultiplyVault$,
     generalManageVault$,
     userSettings$,

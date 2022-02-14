@@ -15,11 +15,6 @@ export const LANDING_PILLS = [
     link: '/asset/dai',
   },
   {
-    icon: 'usdc_circle_color',
-    label: 'USDC',
-    link: '/asset/usdc',
-  },
-  {
     icon: 'uni_lp_circle_color',
     label: 'UNI LP',
     link: '/asset/lp-token',

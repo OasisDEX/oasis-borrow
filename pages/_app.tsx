@@ -51,6 +51,7 @@ const globalStyles = `
 
   html {
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
 
   body {

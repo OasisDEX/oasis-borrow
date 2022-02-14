@@ -21,7 +21,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 export default function Vault({ id }: { id: string }) {
-  console.log('rendering index')
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 

@@ -3,16 +3,26 @@ import { AppLayout } from 'components/Layouts'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
-import { GetServerSidePropsContext } from 'next'
+import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+import { supportedMultiplyIlks } from '../../../helpers/productCards'
+
+export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
+  const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
+  return {
+    paths,
+    fallback: true,
+  }
+}
+
+export async function getStaticProps(ctx: GetServerSidePropsContext & { params: { ilk: string } }) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      ilk: ctx.query.ilk || null,
+      ilk: ctx.params.ilk || null,
     },
   }
 }

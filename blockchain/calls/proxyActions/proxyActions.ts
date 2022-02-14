@@ -4,7 +4,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
-import { amountToWad, amountToWei, amountToWeiRoundDown } from 'blockchain/utils'
+import { amountToWad, amountToWei } from 'blockchain/utils'
 import { ExchangeAction } from 'features/exchange/exchange'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -15,7 +15,9 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
-import { TxMetaKind } from './txMeta'
+import { TxMetaKind } from '../txMeta'
+import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -31,98 +33,88 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
+  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
 ) {
-  const { dssProxyActions, dssCdpManager, mcdJoinDai, joins, contract } = context
-  const { id, token, withdrawAmount, paybackAmount, ilk, shouldPaybackAll } = data
+  const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
       if (shouldPaybackAll) {
-        return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeETH(
-          dssCdpManager.address,
-          joins[ilk],
-          mcdJoinDai.address,
-          id.toString(),
-          amountToWei(withdrawAmount, token).toFixed(0),
-        )
+        return proxyActionsSmartContractWrapper.wipeAllAndFreeETH(context, data)
       }
-
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeETH(
-        dssCdpManager.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-        amountToWei(paybackAmount, 'DAI').toFixed(0),
-      )
+      return proxyActionsSmartContractWrapper.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAllAndFreeGem(
-        dssCdpManager.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-      )
+      return proxyActionsSmartContractWrapper.wipeAllAndFreeGem(context, data)
     }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.wipeAndFreeGem(
-      dssCdpManager.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(withdrawAmount, token).toFixed(0),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
-    )
+    return proxyActionsSmartContractWrapper.wipeAndFreeGem(context, data)
   }
 
   if (withdrawAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.freeETH(
-        dssCdpManager.address,
-        joins[ilk],
-        id.toString(),
-        amountToWei(withdrawAmount, token).toFixed(0),
-      )
+      return proxyActionsSmartContractWrapper.freeETH(context, data)
     }
-    return contract<DssProxyActions>(dssProxyActions).methods.freeGem(
-      dssCdpManager.address,
-      joins[ilk],
-      id.toString(),
-      amountToWeiRoundDown(withdrawAmount, token).toFixed(0),
-    )
+    return proxyActionsSmartContractWrapper.freeGem(context, data)
   }
 
   if (paybackAmount.gt(zero)) {
     if (shouldPaybackAll) {
-      return contract<DssProxyActions>(dssProxyActions).methods.wipeAll(
-        dssCdpManager.address,
-        mcdJoinDai.address,
-        id.toString(),
-      )
+      return proxyActionsSmartContractWrapper.wipeAll(context, data)
     }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.wipe(
-      dssCdpManager.address,
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(paybackAmount, 'DAI').toFixed(0),
-    )
+    return proxyActionsSmartContractWrapper.wipe(context, data)
   }
 
   // would be nice to remove this for Unreachable error case in the future
   throw new Error('Could not make correct proxyActions call')
 }
 
-export const withdrawAndPayback: TransactionDef<WithdrawAndPaybackData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => {
-    const { dssProxyActions } = context
-    return [dssProxyActions.address, getWithdrawAndPaybackCallData(data, context).encodeABI()]
-  },
+export interface WithdrawPaybackDepositGenerateLogicInterface {
+  withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
+  depositAndGenerate: TransactionDef<DepositAndGenerateData>
+}
+
+export function withdrawPaybackDepositGenerateLogicFactory(
+  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
+): WithdrawPaybackDepositGenerateLogicInterface {
+  return {
+    withdrawAndPayback: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getWithdrawAndPaybackCallData(
+            data,
+            context,
+            proxyActionsSmartContractWrapper,
+          ).encodeABI(),
+        ]
+      },
+    },
+    depositAndGenerate: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getDepositAndGenerateCallData(
+            data,
+            context,
+            proxyActionsSmartContractWrapper,
+          ).encodeABI(),
+        ]
+      },
+      options: ({ token, depositAmount }) =>
+        token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    },
+  }
 }
 
 export type DepositAndGenerateData = {
@@ -135,70 +127,30 @@ export type DepositAndGenerateData = {
   proxyAddress: string
 }
 
-function getDepositAndGenerateCallData(data: DepositAndGenerateData, context: ContextConnected) {
-  const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
-  const { id, token, depositAmount, generateAmount, ilk } = data
+export function getDepositAndGenerateCallData(
+  data: DepositAndGenerateData,
+  context: ContextConnected,
+  proxyActionsContract: DssProxyActionsSmartContractWrapperInterface,
+) {
+  const { token, depositAmount, generateAmount } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.lockETHAndDraw(
-        dssCdpManager.address,
-        mcdJug.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        id.toString(),
-        amountToWei(generateAmount, 'DAI').toFixed(0),
-      )
+      return proxyActionsContract.lockETHAndDraw(context, data)
     }
-    return contract<DssProxyActions>(dssProxyActions).methods.lockGemAndDraw(
-      dssCdpManager.address,
-      mcdJug.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
-      amountToWei(generateAmount, 'DAI').toFixed(0),
-      true,
-    )
+
+    return proxyActionsContract.lockGemAndDraw(context, data)
   }
 
   if (depositAmount.gt(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.lockETH(
-        dssCdpManager.address,
-        joins[ilk],
-        id.toString(),
-      )
+      return proxyActionsContract.lockETH(context, data)
     }
 
-    return contract<DssProxyActions>(dssProxyActions).methods.lockGem(
-      dssCdpManager.address,
-      joins[ilk],
-      id.toString(),
-      amountToWei(depositAmount, token).toFixed(0),
-      true,
-    )
+    return proxyActionsContract.lockGem(context, data)
   }
 
-  return contract<DssProxyActions>(dssProxyActions).methods.draw(
-    dssCdpManager.address,
-    mcdJug.address,
-    mcdJoinDai.address,
-    id.toString(),
-    amountToWei(generateAmount, 'DAI').toFixed(0),
-  )
-}
-
-export const depositAndGenerate: TransactionDef<DepositAndGenerateData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => {
-    const { dssProxyActions } = context
-    return [dssProxyActions.address, getDepositAndGenerateCallData(data, context).encodeABI()]
-  },
-  options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+  return proxyActionsContract.draw(context, data)
 }
 
 export type OpenData = {
@@ -720,13 +672,14 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             kind: TxMetaKind.withdrawAndPayback,
             withdrawAmount: data.totalCollateral,
             paybackAmount: new BigNumber(0),
-            proxyAddress: data.proxyAddress!,
+            proxyAddress: data.proxyAddress,
             ilk: data.ilk,
             token: data.token,
             id: data.id,
             shouldPaybackAll: true,
           },
           context,
+          StandardDssProxyActionsContractWrapper,
         ).encodeABI(),
       ]
     }
@@ -793,7 +746,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       guni: tokens[data.token].address,
       resolver: guniResolver,
       router: guniRouter,
-      otherToken: tokens[token1Symbol!].address,
+      otherToken: tokens[token1Symbol].address,
       manager: dssCdpManager.address,
       guniProxyActions: guniProxyActions.address,
       lender: fmm,

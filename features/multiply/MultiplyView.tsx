@@ -5,11 +5,13 @@ import { Flex, Grid } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsFilter } from '../../components/ProductCardsFilter'
+import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../helpers/observableHook'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function MultiplyView() {
   const { t } = useTranslation()
@@ -18,12 +20,14 @@ export function MultiplyView() {
     productCardsData$,
   )
 
+  const earnEnabled = useFeatureToggle('EarnProduct')
+
   return (
     <Grid
       sx={{
         flex: 1,
         position: 'relative',
-        mb: ['123px', '343px'],
+        mb: ['123px', '187px'],
       }}
     >
       <ProductHeader
@@ -45,14 +49,25 @@ export function MultiplyView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.multiply.cardsFilters}>
-              {(cardsFilter) => (
-                <Grid columns={[1, 2, 3]} sx={{ justifyItems: 'center' }}>
-                  {multiplyPageCardsData({ productCardsData, cardsFilter }).map((cardData) => (
-                    <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
-                  ))}
-                </Grid>
+            <ProductCardsFilter
+              filters={productCardsConfig.multiply.cardsFilters.filter(
+                (f) => !(earnEnabled && f.name === 'UNI LP'),
               )}
+            >
+              {(cardsFilter) => {
+                const filteredCards = multiplyPageCardsData({
+                  productCardsData,
+                  cardsFilter,
+                })
+
+                return (
+                  <ProductCardsWrapper>
+                    {filteredCards.map((cardData) => (
+                      <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
+                    ))}
+                  </ProductCardsWrapper>
+                )
+              }}
             </ProductCardsFilter>
           )}
         </WithLoadingIndicator>

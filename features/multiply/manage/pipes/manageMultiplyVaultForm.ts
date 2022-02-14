@@ -119,6 +119,7 @@ export function applyManageVaultForm(
       ...state,
       ...manageMultiplyInputsDefaults,
       otherAction: change.otherAction,
+      withdrawAmount: change.otherAction === 'closeVault' ? state.maxWithdrawAmount : undefined,
     }
   }
 

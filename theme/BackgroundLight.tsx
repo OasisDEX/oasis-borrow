@@ -50,6 +50,7 @@ export function BackgroundLight() {
           userSelect: 'none',
           pointerEvents: 'none',
           overflow: 'hidden',
+          maxHeight: 'calc(100vh + 300px)',
         }}
       >
         <svg

@@ -5,7 +5,8 @@ try {
     baseUrl: 'https://oasis.app',
     pagesDirectory: `.next/server/pages`,
     targetDirectory: 'public/',
-    ignoredPaths: ['/api', '404', '/[address]', '/terms', '/privacy', '/save'],
+    // TODO: remove '/earn' exclusion below when enabling EarnProduct feature
+    ignoredPaths: ['/api', '404', '/[address]', '/terms', '/privacy', '/save', '/earn'],
     // other apps routes from Oasis Suite
     extraPaths: ['/blog'],
     nextConfigPath: `${__dirname}/next.config.js`,
