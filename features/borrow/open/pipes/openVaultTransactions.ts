@@ -1,5 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { open, OpenData } from 'blockchain/calls/proxyActions'
+import { open, OpenData } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'

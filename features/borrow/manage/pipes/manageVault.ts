@@ -13,7 +13,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { WithdrawPaybackDepositGenerateSmartContractLogic } from '../../../../blockchain/calls/proxyActions'
+import { WithdrawPaybackDepositGenerateSmartContractLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -197,7 +197,7 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   saveVaultType$: SaveVaultType,
-  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogic,
+  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogicInterface,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -387,7 +387,7 @@ export function createManageVault$(
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
-  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogic,
+  proxyActions: WithdrawPaybackDepositGenerateSmartContractLogicInterface,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(

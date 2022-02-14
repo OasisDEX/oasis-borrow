@@ -12,7 +12,7 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { proxyActionsFactory } from '../../blockchain/calls/proxyActions'
+import { proxyActionsFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'

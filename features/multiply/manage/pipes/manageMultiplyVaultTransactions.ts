@@ -9,7 +9,7 @@ import {
   MultiplyAdjustData,
   proxyActionsFactory,
   WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'

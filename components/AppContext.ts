@@ -30,7 +30,7 @@ import {
   proxyActionsFactory,
   ReclaimData,
   WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'

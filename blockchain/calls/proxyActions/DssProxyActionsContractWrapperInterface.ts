@@ -3,7 +3,7 @@ import {
   PayableTransactionObject,
 } from '../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../network'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from '../proxyActions'
+import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
 
 export interface DssProxyActionsContractWrapperInterface {
   resolveContractAddress: (context: ContextConnected) => string

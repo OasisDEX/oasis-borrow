@@ -11,7 +11,7 @@ import {
   getWithdrawAndPaybackCallData,
   proxyActionsFactory,
   WithdrawAndPaybackData,
-} from './calls/proxyActions'
+} from './calls/proxyActions/proxyActions'
 import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
 import { DssProxyActionsContractWrapperInterface } from './calls/proxyActions/DssProxyActionsContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from './calls/proxyActions/standardDssProxyActionsContractWrapper'

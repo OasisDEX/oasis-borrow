@@ -15,9 +15,9 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
-import { DssProxyActionsContractWrapperInterface } from './proxyActions/DssProxyActionsContractWrapperInterface'
-import { StandardDssProxyActionsContractWrapper } from './proxyActions/standardDssProxyActionsContractWrapper'
-import { TxMetaKind } from './txMeta'
+import { DssProxyActionsContractWrapperInterface } from './DssProxyActionsContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
+import { TxMetaKind } from '../txMeta'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -69,14 +69,14 @@ export function getWithdrawAndPaybackCallData(
   throw new Error('Could not make correct proxyActions call')
 }
 
-export interface WithdrawPaybackDepositGenerateSmartContractLogic {
+export interface WithdrawPaybackDepositGenerateSmartContractLogicInterface {
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
 export function proxyActionsFactory(
   proxyActionsSmartContractWrapper: DssProxyActionsContractWrapperInterface,
-): WithdrawPaybackDepositGenerateSmartContractLogic {
+): WithdrawPaybackDepositGenerateSmartContractLogicInterface {
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
