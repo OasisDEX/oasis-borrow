@@ -4,9 +4,11 @@ import React from 'react'
 
 import { IlkData } from '../../blockchain/ilks'
 import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { VaultHeader, VaultHeaderAutomation, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {
+  header: string
   id?: BigNumber
   ilkData: IlkData
 }
@@ -15,10 +17,13 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
   const {
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,
+    header,
   } = props
   const { t } = useTranslation()
-  return (
-    <VaultHeader id={id}>
+  const automationEnabled = useFeatureToggle('Automation')
+
+  const content = (
+    <>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
@@ -57,6 +62,14 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
           },
         }}
       />
+    </>
+  )
+
+  return automationEnabled ? (
+    <VaultHeaderAutomation id={id}>{content}</VaultHeaderAutomation>
+  ) : (
+    <VaultHeader id={id} header={header}>
+      {content}
     </VaultHeader>
   )
 }

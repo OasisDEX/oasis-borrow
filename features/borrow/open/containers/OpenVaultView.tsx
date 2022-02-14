@@ -92,7 +92,8 @@ function OpenVaultForm(props: OpenVaultState) {
 }
 
 export function OpenVaultContainer(props: OpenVaultState) {
-  const { clear } = props
+  const { ilk, clear } = props
+  const { t } = useTranslation()
 
   useEffect(() => {
     return () => {
@@ -103,7 +104,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
   return (
     <>
       <VaultHeading />
-      <DefaultVaultHeader {...props} />
+      <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
           <OpenVaultDetails {...props} />

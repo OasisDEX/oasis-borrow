@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Container } from 'theme-ui'
 
@@ -15,6 +16,7 @@ import { OpenMultiplyVaultForm } from './OpenMultiplyVaultForm'
 export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const { openMultiplyVault$, accountData$, context$ } = useAppContext()
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
+  const { t } = useTranslation()
 
   const openVaultWithError = useObservableWithError(openMultiplyVault$(ilk))
 
@@ -37,7 +39,12 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer
-              header={<DefaultVaultHeader {...openVault} />}
+              header={
+                <DefaultVaultHeader
+                  {...openVault}
+                  header={t('vault.open-vault', { ilk: openVault.ilk })}
+                />
+              }
               details={<OpenMultiplyVaultDetails {...openVault} />}
               form={<OpenMultiplyVaultForm {...openVault} />}
               clear={openVault.clear}

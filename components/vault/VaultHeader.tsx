@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Grid, SxStyleProp } from 'theme-ui'
 
+import { VaultHeaderContainer } from './VaultHeaderContainer'
+
 export function VaultIlkDetailsItem({
   label,
   value,
@@ -68,7 +70,23 @@ export function VaultIlkDetailsItem({
   )
 }
 
-export function VaultHeader(props: { id?: BigNumber; children: ReactNode }) {
+export function VaultHeader(props: { header: string; id?: BigNumber; children: ReactNode }) {
+  const { id, header, children } = props
+  const { t } = useTranslation()
+
+  return (
+    <VaultHeaderContainer header={header}>
+      <VaultIlkDetailsItem
+        label={'VaultID'}
+        value={id ? id.toFixed(0) : 'T.B.D'}
+        tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
+      />
+      {children}
+    </VaultHeaderContainer>
+  )
+}
+
+export function VaultHeaderAutomation(props: { id?: BigNumber; children: ReactNode }) {
   const { id, children } = props
   const { t } = useTranslation()
 

@@ -9,10 +9,11 @@ export function GuniVaultHeader(props: DefaultVaultHeaderProps) {
   const {
     ilkData: { stabilityFee, debtFloor },
     id,
+    header,
   } = props
   const { t } = useTranslation()
   return (
-    <VaultHeader id={id}>
+    <VaultHeader header={header} id={id}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}

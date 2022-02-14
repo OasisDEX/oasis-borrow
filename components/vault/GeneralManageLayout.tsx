@@ -2,10 +2,9 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Grid } from 'theme-ui'
 
-import { GuniTempBanner } from '../../features/banners/guniTempBanner'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
+import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { TabSwitchLayout, VaultViewMode } from '../TabSwitchLayout'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -27,8 +26,6 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyti
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vaultId} />
-      <GuniTempBanner id={vaultId} />
-      {/* TODO Replace with TabSwitcher ~ŁW */}
       <TabSwitchLayout
         defaultMode={VaultViewMode.Overview}
         heading={t('vault.header', { ilk: generalManageVault.state.ilkData.ilk, id: vaultId })}
@@ -38,7 +35,9 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyti
             ilkData={generalManageVault.state.ilkData}
           />
         }
-        overViewControl={<GeneralManageVaultView generalManageVault={generalManageVault} />}
+        overViewControl={
+          <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
+        }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={
           <ProtectionControl

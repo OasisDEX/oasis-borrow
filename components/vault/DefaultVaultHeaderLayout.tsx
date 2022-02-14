@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
-import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
+import { VaultHeaderAutomation, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderLayoutProps {
   id: BigNumber
@@ -22,7 +22,7 @@ export function DefaultVaultHeaderLayout({
 }: DefaultVaultHeaderLayoutProps) {
   const { t } = useTranslation()
   return (
-    <VaultHeader id={id}>
+    <VaultHeaderAutomation id={id}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
@@ -65,6 +65,6 @@ export function DefaultVaultHeaderLayout({
           },
         }}
       />
-    </VaultHeader>
+    </VaultHeaderAutomation>
   )
 }
