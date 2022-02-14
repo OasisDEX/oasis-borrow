@@ -25,6 +25,7 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as dssCharter from './abi/dss-charter.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -114,6 +115,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
@@ -179,6 +181,7 @@ const kovan: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, kovanAddresses.MCD_VAT),
@@ -239,6 +242,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
   vat: contractDesc(vat, goerliAddresses.MCD_VAT),

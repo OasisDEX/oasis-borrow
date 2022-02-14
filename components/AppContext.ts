@@ -12,6 +12,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -241,6 +242,10 @@ export function setupAppContext() {
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
+
+  const charterNib$ = observe(onEveryBlock$, context$, charterNib)
+  const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
+  const charterUline$ = observe(onEveryBlock$, context$, charterUline)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
