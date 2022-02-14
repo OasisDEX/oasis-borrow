@@ -112,6 +112,7 @@ export function ManageVaultContainer({
   const {
     vault: { id, ilk },
     clear,
+    ilkData
   } = manageVault
   const { t } = useTranslation()
 
@@ -130,7 +131,7 @@ export function ManageVaultContainer({
 
   return (
     <>
-      <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      <DefaultVaultHeader header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails {...manageVault} />
