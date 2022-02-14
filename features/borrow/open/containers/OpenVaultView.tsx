@@ -6,7 +6,6 @@ import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllo
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultHeading } from 'components/vault/VaultHeading'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -103,7 +102,6 @@ export function OpenVaultContainer(props: OpenVaultState) {
 
   return (
     <>
-      <VaultHeading />
       <DefaultVaultHeader {...props} header={t('vault.open-vault', { ilk })} />
       <Grid variant="vaultContainer">
         <Box>
