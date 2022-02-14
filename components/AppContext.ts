@@ -34,6 +34,7 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createInstiVault$ } from 'blockchain/instiVault'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -291,6 +292,10 @@ export function setupAppContext() {
         id,
       ),
     bigNumberTostring,
+  )
+
+  const instiVault$ = memoize(
+    curry(createInstiVault$)(vault$, charterNib$, charterPeace$, charterUline$),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
@@ -558,6 +563,7 @@ export function setupAppContext() {
     openGuniVault$,
     ilkDataList$,
     productCardsData$,
+    instiVault$,
   }
 }
 

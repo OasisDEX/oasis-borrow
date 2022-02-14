@@ -11,9 +11,9 @@ interface InstiVault extends Vault {
 
 export function createInstiVault$(
   vault$: (id: BigNumber) => Observable<Vault>,
-  charterNib$: (ilk: string, usr: string) => Observable<BigNumber>,
-  charterPeace$: (ilk: string, usr: string) => Observable<BigNumber>,
-  charterUline$: (ilk: string, usr: string) => Observable<BigNumber>,
+  charterNib$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  charterPeace$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  charterUline$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
   id: BigNumber,
 ): Observable<InstiVault> {
   return vault$(id).pipe(
@@ -23,9 +23,9 @@ export function createInstiVault$(
         filter((params): params is [string, string] => params[1] !== undefined),
         switchMap(([ilk, usr]) =>
           combineLatest(
-            charterNib$(ilk, usr),
-            charterPeace$(ilk, usr),
-            charterUline$(ilk, usr),
+            charterNib$({ ilk, usr }),
+            charterPeace$({ ilk, usr }),
+            charterUline$({ ilk, usr }),
           ).pipe(
             map(([nib, peace, uline]) => ({
               ...vault,
