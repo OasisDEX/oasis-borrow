@@ -4,8 +4,8 @@ import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
-  WithdrawPaybackDepositGenerateLogicInterface,
   WithdrawAndPaybackData,
+  WithdrawPaybackDepositGenerateLogicInterface,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'

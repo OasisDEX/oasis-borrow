@@ -7,8 +7,8 @@ import {
   closeVaultCall,
   DepositAndGenerateData,
   MultiplyAdjustData,
-  withdrawPaybackDepositGenerateLogicFactory,
   WithdrawAndPaybackData,
+  withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'

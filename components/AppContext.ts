@@ -27,9 +27,9 @@ import {
   OpenData,
   OpenGuniMultiplyData,
   OpenMultiplyData,
-  withdrawPaybackDepositGenerateLogicFactory,
   ReclaimData,
   WithdrawAndPaybackData,
+  withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'

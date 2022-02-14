@@ -5,8 +5,8 @@ import {
 } from '../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
 import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
+import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
 
 export const StandardDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
   resolveContractAddress(context: ContextConnected): string {

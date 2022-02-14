@@ -15,9 +15,9 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 import Web3 from 'web3'
 
+import { TxMetaKind } from '../txMeta'
 import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
-import { TxMetaKind } from '../txMeta'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback

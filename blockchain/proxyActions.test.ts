@@ -5,15 +5,15 @@ import { one, zero } from 'helpers/zero'
 import { describe } from 'mocha'
 
 import { PROXY_ACTIONS } from './addresses/mainnet.json'
+import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
+import { DssProxyActionsSmartContractWrapperInterface } from './calls/proxyActions/DssProxyActionsSmartContractWrapperInterface'
 import {
   DepositAndGenerateData,
   getDepositAndGenerateCallData,
   getWithdrawAndPaybackCallData,
-  withdrawPaybackDepositGenerateLogicFactory,
   WithdrawAndPaybackData,
+  withdrawPaybackDepositGenerateLogicFactory,
 } from './calls/proxyActions/proxyActions'
-import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
-import { DssProxyActionsSmartContractWrapperInterface } from './calls/proxyActions/DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from './calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { TxMetaKind } from './calls/txMeta'
 
