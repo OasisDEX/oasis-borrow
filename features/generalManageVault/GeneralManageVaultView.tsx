@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
+import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -9,6 +11,7 @@ import { Container } from 'theme-ui'
 
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
+import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -16,7 +19,6 @@ import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/Manage
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
-import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
 
 const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(27426))]
 
@@ -57,6 +59,10 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                     <ManageVaultContainer
                       vaultHistory={vaultHistory}
                       manageVault={generalManageVault.state}
+                      header={DefaultVaultHeader}
+                      details={ManageVaultDetails}
+                      form={ManageVaultForm}
+                      history={VaultHistoryView}
                     />
                   )}
                 </Container>
