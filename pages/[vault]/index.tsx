@@ -21,7 +21,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 export default function Vault({ id }: { id: string }) {
-  console.log('rendering index')
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
 
@@ -40,5 +39,26 @@ export default function Vault({ id }: { id: string }) {
     </WithConnection>
   )
 }
+
+// TODO FROM DEV
+// return (
+//   <WithConnection>
+//     <WithTermsOfService>
+//       <Grid gap={0} sx={{ width: '100%' }}>
+//         <BackgroundLight />
+//         {isValidVaultId ? (
+//           <>
+//             <VaultBannersView id={vaultId} />
+//             <GeneralManageVaultView id={vaultId} />
+//           </>
+//         ) : (
+//           <Box sx={{ position: 'relative', zIndex: 1 }}>
+//             <NotFoundPage />
+//           </Box>
+//         )}
+//       </Grid>
+//     </WithTermsOfService>
+//   </WithConnection>
+// )
 
 Vault.layout = AppLayout

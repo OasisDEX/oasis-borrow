@@ -6,7 +6,6 @@ import { OpenMultiplyVaultContainer } from '../../../../../components/vault/comm
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../../../../helpers/observableHook'
-import { GuniDebtCeilingBanner } from '../../common/GuniDebtCeilingBanner'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
@@ -36,7 +35,6 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
       <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
-            {ilk === 'GUNIV3DAIUSDC2-A' && <GuniDebtCeilingBanner />}
             <OpenMultiplyVaultContainer
               header={<GuniVaultHeader {...openVault} />}
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}

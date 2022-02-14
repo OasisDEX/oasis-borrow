@@ -1,74 +1,54 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useCallback, useMemo } from 'react'
-import ReactSelect, {
-  components,
-  OptionProps,
-  SingleValueProps,
-  StylesConfig,
-  ValueType,
-} from 'react-select'
-import { Flex } from 'theme-ui'
+import ReactSelect, { OptionProps, SingleValueProps, StylesConfig, ValueType } from 'react-select'
+import { Box, Flex } from 'theme-ui'
 
-import { theme } from '../theme'
+import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from '../helpers/productCards'
+import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 const customStyles: StylesConfig = {
-  control: (styles) => ({
-    ...styles,
-    height: '64px',
-    borderRadius: '8px',
-    outline: 'none',
-    ':hover': { borderColor: theme.colors.primary, boxShadow: 'unset' },
-  }),
   container: (styles) => ({ ...styles, maxWidth: '378px', flex: 1 }),
-  singleValue: (styles) => ({ ...styles, fontWeight: theme.fontWeights.semiBold }),
-  indicatorSeparator: () => ({ display: 'none' }),
-  option: (styles, { isSelected }) => {
-    return {
-      ...styles,
-      backgroundColor: isSelected ? theme.colors.selected : undefined,
-      color: theme.colors.primary,
-      ':hover': {
-        backgroundColor: theme.colors.secondaryAlt,
-      },
-    }
-  },
 }
 
-const { Option } = components
-
-export interface ProductCardsSelectValue {
-  name: string
-  icon: string
-}
-
-function OptionWithIcon(props: OptionProps<ProductCardsSelectValue>) {
+function OptionWithIcon({ innerProps, data, isSelected }: OptionProps<ProductLandingPagesFilter>) {
   return (
-    <Option {...props}>
+    <Box
+      {...innerProps}
+      sx={{
+        py: 2,
+        px: 3,
+        bg: isSelected ? 'selected' : undefined,
+        cursor: 'pointer',
+        '&:hover': {
+          bg: 'secondaryAlt',
+        },
+      }}
+    >
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
-        <Icon name={`${props.data.icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
-        {props.data.name}
+        <Icon name={`${data.icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
+        {data.name}
       </Flex>
-    </Option>
+    </Box>
   )
 }
 
-const InputWithIcon = (props: SingleValueProps<ProductCardsSelectValue>) => {
+const InputWithIcon = (props: SingleValueProps<ProductLandingPagesFilter>) => {
   const { value } = props.selectProps
   return (
     <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
       <Icon
-        name={`${(value as ProductCardsSelectValue).icon}_color`}
+        name={`${(value as ProductLandingPagesFilter).icon}_color`}
         size="32px"
         sx={{ mr: 2, ml: 2 }}
       />
-      {(value as ProductCardsSelectValue).name}
+      {(value as ProductLandingPagesFilter).name}
     </Flex>
   )
 }
 
 interface ProductCardsSelectProps {
-  options: { name: string; icon: string }[]
-  handleChange: (tab: string) => void
+  options: Array<ProductLandingPagesFilter>
+  handleChange: (tab: ProductLandingPagesFiltersKeys) => void
   currentFilter: string
 }
 
@@ -78,8 +58,8 @@ export function ProductCardsSelect({
   currentFilter,
 }: ProductCardsSelectProps) {
   const handleSelectChange = useCallback(
-    (option: ValueType<ProductCardsSelectValue>) =>
-      handleChange((option as ProductCardsSelectValue).name),
+    (option: ValueType<ProductLandingPagesFilter>) =>
+      handleChange((option as ProductLandingPagesFilter).name),
     [],
   )
 
@@ -88,17 +68,23 @@ export function ProductCardsSelect({
   ])
 
   const isSelected = useMemo(
-    () => (option: ProductCardsSelectValue) => currentFilter === option.name,
+    () => (option: ProductLandingPagesFilter) => currentFilter === option.name,
     [currentFilter],
   )
 
+  const productCardSelectComponents = useMemo(
+    () => reactSelectCustomComponents<ProductLandingPagesFilter>(),
+    [],
+  )
+
   return (
-    <ReactSelect<ProductCardsSelectValue>
+    <ReactSelect<ProductLandingPagesFilter>
       options={options}
       onChange={handleSelectChange}
       styles={customStyles}
       value={value}
       components={{
+        ...productCardSelectComponents,
         Option: OptionWithIcon,
         SingleValue: InputWithIcon,
       }}

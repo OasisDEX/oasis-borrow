@@ -1,6 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
-import { reclaim, ReclaimData } from 'blockchain/calls/proxyActions'
+import { reclaim, ReclaimData } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
 import { TxHelpers } from 'components/AppContext'

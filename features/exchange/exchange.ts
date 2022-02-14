@@ -78,6 +78,7 @@ export function getQuote$(
   amount: BigNumber, // This is always the receiveAtLeast amount of tokens we want to exchange from
   slippage: BigNumber,
   action: ExchangeAction,
+  protocols?: string,
 ) {
   const fromTokenAddress = action === 'BUY_COLLATERAL' ? dai.address : collateral.address
   const toTokenAddress = action === 'BUY_COLLATERAL' ? collateral.address : dai.address
@@ -96,7 +97,7 @@ export function getQuote$(
     slippage: slippage.times(100).toString(),
     disableEstimate: 'true',
     allowPartialFill: 'false',
-    protocols: 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
+    protocols: protocols || 'UNISWAP_V3,PMM4,UNISWAP_V2,SUSHI,CURVE,PSM',
   })
 
   const responseBase = {
@@ -167,6 +168,7 @@ export type Quote = ReturnType<typeof getQuote$> extends Observable<infer R> ? R
 
 export function createExchangeQuote$(
   context$: Observable<Context>,
+  protocols: string | undefined,
   token: string,
   slippage: BigNumber,
   amount: BigNumber,
@@ -181,7 +183,7 @@ export function createExchangeQuote$(
       const dai = getTokenMetaData('DAI', tokensMainnet)
       const collateral = getTokenMetaData(token, tokensMainnet)
 
-      return getQuote$(dai, collateral, exchange.address, amount, slippage, action)
+      return getQuote$(dai, collateral, exchange.address, amount, slippage, action, protocols)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)

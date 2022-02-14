@@ -43,3 +43,87 @@ export function GeneralManageVaultView({ generalManageVault }: GeneralManageVaul
       )
   }
 }
+
+// TODO DEV
+  // export function GeneralManageVaultView({ id }: { id: BigNumber }) {
+  //   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
+  //   const manageVaultWithId$ = generalManageVault$(id)
+  //   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
+  //   const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
+  //   const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
+  //
+  //   return (
+  //     <WithErrorHandler
+  //       error={[
+  //         manageVaultWithError.error,
+  //         vaultHistoryWithError.error,
+  //         vaultMultiplyHistoryWithError.error,
+  //       ]}
+  //     >
+  //       <WithLoadingIndicator
+  //         value={[
+  //           manageVaultWithError.value,
+  //           vaultHistoryWithError.value,
+  //           vaultMultiplyHistoryWithError.value,
+  //         ]}
+  //         customLoader={<VaultContainerSpinner />}
+  //       >
+  //         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
+  //           switch (generalManageVault.type) {
+  //             case VaultType.Borrow:
+  //               return (
+  //                 <Container variant="vaultPageContainer">
+  //                   <ManageVaultContainer
+  //                     vaultHistory={vaultHistory}
+  //                     manageVault={generalManageVault.state}
+  //                   />
+  //                 </Container>
+  //               )
+  //             case VaultType.Multiply:
+  //               const vaultIlk = generalManageVault.state.ilkData.ilk
+  //               const multiplyContainerMap: Record<string, ReactNode> = {
+  //                 'GUNIV3DAIUSDC1-A': (
+  //                   <ManageMultiplyVaultContainer
+  //                     vaultHistory={vaultMultiplyHistory}
+  //                     manageVault={generalManageVault.state}
+  //                     header={GuniVaultHeader}
+  //                     details={GuniManageMultiplyVaultDetails}
+  //                     form={GuniManageMultiplyVaultForm}
+  //                     history={VaultHistoryView}
+  //                   />
+  //                 ),
+  //                 'GUNIV3DAIUSDC2-A': (
+  //                   <>
+  //                     <ManageMultiplyVaultContainer
+  //                       vaultHistory={vaultMultiplyHistory}
+  //                       manageVault={generalManageVault.state}
+  //                       header={GuniVaultHeader}
+  //                       details={GuniManageMultiplyVaultDetails}
+  //                       form={GuniManageMultiplyVaultForm}
+  //                       history={VaultHistoryView}
+  //                     />
+  //                   </>
+  //                 ),
+  //               }
+  //               return (
+  //                 <Container variant="vaultPageContainer">
+  //                   {multiplyContainerMap[vaultIlk] ? (
+  //                     multiplyContainerMap[vaultIlk]
+  //                   ) : (
+  //                     <ManageMultiplyVaultContainer
+  //                       vaultHistory={vaultMultiplyHistory}
+  //                       manageVault={generalManageVault.state}
+  //                       header={DefaultVaultHeader}
+  //                       details={ManageMultiplyVaultDetails}
+  //                       form={ManageMultiplyVaultForm}
+  //                       history={VaultHistoryView}
+  //                     />
+  //                   )}
+  //                 </Container>
+  //               )
+  //           }
+  //         }}
+  //       </WithLoadingIndicator>
+  //     </WithErrorHandler>
+  //   )
+  // }

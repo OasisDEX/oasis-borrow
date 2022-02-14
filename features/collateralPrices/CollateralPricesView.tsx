@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
-import { TokenSymbol } from 'features/landing/LandingView'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -11,6 +10,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Grid, Heading, Text } from 'theme-ui'
 
+import { TokenSymbol } from '../../components/TokenSymbol'
 import { CollateralPrice } from './collateralPrices'
 import {
   CollateralPricesWithFilters,

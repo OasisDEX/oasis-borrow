@@ -12,6 +12,8 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
+import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
@@ -139,6 +141,7 @@ export function mockManageVault$({
     vault$,
     saveVaultType$,
     addGasEstimationMock,
+    withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
     MOCK_VAULT_ID,
   )
 }

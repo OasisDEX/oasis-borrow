@@ -82,7 +82,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-positions-you-like')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
           </Text>
         </Box>
       ) : (
@@ -90,7 +90,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-open-positions')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
           </Text>
         </Box>
       )}
