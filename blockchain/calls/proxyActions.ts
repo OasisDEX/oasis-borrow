@@ -33,50 +33,50 @@ export type WithdrawAndPaybackData = {
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  dssProxyActions: DssProxyActionsContractWrapperInterface,
+  proxyActionsSmartContractWrapper: DssProxyActionsContractWrapperInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
       if (shouldPaybackAll) {
-        return dssProxyActions.wipeAllAndFreeETH(context, data)
+        return proxyActionsSmartContractWrapper.wipeAllAndFreeETH(context, data)
       }
-      return dssProxyActions.wipeAndFreeETH(context, data)
+      return proxyActionsSmartContractWrapper.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
-      return dssProxyActions.wipeAllAndFreeGem(context, data)
+      return proxyActionsSmartContractWrapper.wipeAllAndFreeGem(context, data)
     }
-    return dssProxyActions.wipeAndFreeGem(context, data)
+    return proxyActionsSmartContractWrapper.wipeAndFreeGem(context, data)
   }
 
   if (withdrawAmount.gt(zero)) {
     if (token === 'ETH') {
-      return dssProxyActions.freeETH(context, data)
+      return proxyActionsSmartContractWrapper.freeETH(context, data)
     }
-    return dssProxyActions.freeGem(context, data)
+    return proxyActionsSmartContractWrapper.freeGem(context, data)
   }
 
   if (paybackAmount.gt(zero)) {
     if (shouldPaybackAll) {
-      return dssProxyActions.wipeAll(context, data)
+      return proxyActionsSmartContractWrapper.wipeAll(context, data)
     }
-    return dssProxyActions.wipe(context, data)
+    return proxyActionsSmartContractWrapper.wipe(context, data)
   }
 
   // would be nice to remove this for Unreachable error case in the future
   throw new Error('Could not make correct proxyActions call')
 }
 
-export interface IProxyActions {
+export interface WithdrawPaybackDepositGenerateSmartContractLogic {
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
 export function proxyActionsFactory(
-  dssProxyActions: DssProxyActionsContractWrapperInterface,
-): IProxyActions {
+  proxyActionsSmartContractWrapper: DssProxyActionsContractWrapperInterface,
+): WithdrawPaybackDepositGenerateSmartContractLogic {
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -86,8 +86,12 @@ export function proxyActionsFactory(
       },
       prepareArgs: (data, context) => {
         return [
-          dssProxyActions.resolveContractAddress(context),
-          getWithdrawAndPaybackCallData(data, context, dssProxyActions).encodeABI(),
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getWithdrawAndPaybackCallData(
+            data,
+            context,
+            proxyActionsSmartContractWrapper,
+          ).encodeABI(),
         ]
       },
     },
@@ -99,8 +103,12 @@ export function proxyActionsFactory(
       },
       prepareArgs: (data, context) => {
         return [
-          dssProxyActions.resolveContractAddress(context),
-          getDepositAndGenerateCallData(data, context, dssProxyActions).encodeABI(),
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getDepositAndGenerateCallData(
+            data,
+            context,
+            proxyActionsSmartContractWrapper,
+          ).encodeABI(),
         ]
       },
       options: ({ token, depositAmount }) =>
@@ -122,33 +130,28 @@ export type DepositAndGenerateData = {
 export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  dssProxyActions: DssProxyActionsContractWrapperInterface,
+  proxyActionsContract: DssProxyActionsContractWrapperInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
     if (token === 'ETH') {
-      return dssProxyActions.lockETHAndDraw(context, data)
+      return proxyActionsContract.lockETHAndDraw(context, data)
     }
 
-    return dssProxyActions.lockGemAndDraw(context, data)
+    return proxyActionsContract.lockGemAndDraw(context, data)
   }
 
   if (depositAmount.gt(zero)) {
     if (token === 'ETH') {
-      return dssProxyActions.lockETH(context, data)
+      return proxyActionsContract.lockETH(context, data)
     }
 
-    return dssProxyActions.lockGem(context, data)
+    return proxyActionsContract.lockGem(context, data)
   }
 
-  return dssProxyActions.draw(context, data)
+  return proxyActionsContract.draw(context, data)
 }
-
-// this is left here because it's called directly elsewhere rather than injected
-const _oldStandardProxyFns = proxyActionsFactory(StandardDssProxyActionsContractWrapper)
-export const depositAndGenerate = _oldStandardProxyFns.depositAndGenerate
-export const withdrawAndPayback = _oldStandardProxyFns.withdrawAndPayback
 
 export type OpenData = {
   kind: TxMetaKind.open
