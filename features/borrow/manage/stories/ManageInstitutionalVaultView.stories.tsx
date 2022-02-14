@@ -1,7 +1,7 @@
-import { manageVaultStory } from '../../../../helpers/stories/ManageVaultStory'
 import { BigNumber } from 'bignumber.js'
+
 import { DEFAULT_PROXY_ADDRESS } from '../../../../helpers/mocks/vaults.mock'
-import React from 'react'
+import { manageVaultStory } from '../../../../helpers/stories/ManageVaultStory'
 
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
@@ -19,7 +20,6 @@ import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
-import BigNumber from 'bignumber.js'
 
 type ManageVaultStory = { title?: string } & MockManageVaultProps
 

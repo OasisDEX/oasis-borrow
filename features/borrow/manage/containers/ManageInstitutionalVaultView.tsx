@@ -1,16 +1,11 @@
-import { ManageVaultState } from '../pipes/manageVault'
-import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
-import { useAppContext } from '../../../../components/AppContextProvider'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
+
 import { trackingEvents } from '../../../../analytics/analytics'
-import { DefaultVaultHeader } from '../../../../components/vault/DefaultVaultHeader'
-import { Box, Grid } from 'theme-ui'
-import { ManageVaultDetails } from './ManageVaultDetails'
-import { VaultHistoryView } from '../../../vaultHistory/VaultHistoryView'
-import { VaultHeader, VaultIlkDetailsItem } from '../../../../components/vault/VaultHeader'
-import { formatPercent } from '../../../../helpers/formatters/format'
+import { useAppContext } from '../../../../components/AppContextProvider'
+import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
+import { ManageVaultState } from '../pipes/manageVault'
+import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 
 export function ManageInstiVaultContainer({
   manageVault,

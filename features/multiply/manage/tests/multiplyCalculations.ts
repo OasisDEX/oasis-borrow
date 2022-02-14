@@ -1,9 +1,10 @@
-import { getStateUnpacker } from '../../../../helpers/testHelpers'
-import { mockManageMultiplyVault$ } from '../../../../helpers/mocks/manageMultiplyVault.mock'
 import BigNumber from 'bignumber.js'
-import { calculatePNL } from '../../../../helpers/multiply/calculations'
 import { expect } from 'chai'
+
+import { mockManageMultiplyVault$ } from '../../../../helpers/mocks/manageMultiplyVault.mock'
+import { calculatePNL } from '../../../../helpers/multiply/calculations'
 import { mockedMultiplyEvents } from '../../../../helpers/multiply/calculations.test'
+import { getStateUnpacker } from '../../../../helpers/testHelpers'
 
 describe('Multiply calculations', () => {
   it('Calculates PNL correctly', () => {

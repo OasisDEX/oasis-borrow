@@ -1,7 +1,8 @@
-import React from 'react'
 import { ComponentStory } from '@storybook/react'
-import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 import BigNumber from 'bignumber.js'
+import React from 'react'
+
+import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export default {
   title: 'Vault Header',
