@@ -92,7 +92,7 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState) {
+export function ManageVaultDetails(props: ManageVaultState & { extraCards?: JSX.Element}) {
   const {
     vault: {
       token,
@@ -108,6 +108,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
     collateralizationRatioAtNextPrice,
     inputAmountsEmpty,
     stage,
+    extraCards,
   } = props
   const { t } = useTranslation()
   const openModal = useModal()
@@ -178,6 +179,7 @@ export function ManageVaultDetails(props: ManageVaultState) {
           afterPillColors={afterPillColors}
           showAfterPill={showAfterPill}
         />
+        {extraCards}
       </Grid>
       <ManageVaultDetailsSummary
         {...props}
