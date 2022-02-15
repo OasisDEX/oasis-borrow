@@ -3,7 +3,6 @@ import { DefaultVaultHeader, DefaultVaultHeaderProps } from 'components/vault/De
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { useTranslation } from 'next-i18next'
 import { BigNumber } from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
 import { formatPercent } from 'helpers/formatters/format'
 
 

@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
-import { ManageInstiVaultDetails } from 'features/instiVault/manage/containers/ManageInstiVaultDetails'
-import { ManageInstiVaultForm } from 'features/instiVault/manage/containers/ManageInstiVaultForm'
-import { ManageInstiVaultHeader } from 'features/instiVault/manage/containers/ManageInstiVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -19,7 +16,7 @@ import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/Manage
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
-import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
+import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 
 // Temporary stuff for testing insti vaults
 const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
@@ -58,13 +55,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               return (
                 <Container variant="vaultPageContainer">
                   {INSTITUTIONAL_VAULT_IDS.some((bn) => bn.eq(id)) ? (
-                    <ManageVaultContainer
+                    <ManageInstiVaultContainer
                       vaultHistory={vaultHistory}
                       manageVault={{...generalManageVault.state, vault: {...mockInstiVaultProps, ...generalManageVault.state.vault}}}
-                      header={ManageInstiVaultHeader}
-                      details={ManageInstiVaultDetails}
-                      form={ManageInstiVaultForm}
-                      history={VaultHistoryView}
                     />
                   ) : (
                     <ManageVaultContainer

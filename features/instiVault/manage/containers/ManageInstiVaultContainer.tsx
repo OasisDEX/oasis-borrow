@@ -1,18 +1,20 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { ManageVaultState } from '../pipes/manageVault'
-import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
-import { ManageVaultDetails } from './ManageVaultDetails'
-import { ManageVaultForm } from './ManageVaultForm'
+import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
+import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
+import { ManageInstiVaultForm } from './ManageInstiVaultForm'
+import { ManageInstiVaultHeader } from './ManageInstiVaultHeader'
 
-export function ManageVaultContainer({
+
+export function ManageInstiVaultContainer({
   manageVault,
   vaultHistory,
 }: {
@@ -42,14 +44,14 @@ export function ManageVaultContainer({
 
   return (
     <>
-      <DefaultVaultHeader header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+      <ManageInstiVaultHeader header={t('vault.insti-header', { ilk, id })} id={id} ilkData={ilkData} />
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <ManageVaultDetails {...manageVault} />
+          <ManageInstiVaultDetails {...manageVault} />
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
-          <ManageVaultForm {...manageVault} />
+          <ManageInstiVaultForm {...manageVault} />
         </Box>
       </Grid>
     </>
