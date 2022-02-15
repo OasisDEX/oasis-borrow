@@ -1,1 +1,1 @@
-web: yarn start:prod
+web: SENTRY_RELEASE="$HEROKU_BRANCH"; yarn start:prod
