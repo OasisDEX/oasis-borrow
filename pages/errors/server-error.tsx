@@ -8,6 +8,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 })
 
 export default function ServerError() {
+  console.log('oasis-borrow@' + process.env.npm_package_version)
   throw new Error('test error from page')
 }
 
