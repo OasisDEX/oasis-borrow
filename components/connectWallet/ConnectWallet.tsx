@@ -53,9 +53,17 @@ export async function getConnector(
   assert(rpcUrls[network], 'Unsupported chainId!')
   switch (connectorKind) {
     case 'injected': {
-      const connector = new InjectedConnector({
+      let connector = new InjectedConnector({
         supportedChainIds: Object.values(networksById).map(({ id }) => Number.parseInt(id)),
       })
+      const injectedKind = getInjectedWalletKind();
+
+      if (injectedKind === 'Tally') {
+        connector = new InjectedConnector({
+          supportedChainIds: [1]
+        })
+        return connector;
+      }
       const connectorChainId = Number.parseInt((await connector.getChainId()) as string)
       if (network !== connectorChainId) {
         alert('Browser ethereum provider and URL network param do not match!')
@@ -232,6 +240,7 @@ export function getInjectedWalletKind() {
   if (w.imToken) return 'IMToken'
 
   if (w.ethereum?.isMetaMask) return 'MetaMask'
+  if (w.ethereum?.isTally) return 'Tally'
 
   if (!w.web3 || typeof w.web3.currentProvider === 'undefined') return undefined
 
