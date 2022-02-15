@@ -8,20 +8,29 @@ import { AutomationFromKind } from '../common/enums/TriggersTypes'
 export function ProtectionFormLayout({
   toggleForm,
   currentForm,
+  showButton,
   children,
-}: React.PropsWithChildren<{ toggleForm: () => void; currentForm: AutomationFromKind }>) {
+}: React.PropsWithChildren<{
+  toggleForm: () => void
+  currentForm: AutomationFromKind
+  showButton: boolean
+}>) {
   const { t } = useTranslation()
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <Grid columns={1}>
         {children}
-        <Divider variant="styles.hrVaultFormBottom" />
-        <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForm}>
-          {currentForm === AutomationFromKind.ADJUST
-            ? t('protection.navigate-cancel')
-            : t('protection.navigate-adjust')}
-        </Button>
+        {showButton && (
+          <>
+            <Divider variant="styles.hrVaultFormBottom" />
+            <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForm}>
+              {currentForm === AutomationFromKind.ADJUST
+                ? t('protection.navigate-cancel')
+                : t('protection.navigate-adjust')}
+            </Button>
+          </>
+        )}
       </Grid>
     </VaultFormContainer>
   )

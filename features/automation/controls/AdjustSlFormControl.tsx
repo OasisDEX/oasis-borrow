@@ -52,8 +52,9 @@ interface AdjustSlFormControlProps {
   collateralPrice: CollateralPricesWithFilters
   ilkData: IlkData
   triggerData: TriggersData
-  tx?: TxHelpers
   ctx: Context
+  accountIsController: boolean
+  tx?: TxHelpers
 }
 
 export function AdjustSlFormControl({
@@ -61,8 +62,9 @@ export function AdjustSlFormControl({
   collateralPrice,
   ilkData,
   triggerData,
-  tx,
   ctx,
+  accountIsController,
+  tx,
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
@@ -209,6 +211,7 @@ export function AdjustSlFormControl({
     addTriggerConfig: addTriggerConfig,
     txState: txStatus,
     gasEstimation: getEstimatedGasFeeText(gasEstimationData),
+    accountIsController,
   }
 
   return <AdjustSlFormLayout {...props} />

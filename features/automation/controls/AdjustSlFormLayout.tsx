@@ -16,8 +16,9 @@ export interface AdjustSlFormLayoutProps {
   closePickerConfig: PickCloseStateProps
   slValuePickerConfig: SliderValuePickerProps
   addTriggerConfig: RetryableLoadingButtonProps
-  txState?: TxState<AutomationBotAddTriggerData>
   gasEstimation: ReactNode
+  accountIsController: boolean
+  txState?: TxState<AutomationBotAddTriggerData>
 }
 
 export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
@@ -32,9 +33,11 @@ export function AdjustSlFormLayout(props: AdjustSlFormLayoutProps) {
       <Box>
         <TxStatusSection txState={props.txState} />
       </Box>
-      <Box>
-        <RetryableLoadingButton {...props.addTriggerConfig} />
-      </Box>
+      {props.accountIsController && (
+        <Box>
+          <RetryableLoadingButton {...props.addTriggerConfig} />
+        </Box>
+      )}
       {/* TODO for now added as new line of text, this should be eventually included within changes information */}
       <Flex>Gas estimation: {props.gasEstimation}</Flex>
     </Grid>

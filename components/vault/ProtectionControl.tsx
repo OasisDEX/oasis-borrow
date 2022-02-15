@@ -39,9 +39,10 @@ function ZeroDebtProtectionBanner() {
 interface ProtectionControlProps {
   vault: Vault
   ilkData: IlkData
+  account?: string
 }
 
-export function ProtectionControl({ vault, ilkData }: ProtectionControlProps) {
+export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
@@ -72,6 +73,7 @@ export function ProtectionControl({ vault, ilkData }: ProtectionControlProps) {
                   automationTriggersData={automationTriggersData}
                   collateralPrices={collateralPrices}
                   vault={vault}
+                  account={account}
                 />
               }
             />

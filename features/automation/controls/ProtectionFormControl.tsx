@@ -7,6 +7,7 @@ import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/Ap
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
+import { accountIsConnectedValidator } from '../../form/commonValidators'
 import { AutomationFromKind } from '../common/enums/TriggersTypes'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormControl } from './AdjustSlFormControl'
@@ -18,6 +19,7 @@ interface Props {
   automationTriggersData: TriggersData
   collateralPrices: CollateralPricesWithFilters
   vault: Vault
+  account?: string
 }
 
 export function ProtectionFormControl({
@@ -25,6 +27,7 @@ export function ProtectionFormControl({
   automationTriggersData,
   collateralPrices,
   vault,
+  account,
 }: Props) {
   const { txHelpers$, context$ } = useAppContext()
 
@@ -41,6 +44,10 @@ export function ProtectionFormControl({
     )
   }, [currentForm])
 
+  const { isAutomationEnabled } = automationTriggersData
+  const accountIsConnected = accountIsConnectedValidator({ account })
+  const accountIsController = accountIsConnected ? account === vault.controller : false
+
   return (
     <WithErrorHandler error={[contextWithError.error]}>
       <WithLoadingIndicator
@@ -48,7 +55,11 @@ export function ProtectionFormControl({
         customLoader={<VaultContainerSpinner />}
       >
         {([context]) => (
-          <ProtectionFormLayout currentForm={currentForm} toggleForm={toggleForms}>
+          <ProtectionFormLayout
+            currentForm={currentForm}
+            toggleForm={toggleForms}
+            showButton={accountIsController && isAutomationEnabled}
+          >
             {currentForm === AutomationFromKind.ADJUST ? (
               <AdjustSlFormControl
                 vault={vault}
@@ -57,6 +68,7 @@ export function ProtectionFormControl({
                 triggerData={automationTriggersData}
                 tx={txHelpersWithError.value}
                 ctx={context}
+                accountIsController={accountIsController}
               />
             ) : (
               <CancelSlFormControl
