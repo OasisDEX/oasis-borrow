@@ -4,7 +4,9 @@ import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Grid, SxStyleProp } from 'theme-ui'
+import { SxStyleProp } from 'theme-ui'
+
+import { VaultHeaderContainer } from './VaultHeaderContainer'
 
 export function VaultIlkDetailsItem({
   label,
@@ -68,30 +70,18 @@ export function VaultIlkDetailsItem({
   )
 }
 
-export function VaultHeader(props: { id?: BigNumber; children: ReactNode }) {
-  const { id, children } = props
+export function VaultHeader(props: { header: string; id?: BigNumber; children: ReactNode }) {
+  const { id, header, children } = props
   const { t } = useTranslation()
 
   return (
-    <Grid mt={4}>
-      <Box
-        sx={{
-          mb: 4,
-          fontSize: 1,
-          fontWeight: 'semiBold',
-          color: 'text.subtitle',
-          display: ['grid', 'flex'],
-          gridTemplateColumns: '1fr 1fr',
-          gap: [3, 0],
-        }}
-      >
-        <VaultIlkDetailsItem
-          label={'VaultID'}
-          value={id ? id.toFixed(0) : 'T.B.D'}
-          tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
-        />
-        {children}
-      </Box>
-    </Grid>
+    <VaultHeaderContainer header={header}>
+      <VaultIlkDetailsItem
+        label="VaultID"
+        value={id ? id.toFixed(0) : 'T.B.D'}
+        tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
+      />
+      {children}
+    </VaultHeaderContainer>
   )
 }

@@ -7,6 +7,7 @@ import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/for
 import { VaultHeader, VaultIlkDetailsItem } from './VaultHeader'
 
 export interface DefaultVaultHeaderProps {
+  header: string
   id?: BigNumber
   ilkData: IlkData
 }
@@ -15,10 +16,12 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
   const {
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,
+    header,
   } = props
   const { t } = useTranslation()
+
   return (
-    <VaultHeader id={id}>
+    <VaultHeader id={id} header={header}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}

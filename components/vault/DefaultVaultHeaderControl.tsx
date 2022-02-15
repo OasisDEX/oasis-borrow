@@ -2,7 +2,7 @@ import { IlkData } from 'blockchain/ilks'
 import React from 'react'
 
 import { Vault } from '../../blockchain/vaults'
-import { DefaultVaultHeaderLayout } from './DefaultVaultHeaderLayout'
+import { VaultHeaderLayout } from './VaultHeaderLayout'
 
 export interface DefaultVaultHeaderControlProps {
   vault: Vault
@@ -28,5 +28,5 @@ export function DefaultVaultHeaderControl({ ilkData, vault }: DefaultVaultHeader
     ? guniHeaderProps
     : vaultHeaderProps
 
-  return <DefaultVaultHeaderLayout {...headerProps} />
+  return <VaultHeaderLayout {...headerProps} />
 }

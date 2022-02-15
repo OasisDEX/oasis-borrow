@@ -18,6 +18,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageVaultState } from '../pipes/manageVault'
@@ -122,17 +123,22 @@ export function ManageVaultDetails(
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const automationEnabled = useFeatureToggle('Automation')
 
   return (
     <Box>
-      <GetProtectionBannerControl vaultId={id} />
-      <StopLossBannerControl
-        vaultId={id}
-        liquidationPrice={liquidationPrice}
-        liquidationRatio={liquidationRatio}
-        afterLiquidationPrice={afterLiquidationPrice}
-        showAfterPill={showAfterPill}
-      />
+      {automationEnabled && (
+        <>
+          <GetProtectionBannerControl vaultId={id} />
+          <StopLossBannerControl
+            vaultId={id}
+            liquidationPrice={liquidationPrice}
+            liquidationRatio={liquidationRatio}
+            afterLiquidationPrice={afterLiquidationPrice}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      )}
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{

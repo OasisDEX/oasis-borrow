@@ -15,8 +15,12 @@ import { Box, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { DefaultVaultHeader } from '../../../../components/vault/DefaultVaultHeader'
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
+import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
+import { VaultHistoryView } from '../../../vaultHistory/VaultHistoryView'
 import { ManageVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -100,11 +104,20 @@ export function ManageVaultForm(props: ManageVaultState) {
   )
 }
 
-export function ManageVaultContainer({ manageVault }: { manageVault: ManageVaultState }) {
+export function ManageVaultContainer({
+  manageVault,
+  vaultHistory,
+}: {
+  manageVault: ManageVaultState
+  vaultHistory: VaultHistoryEvent[]
+}) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
-    vault: { id },
+    vault: { id, ilk },
+    clear,
   } = manageVault
+  const { t } = useTranslation()
+  const automationEnabled = useFeatureToggle('Automation')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -114,12 +127,16 @@ export function ManageVaultContainer({ manageVault }: { manageVault: ManageVault
     ).subscribe()
 
     return () => {
+      !automationEnabled && clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
+      {!automationEnabled && (
+        <DefaultVaultHeader {...manageVault} header={t('vault.header', { ilk, id })} id={id} />
+      )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageVaultDetails
@@ -128,6 +145,7 @@ export function ManageVaultContainer({ manageVault }: { manageVault: ManageVault
               uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
             }}
           />
+          {!automationEnabled && <VaultHistoryView vaultHistory={vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm {...manageVault} />
