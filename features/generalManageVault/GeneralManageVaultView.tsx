@@ -3,6 +3,9 @@ import { useAppContext } from 'components/AppContextProvider'
 import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
+import { ManageInstiVaultDetails } from 'features/instiVault/manage/containers/ManageInstiVaultDetails'
+import { ManageInstiVaultForm } from 'features/instiVault/manage/containers/ManageInstiVaultForm'
+import { ManageInstiVaultHeader } from 'features/instiVault/manage/containers/ManageInstiVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from 'helpers/observableHook'
@@ -11,7 +14,6 @@ import { Container } from 'theme-ui'
 
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
-import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -20,7 +22,7 @@ import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMul
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
 
-const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(27426))]
+const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
@@ -47,13 +49,17 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
           switch (generalManageVault.type) {
-            case VaultType.Borrow:
+            case VaultType.Borrow: // todo: add insti vault case
               return (
                 <Container variant="vaultPageContainer">
                   {INSTITUTIONAL_VAULT_IDS.some((bn) => bn.eq(id)) ? (
-                    <ManageInstiVaultContainer
+                    <ManageVaultContainer
                       vaultHistory={vaultHistory}
                       manageVault={generalManageVault.state}
+                      header={ManageInstiVaultHeader}
+                      details={ManageInstiVaultDetails}
+                      form={ManageInstiVaultForm}
+                      history={VaultHistoryView}
                     />
                   ) : (
                     <ManageVaultContainer

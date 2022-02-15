@@ -14,6 +14,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
+import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
@@ -92,7 +93,7 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState & { extraCards?: JSX.Element}) {
+export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
   const {
     vault: {
       token,
@@ -108,7 +109,7 @@ export function ManageVaultDetails(props: ManageVaultState & { extraCards?: JSX.
     collateralizationRatioAtNextPrice,
     inputAmountsEmpty,
     stage,
-    extraCards,
+    children,
   } = props
   const { t } = useTranslation()
   const openModal = useModal()
@@ -179,7 +180,7 @@ export function ManageVaultDetails(props: ManageVaultState & { extraCards?: JSX.
           afterPillColors={afterPillColors}
           showAfterPill={showAfterPill}
         />
-        {extraCards}
+        {children}
       </Grid>
       <ManageVaultDetailsSummary
         {...props}
