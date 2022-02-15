@@ -8,6 +8,7 @@ import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
+import * as dssCharter from './abi/dss-charter.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
@@ -25,7 +26,6 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import * as dssCharter from './abi/dss-charter.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,

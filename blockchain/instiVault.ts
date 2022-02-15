@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap, filter, map } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
+
 import { Vault } from './vaults'
 
 interface InstiVault extends Vault {
