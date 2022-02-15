@@ -5,8 +5,6 @@ const SENTRY_DSN: string =
 
 Sentry.init({
   dsn: SENTRY_DSN,
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
   tracesSampleRate: 1.0,
   environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
   // ...
