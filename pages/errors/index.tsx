@@ -11,6 +11,8 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
 export default function ServerError() {
   return (
     <ul>
+      <li>{process.env.HEROKU_BRANCH}</li>
+      <li>{process.env.SENTRY_RELEASE}</li>
       <li>
         <button
           type="button"
