@@ -30,7 +30,8 @@ import {
   OpenMultiplyData,
   ReclaimData,
   WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+  withdrawPaybackDepositGenerateLogicFactory,
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
@@ -91,6 +92,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
+import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -430,6 +432,7 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
+        withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         id,
       ),
     bigNumberTostring,

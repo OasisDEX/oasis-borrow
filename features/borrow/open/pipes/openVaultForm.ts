@@ -4,7 +4,7 @@ export type OpenVaultFormChange = {
   kind: 'toggleGenerateOption'
 }
 
-export function applyOpenVaultForm(change: OpenVaultChange, state: OpenVaultState): OpenVaultState {
+export function applyOpenVaultForm(state: OpenVaultState, change: OpenVaultChange): OpenVaultState {
   if (change.kind === 'toggleGenerateOption' && state.depositAmount) {
     return {
       ...state,

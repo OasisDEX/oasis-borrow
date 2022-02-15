@@ -13,6 +13,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -196,6 +197,7 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   saveVaultType$: SaveVaultType,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   change: (ch: ManageVaultChange) => void,
   state: ManageVaultState,
 ): ManageVaultState {
@@ -347,7 +349,7 @@ function addTransitions(
   if (state.stage === 'manageWaitingForConfirmation' || state.stage === 'manageFailure') {
     return {
       ...state,
-      progress: () => progressManage(txHelpers$, state, change),
+      progress: () => progressManage(txHelpers$, state, change, proxyActions),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -385,6 +387,7 @@ export function createManageVault$(
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   id: BigNumber,
 ): Observable<ManageVaultState> {
   return context$.pipe(
@@ -467,12 +470,13 @@ export function createManageVault$(
                     scan(apply, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    switchMap(curry(applyEstimateGas)(addGasEstimation$, proxyActions)),
                     map(
                       curry(addTransitions)(
                         txHelpers$,
                         connectedProxyAddress$,
                         saveVaultType$,
+                        proxyActions,
                         change,
                       ),
                     ),
