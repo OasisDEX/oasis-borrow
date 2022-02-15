@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { ManageVaultDetails } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
 import { ManageInstiVaultDetails } from 'features/instiVault/manage/containers/ManageInstiVaultDetails'
 import { ManageInstiVaultForm } from 'features/instiVault/manage/containers/ManageInstiVaultForm'
@@ -21,6 +19,7 @@ import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/Manage
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
+import { ManageInstiVaultContainer } from '../borrow/manage/containers/ManageInstitutionalVaultView'
 
 // Temporary stuff for testing insti vaults
 const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
@@ -71,10 +70,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                     <ManageVaultContainer
                       vaultHistory={vaultHistory}
                       manageVault={generalManageVault.state}
-                      header={DefaultVaultHeader}
-                      details={ManageVaultDetails}
-                      form={ManageVaultForm}
-                      history={VaultHistoryView}
                     />
                   )}
                 </Container>
