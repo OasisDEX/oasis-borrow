@@ -323,6 +323,9 @@
       "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
     }
   },
+  "manage-insti-vault": {
+    "origination-fee": "Origination Fee"
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "The Vault ID is a unique reference for your Maker Vault in Oasis.app.",
@@ -565,6 +568,7 @@
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
+    "insti-header": "Institutional {{ilk}} Vault {{id}}",
     "next-price": "Next price in {{count}} minute",
     "next-price-any-time": "Next price in <2 minutes",
     "next-price_plural": "Next price in {{count}} minutes",

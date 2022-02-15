@@ -22,7 +22,13 @@ import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMul
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
 
+// Temporary stuff for testing insti vaults
 const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
+const mockInstiVaultProps = {
+  originationFee: new BigNumber(0.01),
+  activeCollRatio: new BigNumber(1.4),
+  debtCeiling: new BigNumber(500000)
+} 
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
@@ -55,7 +61,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                   {INSTITUTIONAL_VAULT_IDS.some((bn) => bn.eq(id)) ? (
                     <ManageVaultContainer
                       vaultHistory={vaultHistory}
-                      manageVault={generalManageVault.state}
+                      manageVault={{...generalManageVault.state, vault: {...mockInstiVaultProps, ...generalManageVault.state.vault}}}
                       header={ManageInstiVaultHeader}
                       details={ManageInstiVaultDetails}
                       form={ManageInstiVaultForm}

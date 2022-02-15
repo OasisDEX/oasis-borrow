@@ -1,16 +1,19 @@
 import React from 'react'
 import { DefaultVaultHeader, DefaultVaultHeaderProps } from 'components/vault/DefaultVaultHeader'
-import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { useTranslation } from 'next-i18next'
+import { BigNumber } from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { formatPercent } from 'helpers/formatters/format'
 
-export function ManageInstiVaultHeader(props: DefaultVaultHeaderProps) {
-  const { ilkData, id } = props
+
+export function ManageInstiVaultHeader(props: DefaultVaultHeaderProps & { originationFee?: BigNumber}) {
+  const { ilkData, id, originationFee } = props
   const { t } = useTranslation()
-  return <DefaultVaultHeader header="Institutional Vault" ilkData={ilkData} id={id}>
+  return <DefaultVaultHeader header={t('vault.insti-header', { ilk: ilkData.ilk, id })} ilkData={ilkData} id={id}>
     <VaultIlkDetailsItem
-        label="Insti vault item"
-        value="123"
+        label={t('manage-vault.stability-fee')}
+        value={`${formatPercent(originationFee!.times(100), { precision: 2 })}`}
         tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
         styles={{
           tooltip: {
