@@ -46,7 +46,7 @@ export function ProtectionFormControl({
 
   const { isAutomationEnabled } = automationTriggersData
   const accountIsConnected = accountIsConnectedValidator({ account })
-  const accountIsController = accountIsConnected ? account === vault.controller : false
+  const accountIsController = accountIsConnected && account === vault.controller
 
   return (
     <WithErrorHandler error={[contextWithError.error]}>
