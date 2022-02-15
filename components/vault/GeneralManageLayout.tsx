@@ -43,6 +43,7 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyti
           <ProtectionControl
             vault={generalManageVault.state.vault}
             ilkData={generalManageVault.state.ilkData}
+            account={generalManageVault.state.account}
           />
         }
       />
