@@ -36,7 +36,7 @@ export function VaultHeaderLayout({
         }}
       >
         <VaultIlkDetailsItem
-          label={'VaultID'}
+          label="VaultID"
           value={id ? id.toFixed(0) : 'T.B.D'}
           tooltipContent={t('manage-multiply-vault.tooltip.vaultId')}
         />
