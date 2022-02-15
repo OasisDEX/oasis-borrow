@@ -25,7 +25,7 @@ import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
-  extractSLData,
+  extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
@@ -70,7 +70,7 @@ export function AdjustSlFormControl({
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
-  const { triggerId, stopLossLevel, isStopLossEnabled } = extractSLData(triggerData)
+  const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$ } = useAppContext()
 
   const replacedTriggerId = triggerId || 0

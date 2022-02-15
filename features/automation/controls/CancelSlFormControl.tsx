@@ -19,7 +19,7 @@ import { useObservable } from '../../../helpers/observableHook'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   determineProperDefaults,
-  extractSLData,
+  extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { TriggersData } from '../triggers/AutomationTriggersData'
@@ -30,6 +30,7 @@ function prepareRemoveTriggerData(
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
   triggerId: number,
+  removeAllowance: boolean,
 ): AutomationBotRemoveTriggerData {
   const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
 
@@ -37,6 +38,7 @@ function prepareRemoveTriggerData(
     ...baseTriggerData,
     kind: TxMetaKind.removeTrigger,
     triggerId,
+    removeAllowance,
   }
 }
 
@@ -57,11 +59,20 @@ export function CancelSlFormControl({
 }: CancelSlFormControlProps) {
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-  const { triggerId, isStopLossEnabled, stopLossLevel } = extractSLData(triggerData)
+  const { triggerId, isStopLossEnabled, stopLossLevel } = extractStopLossData(triggerData)
   const { addGasEstimation$ } = useAppContext()
 
+  // TODO: if there will be no existing triggers left after removal, allowance should be set to true
+  const removeAllowance = false
   const txData = useMemo(
-    () => prepareRemoveTriggerData(vault, collateralActive, selectedSLValue, triggerId),
+    () =>
+      prepareRemoveTriggerData(
+        vault,
+        collateralActive,
+        selectedSLValue,
+        triggerId,
+        removeAllowance,
+      ),
     [collateralActive, selectedSLValue, triggerId],
   )
 

@@ -10,7 +10,6 @@ import { TxMetaKind } from './txMeta'
 export type AutomationBaseTriggerData = {
   cdpId: BigNumber
   triggerType: BigNumber
-  commandAddress: string
   triggerData: string
   proxyAddress: string
 }
@@ -20,9 +19,12 @@ export type AutomationBotAddTriggerData = AutomationBaseTriggerData & {
   replacedTriggerId: number
 }
 
-export type AutomationBotRemoveTriggerData = AutomationBaseTriggerData & {
+export type AutomationBotRemoveTriggerData = {
   kind: TxMetaKind.removeTrigger
+  proxyAddress: string
+  cdpId: BigNumber
   triggerId: number
+  removeAllowance: boolean
 }
 
 function getAddAutomationTriggerCallData(
@@ -35,17 +37,17 @@ function getAddAutomationTriggerCallData(
     data.triggerType,
     data.replacedTriggerId,
     data.triggerData,
-  ) as any
+  )
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
-  prepareArgs: (data, context) => {
-    const { automationBot } = context
-    return [automationBot.address, getAddAutomationTriggerCallData(data, context).encodeABI()]
-  },
+  prepareArgs: (data, context) => [
+    context.automationBot.address,
+    getAddAutomationTriggerCallData(data, context).encodeABI(),
+  ],
 }
 // TODO ŁW refactor use template method pattern and getAddAutomationTriggerCallData
 function getRemoveAutomationTriggerCallData(
@@ -53,23 +55,19 @@ function getRemoveAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  // TODO ŁW allowance! But contract has it this way
-  const removeAllowance = false
   return contract<AutomationBot>(automationBot).methods.removeTrigger(
     data.cdpId,
     data.triggerId,
-    data.commandAddress,
-    removeAllowance,
-    data.triggerData,
-  ) as any
+    data.removeAllowance,
+  )
 }
 
 export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
-  prepareArgs: (data, context) => {
-    const { automationBot } = context
-    return [automationBot.address, getRemoveAutomationTriggerCallData(data, context).encodeABI()]
-  },
+  prepareArgs: (data, context) => [
+    context.automationBot.address,
+    getRemoveAutomationTriggerCallData(data, context).encodeABI(),
+  ],
 }

@@ -219,8 +219,8 @@ function createUIChangesSubject(): UIChanges {
   }
 
   return {
-    subscribe: subscribe,
-    publish: publish,
+    subscribe,
+    publish,
   }
 }
 

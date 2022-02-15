@@ -91,7 +91,8 @@
       { "internalType": "uint256", "name": "cdpId", "type": "uint256" },
       { "internalType": "bytes", "name": "triggerData", "type": "bytes" },
       { "internalType": "address", "name": "commandAddress", "type": "address" },
-      { "internalType": "uint256", "name": "triggerId", "type": "uint256" }
+      { "internalType": "uint256", "name": "triggerId", "type": "uint256" },
+      { "internalType": "uint256", "name": "txCostsDaiCoverage", "type": "uint256" }
     ],
     "name": "execute",
     "outputs": [],
@@ -140,9 +141,7 @@
     "inputs": [
       { "internalType": "uint256", "name": "cdpId", "type": "uint256" },
       { "internalType": "uint256", "name": "triggerId", "type": "uint256" },
-      { "internalType": "address", "name": "commandAddress", "type": "address" },
-      { "internalType": "bool", "name": "removeAllowance", "type": "bool" },
-      { "internalType": "bytes", "name": "triggerData", "type": "bytes" }
+      { "internalType": "bool", "name": "removeAllowance", "type": "bool" }
     ],
     "name": "removeTrigger",
     "outputs": [],

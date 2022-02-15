@@ -5,7 +5,7 @@ import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../components/TabSwitchLayout'
 import { AfterPillProps } from '../../../components/vault/VaultDetails'
 import { useObservable } from '../../../helpers/observableHook'
-import { extractSLData } from '../common/StopLossTriggerDataExtractor'
+import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { StopLossBannerLayout } from './StopLossBannerLayout'
 
@@ -27,7 +27,7 @@ export function StopLossBannerControl({
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const automationTriggersData = useObservable(autoTriggersData$)
 
-  const slData = automationTriggersData ? extractSLData(automationTriggersData) : null
+  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   if (slData && slData.isStopLossEnabled) {
     const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slData.stopLossLevel)
