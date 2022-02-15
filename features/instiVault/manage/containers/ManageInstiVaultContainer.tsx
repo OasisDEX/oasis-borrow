@@ -10,11 +10,11 @@ import { Box, Grid } from 'theme-ui'
 import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
-import { ManageInstiVaultForm } from './ManageInstiVaultForm'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { formatPercent } from 'helpers/formatters/format'
 import { BigNumber } from 'bignumber.js'
+import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 
 
 export function ManageInstiVaultContainer({
@@ -73,7 +73,7 @@ export function ManageInstiVaultContainer({
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
-          <ManageInstiVaultForm {...manageVault} />
+          <ManageVaultForm isInstiVault={true} {...manageVault} />
         </Box>
       </Grid>
     </>
