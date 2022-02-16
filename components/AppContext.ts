@@ -53,6 +53,7 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { AddFormChange } from 'features/automation/common/UITypes/AddFormChange'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
@@ -178,8 +179,6 @@ function createTxHelpers$(
   )
 }
 
-/* TODO: Try changing to:
-
 export type UiChangesTypes = {
   AdjustSlForm: AddFormChange
 }
@@ -187,13 +186,6 @@ export type UiChangesTypes = {
 export type UIChanges = {
   subscribe: <T extends keyof UiChangesTypes>(sub: T) => Observable<UiChangesTypes[T]>
   publish: <T extends keyof UiChangesTypes>(sub: T, event: UiChangesTypes[T]) => void
-}
-
-*/
-
-export type UIChanges = {
-  subscribe: <T>(sub: string) => Observable<T>
-  publish: <T>(sub: string, event: T) => void
 }
 
 function createUIChangesSubject(): UIChanges {
