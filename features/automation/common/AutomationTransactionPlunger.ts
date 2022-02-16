@@ -41,7 +41,8 @@ function handleFinalTransaction(
     resetStatus()
   } else {
     finishLoader(true)
-    resetStatus()
+    waitForTx.unsubscribe()
+    // resetStatus()
   }
   function resetStatus() {
     waitForTx.unsubscribe()
