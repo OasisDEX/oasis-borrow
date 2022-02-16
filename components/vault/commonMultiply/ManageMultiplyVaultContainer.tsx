@@ -7,6 +7,7 @@ import { trackingEvents } from '../../../analytics/analytics'
 import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from '../../../features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from '../../../features/vaultHistory/vaultHistory'
+import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { useAppContext } from '../../AppContextProvider'
 import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 
@@ -37,6 +38,7 @@ export function ManageMultiplyVaultContainer({
     ilkData,
   } = manageVault
   const { t } = useTranslation()
+  const automationEnabled = useFeatureToggle('Automation')
 
   useEffect(() => {
     const { token } = manageVault.vault
@@ -52,18 +54,20 @@ export function ManageMultiplyVaultContainer({
     ).subscribe()
 
     return () => {
-      clear()
+      !automationEnabled && clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      <Header header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+      {!automationEnabled && (
+        <Header header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+      )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />
-          <History vaultHistory={vaultHistory} />
+          {!automationEnabled && <History vaultHistory={vaultHistory} />}
         </Grid>
         <Box>
           <Form {...manageVault} />

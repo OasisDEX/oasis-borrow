@@ -18,6 +18,8 @@
   "activity": "Activity",
   "address": "Address",
   "address-invalid": "Address not found",
+  "add-stop-loss": "Add Stop Loss",
+  "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
   "after": "After",
   "after-next": "After + Next",
@@ -356,7 +358,15 @@
       "net-value-description": "The Net Value is calculated as the current value of the collateral in your vault minus the current debt.\nNote: This will not be exactly equal to the amount you will receive if you close your vault to Dai. This is due to fees applied when swapping collateral to Dai. The Net Value is calculated using the market price for the collateral using 1Inch.",
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
-      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
+      "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
+      "dynamic-stop-price": "Dynamic Stop price",
+      "max-token-on-stop-loss-trigger": "Max {{token}} on stop loss trigger",
+      "current-coll-ratio": "Current coll ratio",
+      "saving-comp-to-liquidation": "Saving compared to liquidation",
+      "above-liquidation-price": "above liquidation price",
+      "on-next-price": "on next price",
+      "up-to": "up to"
     },
     "action-tabs": {
       "adjust": "Adjust",
@@ -504,6 +514,32 @@
   "setup-proxy": "Setup Proxy",
   "setup-wallet": "Setup your wallet",
   "show-more": "Show more",
+  "slider": {
+    "adjust-multiply": {
+      "introduction-header": "Adjust your multiply",
+      "introduction-content": "",
+      "left-label": "Liquidation Price",
+      "right-label": "Collateral Ratio",
+      "left-footer": "Decrease risk",
+      "right-footer": "Increase risk"
+    },
+    "set-stoploss": {
+      "introduction-header": "Set downside protection",
+      "introduction-content": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+      "left-label": "Stop loss coll.ratio",
+      "right-label": "Dynamic stop price",
+      "left-footer": "Bigger loss",
+      "right-footer": "More likely execution"
+    }
+  },
+  "cancel-stoploss": {
+    "header": "Cancellation confirmation",
+    "description": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
+    "summary-header": "Cancel stop loss order summary",
+    "liquidation": "Liquidation price after cancellation",
+    "total": "Total transaction cost"
+  },
+  "notice": "Notice: Canceling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
@@ -766,6 +802,18 @@
       "subtext": "Borrow up to {{maxBorrow}} DAI for every $100,000 worth of {{token}}",
       "button": "Borrow against {{token}}"
     }
+  },
+  "protection": {
+    "navigate-cancel": "Cancel downside protection",
+    "navigate-adjust": "Return to adjusting stop loss",
+    "banner-header": "Get vault protection",
+    "banner-content": "Short text to introduce vault protection.",
+    "banner-button": "Set up Vault Protection ->",
+    "edit-vault-protection": "Edit Vault Protection",
+    "dynamic-stop-loss-price": "Dynamic Stop Loss Price",
+    "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
+    "zero-debt-heading": "You need to generate DAI before you can set up Stop Loss Protection",
+    "zero-debt-description": "Oasis Protection allows you to set up a stop loss for your vault. In the case of a sharp downturn in collateralisation ratio, while you are unavailable to manage your vault, the protection set at your desired collateralisation level will sell some of your collateral to cover your complete debt. Learn more about how it works under the hood"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

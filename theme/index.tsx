@@ -27,6 +27,7 @@ const oasisBaseTheme = {
     backgroundAlt: '#F1F3F4',
     surface: '#FFF',
 
+    fadedWhite: 'rgba(255, 255, 255, 0.5)',
     light: '#D1DEE6',
     lightIcon: '#BEC9D0',
     border: '#EAEAEA',
@@ -52,6 +53,7 @@ const oasisBaseTheme = {
     error: '#FDEDE8',
     onError: '#F75524',
     success: '#E7FCFA',
+    dimSuccess: 'rgba(26, 171, 155, 0.1)',
     onSuccess: '#1AAB9B',
     warning: '#FFF1CF',
     onWarning: '#D8762D',
@@ -392,6 +394,39 @@ const oasisBaseTheme = {
       '&:focus': {
         outline: 'none',
       },
+    },
+    tab: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      fontWeight: 'semiBold',
+      paddingTop: '5px',
+      paddingBottom: '5px',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.contrast',
+      transition: 'background 0.2s ease-in',
+      '&:focus-visible': {
+        bg: 'primaryEmphasis',
+      },
+      '&:disabled': {
+        bg: 'primaryAlt',
+        pointerEvents: 'none',
+      },
+      '&:focus': {
+        outline: 'none',
+      },
+    },
+    tabInactive: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      paddingTop: '5px',
+      paddingBottom: '5px',
+      fontWeight: 'semiBold',
+      borderRadius: 'round',
+      lineHeight: 'buttons',
+      color: 'text.subtitle',
+      transition: 'background 0.2s ease-in',
+      bg: 'unset',
     },
     outline: {
       variant: 'text.paragraph2',
