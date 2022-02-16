@@ -4,6 +4,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { Modal, ModalCloseIcon } from 'components/Modal'
+import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { ModalProps, useModal } from 'helpers/modalHook'
@@ -590,6 +591,61 @@ export function VaultDetailsCardLiquidationPrice({
       afterPillColors={afterPillColors}
     />
   )
+}
+
+export function VaultDetailsCardCollaterlizationRatio(props: ManageVaultState & AfterPillProps) {
+  const {
+    vault: {
+      collateralizationRatio
+    },
+    afterCollateralizationRatio,
+    collateralizationRatioAtNextPrice,
+    showAfterPill,
+    afterPillColors
+  } = props
+  const { t } = useTranslation()
+  const openModal = useModal()
+  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
+  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
+
+  return <VaultDetailsCard
+          title={`${t('system.collateralization-ratio')}`}
+          value={
+            <Text as="span" sx={{ color: collRatioColor }}>
+              {formatPercent(collateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+          }
+          valueAfter={
+            showAfterPill &&
+            formatPercent(afterCollateralizationRatio.times(100), {
+              precision: 2,
+              roundMode: BigNumber.ROUND_DOWN,
+            })
+          }
+          valueBottom={
+            <>
+              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
+                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Text>
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                {` on next price`}
+              </Text>
+            </>
+          }
+          openModal={() =>
+            openModal(VaultDetailsCardCollaterlizationRatioModal, {
+              collateralRatioOnNextPrice: collateralizationRatioAtNextPrice,
+              currentCollateralRatio: collateralizationRatio,
+            })
+          }
+          afterPillColors={afterPillColors}
+        />
 }
 
 export function VaultDetailsCardCurrentPrice(props: CommonVaultState) {

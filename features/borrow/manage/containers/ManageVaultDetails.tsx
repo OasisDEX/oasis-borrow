@@ -1,23 +1,20 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatioModal,
+  VaultDetailsCardCollaterlizationRatio,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
+import { formatAmount } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 import { ManageVaultState } from '../pipes/manageVault'
 
@@ -97,7 +94,6 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
   const {
     vault: {
       token,
-      collateralizationRatio,
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
@@ -106,15 +102,11 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
     afterLiquidationPrice,
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
-    collateralizationRatioAtNextPrice,
     inputAmountsEmpty,
     stage,
     children,
   } = props
-  const { t } = useTranslation()
-  const openModal = useModal()
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
+  
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -131,46 +123,11 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
             showAfterPill,
           }}
         />
-
-        <VaultDetailsCard
-          title={`${t('system.collateralization-ratio')}`}
-          value={
-            <Text as="span" sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
-          }
-          valueAfter={
-            showAfterPill &&
-            formatPercent(afterCollateralizationRatio.times(100), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })
-          }
-          valueBottom={
-            <>
-              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
-                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
-          openModal={() =>
-            openModal(VaultDetailsCardCollaterlizationRatioModal, {
-              collateralRatioOnNextPrice: collateralizationRatioAtNextPrice,
-              currentCollateralRatio: collateralizationRatio,
-            })
-          }
-          afterPillColors={afterPillColors}
+        <VaultDetailsCardCollaterlizationRatio 
+          afterPillColors={afterPillColors} 
+          showAfterPill={showAfterPill}
+          {...props}
         />
-
         <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
