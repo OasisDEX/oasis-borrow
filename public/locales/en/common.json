@@ -324,7 +324,10 @@
     }
   },
   "manage-insti-vault": {
-    "origination-fee": "Origination Fee"
+    "origination-fee": "Origination Fee",
+    "tooltip": {
+      "origination-fee": "Institutional Vault Origination Fee"
+    }
   },
   "manage-multiply-vault": {
     "tooltip": {

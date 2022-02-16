@@ -56,9 +56,9 @@ export function ManageInstiVaultContainer({
     <>
       <DefaultVaultHeader header={t('vault.insti-header', { ilk, id })} ilkData={ilkData} id={id}>
         <VaultIlkDetailsItem
-            label={t('manage-vault.stability-fee')}
+            label={t('manage-insti-vault.origination-fee')}
             value={`${formatPercent(originationFee.times(100), { precision: 2 })}`}
-            tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
+            tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
             styles={{
               tooltip: {
                 left: ['-80px', 'auto'],
