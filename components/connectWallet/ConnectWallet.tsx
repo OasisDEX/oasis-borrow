@@ -58,7 +58,7 @@ export async function getConnector(
       })
       const injectedKind = getInjectedWalletKind();
 
-      if (injectedKind === 'Tally') {
+      if (injectedKind?.name === 'Tally') {
         connector = new InjectedConnector({
           supportedChainIds: [1]
         })
@@ -234,59 +234,84 @@ function connect(
   }
 }
 
-export function getInjectedWalletKind() {
+export function getInjectedWalletKind(): ConnectionKindMessage | undefined {
   const w = window as any
 
-  if (w.imToken) return 'IMToken'
+  if (w.imToken) return {
+    name: 'IMToken'
+  }
 
-  if (w.ethereum?.isMetaMask) return 'MetaMask'
-  if (w.ethereum?.isTally) return 'Tally'
+  if (w.ethereum?.isMetaMask) return {
+    name: 'MetaMask'
+  }
+  if (w.ethereum?.isTally) return {
+    name: 'Tally',
+    iconName: 'tally_color'
+  }
 
   if (!w.web3 || typeof w.web3.currentProvider === 'undefined') return undefined
 
-  if (w.web3.currentProvider.isAlphaWallet) return 'Alpha Wallet'
+  if (w.web3.currentProvider.isAlphaWallet) return {
+    name: 'Alpha Wallet'
+  }
 
-  if (w.web3.currentProvider.isTrust) return 'Trust'
+  if (w.web3.currentProvider.isTrust) return {
+    name: 'Trust'
+  }
 
-  if (typeof w.SOFA !== 'undefined') return 'Coinbase'
+  if (typeof w.SOFA !== 'undefined') return {
+    name: 'Coinbase'
+  }
 
-  if (typeof w.__CIPHER__ !== 'undefined') return 'Coinbase'
+  if (typeof w.__CIPHER__ !== 'undefined') return {
+    name: 'Coinbase'
+  }
 
-  if (w.web3.currentProvider.constructor.name === 'EthereumProvider') return 'Mist'
+  if (w.web3.currentProvider.constructor.name === 'EthereumProvider') return {
+    name: 'Mist'
+  }
 
-  if (w.web3.currentProvider.constructor.name === 'Web3FrameProvider') return 'Parity'
+  if (w.web3.currentProvider.constructor.name === 'Web3FrameProvider') return {
+    name: 'Parity'
+  }
 
   if (w.web3.currentProvider.host && w.web3.currentProvider.host.indexOf('infura') !== -1)
-    return 'Infura'
+    return { name: 'Infura' }
 
   if (w.web3.currentProvider.host && w.web3.currentProvider.host.indexOf('localhost') !== -1)
-    return 'Localhost'
+    return { name: 'Localhost' }
 
-  return 'Injected provider'
+  return { name: 'Injected provider' }
 }
 
-export function getConnectionKindMessage(connectionKind: ConnectionKind) {
+type ConnectionKindMessage = {
+  name: string,
+  iconName?: string // ability to pass in an overide of metamask icon
+}
+
+
+export function getConnectionKindMessage(connectionKind: ConnectionKind): ConnectionKindMessage | undefined {
   switch (connectionKind) {
     case 'injected':
       return getInjectedWalletKind()
     case 'walletConnect':
-      return 'WalletConnect'
+      return { name: 'WalletConnect' }
     case 'walletLink':
-      return 'Coinbase wallet'
+      return { name: 'Coinbase wallet' }
     case 'portis':
-      return 'Portis wallet'
+      return { name: 'Portis wallet' }
     case 'myetherwallet':
-      return 'My Ether Wallet'
+      return { name: 'My Ether Wallet'}
     case 'trezor':
-      return 'Trezor'
+      return { name: 'Trezor' }
     case 'ledger':
-      return 'Ledger'
+      return { name: 'Ledger' }
     case 'network':
-      return 'Network'
+      return { name: 'Network' }
     case 'gnosisSafe':
-      return 'Gnosis Safe'
+      return { name: 'Gnosis Safe' }
     case 'magicLink':
-      return 'MagicLink'
+      return { name: 'MagicLink' }
   }
 }
 
@@ -395,13 +420,18 @@ export function ConnectWallet() {
           const isConnecting =
             (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
             web3Context.connectionKind === connectionKind
-          const connectionKindMsg = getConnectionKindMessage(connectionKind)
+          let connectionKindMsg = getConnectionKindMessage(connectionKind)
           const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
           const missingInjectedWallet = connectionKindMsg === undefined
+          const iconName_ = connectionKind === 'injected'
+            // default to metamask_color if no iconName is provided by injected wallet
+            ? connectionKindMsg?.iconName ?? 'metamask_color' 
+            : iconName
           const description = missingInjectedWallet
             ? t('connect-install-metamask')
             : t(descriptionTranslation, {
-                connectionKind: connectionKindMsg,
+                // @ts-expect-error this check is handled with missingInjectedWallet above
+                connectionKind: connectionKindMsg.name,
               })
 
           return (
@@ -409,7 +439,7 @@ export function ConnectWallet() {
               {...{
                 key: connectionKind,
                 isConnecting,
-                iconName,
+                iconName: iconName_,
                 description,
                 connect:
                   web3Context.status === 'connecting'
