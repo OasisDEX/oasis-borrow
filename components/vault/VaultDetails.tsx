@@ -593,7 +593,7 @@ export function VaultDetailsCardLiquidationPrice({
   )
 }
 
-export function VaultDetailsCardCollaterlizationRatio(props: ManageVaultState & AfterPillProps) {
+export function VaultDetailsCardCollateralizationRatio(props: ManageVaultState & AfterPillProps) {
   const {
     vault: {
       collateralizationRatio

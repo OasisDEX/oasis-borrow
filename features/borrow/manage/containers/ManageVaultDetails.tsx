@@ -4,21 +4,20 @@ import {
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatio,
+  VaultDetailsCardCollateralizationRatio,
   VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount } from 'helpers/formatters/format'
-import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { ManageVaultState } from '../pipes/manageVault'
 
-function ManageVaultDetailsSummary({
+export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
   afterDebt,
   afterFreeCollateral,
@@ -90,7 +89,7 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
+export function ManageVaultDetails(props: ManageVaultState) {
   const {
     vault: {
       token,
@@ -104,7 +103,6 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
-    children,
   } = props
   
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -123,7 +121,7 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
             showAfterPill,
           }}
         />
-        <VaultDetailsCardCollaterlizationRatio 
+        <VaultDetailsCardCollateralizationRatio 
           afterPillColors={afterPillColors} 
           showAfterPill={showAfterPill}
           {...props}
@@ -137,7 +135,6 @@ export function ManageVaultDetails(props: ManageVaultState & WithChildren) {
           afterPillColors={afterPillColors}
           showAfterPill={showAfterPill}
         />
-        {children}
       </Grid>
       <ManageVaultDetailsSummary
         {...props}
