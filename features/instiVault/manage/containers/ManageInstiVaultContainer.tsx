@@ -69,7 +69,7 @@ export function ManageInstiVaultContainer({
       </DefaultVaultHeader>
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <ManageInstiVaultDetails {...manageVault} />
+          <ManageInstiVaultDetails {...manageVault} activeCollRatio={activeCollRatio}/>
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>

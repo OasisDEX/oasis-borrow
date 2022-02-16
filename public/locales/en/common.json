@@ -325,8 +325,13 @@
   },
   "manage-insti-vault": {
     "origination-fee": "Origination Fee",
+    
     "tooltip": {
       "origination-fee": "Institutional Vault Origination Fee"
+    },
+    "card": {
+      "min-active-coll-ratio-price": "Minimum active Coll ratio Price",
+      "min-active-coll-ratio": "{{percentageRatio}} minimum active coll ratio"
     }
   },
   "manage-multiply-vault": {
