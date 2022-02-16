@@ -31,6 +31,7 @@ interface AdjustSlFormHeaderProps {
   txSuccess: boolean
 }
 
+// TODO potential to be a config-based component per specific state, to be verified with close step
 function AdjustSlFormHeader({ txProgressing, txSuccess }: AdjustSlFormHeaderProps) {
   const { t } = useTranslation()
   const txStates = txProgressing || txSuccess
