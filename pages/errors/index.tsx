@@ -2,9 +2,8 @@ import { MarketingLayout } from 'components/Layouts'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
 
-import { TriggerErrorWithUseObservableWithError } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservableWithError'
 import { TriggerErrorWithUseObservable } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservable'
-import { useObservable, useObservableWithError } from '../../helpers/observableHook'
+import { TriggerErrorWithUseObservableWithError } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservableWithError'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
