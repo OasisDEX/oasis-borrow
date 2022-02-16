@@ -118,4 +118,4 @@ const conf = withBundleAnalyzer(
   ),
 )
 
-module.exports = withSentryConfig(conf) // sentry needs to be last for accurate sourcemaps
+module.exports = withSentryConfig(conf, { ignore: [] }) // sentry needs to be last for accurate sourcemaps
