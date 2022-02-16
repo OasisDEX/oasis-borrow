@@ -5,7 +5,7 @@ import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../components/TabSwitchLayout'
 import { useObservable } from '../../../helpers/observableHook'
 import { useSessionStorage } from '../../../helpers/useSessionStorage'
-import { extractSLData } from '../common/StopLossTriggerDataExtractor'
+import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 
@@ -19,7 +19,7 @@ export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const automationTriggersData = useObservable(autoTriggersData$)
 
-  const slData = automationTriggersData ? extractSLData(automationTriggersData) : null
+  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   const handleClose = useCallback(() => setIsBannerClosed(true), [])
 

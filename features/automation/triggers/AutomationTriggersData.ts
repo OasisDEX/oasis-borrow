@@ -26,13 +26,12 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
 
 export interface TriggerRecord {
   triggerId: number
-  commandAddress: string // TODO: Temp solution as yet we don't have it in cache ~ŁW
   executionParams: string // bytes triggerData from TriggerAdded event
 }
 
 export interface TriggersData {
   isAutomationEnabled: boolean
-  triggers: List<TriggerRecord> | undefined
+  triggers?: List<TriggerRecord>
 }
 
 export function createAutomationTriggersData(

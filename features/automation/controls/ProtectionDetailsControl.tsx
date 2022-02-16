@@ -5,7 +5,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import React, { useEffect, useState } from 'react'
 
-import { extractSLData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
@@ -74,7 +74,7 @@ export function ProtectionDetailsControl({
   console.log('rendering ProtDetailsControl')
 
   return renderLayout(
-    extractSLData(automationTriggersData),
+    extractStopLossData(automationTriggersData),
     vault,
     collateralPrices,
     ilkData,

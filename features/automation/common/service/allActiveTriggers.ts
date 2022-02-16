@@ -7,31 +7,30 @@ const query = gql`
     allActiveTriggers(filter: { cdpId: { equalTo: $vaultId } }, orderBy: [BLOCK_ID_ASC]) {
       nodes {
         triggerId
-        commandAddress
         triggerData
       }
     }
   }
 `
+
+interface ActiveTrigger {
+  triggerId: number
+  triggerData: string
+}
+
 // vaultId is string here because gql expects type BigFloat but can only parse string values
 export async function getAllActiveTriggers(
   client: GraphQLClient,
   vaultId: string,
 ): Promise<List<TriggerRecord>> {
-  const data = await client.request(query, { vaultId: vaultId })
-  console.log('data returned from gql')
-  console.log(data)
+  const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
+    vaultId,
+  })
 
-  const returnedRecords = data.allActiveTriggers.nodes.map(
-    (record: { triggerId: number; commandAddress: string; triggerData: string }) => {
-      return {
-        triggerId: record.triggerId,
-        commandAddress: record.commandAddress,
-        executionParams: record.triggerData,
-      }
-    },
-  )
-  console.log('returned records after map')
-  console.log(returnedRecords)
+  const returnedRecords = data.allActiveTriggers.nodes.map((record) => ({
+    triggerId: record.triggerId,
+    executionParams: record.triggerData,
+  }))
+
   return returnedRecords
 }
