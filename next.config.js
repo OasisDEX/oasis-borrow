@@ -118,4 +118,9 @@ const conf = withBundleAnalyzer(
   ),
 )
 
-module.exports = withSentryConfig(conf, { ignore: [] }) // sentry needs to be last for accurate sourcemaps
+// sentry needs to be last for accurate sourcemaps
+module.exports = withSentryConfig(conf, {
+  org: 'oazo-apps',
+  project: 'oazo-apps',
+  url: 'https://sentry.io/',
+})
