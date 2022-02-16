@@ -6,13 +6,14 @@
     "node": "16.x"
   },
   "scripts": {
+    "thing":"if [[ -z $SENTRY_RELEASE && -n $HEROKU_APP_NAME ]]; then echo run; echo hello; else echo $SENTRY_RELEASE; fi;",
     "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
     "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
-    "build": "if [[ -z $SENTRY_RELEASE ]]; then SENTRY_RELEASE=\"$HEROKU_APP_NAME\"; fi; next build && node sitemapGenerator.js",
-    "build:server": "if [[ -z $SENTRY_RELEASE ]]; then SENTRY_RELEASE=\"$HEROKU_APP_NAME\"; fi; tsc --project ./tsconfig.prod.json",
+    "build": "next build && node sitemapGenerator.js",
+    "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
     "lint": "eslint --ext .ts --ext .tsx .",
