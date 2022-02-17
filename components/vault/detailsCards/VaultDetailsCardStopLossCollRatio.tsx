@@ -31,7 +31,7 @@ export function VaultDetailsCardStopLossCollRatio({
   slRatio: BigNumber
   collateralizationRatio: BigNumber
   isProtected: boolean
-  afterSlRatio?: BigNumber
+  afterSlRatio: BigNumber
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
@@ -58,7 +58,6 @@ export function VaultDetailsCardStopLossCollRatio({
       }
       valueAfter={
         showAfterPill &&
-        afterSlRatio &&
         formatPercent(afterSlRatio.times(100), {
           precision: 2,
         })
