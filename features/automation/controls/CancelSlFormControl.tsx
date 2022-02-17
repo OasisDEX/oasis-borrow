@@ -17,6 +17,7 @@ import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesIn
 import { GasEstimationStatus } from '../../../helpers/form'
 import { useObservable } from '../../../helpers/observableHook'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
+import { progressStatuses } from '../common/consts/txStatues'
 import {
   determineProperDefaults,
   extractStopLossData,
@@ -46,16 +47,20 @@ interface CancelSlFormControlProps {
   vault: Vault
   ilkData: IlkData
   triggerData: TriggersData
-  tx?: TxHelpers
   ctx: Context
+  toggleForms: () => void
+  accountIsController: boolean
+  tx?: TxHelpers
 }
 
 export function CancelSlFormControl({
   vault,
   ilkData,
   triggerData,
-  tx,
   ctx,
+  toggleForms,
+  accountIsController,
+  tx,
 }: CancelSlFormControlProps) {
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
@@ -115,11 +120,16 @@ export function CancelSlFormControl({
     disabled: isOwner,
   }
 
+  const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
+
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: txStatus,
     gasEstimation: getEstimatedGasFeeText(gasEstimationData),
+    accountIsController,
+    toggleForms,
+    txProgressing,
   }
 
   return <CancelSlFormLayout {...props} />
