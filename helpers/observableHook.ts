@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 import { useAppContext } from 'components/AppContextProvider'
-import { useEffect, useReducer,useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
