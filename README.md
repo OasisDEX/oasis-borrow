@@ -147,6 +147,10 @@ Some of the values that are used you can check in the `.env` file.
 - `ETHERSCAN_API_KEY` - The value is used to create the corresponding etherscan endpoint. For each
   transaction, there is a url that leads to that TX details in etherscan.
 
+- `SENTRY_RELEASE` - The release in sentry.io.  Used by sentry.io to generate and upload source maps for a given release at build time, and tie those source maps to errors sent to sentry at run time.
+
+- `SENTRY_AUTH_TOKEN` - auth token used by sentry.io to upload source maps.
+
 As mentioned previously, there is also the custom express server part which uses the env variables
 at _run time_
 
@@ -164,6 +168,10 @@ at _run time_
 - `MAILCHIMP_ENDPOINT` - Mailchimp endpoint with audience ID used to integrate Mailchimp newsletter.
 
 - `MAILCHIMP_API_KEY` - Mailchimp API Key used to integrate Mailchimp newsletter.
+
+- `SENTRY_RELEASE` - The release in sentry.io.  Used by sentry.io to generate and upload source maps for a given release at build time, and tie those source maps to errors sent to sentry at run time.
+
+- `NEXT_PUBLIC_SENTRY_ENV` - The environment that sentry events are tagged as.  `production` | `staging` | `pullrequest` | `development`
 
 _Note: Make sure that you call the process that build the project with the `build-time` vars and
 make sure that you call the proces that runs the application with the `run-time` vars._
