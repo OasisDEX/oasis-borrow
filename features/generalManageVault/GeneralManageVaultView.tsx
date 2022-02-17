@@ -27,7 +27,8 @@ const instiMockedData =
     activeCollRatioPriceUSD: new BigNumber(1300),
     debtCeiling: new BigNumber(500000),
     termEnd: new Date('11/12/2022'),
-    fixedFee: new BigNumber(0.015)
+    fixedFee: new BigNumber(0.015),
+    nextFixedFee: new BigNumber(0.014)
   }
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {

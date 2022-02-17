@@ -331,7 +331,10 @@
     },
     "card": {
       "min-active-coll-ratio-price": "Minimum active Coll ratio Price",
-      "min-active-coll-ratio": "{{percentageRatio}} minimum active coll ratio"
+      "min-active-coll-ratio": "{{percentageRatio}} minimum active coll ratio",
+      "current-fixed-fee": "Current Fixed Fee",
+      "next-fee-change": "Next fee change",
+      "term-end": "Term End"
     }
   },
   "manage-multiply-vault": {

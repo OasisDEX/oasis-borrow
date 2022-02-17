@@ -7,7 +7,8 @@ type InstiVault = {
   activeCollRatioPriceUSD: BigNumber,
   debtCeiling: BigNumber,
   termEnd: Date,
-  fixedFee: BigNumber
+  fixedFee: BigNumber,
+  nextFixedFee: BigNumber
 }
 
 export type ManageInstiVaultState = ManageVaultState & InstiVault

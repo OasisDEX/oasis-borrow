@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Box, Grid, Text } from 'theme-ui'
 import { 
   getAfterPillColors,
   getCollRatioColor,
@@ -10,7 +10,7 @@ import {
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { useTranslation } from 'next-i18next'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent, formatRatio } from 'helpers/formatters/format'
 import { BigNumber } from 'bignumber.js'
 import { ManageInstiVaultState } from '../pipes/manageVault'
 
@@ -31,31 +31,28 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     activeCollRatioPriceUSD,
     debtCeiling,
     termEnd,
-    fixedFee
+    fixedFee,
+    nextFixedFee
   } = props
   const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  
+  const afterPill = {
+    afterPillColors: getAfterPillColors(afterCollRatioColor),
+    showAfterPill: !inputAmountsEmpty && stage !== 'manageSuccess' ,
+  }
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCard
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
-          valueBottom={t('min-active-coll-ratio', { percentageRatio: 
-            formatPercent(activeCollRatio.times(100), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })})}
-          afterPillColors={afterPillColors} 
-          showAfterPill={showAfterPill}
+          valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', { percentageRatio: 
+            formatRatio(activeCollRatio)})}
+          {...afterPill}
         />
         <VaultDetailsCardCollateralizationRatio 
-          afterPillColors={afterPillColors} 
-          showAfterPill={showAfterPill}
           {...props}
+          {...afterPill}
         />
         <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
@@ -63,14 +60,25 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           afterDepositAmountUSD={afterLockedCollateralUSD}
           depositAmount={lockedCollateral}
           token={token}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
+          {...afterPill}
+        />
+        <VaultDetailsCard
+          title={t('manage-insti-vault.card.current-fixed-fee')}
+          value={formatRatio(fixedFee)}
+          valueBottom={
+            <>
+              <Text as="span" sx={{ color: 'text.subtitle' }}>
+                {t('manage-insti-vault.card.next-fee-change')}{' '}
+              </Text>
+              {formatRatio(nextFixedFee)}
+            </>
+          }
+          {...afterPill}
         />
       </Grid>
       <ManageVaultDetailsSummary
         {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
+        {...afterPill}
       />
     </Box>
   )
