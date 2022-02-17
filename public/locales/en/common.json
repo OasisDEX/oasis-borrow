@@ -77,6 +77,7 @@
     "title": "Contact Us"
   },
   "continue": "Continue",
+  "fact": "Fact",
   "conversion-fee": "Conversion fee",
   "copied": "Copied",
   "copy-address": "Copy address",
@@ -819,9 +820,20 @@
     "dynamic-stop-loss": "Dynamic Stop Loss",
     "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
     "total-cost": "Total transaction cost",
+    "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
     "zero-debt-heading": "You need to generate DAI before you can set up Stop Loss Protection",
-    "zero-debt-description": "Oasis Protection allows you to set up a stop loss for your vault. In the case of a sharp downturn in collateralisation ratio, while you are unavailable to manage your vault, the protection set at your desired collateralisation level will sell some of your collateral to cover your complete debt. Learn more about how it works under the hood"
+    "zero-debt-description": "Oasis Protection allows you to set up a stop loss for your vault. In the case of a sharp downturn in collateralisation ratio, while you are unavailable to manage your vault, the protection set at your desired collateralisation level will sell some of your collateral to cover your complete debt. Learn more about how it works under the hood",
+    "summary-of-protection": "Summary of protection",
+    "on-stop-loss-trigger": "On stop loss trigger",
+    "estimated-to-receive": "Estimated to receive",
+    "saving-comp-to-liquidation": "Saving compared to liquidation",
+    "estimated-fees-on-trigger": "Estimated fees on trigger",
+    "up-to": "up to",
+    "not-guaranteed": "Automation isn't guaranteed to work 100% of the time",
+    "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
+    "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
+    "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
