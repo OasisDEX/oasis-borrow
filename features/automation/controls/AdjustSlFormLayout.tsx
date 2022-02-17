@@ -7,7 +7,7 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image } from 'theme-ui'
+import { Divider, Flex, Image, Text } from 'theme-ui'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
@@ -17,6 +17,7 @@ import {
   RetryableLoadingButtonProps,
 } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
+import { AppLink } from '../../../components/Links'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
@@ -99,7 +100,7 @@ function ProtectionCompleteInformation({
     .div(dynamicStopLossPrice)
 
   return (
-    <VaultChangesInformationContainer title="Summary of protection">
+    <VaultChangesInformationContainer title={t('protection.summary-of-protection')}>
       <VaultChangesInformationItem
         label={`${t('protection.stop-loss-coll-ratio')}`}
         value={
@@ -131,6 +132,80 @@ function ProtectionCompleteInformation({
   )
 }
 
+interface SetDownsideProtectionInformationProps {
+  vault: Vault
+  ilkData: IlkData
+  token: string
+  gasEstimation: ReactNode
+  afterStopLossRatio: BigNumber
+}
+
+function SetDownsideProtectionInformation({
+  vault,
+  ilkData,
+  token,
+  gasEstimation,
+  afterStopLossRatio,
+}: SetDownsideProtectionInformationProps) {
+  const { t } = useTranslation()
+
+  const afterDynamicStopLossPrice = vault.liquidationPrice
+    .div(ilkData.liquidationRatio)
+    .times(afterStopLossRatio.div(100))
+
+  const afterMaxEth = vault.lockedCollateral
+    .times(afterDynamicStopLossPrice)
+    .minus(vault.debt)
+    .div(afterDynamicStopLossPrice)
+
+  const ethDuringLiquidation = vault.debt
+    .times(ilkData.liquidationRatio)
+    .div(vault.liquidationPrice)
+
+  const savingCompareToLiquidation = ethDuringLiquidation.minus(afterMaxEth)
+
+  return (
+    <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
+      <VaultChangesInformationItem
+        label={`${t('protection.estimated-to-receive')}`}
+        value={
+          <Flex>
+            {t('protection.up-to')} {formatAmount(afterMaxEth, token)} {token}
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={`${t('protection.saving-comp-to-liquidation')}`}
+        value={
+          <Flex>
+            {t('protection.up-to')} {formatAmount(savingCompareToLiquidation, token)} {token}
+          </Flex>
+        }
+      />
+      <VaultChangesInformationItem
+        label={`${t('protection.estimated-fees-on-trigger', { token })}`}
+        // TODO replace with correct estimation
+        value={<Flex>${formatAmount(new BigNumber(30), 'USD')}</Flex>}
+      />
+      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      <Box sx={{ fontSize: 2 }}>
+        <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
+        <Text sx={{ mb: 3 }}>
+          {t('protection.guarantee-factors')}{' '}
+          <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
+            {t('protection.learn-more-about-automation')}
+          </AppLink>
+        </Text>
+        <Text>
+          <strong>{t('fact')}: </strong>
+          {/* TODO values mocked for now, we will need data source for those */}
+          {t('protection.automation-fact', { success: 12, total: 12 })}
+        </Text>
+      </Box>
+    </VaultChangesInformationContainer>
+  )
+}
+
 export interface AdjustSlFormLayoutProps {
   token: string
   closePickerConfig: PickCloseStateProps
@@ -149,6 +224,7 @@ export interface AdjustSlFormLayoutProps {
   ilkData: IlkData
   isEditing: boolean
   etherscan: string
+  selectedSLValue: BigNumber
 }
 
 export function AdjustSlFormLayout({
@@ -167,6 +243,7 @@ export function AdjustSlFormLayout({
   isEditing,
   gasEstimation,
   etherscan,
+  selectedSLValue,
 }: AdjustSlFormLayoutProps) {
   return (
     <Grid columns={[1]}>
@@ -180,6 +257,22 @@ export function AdjustSlFormLayout({
           <Box>
             <PickCloseState {...closePickerConfig} />
           </Box>
+          {isEditing && (
+            <>
+              <Box>
+                <Divider variant="styles.hrVaultFormBottom" mb={3} />
+              </Box>
+              <Box>
+                <SetDownsideProtectionInformation
+                  token={token}
+                  vault={vault}
+                  ilkData={ilkData}
+                  gasEstimation={gasEstimation}
+                  afterStopLossRatio={selectedSLValue}
+                />
+              </Box>
+            </>
+          )}
         </>
       )}
 
@@ -207,8 +300,6 @@ export function AdjustSlFormLayout({
           <RetryableLoadingButton {...addTriggerConfig} />
         </Box>
       )}
-      {/* TODO for now added as new line of text, this should be eventually included within changes information */}
-      {isEditing && !txProgressing && !txSuccess && <Flex>Gas estimation: {gasEstimation}</Flex>}
     </Grid>
   )
 }

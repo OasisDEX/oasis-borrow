@@ -69,6 +69,8 @@ jobs:
                      --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_STAGING_API_KEY }} \
                      --build-arg SHOW_BUILD_INFO=1 \
                      --build-arg NODE_ENV=production \
+                     --build-arg NEXT_PUBLIC_SENTRY_ENV=development \
+                     --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
                      --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
                      -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \

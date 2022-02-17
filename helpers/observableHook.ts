@@ -18,7 +18,6 @@ export function useUIChanges<S, A>(
 
   const [uiState, dispatch] = useReducer(handler, initial)
   useEffect(() => {
-    console.log('New state', uiState)
     publishUIChange(uiState)
   }, [uiState])
   return dispatch
