@@ -1,5 +1,4 @@
 import React from 'react'
-import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { Box, Grid } from 'theme-ui'
 import { 
   getAfterPillColors,
@@ -10,13 +9,13 @@ import {
   VaultDetailsCard 
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
-import t from 'pages/api/t'
 import { useTranslation } from 'next-i18next'
-import { formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { BigNumber } from 'bignumber.js'
+import { ManageInstiVaultState } from '../pipes/manageVault'
 
 
-export function ManageInstiVaultDetails(props: ManageVaultState & {activeCollRatio: BigNumber }) {
+export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
     vault: {
       token,
@@ -27,7 +26,12 @@ export function ManageInstiVaultDetails(props: ManageVaultState & {activeCollRat
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
-    activeCollRatio
+    activeCollRatio,
+
+    activeCollRatioPriceUSD,
+    debtCeiling,
+    termEnd,
+    fixedFee
   } = props
   const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -39,7 +43,7 @@ export function ManageInstiVaultDetails(props: ManageVaultState & {activeCollRat
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCard
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
-          value="todo"
+          value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
           valueBottom={t('min-active-coll-ratio', { percentageRatio: 
             formatPercent(activeCollRatio.times(100), {
               precision: 2,

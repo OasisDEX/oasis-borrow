@@ -19,7 +19,16 @@ import { VaultType } from './vaultType'
 import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 
 // Temporary stuff for testing insti vaults
-const INSTITUTIONAL_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
+export const INSTI_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
+const instiMockedData = 
+  { 
+    originationFee: new BigNumber(0.01),
+    activeCollRatio: new BigNumber(1.4),
+    activeCollRatioPriceUSD: new BigNumber(1300),
+    debtCeiling: new BigNumber(500000),
+    termEnd: new Date('11/12/2022'),
+    fixedFee: new BigNumber(0.015)
+  }
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
@@ -49,10 +58,10 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             case VaultType.Borrow: // todo: add insti vault case
               return (
                 <Container variant="vaultPageContainer">
-                  {INSTITUTIONAL_VAULT_IDS.some((bn) => bn.eq(id)) ? (
+                  {INSTI_VAULT_IDS.some((bn) => bn.eq(id)) ? (
                     <ManageInstiVaultContainer
                       vaultHistory={vaultHistory}
-                      manageVault={generalManageVault.state}
+                      manageVault={{...generalManageVault.state, ...instiMockedData}}
                     />
                   ) : (
                     <ManageVaultContainer
