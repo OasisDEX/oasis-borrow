@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 
 import { TriggerErrorWithUseObservable } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservable'
 import { TriggerErrorWithUseObservableWithError } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservableWithError'
+import { GetServerSideProps } from 'next'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -71,3 +72,12 @@ export default function ServerError() {
 
 ServerError.layout = MarketingLayout
 ServerError.theme = 'Landing'
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  if (process.env.NEXT_PUBLIC_SENTRY_ENV === 'production') {
+    return {
+      notFound: true,
+    }
+  }
+  return { props: {} }
+}
