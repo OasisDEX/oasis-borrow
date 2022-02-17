@@ -13,6 +13,7 @@ import { useTranslation } from 'next-i18next'
 import { formatAmount, formatPercent, formatRatio } from 'helpers/formatters/format'
 import { BigNumber } from 'bignumber.js'
 import { ManageInstiVaultState } from '../pipes/manageVault'
+import moment from 'moment'
 
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
@@ -72,6 +73,14 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
               </Text>
               {formatRatio(nextFixedFee)}
             </>
+          }
+          {...afterPill}
+        />
+        <VaultDetailsCard
+          title={t('manage-insti-vault.card.term-end')}
+          value={moment(termEnd).format('Do MMMM YYYY')}
+          valueBottom={
+            t('manage-insti-vault.card.days-remaining', { days: moment(termEnd).diff(moment(), 'days')})
           }
           {...afterPill}
         />
