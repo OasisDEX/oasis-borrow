@@ -7,6 +7,7 @@ import { TxStatusCardProgress, TxStatusCardSuccess } from '../vault/TxStatusCard
 
 export interface TxStatusSectionProps<A extends TxMeta> {
   txState: TxState<A> | undefined
+  etherscan: string
 }
 
 export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>) {
@@ -18,14 +19,14 @@ export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>
   return (
     <>
       {txStatus && progressStatuses.includes(txStatus) && (
-        <TxStatusCardProgress
-          text={t('waiting-confirmation')}
-          etherscan={''}
-          txHash={(props.txState as any).txHash}
-        />
+        <TxStatusCardProgress text={t('waiting-confirmation')} etherscan={''} txHash={txHash} />
       )}
       {txStatus === TxStatus.Success && txHash && (
-        <TxStatusCardSuccess text={t('vault-changed')} etherscan={''} txHash={txHash} />
+        <TxStatusCardSuccess
+          text={t('vault-changed')}
+          etherscan={props.etherscan}
+          txHash={txHash}
+        />
       )}
     </>
   )

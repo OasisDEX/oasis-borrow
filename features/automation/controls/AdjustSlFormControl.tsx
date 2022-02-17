@@ -77,7 +77,7 @@ export function AdjustSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
   const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
-
+  console.log(ctx)
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
@@ -230,6 +230,7 @@ export function AdjustSlFormControl({
   const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
   const txSuccess = txStatus?.status === TxStatus.Success
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const etherscan = ctx.etherscan.url
 
   const props: AdjustSlFormLayoutProps = {
     token,
@@ -248,6 +249,7 @@ export function AdjustSlFormControl({
     vault,
     ilkData,
     isEditing,
+    etherscan,
   }
 
   return <AdjustSlFormLayout {...props} />

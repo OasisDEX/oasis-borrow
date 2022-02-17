@@ -148,6 +148,7 @@ export interface AdjustSlFormLayoutProps {
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
+  etherscan: string
 }
 
 export function AdjustSlFormLayout({
@@ -165,6 +166,7 @@ export function AdjustSlFormLayout({
   ilkData,
   isEditing,
   gasEstimation,
+  etherscan,
 }: AdjustSlFormLayoutProps) {
   return (
     <Grid columns={[1]}>
@@ -198,7 +200,7 @@ export function AdjustSlFormLayout({
         </Box>
       )}
       <Box>
-        <TxStatusSection txState={txState} />
+        <TxStatusSection txState={txState} etherscan={etherscan} />
       </Box>
       {accountIsController && !txProgressing && (
         <Box>
