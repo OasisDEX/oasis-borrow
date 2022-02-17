@@ -1,10 +1,10 @@
 import { MarketingLayout } from 'components/Layouts'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
 
 import { TriggerErrorWithUseObservable } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservable'
 import { TriggerErrorWithUseObservableWithError } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservableWithError'
-import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 
 export default function ServerError() {
   const [
