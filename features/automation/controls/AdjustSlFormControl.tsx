@@ -73,7 +73,7 @@ export function AdjustSlFormControl({
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const [collateralActive, setCloseToCollateral] = useState(false)
+  const [collateralActive, setCloseToCollateral] = useState(true)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
@@ -170,7 +170,7 @@ export function AdjustSlFormControl({
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-    step: 0.05,
+    step: 1,
     maxBoundry: maxBoundry.multipliedBy(100),
     minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
@@ -252,6 +252,7 @@ export function AdjustSlFormControl({
     ilkData,
     isEditing,
     etherscan,
+    selectedSLValue,
     toggleForms,
   }
 
