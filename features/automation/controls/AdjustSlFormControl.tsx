@@ -1,4 +1,4 @@
-import { TxState } from '@oasisdex/transactions'
+import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
@@ -20,15 +20,18 @@ import React, { useMemo, useState } from 'react'
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
+import { VaultViewMode } from '../../../components/TabSwitchLayout'
 import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
+import { progressStatuses } from '../common/consts/txStatues'
 import {
   determineProperDefaults,
   extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
@@ -73,8 +76,8 @@ export function AdjustSlFormControl({
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
   const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
-  const { addGasEstimation$ } = useAppContext()
-
+  const { addGasEstimation$, uiChanges } = useAppContext()
+  console.log(ctx)
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
@@ -108,7 +111,11 @@ export function AdjustSlFormControl({
   const token = vault.token
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
+  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
+  const isEditing = isStopLossEnabled
+    ? !selectedSLValue.eq(stopLossLevel.multipliedBy(100))
+    : !selectedSLValue.eq(ilkData.liquidationRatio.multipliedBy(100))
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
@@ -129,8 +136,7 @@ export function AdjustSlFormControl({
 
   const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
-  const [txStatus, txStatusSetter] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
-
+  const [txStatus, setTxStatus] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
   const maxBoundry =
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
@@ -185,13 +191,20 @@ export function AdjustSlFormControl({
   }
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: 'add-stop-loss',
+    translationKey:
+      txStatus?.status === TxStatus.Success ? 'back-to-vault-overview' : 'add-stop-loss',
     onClick: (finishLoader: (succeded: boolean) => void) => {
       if (tx === undefined) {
         return
       }
+      if (txStatus?.status === TxStatus.Success) {
+        uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
+        setTxStatus(undefined)
+        setSelectedSLValue(startingSlRatio)
+        return
+      }
       const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
-        transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+        transactionStateHandler(setTxStatus, transactionState, finishLoader, waitForTx)
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
@@ -205,13 +218,38 @@ export function AdjustSlFormControl({
     disabled: isOwner,
   }
 
+  const dynamicStopLossPrice = vault.liquidationPrice
+    .div(ilkData.liquidationRatio)
+    .times(stopLossLevel)
+
+  const amountOnStopLossTrigger = vault.lockedCollateral
+    .times(dynamicStopLossPrice)
+    .minus(vault.debt)
+    .div(dynamicStopLossPrice)
+
+  const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
+  const txSuccess = txStatus?.status === TxStatus.Success
+  const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const etherscan = ctx.etherscan.url
+
   const props: AdjustSlFormLayoutProps = {
+    token,
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
     txState: txStatus,
-    gasEstimation: getEstimatedGasFeeText(gasEstimationData),
+    txProgressing,
+    txSuccess,
+    gasEstimation,
     accountIsController,
+    stopLossLevel,
+    dynamicStopLossPrice,
+    amountOnStopLossTrigger,
+    ethPrice,
+    vault,
+    ilkData,
+    isEditing,
+    etherscan,
   }
 
   return <AdjustSlFormLayout {...props} />

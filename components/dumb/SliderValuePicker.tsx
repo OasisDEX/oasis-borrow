@@ -27,20 +27,9 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   const rightLabel = t(`slider.${props.sliderKey}.right-label`)
   const leftFooter = t(`slider.${props.sliderKey}.left-footer`)
   const rightFooter = t(`slider.${props.sliderKey}.right-footer`)
-  const introductionHeader = t(`slider.${props.sliderKey}.introduction-header`)
-  const introductionContent = t(`slider.${props.sliderKey}.introduction-content`)
+
   return (
     <Grid gap={2}>
-      {introductionHeader && (
-        <Text variant="strong" mb={2}>
-          {introductionHeader}
-        </Text>
-      )}
-      {introductionContent && (
-        <Text variant="paragraph3" mb="24px">
-          {introductionContent}
-        </Text>
-      )}
       <Box>
         <Flex
           sx={{

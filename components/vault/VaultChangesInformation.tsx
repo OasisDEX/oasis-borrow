@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
-import { CommonVaultState, WithChildren } from 'helpers/types'
+import { WithChildren } from 'helpers/types'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -108,7 +108,7 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
   }
 }
 
-export function VaultChangesInformationEstimatedGasFee(props: CommonVaultState) {
+export function VaultChangesInformationEstimatedGasFee(props: HasGasEstimation) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationItem
