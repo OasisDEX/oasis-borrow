@@ -1,12 +1,12 @@
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -127,7 +127,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           relevant={inputAmountChangedSinceFirstRender}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

@@ -450,12 +450,15 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           icon={tokenData.iconCircle}
           onClick={() => setCloseVaultTo!('collateral')}
           isActive={closeToCollateral}
+          optionName={'collateral'}
         />
+
         <CloseVaultCard
           text="Close to DAI"
           icon="dai_circle_color"
           onClick={() => setCloseVaultTo!('dai')}
           isActive={!closeToCollateral}
+          optionName={'dai'}
         />
       </Grid>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>

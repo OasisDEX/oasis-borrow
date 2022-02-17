@@ -4,7 +4,7 @@
 <br> <br>
 
 <div align="center">
-  <img src="https://github.com/OasisDEX/oasis-borrow/blob/pm/readme-updates/public/static/img/logo.svg" width="500" height="500">
+  <img src="https://raw.githubusercontent.com/OasisDEX/oasis-borrow/57f15f27fad34b05f94398eec8eec33bcf4ffee8/public/static/img/logo_footer.svg" width="500" height="500">
 </div>
 <br>
 <br>
@@ -16,9 +16,9 @@
 
 <br>
 
-# Oasis Borrow
+# Oasis.app
 
-[Oasis Borrow](https://oasis.app) is the most popular user-interface to interact with the
+[Oasis.app](https://oasis.app) is the most popular user-interface to interact with the
 [Maker protocol](https://docs.makerdao.com/). It enables users to generate Dai, the most used and
 decentralized stablecoin, using a variety of crypto assets as collateral.
 

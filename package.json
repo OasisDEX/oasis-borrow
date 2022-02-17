@@ -6,7 +6,7 @@
     "node": "16.x"
   },
   "scripts": {
-    "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
+    "start": "CHOKIDAR_USEPOLLING=true ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
     "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",

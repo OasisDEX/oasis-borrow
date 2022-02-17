@@ -4,6 +4,10 @@ import { trackingEvents } from 'analytics/analytics'
 import { mixpanelIdentify } from 'analytics/mixpanel'
 import { BigNumber } from 'bignumber.js'
 import {
+  AutomationBotAddTriggerData,
+  AutomationBotRemoveTriggerData,
+} from 'blockchain/calls/automationBot'
+import {
   createSendTransaction,
   createSendWithGasConstraints,
   estimateGas,
@@ -49,6 +53,7 @@ import {
 import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
@@ -78,7 +83,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -131,6 +136,8 @@ export type TxData =
   | MultiplyAdjustData
   | CloseVaultData
   | OpenGuniMultiplyData
+  | AutomationBotAddTriggerData
+  | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
 
 export interface TxHelpers {
@@ -169,6 +176,52 @@ function createTxHelpers$(
       },
     })),
   )
+}
+
+/* TODO: Try changing to:
+
+export type UiChangesTypes = {
+  AdjustSlForm: AddFormChange
+}
+
+export type UIChanges = {
+  subscribe: <T extends keyof UiChangesTypes>(sub: T) => Observable<UiChangesTypes[T]>
+  publish: <T extends keyof UiChangesTypes>(sub: T, event: UiChangesTypes[T]) => void
+}
+
+*/
+
+export type UIChanges = {
+  subscribe: <T>(sub: string) => Observable<T>
+  publish: <T>(sub: string, event: T) => void
+}
+
+function createUIChangesSubject(): UIChanges {
+  interface PublisherRecord {
+    subjectName: string
+    payload: any
+  }
+  const commonSubject = new Subject<PublisherRecord>()
+
+  function subscribe<T>(subjectName: string): Observable<T> {
+    return commonSubject.pipe(
+      filter((x) => x.subjectName === subjectName),
+      map((x) => x.payload as T),
+      shareReplay(1),
+    )
+  }
+
+  function publish<T>(subjectName: string, event: T) {
+    commonSubject.next({
+      subjectName,
+      payload: event,
+    })
+  }
+
+  return {
+    subscribe,
+    publish,
+  }
 }
 
 export function setupAppContext() {
@@ -313,10 +366,6 @@ export function setupAppContext() {
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
-  // as (
-  //   token: string,
-  //   account: string | undefined,
-  // ) => Observable<PriceInfo>
 
   // TODO Don't allow undefined args like this
   const balanceInfo$ = curry(createBalanceInfo$)(balance$) as (
@@ -522,6 +571,12 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
+  )
+
+  const uiChanges = createUIChangesSubject()
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -544,6 +599,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    automationTriggersData$,
     accountData$,
     vaultHistory$,
     vaultMultiplyHistory$,
@@ -555,7 +611,10 @@ export function setupAppContext() {
     userSettings$,
     openGuniVault$,
     ilkDataList$,
+    uiChanges,
+    connectedContext$,
     productCardsData$,
+    addGasEstimation$,
   }
 }
 

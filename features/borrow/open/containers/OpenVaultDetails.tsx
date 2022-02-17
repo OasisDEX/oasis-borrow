@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
   VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
@@ -154,7 +154,7 @@ export function OpenVaultDetails(props: OpenVaultState) {
           relevant={inputAmountWasChanged}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
         <VaultDetailsCardCollateralLocked
           {...{
             depositAmount,
