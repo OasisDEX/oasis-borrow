@@ -57,6 +57,7 @@ interface AdjustSlFormControlProps {
   triggerData: TriggersData
   ctx: Context
   accountIsController: boolean
+  toggleForms: () => void
   tx?: TxHelpers
 }
 
@@ -67,6 +68,7 @@ export function AdjustSlFormControl({
   triggerData,
   ctx,
   accountIsController,
+  toggleForms,
   tx,
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
@@ -77,7 +79,7 @@ export function AdjustSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
   const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
-  console.log(ctx)
+
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
@@ -250,6 +252,7 @@ export function AdjustSlFormControl({
     ilkData,
     isEditing,
     etherscan,
+    toggleForms,
   }
 
   return <AdjustSlFormLayout {...props} />

@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
 import { useAppContext } from '../../../components/AppContextProvider'
+import { VaultFormContainer } from '../../../components/vault/VaultFormContainer'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservableWithError } from '../../../helpers/observableHook'
@@ -12,7 +13,6 @@ import { AutomationFromKind } from '../common/enums/TriggersTypes'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormControl } from './AdjustSlFormControl'
 import { CancelSlFormControl } from './CancelSlFormControl'
-import { ProtectionFormLayout } from './ProtectionFormLayout'
 
 interface Props {
   ilkData: IlkData
@@ -44,7 +44,6 @@ export function ProtectionFormControl({
     )
   }, [currentForm])
 
-  const { isAutomationEnabled } = automationTriggersData
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
 
@@ -55,11 +54,7 @@ export function ProtectionFormControl({
         customLoader={<VaultContainerSpinner />}
       >
         {([context]) => (
-          <ProtectionFormLayout
-            currentForm={currentForm}
-            toggleForm={toggleForms}
-            showButton={accountIsController && isAutomationEnabled}
-          >
+          <VaultFormContainer toggleTitle="Edit Vault">
             {currentForm === AutomationFromKind.ADJUST ? (
               <AdjustSlFormControl
                 vault={vault}
@@ -69,6 +64,7 @@ export function ProtectionFormControl({
                 tx={txHelpersWithError.value}
                 ctx={context}
                 accountIsController={accountIsController}
+                toggleForms={toggleForms}
               />
             ) : (
               <CancelSlFormControl
@@ -77,9 +73,11 @@ export function ProtectionFormControl({
                 triggerData={automationTriggersData}
                 tx={txHelpersWithError.value}
                 ctx={context}
+                accountIsController={accountIsController}
+                toggleForms={toggleForms}
               />
             )}
-          </ProtectionFormLayout>
+          </VaultFormContainer>
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
