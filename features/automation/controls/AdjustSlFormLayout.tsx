@@ -185,7 +185,7 @@ function SetDownsideProtectionInformation({
       <VaultChangesInformationItem
         label={`${t('protection.estimated-fees-on-trigger', { token })}`}
         // TODO replace with correct estimation
-        value={gasEstimation}
+        value={<Flex>${formatAmount(new BigNumber(30), 'USD')}</Flex>}
       />
       <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
       <Box sx={{ fontSize: 2 }}>
