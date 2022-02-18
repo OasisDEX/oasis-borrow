@@ -133,7 +133,7 @@ export function AdjustSlFormControl({
   const startingSlRatio = isStopLossEnabled
     ? stopLossLevel
     : new BigNumber(
-        ilkData.liquidationRatio.plus(vault.collateralizationRatio).dividedBy(2).toFixed(2, 2),
+        ilkData.liquidationRatio.plus(vault.collateralizationRatio).dividedBy(2).toFixed(2, BigNumber.ROUND_CEIL),
       )
 
   const isEditing = !!lastUIState?.isEditing
