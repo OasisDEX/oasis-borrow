@@ -15,7 +15,7 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -80,6 +80,19 @@ export function AdjustSlFormControl({
   const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
 
+  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
+
+  useEffect(() => {
+    const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
+
+    const subscription = uiChanges$.subscribe((value) => {
+      lastUIStateSetter(value)
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
@@ -100,6 +113,7 @@ export function AdjustSlFormControl({
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
     | { type: 'close-type'; toCollateral: boolean }
+    | { type: 'isEditing'; isEditing: boolean }
 
   function reducerHandler(state: AddFormChange, action: Action): AddFormChange {
     switch (action.type) {
@@ -107,6 +121,8 @@ export function AdjustSlFormControl({
         return { ...state, selectedSLValue: action.stopLoss }
       case 'close-type':
         return { ...state, collateralActive: action.toCollateral }
+      case 'isEditing':
+        return { ...state, isEditing: action.isEditing }
     }
   }
 
@@ -114,10 +130,16 @@ export function AdjustSlFormControl({
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
-  const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
-  const isEditing = isStopLossEnabled
-    ? !selectedSLValue.eq(stopLossLevel.multipliedBy(100))
-    : !selectedSLValue.eq(ilkData.liquidationRatio.multipliedBy(100))
+  const startingSlRatio = isStopLossEnabled
+    ? stopLossLevel
+    : new BigNumber(
+        ilkData.liquidationRatio
+          .plus(vault.collateralizationRatio)
+          .dividedBy(2)
+          .toFixed(2, BigNumber.ROUND_CEIL),
+      )
+
+  const isEditing = !!lastUIState?.isEditing
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
@@ -134,6 +156,7 @@ export function AdjustSlFormControl({
   const initial: AddFormChange = {
     collateralActive: false,
     selectedSLValue: startingSlRatio.multipliedBy(100),
+    isEditing: false,
   }
 
   const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
@@ -171,7 +194,7 @@ export function AdjustSlFormControl({
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
-    maxBoundry: maxBoundry.multipliedBy(100),
+    maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
     minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
@@ -188,6 +211,10 @@ export function AdjustSlFormControl({
       dispatch({
         type: 'stop-loss',
         stopLoss: slCollRatio,
+      })
+      dispatch({
+        type: 'isEditing',
+        isEditing: true,
       })
     },
   }
@@ -215,9 +242,17 @@ export function AdjustSlFormControl({
         .sendWithGasEstimation(addAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
     },
+    onConfirm: () => {
+      dispatch({
+        type: 'isEditing',
+        isEditing: true,
+      })
+    },
+    isStopLossEnabled,
     isLoading: false,
     isRetry: false,
-    disabled: isOwner,
+    isEditing,
+    disabled: isOwner || !isEditing || selectedSLValue.eq(stopLossLevel.multipliedBy(100)),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice

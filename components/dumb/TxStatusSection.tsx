@@ -25,7 +25,11 @@ export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>
     return (
       <>
         {txStatus && progressStatuses.includes(txStatus) && (
-          <TxStatusCardProgress text={t('waiting-confirmation')} etherscan={''} txHash={txHash} />
+          <TxStatusCardProgress
+            text={t('waiting-confirmation')}
+            etherscan={props.etherscan}
+            txHash={txHash}
+          />
         )}
         {txStatus === TxStatus.Success && txHash && (
           <TxStatusCardSuccess
