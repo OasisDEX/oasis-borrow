@@ -1,9 +1,12 @@
 import React from 'react'
-import { of } from 'rxjs'
-import { flatMap } from 'rxjs/operators'
+import { throwError } from 'rxjs'
 
 import { useObservableWithError } from '../../helpers/observableHook'
-const streamThatErrors$ = of(1).pipe(flatMap(() => fetch('https://fetch-handled-url')))
+
+const streamThatErrors$ = throwError(() => {
+  return new Error('Try me!')
+})
+
 export function TriggerErrorWithUseObservableWithError() {
   const { value, error } = useObservableWithError(streamThatErrors$)
   return (
