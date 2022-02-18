@@ -33,45 +33,35 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   showAfterPill,
   isProtected,
   debt,
-  collateralAmountLocked,
   lockedCollateral,
   liquidationRatio,
   token,
 }: {
   slRatio: BigNumber
-  afterSlRatio?: BigNumber
+  afterSlRatio: BigNumber
   liquidationPrice: BigNumber
   isProtected: boolean
   debt: BigNumber
-  collateralAmountLocked: BigNumber
   liquidationRatio: BigNumber
   token: string
-  lockedCollateral?: BigNumber
-  vaultDebt?: BigNumber
+  lockedCollateral: BigNumber
 } & AfterPillProps) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const ethDuringLiquidation = !liquidationPrice.isZero()
-    ? debt.times(liquidationRatio).div(liquidationPrice)
+  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+
+  const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
+
+  const afterDynamicStopPrice = liquidationPrice.div(liquidationRatio).times(afterSlRatio)
+
+  const maxEth = !dynamicStopPrice.isZero()
+    ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
     : zero
 
-  const dynamicStopPrice = !liquidationPrice.isZero()
-    ? liquidationPrice.div(liquidationRatio).times(slRatio)
-    : zero
-
-  const afterDynamicStopPrice = !liquidationPrice.isZero()
-    ? liquidationPrice.div(liquidationRatio).times(afterSlRatio || zero)
-    : zero
-
-  const maxEth =
-    !collateralAmountLocked.isZero() && !dynamicStopPrice.isZero()
-      ? collateralAmountLocked.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
-      : zero
-
-  const afterMaxEth =
-    lockedCollateral && debt && lockedCollateral.times(afterDynamicStopPrice).minus(debt).gt(zero)
-      ? lockedCollateral.times(afterDynamicStopPrice).minus(debt).div(afterDynamicStopPrice)
-      : zero
+  const afterMaxEth = lockedCollateral
+    .times(afterDynamicStopPrice)
+    .minus(debt)
+    .div(afterDynamicStopPrice)
 
   return (
     <VaultDetailsCard
@@ -91,8 +81,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
       }
       valueAfter={
         showAfterPill &&
-        !maxEth.isZero() &&
-        `${t('manage-multiply-vault.card.up-to')} $${formatAmount(afterMaxEth, token)} ${token}`
+        `${t('manage-multiply-vault.card.up-to')} ${formatAmount(afterMaxEth, token)} ${token}`
       }
       openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, { token })}
       afterPillColors={afterPillColors}

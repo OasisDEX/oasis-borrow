@@ -10,15 +10,7 @@ import { calculatePricePercentageChange } from '../../../blockchain/prices'
 import { getAfterPillColors } from '../../../components/vault/VaultDetails'
 import { zero } from '../../../helpers/zero'
 
-export interface ProtectionState {
-  inputAmountsEmpty: boolean
-  stage: string // prepare protection stages
-  afterSlRatio?: BigNumber
-  afterLockedCollateral?: BigNumber
-}
-
 export interface ProtectionDetailsLayoutProps {
-  // context
   slRatio: BigNumber
   vaultDebt: BigNumber
   currentOraclePrice: BigNumber
@@ -28,13 +20,10 @@ export interface ProtectionDetailsLayoutProps {
   lockedCollateral: BigNumber
   token: string
   liquidationRatio: BigNumber
-
-  // protection state
-  protectionState: ProtectionState
+  afterSlRatio: BigNumber
 }
 
 export function ProtectionDetailsLayout({
-  // context
   slRatio,
   vaultDebt,
   currentOraclePrice,
@@ -44,22 +33,18 @@ export function ProtectionDetailsLayout({
   lockedCollateral,
   token,
   liquidationRatio,
-
-  // protection state
-  protectionState: { stage, inputAmountsEmpty, afterSlRatio },
+  afterSlRatio,
 }: ProtectionDetailsLayoutProps) {
-  const showAfterPill = !inputAmountsEmpty && stage !== 'protectionSuccess'
+  const showAfterPill = slRatio.eq(zero)
+    ? !liquidationRatio.eq(afterSlRatio)
+    : !slRatio.eq(afterSlRatio)
 
   const afterPillColors = getAfterPillColors('onSuccess')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
-  const collateralizationRatio = vaultDebt.isZero()
-    ? zero
-    : lockedCollateral.times(currentOraclePrice).div(vaultDebt)
+  const collateralizationRatio = lockedCollateral.times(currentOraclePrice).div(vaultDebt)
 
-  const liquidationPrice = lockedCollateral.isZero()
-    ? zero
-    : vaultDebt.times(liquidationRatio).div(lockedCollateral)
+  const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
 
   return (
     <Box>
@@ -93,12 +78,10 @@ export function ProtectionDetailsLayout({
           isProtected={isStopLossEnabled}
           liquidationPrice={liquidationPrice}
           debt={vaultDebt}
-          collateralAmountLocked={lockedCollateral}
           liquidationRatio={liquidationRatio}
           token={token}
           showAfterPill={showAfterPill}
           lockedCollateral={lockedCollateral}
-          vaultDebt={vaultDebt}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}
         />

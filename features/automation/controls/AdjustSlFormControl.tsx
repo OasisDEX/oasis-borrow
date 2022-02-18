@@ -57,6 +57,7 @@ interface AdjustSlFormControlProps {
   triggerData: TriggersData
   ctx: Context
   accountIsController: boolean
+  toggleForms: () => void
   tx?: TxHelpers
 }
 
@@ -67,6 +68,7 @@ export function AdjustSlFormControl({
   triggerData,
   ctx,
   accountIsController,
+  toggleForms,
   tx,
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
@@ -131,7 +133,7 @@ export function AdjustSlFormControl({
 
   const initial: AddFormChange = {
     collateralActive: false,
-    selectedSLValue: new BigNumber(currentCollRatio),
+    selectedSLValue: startingSlRatio.multipliedBy(100),
   }
 
   const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
@@ -251,6 +253,7 @@ export function AdjustSlFormControl({
     isEditing,
     etherscan,
     selectedSLValue,
+    toggleForms,
   }
 
   return <AdjustSlFormLayout {...props} />

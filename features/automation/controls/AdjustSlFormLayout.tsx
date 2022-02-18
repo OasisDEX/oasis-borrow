@@ -12,10 +12,7 @@ import { Divider, Flex, Image, Text } from 'theme-ui'
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
 import { FormHeader } from '../../../components/dumb/FormHeader'
-import {
-  RetryableLoadingButton,
-  RetryableLoadingButtonProps,
-} from '../../../components/dumb/RetryableLoadingButton'
+import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
 import { AppLink } from '../../../components/Links'
 import {
@@ -26,6 +23,7 @@ import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { zero } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
+import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 
 interface AdjustSlFormHeaderProps {
   txProgressing: boolean
@@ -224,6 +222,7 @@ export interface AdjustSlFormLayoutProps {
   ilkData: IlkData
   isEditing: boolean
   etherscan: string
+  toggleForms: () => void
   selectedSLValue: BigNumber
 }
 
@@ -243,6 +242,7 @@ export function AdjustSlFormLayout({
   isEditing,
   gasEstimation,
   etherscan,
+  toggleForms,
   selectedSLValue,
 }: AdjustSlFormLayoutProps) {
   return (
@@ -296,9 +296,11 @@ export function AdjustSlFormLayout({
         <TxStatusSection txState={txState} etherscan={etherscan} />
       </Box>
       {accountIsController && !txProgressing && (
-        <Box>
-          <RetryableLoadingButton {...addTriggerConfig} />
-        </Box>
+        <AutomationFormButtons
+          triggerConfig={addTriggerConfig}
+          toggleForms={toggleForms}
+          toggleKey="protection.navigate-cancel"
+        />
       )}
     </Grid>
   )
