@@ -191,7 +191,7 @@ export function AdjustSlFormControl({
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
-    maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, 1)),
+    maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
     minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
