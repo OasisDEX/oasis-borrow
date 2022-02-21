@@ -186,9 +186,7 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const slider = selectedSLValue
-    .minus(liqRatio.times(100))
-    .div(currentCollRatio.minus(liqRatio))
+  const slider = selectedSLValue.minus(liqRatio.times(100)).div(currentCollRatio.minus(liqRatio))
 
   const sliderBackground = slider
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
