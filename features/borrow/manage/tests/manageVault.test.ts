@@ -15,7 +15,7 @@ import {
 } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
-import { BehaviorSubject,  of, Subject } from 'rxjs'
+import { BehaviorSubject, of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
 import { createInstiVault$ } from '../../../../blockchain/instiVault'
