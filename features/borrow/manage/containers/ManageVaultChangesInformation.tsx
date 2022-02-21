@@ -10,11 +10,11 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
 export function ManageVaultChangesInformation(
-  props: ManageVaultState & { isInstiVault?: boolean },
+  props: ManageVaultState & { extraInfo?: ReactNode },
 ) {
   const { t } = useTranslation()
   const {
@@ -34,7 +34,7 @@ export function ManageVaultChangesInformation(
       token,
       daiYieldFromLockedCollateral,
     },
-    isInstiVault,
+    extraInfo,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -111,21 +111,7 @@ export function ManageVaultChangesInformation(
           </Flex>
         }
       />
-      {isInstiVault && (
-        <>
-          <VaultChangesInformationItem
-            label="Some institutional info"
-            value={
-              <Flex>
-                123
-                <VaultChangesInformationArrow />
-                456
-              </Flex>
-            }
-          />
-        </>
-      )}
-      <VaultChangesInformationEstimatedGasFee {...props} />
+      {extraInfo}
     </VaultChangesInformationContainer>
   ) : null
 }

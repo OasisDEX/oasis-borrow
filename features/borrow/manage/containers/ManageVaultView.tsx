@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
@@ -49,7 +50,7 @@ export function ManageVaultContainer({
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
-          <ManageVaultForm {...manageVault} />
+          <ManageVaultForm {...manageVault} extraInfo={<VaultChangesInformationEstimatedGasFee {...manageVault} />} />
         </Box>
       </Grid>
     </>

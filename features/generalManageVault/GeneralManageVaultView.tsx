@@ -26,7 +26,7 @@ const instiMockedData =
     activeCollRatio: new BigNumber(1.4),
     activeCollRatioPriceUSD: new BigNumber(1300),
     debtCeiling: new BigNumber(500000),
-    termEnd: new Date('18/02/2022'),
+    termEnd: new Date('02/28/2022'),
     fixedFee: new BigNumber(0.015),
     nextFixedFee: new BigNumber(0.014)
   }

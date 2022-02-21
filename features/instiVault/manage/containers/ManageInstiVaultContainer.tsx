@@ -5,16 +5,16 @@ import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
 
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { formatPercent } from 'helpers/formatters/format'
-import { BigNumber } from 'bignumber.js'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageInstiVaultState } from '../pipes/manageVault'
+import { VaultChangesInformationEstimatedGasFee, VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
 
 
 export function ManageInstiVaultContainer({
@@ -68,7 +68,17 @@ export function ManageInstiVaultContainer({
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
-          <ManageVaultForm isInstiVault={true} {...manageVault} />
+          <ManageVaultForm hideMultiply={true} extraInfo={<>
+            <VaultChangesInformationItem
+              label={t('manage-insti-vault.origination-fee')}
+              value={
+                <Flex>
+                  $100.00
+                </Flex>
+              }
+            />
+            <VaultChangesInformationEstimatedGasFee {...manageVault} />
+          </>} {...manageVault} />
         </Box>
       </Grid>
     </>

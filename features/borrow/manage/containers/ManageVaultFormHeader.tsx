@@ -17,8 +17,8 @@ function ManageVaultEditingController({
   vault: { token },
   setMainAction,
   mainAction,
-  isInstiVault,
-}: ManageVaultState & { isInstiVault?: boolean }) {
+  hideMultiply,
+}: ManageVaultState & { hideMultiply?: boolean }) {
   const { t } = useTranslation()
   const isDaiEditing = stage === 'daiEditing'
   const isCollateralEditing = stage === 'collateralEditing'
@@ -47,14 +47,14 @@ function ManageVaultEditingController({
 
   return (
     <Grid gap={4}>
-      <Grid columns={isInstiVault ? 2 : 3} variant="vaultEditingControllerContainer">
+      <Grid columns={hideMultiply ? 2 : 3} variant="vaultEditingControllerContainer">
         <Button onClick={() => handleToggle('collateralEditing')} variant={collateralVariant}>
           {t('system.collateral')}
         </Button>
         <Button onClick={() => handleToggle('daiEditing')} variant={daiVariant}>
           {t('system.dai')}
         </Button>
-        {!isInstiVault && (
+        {!hideMultiply && (
           <Button
             onClick={() => handleToggle('multiplyTransitionEditing')}
             variant={multiplyVariant}
@@ -86,7 +86,7 @@ function ManageVaultEditingController({
   )
 }
 
-export function ManageVaultFormHeader(props: ManageVaultState & { isInstiVault?: boolean }) {
+export function ManageVaultFormHeader(props: ManageVaultState & { hideMultiply?: boolean }) {
   const { t } = useTranslation()
   const {
     isMultiplyTransitionStage,
