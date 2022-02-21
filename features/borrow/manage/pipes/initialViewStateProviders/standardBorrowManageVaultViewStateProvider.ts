@@ -6,10 +6,10 @@ import { defaultManageVaultConditions } from '../manageVaultConditions'
 import { defaultManageVaultSummary } from '../manageVaultSummary'
 import {
   CreateInitialVaultStateArgs,
-  VaultViewStateProviderInterface,
+  BorrowManageVaultViewStateProviderInterface,
 } from './borrowManageVaultViewStateProviderInterface'
 
-export const StandardBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
+export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
   Vault,
   ManageVaultState
 > = {

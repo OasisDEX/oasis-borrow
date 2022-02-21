@@ -2,11 +2,11 @@ import { InstiVault } from 'blockchain/instiVault'
 import { ManageInstiVaultState, ManageVaultState } from '../manageVault'
 import {
   CreateInitialVaultStateArgs,
-  VaultViewStateProviderInterface,
+  BorrowManageVaultViewStateProviderInterface,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
 
-export const InstitutionalBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
+export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
   InstiVault,
   ManageInstiVaultState
 > = {

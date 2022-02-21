@@ -23,7 +23,7 @@ import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
-import { VaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
+import { BorrowManageVaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
 import { applyManageVaultCalculations, ManageVaultCalculations } from './manageVaultCalculations'
 import {
@@ -389,7 +389,7 @@ export function createManageVault$<V extends Vault, VS extends ManageVaultState>
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
-  vaultViewStateProvider: VaultViewStateProviderInterface<V, VS>,
+  vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
   id: BigNumber,
 ): Observable<VS> {
   return context$.pipe(
