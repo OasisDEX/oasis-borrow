@@ -84,7 +84,6 @@ export function AdjustSlFormControl({
 
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
   const [firstStopLossSetup] = useState(!isStopLossEnabled)
-  console.log(firstStopLossSetup)
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
