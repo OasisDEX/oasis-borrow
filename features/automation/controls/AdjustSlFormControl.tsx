@@ -187,10 +187,8 @@ export function AdjustSlFormControl({
   }
 
   const slider = selectedSLValue
-    .div(100)
-    .minus(liqRatio)
+    .minus(liqRatio.times(100))
     .div(currentCollRatio.minus(liqRatio))
-    .times(100)
 
   const sliderBackground = slider
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
