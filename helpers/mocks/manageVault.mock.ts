@@ -6,10 +6,8 @@ import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   createManageVault$,
-  InstitutionalBorrowManageVaultViewStateProvider,
   ManageInstiVaultState,
   ManageVaultState,
-  StandardBorrowManageVaultViewStateProvider,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -21,6 +19,8 @@ import { switchMap } from 'rxjs/operators'
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { InstiVault } from '../../blockchain/instiVault'
+import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/initialViewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/initialViewStateProviders/standardBorrowManageVaultViewStateProvider'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'

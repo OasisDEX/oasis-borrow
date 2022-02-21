@@ -59,10 +59,8 @@ import { createAutomationTriggersData } from 'features/automation/triggers/Autom
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
-  InstitutionalBorrowManageVaultViewStateProvider,
   ManageInstiVaultState,
   ManageVaultState,
-  StandardBorrowManageVaultViewStateProvider,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
@@ -117,6 +115,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/initialViewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/initialViewStateProviders/standardBorrowManageVaultViewStateProvider'
 import {
   getTotalSupply,
   getUnderlyingBalances,

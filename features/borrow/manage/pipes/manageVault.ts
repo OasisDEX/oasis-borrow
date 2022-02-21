@@ -5,42 +5,36 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
-import { saveVaultTypeForAccount, VaultType } from 'features/generalManageVault/vaultType'
-import { SaveVaultType } from 'features/generalManageVault/vaultType'
+import {
+  SaveVaultType,
+  saveVaultTypeForAccount,
+  VaultType,
+} from 'features/generalManageVault/vaultType'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { HasGasEstimation } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
-import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
+import { VaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
-import {
-  applyManageVaultCalculations,
-  defaultManageVaultCalculations,
-  ManageVaultCalculations,
-} from './manageVaultCalculations'
+import { applyManageVaultCalculations, ManageVaultCalculations } from './manageVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
-  defaultManageVaultConditions,
   ManageVaultConditions,
 } from './manageVaultConditions'
 import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
 import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
 import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
-import {
-  applyManageVaultSummary,
-  defaultManageVaultSummary,
-  ManageVaultSummary,
-} from './manageVaultSummary'
+import { applyManageVaultSummary, ManageVaultSummary } from './manageVaultSummary'
 import {
   applyEstimateGas,
   applyManageVaultTransaction,
@@ -488,88 +482,4 @@ export function createManageVault$<V extends Vault, VS extends ManageVaultState>
     }),
     shareReplay(1),
   )
-}
-
-type CreateInitialVaultStateArgs<V extends Vault> = {
-  vault: V
-  priceInfo: PriceInfo
-  balanceInfo: BalanceInfo
-  ilkData: IlkData
-  account?: string
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-  context: Context
-  initialTotalSteps: number
-  change: (ch: ManageVaultChange) => void
-  injectStateOverride: (stateToOverride: Partial<MutableManageVaultState>) => void
-}
-
-interface VaultViewStateProviderInterface<V extends Vault, ViewState> {
-  createInitialVaultState(args: CreateInitialVaultStateArgs<V>): ViewState
-}
-
-export const StandardBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
-  Vault,
-  ManageVaultState
-> = {
-  createInitialVaultState(args: CreateInitialVaultStateArgs<Vault>) {
-    const {
-      vault,
-      priceInfo,
-      balanceInfo,
-      ilkData,
-      account,
-      proxyAddress,
-      collateralAllowance,
-      daiAllowance,
-      context,
-      initialTotalSteps,
-      change,
-      injectStateOverride,
-    } = args
-    const initialState: ManageVaultState = {
-      ...defaultMutableManageVaultState,
-      ...defaultManageVaultCalculations,
-      ...defaultManageVaultConditions,
-      vault,
-      priceInfo,
-      balanceInfo,
-      ilkData,
-      account,
-      proxyAddress,
-      collateralAllowance,
-      daiAllowance,
-      safeConfirmations: context.safeConfirmations,
-      etherscan: context.etherscan.url,
-      errorMessages: [],
-      warningMessages: [],
-      summary: defaultManageVaultSummary,
-      initialTotalSteps,
-      totalSteps: initialTotalSteps,
-      currentStep: 1,
-      clear: () => change({ kind: 'clear' }),
-      gasEstimationStatus: GasEstimationStatus.unset,
-      injectStateOverride,
-    }
-    return initialState
-  },
-}
-
-export const InstitutionalBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
-  InstiVault,
-  ManageInstiVaultState
-> = {
-  createInitialVaultState(args: CreateInitialVaultStateArgs<InstiVault>): ManageInstiVaultState {
-    const mananageStandardVaultViewState: ManageVaultState = StandardBorrowManageVaultViewStateProvider.createInitialVaultState(
-      args,
-    )
-
-    return {
-      ...mananageStandardVaultViewState,
-      originationFee: args.vault.originationFee,
-      activeCollRatio: args.vault.activeCollRatio,
-      debtCeiling: args.vault.debtCeiling,
-    }
-  },
 }
