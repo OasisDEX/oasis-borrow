@@ -61,7 +61,7 @@ function AdjustSlFormHeader({ txProgressing, txSuccess }: AdjustSlFormHeaderProp
 }
 
 interface AdjustSlFormInformationProps {
-  ethPrice: BigNumber
+  tokenPrice: BigNumber
   stopLossLevel: BigNumber
   vault: Vault
   ilkData: IlkData
@@ -69,9 +69,8 @@ interface AdjustSlFormInformationProps {
   txState?: TxState<AutomationBotAddTriggerData>
 }
 
-// TODO close to DAI case is currently not handled on the UI, it will be covered in separate task
 function ProtectionCompleteInformation({
-  ethPrice,
+  tokenPrice,
   stopLossLevel,
   vault,
   ilkData,
@@ -85,7 +84,7 @@ function ProtectionCompleteInformation({
   const effectiveGasPrice = successTx ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
   const totalCost =
     !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
+      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
       : zero
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -136,6 +135,8 @@ interface SetDownsideProtectionInformationProps {
   token: string
   gasEstimation: ReactNode
   afterStopLossRatio: BigNumber
+  tokenPrice: BigNumber
+  isCollateralActive: boolean
 }
 
 function SetDownsideProtectionInformation({
@@ -144,6 +145,8 @@ function SetDownsideProtectionInformation({
   token,
   gasEstimation,
   afterStopLossRatio,
+  tokenPrice,
+  isCollateralActive,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -151,7 +154,7 @@ function SetDownsideProtectionInformation({
     .div(ilkData.liquidationRatio)
     .times(afterStopLossRatio.div(100))
 
-  const afterMaxEth = vault.lockedCollateral
+  const afterMaxToken = vault.lockedCollateral
     .times(afterDynamicStopLossPrice)
     .minus(vault.debt)
     .div(afterDynamicStopLossPrice)
@@ -160,7 +163,15 @@ function SetDownsideProtectionInformation({
     .times(ilkData.liquidationRatio)
     .div(vault.liquidationPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(afterMaxEth)
+  const savingCompareToLiquidation = ethDuringLiquidation.minus(afterMaxToken)
+
+  const maxTokenOrDai = isCollateralActive
+    ? `${formatAmount(afterMaxToken, token)} ${token}`
+    : `${formatAmount(afterMaxToken.multipliedBy(tokenPrice), 'USD')} DAI`
+
+  const savingTokenOrDai = isCollateralActive
+    ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
+    : `${formatAmount(savingCompareToLiquidation.multipliedBy(tokenPrice), 'USD')} DAI`
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -168,7 +179,7 @@ function SetDownsideProtectionInformation({
         label={`${t('protection.estimated-to-receive')}`}
         value={
           <Flex>
-            {t('protection.up-to')} {formatAmount(afterMaxEth, token)} {token}
+            {t('protection.up-to')} {maxTokenOrDai}
           </Flex>
         }
       />
@@ -176,7 +187,7 @@ function SetDownsideProtectionInformation({
         label={`${t('protection.saving-comp-to-liquidation')}`}
         value={
           <Flex>
-            {t('protection.up-to')} {formatAmount(savingCompareToLiquidation, token)} {token}
+            {t('protection.up-to')} {savingTokenOrDai}
           </Flex>
         }
       />
@@ -217,7 +228,7 @@ export interface AdjustSlFormLayoutProps {
   stopLossLevel: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
-  ethPrice: BigNumber
+  tokenPrice: BigNumber
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
@@ -236,7 +247,7 @@ export function AdjustSlFormLayout({
   accountIsController,
   addTriggerConfig,
   stopLossLevel,
-  ethPrice,
+  tokenPrice,
   vault,
   ilkData,
   isEditing,
@@ -269,6 +280,8 @@ export function AdjustSlFormLayout({
                   ilkData={ilkData}
                   gasEstimation={gasEstimation}
                   afterStopLossRatio={selectedSLValue}
+                  tokenPrice={tokenPrice}
+                  isCollateralActive={closePickerConfig.isCollateralActive}
                 />
               </Box>
             </>
@@ -286,7 +299,7 @@ export function AdjustSlFormLayout({
             token={token}
             txState={txState}
             stopLossLevel={stopLossLevel}
-            ethPrice={ethPrice}
+            tokenPrice={tokenPrice}
             vault={vault}
             ilkData={ilkData}
           />
