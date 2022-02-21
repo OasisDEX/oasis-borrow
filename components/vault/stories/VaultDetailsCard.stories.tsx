@@ -76,10 +76,12 @@ export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsContro
         liquidationPrice={new BigNumber(2000)}
         isProtected={isProtected}
         debt={new BigNumber(12000)}
-        collateralAmountLocked={new BigNumber(20)}
+        lockedCollateral={new BigNumber(20)}
         liquidationRatio={new BigNumber(1.3)}
         token="ETH"
         showAfterPill={hasAfter}
+        isCollateralActive={true}
+        tokenPrice={new BigNumber(2000)}
       />
     </MaxWidthWrapper>
   )

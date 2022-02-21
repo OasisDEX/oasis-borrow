@@ -1,15 +1,10 @@
 import { MarketingLayout } from 'components/Layouts'
+import { GetServerSideProps, GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React, { useState } from 'react'
 
 import { TriggerErrorWithUseObservable } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservable'
 import { TriggerErrorWithUseObservableWithError } from '../../components/errorTriggeringComponents/TriggerErrorWithUseObservableWithError'
-
-export const getStaticProps = async ({ locale }: { locale: string }) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['common'])),
-  },
-})
 
 export default function ServerError() {
   const [
@@ -71,3 +66,12 @@ export default function ServerError() {
 
 ServerError.layout = MarketingLayout
 ServerError.theme = 'Landing'
+
+export const getServerSideProps: GetServerSideProps = async (ctx: GetServerSidePropsContext) => {
+  if (process.env.NEXT_PUBLIC_SENTRY_ENV === 'production') {
+    return {
+      notFound: true,
+    }
+  }
+  return { props: await serverSideTranslations(ctx.locale!, ['common']) }
+}

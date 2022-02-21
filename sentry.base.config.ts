@@ -7,9 +7,8 @@ export const sentryBaseConfig = {
   dsn: SENTRY_DSN,
   tracesSampleRate: 1.0,
   environment: process.env.NEXT_PUBLIC_SENTRY_ENV,
+  // release is also used for source map uploads at build time,
+  // so ensure that SENTRY_RELEASE is the same at build time.
   release: process.env.SENTRY_RELEASE || getConfig()?.publicRuntimeConfig?.sentryRelease,
-  // ...
-  // Note: if you want to override the automatic release value, do not set a
-  // `release` value here - use the environment variable `SENTRY_RELEASE`, so
-  // that it will also get attached to your source maps
+  enabled: process.env.NEXT_PUBLIC_SENTRY_ENV !== 'development',
 }
