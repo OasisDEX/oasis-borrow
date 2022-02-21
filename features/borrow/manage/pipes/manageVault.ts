@@ -54,6 +54,7 @@ import {
   progressManage,
 } from './manageVaultTransitions'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
+import { InstiVault } from '../../../../blockchain/instiVault'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -192,6 +193,12 @@ export type ManageVaultState = MutableManageVaultState &
     totalSteps: number
     currentStep: number
   } & HasGasEstimation
+
+export type ManageInstiVaultState = ManageVaultState & {
+  originationFee: BigNumber
+  activeCollRatio: BigNumber
+  debtCeiling: BigNumber
+}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -376,7 +383,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-export function createManageVault$(
+export function createManageVault$<V extends Vault, VS extends ManageVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -384,12 +391,13 @@ export function createManageVault$(
   priceInfo$: (token: string) => Observable<PriceInfo>,
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  vault$: (id: BigNumber, chainId: number) => Observable<V>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  vaultViewStateProvider: VaultViewStateProviderInterface<V, VS>,
   id: BigNumber,
-): Observable<ManageVaultState> {
+): Observable<VS> {
   return context$.pipe(
     switchMap((context) => {
       const account = context.status === 'connected' ? context.account : undefined
@@ -432,10 +440,7 @@ export function createManageVault$(
                     collateralAllowance,
                   )
 
-                  const initialState: ManageVaultState = {
-                    ...defaultMutableManageVaultState,
-                    ...defaultManageVaultCalculations,
-                    ...defaultManageVaultConditions,
+                  const initialState = vaultViewStateProvider.createInitialVaultState({
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -444,18 +449,11 @@ export function createManageVault$(
                     proxyAddress,
                     collateralAllowance,
                     daiAllowance,
-                    safeConfirmations: context.safeConfirmations,
-                    etherscan: context.etherscan.url,
-                    errorMessages: [],
-                    warningMessages: [],
-                    summary: defaultManageVaultSummary,
+                    context,
                     initialTotalSteps,
-                    totalSteps: initialTotalSteps,
-                    currentStep: 1,
-                    clear: () => change({ kind: 'clear' }),
-                    gasEstimationStatus: GasEstimationStatus.unset,
+                    change,
                     injectStateOverride,
-                  }
+                  })
 
                   const environmentChanges$ = merge(
                     priceInfoChange$(priceInfo$, vault.token),
@@ -490,4 +488,88 @@ export function createManageVault$(
     }),
     shareReplay(1),
   )
+}
+
+type CreateInitialVaultStateArgs<V extends Vault> = {
+  vault: V
+  priceInfo: PriceInfo
+  balanceInfo: BalanceInfo
+  ilkData: IlkData
+  account?: string
+  proxyAddress?: string
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+  context: Context
+  initialTotalSteps: number
+  change: (ch: ManageVaultChange) => void
+  injectStateOverride: (stateToOverride: Partial<MutableManageVaultState>) => void
+}
+
+interface VaultViewStateProviderInterface<V extends Vault, ViewState> {
+  createInitialVaultState(args: CreateInitialVaultStateArgs<V>): ViewState
+}
+
+export const StandardBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
+  Vault,
+  ManageVaultState
+> = {
+  createInitialVaultState(args: CreateInitialVaultStateArgs<Vault>) {
+    const {
+      vault,
+      priceInfo,
+      balanceInfo,
+      ilkData,
+      account,
+      proxyAddress,
+      collateralAllowance,
+      daiAllowance,
+      context,
+      initialTotalSteps,
+      change,
+      injectStateOverride,
+    } = args
+    const initialState: ManageVaultState = {
+      ...defaultMutableManageVaultState,
+      ...defaultManageVaultCalculations,
+      ...defaultManageVaultConditions,
+      vault,
+      priceInfo,
+      balanceInfo,
+      ilkData,
+      account,
+      proxyAddress,
+      collateralAllowance,
+      daiAllowance,
+      safeConfirmations: context.safeConfirmations,
+      etherscan: context.etherscan.url,
+      errorMessages: [],
+      warningMessages: [],
+      summary: defaultManageVaultSummary,
+      initialTotalSteps,
+      totalSteps: initialTotalSteps,
+      currentStep: 1,
+      clear: () => change({ kind: 'clear' }),
+      gasEstimationStatus: GasEstimationStatus.unset,
+      injectStateOverride,
+    }
+    return initialState
+  },
+}
+
+export const InstitutionalBorrowManageVaultViewStateProvider: VaultViewStateProviderInterface<
+  InstiVault,
+  ManageInstiVaultState
+> = {
+  createInitialVaultState(args: CreateInitialVaultStateArgs<InstiVault>): ManageInstiVaultState {
+    const mananageStandardVaultViewState: ManageVaultState = StandardBorrowManageVaultViewStateProvider.createInitialVaultState(
+      args,
+    )
+
+    return {
+      ...mananageStandardVaultViewState,
+      originationFee: args.vault.originationFee,
+      activeCollRatio: args.vault.activeCollRatio,
+      debtCeiling: args.vault.debtCeiling,
+    }
+  },
 }

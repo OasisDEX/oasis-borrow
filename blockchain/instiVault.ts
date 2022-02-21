@@ -4,7 +4,7 @@ import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from './vaults'
 
-interface InstiVault extends Vault {
+export interface InstiVault extends Vault {
   originationFee: BigNumber
   activeCollRatio: BigNumber
   debtCeiling: BigNumber

@@ -39,7 +39,7 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
-import { createInstiVault$ } from 'blockchain/instiVault'
+import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -52,12 +52,18 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import { createController$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
-import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
+import {
+  createManageVault$,
+  ManageInstiVaultState,
+  InstitutionalBorrowManageVaultViewStateProvider,
+  ManageVaultState,
+  StandardBorrowManageVaultViewStateProvider,
+} from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
@@ -124,6 +130,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import { CharteredDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/charteredDssProxyActionsContractWrapper'
 
 export type TxData =
   | OpenData
@@ -470,7 +477,7 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
-      createManageVault$(
+      createManageVault$<Vault, ManageVaultState>(
         context$,
         txHelpers$,
         proxyAddress$,
@@ -482,6 +489,27 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+        StandardBorrowManageVaultViewStateProvider,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
+  const manageInstiVault$ = memoize(
+    (id: BigNumber) =>
+      createManageVault$<InstiVault, ManageInstiVaultState>(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        instiVault$,
+        saveVaultUsingApi$,
+        addGasEstimation$,
+        withdrawPaybackDepositGenerateLogicFactory(CharteredDssProxyActionsContractWrapper),
+        InstitutionalBorrowManageVaultViewStateProvider,
         id,
       ),
     bigNumberTostring,
@@ -547,6 +575,7 @@ export function setupAppContext() {
   const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
+      manageInstiVault$,
       manageMultiplyVault$,
       manageGuniVault$,
       manageVault$,
@@ -603,6 +632,7 @@ export function setupAppContext() {
     ilks$,
     openVault$,
     manageVault$,
+    manageInstiVault$,
     manageMultiplyVault$,
     manageGuniVault$,
     vaultsOverview$,

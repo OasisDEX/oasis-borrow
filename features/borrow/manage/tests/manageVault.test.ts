@@ -5,13 +5,20 @@ import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
 import { expect } from 'chai'
 import { protoTxHelpers } from 'components/AppContext'
-import { mockManageVault$ } from 'helpers/mocks/manageVault.mock'
+import { mockManageInstiVault$, mockManageVault$ } from 'helpers/mocks/manageVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
-import { DEFAULT_PROXY_ADDRESS, defaultCollateral, defaultDebt } from 'helpers/mocks/vaults.mock'
+import {
+  DEFAULT_PROXY_ADDRESS,
+  defaultCollateral,
+  defaultDebt,
+  mockVault$,
+} from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
-import { of, Subject } from 'rxjs'
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
+import { ManageVaultState } from '../pipes/manageVault'
+import { createInstiVault$ } from '../../../../blockchain/instiVault'
 
 type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }
 ;(global as GlobalMock).window = {
@@ -878,5 +885,57 @@ describe('manageVault', () => {
     state().progress!()
     state().progress!()
     expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
+  })
+
+  describe('managing institutional vaults', () => {
+    it('should add the initial values to the view states from the insti vault', () => {
+      const charterNib$ = () => of(new BigNumber(1))
+      const charterPeace$ = () => of(new BigNumber(2))
+      const charterUline$ = () => of(new BigNumber(3))
+      const instiVault$ = createInstiVault$(
+        () => mockVault$(),
+        charterNib$,
+        charterPeace$,
+        charterUline$,
+        new BigNumber(1),
+      )
+
+      const state = getStateUnpacker(mockManageInstiVault$({ _instiVault$: instiVault$ }))
+
+      expect(state().originationFee.toString()).to.eq('1')
+      expect(state().activeCollRatio.toString()).to.eq('2')
+      expect(state().debtCeiling.toString()).to.eq('3')
+    })
+
+    it('should update the view state when new nib/peace/uline values come in', () => {
+      function createStream(
+        startValue: number,
+      ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
+        const bs = new BehaviorSubject<BigNumber>(new BigNumber(startValue))
+        return [bs, () => bs]
+      }
+
+      const [charterNib$, charterNibCtor] = createStream(1)
+      const [charterPeace$, charterPeaceCtor] = createStream(5)
+      const [charterUline$, charterUlineCtor] = createStream(10)
+
+      const instiVault$ = createInstiVault$(
+        () => mockVault$(),
+        charterNibCtor,
+        charterPeaceCtor,
+        charterUlineCtor,
+        new BigNumber(1),
+      )
+
+      const state = getStateUnpacker(mockManageInstiVault$({ _instiVault$: instiVault$ }))
+
+      charterNib$.next(new BigNumber(2))
+      charterPeace$.next(new BigNumber(6))
+      charterUline$.next(new BigNumber(11))
+
+      expect(state().originationFee.toString()).to.eq('2')
+      expect(state().activeCollRatio.toString()).to.eq('6')
+      expect(state().debtCeiling.toString()).to.eq('11')
+    })
   })
 })
