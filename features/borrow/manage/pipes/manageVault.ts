@@ -14,6 +14,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -54,7 +55,6 @@ import {
   progressManage,
 } from './manageVaultTransitions'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
-import { InstiVault } from '../../../../blockchain/instiVault'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'

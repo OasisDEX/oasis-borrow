@@ -15,9 +15,9 @@ import {
 } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs'
+import { BehaviorSubject,  of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
-import { ManageVaultState } from '../pipes/manageVault'
+
 import { createInstiVault$ } from '../../../../blockchain/instiVault'
 
 type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }

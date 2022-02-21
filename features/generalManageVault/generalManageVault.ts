@@ -4,13 +4,17 @@ import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
-import { ManageVaultState } from '../borrow/manage/pipes/manageVault'
+import { ManageInstiVaultState, ManageVaultState } from '../borrow/manage/pipes/manageVault'
 import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
 type WithToggle<T> = T & { toggleVaultType: () => void }
 
 export type GeneralManageVaultState =
+  | {
+      type: VaultType.Insti
+      state: WithToggle<ManageInstiVaultState>
+    }
   | {
       type: VaultType.Borrow
       state: WithToggle<ManageVaultState>
@@ -21,6 +25,7 @@ export type GeneralManageVaultState =
     }
 
 export function createGeneralManageVault$(
+  manageInstiVault$: (id: BigNumber) => Observable<ManageInstiVaultState>,
   manageMultiplyVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageGuniVault$: (id: BigNumber) => Observable<ManageMultiplyVaultState>,
   manageVault$: (id: BigNumber) => Observable<ManageVaultState>,

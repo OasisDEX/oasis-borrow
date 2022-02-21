@@ -1,9 +1,10 @@
-import { BehaviorSubject, Observable, of } from 'rxjs'
 import { BigNumber } from 'bignumber.js'
-import { createInstiVault$ } from './instiVault'
+import { expect } from 'chai'
+import { BehaviorSubject, Observable, of } from 'rxjs'
+
 import { mockVault$ } from '../helpers/mocks/vaults.mock'
 import { getStateUnpacker } from '../helpers/testHelpers'
-import { expect } from 'chai'
+import { createInstiVault$ } from './instiVault'
 
 describe('instiVault$', () => {
   it('pipes nib, peace, and uline', () => {
@@ -51,19 +52,19 @@ describe('instiVault$', () => {
     }
 
     let createCharterNib$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    const createCharterNib$Fake = (args: CharterPipeArgs): Observable<BigNumber> => {
+    function createCharterNib$Fake(args: CharterPipeArgs): Observable<BigNumber> {
       createCharterNib$FakeCalledWith = args
       return of(new BigNumber(1))
     }
 
     let createCharterPeace$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    const createCharterPeace$Fake = (args: CharterPipeArgs): Observable<BigNumber> => {
+    function createCharterPeace$Fake(args: CharterPipeArgs): Observable<BigNumber> {
       createCharterPeace$FakeCalledWith = args
       return of(new BigNumber(2))
     }
 
     let createCharterUline$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    const createCharterUline$Fake = (args: CharterPipeArgs): Observable<BigNumber> => {
+    function createCharterUline$Fake(args: CharterPipeArgs): Observable<BigNumber> {
       createCharterUline$FakeCalledWith = args
       return of(new BigNumber(3))
     }

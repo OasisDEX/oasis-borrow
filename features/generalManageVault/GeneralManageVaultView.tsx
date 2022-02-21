@@ -26,6 +26,8 @@ export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
   switch (generalManageVault.type) {
+    case VaultType.Insti:
+      return <>manange insti vault automation</>
     case VaultType.Borrow:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
@@ -85,6 +87,8 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
           switch (generalManageVault.type) {
+            case VaultType.Insti:
+              return <>rending insti vault</>
             case VaultType.Borrow:
               return (
                 <Container variant="vaultPageContainer">

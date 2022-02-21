@@ -14,7 +14,7 @@ import {
 } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
-import { EMPTY, of } from 'rxjs'
+import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -96,6 +96,7 @@ export function manageVaultStory({
       context$: of({ etherscan: 'url' }),
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
+          () => from([]),
           // @ts-ignore, don't need to mock Multiply here
           () => of(EMPTY),
           () => of(EMPTY),
