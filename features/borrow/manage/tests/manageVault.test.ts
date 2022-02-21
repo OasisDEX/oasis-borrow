@@ -927,11 +927,11 @@ describe('manageVault', () => {
         new BigNumber(1),
       )
 
-      const state = getStateUnpacker(mockManageInstiVault$({ _instiVault$: instiVault$ }))
-
       charterNib$.next(new BigNumber(2))
       charterPeace$.next(new BigNumber(6))
       charterUline$.next(new BigNumber(11))
+
+      const state = getStateUnpacker(mockManageInstiVault$({ _instiVault$: instiVault$ }))
 
       expect(state().originationFee.toString()).to.eq('2')
       expect(state().activeCollRatio.toString()).to.eq('6')
