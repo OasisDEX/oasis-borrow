@@ -1,8 +1,9 @@
 import { InstiVault } from 'blockchain/instiVault'
+
 import { ManageInstiVaultState, ManageVaultState } from '../manageVault'
 import {
-  CreateInitialVaultStateArgs,
   BorrowManageVaultViewStateProviderInterface,
+  CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
 

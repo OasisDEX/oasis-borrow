@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+
 import { BalanceInfo } from '../../../../shared/balanceInfo'
 import { PriceInfo } from '../../../../shared/priceInfo'
 import { ManageVaultChange, MutableManageVaultState } from '../manageVault'

@@ -1,12 +1,13 @@
 import { Vault } from 'blockchain/vaults'
 import { GasEstimationStatus } from 'helpers/form'
+
 import { defaultMutableManageVaultState, ManageVaultState } from '../manageVault'
 import { defaultManageVaultCalculations } from '../manageVaultCalculations'
 import { defaultManageVaultConditions } from '../manageVaultConditions'
 import { defaultManageVaultSummary } from '../manageVaultSummary'
 import {
-  CreateInitialVaultStateArgs,
   BorrowManageVaultViewStateProviderInterface,
+  CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 
 export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
