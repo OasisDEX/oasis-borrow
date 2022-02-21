@@ -28,10 +28,15 @@ import { AutomationFormButtons } from '../common/components/AutomationFormButton
 interface AdjustSlFormHeaderProps {
   txProgressing: boolean
   txSuccess: boolean
+  firstStopLossSetup: boolean
 }
 
 // TODO potential to be a config-based component per specific state, to be verified with close step
-function AdjustSlFormHeader({ txProgressing, txSuccess }: AdjustSlFormHeaderProps) {
+function AdjustSlFormHeader({
+  txProgressing,
+  txSuccess,
+  firstStopLossSetup,
+}: AdjustSlFormHeaderProps) {
   const { t } = useTranslation()
   const txStates = txProgressing || txSuccess
 
@@ -52,7 +57,11 @@ function AdjustSlFormHeader({ txProgressing, txSuccess }: AdjustSlFormHeaderProp
       )}
       {txSuccess && (
         <FormHeader
-          header={t('protection.downside-protection-complete')}
+          header={t(
+            firstStopLossSetup
+              ? 'protection.downside-protection-complete'
+              : 'protection.downside-protection-updated',
+          )}
           description={t('protection.downside-protection-complete-desc')}
         />
       )}
@@ -237,6 +246,7 @@ export interface AdjustSlFormLayoutProps {
   etherscan: string
   toggleForms: () => void
   selectedSLValue: BigNumber
+  firstStopLossSetup: boolean
 }
 
 export function AdjustSlFormLayout({
@@ -257,10 +267,15 @@ export function AdjustSlFormLayout({
   etherscan,
   toggleForms,
   selectedSLValue,
+  firstStopLossSetup,
 }: AdjustSlFormLayoutProps) {
   return (
     <Grid columns={[1]}>
-      <AdjustSlFormHeader txProgressing={txProgressing} txSuccess={txSuccess} />
+      <AdjustSlFormHeader
+        txProgressing={txProgressing}
+        txSuccess={txSuccess}
+        firstStopLossSetup={firstStopLossSetup}
+      />
       {txProgressing && <OpenVaultAnimation />}
       {!txProgressing && !txSuccess && (
         <>
@@ -316,6 +331,7 @@ export function AdjustSlFormLayout({
           triggerConfig={addTriggerConfig}
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
+          txSuccess={txState?.status === TxStatus.Success}
         />
       )}
     </Grid>

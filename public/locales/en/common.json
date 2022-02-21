@@ -19,6 +19,7 @@
   "address": "Address",
   "address-invalid": "Address not found",
   "add-stop-loss": "Add Stop Loss",
+  "update-stop-loss": "Update Stop Loss",
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
@@ -539,7 +540,8 @@
     "description": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
     "summary-header": "Cancel stop loss order summary",
     "liquidation": "Liquidation price after cancellation",
-    "total": "Total transaction cost"
+    "total": "Total transaction cost",
+    "max": "Max transaction cost"
   },
   "notice": "Notice: Canceling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
   "spots-remaining": "{{ spots }} spots remaining",
@@ -811,6 +813,7 @@
     "setting-downside-protection": "Setting downside protections",
     "setting-downside-protection-desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus finibus, non imperdiet.",
     "downside-protection-complete": "Downside protection complete",
+    "downside-protection-updated": "Downside protection updated",
     "downside-protection-complete-desc": "Some intro text. 29 Vaults saved in the 30 days using Oasis Automation. Find out more about setting stop loss →",
     "banner-header": "Get vault protection",
     "banner-content": "Short text to introduce vault protection.",
