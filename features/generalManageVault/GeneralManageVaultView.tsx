@@ -19,7 +19,7 @@ import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
 
 // Temporary stuff for testing insti vaults
-export const INSTI_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
+export const INSTI_VAULT_IDS: BigNumber[] = []
 const instiMockedData = 
   { 
     originationFee: new BigNumber(0.01),
