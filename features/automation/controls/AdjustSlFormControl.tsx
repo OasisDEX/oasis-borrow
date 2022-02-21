@@ -73,7 +73,7 @@ export function AdjustSlFormControl({
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const [collateralActive, setCloseToCollateral] = useState(true)
+  const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
@@ -129,7 +129,7 @@ export function AdjustSlFormControl({
   const token = vault.token
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
-  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
+  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
   const startingSlRatio = isStopLossEnabled
     ? stopLossLevel
     : new BigNumber(
@@ -294,7 +294,7 @@ export function AdjustSlFormControl({
     stopLossLevel,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
-    ethPrice,
+    tokenPrice,
     vault,
     ilkData,
     isEditing,
