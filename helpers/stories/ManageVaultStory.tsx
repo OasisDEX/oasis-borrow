@@ -6,7 +6,6 @@ import {
   MutableManageVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   MOCK_VAULT_ID,
@@ -14,11 +13,12 @@ import {
   MockManageVaultProps,
 } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'
-import React from 'react'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
+
+import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
 
 type ManageVaultStory = { title?: string } & MockManageVaultProps
 
@@ -131,7 +131,7 @@ const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageVaultView id={MOCK_VAULT_ID} />
+        <GeneralManageControl id={MOCK_VAULT_ID} />
       </Grid>
     </Container>
   )

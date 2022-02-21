@@ -1,7 +1,6 @@
 import {
   AfterPillProps,
   getAfterPillColors,
-  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -10,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
