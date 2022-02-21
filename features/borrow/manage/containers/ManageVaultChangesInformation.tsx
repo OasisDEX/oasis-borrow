@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
-  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'

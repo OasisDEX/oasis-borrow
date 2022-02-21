@@ -1,20 +1,19 @@
-import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+
 import { 
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsCardCollateralLocked,
+  VaultDetailsCard, 
   VaultDetailsCardCollateralizationRatio,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCard 
-} from 'components/vault/VaultDetails'
+  VaultDetailsCardCollateralLocked,
+  VaultDetailsCardCurrentPrice } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { useTranslation } from 'next-i18next'
-import { formatAmount, formatPercent, formatRatio } from 'helpers/formatters/format'
-import { BigNumber } from 'bignumber.js'
-import { ManageInstiVaultState } from '../pipes/manageVault'
+import { formatAmount,  formatRatio } from 'helpers/formatters/format'
 import moment from 'moment'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Box, Grid, Text } from 'theme-ui'
 
+import { ManageInstiVaultState } from '../pipes/manageVault'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
@@ -48,7 +47,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
           valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', { percentageRatio: 
-            formatRatio(activeCollRatio)})}
+            formatRatio(activeCollRatio) })}
           {...afterPill}
         />
         <VaultDetailsCardCollateralizationRatio 
@@ -80,7 +79,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           title={t('manage-insti-vault.card.term-end')}
           value={moment(termEnd).format('Do MMMM YYYY')}
           valueBottom={
-            t('manage-insti-vault.card.days-remaining', { days: moment(termEnd).diff(moment(), 'days')})
+            t('manage-insti-vault.card.days-remaining', { days: moment(termEnd).diff(moment(), 'days') })
           }
           {...afterPill}
         />

@@ -12,11 +12,11 @@ import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
+import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/ManageMultiplyVaultDetails'
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { VaultType } from './vaultType'
-import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 
 // Temporary stuff for testing insti vaults
 export const INSTI_VAULT_IDS: BigNumber[] = [new BigNumber(new BigNumber(86))]
@@ -62,7 +62,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                   {INSTI_VAULT_IDS.some((bn) => bn.eq(id)) ? (
                     <ManageInstiVaultContainer
                       vaultHistory={vaultHistory}
-                      manageVault={{...generalManageVault.state, ...instiMockedData}}
+                      manageVault={{ ...generalManageVault.state, ...instiMockedData }}
                     />
                   ) : (
                     <ManageVaultContainer

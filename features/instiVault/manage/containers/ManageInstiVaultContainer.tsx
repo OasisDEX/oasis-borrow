@@ -1,21 +1,19 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-
+import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { VaultChangesInformationEstimatedGasFee, VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
+import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
+import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
+import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
-import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
-import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
-import { formatPercent } from 'helpers/formatters/format'
-import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { ManageInstiVaultState } from '../pipes/manageVault'
-import { VaultChangesInformationEstimatedGasFee, VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
-
+import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({
   manageVault,
