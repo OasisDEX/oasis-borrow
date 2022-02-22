@@ -1,3 +1,4 @@
+import React, { ReactNode } from 'react'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
@@ -6,7 +7,6 @@ import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { useTranslation } from 'next-i18next'
-import { ReactNode } from 'react'
 import { Box, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
