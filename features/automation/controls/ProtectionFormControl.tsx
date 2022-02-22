@@ -75,6 +75,7 @@ export function ProtectionFormControl({
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={toggleForms}
+                collateralPrice={collateralPrices}
               />
             )}
           </VaultFormContainer>

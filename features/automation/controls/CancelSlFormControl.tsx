@@ -1,4 +1,4 @@
-import { TxState } from '@oasisdex/transactions'
+import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import {
   AutomationBotRemoveTriggerData,
@@ -16,6 +16,7 @@ import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableL
 import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../helpers/form'
 import { useObservable } from '../../../helpers/observableHook'
+import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
 import {
@@ -50,6 +51,7 @@ interface CancelSlFormControlProps {
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
+  collateralPrice: CollateralPricesWithFilters
   tx?: TxHelpers
 }
 
@@ -60,6 +62,7 @@ export function CancelSlFormControl({
   ctx,
   toggleForms,
   accountIsController,
+  collateralPrice,
   tx,
 }: CancelSlFormControlProps) {
   const [collateralActive] = useState(false)
@@ -121,16 +124,23 @@ export function CancelSlFormControl({
     isStopLossEnabled,
   }
 
+  const { token } = vault
+  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const txSuccess = txStatus?.status === TxStatus.Success
   const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
+  const etherscan = ctx.etherscan.url
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
+    tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: txStatus,
     gasEstimation: getEstimatedGasFeeText(gasEstimationData),
     accountIsController,
     toggleForms,
     txProgressing,
+    txSuccess,
+    etherscan,
   }
 
   return <CancelSlFormLayout {...props} />
