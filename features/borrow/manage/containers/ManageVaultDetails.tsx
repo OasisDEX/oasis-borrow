@@ -96,13 +96,7 @@ export function ManageVaultDetails(
   props: ManageVaultState & { onBannerButtonClickHandler: () => void },
 ) {
   const {
-    vault: {
-      id,
-      token,
-      liquidationPrice,
-      lockedCollateral,
-      lockedCollateralUSD,
-    },
+    vault: { id, token, liquidationPrice, lockedCollateral, lockedCollateralUSD },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
@@ -111,7 +105,7 @@ export function ManageVaultDetails(
     inputAmountsEmpty,
     stage,
   } = props
-  
+
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -141,8 +135,8 @@ export function ManageVaultDetails(
             showAfterPill,
           }}
         />
-        <VaultDetailsCardCollateralizationRatio 
-          afterPillColors={afterPillColors} 
+        <VaultDetailsCardCollateralizationRatio
+          afterPillColors={afterPillColors}
           showAfterPill={showAfterPill}
           {...props}
         />

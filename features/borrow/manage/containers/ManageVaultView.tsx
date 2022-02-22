@@ -27,7 +27,7 @@ export function ManageVaultContainer({
   const {
     vault: { id, ilk },
     clear,
-    ilkData
+    ilkData,
   } = manageVault
   const { t } = useTranslation()
   const automationEnabled = useFeatureToggle('Automation')
@@ -61,7 +61,10 @@ export function ManageVaultContainer({
           {!automationEnabled && <VaultHistoryView vaultHistory={vaultHistory} />}
         </Grid>
         <Box>
-          <ManageVaultForm {...manageVault} extraInfo={<VaultChangesInformationEstimatedGasFee {...manageVault} />} />
+          <ManageVaultForm
+            {...manageVault}
+            extraInfo={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
+          />
         </Box>
       </Grid>
     </>

@@ -18,7 +18,7 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps & WithChildren
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,
     header,
-    children
+    children,
   } = props
   const { t } = useTranslation()
 

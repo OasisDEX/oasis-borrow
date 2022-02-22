@@ -1,7 +1,10 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultChangesInformationEstimatedGasFee, VaultChangesInformationItem } from 'components/vault/VaultChangesInformation'
+import {
+  VaultChangesInformationEstimatedGasFee,
+  VaultChangesInformationItem,
+} from 'components/vault/VaultChangesInformation'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
@@ -17,7 +20,7 @@ import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({
   manageVault,
-  vaultHistory
+  vaultHistory,
 }: {
   manageVault: ManageInstiVaultState
   vaultHistory: VaultHistoryEvent[]
@@ -29,7 +32,7 @@ export function ManageInstiVaultContainer({
     ilkData,
     originationFee,
   } = manageVault
-   
+
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -49,16 +52,16 @@ export function ManageInstiVaultContainer({
     <>
       <DefaultVaultHeader header={t('vault.insti-header', { ilk, id })} ilkData={ilkData} id={id}>
         <VaultIlkDetailsItem
-            label={t('manage-insti-vault.origination-fee')}
-            value={`${formatPercent(originationFee.times(100), { precision: 2 })}`}
-            tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
-            styles={{
-              tooltip: {
-                left: ['-80px', 'auto'],
-                right: ['auto', '-32px'],
-              },
-            }}
-          />
+          label={t('manage-insti-vault.origination-fee')}
+          value={`${formatPercent(originationFee.times(100), { precision: 2 })}`}
+          tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
+          styles={{
+            tooltip: {
+              left: ['-80px', 'auto'],
+              right: ['auto', '-32px'],
+            },
+          }}
+        />
       </DefaultVaultHeader>
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
@@ -66,17 +69,19 @@ export function ManageInstiVaultContainer({
           <VaultHistoryView vaultHistory={vaultHistory} />
         </Grid>
         <Box>
-          <ManageVaultForm hideMultiply={true} extraInfo={<>
-            <VaultChangesInformationItem
-              label={t('manage-insti-vault.origination-fee')}
-              value={
-                <Flex>
-                  $100.00
-                </Flex>
-              }
-            />
-            <VaultChangesInformationEstimatedGasFee {...manageVault} />
-          </>} {...manageVault} />
+          <ManageVaultForm
+            hideMultiply={true}
+            extraInfo={
+              <>
+                <VaultChangesInformationItem
+                  label={t('manage-insti-vault.origination-fee')}
+                  value={<Flex>$100.00</Flex>}
+                />
+                <VaultChangesInformationEstimatedGasFee {...manageVault} />
+              </>
+            }
+            {...manageVault}
+          />
         </Box>
       </Grid>
     </>

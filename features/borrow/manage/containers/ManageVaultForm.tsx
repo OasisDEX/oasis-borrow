@@ -47,8 +47,9 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   )
 }
 
-export function ManageVaultForm(props: ManageVaultState & 
-  { hideMultiply?: boolean, extraInfo?: ReactNode }) {
+export function ManageVaultForm(
+  props: ManageVaultState & { hideMultiply?: boolean; extraInfo?: ReactNode },
+) {
   const {
     isEditingStage,
     isProxyStage,

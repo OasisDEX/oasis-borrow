@@ -21,16 +21,15 @@ import { VaultType } from './vaultType'
 
 // Temporary stuff for testing insti vaults
 export const INSTI_VAULT_IDS: BigNumber[] = []
-const instiMockedData = 
-  { 
-    originationFee: new BigNumber(0.01),
-    activeCollRatio: new BigNumber(1.4),
-    activeCollRatioPriceUSD: new BigNumber(1300),
-    debtCeiling: new BigNumber(500000),
-    termEnd: new Date('02/28/2022'),
-    fixedFee: new BigNumber(0.015),
-    nextFixedFee: new BigNumber(0.014)
-  }
+const instiMockedData = {
+  originationFee: new BigNumber(0.01),
+  activeCollRatio: new BigNumber(1.4),
+  activeCollRatioPriceUSD: new BigNumber(1300),
+  debtCeiling: new BigNumber(500000),
+  termEnd: new Date('02/28/2022'),
+  fixedFee: new BigNumber(0.015),
+  nextFixedFee: new BigNumber(0.014),
+}
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
 }

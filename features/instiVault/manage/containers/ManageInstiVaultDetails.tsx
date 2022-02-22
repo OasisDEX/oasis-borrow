@@ -1,13 +1,13 @@
-
-import { 
+import {
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsCard, 
+  VaultDetailsCard,
   VaultDetailsCardCollateralizationRatio,
   VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCurrentPrice } from 'components/vault/VaultDetails'
+  VaultDetailsCardCurrentPrice,
+} from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { formatAmount,  formatRatio } from 'helpers/formatters/format'
+import { formatAmount, formatRatio } from 'helpers/formatters/format'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,11 +17,7 @@ import { ManageInstiVaultState } from '../pipes/manageVault'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
-    vault: {
-      token,
-      lockedCollateral,
-      lockedCollateralUSD,
-    },
+    vault: { token, lockedCollateral, lockedCollateralUSD },
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
     inputAmountsEmpty,
@@ -31,13 +27,13 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     activeCollRatioPriceUSD,
     termEnd,
     fixedFee,
-    nextFixedFee
+    nextFixedFee,
   } = props
   const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPill = {
     afterPillColors: getAfterPillColors(afterCollRatioColor),
-    showAfterPill: !inputAmountsEmpty && stage !== 'manageSuccess' ,
+    showAfterPill: !inputAmountsEmpty && stage !== 'manageSuccess',
   }
   return (
     <Box>
@@ -45,14 +41,12 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         <VaultDetailsCard
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
-          valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', { percentageRatio: 
-            formatRatio(activeCollRatio) })}
+          valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', {
+            percentageRatio: formatRatio(activeCollRatio),
+          })}
           {...afterPill}
         />
-        <VaultDetailsCardCollateralizationRatio 
-          {...props}
-          {...afterPill}
-        />
+        <VaultDetailsCardCollateralizationRatio {...props} {...afterPill} />
         <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
@@ -77,16 +71,13 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         <VaultDetailsCard
           title={t('manage-insti-vault.card.term-end')}
           value={moment(termEnd).format('Do MMMM YYYY')}
-          valueBottom={
-            t('manage-insti-vault.card.days-remaining', { days: moment(termEnd).diff(moment(), 'days') })
-          }
+          valueBottom={t('manage-insti-vault.card.days-remaining', {
+            days: moment(termEnd).diff(moment(), 'days'),
+          })}
           {...afterPill}
         />
       </Grid>
-      <ManageVaultDetailsSummary
-        {...props}
-        {...afterPill}
-      />
+      <ManageVaultDetailsSummary {...props} {...afterPill} />
     </Box>
   )
 }

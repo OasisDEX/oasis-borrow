@@ -12,9 +12,7 @@ import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 
-export function ManageVaultChangesInformation(
-  props: ManageVaultState & { extraInfo?: ReactNode },
-) {
+export function ManageVaultChangesInformation(props: ManageVaultState & { extraInfo?: ReactNode }) {
   const { t } = useTranslation()
   const {
     afterCollateralizationRatio,
