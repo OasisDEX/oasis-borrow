@@ -540,7 +540,7 @@
     "total": "Total transaction cost",
     "max": "Max transaction cost"
   },
-  "notice": "Notice: Canceling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+  "notice": "Notice: Cancelling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
@@ -812,7 +812,7 @@
     "cancel-downside-protection": "Cancel downside protection",
     "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting downside protections",
-    "cancelling-downside-protection": "Canceling stop loss protections",
+    "cancelling-downside-protection": "Cancelling stop loss protections",
     "setting-downside-protection-desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus finibus, non imperdiet.",
     "cancelling-downside-protection-desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus finibus, non imperdiet.",
     "downside-protection-complete": "Downside protection complete",

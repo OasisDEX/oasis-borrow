@@ -37,7 +37,7 @@ function CancelDownsideProtectionInformation({
       <VaultChangesInformationItem
         label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
-      />{' '}
+      />
       <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
     </VaultChangesInformationContainer>
   )
@@ -68,7 +68,7 @@ function CancelCompleteInformation({
       <VaultChangesInformationItem
         label={`${t('system.liquidation-price')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
-      />{' '}
+      />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}
         value={<Flex>${formatAmount(totalCost, 'USD')}</Flex>}
