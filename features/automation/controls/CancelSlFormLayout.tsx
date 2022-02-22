@@ -104,8 +104,8 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
             description: t('protection.cancel-downside-protection-desc'),
           },
           progressing: {
-            header: t('protection.canceling-downside-protection'),
-            description: t('protection.canceling-downside-protection-desc'),
+            header: t('protection.cancelling-downside-protection'),
+            description: t('protection.cancelling-downside-protection-desc'),
           },
           success: {
             header: t('protection.cancel-protection-complete'),
