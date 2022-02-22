@@ -124,7 +124,7 @@ export function CancelSlFormControl({
     isStopLossEnabled,
   }
 
-  const token = vault.token
+  const { token } = vault
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
   const txSuccess = txStatus?.status === TxStatus.Success
   const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
