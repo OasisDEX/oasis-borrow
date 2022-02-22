@@ -17,10 +17,9 @@ import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/Manage
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { GeneralManageVaultState } from './generalManageVault'
-import { VaultType } from './vaultType'
+import { isInstiVault, VaultType } from './vaultType'
 
 // Temporary stuff for testing insti vaults
-export const INSTI_VAULT_IDS: BigNumber[] = []
 const instiMockedData = {
   originationFee: new BigNumber(0.01),
   activeCollRatio: new BigNumber(1.4),
@@ -30,6 +29,7 @@ const instiMockedData = {
   fixedFee: new BigNumber(0.015),
   nextFixedFee: new BigNumber(0.014),
 }
+
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
 }
@@ -100,7 +100,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             case VaultType.Borrow: // todo: add insti vault case
               return (
                 <Container variant="vaultPageContainer">
-                  {INSTI_VAULT_IDS.some((bn) => bn.eq(id)) ? (
+                  {isInstiVault(id) ? (
                     <ManageInstiVaultContainer
                       vaultHistory={vaultHistory}
                       manageVault={{ ...generalManageVault.state, ...instiMockedData }}
