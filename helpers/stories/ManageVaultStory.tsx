@@ -132,7 +132,7 @@ const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageControl id={MOCK_VAULT_ID} />
+        <GeneralManageControl id={vaultId} />
       </Grid>
     </Container>
   )

@@ -6,7 +6,6 @@ import {
   getCollRatioColor,
   VaultDetailsCardCollateralizationRatio,
   VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatioModal,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,

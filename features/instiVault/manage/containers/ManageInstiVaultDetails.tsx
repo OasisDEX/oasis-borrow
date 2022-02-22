@@ -29,7 +29,6 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     activeCollRatio,
 
     activeCollRatioPriceUSD,
-    debtCeiling,
     termEnd,
     fixedFee,
     nextFixedFee
