@@ -21,8 +21,9 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps & WithChildren
     children
   } = props
   const { t } = useTranslation()
+
   return (
-    <VaultHeader header={header} id={id}>
+    <VaultHeader id={id} header={header}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}

@@ -1,10 +1,11 @@
+import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 9 })
 
-export default async function (_req: NextApiRequest, res: NextApiResponse) {
+const handler = async function (_req: NextApiRequest, res: NextApiResponse) {
   const time = cache.get('time')
   if (!time) {
     axios({
@@ -51,3 +52,5 @@ export default async function (_req: NextApiRequest, res: NextApiResponse) {
     })
   }
 }
+
+export default withSentry(handler)

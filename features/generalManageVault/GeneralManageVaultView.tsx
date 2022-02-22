@@ -1,14 +1,14 @@
-import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
+import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Container } from 'theme-ui'
 
+import { useAppContext } from '../../components/AppContextProvider'
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
+import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { useObservableWithError } from '../../helpers/observableHook'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -16,6 +16,7 @@ import { ManageInstiVaultContainer } from '../instiVault/manage/containers/Manag
 import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/ManageMultiplyVaultDetails'
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
+import { GeneralManageVaultState } from './generalManageVault'
 import { VaultType } from './vaultType'
 
 // Temporary stuff for testing insti vaults
@@ -30,6 +31,47 @@ const instiMockedData =
     fixedFee: new BigNumber(0.015),
     nextFixedFee: new BigNumber(0.014)
   }
+interface GeneralManageVaultViewProps {
+  generalManageVault: GeneralManageVaultState
+}
+
+export function GeneralManageVaultViewAutomation({
+  generalManageVault,
+}: GeneralManageVaultViewProps) {
+  switch (generalManageVault.type) {
+    case VaultType.Borrow:
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          <ManageVaultContainer manageVault={generalManageVault.state} vaultHistory={[]} />
+        </Container>
+      )
+    case VaultType.Multiply:
+      const vaultIlk = generalManageVault.state.ilkData.ilk
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          {['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
+            <ManageMultiplyVaultContainer
+              manageVault={generalManageVault.state}
+              details={GuniManageMultiplyVaultDetails}
+              header={GuniVaultHeader}
+              form={GuniManageMultiplyVaultForm}
+              history={VaultHistoryView}
+              vaultHistory={[]}
+            />
+          ) : (
+            <ManageMultiplyVaultContainer
+              manageVault={generalManageVault.state}
+              header={DefaultVaultHeader}
+              details={ManageMultiplyVaultDetails}
+              form={ManageMultiplyVaultForm}
+              history={VaultHistoryView}
+              vaultHistory={[]}
+            />
+          )}
+        </Container>
+      )
+  }
+}
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
@@ -74,34 +116,18 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               )
             case VaultType.Multiply:
               const vaultIlk = generalManageVault.state.ilkData.ilk
-              const multiplyContainerMap: Record<string, ReactNode> = {
-                'GUNIV3DAIUSDC1-A': (
-                  <ManageMultiplyVaultContainer
-                    vaultHistory={vaultMultiplyHistory}
-                    manageVault={generalManageVault.state}
-                    header={GuniVaultHeader}
-                    details={GuniManageMultiplyVaultDetails}
-                    form={GuniManageMultiplyVaultForm}
-                    history={VaultHistoryView}
-                  />
-                ),
-                'GUNIV3DAIUSDC2-A': (
-                  <>
-                    <ManageMultiplyVaultContainer
-                      vaultHistory={vaultMultiplyHistory}
-                      manageVault={generalManageVault.state}
-                      header={GuniVaultHeader}
-                      details={GuniManageMultiplyVaultDetails}
-                      form={GuniManageMultiplyVaultForm}
-                      history={VaultHistoryView}
-                    />
-                  </>
-                ),
-              }
+
               return (
                 <Container variant="vaultPageContainer">
-                  {multiplyContainerMap[vaultIlk] ? (
-                    multiplyContainerMap[vaultIlk]
+                  {['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
+                    <ManageMultiplyVaultContainer
+                      manageVault={generalManageVault.state}
+                      details={GuniManageMultiplyVaultDetails}
+                      header={GuniVaultHeader}
+                      form={GuniManageMultiplyVaultForm}
+                      history={VaultHistoryView}
+                      vaultHistory={[]}
+                    />
                   ) : (
                     <ManageMultiplyVaultContainer
                       vaultHistory={vaultMultiplyHistory}
