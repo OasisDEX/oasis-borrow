@@ -8,7 +8,6 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -18,6 +17,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'

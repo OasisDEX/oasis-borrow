@@ -8,7 +8,6 @@ import {
   getCollRatioColor,
   VaultDetailsCard,
   VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -20,6 +19,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { OpenVaultState } from '../pipes/openVault'
 
 function OpenVaultDetailsSummary({
