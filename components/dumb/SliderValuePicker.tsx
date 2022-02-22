@@ -6,6 +6,7 @@ import { SxStyleProp } from 'theme-ui'
 
 export interface SliderValuePickerProps {
   sliderKey: string
+  background: string
   leftBoundry: BigNumber
   leftBoundryFormatter: (input: BigNumber) => string
   rightBoundry: BigNumber
@@ -55,7 +56,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       </Box>
       <Box my={1}>
         <Slider
-          sx={props.rightBoundryStyling}
+          sx={{ ...props.rightBoundryStyling, background: props.background }}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry?.toNumber()}
