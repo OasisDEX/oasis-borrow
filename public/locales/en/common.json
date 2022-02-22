@@ -338,6 +338,8 @@
     },
     "card": {
       "liquidation-price-description": "The Liquidation Price specifies the collateral price where your vault is subject to liquidation. If you think your vault is too close to liquidation price you can change your multiply vault to have a higher collateralization ratio, you can add more collateral on your own, or you can pay back some of your Dai debt.",
+      "liquidation-price-description-AUTO": "The Liquidation Price is the price at which a Vault becomes vulnerable to liquidation.",
+      "vault-protection-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
       "liquidation-price-current": "Your current liquidation price is:",
       "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
       "buying-power": "Buying power",
@@ -575,7 +577,8 @@
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
-    "seven-day-average": "7 day average"
+    "seven-day-average": "7 day average",
+    "vault-protection": "Vault Protection"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -841,7 +844,8 @@
     "not-guaranteed": "Automation isn't guaranteed to work 100% of the time",
     "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
     "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
-    "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days"
+    "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days",
+    "modal-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

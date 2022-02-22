@@ -3,23 +3,31 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
+import { StopLossBannerControl } from '../../../features/automation/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
+import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface LiquidationProps {
   liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
+  vaultId: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
 }
 
 function VaultDetailsLiquidationModal({
   liquidationPrice,
+  liquidationRatio,
+  vaultId,
   liquidationPriceCurrentPriceDifference,
   close,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
-  return (
+  const automationEnabled = useFeatureToggle('Automation')
+
+  return !automationEnabled ? (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
@@ -43,18 +51,46 @@ function VaultDetailsLiquidationModal({
         )}
       </Grid>
     </VaultDetailsCardModal>
+  ) : (
+    <VaultDetailsCardModal close={close}>
+      <Grid gap={2}>
+        <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('manage-multiply-vault.card.liquidation-price-description-AUTO')}
+        </Text>
+        <Card variant="vaultDetailsCardModal" sx={{ mb: 3 }}>{`$${formatAmount(
+          liquidationPrice,
+          'USD',
+        )}`}</Card>
+        <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
+        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          {t('protection.modal-description')}
+        </Text>
+        <StopLossBannerControl
+          liquidationPrice={liquidationPrice}
+          liquidationRatio={liquidationRatio}
+          vaultId={vaultId}
+          onClick={close}
+          compact
+        />
+      </Grid>
+    </VaultDetailsCardModal>
   )
 }
 
 export function VaultDetailsCardLiquidationPrice({
   liquidationPrice,
+  liquidationRatio,
   liquidationPriceCurrentPriceDifference,
   afterLiquidationPrice,
   afterPillColors,
   showAfterPill,
   relevant = true,
+  vaultId,
 }: {
   liquidationPrice: BigNumber
+  liquidationRatio: BigNumber
+  vaultId: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
   relevant?: Boolean
@@ -84,8 +120,10 @@ export function VaultDetailsCardLiquidationPrice({
       }
       openModal={() =>
         openModal(VaultDetailsLiquidationModal, {
-          liquidationPrice: liquidationPrice,
-          liquidationPriceCurrentPriceDifference: liquidationPriceCurrentPriceDifference,
+          liquidationPrice,
+          liquidationRatio,
+          liquidationPriceCurrentPriceDifference,
+          vaultId,
         })
       }
       relevant={relevant}
