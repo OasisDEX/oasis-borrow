@@ -3,11 +3,14 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
+import { extractStopLossData } from '../../../features/automation/common/StopLossTriggerDataExtractor'
 import { StopLossBannerControl } from '../../../features/automation/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
+import { useObservable } from '../../../helpers/observableHook'
 import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { zero } from '../../../helpers/zero'
+import { useAppContext } from '../../AppContextProvider'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface LiquidationProps {
@@ -15,6 +18,7 @@ interface LiquidationProps {
   liquidationRatio: BigNumber
   vaultId: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
+  isStopLossEnabled?: boolean
 }
 
 function VaultDetailsLiquidationModal({
@@ -23,6 +27,7 @@ function VaultDetailsLiquidationModal({
   vaultId,
   liquidationPriceCurrentPriceDifference,
   close,
+  isStopLossEnabled,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
   const automationEnabled = useFeatureToggle('Automation')
@@ -62,17 +67,21 @@ function VaultDetailsLiquidationModal({
           liquidationPrice,
           'USD',
         )}`}</Card>
-        <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          {t('protection.modal-description')}
-        </Text>
-        <StopLossBannerControl
-          liquidationPrice={liquidationPrice}
-          liquidationRatio={liquidationRatio}
-          vaultId={vaultId}
-          onClick={close}
-          compact
-        />
+        {isStopLossEnabled && (
+          <>
+            <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
+            <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+              {t('protection.modal-description')}
+            </Text>
+            <StopLossBannerControl
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              vaultId={vaultId}
+              onClick={close}
+              compact
+            />
+          </>
+        )}
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -97,6 +106,10 @@ export function VaultDetailsCardLiquidationPrice({
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
+  const { automationTriggersData$ } = useAppContext()
+  const autoTriggersData$ = automationTriggersData$(vaultId)
+  const automationTriggersData = useObservable(autoTriggersData$)
+  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   return (
     <VaultDetailsCard
@@ -124,6 +137,7 @@ export function VaultDetailsCardLiquidationPrice({
           liquidationRatio,
           liquidationPriceCurrentPriceDifference,
           vaultId,
+          isStopLossEnabled: slData?.isStopLossEnabled,
         })
       }
       relevant={relevant}
