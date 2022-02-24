@@ -16,17 +16,17 @@ import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../Vaul
 interface LiquidationProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  vaultId: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
+  vaultId?: BigNumber
   isStopLossEnabled?: boolean
 }
 
 function VaultDetailsLiquidationModal({
   liquidationPrice,
   liquidationRatio,
-  vaultId,
   liquidationPriceCurrentPriceDifference,
   close,
+  vaultId,
   isStopLossEnabled,
 }: ModalProps<LiquidationProps>) {
   const { t } = useTranslation()
@@ -67,7 +67,7 @@ function VaultDetailsLiquidationModal({
           liquidationPrice,
           'USD',
         )}`}</Card>
-        {isStopLossEnabled && (
+        {isStopLossEnabled && vaultId && (
           <>
             <Heading variant="header3">{`${t('system.vault-protection')}`}</Heading>
             <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
@@ -99,49 +99,66 @@ export function VaultDetailsCardLiquidationPrice({
 }: {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  vaultId: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
   afterLiquidationPrice?: BigNumber
+  vaultId?: BigNumber
   relevant?: Boolean
 } & AfterPillProps) {
   const openModal = useModal()
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
-  const autoTriggersData$ = automationTriggersData$(vaultId)
-  const automationTriggersData = useObservable(autoTriggersData$)
-  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
+
+  const cardDetailsData = {
+    title: t('system.liquidation-price'),
+    value: `$${formatAmount(liquidationPrice, 'USD')}`,
+    valueAfter: showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`,
+    valueBottom: liquidationPriceCurrentPriceDifference && (
+      <>
+        {formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+          precision: 2,
+          roundMode: BigNumber.ROUND_DOWN,
+        })}
+        <Text as="span" sx={{ color: 'text.subtitle' }}>
+          {` ${liquidationPriceCurrentPriceDifference.lt(zero) ? 'above' : 'below'} current price`}
+        </Text>
+      </>
+    ),
+
+    relevant,
+    afterPillColors,
+  }
+
+  if (vaultId) {
+    const autoTriggersData$ = automationTriggersData$(vaultId)
+    const automationTriggersData = useObservable(autoTriggersData$)
+    const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
+
+    return (
+      <VaultDetailsCard
+        {...cardDetailsData}
+        openModal={() =>
+          openModal(VaultDetailsLiquidationModal, {
+            liquidationPrice,
+            liquidationRatio,
+            liquidationPriceCurrentPriceDifference,
+            vaultId,
+            isStopLossEnabled: slData?.isStopLossEnabled,
+          })
+        }
+      />
+    )
+  }
 
   return (
     <VaultDetailsCard
-      title={t('system.liquidation-price')}
-      value={`$${formatAmount(liquidationPrice, 'USD')}`}
-      valueAfter={showAfterPill && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`}
-      valueBottom={
-        liquidationPriceCurrentPriceDifference && (
-          <>
-            {formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })}
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
-              {` ${
-                liquidationPriceCurrentPriceDifference.lt(zero) ? 'above' : 'below'
-              } current price`}
-            </Text>
-          </>
-        )
-      }
+      {...cardDetailsData}
       openModal={() =>
         openModal(VaultDetailsLiquidationModal, {
           liquidationPrice,
           liquidationRatio,
           liquidationPriceCurrentPriceDifference,
-          vaultId,
-          isStopLossEnabled: slData?.isStopLossEnabled,
         })
       }
-      relevant={relevant}
-      afterPillColors={afterPillColors}
     />
   )
 }

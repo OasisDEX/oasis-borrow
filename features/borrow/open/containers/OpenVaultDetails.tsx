@@ -101,7 +101,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
     token,
     inputAmountsEmpty,
     stage,
-    id,
     ilkData: { liquidationRatio },
   } = props
   const { t } = useTranslation()
@@ -131,7 +130,6 @@ export function OpenVaultDetails(props: OpenVaultState) {
             afterPillColors,
             showAfterPill,
             relevant: inputAmountWasChanged,
-            vaultId: id!,
           }}
         />
 
