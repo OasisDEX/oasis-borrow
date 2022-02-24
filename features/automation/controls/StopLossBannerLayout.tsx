@@ -96,8 +96,8 @@ export function StopLossBannerLayout({
         sx={{
           background: 'linear-gradient(92.87deg, #F0FCFF 13.82%, #FFEFFA 88.81%), #FFFFFF',
           mb: 3,
-          py: compact ? '21px' : '24px',
-          height: ['auto', compact ? '91px' : '132px'],
+          py: '21px',
+          height: ['auto', '91px'],
         }}
       >
         <Flex sx={{ height: '100%' }}>
