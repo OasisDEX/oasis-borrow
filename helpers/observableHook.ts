@@ -5,6 +5,14 @@ import { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
+function raiseObservableErrorInSentry(e: any) {
+  if (e instanceof Error) {
+    Sentry.captureException(e)
+  } else {
+    Sentry.captureException(new Error(JSON.stringify(e)))
+  }
+}
+
 export function useUIChanges<S, A>(
   handler: (state: S, action: A) => S,
   initial: S,
@@ -33,7 +41,7 @@ export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | und
       (v: Unpack<O>) => setValue(v),
       (error) => {
         console.log('error', error)
-        Sentry.captureException(error)
+        raiseObservableErrorInSentry(error)
       },
     )
     return () => subscription.unsubscribe()
@@ -53,7 +61,7 @@ export function useObservableWithError<O extends Observable<any>>(
       (v: Unpack<O>) => setValue(v),
       (e) => {
         setError(e)
-        Sentry.captureException(e)
+        raiseObservableErrorInSentry(e)
       },
     )
     return () => subscription.unsubscribe()
