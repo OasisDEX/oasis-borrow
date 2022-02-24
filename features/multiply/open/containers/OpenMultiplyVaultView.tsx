@@ -18,7 +18,7 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
   const { t } = useTranslation()
 
-  const openVaultWithError = useObservable(openMultiplyVault$(ilk))
+  const openVault = useObservable(openMultiplyVault$(ilk))
 
   useEffect(() => {
     const subscription = createOpenMultiplyVaultAnalytics$(
@@ -34,8 +34,8 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <WithErrorHandler error={openVaultWithError.error}>
-      <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
+    <WithErrorHandler error={openVault.error}>
+      <WithLoadingIndicator {...openVault} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer

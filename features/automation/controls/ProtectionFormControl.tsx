@@ -31,8 +31,8 @@ export function ProtectionFormControl({
 }: Props) {
   const { txHelpers$, context$ } = useAppContext()
 
-  const txHelpersWithError = useObservable(txHelpers$)
-  const contextWithError = useObservable(context$)
+  const txHelpers = useObservable(txHelpers$)
+  const context = useObservable(context$)
 
   const [currentForm, setForm] = useState(AutomationFromKind.ADJUST)
 
@@ -48,11 +48,8 @@ export function ProtectionFormControl({
   const accountIsController = accountIsConnected && account === vault.controller
 
   return (
-    <WithErrorHandler error={[contextWithError.error]}>
-      <WithLoadingIndicator
-        value={[contextWithError.value]}
-        customLoader={<VaultContainerSpinner />}
-      >
+    <WithErrorHandler error={[context.error]}>
+      <WithLoadingIndicator value={[context.value]} customLoader={<VaultContainerSpinner />}>
         {([context]) => (
           <VaultFormContainer toggleTitle="Edit Vault">
             {currentForm === AutomationFromKind.ADJUST ? (
@@ -61,7 +58,7 @@ export function ProtectionFormControl({
                 collateralPrice={collateralPrices}
                 ilkData={ilkData}
                 triggerData={automationTriggersData}
-                tx={txHelpersWithError.value}
+                tx={txHelpers.value}
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={toggleForms}
@@ -71,7 +68,7 @@ export function ProtectionFormControl({
                 vault={vault}
                 ilkData={ilkData}
                 triggerData={automationTriggersData}
-                tx={txHelpersWithError.value}
+                tx={txHelpers.value}
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={toggleForms}

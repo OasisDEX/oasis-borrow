@@ -63,24 +63,14 @@ export function GeneralManageVaultViewAutomation({
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
-  const manageVaultWithError = useObservable(manageVaultWithId$)
-  const vaultHistoryWithError = useObservable(vaultHistory$(id))
-  const vaultMultiplyHistoryWithError = useObservable(vaultMultiplyHistory$(id))
+  const manageVault = useObservable(manageVaultWithId$)
+  const vaultHistory = useObservable(vaultHistory$(id))
+  const vaultMultiplyHistory = useObservable(vaultMultiplyHistory$(id))
 
   return (
-    <WithErrorHandler
-      error={[
-        manageVaultWithError.error,
-        vaultHistoryWithError.error,
-        vaultMultiplyHistoryWithError.error,
-      ]}
-    >
+    <WithErrorHandler error={[manageVault.error, vaultHistory.error, vaultMultiplyHistory.error]}>
       <WithLoadingIndicator
-        value={[
-          manageVaultWithError.value,
-          vaultHistoryWithError.value,
-          vaultMultiplyHistoryWithError.value,
-        ]}
+        value={[manageVault.value, vaultHistory.value, vaultMultiplyHistory.value]}
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {

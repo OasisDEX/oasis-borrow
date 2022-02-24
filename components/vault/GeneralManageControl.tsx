@@ -14,12 +14,12 @@ interface GeneralManageControlProps {
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const { generalManageVault$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const generalManageVaultWithError = useObservable(generalManageVaultWithId$)
+  const generalManageVault = useObservable(generalManageVaultWithId$)
 
   return (
-    <WithErrorHandler error={[generalManageVaultWithError.error]}>
+    <WithErrorHandler error={[generalManageVault.error]}>
       <WithLoadingIndicator
-        value={[generalManageVaultWithError.value]}
+        value={[generalManageVault.value]}
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault]) => <GeneralManageLayout generalManageVault={generalManageVault} />}

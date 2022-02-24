@@ -15,15 +15,15 @@ interface HistoryControlProps {
 
 export function HistoryControl({ generalManageVault }: HistoryControlProps) {
   const { vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
-  const vaultHistoryWithError = useObservable(vaultHistory$(generalManageVault.state.vault.id))
-  const vaultMultiplyHistoryWithError = useObservable(
+  const vaultHistory = useObservable(vaultHistory$(generalManageVault.state.vault.id))
+  const vaultMultiplyHistory = useObservable(
     vaultMultiplyHistory$(generalManageVault.state.vault.id),
   )
 
   return (
-    <WithErrorHandler error={[vaultHistoryWithError.error, vaultMultiplyHistoryWithError.error]}>
+    <WithErrorHandler error={[vaultHistory.error, vaultMultiplyHistory.error]}>
       <WithLoadingIndicator
-        value={[vaultHistoryWithError.value, vaultMultiplyHistoryWithError.value]}
+        value={[vaultHistory.value, vaultMultiplyHistory.value]}
         customLoader={<VaultContainerSpinner />}
       >
         {([vaultHistory, vaultMultiplyHistory]) => {

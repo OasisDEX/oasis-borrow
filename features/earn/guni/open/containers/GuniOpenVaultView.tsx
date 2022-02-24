@@ -17,7 +17,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { openGuniVault$, accountData$, context$ } = useAppContext()
   // const multiplyVaultWithIlk$ = openGuniVault$(ilk)
 
-  const openVaultWithError = useObservable(openGuniVault$(ilk))
+  const openVault = useObservable(openGuniVault$(ilk))
 
   // useEffect(() => {
   //   const subscription = createOpenMultiplyVaultAnalytics$(
@@ -33,8 +33,8 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   // }, [])
 
   return (
-    <WithErrorHandler error={openVaultWithError.error}>
-      <WithLoadingIndicator {...openVaultWithError} customLoader={<VaultContainerSpinner />}>
+    <WithErrorHandler error={openVault.error}>
+      <WithLoadingIndicator {...openVault} customLoader={<VaultContainerSpinner />}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer
