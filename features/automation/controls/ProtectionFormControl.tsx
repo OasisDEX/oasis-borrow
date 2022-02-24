@@ -6,7 +6,7 @@ import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultFormContainer } from '../../../components/vault/VaultFormContainer'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../../helpers/observableHook'
+import { useObservable } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from '../../form/commonValidators'
 import { AutomationFromKind } from '../common/enums/TriggersTypes'
@@ -31,8 +31,8 @@ export function ProtectionFormControl({
 }: Props) {
   const { txHelpers$, context$ } = useAppContext()
 
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(context$)
+  const txHelpersWithError = useObservable(txHelpers$)
+  const contextWithError = useObservable(context$)
 
   const [currentForm, setForm] = useState(AutomationFromKind.ADJUST)
 

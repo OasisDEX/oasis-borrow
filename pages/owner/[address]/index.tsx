@@ -6,7 +6,7 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { VaultsOverviewView } from 'features/vaultsOverview/VaultsOverviewView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
+import { useObservable } from 'helpers/observableHook'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -25,8 +25,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Summary({ address }: { address: string }) {
   const { vaultsOverview$, context$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
-  const vaultsOverviewWithError = useObservableWithError(vaultsOverview$(checksumAddress))
-  const contextWithError = useObservableWithError(context$)
+  const vaultsOverviewWithError = useObservable(vaultsOverview$(checksumAddress))
+  const contextWithError = useObservable(context$)
 
   return (
     <WithErrorHandler error={[vaultsOverviewWithError.error, contextWithError.error]}>

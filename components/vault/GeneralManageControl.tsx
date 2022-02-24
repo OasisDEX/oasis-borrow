@@ -3,7 +3,7 @@ import React from 'react'
 
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
 
@@ -14,7 +14,7 @@ interface GeneralManageControlProps {
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const { generalManageVault$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const generalManageVaultWithError = useObservableWithError(generalManageVaultWithId$)
+  const generalManageVaultWithError = useObservable(generalManageVaultWithId$)
 
   return (
     <WithErrorHandler error={[generalManageVaultWithError.error]}>

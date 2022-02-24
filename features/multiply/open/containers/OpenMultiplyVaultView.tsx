@@ -8,7 +8,7 @@ import { OpenMultiplyVaultContainer } from '../../../../components/vault/commonM
 import { DefaultVaultHeader } from '../../../../components/vault/DefaultVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../../../helpers/observableHook'
+import { useObservable } from '../../../../helpers/observableHook'
 import { createOpenMultiplyVaultAnalytics$ } from '../pipes/openMultiplyVaultAnalytics'
 import { OpenMultiplyVaultDetails } from './OpenMultiplyVaultDetails'
 import { OpenMultiplyVaultForm } from './OpenMultiplyVaultForm'
@@ -18,7 +18,7 @@ export function OpenMultiplyVaultView({ ilk }: { ilk: string }) {
   const multiplyVaultWithIlk$ = openMultiplyVault$(ilk)
   const { t } = useTranslation()
 
-  const openVaultWithError = useObservableWithError(openMultiplyVault$(ilk))
+  const openVaultWithError = useObservable(openMultiplyVault$(ilk))
 
   useEffect(() => {
     const subscription = createOpenMultiplyVaultAnalytics$(

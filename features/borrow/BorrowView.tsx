@@ -9,7 +9,7 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import {
   borrowPageCardsData,
   productCardsConfig,
@@ -19,7 +19,7 @@ import {
 export function BorrowView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
     productCardsData$,
   )
 

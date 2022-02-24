@@ -25,7 +25,7 @@ export function StopLossBannerControl({
 }: StopLossBannerControlProps & AfterPillProps) {
   const { automationTriggersData$, uiChanges } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vaultId)
-  const automationTriggersData = useObservable(autoTriggersData$)
+  const automationTriggersData = useObservable(autoTriggersData$).value
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 

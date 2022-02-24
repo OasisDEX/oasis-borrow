@@ -111,7 +111,7 @@ export function AdjustSlFormControl({
     [txData],
   )
 
-  const gasEstimationData = useObservable(gasEstimationData$)
+  const gasEstimationData = useObservable(gasEstimationData$).value
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }

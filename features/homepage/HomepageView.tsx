@@ -14,7 +14,7 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable, useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
@@ -111,10 +111,10 @@ export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
     productCardsData$,
   )
-  const context = useObservable(context$)
+  const context = useObservable(context$).value
 
   return (
     <Box

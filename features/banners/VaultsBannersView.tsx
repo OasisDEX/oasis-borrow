@@ -372,7 +372,7 @@ export function VaultNextPriceUpdateCounter({
 
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
-  const state = useObservable(vaultBanners$(id))
+  const state = useObservable(vaultBanners$(id)).value
 
   if (!state) return null
 

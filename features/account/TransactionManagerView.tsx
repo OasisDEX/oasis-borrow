@@ -148,8 +148,8 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
 
 export function PendingTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$)?.pendingTransactions
-  const context = useObservable(context$)
+  const transactions = useObservable(transactionManager$).value?.pendingTransactions
+  const context = useObservable(context$).value
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 
@@ -177,8 +177,8 @@ export function PendingTransactions() {
 
 export function RecentTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$)?.recentTransactions
-  const context = useObservable(context$)
+  const transactions = useObservable(transactionManager$).value?.recentTransactions
+  const context = useObservable(context$).value
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 

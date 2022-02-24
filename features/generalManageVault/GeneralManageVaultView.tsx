@@ -8,7 +8,7 @@ import { ManageMultiplyVaultContainer } from '../../components/vault/commonMulti
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -63,9 +63,9 @@ export function GeneralManageVaultViewAutomation({
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
-  const manageVaultWithError = useObservableWithError(manageVaultWithId$)
-  const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
-  const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
+  const manageVaultWithError = useObservable(manageVaultWithId$)
+  const vaultHistoryWithError = useObservable(vaultHistory$(id))
+  const vaultMultiplyHistoryWithError = useObservable(vaultMultiplyHistory$(id))
 
   return (
     <WithErrorHandler

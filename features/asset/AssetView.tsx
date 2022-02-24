@@ -9,7 +9,7 @@ import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from 'helpers/observableHook'
+import { useObservable } from 'helpers/observableHook'
 import { ProductCardData } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -50,7 +50,7 @@ function TabContent(props: {
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
+  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
     productCardsData$,
   )
   const enabled = useFeatureToggle('EarnProduct')

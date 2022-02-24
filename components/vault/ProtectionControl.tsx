@@ -9,7 +9,7 @@ import { ProtectionFormControl } from '../../features/automation/controls/Protec
 import { VaultBanner } from '../../features/banners/VaultsBannersView'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
@@ -45,8 +45,8 @@ interface ProtectionControlProps {
 export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
-  const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
+  const automationTriggersDataWithError = useObservable(autoTriggersData$)
+  const collateralPricesWithError = useObservable(collateralPrices$)
 
   return !vault.debt.isZero() ? (
     <WithErrorHandler
