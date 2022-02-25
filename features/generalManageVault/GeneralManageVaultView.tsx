@@ -29,7 +29,7 @@ export function GeneralManageVaultViewAutomation({
     case VaultType.Borrow:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          <ManageVaultContainer manageVault={generalManageVault.state} vaultHistory={[]} />
+          <ManageVaultContainer manageVault={generalManageVault.state} />
         </Container>
       )
     case VaultType.Multiply:
@@ -43,7 +43,6 @@ export function GeneralManageVaultViewAutomation({
               header={GuniVaultHeader}
               form={GuniManageMultiplyVaultForm}
               history={VaultHistoryView}
-              vaultHistory={[]}
             />
           ) : (
             <ManageMultiplyVaultContainer
@@ -52,7 +51,6 @@ export function GeneralManageVaultViewAutomation({
               details={ManageMultiplyVaultDetails}
               form={ManageMultiplyVaultForm}
               history={VaultHistoryView}
-              vaultHistory={[]}
             />
           )}
         </Container>
@@ -61,37 +59,22 @@ export function GeneralManageVaultViewAutomation({
 }
 
 export function GeneralManageVaultView({ id }: { id: BigNumber }) {
-  const { generalManageVault$, vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
+  const { generalManageVault$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const manageVaultWithError = useObservableWithError(manageVaultWithId$)
-  const vaultHistoryWithError = useObservableWithError(vaultHistory$(id))
-  const vaultMultiplyHistoryWithError = useObservableWithError(vaultMultiplyHistory$(id))
 
   return (
-    <WithErrorHandler
-      error={[
-        manageVaultWithError.error,
-        vaultHistoryWithError.error,
-        vaultMultiplyHistoryWithError.error,
-      ]}
-    >
+    <WithErrorHandler error={[manageVaultWithError.error]}>
       <WithLoadingIndicator
-        value={[
-          manageVaultWithError.value,
-          vaultHistoryWithError.value,
-          vaultMultiplyHistoryWithError.value,
-        ]}
+        value={[manageVaultWithError.value]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
+        {([generalManageVault]) => {
           switch (generalManageVault.type) {
             case VaultType.Borrow:
               return (
                 <Container variant="vaultPageContainer">
-                  <ManageVaultContainer
-                    vaultHistory={vaultHistory}
-                    manageVault={generalManageVault.state}
-                  />
+                  <ManageVaultContainer manageVault={generalManageVault.state} />
                 </Container>
               )
             case VaultType.Multiply:
@@ -106,11 +89,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       header={GuniVaultHeader}
                       form={GuniManageMultiplyVaultForm}
                       history={VaultHistoryView}
-                      vaultHistory={[]}
                     />
                   ) : (
                     <ManageMultiplyVaultContainer
-                      vaultHistory={vaultMultiplyHistory}
                       manageVault={generalManageVault.state}
                       header={DefaultVaultHeader}
                       details={ManageMultiplyVaultDetails}

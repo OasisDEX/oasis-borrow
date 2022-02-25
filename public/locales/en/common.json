@@ -578,7 +578,8 @@
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day average",
-    "vault-protection": "Vault Protection"
+    "vault-protection": "Vault Protection",
+    "date": "Date"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -845,7 +846,15 @@
     "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
     "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
     "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days",
-    "modal-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing."
+    "modal-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
+    "your-stop-loss-triggered": "Your stop loss was triggered",
+    "your-stop-loss-triggered-desc": "See below for a summary of what happened to the Vault.",
+    "stop-loss-summary": "Stop loss summary",
+    "token-sold": "{{token}} sold",
+    "token-or-dai-withdrawn": "{{token}} / DAI withdrawn",
+    "reopen-position": "Reopen position",
+    "stop-loss-triggered": "Stop loss triggered",
+    "stop-loss-triggered-desc": "Your stop loss was triggered on your Vault"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
