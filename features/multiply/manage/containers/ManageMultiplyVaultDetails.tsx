@@ -124,10 +124,12 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            vaultId: id,
           }}
         />
 
