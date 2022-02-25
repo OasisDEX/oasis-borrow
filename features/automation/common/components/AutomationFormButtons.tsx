@@ -62,17 +62,7 @@ export function AutomationFormButtons({
           </Button>
         </Box>
       )}
-      {triggerConfig.isStopLossEnabled && (
-        <>
-          <Divider variant="styles.hrVaultFormBottom" />
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForms}>
-              {t(toggleKey)}
-            </Button>
-          </Flex>
-        </>
-      )}
-      {txSuccess && type === 'cancel' && (
+      {(triggerConfig.isStopLossEnabled || (txSuccess && type === 'cancel')) && (
         <>
           <Divider variant="styles.hrVaultFormBottom" />
           <Flex sx={{ justifyContent: 'center' }}>
