@@ -106,7 +106,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       header={GuniVaultHeader}
                       form={GuniManageMultiplyVaultForm}
                       history={VaultHistoryView}
-                      vaultHistory={[]}
+                      vaultHistory={vaultMultiplyHistory}
                     />
                   ) : (
                     <ManageMultiplyVaultContainer
