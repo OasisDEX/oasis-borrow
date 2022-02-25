@@ -4,7 +4,7 @@ import { Grid } from 'theme-ui'
 
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
+import { GeneralManageVaultView, GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { TabSwitchLayout, VaultViewMode } from '../TabSwitchLayout'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -36,7 +36,10 @@ export function GeneralManageLayout({ generalManageVault }: GeneralManageAnalyti
           />
         }
         overViewControl={
-          <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
+          <GeneralManageVaultView id = {vaultId} />
+          // TODO: to make automation work uncomment below ~ŁW
+          // <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
+
         }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={
