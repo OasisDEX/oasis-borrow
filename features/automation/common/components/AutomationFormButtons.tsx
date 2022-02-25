@@ -16,6 +16,7 @@ interface AutomationFormButtonsProps {
   toggleForms: () => void
   toggleKey: string
   txSuccess: boolean
+  type?: 'adjust' | 'cancel'
 }
 
 export function AutomationFormButtons({
@@ -23,6 +24,7 @@ export function AutomationFormButtons({
   toggleForms,
   toggleKey,
   txSuccess,
+  type,
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -61,6 +63,16 @@ export function AutomationFormButtons({
         </Box>
       )}
       {triggerConfig.isStopLossEnabled && (
+        <>
+          <Divider variant="styles.hrVaultFormBottom" />
+          <Flex sx={{ justifyContent: 'center' }}>
+            <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForms}>
+              {t(toggleKey)}
+            </Button>
+          </Flex>
+        </>
+      )}
+      {txSuccess && type === 'cancel' && (
         <>
           <Divider variant="styles.hrVaultFormBottom" />
           <Flex sx={{ justifyContent: 'center' }}>
