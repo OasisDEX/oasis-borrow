@@ -6,7 +6,7 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 
 import { formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal, getCollRatioColor } from '../VaultDetails'
+import { AfterPillProps, getCollRatioColor,VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 interface CollaterlizationRatioProps {
   currentCollateralRatio: BigNumber
