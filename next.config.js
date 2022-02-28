@@ -8,12 +8,11 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
-const { withSentryConfig } = require('@sentry/nextjs')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
 
-const conf = withBundleAnalyzer(
+module.exports = withBundleAnalyzer(
   withPWA(
     withMDX(
       withSass({
@@ -43,7 +42,6 @@ const conf = withBundleAnalyzer(
           showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
           infuraProjectId: process.env.INFURA_PROJECT_ID,
           etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
-          sentryRelease: process.env.SENTRY_RELEASE,
           exchangeAddress:
             process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
           multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
@@ -117,10 +115,3 @@ const conf = withBundleAnalyzer(
     ),
   ),
 )
-
-// sentry needs to be last for accurate sourcemaps
-module.exports = withSentryConfig(conf, {
-  org: 'oazo-apps',
-  project: 'oazo-apps',
-  url: 'https://sentry.io/',
-})

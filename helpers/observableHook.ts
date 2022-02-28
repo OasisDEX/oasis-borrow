@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/nextjs'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect, useReducer, useState } from 'react'
 import { Observable } from 'rxjs'
@@ -32,10 +31,7 @@ export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | und
   useEffect(() => {
     const subscription = o$.subscribe(
       (v: Unpack<O>) => setValue(v),
-      (error) => {
-        console.log('error', error)
-        Sentry.captureException(error)
-      },
+      (error) => console.log('error', error),
     )
     return () => subscription.unsubscribe()
   }, [o$])
@@ -52,10 +48,7 @@ export function useObservableWithError<O extends Observable<any>>(
   useEffect(() => {
     const subscription = o$.subscribe(
       (v: Unpack<O>) => setValue(v),
-      (e) => {
-        setError(e)
-        Sentry.captureException(e)
-      },
+      (e) => setError(e),
     )
     return () => subscription.unsubscribe()
   }, [o$])
