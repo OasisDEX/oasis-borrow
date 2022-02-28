@@ -76,7 +76,7 @@ export function AdjustSlFormControl({
   const [collateralActive, setCloseToCollateral] = useState(true)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
 
-  const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
+  const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
   const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
 
@@ -226,23 +226,14 @@ export function AdjustSlFormControl({
       if (tx === undefined) {
         return
       }
-      const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
-        transactionStateHandler(setTxStatus, transactionState, finishLoader, waitForTx)
-
-        if (txStatus?.status === TxStatus.Success) {
-          dispatch({
-            type: 'isEditing',
-            isEditing: false,
-          })
-        }
-      }
-
       if (txStatus?.status === TxStatus.Success) {
         uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
         setTxStatus(undefined)
         setSelectedSLValue(startingSlRatio)
         return
       }
+      const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) =>
+        transactionStateHandler(setTxStatus, transactionState, finishLoader, waitForTx)
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
@@ -261,10 +252,7 @@ export function AdjustSlFormControl({
     isLoading: false,
     isRetry: false,
     isEditing,
-    disabled:
-      !isOwner ||
-      (selectedSLValue.eq(stopLossLevel.multipliedBy(100)) &&
-        txStatus?.status !== TxStatus.Success),
+    disabled: isOwner || !isEditing || selectedSLValue.eq(stopLossLevel.multipliedBy(100)),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
