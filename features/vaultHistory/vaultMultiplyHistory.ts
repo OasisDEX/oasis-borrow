@@ -141,25 +141,6 @@ async function getVaultMultiplyHistory(
   return data.allVaultMultiplyHistories.nodes
 }
 
-function addReclaimFlag(events: VaultHistoryEvent[]) {
-  return events.map((event, index, array) => {
-    if (index === 0) {
-      return { ...event, reclaim: false }
-    }
-    const previousEvent = array[index - 1]
-
-    if (
-      event.kind === 'DEPOSIT' &&
-      previousEvent.kind === 'AUCTION_FINISHED_V2' &&
-      previousEvent.remainingCollateral.eq(event.collateralAmount)
-    ) {
-      return { ...event, reclaim: true }
-    }
-
-    return { ...event, reclaim: false }
-  })
-}
-
 export function createVaultMultiplyHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
@@ -181,7 +162,6 @@ export function createVaultMultiplyHistory$(
           ),
         ),
         map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
-        map(addReclaimFlag),
         catchError(() => of([])),
       )
     }),

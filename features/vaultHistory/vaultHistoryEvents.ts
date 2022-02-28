@@ -6,7 +6,6 @@ interface HistoryEventBase {
   id: string
   liquidationRatio?: BigNumber
   ethPrice: BigNumber
-  reclaim?: boolean
 }
 
 interface VaultOpenedEvent extends HistoryEventBase {
