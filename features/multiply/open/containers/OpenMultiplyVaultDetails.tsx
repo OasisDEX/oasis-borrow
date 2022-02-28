@@ -89,6 +89,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     stage,
     marketPrice,
     priceInfo,
+    ilkData: { liquidationRatio },
   } = props
   const openModal = useModal()
 
@@ -110,6 +111,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
