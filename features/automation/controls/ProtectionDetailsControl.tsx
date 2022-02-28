@@ -60,6 +60,7 @@ export function ProtectionDetailsControl({
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
 
   useEffect(() => {
+    console.log('Subscribing to uiChanges')
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
 
     const subscription = uiChanges$.subscribe((value) => {
@@ -69,6 +70,8 @@ export function ProtectionDetailsControl({
       subscription.unsubscribe()
     }
   }, [])
+
+  console.log('rendering ProtDetailsControl')
 
   return renderLayout(
     extractStopLossData(automationTriggersData),
