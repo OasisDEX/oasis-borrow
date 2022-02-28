@@ -114,7 +114,7 @@ export function formatPercent(
   return `${sign}${number.toFixed(precision, roundMode)}%`
 }
 
-export function formatRatio(number: BigNumber) {
+export function formatDecimalAsPercent(number: BigNumber) {
   return formatPercent(number.times(100), {
     precision: 2,
     roundMode: BigNumber.ROUND_DOWN,

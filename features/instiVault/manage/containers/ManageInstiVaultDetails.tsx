@@ -7,7 +7,7 @@ import {
   VaultDetailsCardCurrentPrice,
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { formatAmount, formatRatio } from 'helpers/formatters/format'
+import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -42,7 +42,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
           valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', {
-            percentageRatio: formatRatio(activeCollRatio),
+            percentageRatio: formatDecimalAsPercent(activeCollRatio),
           })}
           {...afterPill}
         />
@@ -57,13 +57,13 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         />
         <VaultDetailsCard
           title={t('manage-insti-vault.card.current-fixed-fee')}
-          value={formatRatio(fixedFee)}
+          value={formatDecimalAsPercent(fixedFee)}
           valueBottom={
             <>
               <Text as="span" sx={{ color: 'text.subtitle' }}>
                 {t('manage-insti-vault.card.next-fee-change')}{' '}
               </Text>
-              {formatRatio(nextFixedFee)}
+              {formatDecimalAsPercent(nextFixedFee)}
             </>
           }
           {...afterPill}
