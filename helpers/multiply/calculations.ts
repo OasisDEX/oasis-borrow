@@ -14,7 +14,9 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'DEPOSIT':
     case 'DEPOSIT-GENERATE':
-      if ((event as any).reclaim) return total
+      if (event.reclaim) {
+        return total
+      }
 
       return total.plus(event.collateralAmount.times(event.oraclePrice))
     case 'PAYBACK':
