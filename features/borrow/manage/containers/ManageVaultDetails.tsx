@@ -143,12 +143,10 @@ export function ManageVaultDetails(
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
-            liquidationRatio,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
-            vaultId: id,
           }}
         />
 
