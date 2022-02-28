@@ -131,7 +131,7 @@ export function AdjustSlFormControl({
 
   const initial: AddFormChange = {
     collateralActive: false,
-    selectedSLValue: startingSlRatio.multipliedBy(100),
+    selectedSLValue: new BigNumber(currentCollRatio),
   }
 
   const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)

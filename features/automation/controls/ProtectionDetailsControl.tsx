@@ -31,7 +31,12 @@ function renderLayout(
     isStaticPrice: collateralPrice.isStaticPrice,
     token: vaultData.token,
 
-    afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
+    // protectionState mocked for now
+    protectionState: {
+      inputAmountsEmpty: false,
+      stage: 'editing',
+      afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
+    },
   }
   return <ProtectionDetailsLayout {...props} />
 }
