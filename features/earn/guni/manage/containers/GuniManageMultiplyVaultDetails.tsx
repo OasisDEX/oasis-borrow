@@ -1,6 +1,7 @@
 import {
   AfterPillProps,
   getAfterPillColors,
+  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -10,7 +11,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 
 function GuniManageMultiplyVaultDetailsSummary({
