@@ -17,15 +17,12 @@ import { configSchema } from './config'
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000
 const DEV_HTTPS_PORT = 3443
 const dev = process.env.NODE_ENV !== 'production'
-// const enablePasswordProtection = !dev
-// const PASSWORD = 'password!@#'
 
 const nextApp = next({ dev })
 const handleByNext = nextApp.getRequestHandler()
 
 async function main() {
   const config = configSchema.parse({
-    // httpPassword: enablePasswordProtection ? PASSWORD : undefined,
     challengeJWTSecret: process.env.CHALLENGE_JWT_SECRET,
     userJWTSecret: process.env.USER_JWT_SECRET,
   })

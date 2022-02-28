@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import express from 'express'
-import basicAuth from 'express-basic-auth'
 import jwt from 'express-jwt'
 import morgan from 'morgan'
 
@@ -21,21 +20,6 @@ export interface Dependencies {
 export function getApp(config: Config, { nextHandler }: Dependencies): express.Application {
   const app = express()
   app.enable('trust proxy')
-
-  if (config.httpPassword) {
-    console.log('Enabling http-auth...')
-    const httpBasic = basicAuth({
-      challenge: true,
-      users: { admin: config.httpPassword },
-    })
-    app.use((req, res, next) => {
-      // do not require http-auth on /api
-      if (!req.path.startsWith('/api')) {
-        return httpBasic(req, res, next)
-      }
-      next()
-    })
-  }
 
   app.use(bodyParser.json())
   app.use(cookieParser())
