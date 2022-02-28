@@ -66,7 +66,6 @@ interface AdjustSlFormInformationProps {
   vault: Vault
   ilkData: IlkData
   token: string
-  isCollateralActive: boolean
   txState?: TxState<AutomationBotAddTriggerData>
 }
 
@@ -76,7 +75,6 @@ function ProtectionCompleteInformation({
   vault,
   ilkData,
   token,
-  isCollateralActive,
   txState,
 }: AdjustSlFormInformationProps) {
   const { t } = useTranslation()
@@ -93,14 +91,10 @@ function ProtectionCompleteInformation({
     .div(ilkData.liquidationRatio)
     .times(stopLossLevel)
 
-  const maxToken = vault.lockedCollateral
+  const amountOnStopLossTrigger = vault.lockedCollateral
     .times(dynamicStopLossPrice)
     .minus(vault.debt)
     .div(dynamicStopLossPrice)
-
-  const maxTokenOrDai = isCollateralActive
-    ? `${formatAmount(maxToken, token)} ${token}`
-    : `${formatAmount(maxToken.multipliedBy(tokenPrice), 'USD')} DAI`
 
   return (
     <VaultChangesInformationContainer title={t('protection.summary-of-protection')}>
@@ -121,7 +115,11 @@ function ProtectionCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-on-stop-loss-trigger', { token })}`}
-        value={<Flex>{maxTokenOrDai}</Flex>}
+        value={
+          <Flex>
+            {formatAmount(amountOnStopLossTrigger, token)} {token}
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}
@@ -304,7 +302,6 @@ export function AdjustSlFormLayout({
             tokenPrice={tokenPrice}
             vault={vault}
             ilkData={ilkData}
-            isCollateralActive={closePickerConfig.isCollateralActive}
           />
         </Box>
       )}
