@@ -38,10 +38,13 @@ function handleFinalTransaction(
 ) {
   if (isTxStatusFailed(transactionState.status)) {
     finishLoader(false)
-    waitForTx.unsubscribe()
-    txStatusSetter(undefined)
+    resetStatus()
   } else {
     finishLoader(true)
+    resetStatus()
+  }
+  function resetStatus() {
     waitForTx.unsubscribe()
+    txStatusSetter(undefined)
   }
 }
