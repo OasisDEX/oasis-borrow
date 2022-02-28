@@ -128,11 +128,12 @@ function SetDownsideProtectionInformation({
     .minus(vault.debt)
     .div(afterDynamicStopLossPrice)
 
-  const ethDuringLiquidation = vault.debt
-    .times(ilkData.liquidationRatio)
+  const ethDuringLiquidation = vault.lockedCollateral
+    .times(vault.liquidationPrice)
+    .minus(vault.debt)
     .div(vault.liquidationPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(afterMaxToken)
+  const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(afterMaxToken, token)} ${token}`

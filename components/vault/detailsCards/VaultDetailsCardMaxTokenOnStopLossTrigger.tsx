@@ -52,7 +52,11 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 } & AfterPillProps) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+
+  const ethDuringLiquidation = lockedCollateral
+    .times(liquidationPrice)
+    .minus(debt)
+    .div(liquidationPrice)
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
 
@@ -67,7 +71,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
     .minus(debt)
     .div(afterDynamicStopPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(maxToken)
+  const savingCompareToLiquidation = maxToken.minus(ethDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`
