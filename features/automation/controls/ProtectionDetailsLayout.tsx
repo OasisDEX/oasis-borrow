@@ -21,7 +21,6 @@ export interface ProtectionDetailsLayoutProps {
   liquidationRatio: BigNumber
   afterSlRatio: BigNumber
   isEditing: boolean
-  isCollateralActive: boolean
 }
 
 export function ProtectionDetailsLayout({
@@ -36,7 +35,6 @@ export function ProtectionDetailsLayout({
   liquidationRatio,
   afterSlRatio,
   isEditing,
-  isCollateralActive,
 }: ProtectionDetailsLayoutProps) {
   const showAfterPill = isEditing
 
@@ -85,8 +83,6 @@ export function ProtectionDetailsLayout({
           lockedCollateral={lockedCollateral}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}
-          isCollateralActive={isCollateralActive}
-          tokenPrice={currentOraclePrice}
         />
       </Grid>
     </Box>

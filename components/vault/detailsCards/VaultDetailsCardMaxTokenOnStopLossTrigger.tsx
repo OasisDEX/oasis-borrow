@@ -36,8 +36,6 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   lockedCollateral,
   liquidationRatio,
   token,
-  isCollateralActive,
-  tokenPrice,
 }: {
   slRatio: BigNumber
   afterSlRatio: BigNumber
@@ -47,8 +45,6 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   liquidationRatio: BigNumber
   token: string
   lockedCollateral: BigNumber
-  isCollateralActive: boolean
-  tokenPrice: BigNumber
 } & AfterPillProps) {
   const { t } = useTranslation()
   const openModal = useModal()
@@ -58,39 +54,23 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 
   const afterDynamicStopPrice = liquidationPrice.div(liquidationRatio).times(afterSlRatio)
 
-  const maxToken = !dynamicStopPrice.isZero()
+  const maxEth = !dynamicStopPrice.isZero()
     ? lockedCollateral.times(dynamicStopPrice).minus(debt).div(dynamicStopPrice)
     : zero
 
-  const afterMaxToken = lockedCollateral
+  const afterMaxEth = lockedCollateral
     .times(afterDynamicStopPrice)
     .minus(debt)
     .div(afterDynamicStopPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(maxToken)
-
-  const maxTokenOrDai = isCollateralActive
-    ? `${formatAmount(maxToken, token)} ${token}`
-    : `${formatAmount(maxToken.multipliedBy(tokenPrice), 'USD')} DAI`
-
-  const afterMaxTokenOrDai = isCollateralActive
-    ? `${formatAmount(afterMaxToken, token)} ${token}`
-    : `${formatAmount(afterMaxToken.multipliedBy(tokenPrice), 'USD')} DAI`
-
-  const savingTokenOrDai = isCollateralActive
-    ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
-    : `${formatAmount(savingCompareToLiquidation.multipliedBy(tokenPrice), 'USD')} DAI`
-
   return (
     <VaultDetailsCard
-      title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', {
-        token: isCollateralActive ? token : 'DAI',
-      })}
-      value={isProtected && !maxToken.isZero() ? maxTokenOrDai : '-'}
+      title={t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
+      value={isProtected && !maxEth.isZero() ? `${formatAmount(maxEth, token)} ${token}` : '-'}
       valueBottom={
-        !slRatio.isZero() && !maxToken.isZero() ? (
+        !slRatio.isZero() && !maxEth.isZero() ? (
           <>
-            {savingTokenOrDai}{' '}
+            ${formatAmount(ethDuringLiquidation.minus(maxEth), token)} {token}{' '}
             <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
               {t('manage-multiply-vault.card.saving-comp-to-liquidation')}
             </Text>
@@ -100,11 +80,8 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
         )
       }
       valueAfter={
-        showAfterPill && (
-          <>
-            {t('manage-multiply-vault.card.up-to')} {afterMaxTokenOrDai}
-          </>
-        )
+        showAfterPill &&
+        `${t('manage-multiply-vault.card.up-to')} ${formatAmount(afterMaxEth, token)} ${token}`
       }
       openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, { token })}
       afterPillColors={afterPillColors}
