@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { SwapWidget } from '@uniswap/widgets'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
@@ -96,6 +97,8 @@ interface UserAccountProps {
 
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+  const { web3ContextConnected$ } = useAppContext()
+  const web3ContextConnected = useObservable(web3ContextConnected$)
 
   return (
     <Flex
@@ -112,6 +115,7 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
+        <SwapWidget />
         <UserSettingsButton />
         <AccountButton />
       </Flex>
