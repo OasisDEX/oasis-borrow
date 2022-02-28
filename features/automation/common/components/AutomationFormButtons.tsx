@@ -23,32 +23,15 @@ export function AutomationFormButtons({
 
   return (
     <>
-      {(triggerConfig.isEditing || triggerConfig.isStopLossEnabled) && (
-        <Box>
-          <RetryableLoadingButton {...triggerConfig} />
-        </Box>
-      )}
-      {!triggerConfig.isEditing && !triggerConfig.isStopLossEnabled && (
-        <Box>
-          <Button
-            sx={{ width: '100%', justifySelf: 'center' }}
-            variant="primary"
-            onClick={triggerConfig.onConfirm}
-          >
-            {t('Confirm')}
-          </Button>
-        </Box>
-      )}
-      {triggerConfig.isStopLossEnabled && (
-        <>
-          <Divider variant="styles.hrVaultFormBottom" />
-          <Flex sx={{ justifyContent: 'center' }}>
-            <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForms}>
-              {t(toggleKey)}
-            </Button>
-          </Flex>
-        </>
-      )}
+      <Box>
+        <RetryableLoadingButton {...triggerConfig} />
+      </Box>
+      <Divider variant="styles.hrVaultFormBottom" />
+      <Flex sx={{ justifyContent: 'center' }}>
+        <Button sx={{ mt: 3 }} variant="textualSmall" onClick={toggleForms}>
+          {t(toggleKey)}
+        </Button>
+      </Flex>
     </>
   )
 }

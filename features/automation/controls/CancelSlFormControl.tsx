@@ -118,7 +118,6 @@ export function CancelSlFormControl({
     isLoading: false,
     isRetry: false,
     disabled: isOwner,
-    isStopLossEnabled,
   }
 
   const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)

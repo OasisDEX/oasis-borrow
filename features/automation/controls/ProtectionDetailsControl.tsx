@@ -32,7 +32,6 @@ function renderLayout(
     token: vaultData.token,
 
     afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
-    isEditing: lastUIState ? lastUIState.isEditing : false,
   }
   return <ProtectionDetailsLayout {...props} />
 }

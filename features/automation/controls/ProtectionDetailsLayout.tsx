@@ -8,6 +8,7 @@ import { Box, Grid } from 'theme-ui'
 
 import { calculatePricePercentageChange } from '../../../blockchain/prices'
 import { getAfterPillColors } from '../../../components/vault/VaultDetails'
+import { zero } from '../../../helpers/zero'
 
 export interface ProtectionDetailsLayoutProps {
   slRatio: BigNumber
@@ -20,7 +21,6 @@ export interface ProtectionDetailsLayoutProps {
   token: string
   liquidationRatio: BigNumber
   afterSlRatio: BigNumber
-  isEditing: boolean
 }
 
 export function ProtectionDetailsLayout({
@@ -34,9 +34,10 @@ export function ProtectionDetailsLayout({
   token,
   liquidationRatio,
   afterSlRatio,
-  isEditing,
 }: ProtectionDetailsLayoutProps) {
-  const showAfterPill = isEditing
+  const showAfterPill = slRatio.eq(zero)
+    ? !liquidationRatio.eq(afterSlRatio)
+    : !slRatio.eq(afterSlRatio)
 
   const afterPillColors = getAfterPillColors('onSuccess')
 
