@@ -1,10 +1,10 @@
+import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   getAfterPillColors,
   getCollRatioColor,
   VaultDetailsCard,
-  VaultDetailsCardCollateralizationRatio,
-  VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCurrentPrice,
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
 import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
@@ -47,7 +47,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           {...afterPill}
         />
         <VaultDetailsCardCollateralizationRatio {...props} {...afterPill} />
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
           afterDepositAmountUSD={afterLockedCollateralUSD}
