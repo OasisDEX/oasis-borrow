@@ -7,17 +7,16 @@ import { formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
-import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
+import {
+  RetryableLoadingButton,
+  RetryableLoadingButtonProps,
+} from '../../../components/dumb/RetryableLoadingButton'
 
 export interface CancelSlFormLayoutProps {
   liquidationPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
-  toggleForms: () => void
-  gasEstimation: ReactNode
-  accountIsController: boolean
-  txProgressing: boolean
   txState?: TxState<AutomationBotRemoveTriggerData>
+  gasEstimation: ReactNode
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
@@ -51,13 +50,9 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <Box>{props.gasEstimation}</Box>
       </Grid>
       <MessageCard {...{ messages, type: 'warning' }} />
-      {props.accountIsController && !props.txProgressing && (
-        <AutomationFormButtons
-          triggerConfig={props.removeTriggerConfig}
-          toggleForms={props.toggleForms}
-          toggleKey="protection.navigate-adjust"
-        />
-      )}
+      <Box>
+        <RetryableLoadingButton {...props.removeTriggerConfig} />
+      </Box>
     </Grid>
   )
 }
