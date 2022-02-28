@@ -25,7 +25,7 @@ export function GetProtectionBannerLayout({
       buttonText={t('protection.banner-button')}
       buttonSx={{
         backgroundColor: 'selected',
-        '&:hover': { backgroundColor: 'selected' },
+        '&:hover': { backgroundColor: 'fogBlue' },
         maxWidth: '168px',
         zIndex: 1,
       }}
