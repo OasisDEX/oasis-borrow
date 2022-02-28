@@ -22,6 +22,7 @@ import { isInstiVault, VaultType } from './vaultType'
 // Temporary stuff for testing insti vaults
 const instiMockedData = {
   originationFee: new BigNumber(0.01),
+  originationFeeUSD: new BigNumber(120),
   activeCollRatio: new BigNumber(1.4),
   activeCollRatioPriceUSD: new BigNumber(1300),
   debtCeiling: new BigNumber(500000),

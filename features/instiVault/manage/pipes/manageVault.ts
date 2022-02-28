@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 
-type InstiVault = {
+type InstiVaultViewState = {
   originationFee: BigNumber
+  originationFeeUSD: BigNumber
   activeCollRatio: BigNumber
   activeCollRatioPriceUSD: BigNumber
   debtCeiling: BigNumber
@@ -11,4 +12,4 @@ type InstiVault = {
   nextFixedFee: BigNumber
 }
 
-export type ManageInstiVaultState = ManageVaultState & InstiVault
+export type ManageInstiVaultState = ManageVaultState & InstiVaultViewState

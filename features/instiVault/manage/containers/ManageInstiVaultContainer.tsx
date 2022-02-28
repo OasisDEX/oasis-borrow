@@ -10,7 +10,7 @@ import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultFo
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
-import { formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
@@ -31,6 +31,7 @@ export function ManageInstiVaultContainer({
     clear,
     ilkData,
     originationFee,
+    originationFeeUSD,
   } = manageVault
 
   const { t } = useTranslation()
@@ -75,7 +76,7 @@ export function ManageInstiVaultContainer({
               <>
                 <VaultChangesInformationItem
                   label={t('manage-insti-vault.origination-fee')}
-                  value={<Flex>$100.00</Flex>}
+                  value={<Flex>{`$${formatAmount(originationFeeUSD, 'USD')}`}</Flex>}
                 />
                 <VaultChangesInformationEstimatedGasFee {...manageVault} />
               </>
