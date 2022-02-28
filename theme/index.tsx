@@ -76,6 +76,7 @@ const oasisBaseTheme = {
     actionInputHover: '#E5E7E8',
     selected: '#EDEDFF',
     fogBlue: '#D8D9FE',
+    maritimeBlue: '#26283E',
     newsletterInputBorder: 'rgba(120, 122, 155, 0.25)',
   },
   fonts: {
@@ -429,8 +430,7 @@ const oasisBaseTheme = {
       transition: 'background 0.2s ease-in',
       bg: 'unset',
       '&:hover': {
-        backgroundColor: 'primaryEmphasis',
-        color: 'white',
+        color: 'maritimeBlue',
       },
     },
     outline: {
