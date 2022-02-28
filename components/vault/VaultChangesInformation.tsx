@@ -2,9 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
-import { GasEstimationStatus } from 'helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
-import { CommonVaultState, WithChildren } from 'helpers/types'
+import { WithChildren } from 'helpers/types'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -75,10 +75,18 @@ export function VaultChangesInformationArrow() {
   return <Icon name="arrow_right_light" size="auto" width="10px" height="7px" sx={{ mx: 2 }} />
 }
 
-export function getEstimatedGasFeeText(
-  { gasEstimationStatus, gasEstimationUsd }: CommonVaultState,
-  withBrackets = false,
-) {
+function EstimationError({ withBrackets }: { withBrackets: boolean }) {
+  const textError = 'n/a'
+  return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+}
+
+export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {
+  if (!gasEstimation) {
+    return <EstimationError withBrackets={withBrackets} />
+  }
+
+  const { gasEstimationStatus, gasEstimationUsd } = gasEstimation
+
   switch (gasEstimationStatus) {
     case GasEstimationStatus.calculating:
       const textPending = 'Pending...'
@@ -92,9 +100,7 @@ export function getEstimatedGasFeeText(
     case GasEstimationStatus.unknown:
     case GasEstimationStatus.unset:
     case undefined:
-      const textError = 'n/a'
-
-      return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+      return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
       const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
 
@@ -102,7 +108,7 @@ export function getEstimatedGasFeeText(
   }
 }
 
-export function VaultChangesInformationEstimatedGasFee(props: CommonVaultState) {
+export function VaultChangesInformationEstimatedGasFee(props: HasGasEstimation) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationItem

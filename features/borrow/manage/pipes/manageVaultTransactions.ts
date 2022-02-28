@@ -3,11 +3,10 @@ import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
-  depositAndGenerate,
   DepositAndGenerateData,
-  withdrawAndPayback,
   WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+  WithdrawPaybackDepositGenerateLogicInterface,
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -227,12 +226,13 @@ export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(depositAndGenerate, {
+        sendWithGasEstimation(proxyActions.depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -276,12 +276,13 @@ export function manageVaultWithdrawAndPayback(
     vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageVaultState,
+  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(withdrawAndPayback, {
+        sendWithGasEstimation(proxyActions.withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,
@@ -450,6 +451,7 @@ export function createProxy(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
+  dssProxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   state: ManageVaultState,
 ): Observable<ManageVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
@@ -467,7 +469,7 @@ export function applyEstimateGas(
       const isDepositAndGenerate = depositAmount || generateAmount
 
       if (isDepositAndGenerate) {
-        return estimateGas(depositAndGenerate, {
+        return estimateGas(dssProxyActions.depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -477,7 +479,7 @@ export function applyEstimateGas(
           id,
         })
       } else {
-        return estimateGas(withdrawAndPayback, {
+        return estimateGas(dssProxyActions.withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,
