@@ -13,7 +13,7 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
+import { parseVaultIdFromReceiptLogs } from '../pipes/openVaultTransactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 describe('openVault', () => {
@@ -52,7 +52,7 @@ describe('openVault', () => {
           ilk: 'ETH-Z',
         }),
       )
-      expect(state).to.throw(`Ilk ETH-Z does not exist`)
+      expect(state).to.throw()
     })
 
     it('should start by default at the editing stage', () => {

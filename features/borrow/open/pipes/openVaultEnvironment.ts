@@ -7,8 +7,8 @@ import { OpenVaultChange, OpenVaultState } from './openVault'
 export type OpenVaultEnvironmentChange = PriceInfoChange | BalanceInfoChange | IlkDataChange
 
 export function applyOpenVaultEnvironment(
-  state: OpenVaultState,
   change: OpenVaultChange,
+  state: OpenVaultState,
 ): OpenVaultState {
   if (change.kind === 'priceInfo') {
     return {

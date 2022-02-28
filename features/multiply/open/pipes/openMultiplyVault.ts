@@ -14,27 +14,16 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
-import {
-  AllowanceChanges,
-  AllowanceOption,
-  applyAllowanceChanges,
-} from '../../../allowance/allowance'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
-import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
-import { OpenVaultTransactionChange } from '../../../shared/transactions'
-import {
-  createApplyOpenVaultTransition,
-  OpenVaultTransitionChange,
-} from '../../../vaultTransitions/openVaultTransitions'
 import {
   applyExchange,
   createExchangeChange$,
   createInitialQuoteChange,
   ExchangeQuoteChanges,
 } from './openMultiplyQuote'
+import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openMultiplyVaultAllowances'
 import {
   applyOpenMultiplyVaultCalculations,
   defaultOpenMultiplyVaultStateCalculations,
@@ -60,8 +49,10 @@ import {
   applyEstimateGas,
   applyOpenMultiplyVaultTransaction,
   multiplyVault,
+  OpenVaultTransactionChange,
   setAllowance,
 } from './openMultiplyVaultTransactions'
+import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openMultiplyVaultTransitions'
 import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -70,8 +61,8 @@ interface OpenVaultInjectedOverrideChange {
 }
 
 function applyOpenVaultInjectedOverride(
-  state: OpenMultiplyVaultState,
   change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
     return {
@@ -86,11 +77,24 @@ export type OpenMultiplyVaultChange =
   | OpenVaultInputChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
-  | AllowanceChanges
-  | ProxyChanges
+  | OpenVaultAllowanceChange
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
   | ExchangeQuoteChanges
+
+function apply(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
+  const s1 = applyOpenVaultInput(change, state)
+  const s2 = applyExchange(change, s1)
+  const s3 = applyOpenVaultTransition(change, s2)
+  const s4 = applyOpenMultiplyVaultTransaction(change, s3)
+  const s5 = applyOpenVaultAllowance(change, s4)
+  const s6 = applyOpenVaultEnvironment(change, s5)
+  const s7 = applyOpenVaultInjectedOverride(change, s6)
+  const s8 = applyOpenMultiplyVaultCalculations(s7)
+  const s9 = applyOpenVaultStageCategorisation(s8)
+  const s10 = applyOpenVaultConditions(s9)
+  return applyOpenVaultSummary(s10)
+}
 
 export type ProxyStages =
   | 'proxyWaitingForConfirmation'
@@ -119,7 +123,7 @@ export interface MutableOpenMultiplyVaultState {
   stage: OpenMultiplyVaultStage
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
-  selectedAllowanceRadio: AllowanceOption
+  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
   allowanceAmount?: BigNumber
   id?: BigNumber
   requiredCollRatio?: BigNumber
@@ -274,11 +278,8 @@ function addTransitions(
 
 export const defaultMutableOpenMultiplyVaultState: MutableOpenMultiplyVaultState = {
   stage: 'editing' as OpenMultiplyVaultStage,
-  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
+  selectedAllowanceRadio: 'unlimited' as 'unlimited',
   allowanceAmount: maxUint256,
-  depositAmount: undefined,
-  depositAmountUSD: undefined,
-  requiredCollRatio: undefined,
 }
 
 export function createOpenMultiplyVault$(
@@ -363,33 +364,6 @@ export function createOpenMultiplyVault$(
                     }
 
                     const stateSubject$ = new Subject<OpenMultiplyVaultState>()
-
-                    const apply = combineApplyChanges<
-                      OpenMultiplyVaultState,
-                      OpenMultiplyVaultChange
-                    >(
-                      applyOpenVaultInput,
-                      applyExchange,
-                      createApplyOpenVaultTransition<
-                        OpenMultiplyVaultState,
-                        MutableOpenMultiplyVaultState,
-                        OpenMultiplyVaultCalculations,
-                        OpenMultiplyVaultConditions
-                      >(
-                        defaultMutableOpenMultiplyVaultState,
-                        defaultOpenMultiplyVaultStateCalculations,
-                        defaultOpenMultiplyVaultConditions,
-                      ),
-                      applyProxyChanges,
-                      applyAllowanceChanges,
-                      applyOpenMultiplyVaultTransaction,
-                      applyOpenVaultEnvironment,
-                      applyOpenVaultInjectedOverride,
-                      applyOpenMultiplyVaultCalculations,
-                      applyOpenVaultStageCategorisation,
-                      applyOpenVaultConditions,
-                      applyOpenVaultSummary,
-                    )
 
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),

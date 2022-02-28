@@ -12,8 +12,8 @@ export type OpenVaultEnvironmentChange =
   | SlippageChange
 
 export function applyOpenVaultEnvironment(
-  state: OpenMultiplyVaultState,
   change: OpenMultiplyVaultChange,
+  state: OpenMultiplyVaultState,
 ): OpenMultiplyVaultState {
   if (change.kind === 'priceInfo') {
     return {

@@ -44,7 +44,7 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapSuccessChange
   | ExchangeSwapFailureChange
 
-export function applyExchange(state: OpenMultiplyVaultState, change: OpenMultiplyVaultChange) {
+export function applyExchange(change: OpenMultiplyVaultChange, state: OpenMultiplyVaultState) {
   if (change.kind === 'quoteError' || change.kind === 'swapError') {
     return {
       ...state,

@@ -34,8 +34,8 @@ export type OpenVaultInputChange =
   | GenerateMaxChange
 
 export function applyOpenVaultInput(
-  state: OpenVaultState,
   change: OpenVaultChange,
+  state: OpenVaultState,
 ): OpenVaultState {
   if (change.kind === 'deposit') {
     const { depositAmount } = change
