@@ -22,7 +22,7 @@ export type NotificationTransaction = {
   withDescription: boolean
 }
 
-interface TransactionManager {
+export interface TransactionManager {
   pendingTransactions: TxMgrTransaction[]
   recentTransactions: TxMgrTransaction[]
   notificationTransaction?: NotificationTransaction

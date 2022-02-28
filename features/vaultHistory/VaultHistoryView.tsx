@@ -308,7 +308,7 @@ function VaultHistoryItem({
 
 export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryEvent[] }) {
   const { context$ } = useAppContext()
-  const context = useObservable(context$).value
+  const { value: context } = useObservable(context$)
   const { t } = useTranslation()
 
   const spitedEvents = flatten(vaultHistory.map(splitEvents))

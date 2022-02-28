@@ -160,6 +160,9 @@ export function createOraclePriceData$(
 ): Observable<OraclePriceData> {
   return context$.pipe(
     switchMap(({ web3, mcdOsms }) => {
+      console.log(mcdOsms)
+      console.log(token)
+      console.log(mcdOsms[token])
       return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
         switchMap((contractData) =>

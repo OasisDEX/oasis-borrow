@@ -114,7 +114,7 @@ export function HomepageView() {
   const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
     productCardsData$,
   )
-  const context = useObservable(context$).value
+  const { value: context } = useObservable(context$)
 
   return (
     <Box

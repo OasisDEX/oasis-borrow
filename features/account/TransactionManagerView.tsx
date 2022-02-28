@@ -12,7 +12,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Grid, Heading, Link, Spinner } from 'theme-ui'
 
-import { TxMgrTransaction } from './transactionManager'
+import { TransactionManager, TxMgrTransaction } from './transactionManager'
 import { getTransactionTranslations } from './transactionTranslations'
 
 export interface TransactionProps<A extends TxMeta> {
@@ -148,8 +148,9 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
 
 export function PendingTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$).value?.pendingTransactions
-  const context = useObservable(context$).value
+  const { pendingTransactions: transactions } =
+    useObservable(transactionManager$).value || ({} as TransactionManager)
+  const { value: context } = useObservable(context$)
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 
@@ -177,8 +178,9 @@ export function PendingTransactions() {
 
 export function RecentTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$).value?.recentTransactions
-  const context = useObservable(context$).value
+  const { recentTransactions: transactions } =
+    useObservable(transactionManager$).value || ({} as TransactionManager)
+  const { value: context } = useObservable(context$)
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 

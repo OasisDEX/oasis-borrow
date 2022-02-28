@@ -8,6 +8,6 @@ const streamThatErrors$ = throwError(() => {
 })
 
 export function TriggerErrorWithUseObservable() {
-  const value = useObservable(streamThatErrors$).value
+  const { value } = useObservable(streamThatErrors$)
   return <>TriggerErrorWithUseObservable {JSON.stringify(value)}</>
 }

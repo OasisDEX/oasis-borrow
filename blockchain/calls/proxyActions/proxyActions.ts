@@ -64,6 +64,7 @@ export function getWithdrawAndPaybackCallData(
     }
     return proxyActionsSmartContractWrapper.wipe(context, data)
   }
+  console.log()
 
   // would be nice to remove this for Unreachable error case in the future
   throw new Error('Could not make correct proxyActions call')
@@ -77,6 +78,7 @@ export interface WithdrawPaybackDepositGenerateLogicInterface {
 export function withdrawPaybackDepositGenerateLogicFactory(
   proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
 ): WithdrawPaybackDepositGenerateLogicInterface {
+  console.log('here')
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -85,6 +87,7 @@ export function withdrawPaybackDepositGenerateLogicFactory(
         ]
       },
       prepareArgs: (data, context) => {
+        console.log('here 2')
         return [
           proxyActionsSmartContractWrapper.resolveContractAddress(context),
           getWithdrawAndPaybackCallData(
