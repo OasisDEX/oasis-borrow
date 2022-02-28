@@ -13,7 +13,9 @@ interface StopLossBannerControlProps {
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
   vaultId: BigNumber
-  afterLiquidationPrice: BigNumber
+  afterLiquidationPrice?: BigNumber
+  compact?: boolean
+  onClick?: () => void
 }
 
 export function StopLossBannerControl({
@@ -22,6 +24,8 @@ export function StopLossBannerControl({
   liquidationRatio,
   afterLiquidationPrice,
   showAfterPill,
+  compact = false,
+  onClick,
 }: StopLossBannerControlProps & AfterPillProps) {
   const { automationTriggersData$, uiChanges } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vaultId)
@@ -31,9 +35,9 @@ export function StopLossBannerControl({
 
   if (slData && slData.isStopLossEnabled) {
     const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slData.stopLossLevel)
-    const afterDynamicStopPrice = afterLiquidationPrice
-      .div(liquidationRatio)
-      .times(slData.stopLossLevel)
+    const afterDynamicStopPrice =
+      afterLiquidationPrice &&
+      afterLiquidationPrice.div(liquidationRatio).times(slData.stopLossLevel)
 
     return (
       <StopLossBannerLayout
@@ -43,7 +47,9 @@ export function StopLossBannerControl({
         showAfterPill={showAfterPill}
         handleClick={() => {
           uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+          onClick && onClick()
         }}
+        compact={compact}
       />
     )
   }

@@ -1,12 +1,12 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsCardCollateralizationRatio,
-  VaultDetailsCardCollateralLocked,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -129,10 +129,12 @@ export function ManageVaultDetails(
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            vaultId: id,
           }}
         />
         <VaultDetailsCardCollateralizationRatio

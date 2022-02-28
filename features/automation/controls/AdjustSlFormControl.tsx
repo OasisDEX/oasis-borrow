@@ -16,11 +16,11 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import React, { useEffect, useMemo, useState } from 'react'
+import { useThemeUI } from 'theme-ui'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { VaultViewMode } from '../../../components/TabSwitchLayout'
 import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
@@ -31,7 +31,6 @@ import {
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
 import { AddFormChange } from '../common/UITypes/AddFormChange'
-import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
@@ -72,15 +71,21 @@ export function AdjustSlFormControl({
   tx,
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
+    triggerData,
+  )
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
+  const [collateralActive, setCloseToCollateral] = useState(isToCollateral)
+  const {
+    theme: { colors },
+  } = useThemeUI()
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
-  const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
 
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
+  const [firstStopLossSetup] = useState(!isStopLossEnabled)
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
@@ -154,7 +159,7 @@ export function AdjustSlFormControl({
   )
 
   const initial: AddFormChange = {
-    collateralActive: false,
+    collateralActive: isToCollateral,
     selectedSLValue: startingSlRatio.multipliedBy(100),
     isEditing: false,
   }
@@ -183,8 +188,17 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
+  const slider = selectedSLValue.minus(liqRatio.times(100)).div(currentCollRatio.minus(liqRatio))
+
+  const sliderBackground = slider
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+        slider.toNumber() || 0
+      }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
+    : 'primaryAlt'
+
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
+    background: sliderBackground,
     leftBoundry: selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
@@ -220,8 +234,7 @@ export function AdjustSlFormControl({
   }
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey:
-      txStatus?.status === TxStatus.Success ? 'back-to-vault-overview' : 'add-stop-loss',
+    translationKey: isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss',
     onClick: (finishLoader: (succeded: boolean) => void) => {
       if (tx === undefined) {
         return
@@ -229,7 +242,7 @@ export function AdjustSlFormControl({
       const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
         transactionStateHandler(setTxStatus, transactionState, finishLoader, waitForTx)
 
-        if (txStatus?.status === TxStatus.Success) {
+        if (transactionState?.status === TxStatus.Success) {
           dispatch({
             type: 'isEditing',
             isEditing: false,
@@ -237,12 +250,6 @@ export function AdjustSlFormControl({
         }
       }
 
-      if (txStatus?.status === TxStatus.Success) {
-        uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
-        setTxStatus(undefined)
-        setSelectedSLValue(startingSlRatio)
-        return
-      }
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
@@ -301,6 +308,7 @@ export function AdjustSlFormControl({
     etherscan,
     selectedSLValue,
     toggleForms,
+    firstStopLossSetup,
   }
 
   return <AdjustSlFormLayout {...props} />

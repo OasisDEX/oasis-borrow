@@ -19,6 +19,7 @@
   "address": "Address",
   "address-invalid": "Address not found",
   "add-stop-loss": "Add Stop Loss",
+  "update-stop-loss": "Update Stop Loss",
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
@@ -352,6 +353,8 @@
     },
     "card": {
       "liquidation-price-description": "The Liquidation Price specifies the collateral price where your vault is subject to liquidation. If you think your vault is too close to liquidation price you can change your multiply vault to have a higher collateralization ratio, you can add more collateral on your own, or you can pay back some of your Dai debt.",
+      "liquidation-price-description-AUTO": "The Liquidation Price is the price at which a Vault becomes vulnerable to liquidation.",
+      "vault-protection-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
       "liquidation-price-current": "Your current liquidation price is:",
       "liquidation-percentage-below": "That is {{percentageBelow}} below the current price",
       "buying-power": "Buying power",
@@ -541,8 +544,6 @@
       "right-footer": "Increase risk"
     },
     "set-stoploss": {
-      "introduction-header": "Set downside protection",
-      "introduction-content": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
       "left-label": "Stop loss coll.ratio",
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
@@ -550,13 +551,12 @@
     }
   },
   "cancel-stoploss": {
-    "header": "Cancellation confirmation",
-    "description": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
     "summary-header": "Cancel stop loss order summary",
     "liquidation": "Liquidation price after cancellation",
-    "total": "Total transaction cost"
+    "total": "Total transaction cost",
+    "max": "Max transaction cost"
   },
-  "notice": "Notice: Canceling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+  "notice": "Notice",
   "spots-remaining": "{{ spots }} spots remaining",
   "start-saving": "Start Saving",
   "system": {
@@ -591,7 +591,8 @@
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
-    "seven-day-average": "7 day average"
+    "seven-day-average": "7 day average",
+    "vault-protection": "Vault Protection"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -824,10 +825,20 @@
   "protection": {
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting stop loss",
+    "set-downside-protection": "Set downside protection",
+    "set-downside-protection-desc": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+    "cancel-downside-protection": "Cancellation confirmation",
+    "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting downside protections",
+    "cancelling-downside-protection": "Cancelling stop loss",
     "setting-downside-protection-desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus finibus, non imperdiet.",
+    "cancelling-downside-protection-desc": "The stop loss cancellation is in progress. Once the transaction is done, the stop loss will be removed.",
+    "position-again-at-risk": "Your position is then at risk of liquidation again once the liquidation price is hit.",
     "downside-protection-complete": "Downside protection complete",
+    "cancel-protection-complete": "Stop loss cancellation complete",
+    "downside-protection-updated": "Downside protection updated",
     "downside-protection-complete-desc": "Some intro text. 29 Vaults saved in the 30 days using Oasis Automation. Find out more about setting stop loss →",
+    "cancel-protection-complete-desc": "Stop loss has been cancelled successfully. You can always set up it again to protect your vault. Your position is now again at risk of liquidation once the liquidation price is hit.",
     "banner-header": "Get vault protection",
     "banner-content": "Short text to introduce vault protection.",
     "banner-button": "Set up Vault Protection ->",
@@ -849,7 +860,11 @@
     "not-guaranteed": "Automation isn't guaranteed to work 100% of the time",
     "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
     "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
-    "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days"
+    "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days",
+    "modal-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
+    "cancel-notice": "Cancelling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+    "find-more-about-setting-stop-loss": "Find out more about setting stop loss →",
+    "set-stop-loss-again": "Set up stop loss again"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
