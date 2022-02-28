@@ -671,7 +671,7 @@ export function applyEstimateGas(
           ilk,
         })
       } else {
-        if (state.otherAction === 'closeVault' && !debt.isZero()) {
+        if (state.otherAction === 'closeVault') {
           const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
             closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
