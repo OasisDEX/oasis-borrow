@@ -1,4 +1,4 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
+import { TxState } from '@oasisdex/transactions'
 import { Box, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { AutomationBotRemoveTriggerData } from 'blockchain/calls/automationBot'
@@ -26,18 +26,18 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const description = t(`cancel-stoploss.description`)
   const summaryHeader = t(`cancel-stoploss.summary-header`)
   const liquidation = t(`cancel-stoploss.liquidation`)
-  const total = t(`cancel-stoploss.max`)
+  const total = t(`cancel-stoploss.total`)
   const messages = [t(`notice`)]
   return (
     <Grid columns={[1]}>
-      <Box mb={3}>
+      <Box>
         <Text variant="strong" mb={2}>
           {header}
         </Text>
         <Text variant="subheader">{description}</Text>
       </Box>
       <Text variant="strong">{summaryHeader}</Text>
-      <Grid columns={2} mb={3}>
+      <Grid columns={2}>
         <Box>
           <Text variant="subheader">{liquidation}</Text>
         </Box>
@@ -50,13 +50,12 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         {/* <Box>$250.00</Box> */}
         <Box>{props.gasEstimation}</Box>
       </Grid>
-      <MessageCard {...{ messages, type: 'warning' }} withBullet={false} />
-      {props.accountIsController && (
+      <MessageCard {...{ messages, type: 'warning' }} />
+      {props.accountIsController && !props.txProgressing && (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
           toggleKey="protection.navigate-adjust"
-          txSuccess={props.txState?.status === TxStatus.Success}
         />
       )}
     </Grid>

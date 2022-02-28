@@ -21,13 +21,7 @@ function StopLossBannerSection({
   showAfterPill,
 }: StopLossBannerSectionProps & AfterPillProps) {
   return (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: ['center', 'flex-start'],
-        justifyContent: 'center',
-      }}
-    >
+    <Flex sx={{ flexDirection: 'column', alignItems: ['center', 'flex-start'] }}>
       <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', mb: 2, color: 'lavender' }}>
         {text}
       </Text>

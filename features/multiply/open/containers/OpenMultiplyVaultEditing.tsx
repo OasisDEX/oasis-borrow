@@ -6,7 +6,6 @@ import { handleNumericInput } from 'helpers/input'
 import React from 'react'
 import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-import { zero } from '../../../../helpers/zero'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 
@@ -36,18 +35,17 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     inputAmountsEmpty,
   } = props
 
-  const slider = requiredCollRatio
-    ? maxCollRatio?.minus(requiredCollRatio)?.div(maxCollRatio.minus(liquidationRatio)).times(100)
-    : zero
+  const slider = maxCollRatio
+    ?.minus(requiredCollRatio || liquidationRatio)
+    ?.div(maxCollRatio.minus(liquidationRatio))
+    .times(100)
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
-      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
-          colors?.sliderTrackFill
-        } ${slider.toNumber()}%, ${colors?.primaryAlt} ${slider.toNumber()}%, ${
-          colors?.primaryAlt
-        } 100%)`
+      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+          slider.toNumber() || 0
+        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
       : 'primaryAlt'
 
   return (
@@ -114,7 +112,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             step={0.05}
             min={liquidationRatio.toNumber()}
             max={maxCollRatio?.toNumber()}
-            value={canAdjustRisk && requiredCollRatio ? requiredCollRatio.toNumber() : 100}
+            value={requiredCollRatio?.toNumber() || maxCollRatio?.toNumber()}
             onChange={(e) => {
               updateRequiredCollRatio && updateRequiredCollRatio(new BigNumber(e.target.value))
             }}
