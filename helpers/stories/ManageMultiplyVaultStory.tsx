@@ -2,6 +2,7 @@ import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { GeneralManageVaultView } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import {
   defaultMutableManageMultiplyVaultState,
@@ -13,13 +14,12 @@ import {
   MockManageMultiplyVaultProps,
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useEffect } from 'react'
 import { EMPTY, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
-
-import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
 
 type ManageMultiplyVaultStory = { title?: string } & MockManageMultiplyVaultProps
 
@@ -78,6 +78,13 @@ export function manageMultiplyVaultStory({
             ...(paybackAmount && {
               paybackAmount,
             }),
+            // showDepositAndGenerateOption:
+            //   (stage === 'daiEditing' && !!depositAmount) ||
+            //   (stage === 'collateralEditing' && !!generateAmount),
+            // showPaybackAndWithdrawOption:
+            //   accountIsController &&
+            //   ((stage === 'daiEditing' && !!withdrawAmount) ||
+            //     (stage === 'collateralEditing' && !!paybackAmount)),
           }
 
           injectStateOverride(newState || {})
@@ -129,7 +136,7 @@ const ManageMultiplyVaultStoryContainer = ({ title }: { title?: string }) => {
       <InjectTokenIconsDefs />
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageControl id={MOCK_VAULT_ID} />
+        <GeneralManageVaultView id={MOCK_VAULT_ID} />
       </Grid>
     </Container>
   )

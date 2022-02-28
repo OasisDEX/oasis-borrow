@@ -12,6 +12,4 @@ export enum TxMetaKind {
   closeVault = 'closeVault',
   openGuni = 'openGuni',
   closeGuni = 'closeGuni',
-  addTrigger = 'addTrigger',
-  removeTrigger = 'removeTrigger',
 }

@@ -6,11 +6,10 @@ import { Box, IconButton, SxProps } from 'theme-ui'
 type Closable = {
   close: React.MouseEventHandler<any>
   sx?: SxProps
-  withClose?: boolean
 }
 type BannerProps = WithChildren & Closable
 
-export function Banner({ children, close, sx, withClose = true }: BannerProps) {
+export function Banner({ children, close, sx }: BannerProps) {
   return (
     <Box
       sx={{
@@ -25,27 +24,25 @@ export function Banner({ children, close, sx, withClose = true }: BannerProps) {
         ...sx,
       }}
     >
-      {withClose && (
-        <IconButton
-          onClick={close}
-          sx={{
-            cursor: 'pointer',
-            height: 3,
-            width: 3,
-            padding: 0,
-            position: 'absolute',
-            top: 3,
-            right: 3,
-            zIndex: 1,
-            color: 'onSurface',
-            '&:hover': {
-              color: 'primary',
-            },
-          }}
-        >
-          <Icon name="close_squared" size={14} />
-        </IconButton>
-      )}
+      <IconButton
+        onClick={close}
+        sx={{
+          cursor: 'pointer',
+          height: 3,
+          width: 3,
+          padding: 0,
+          position: 'absolute',
+          top: 3,
+          right: 3,
+          zIndex: 1,
+          color: 'onSurface',
+          '&:hover': {
+            color: 'primary',
+          },
+        }}
+      >
+        <Icon name="close_squared" size={14} />
+      </IconButton>
       <Box sx={{ wordBreak: 'break-all' }}>{children}</Box>
     </Box>
   )

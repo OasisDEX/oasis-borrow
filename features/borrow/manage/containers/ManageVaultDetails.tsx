@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
-import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -8,6 +7,7 @@ import {
   VaultDetailsCard,
   VaultDetailsCardCollateralLocked,
   VaultDetailsCardCollaterlizationRatioModal,
+  VaultDetailsCardCurrentPrice,
   VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
@@ -18,9 +18,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
-import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageVaultState } from '../pipes/manageVault'
 
 function ManageVaultDetailsSummary({
@@ -95,19 +92,15 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(
-  props: ManageVaultState & { onBannerButtonClickHandler: () => void },
-) {
+export function ManageVaultDetails(props: ManageVaultState) {
   const {
     vault: {
-      id,
       token,
       collateralizationRatio,
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
     },
-    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -123,22 +116,9 @@ export function ManageVaultDetails(
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
 
   return (
     <Box>
-      {automationEnabled && (
-        <>
-          <GetProtectionBannerControl vaultId={id} />
-          <StopLossBannerControl
-            vaultId={id}
-            liquidationPrice={liquidationPrice}
-            liquidationRatio={liquidationRatio}
-            afterLiquidationPrice={afterLiquidationPrice}
-            showAfterPill={showAfterPill}
-          />
-        </>
-      )}
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{
@@ -189,7 +169,7 @@ export function ManageVaultDetails(
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
+        <VaultDetailsCardCurrentPrice {...props} />
         <VaultDetailsCardCollateralLocked
           depositAmountUSD={lockedCollateralUSD}
           afterDepositAmountUSD={afterLockedCollateralUSD}

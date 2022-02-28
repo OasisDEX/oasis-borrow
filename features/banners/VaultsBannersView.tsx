@@ -21,7 +21,6 @@ type VaultBannerProps = {
   status?: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
-  withClose?: boolean
 }
 
 function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
@@ -46,14 +45,12 @@ export function VaultBanner({
   header,
   subheader,
   color,
-  withClose = true,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
-
   return (
     <>
       {isVisible && (
-        <Banner close={() => setIsVisible(false)} withClose={withClose}>
+        <Banner close={() => setIsVisible(false)}>
           <Flex sx={{ py: 2, pr: 5 }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
