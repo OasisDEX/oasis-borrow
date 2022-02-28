@@ -11,7 +11,6 @@ import { Divider, Flex, Image, Text } from 'theme-ui'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
-import { FormHeader } from '../../../components/dumb/FormHeader'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
 import { AppLink } from '../../../components/Links'
@@ -24,41 +23,7 @@ import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { zero } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
-
-interface AdjustSlFormHeaderProps {
-  txProgressing: boolean
-  txSuccess: boolean
-}
-
-// TODO potential to be a config-based component per specific state, to be verified with close step
-function AdjustSlFormHeader({ txProgressing, txSuccess }: AdjustSlFormHeaderProps) {
-  const { t } = useTranslation()
-  const txStates = txProgressing || txSuccess
-
-  return (
-    <>
-      {!txStates && (
-        <FormHeader
-          header={t('slider.set-stoploss.introduction-header')}
-          description={t('slider.set-stoploss.introduction-content')}
-        />
-      )}
-      {txProgressing && (
-        <FormHeader
-          header={t('protection.setting-downside-protection')}
-          description={t('protection.setting-downside-protection-desc')}
-          withDivider
-        />
-      )}
-      {txSuccess && (
-        <FormHeader
-          header={t('protection.downside-protection-complete')}
-          description={t('protection.downside-protection-complete-desc')}
-        />
-      )}
-    </>
-  )
-}
+import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
 interface AdjustSlFormInformationProps {
   tokenPrice: BigNumber
@@ -120,7 +85,9 @@ function ProtectionCompleteInformation({
         value={<Flex>${formatAmount(dynamicStopLossPrice, 'USD')}</Flex>}
       />
       <VaultChangesInformationItem
-        label={`${t('protection.token-on-stop-loss-trigger', { token })}`}
+        label={`${t('protection.token-on-stop-loss-trigger', {
+          token: isCollateralActive ? token : 'DAI',
+        })}`}
         value={<Flex>{maxTokenOrDai}</Flex>}
       />
       <VaultChangesInformationItem
@@ -237,6 +204,7 @@ export interface AdjustSlFormLayoutProps {
   etherscan: string
   toggleForms: () => void
   selectedSLValue: BigNumber
+  firstStopLossSetup: boolean
 }
 
 export function AdjustSlFormLayout({
@@ -257,10 +225,34 @@ export function AdjustSlFormLayout({
   etherscan,
   toggleForms,
   selectedSLValue,
+  firstStopLossSetup,
 }: AdjustSlFormLayoutProps) {
+  const { t } = useTranslation()
+
   return (
     <Grid columns={[1]}>
-      <AdjustSlFormHeader txProgressing={txProgressing} txSuccess={txSuccess} />
+      <AutomationFormHeader
+        txProgressing={txProgressing}
+        txSuccess={txSuccess}
+        translations={{
+          editing: {
+            header: t('protection.set-downside-protection'),
+            description: t('protection.set-downside-protection-desc'),
+          },
+          progressing: {
+            header: t('protection.setting-downside-protection'),
+            description: t('protection.setting-downside-protection-desc'),
+          },
+          success: {
+            header: t(
+              firstStopLossSetup
+                ? 'protection.downside-protection-complete'
+                : 'protection.downside-protection-updated',
+            ),
+            description: t('protection.downside-protection-complete-desc'),
+          },
+        }}
+      />
       {txProgressing && <OpenVaultAnimation />}
       {!txProgressing && !txSuccess && (
         <>
@@ -316,6 +308,7 @@ export function AdjustSlFormLayout({
           triggerConfig={addTriggerConfig}
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
+          txSuccess={txState?.status === TxStatus.Success}
         />
       )}
     </Grid>

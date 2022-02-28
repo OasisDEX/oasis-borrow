@@ -105,9 +105,11 @@ export const LiquidationPrice = ({ hasAfter, hasBottom }: CardsControl) => {
     <MaxWidthWrapper>
       <VaultDetailsCardLiquidationPrice
         liquidationPrice={new BigNumber(800)}
+        liquidationRatio={new BigNumber(1.2)}
         afterLiquidationPrice={new BigNumber(900)}
         liquidationPriceCurrentPriceDifference={hasBottom ? new BigNumber(0.02) : undefined}
         showAfterPill={hasAfter}
+        vaultId={new BigNumber(1)}
       />
     </MaxWidthWrapper>
   )
