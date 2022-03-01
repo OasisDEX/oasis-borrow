@@ -671,23 +671,23 @@ export function applyManageVaultCalculations(
   const afterLockedCollateral = isCloseAction ? zero : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
-  const afterCollateralizationRatio = vaultHasZeroCollateral
-    ? zero
-    : afterLockedCollateralUSD.div(afterDebt)
+  const afterCollateralizationRatio =
+    vaultHasZeroCollateral || afterDebt.isZero() ? zero : afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
   const afterMultiply = vaultHasZeroCollateral
     ? zero
-    : isCloseAction
+    : isCloseAction || afterLockedCollateralUSD.isZero()
     ? one
     : calculateMultiply({
         debt: afterDebt,
         lockedCollateralUSD: afterLockedCollateralUSD,
       })
 
-  const afterLiquidationPrice = vaultHasZeroCollateral
-    ? zero
-    : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
+  const afterLiquidationPrice =
+    vaultHasZeroCollateral || afterCollateralizationRatio.isZero()
+      ? zero
+      : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
 
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
