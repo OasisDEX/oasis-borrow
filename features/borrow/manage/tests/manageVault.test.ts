@@ -900,7 +900,7 @@ describe('manageVault', () => {
       genericManageVaultTests(createManageInstiVault$)
     })
 
-    it('should add the initial values to the view states from the insti vault', () => {
+    it('should initialise origination fee USD with undefined', () => {
       const charterNib$ = () => of(new BigNumber(1))
       const charterPeace$ = () => of(new BigNumber(2))
       const charterUline$ = () => of(new BigNumber(3))
@@ -914,12 +914,10 @@ describe('manageVault', () => {
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
-      expect(state().originationFee.toString()).to.eq('1')
-      expect(state().activeCollRatio.toString()).to.eq('2')
-      expect(state().debtCeiling.toString()).to.eq('3')
+      expect(state().originationFeeUSD).to.eq(undefined)
     })
 
-    it('should update the view state when new nib/peace/uline values come in', () => {
+    it('should contain origination fee in USD in the view state', () => {
       function createStream(
         startValue: number,
       ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
@@ -928,35 +926,14 @@ describe('manageVault', () => {
       }
 
       const [charterNib$, charterNibCtor] = createStream(1)
-      const [charterPeace$, charterPeaceCtor] = createStream(5)
-      const [charterUline$, charterUlineCtor] = createStream(10)
+
+      const depositAmount = new BigNumber('5')
+      const generateAmount = new BigNumber('3000')
+      const secondGenerateAmount = new BigNumber('5000')
 
       const instiVault$ = createInstiVault$(
         () => mockVault$(),
         charterNibCtor,
-        charterPeaceCtor,
-        charterUlineCtor,
-        new BigNumber(1),
-      )
-
-      charterNib$.next(new BigNumber(2))
-      charterPeace$.next(new BigNumber(6))
-      charterUline$.next(new BigNumber(11))
-
-      const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
-
-      expect(state().originationFee.toString()).to.eq('2')
-      expect(state().activeCollRatio.toString()).to.eq('6')
-      expect(state().debtCeiling.toString()).to.eq('11')
-    })
-
-    it('should contain absolute origination fee in the view state', () => {
-      const depositAmount = new BigNumber('5')
-      const generateAmount = new BigNumber('3000')
-
-      const instiVault$ = createInstiVault$(
-        () => mockVault$(),
-        () => of(new BigNumber(1)),
         () => of(new BigNumber(2)),
         () => of(new BigNumber(3)),
         new BigNumber(1),
@@ -964,17 +941,18 @@ describe('manageVault', () => {
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
-      state().updateGenerate!(generateAmount)
-      expect(state().generateAmount!).to.be.undefined
       state().updateDeposit!(depositAmount)
-      expect(state().depositAmount!).to.deep.equal(depositAmount)
-      state().updateGenerate!(generateAmount)
-      expect(state().generateAmount!).to.be.undefined
       state().toggleDepositAndGenerateOption!()
-      expect(state().showDepositAndGenerateOption).to.be.true
+
+      // changes with input value changing
       state().updateGenerate!(generateAmount)
-      expect(state().generateAmount!).to.deep.equal(generateAmount)
-      expect(state().originationFeeAbsoluteValue!.toString()).to.eq('30')
+      expect(state().originationFeeUSD!.toString()).to.eq('30')
+      state().updateGenerate!(secondGenerateAmount)
+      expect(state().originationFeeUSD!.toString()).to.eq('50')
+
+      // changes when we have a new value from the observable
+      charterNib$.next(new BigNumber(5))
+      expect(state().originationFeeUSD!.toString()).to.eq('250')
     })
   })
 })

@@ -2,12 +2,16 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
+import { zero } from '../helpers/zero'
 import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber
   activeCollRatio: BigNumber
   debtCeiling: BigNumber
+  termEnd: Date
+  fixedFee: BigNumber
+  nextFixedFee: BigNumber
 }
 
 export function createInstiVault$(
@@ -33,6 +37,9 @@ export function createInstiVault$(
               originationFeePercent: nib,
               activeCollRatio: peace,
               debtCeiling: uline,
+              termEnd: new Date('2022-10-01'),
+              fixedFee: zero,
+              nextFixedFee: zero,
             })),
           ),
         ),

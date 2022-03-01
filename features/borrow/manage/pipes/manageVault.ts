@@ -162,10 +162,7 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
-  originationFeeAbsoluteValue?: BigNumber
-  originationFee: BigNumber
-  activeCollRatio: BigNumber
-  debtCeiling: BigNumber
+  originationFeeUSD?: BigNumber
 }
 
 function addTransitions(
