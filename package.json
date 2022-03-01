@@ -99,6 +99,7 @@
     "mixpanel-browser": "^2.29.1",
     "mock-local-storage": "^1.1.15",
     "moment": "^2.26.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "morgan": "^1.10.0",
     "next": "^10.0.8",
     "next-i18next": "^8.1.0",
@@ -135,6 +136,7 @@
     "zod": "^1.5.0",
     "@typechain/ethers-v5": "^6.0.5",
     "@typechain/web3-v1": "^2.0.0",
+    "@types/moment-locales-webpack-plugin": "^1.2.0",
     "typechain": "^4.0.3"
   },
   "devDependencies": {
@@ -155,7 +157,6 @@
     "@types/ledgerhq__hw-transport-u2f": "^4.21.2",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^7.0.2",
-    "@types/moment-locales-webpack-plugin": "^1.2.0",
     "@types/node": "^12.12",
     "@types/nodemailer": "^6.4.0",
     "@types/raven": "^2.5.3",
@@ -194,7 +195,6 @@
     "hardhat": "^2.1.2",
     "http-server": "^0.11.1",
     "mocha": "^9.1.2",
-    "moment-locales-webpack-plugin": "^1.2.0",
     "nock": "^13.0.3",
     "node-mocks-http": "^1.8.1",
     "node-sass": "^6.0.1",
