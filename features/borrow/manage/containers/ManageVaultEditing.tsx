@@ -1,7 +1,7 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -123,7 +123,7 @@ function PaybackInput({
   )
 }
 
-export function ManageVaultEditing(props: ManageStandardBorrowVaultState) {
+export function ManageVaultEditing(props: ManageStandardBorrowVaultState & { extraInfo?: ReactNode }) {
   const { t } = useTranslation()
 
   const {
