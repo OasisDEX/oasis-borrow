@@ -574,6 +574,7 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  // const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = { 27609: VaultType.Insti }
   const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = {}
 
   const checkVault$: (id: BigNumber) => Observable<VaultType> = curry(createCheckVaultType$)(

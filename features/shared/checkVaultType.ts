@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {  Observable, of } from 'rxjs'
-import {  tap } from 'rxjs/operators'
+import { Observable, of } from 'rxjs'
 
 import { VaultType } from '../generalManageVault/vaultType'
 
@@ -19,6 +18,5 @@ export function createCheckVaultType$(
   } else {
     obs = checkVaultFromApi(vaultId)
   }
-  console.log(vaultId)
-  return obs.pipe(tap((v) => console.log(v)))
+  return obs
 }
