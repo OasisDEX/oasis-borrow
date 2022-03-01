@@ -3,13 +3,13 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
   ManageVaultEditingStage,
-} from './manageVault'
+} from '../manageVault'
 import { defaultManageVaultCalculations } from './manageVaultCalculations'
 import { defaultManageVaultConditions } from './manageVaultConditions'
 import { manageVaultFormDefaults } from './manageVaultForm'

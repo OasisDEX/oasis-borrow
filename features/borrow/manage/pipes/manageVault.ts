@@ -25,27 +25,25 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
 import { BorrowManageVaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
-import {  ManageVaultAllowanceChange } from './manageVaultAllowances'
-import {  ManageVaultCalculations } from './manageVaultCalculations'
-import {
-  ManageVaultConditions,
-} from './manageVaultConditions'
-import {  ManageVaultEnvironmentChange } from './manageVaultEnvironment'
-import {  ManageVaultFormChange } from './manageVaultForm'
-import {  ManageVaultInputChange } from './manageVaultInput'
-import {  ManageVaultSummary } from './manageVaultSummary'
+import { validateErrors, validateWarnings } from './manageVaultValidations'
+import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
+import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
+import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
+import { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
+import { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
+import { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
+import { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
 import {
   applyEstimateGas,
   createProxy,
   ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
-} from './manageVaultTransactions'
+} from './viewStateTransforms/manageVaultTransactions'
 import {
   ManageVaultTransitionChange,
   progressManage,
-} from './manageVaultTransitions'
-import { validateErrors, validateWarnings } from './manageVaultValidations'
+} from './viewStateTransforms/manageVaultTransitions'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'

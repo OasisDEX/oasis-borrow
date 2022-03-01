@@ -29,8 +29,8 @@ import {
   withdrawAmountExceedsFreeCollateralAtNextPriceValidator,
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
-} from '../../../form/commonValidators'
-import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from './manageVault'
+} from '../../../../form/commonValidators'
+import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from '../manageVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,

@@ -1,4 +1,4 @@
-import { ManageStandardBorrowVaultState, ManageVaultChange } from './manageVault'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 export function applyManageVaultInjectedOverride<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,

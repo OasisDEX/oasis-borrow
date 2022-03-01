@@ -6,23 +6,26 @@ import {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from '../manageVault'
-import { applyManageVaultAllowance } from '../manageVaultAllowances'
+import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
 import {
   applyManageVaultCalculations,
   defaultManageVaultCalculations,
-} from '../manageVaultCalculations'
+} from '../viewStateTransforms/manageVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
   defaultManageVaultConditions,
-} from '../manageVaultConditions'
-import { applyManageVaultEnvironment } from '../manageVaultEnvironment'
-import { applyManageVaultForm } from '../manageVaultForm'
-import { applyManageVaultInjectedOverride } from '../manageVaultInjectedOverride'
-import { applyManageVaultInput } from '../manageVaultInput'
-import { applyManageVaultSummary, defaultManageVaultSummary } from '../manageVaultSummary'
-import { applyManageVaultTransaction } from '../manageVaultTransactions'
-import { applyManageVaultTransition } from '../manageVaultTransitions'
+} from '../viewStateTransforms/manageVaultConditions'
+import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
+import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
+import {
+  applyManageVaultSummary,
+  defaultManageVaultSummary,
+} from '../viewStateTransforms/manageVaultSummary'
+import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
+import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
 import {
   BorrowManageVaultViewStateProviderInterface,
   CreateInitialVaultStateArgs,

@@ -1,7 +1,7 @@
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { zero } from 'helpers/zero'
 
-import { ManageStandardBorrowVaultState } from './manageVault'
+import { ManageStandardBorrowVaultState } from '../manageVault'
 import { ManageVaultCalculations } from './manageVaultCalculations'
 import { ManageVaultConditions } from './manageVaultConditions'
 

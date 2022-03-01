@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
-import { ManageStandardBorrowVaultState,ManageVaultEditingStage } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState, ManageVaultEditingStage } from '../pipes/manageVault'
 
 function ManageVaultEditingController({
   stage,

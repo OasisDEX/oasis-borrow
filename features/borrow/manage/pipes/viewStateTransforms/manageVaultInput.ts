@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageStandardBorrowVaultState,ManageVaultChange } from './manageVault'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 interface DepositChange {
   kind: 'deposit'
