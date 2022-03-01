@@ -32,7 +32,6 @@ function renderLayout(
     token: vaultData.token,
 
     afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
-    isEditing: !!lastUIState?.isEditing,
     isCollateralActive: !!lastUIState?.collateralActive,
   }
   return <ProtectionDetailsLayout {...props} />
@@ -49,7 +48,7 @@ export function ProtectionDetailsControl({
   ilkData,
   automationTriggersData,
   collateralPrices,
-  vault,
+  vault
 }: ProtectionDetailsControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const { uiChanges } = useAppContext()
@@ -72,6 +71,6 @@ export function ProtectionDetailsControl({
     vault,
     collateralPrices,
     ilkData,
-    lastUIState,
+    lastUIState
   )
 }

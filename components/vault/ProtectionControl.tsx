@@ -57,6 +57,7 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
         customLoader={<VaultContainerSpinner />}
       >
         {([automationTriggersData, collateralPrices]) => {
+          
           return (
             <DefaultVaultLayout
               detailsViewControl={

@@ -19,7 +19,7 @@ export function isTxStatusFailed(status: TxStatus) {
 }
 
 export function transactionStateHandler(
-  txStatusSetter: React.Dispatch<React.SetStateAction<TxState<any> | undefined>>,
+  txStatusSetter: (txState: TxState<any>) => void,
   transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
   finishLoader: (succeded: boolean) => void,
   waitForTx: Subscription,
@@ -34,12 +34,12 @@ function handleFinalTransaction(
   transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
   finishLoader: (succeded: boolean) => void,
   waitForTx: Subscription,
-  txStatusSetter: React.Dispatch<React.SetStateAction<TxState<any> | undefined>>,
+  txStatusSetter: (txState: TxState<any>) => void,
 ) {
   if (isTxStatusFailed(transactionState.status)) {
     finishLoader(false)
     waitForTx.unsubscribe()
-    txStatusSetter(undefined)
+    txStatusSetter(transactionState)
   } else {
     finishLoader(true)
     waitForTx.unsubscribe()

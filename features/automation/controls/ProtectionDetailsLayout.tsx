@@ -20,7 +20,6 @@ export interface ProtectionDetailsLayoutProps {
   token: string
   liquidationRatio: BigNumber
   afterSlRatio: BigNumber
-  isEditing: boolean
   isCollateralActive: boolean
 }
 
@@ -35,10 +34,9 @@ export function ProtectionDetailsLayout({
   token,
   liquidationRatio,
   afterSlRatio,
-  isEditing,
   isCollateralActive,
 }: ProtectionDetailsLayoutProps) {
-  const showAfterPill = isEditing
+  const showAfterPill = afterSlRatio !== slRatio;
 
   const afterPillColors = getAfterPillColors('onSuccess')
 

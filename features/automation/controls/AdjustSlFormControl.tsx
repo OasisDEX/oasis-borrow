@@ -1,4 +1,5 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import {
   addAutomationBotTrigger,
@@ -15,6 +16,7 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
+import { zero } from 'helpers/zero'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useThemeUI } from 'theme-ui'
 
@@ -79,7 +81,7 @@ export function AdjustSlFormControl({
   const [collateralActive, setCloseToCollateral] = useState(isToCollateral)
   const {
     theme: { colors },
-  } = useThemeUI()
+  } = useThemeUI() /* TODO: This looks like something which should sit in layouts*/
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
@@ -104,7 +106,7 @@ export function AdjustSlFormControl({
     () => prepareAddTriggerData(vault, collateralActive, selectedSLValue, replacedTriggerId),
     [collateralActive, selectedSLValue, replacedTriggerId],
   )
-
+  /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(
     () =>
       addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
@@ -115,10 +117,18 @@ export function AdjustSlFormControl({
 
   const gasEstimationData = useObservable(gasEstimationData$)
 
+  /* End of section */
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
     | { type: 'close-type'; toCollateral: boolean }
-    | { type: 'isEditing'; isEditing: boolean }
+    | {
+        type: 'tx-details'
+        txDetails: {
+          txStatus?: TxStatus
+          txHash?: string
+          txCost?: BigNumber
+        }
+      }
 
   function reducerHandler(state: AddFormChange, action: Action): AddFormChange {
     switch (action.type) {
@@ -126,8 +136,8 @@ export function AdjustSlFormControl({
         return { ...state, selectedSLValue: action.stopLoss }
       case 'close-type':
         return { ...state, collateralActive: action.toCollateral }
-      case 'isEditing':
-        return { ...state, isEditing: action.isEditing }
+      case 'tx-details':
+        return { ...state, txDetails: action.txDetails }
     }
   }
 
@@ -135,16 +145,15 @@ export function AdjustSlFormControl({
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
-  const startingSlRatio = isStopLossEnabled
-    ? stopLossLevel
-    : new BigNumber(
-        ilkData.liquidationRatio
-          .plus(vault.collateralizationRatio)
-          .dividedBy(2)
-          .toFixed(2, BigNumber.ROUND_CEIL),
-      )
+  const initialVaultCollRatio = new BigNumber(
+    ilkData.liquidationRatio
+      .plus(vault.collateralizationRatio)
+      .dividedBy(2)
+      .toFixed(2, BigNumber.ROUND_CEIL),
+  )
+  const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
-  const isEditing = !!lastUIState?.isEditing
+  const isEditing = !lastUIState ? false : startingSlRatio !== lastUIState.selectedSLValue
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
@@ -161,12 +170,11 @@ export function AdjustSlFormControl({
   const initial: AddFormChange = {
     collateralActive: isToCollateral,
     selectedSLValue: startingSlRatio.multipliedBy(100),
-    isEditing: false,
+    txDetails: undefined,
   }
 
   const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
-  const [txStatus, setTxStatus] = useState<TxState<AutomationBotAddTriggerData> | undefined>()
   const maxBoundry =
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
@@ -194,7 +202,7 @@ export function AdjustSlFormControl({
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
         slider.toNumber() || 0
       }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-    : 'primaryAlt'
+    : 'primaryAlt' /* TODO: this looks like something that should sit in layouts */
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -226,10 +234,6 @@ export function AdjustSlFormControl({
         type: 'stop-loss',
         stopLoss: slCollRatio,
       })
-      dispatch({
-        type: 'isEditing',
-        isEditing: true,
-      })
     },
   }
 
@@ -240,14 +244,37 @@ export function AdjustSlFormControl({
         return
       }
       const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
-        transactionStateHandler(setTxStatus, transactionState, finishLoader, waitForTx)
+        transactionStateHandler(
+          (txState) => {
+            /** TODO: This is not right place for it, this should be encapsulated,
+             * probably in similar fashion as addGasEstimation$
+             */
+            const gasUsed =
+              txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
+            const effectiveGasPrice =
+              txState.status ===
+              TxStatus.Success /* Is this even correct? failed tx also have cost */
+                ? new BigNumber(txState.receipt.effectiveGasPrice)
+                : zero
 
-        if (transactionState?.status === TxStatus.Success) {
-          dispatch({
-            type: 'isEditing',
-            isEditing: false,
-          })
-        }
+            const totalCost =
+              !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
+                : zero
+
+            dispatch({
+              type: 'tx-details',
+              txDetails: {
+                txHash: (txState as any).txHash,
+                txStatus: txState.status,
+                txCost: totalCost,
+              },
+            })
+          },
+          transactionState,
+          finishLoader,
+          waitForTx,
+        )
       }
 
       const sendTxErrorHandler = () => {
@@ -259,10 +286,7 @@ export function AdjustSlFormControl({
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
     },
     onConfirm: () => {
-      dispatch({
-        type: 'isEditing',
-        isEditing: true,
-      })
+      /* TODO: Remove it */
     },
     isStopLossEnabled,
     isLoading: false,
@@ -271,7 +295,7 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (selectedSLValue.eq(stopLossLevel.multipliedBy(100)) &&
-        txStatus?.status !== TxStatus.Success),
+        lastUIState?.txDetails?.txStatus !== TxStatus.Success),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -283,8 +307,9 @@ export function AdjustSlFormControl({
     .minus(vault.debt)
     .div(dynamicStopLossPrice)
 
-  const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
-  const txSuccess = txStatus?.status === TxStatus.Success
+  const txProgressing =
+    !!lastUIState?.txDetails?.txStatus &&
+    progressStatuses.includes(lastUIState?.txDetails?.txStatus)
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
   const etherscan = ctx.etherscan.url
 
@@ -293,9 +318,10 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: txStatus,
+    txState: lastUIState?.txDetails?.txStatus,
     txProgressing,
-    txSuccess,
+    txCost: lastUIState?.txDetails?.txCost,
+    txHash: lastUIState?.txDetails?.txHash,
     gasEstimation,
     accountIsController,
     stopLossLevel,
