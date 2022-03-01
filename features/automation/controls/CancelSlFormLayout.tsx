@@ -166,7 +166,11 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         </Box>
       )}
       <Box>
-        <TxStatusSection txStatus={props.txState?.status} txHash={(props.txState as any)?.txHash} etherscan={props.etherscan} />
+        <TxStatusSection
+          txStatus={props.txState?.status}
+          txHash={(props.txState as any)?.txHash}
+          etherscan={props.etherscan}
+        />
       </Box>
       {props.accountIsController && !props.txProgressing && (
         <AutomationFormButtons

@@ -48,7 +48,7 @@ export function ProtectionDetailsControl({
   ilkData,
   automationTriggersData,
   collateralPrices,
-  vault
+  vault,
 }: ProtectionDetailsControlProps) {
   const uiSubjectName = 'AdjustSlForm'
   const { uiChanges } = useAppContext()
@@ -71,6 +71,6 @@ export function ProtectionDetailsControl({
     vault,
     collateralPrices,
     ilkData,
-    lastUIState
+    lastUIState,
   )
 }
