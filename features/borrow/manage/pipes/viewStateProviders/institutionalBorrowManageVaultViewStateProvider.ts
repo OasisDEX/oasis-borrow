@@ -52,7 +52,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
       debtCeiling: args.vault.debtCeiling,
     }
   },
-  applyCalcs(viewState, change: ManageVaultChange) {
+  applyChange(viewState, change: ManageVaultChange) {
     const s1 = applyManageVaultInput<ManageInstiVaultState>(change, viewState)
     const s2 = applyManageVaultForm<ManageInstiVaultState>(change, s1)
     const s3 = applyManageVaultAllowance<ManageInstiVaultState>(change, s2)

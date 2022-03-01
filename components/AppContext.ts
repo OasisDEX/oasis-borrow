@@ -115,8 +115,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/initialViewStateProviders/institutionalBorrowManageVaultViewStateProvider'
-import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/initialViewStateProviders/standardBorrowManageVaultViewStateProvider'
+import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
 import {
   getTotalSupply,
   getUnderlyingBalances,

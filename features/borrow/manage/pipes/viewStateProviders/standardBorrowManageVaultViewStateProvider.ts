@@ -77,7 +77,7 @@ export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewSt
     return initialState
   },
 
-  applyCalcs(state: ManageStandardBorrowVaultState, change: ManageVaultChange) {
+  applyChange(state: ManageStandardBorrowVaultState, change: ManageVaultChange) {
     const s1 = applyManageVaultInput(change, state)
     const s2 = applyManageVaultForm(change, s1)
     const s3 = applyManageVaultAllowance(change, s2)

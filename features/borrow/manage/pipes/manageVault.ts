@@ -24,8 +24,8 @@ import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
-import { BorrowManageVaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
+import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
@@ -433,7 +433,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan(vaultViewStateProvider.applyCalcs, initialState),
+                    scan(vaultViewStateProvider.applyChange, initialState),
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, proxyActions)),
