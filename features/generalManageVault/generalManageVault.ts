@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Observable } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap, tap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
 import {
@@ -56,6 +56,11 @@ export function createGeneralManageVault$(
               }
 
               return manageMultiplyVault$(id).pipe(
+                map((state) => ({ ...state, toggleVaultType: () => {} })),
+                map((state) => ({ state, type })),
+              )
+            case VaultType.Insti:
+              return manageInstiVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),
               )

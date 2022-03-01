@@ -8,6 +8,7 @@ import { Vault } from './vaults'
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber
   activeCollRatio: BigNumber
+  activeCollRatioPriceUSD: BigNumber
   debtCeiling: BigNumber
   termEnd: Date
   fixedFee: BigNumber
@@ -36,6 +37,7 @@ export function createInstiVault$(
               ...vault,
               originationFeePercent: nib,
               activeCollRatio: peace,
+              activeCollRatioPriceUSD: peace,
               debtCeiling: uline,
               termEnd: new Date('2022-10-01'),
               fixedFee: zero,

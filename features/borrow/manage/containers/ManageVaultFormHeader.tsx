@@ -86,7 +86,9 @@ function ManageVaultEditingController({
   )
 }
 
-export function ManageVaultFormHeader(props: ManageStandardBorrowVaultState & { hideMultiply?: boolean }) {
+export function ManageVaultFormHeader(
+  props: ManageStandardBorrowVaultState & { hideMultiply?: boolean },
+) {
   const { t } = useTranslation()
   const {
     isMultiplyTransitionStage,

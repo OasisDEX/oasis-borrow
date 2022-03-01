@@ -126,7 +126,9 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
+import { createCheckVaultType$, VaultIdToTypeMapping } from '../features/shared/checkVaultType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
@@ -572,7 +574,13 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
+  const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = {}
+
+  const checkVault$: (id: BigNumber) => Observable<VaultType> = curry(createCheckVaultType$)(
+    curry(checkVaultTypeUsingApi$)(context$),
+    HARDCODED_VAULT_TYPES,
+  )
+
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
       manageInstiVault$,
