@@ -7,10 +7,11 @@ import { MessageCard } from 'components/MessageCard'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image } from 'theme-ui'
+import { Divider, Flex, Image, Text } from 'theme-ui'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
+import { AppLink } from '../../../components/Links'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
@@ -64,9 +65,9 @@ function CancelCompleteInformation({
       : zero
 
   return (
-    <VaultChangesInformationContainer title={t('cancel-stoploss.cancel-summary')}>
+    <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
       <VaultChangesInformationItem
-        label={`${t('system.liquidation-price')}`}
+        label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
       />
       <VaultChangesInformationItem
@@ -92,7 +93,7 @@ export interface CancelSlFormLayoutProps {
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
-  const messages = [t(`notice`)]
+
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
@@ -105,16 +106,34 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           },
           progressing: {
             header: t('protection.cancelling-downside-protection'),
-            description: t('protection.cancelling-downside-protection-desc'),
+            description: (
+              <>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                  {t('protection.cancelling-downside-protection-desc')}
+                </Text>
+                <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'lavender' }}>
+                  {t('protection.position-again-at-risk')}
+                </Text>
+              </>
+            ),
           },
           success: {
             header: t('protection.cancel-protection-complete'),
-            description: t('protection.cancel-protection-complete-desc'),
+            description: (
+              <>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                  {t('protection.cancel-protection-complete-desc')}
+                </Text>
+                <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
+                  {t('protection.find-more-about-setting-stop-loss')}
+                </AppLink>
+              </>
+            ),
           },
         }}
       />
       {!props.txProgressing && !props.txSuccess && (
-        <Box>
+        <Box my={3}>
           <CancelDownsideProtectionInformation
             gasEstimation={props.gasEstimation}
             liquidationPrice={props.liquidationPrice}
@@ -123,12 +142,20 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
       )}
       {props.txProgressing && <OpenVaultAnimation />}
       {!props.txProgressing && !props.txSuccess && (
-        <MessageCard {...{ messages, type: 'warning' }} withBullet={false} />
+        <MessageCard
+          messages={[
+            <>
+              <strong>{t(`notice`)}</strong>: {t('protection.cancel-notice')}
+            </>,
+          ]}
+          type="warning"
+          withBullet={false}
+        />
       )}
       {props.txSuccess && (
         <Box>
-          <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
+          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+            <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
           </Flex>
           <Divider variant="styles.hrVaultFormBottom" mb={4} />
           <CancelCompleteInformation
@@ -145,8 +172,11 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
-          toggleKey="protection.navigate-adjust"
-          txSuccess={props.txState?.status === TxStatus.Success}
+          toggleKey={
+            props.txSuccess ? 'protection.set-stop-loss-again' : 'protection.navigate-adjust'
+          }
+          txSuccess={props.txSuccess}
+          type="cancel"
         />
       )}
     </Grid>

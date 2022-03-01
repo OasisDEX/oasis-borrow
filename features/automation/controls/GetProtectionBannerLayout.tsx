@@ -37,7 +37,7 @@ export function GetProtectionBannerLayout({
           backgroundColor="selected"
           sx={{
             borderRadius: '6px',
-            '&:hover': { backgroundColor: 'selected' },
+            '&:hover': { backgroundColor: 'fogBlue' },
             height: '28px',
             maxWidth: '168px',
             px: '5px',

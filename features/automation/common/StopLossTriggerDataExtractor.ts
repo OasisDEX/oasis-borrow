@@ -12,7 +12,7 @@ function decodeTriggerData(rawBytes: string) {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'uint16', 'uint256'], rawBytes)
   return {
     cdpId: new BigNumber(values[0].toString()),
-    triggerType: new BigNumber(values[0].toString()).toNumber(),
+    triggerType: new BigNumber(values[1].toString()).toNumber(),
     stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
   }
 }
