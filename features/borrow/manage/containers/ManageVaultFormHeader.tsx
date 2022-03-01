@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
-import { ManageVaultEditingStage, ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState,ManageVaultEditingStage } from '../pipes/manageVault'
 
 function ManageVaultEditingController({
   stage,
@@ -17,7 +17,7 @@ function ManageVaultEditingController({
   vault: { token },
   setMainAction,
   mainAction,
-}: ManageVaultState) {
+}: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
   const isDaiEditing = stage === 'daiEditing'
   const isCollateralEditing = stage === 'collateralEditing'
@@ -80,7 +80,7 @@ function ManageVaultEditingController({
   )
 }
 
-export function ManageVaultFormHeader(props: ManageVaultState) {
+export function ManageVaultFormHeader(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
   const {
     isMultiplyTransitionStage,

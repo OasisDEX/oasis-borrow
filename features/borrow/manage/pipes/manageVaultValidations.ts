@@ -1,8 +1,10 @@
 import { errorMessagesHandler, VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from '../../../form/warningMessagesHandler'
-import { ManageVaultState } from './manageVault'
+import { ManageStandardBorrowVaultState } from './manageVault'
 
-export function validateErrors(state: ManageVaultState): ManageVaultState {
+export function validateErrors(
+  state: ManageStandardBorrowVaultState,
+): ManageStandardBorrowVaultState {
   const {
     stage,
     withdrawAmountExceedsFreeCollateral,
@@ -82,7 +84,9 @@ export function validateErrors(state: ManageVaultState): ManageVaultState {
   return { ...state, errorMessages }
 }
 
-export function validateWarnings(state: ManageVaultState): ManageVaultState {
+export function validateWarnings(
+  state: ManageStandardBorrowVaultState,
+): ManageStandardBorrowVaultState {
   const {
     errorMessages,
     isEditingStage,

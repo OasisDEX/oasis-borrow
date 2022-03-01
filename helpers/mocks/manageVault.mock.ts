@@ -7,7 +7,7 @@ import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   createManageVault$,
   ManageInstiVaultState,
-  ManageVaultState,
+  ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -18,7 +18,7 @@ import { switchMap } from 'rxjs/operators'
 
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
-import { InstiVault } from '../../blockchain/instiVault'
+import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/initialViewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/initialViewStateProviders/standardBorrowManageVaultViewStateProvider'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
@@ -151,7 +151,9 @@ export interface MockManageVaultProps {
   status?: 'connected'
 }
 
-export function mockManageVault$(args: MockManageVaultProps = {}): Observable<ManageVaultState> {
+export function mockManageVault$(
+  args: MockManageVaultProps = {},
+): Observable<ManageStandardBorrowVaultState> {
   const {
     context$,
     txHelpers$,
@@ -164,7 +166,7 @@ export function mockManageVault$(args: MockManageVaultProps = {}): Observable<Ma
     saveVaultType$,
   } = buildMockDependencies(args)
 
-  return createManageVault$<Vault, ManageVaultState>(
+  return createManageVault$<Vault, ManageStandardBorrowVaultState>(
     context$ as Observable<Context>,
     txHelpers$,
     proxyAddress$,
@@ -182,11 +184,11 @@ export function mockManageVault$(args: MockManageVaultProps = {}): Observable<Ma
 }
 
 export interface MockManageInstiVaultProps extends MockManageVaultProps {
-  _instiVault$: Observable<InstiVault>
+  _instiVault$?: Observable<InstiVault>
 }
 
 export function mockManageInstiVault$(
-  args: MockManageInstiVaultProps,
+  args: MockManageInstiVaultProps = {},
 ): Observable<ManageInstiVaultState> {
   const {
     context$,
@@ -199,8 +201,25 @@ export function mockManageInstiVault$(
     saveVaultType$,
   } = buildMockDependencies(args)
 
-  function instiVault$() {
-    return args._instiVault$
+  function instiVault$(): Observable<InstiVault> {
+    function charterNib$() {
+      return of(new BigNumber(1))
+    }
+    function charterPeace$() {
+      return of(new BigNumber(2))
+    }
+    function charterUline$() {
+      return of(new BigNumber(3))
+    }
+    const instiVault$ = createInstiVault$(
+      () => mockVault$(),
+      charterNib$,
+      charterPeace$,
+      charterUline$,
+      new BigNumber(1),
+    )
+
+    return args._instiVault$ || instiVault$
   }
 
   return createManageVault$<InstiVault, ManageInstiVaultState>(

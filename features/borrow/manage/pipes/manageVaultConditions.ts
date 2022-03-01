@@ -30,7 +30,7 @@ import {
   withdrawAmountExceedsFreeCollateralValidator,
   withdrawCollateralOnVaultUnderDebtFloorValidator,
 } from '../../../form/commonValidators'
-import { ManageBorrowVaultStage, ManageVaultState } from './manageVault'
+import { ManageBorrowVaultStage, ManageStandardBorrowVaultState } from './manageVault'
 
 const defaultManageVaultStageCategories = {
   isEditingStage: false,
@@ -41,7 +41,9 @@ const defaultManageVaultStageCategories = {
   isMultiplyTransitionStage: false,
 }
 
-export function applyManageVaultStageCategorisation(state: ManageVaultState) {
+export function applyManageVaultStageCategorisation<
+  VaultState extends ManageStandardBorrowVaultState
+>(state: VaultState): VaultState {
   const {
     stage,
     vault: { token, debtOffset },
@@ -258,7 +260,9 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   depositCollateralOnVaultUnderDebtFloor: false,
 }
 
-export function applyManageVaultConditions(state: ManageVaultState): ManageVaultState {
+export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
+  state: VaultState,
+): VaultState {
   const {
     depositAmount,
     generateAmount,

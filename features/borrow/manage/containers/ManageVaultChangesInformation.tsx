@@ -7,13 +7,13 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export function ManageVaultChangesInformation(props: ManageVaultState) {
+export function ManageVaultChangesInformation(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
   const {
     afterCollateralizationRatio,

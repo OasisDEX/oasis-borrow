@@ -937,5 +937,32 @@ describe('manageVault', () => {
       expect(state().activeCollRatio.toString()).to.eq('6')
       expect(state().debtCeiling.toString()).to.eq('11')
     })
+
+    it('should contain absolute origination fee in the view state', () => {
+      const depositAmount = new BigNumber('5')
+      const generateAmount = new BigNumber('3000')
+
+      const instiVault$ = createInstiVault$(
+        () => mockVault$(),
+        () => of(new BigNumber(1)),
+        () => of(new BigNumber(2)),
+        () => of(new BigNumber(3)),
+        new BigNumber(1),
+      )
+
+      const state = getStateUnpacker(mockManageInstiVault$({ _instiVault$: instiVault$ }))
+
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.be.undefined
+      state().updateDeposit!(depositAmount)
+      expect(state().depositAmount!).to.deep.equal(depositAmount)
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.be.undefined
+      state().toggleDepositAndGenerateOption!()
+      expect(state().showDepositAndGenerateOption).to.be.true
+      state().updateGenerate!(generateAmount)
+      expect(state().generateAmount!).to.deep.equal(generateAmount)
+      expect(state().originationFeeAbsoluteValue!.toString()).to.eq('30')
+    })
   })
 })

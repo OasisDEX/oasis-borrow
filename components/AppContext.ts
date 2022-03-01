@@ -60,7 +60,7 @@ import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
   ManageInstiVaultState,
-  ManageVaultState,
+  ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
@@ -477,7 +477,7 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
-      createManageVault$<Vault, ManageVaultState>(
+      createManageVault$<Vault, ManageStandardBorrowVaultState>(
         context$,
         txHelpers$,
         proxyAddress$,

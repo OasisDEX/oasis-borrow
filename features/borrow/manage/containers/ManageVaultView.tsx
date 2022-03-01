@@ -21,14 +21,14 @@ import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import { VaultHistoryView } from '../../../vaultHistory/VaultHistoryView'
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
-function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
+function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
@@ -57,7 +57,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
   )
 }
 
-export function ManageVaultForm(props: ManageVaultState) {
+export function ManageVaultForm(props: ManageStandardBorrowVaultState) {
   const {
     isEditingStage,
     isProxyStage,
@@ -108,7 +108,7 @@ export function ManageVaultContainer({
   manageVault,
   vaultHistory,
 }: {
-  manageVault: ManageVaultState
+  manageVault: ManageStandardBorrowVaultState
   vaultHistory: VaultHistoryEvent[]
 }) {
   const { manageVault$, context$, uiChanges } = useAppContext()

@@ -33,7 +33,7 @@ describe('instiVault$', () => {
     charterPeace$.next(new BigNumber(6))
     charterUline$.next(new BigNumber(11))
 
-    expect(state().originationFee.toString()).to.eq('2')
+    expect(state().originationFeePercent.toString()).to.eq('2')
     expect(state().activeCollRatio.toString()).to.eq('6')
     expect(state().debtCeiling.toString()).to.eq('11')
   })

@@ -17,6 +17,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
 import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -24,27 +25,23 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
 import { BorrowManageVaultViewStateProviderInterface } from './initialViewStateProviders/borrowManageVaultViewStateProviderInterface'
-import { applyManageVaultAllowance, ManageVaultAllowanceChange } from './manageVaultAllowances'
-import { applyManageVaultCalculations, ManageVaultCalculations } from './manageVaultCalculations'
+import {  ManageVaultAllowanceChange } from './manageVaultAllowances'
+import {  ManageVaultCalculations } from './manageVaultCalculations'
 import {
-  applyManageVaultConditions,
-  applyManageVaultStageCategorisation,
   ManageVaultConditions,
 } from './manageVaultConditions'
-import { applyManageVaultEnvironment, ManageVaultEnvironmentChange } from './manageVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from './manageVaultForm'
-import { applyManageVaultInput, ManageVaultInputChange } from './manageVaultInput'
-import { applyManageVaultSummary, ManageVaultSummary } from './manageVaultSummary'
+import {  ManageVaultEnvironmentChange } from './manageVaultEnvironment'
+import {  ManageVaultFormChange } from './manageVaultForm'
+import {  ManageVaultInputChange } from './manageVaultInput'
+import {  ManageVaultSummary } from './manageVaultSummary'
 import {
   applyEstimateGas,
-  applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
 } from './manageVaultTransactions'
 import {
-  applyManageVaultTransition,
   ManageVaultTransitionChange,
   progressManage,
 } from './manageVaultTransitions'
@@ -52,17 +49,7 @@ import { validateErrors, validateWarnings } from './manageVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
-  stateToOverride: Partial<ManageVaultState>
-}
-
-function applyManageVaultInjectedOverride(change: ManageVaultChange, state: ManageVaultState) {
-  if (change.kind === 'injectStateOverride') {
-    return {
-      ...state,
-      ...change.stateToOverride,
-    }
-  }
-  return state
+  stateToOverride: Partial<ManageStandardBorrowVaultState>
 }
 
 export type ManageVaultChange =
@@ -73,20 +60,6 @@ export type ManageVaultChange =
   | ManageVaultTransactionChange
   | ManageVaultEnvironmentChange
   | ManageVaultInjectedOverrideChange
-
-function apply(state: ManageVaultState, change: ManageVaultChange) {
-  const s1 = applyManageVaultInput(change, state)
-  const s2 = applyManageVaultForm(change, s1)
-  const s3 = applyManageVaultAllowance(change, s2)
-  const s4 = applyManageVaultTransition(change, s3)
-  const s5 = applyManageVaultTransaction(change, s4)
-  const s6 = applyManageVaultEnvironment(change, s5)
-  const s7 = applyManageVaultInjectedOverride(change, s6)
-  const s8 = applyManageVaultCalculations(s7)
-  const s9 = applyManageVaultStageCategorisation(s8)
-  const s10 = applyManageVaultConditions(s9)
-  return applyManageVaultSummary(s10)
-}
 
 export type ManageVaultEditingStage =
   | 'collateralEditing'
@@ -121,13 +94,13 @@ export interface MutableManageVaultState {
   selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
 }
 
-export interface ManageVaultEnvironment {
+export interface ManageVaultEnvironment<V extends Vault> {
   account?: string
   accountIsController: boolean
   proxyAddress?: string
   collateralAllowance?: BigNumber
   daiAllowance?: BigNumber
-  vault: Vault
+  vault: V
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
@@ -174,10 +147,10 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-export type ManageVaultState = MutableManageVaultState &
+type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
-  ManageVaultEnvironment &
+  ManageVaultEnvironment<V> &
   ManageVaultFunctions &
   ManageVaultTxInfo & {
     errorMessages: VaultErrorMessage[]
@@ -188,7 +161,10 @@ export type ManageVaultState = MutableManageVaultState &
     currentStep: number
   } & HasGasEstimation
 
-export type ManageInstiVaultState = ManageVaultState & {
+export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
+
+export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
+  originationFeeAbsoluteValue?: BigNumber
   originationFee: BigNumber
   activeCollRatio: BigNumber
   debtCeiling: BigNumber
@@ -200,8 +176,8 @@ function addTransitions(
   saveVaultType$: SaveVaultType,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: ManageStandardBorrowVaultState,
+): ManageStandardBorrowVaultState {
   if (state.stage === 'multiplyTransitionEditing') {
     return {
       ...state,
@@ -377,7 +353,7 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-export function createManageVault$<V extends Vault, VS extends ManageVaultState>(
+export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
@@ -459,7 +435,7 @@ export function createManageVault$<V extends Vault, VS extends ManageVaultState>
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan(apply, initialState),
+                    scan(vaultViewStateProvider.applyCalcs, initialState),
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, proxyActions)),

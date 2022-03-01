@@ -5,7 +5,7 @@ import { filter, map, switchMap } from 'rxjs/operators'
 import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
-  originationFee: BigNumber
+  originationFeePercent: BigNumber
   activeCollRatio: BigNumber
   debtCeiling: BigNumber
 }
@@ -30,7 +30,7 @@ export function createInstiVault$(
           ).pipe(
             map(([nib, peace, uline]) => ({
               ...vault,
-              originationFee: nib,
+              originationFeePercent: nib,
               activeCollRatio: peace,
               debtCeiling: uline,
             })),
