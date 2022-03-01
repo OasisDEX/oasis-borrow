@@ -20,7 +20,7 @@ import {
 } from '../../../components/vault/VaultChangesInformation'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { zero } from '../../../helpers/zero'
+import { one, zero } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -130,7 +130,7 @@ function SetDownsideProtectionInformation({
 
   const ethDuringLiquidation = vault.lockedCollateral
     .times(vault.liquidationPrice)
-    .minus(vault.debt)
+    .minus(vault.debt.multipliedBy(one.plus(ilkData.liquidationPenalty)))
     .div(vault.liquidationPrice)
 
   const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)

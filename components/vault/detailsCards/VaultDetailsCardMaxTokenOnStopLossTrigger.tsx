@@ -5,7 +5,7 @@ import { Grid, Heading, Text } from 'theme-ui'
 
 import { formatAmount } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { zero } from '../../../helpers/zero'
+import { one, zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalProps) {
@@ -29,6 +29,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   slRatio,
   afterSlRatio,
   liquidationPrice,
+  liquidationPenalty,
   afterPillColors,
   showAfterPill,
   isProtected,
@@ -42,6 +43,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   slRatio: BigNumber
   afterSlRatio: BigNumber
   liquidationPrice: BigNumber
+  liquidationPenalty: BigNumber
   isProtected: boolean
   debt: BigNumber
   liquidationRatio: BigNumber
@@ -55,7 +57,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 
   const ethDuringLiquidation = lockedCollateral
     .times(liquidationPrice)
-    .minus(debt)
+    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
     .div(liquidationPrice)
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
