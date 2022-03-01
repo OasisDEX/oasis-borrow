@@ -12,11 +12,24 @@ import { useObservableWithError } from '../../helpers/observableHook'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
+import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/ManageMultiplyVaultDetails'
 import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { GeneralManageVaultState } from './generalManageVault'
-import { VaultType } from './vaultType'
+import { isInstiVault, VaultType } from './vaultType'
+
+// Temporary stuff for testing insti vaults
+const instiMockedData = {
+  originationFee: new BigNumber(0.01),
+  originationFeeUSD: new BigNumber(120),
+  activeCollRatio: new BigNumber(1.4),
+  activeCollRatioPriceUSD: new BigNumber(1300),
+  debtCeiling: new BigNumber(500000),
+  termEnd: new Date('02/28/2022'),
+  fixedFee: new BigNumber(0.015),
+  nextFixedFee: new BigNumber(0.014),
+}
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
@@ -85,13 +98,20 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       >
         {([generalManageVault, vaultHistory, vaultMultiplyHistory]) => {
           switch (generalManageVault.type) {
-            case VaultType.Borrow:
+            case VaultType.Borrow: // todo: add insti vault case
               return (
                 <Container variant="vaultPageContainer">
-                  <ManageVaultContainer
-                    vaultHistory={vaultHistory}
-                    manageVault={generalManageVault.state}
-                  />
+                  {isInstiVault(id) ? (
+                    <ManageInstiVaultContainer
+                      vaultHistory={vaultHistory}
+                      manageVault={{ ...generalManageVault.state, ...instiMockedData }}
+                    />
+                  ) : (
+                    <ManageVaultContainer
+                      vaultHistory={vaultHistory}
+                      manageVault={generalManageVault.state}
+                    />
+                  )}
                 </Container>
               )
             case VaultType.Multiply:

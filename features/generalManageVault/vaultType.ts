@@ -60,3 +60,8 @@ export function saveVaultTypeLocalStorage$(
 
   return of(undefined).pipe(delay(2000))
 }
+
+export function isInstiVault(vaultID: BigNumber) {
+  const INSTI_VAULT_IDS: BigNumber[] = [] // add your vault id here for testing
+  return INSTI_VAULT_IDS.some((bn) => bn.eq(vaultID))
+}

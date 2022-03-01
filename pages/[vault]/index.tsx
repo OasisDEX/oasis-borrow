@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
+import { isInstiVault } from 'features/generalManageVault/vaultType'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
@@ -31,7 +32,7 @@ export default function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
       <WithTermsOfService>
-        {automationEnabled ? (
+        {automationEnabled && !isInstiVault(vaultId) ? (
           <>
             <BackgroundLight />
             {isValidVaultId ? (
