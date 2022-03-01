@@ -17,7 +17,7 @@ jobs:
             ${{ runner.OS }}-yarn-cache-
 
       - name: Install
-        run: yarn --no-progress --non-interactive --frozen-lockfile
+        run: yarn --prod --no-progress --non-interactive --frozen-lockfile
 
       - name: Lint
         run: yarn lint
