@@ -26,16 +26,11 @@ export function createInstiVault$(
       of(vault).pipe(
         map((vault) => [vault.ilk, vault.controller] as const),
         filter((params): params is [string, string] => params[1] !== undefined),
-        // switchMap(([ilk, usr]) =>
-        switchMap(() =>
+        switchMap(([ilk, usr]) =>
           combineLatest(
-            // todo: insti-vault switch back to smart contract vaules when contract is deployed
-            // charterNib$({ ilk, usr }),
-            // charterPeace$({ ilk, usr }),
-            // charterUline$({ ilk, usr }),
-            of(new BigNumber(0.1)),
-            of(new BigNumber(0.22)),
-            of(new BigNumber(3)),
+            charterNib$({ ilk, usr }),
+            charterPeace$({ ilk, usr }),
+            charterUline$({ ilk, usr }),
           ).pipe(
             map(([nib, peace, uline]) => ({
               // todo: insti-vault put real values here

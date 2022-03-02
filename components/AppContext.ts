@@ -359,7 +359,14 @@ export function setupAppContext() {
   )
 
   const instiVault$ = memoize(
+    // todo: insti-vault switch back to smart contract vaules when contract is deployed
     curry(createInstiVault$)(vault$, charterNib$, charterPeace$, charterUline$),
+    // curry(createInstiVault$)(
+    //   vault$,
+    //   () => of(new BigNumber(0.1)),
+    //   () => of(new BigNumber(0.22)),
+    //   () => of(new BigNumber(3)),
+    // ),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
