@@ -64,7 +64,6 @@ export function getWithdrawAndPaybackCallData(
     }
     return proxyActionsSmartContractWrapper.wipe(context, data)
   }
-  console.log()
 
   // would be nice to remove this for Unreachable error case in the future
   throw new Error('Could not make correct proxyActions call')
