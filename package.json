@@ -35,6 +35,7 @@
     "publish:storybook": "storybook-to-aws-s3",
     "release": "release-it"
   },
+  
   "dependencies": {
     "@davatar/react": "^1.8.1",
     "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
@@ -62,8 +63,6 @@
     "@types/pg": "^7.14.3",
     "@types/ramda": "^0.27.34",
     "@types/react-lottie": "^1.2.6",
-    "@types/react": "^17.0.1",
-    "@types/node": "^12.12",
     "@types/theme-ui": "^0.3.1",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
@@ -101,7 +100,6 @@
     "mixpanel-browser": "^2.29.1",
     "mock-local-storage": "^1.1.15",
     "moment": "^2.26.0",
-    "moment-locales-webpack-plugin": "^1.2.0",
     "morgan": "^1.10.0",
     "next": "^10.0.8",
     "next-i18next": "^8.1.0",
@@ -135,11 +133,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "whatwg-fetch": "2.0.3",
-    "zod": "^1.5.0",
-    "@typechain/ethers-v5": "^6.0.5",
-    "@typechain/web3-v1": "^2.0.0",
-    "@types/moment-locales-webpack-plugin": "^1.2.0",
-    "typechain": "^4.0.3"
+    "zod": "^1.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",
@@ -147,6 +141,8 @@
     "@storybook/addon-links": "^6.3.8",
     "@storybook/addon-postcss": "^2.0.0",
     "@storybook/react": "^6.3.8",
+    "@typechain/ethers-v5": "^6.0.5",
+    "@typechain/web3-v1": "^2.0.0",
     "@types/bn.js": "^4.11.1",
     "@types/body-parser": "^1.19.0",
     "@types/chai": "^4.2.11",
@@ -159,8 +155,11 @@
     "@types/ledgerhq__hw-transport-u2f": "^4.21.2",
     "@types/lodash": "^4.14.109",
     "@types/mocha": "^7.0.2",
+    "@types/moment-locales-webpack-plugin": "^1.2.0",
+    "@types/node": "^12.12",
     "@types/nodemailer": "^6.4.0",
     "@types/raven": "^2.5.3",
+    "@types/react": "^17.0.1",
     "@types/react-dom": "^17.0.1",
     "@types/react-modal": "^3.2.1",
     "@types/react-router": "^4.0.30",
@@ -195,6 +194,7 @@
     "hardhat": "^2.1.2",
     "http-server": "^0.11.1",
     "mocha": "^9.1.2",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "nock": "^13.0.3",
     "node-mocks-http": "^1.8.1",
     "node-sass": "^6.0.1",
@@ -209,6 +209,7 @@
     "ts-loader": "^2.3.7",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.9.0",
+    "typechain": "^4.0.3",
     "typescript": "^4.4.3",
     "webpack": "^4.42.1"
   }
