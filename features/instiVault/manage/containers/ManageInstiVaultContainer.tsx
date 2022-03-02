@@ -17,6 +17,7 @@ import { Box, Flex, Grid } from 'theme-ui'
 
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
+import { closeGuniVault } from '../../../earn/guni/manage/pipes/guniActionsCalls'
 
 export function ManageInstiVaultContainer({
   manageVault,
@@ -27,7 +28,7 @@ export function ManageInstiVaultContainer({
 }) {
   const { manageVault$, context$ } = useAppContext()
   const {
-    vault: { id, ilk, originationFeePercent },
+    vault: { id, originationFeePercent, instiIlkName },
     clear,
     ilkData,
     originationFeeUSD,
@@ -50,7 +51,11 @@ export function ManageInstiVaultContainer({
 
   return (
     <>
-      <DefaultVaultHeader header={t('vault.insti-header', { ilk, id })} ilkData={ilkData} id={id}>
+      <DefaultVaultHeader
+        header={t('vault.insti-header', { ilk: instiIlkName, id })}
+        ilkData={ilkData}
+        id={id}
+      >
         <VaultIlkDetailsItem
           label={t('manage-insti-vault.origination-fee')}
           value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}

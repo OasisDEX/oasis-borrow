@@ -12,6 +12,7 @@ export interface InstiVault extends Vault {
   termEnd: Date
   fixedFee: BigNumber
   nextFixedFee: BigNumber
+  instiIlkName: string
 }
 
 export function createInstiVault$(
@@ -42,6 +43,7 @@ export function createInstiVault$(
               termEnd: new Date('2022-03-02'),
               fixedFee: new BigNumber(0.2),
               nextFixedFee: new BigNumber(0.3),
+              instiIlkName: 'INST-NEXO-ETH',
             })),
           ),
         ),
