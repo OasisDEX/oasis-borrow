@@ -36,7 +36,7 @@ export function ProtectionDetailsLayout({
   afterSlRatio,
   isCollateralActive,
 }: ProtectionDetailsLayoutProps) {
-  const showAfterPill = afterSlRatio.toNumber() !== slRatio.toNumber()
+  const showAfterPill = !afterSlRatio.eq(slRatio)
   console.log('afterSlRatio', afterSlRatio.toNumber())
   console.log('slRatio', slRatio.toNumber())
 

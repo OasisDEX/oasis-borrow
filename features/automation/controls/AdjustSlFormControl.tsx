@@ -79,9 +79,6 @@ export function AdjustSlFormControl({
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
   const [collateralActive, setCloseToCollateral] = useState(isToCollateral)
-  const {
-    theme: { colors },
-  } = useThemeUI() /* TODO: This looks like something which should sit in layouts*/
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
@@ -201,17 +198,13 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const slider = selectedSLValue.minus(liqRatio.times(100)).div(currentCollRatio.minus(liqRatio))
-
-  const sliderBackground = slider
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
-        slider.toNumber() || 0
-      }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-    : 'primaryAlt' /* TODO: this looks like something that should sit in layouts */
+  const sliderPercentageFill = selectedSLValue
+    .minus(liqRatio.times(100))
+    .div(currentCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
-    background: sliderBackground,
+    sliderPercentageFill,
     leftBoundry: selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
