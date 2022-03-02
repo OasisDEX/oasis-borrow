@@ -78,7 +78,6 @@ export interface WithdrawPaybackDepositGenerateLogicInterface {
 export function withdrawPaybackDepositGenerateLogicFactory(
   proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
 ): WithdrawPaybackDepositGenerateLogicInterface {
-  console.log('here')
   return {
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
@@ -87,7 +86,6 @@ export function withdrawPaybackDepositGenerateLogicFactory(
         ]
       },
       prepareArgs: (data, context) => {
-        console.log('here 2')
         return [
           proxyActionsSmartContractWrapper.resolveContractAddress(context),
           getWithdrawAndPaybackCallData(
@@ -398,7 +396,6 @@ export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
   },
   prepareArgs: (data, context) => {
     const { guniProxyActions } = context
-    console.log({ guniProxyActions })
     return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
   },
 }
