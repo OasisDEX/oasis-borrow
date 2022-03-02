@@ -77,14 +77,40 @@ export function AdjustSlFormControl({
     triggerData,
   )
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-  const [collateralActive, setCloseToCollateral] = useState(isToCollateral)
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
 
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
   const [firstStopLossSetup] = useState(!isStopLossEnabled)
+  
+  const token = vault.token
+  const tokenData = getToken(token)
+  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
+  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const initialVaultCollRatio = new BigNumber(
+    ilkData.liquidationRatio
+      .plus(vault.collateralizationRatio)
+      .dividedBy(2)
+      .toFixed(2, BigNumber.ROUND_CEIL),
+  )
+  
+  const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
+
+  const defaultUIState: AddFormChange = {
+    collateralActive: isToCollateral,
+    selectedSLValue: startingSlRatio.multipliedBy(100),
+    txDetails: undefined,
+  }
+
+  const {
+    dispatch,
+    initial
+  }= useUIChanges(reducerHandler, defaultUIState, uiSubjectName)
+  
+  const [selectedSLValue, setSelectedSLValue] = useState(initial.selectedSLValue)
+  
+  const [collateralActive, setCloseToCollateral] = useState(initial.collateralActive)
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
@@ -138,44 +164,29 @@ export function AdjustSlFormControl({
     }
   }
 
-  const token = vault.token
-  const tokenData = getToken(token)
-  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
-  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
-  const initialVaultCollRatio = new BigNumber(
-    ilkData.liquidationRatio
-      .plus(vault.collateralizationRatio)
-      .dividedBy(2)
-      .toFixed(2, BigNumber.ROUND_CEIL),
-  )
-  const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
-  const isEditing = !lastUIState
-    ? false
-    : !startingSlRatio.multipliedBy(100).eq(lastUIState.selectedSLValue)
+  
+  const isEditing = (!isStopLossEnabled && !selectedSLValue.eq(defaultUIState.selectedSLValue)) ||
+  (!stopLossLevel.multipliedBy(100).eq(selectedSLValue)) || collateralActive !== isToCollateral
 
-  console.log('startingSlRatio', startingSlRatio.multipliedBy(100).toNumber())
-  console.log('lastUIState.selectedSLValue', lastUIState?.selectedSLValue.toNumber())
-
+  console.log("isEditing",
+    (!isStopLossEnabled && !selectedSLValue.eq(defaultUIState.selectedSLValue)),
+    (!stopLossLevel.eq(selectedSLValue)),
+    collateralActive !== isToCollateral
+  );
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
 
   const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
-    .multipliedBy(startingSlRatio)
+    .multipliedBy(initial.selectedSLValue)
+    .dividedBy(100)
     .dividedBy(currentCollRatio)
 
   const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
-  const initial: AddFormChange = {
-    collateralActive: isToCollateral,
-    selectedSLValue: startingSlRatio.multipliedBy(100),
-    txDetails: undefined,
-  }
-
-  const dispatch = useUIChanges(reducerHandler, initial, uiSubjectName)
 
   const maxBoundry =
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
@@ -198,17 +209,17 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const sliderPercentageFill = selectedSLValue
+  const sliderPercentageFill = initial.selectedSLValue
     .minus(liqRatio.times(100))
     .div(currentCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
     sliderPercentageFill,
-    leftBoundry: selectedSLValue,
+    leftBoundry: initial.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
-    lastValue: selectedSLValue,
+    lastValue: initial.selectedSLValue,
     leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
@@ -259,7 +270,7 @@ export function AdjustSlFormControl({
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
                 : zero
-
+            console.log("Inside transactionStateHandler", txState)
             dispatch({
               type: 'tx-details',
               txDetails: {
@@ -292,7 +303,7 @@ export function AdjustSlFormControl({
     isEditing,
     disabled:
       !isOwner ||
-      (selectedSLValue.eq(stopLossLevel.multipliedBy(100)) &&
+      (!isEditing &&
         lastUIState?.txDetails?.txStatus !== TxStatus.Success),
   }
 

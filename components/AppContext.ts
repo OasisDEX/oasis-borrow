@@ -83,7 +83,7 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs'
+import { Subject, combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
@@ -193,15 +193,19 @@ export type UIChanges = {
 
 export type UIChanges = {
   subscribe: <T>(sub: string) => Observable<T>
-  publish: <T>(sub: string, event: T) => void
+  publish: <T>(sub: string, event: T) => void,
+  lastPayload: <T>(sub: string) => T
 }
 
 function createUIChangesSubject(): UIChanges {
+
+  let latest : any = {};
+
   interface PublisherRecord {
     subjectName: string
     payload: any
   }
-  const commonSubject = new BehaviorSubject<PublisherRecord>({} as PublisherRecord)
+  const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T>(subjectName: string): Observable<T> {
     return commonSubject.pipe(
@@ -212,15 +216,21 @@ function createUIChangesSubject(): UIChanges {
   }
 
   function publish<T>(subjectName: string, event: T) {
+    latest[subjectName] = event;
     commonSubject.next({
       subjectName,
       payload: event,
     })
   }
 
+  function lastPayload(subject : string) : any{
+    return latest[subject];
+  }
+
   return {
     subscribe,
     publish,
+    lastPayload
   }
 }
 

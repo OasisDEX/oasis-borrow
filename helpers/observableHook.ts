@@ -9,26 +9,32 @@ export function useUIChanges<S, A>(
   handler: (state: S, action: A) => S,
   initial: S,
   uiSubjectName: string,
-): React.Dispatch<A> {
+): {
+   dispatch:React.Dispatch<A>,
+   initial: S
+  } {
   const { uiChanges } = useAppContext()
 
   function publishUIChange<T>(props: T) {
     uiChanges.publish<T>(uiSubjectName, props)
   }
-
-  let lastState = useObservable(uiChanges.subscribe<S>(uiSubjectName));
+  
+  let lastState = uiChanges.lastPayload<S>(uiSubjectName);
 
   const initialState: S = lastState
     ? lastState
     : initial
 
-  console.log(initialState, lastState, initial);
-
   const [uiState, dispatch] = useReducer(handler, initialState)
   useEffect(() => {
     publishUIChange(uiState)
   }, [uiState])
-  return dispatch
+  return {
+    dispatch : (x) => {
+      return dispatch(x);
+    },
+    initial: initialState
+  }
 }
 // In order to infer proper type of observable returned by curry from ramda which uses recursive typing
 // we need to postpone inference.
