@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { Observable } from 'rxjs'
-import { filter, map, switchMap, tap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
 import {
