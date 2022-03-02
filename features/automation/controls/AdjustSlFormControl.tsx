@@ -153,7 +153,12 @@ export function AdjustSlFormControl({
   )
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
-  const isEditing = !lastUIState ? false : startingSlRatio !== lastUIState.selectedSLValue
+  const isEditing = !lastUIState
+    ? false
+    : !startingSlRatio.multipliedBy(100).eq(lastUIState.selectedSLValue)
+
+  console.log('startingSlRatio', startingSlRatio.multipliedBy(100).toNumber())
+  console.log('lastUIState.selectedSLValue', lastUIState?.selectedSLValue.toNumber())
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
