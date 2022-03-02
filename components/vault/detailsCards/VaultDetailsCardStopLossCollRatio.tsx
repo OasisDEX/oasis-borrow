@@ -1,20 +1,32 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid, Heading, Text } from 'theme-ui'
+import { Card, Grid, Heading, Text } from 'theme-ui'
 
 import { formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
-export function VaultDetailsStopLossCollRatioModal({ close }: ModalProps) {
+export function VaultDetailsStopLossCollRatioModal({
+  close,
+  slRatio,
+}: ModalProps<{ slRatio: BigNumber }>) {
+  const { t } = useTranslation()
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">Stop Loss Coll Ratio</Heading>
+        <Heading variant="header3">{t('manage-multiply-vault.card.stop-loss-coll-ratio')}</Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          StopLossCollRatio dummy modal
+          {t('manage-multiply-vault.card.stop-loss-coll-ratio-desc')}
         </Text>
+        <Text variant="header4" sx={{ fontWeight: 'semiBold' }}>
+          {t('manage-multiply-vault.card.current-stop-loss-coll-ratio')}
+        </Text>
+        <Card variant="vaultDetailsCardModal">
+          <Heading variant="header3">
+            {!slRatio.isZero() ? formatPercent(slRatio.multipliedBy(100), { precision: 2 }) : '-'}
+          </Heading>
+        </Card>
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -62,7 +74,7 @@ export function VaultDetailsCardStopLossCollRatio({
           precision: 2,
         })
       }
-      openModal={() => openModal(VaultDetailsStopLossCollRatioModal)}
+      openModal={() => openModal(VaultDetailsStopLossCollRatioModal, { slRatio })}
       afterPillColors={afterPillColors}
     />
   )
