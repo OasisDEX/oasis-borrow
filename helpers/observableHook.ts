@@ -31,9 +31,7 @@ export function useUIChanges<S, A>(
   return dispatch
 }
 
-export function useObservable<O extends Observable<any>>(
-  o$: O,
-): [value: Unpack<O> | undefined, error: any ] {
+export function useObservable<O extends Observable<any>>(o$: O): [Unpack<O> | undefined, any] {
   const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
   const [error, setError] = useState<any>(undefined)
 
@@ -48,5 +46,5 @@ export function useObservable<O extends Observable<any>>(
     return () => subscription.unsubscribe()
   }, [o$])
 
-  return [ value, error ]
+  return [value, error]
 }
