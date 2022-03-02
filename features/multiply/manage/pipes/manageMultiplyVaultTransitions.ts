@@ -266,9 +266,6 @@ export function progressAdjust(
     if (state.withdrawAmount !== undefined || state.paybackAmount !== undefined) {
       return manageVaultWithdrawAndPayback(txHelpers$, change, state)
     }
-    if (state.otherAction === 'closeVault' && state.vault.debt.isZero()) {
-      return manageVaultWithdrawAndPayback(txHelpers$, change, state)
-    }
     if (state.otherAction === 'closeVault') {
       return closeVault(txHelpers$, context, change, state)
     }

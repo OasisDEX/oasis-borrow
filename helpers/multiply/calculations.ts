@@ -14,6 +14,10 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'DEPOSIT':
     case 'DEPOSIT-GENERATE':
+      if (event.reclaim) {
+        return total
+      }
+
       return total.plus(event.collateralAmount.times(event.oraclePrice))
     case 'PAYBACK':
     case 'WITHDRAW-PAYBACK':
@@ -54,18 +58,6 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
-function getCumulativeLossesUSD(total: BigNumber, event: VaultEvent) {
-  switch (event.kind) {
-    case 'AUCTION_STARTED':
-    case 'AUCTION_STARTED_V2':
-      return event.oraclePrice
-        ? total.plus(event.collateralAmount.abs().times(event.oraclePrice))
-        : total
-    default:
-      return total
-  }
-}
-
 export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
     case 'OPEN_MULTIPLY_VAULT':
@@ -91,7 +83,6 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
   const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
-  const cumulativeLossesUSD = events.reduce(getCumulativeLossesUSD, zero)
 
   if (cumulativeDepositUSD.isZero()) {
     return zero
@@ -100,7 +91,6 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
   return cumulativeWithdrawnUSD
     .plus(currentNetValueUSD)
     .minus(cumulativeFeesUSD)
-    .minus(cumulativeLossesUSD)
     .minus(cumulativeDepositUSD)
     .div(cumulativeDepositUSD)
 }

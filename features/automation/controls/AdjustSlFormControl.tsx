@@ -71,15 +71,17 @@ export function AdjustSlFormControl({
   tx,
 }: AdjustSlFormControlProps) {
   const uiSubjectName = 'AdjustSlForm'
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
+    triggerData,
+  )
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
-  const [collateralActive, setCloseToCollateral] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
+  const [collateralActive, setCloseToCollateral] = useState(isToCollateral)
   const {
     theme: { colors },
   } = useThemeUI()
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
-  const { triggerId, stopLossLevel, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
 
   const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
@@ -133,6 +135,7 @@ export function AdjustSlFormControl({
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
   const startingSlRatio = isStopLossEnabled
     ? stopLossLevel
     : new BigNumber(
@@ -157,7 +160,7 @@ export function AdjustSlFormControl({
   )
 
   const initial: AddFormChange = {
-    collateralActive: false,
+    collateralActive: isToCollateral,
     selectedSLValue: startingSlRatio.multipliedBy(100),
     isEditing: false,
   }
@@ -300,6 +303,7 @@ export function AdjustSlFormControl({
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice,
+    ethPrice,
     vault,
     ilkData,
     isEditing,

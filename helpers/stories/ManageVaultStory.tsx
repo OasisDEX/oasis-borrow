@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
@@ -117,21 +118,21 @@ export function manageVaultStory({
             setVaultFormToggleTitle: () => null,
           }}
         >
-          <ManageVaultStoryContainer title={title} />
+          <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
         </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
 }
 
-const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
+const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId: BigNumber }) => {
   if (!isAppContextAvailable()) return null
 
   return (
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageControl id={MOCK_VAULT_ID} />
+        <GeneralManageControl id={vaultId} />
       </Grid>
     </Container>
   )
