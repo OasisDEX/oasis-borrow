@@ -31,6 +31,7 @@ export function useUIChanges<S, A>(
   }, [uiState])
   return {
     dispatch : (x) => {
+      console.log("Executing dispatch");
       return dispatch(x);
     },
     initial: initialState

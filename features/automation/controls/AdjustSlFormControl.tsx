@@ -18,7 +18,6 @@ import { useObservable, useUIChanges } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useThemeUI } from 'theme-ui'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -32,7 +31,7 @@ import {
   extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
-import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { AddFormChange, ADD_FORM_CHANGE, formChangeReducer } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
@@ -72,7 +71,6 @@ export function AdjustSlFormControl({
   toggleForms,
   tx,
 }: AdjustSlFormControlProps) {
-  const uiSubjectName = 'AdjustSlForm'
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
     triggerData,
   )
@@ -103,17 +101,14 @@ export function AdjustSlFormControl({
     txDetails: undefined,
   }
 
-  const {
-    dispatch,
-    initial
-  }= useUIChanges(reducerHandler, defaultUIState, uiSubjectName)
+  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)??defaultUIState;
   
   const [selectedSLValue, setSelectedSLValue] = useState(initial.selectedSLValue)
   
   const [collateralActive, setCloseToCollateral] = useState(initial.collateralActive)
 
   useEffect(() => {
-    const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
+    const uiChanges$ = uiChanges.subscribe<AddFormChange>(ADD_FORM_CHANGE)
 
     const subscription = uiChanges$.subscribe((value) => {
       lastUIStateSetter(value)
@@ -123,6 +118,8 @@ export function AdjustSlFormControl({
     }
   }, [])
 
+  const currentUIState = lastUIState?lastUIState:initial;
+
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
@@ -131,49 +128,20 @@ export function AdjustSlFormControl({
   )
   /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(
-    () =>
-      addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
+    () =>{
+      console.log("redoing gas estimation")
+      return addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
         estimateGas(addAutomationBotTrigger, txData),
-      ),
+      )
+    },
     [txData],
   )
 
   const gasEstimationData = useObservable(gasEstimationData$)
-
-  /* End of section */
-  type Action =
-    | { type: 'stop-loss'; stopLoss: BigNumber }
-    | { type: 'close-type'; toCollateral: boolean }
-    | {
-        type: 'tx-details'
-        txDetails: {
-          txStatus?: TxStatus
-          txHash?: string
-          txCost?: BigNumber
-        }
-      }
-
-  function reducerHandler(state: AddFormChange, action: Action): AddFormChange {
-    switch (action.type) {
-      case 'stop-loss':
-        return { ...state, selectedSLValue: action.stopLoss }
-      case 'close-type':
-        return { ...state, collateralActive: action.toCollateral }
-      case 'tx-details':
-        return { ...state, txDetails: action.txDetails }
-    }
-  }
-
-
   
   const isEditing = (!isStopLossEnabled && !selectedSLValue.eq(defaultUIState.selectedSLValue)) ||
   (!stopLossLevel.multipliedBy(100).eq(selectedSLValue)) || collateralActive !== isToCollateral
 
-  console.log("isEditing",
-    (!isStopLossEnabled && !selectedSLValue.eq(defaultUIState.selectedSLValue)),
-    (!stopLossLevel.eq(selectedSLValue)),
-    collateralActive !== isToCollateral
-  );
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
@@ -199,10 +167,10 @@ export function AdjustSlFormControl({
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
       setCloseToCollateral(optionName === validOptions[0])
-      dispatch({
+      uiChanges.publish(ADD_FORM_CHANGE, formChangeReducer(lastUIState?lastUIState:({}as AddFormChange),{
         type: 'close-type',
         toCollateral: optionName === validOptions[0],
-      })
+      }));
     },
     isCollateralActive: collateralActive,
     collateralTokenSymbol: token,
@@ -239,10 +207,11 @@ export function AdjustSlFormControl({
         .dividedBy(currentCollRatio)
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
-      dispatch({
+      
+      uiChanges.publish(ADD_FORM_CHANGE, formChangeReducer(lastUIState?lastUIState:({}as AddFormChange),{
         type: 'stop-loss',
         stopLoss: slCollRatio,
-      })
+      }));
     },
   }
 
@@ -260,6 +229,7 @@ export function AdjustSlFormControl({
              */
             const gasUsed =
               txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
+
             const effectiveGasPrice =
               txState.status ===
               TxStatus.Success /* Is this even correct? failed tx also have cost */
@@ -271,14 +241,16 @@ export function AdjustSlFormControl({
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
                 : zero
             console.log("Inside transactionStateHandler", txState)
-            dispatch({
+            
+            uiChanges.publish(ADD_FORM_CHANGE, formChangeReducer(lastUIState?lastUIState:({}as AddFormChange),{
               type: 'tx-details',
               txDetails: {
                 txHash: (txState as any).txHash,
                 txStatus: txState.status,
                 txCost: totalCost,
               },
-            })
+            }));
+            console.log("After Inside transactionStateHandler")
           },
           transactionState,
           finishLoader,
@@ -304,7 +276,7 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing &&
-        lastUIState?.txDetails?.txStatus !== TxStatus.Success),
+        currentUIState?.txDetails?.txStatus !== TxStatus.Success),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -317,8 +289,11 @@ export function AdjustSlFormControl({
     .div(dynamicStopLossPrice)
 
   const txProgressing =
-    !!lastUIState?.txDetails?.txStatus &&
-    progressStatuses.includes(lastUIState?.txDetails?.txStatus)
+    !!currentUIState?.txDetails?.txStatus &&
+    progressStatuses.includes(currentUIState?.txDetails?.txStatus)
+
+  console.log("txProgressing",currentUIState);
+
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
   const etherscan = ctx.etherscan.url
 
@@ -327,10 +302,10 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: lastUIState?.txDetails?.txStatus,
+    txState: currentUIState?.txDetails?.txStatus,
     txProgressing,
-    txCost: lastUIState?.txDetails?.txCost,
-    txHash: lastUIState?.txDetails?.txHash,
+    txCost: currentUIState?.txDetails?.txCost,
+    txHash: currentUIState?.txDetails?.txHash,
     gasEstimation,
     accountIsController,
     stopLossLevel,

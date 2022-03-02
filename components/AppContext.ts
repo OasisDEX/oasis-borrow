@@ -195,6 +195,7 @@ export type UIChanges = {
   subscribe: <T>(sub: string) => Observable<T>
   publish: <T>(sub: string, event: T) => void,
   lastPayload: <T>(sub: string) => T
+  clear: <T>(sub: string) => void
 }
 
 function createUIChangesSubject(): UIChanges {
@@ -227,10 +228,15 @@ function createUIChangesSubject(): UIChanges {
     return latest[subject];
   }
 
+  function clear(subject : string) : any{
+    delete latest[subject] ;
+  }
+
   return {
     subscribe,
     publish,
-    lastPayload
+    lastPayload,
+    clear
   }
 }
 

@@ -9,6 +9,7 @@ import {
   RetryableLoadingButtonProps,
 } from '../../../../components/dumb/RetryableLoadingButton'
 import { VaultViewMode } from '../../../../components/TabSwitchLayout'
+import { ADD_FORM_CHANGE } from '../UITypes/AddFormChange'
 import { TAB_CHANGE_SUBJECT } from '../UITypes/TabChange'
 
 interface AutomationFormButtonsProps {
@@ -31,6 +32,7 @@ export function AutomationFormButtons({
 
   function backToVaultOverview() {
     uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
+    uiChanges.clear(ADD_FORM_CHANGE)
   }
 
   return (

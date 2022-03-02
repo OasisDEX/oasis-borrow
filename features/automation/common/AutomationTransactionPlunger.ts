@@ -24,24 +24,15 @@ export function transactionStateHandler(
   finishLoader: (succeded: boolean) => void,
   waitForTx: Subscription,
 ) {
-  txStatusSetter(transactionState)
+  console.log("Transaction changes state");
   if (isTxStatusFinal(transactionState.status)) {
-    handleFinalTransaction(transactionState, finishLoader, waitForTx, txStatusSetter)
+    console.log("Change state and stop", transactionState);
+    finishLoader(!isTxStatusFailed(transactionState.status))
+    txStatusSetter(transactionState)
+    waitForTx.unsubscribe()
+  }else{
+    console.log("Change state and continue");
+    txStatusSetter(transactionState)
   }
 }
 
-function handleFinalTransaction(
-  transactionState: TxState<AutomationBotAddTriggerData | AutomationBotRemoveTriggerData>,
-  finishLoader: (succeded: boolean) => void,
-  waitForTx: Subscription,
-  txStatusSetter: (txState: TxState<any>) => void,
-) {
-  if (isTxStatusFailed(transactionState.status)) {
-    finishLoader(false)
-    waitForTx.unsubscribe()
-    txStatusSetter(transactionState)
-  } else {
-    finishLoader(true)
-    waitForTx.unsubscribe()
-  }
-}
