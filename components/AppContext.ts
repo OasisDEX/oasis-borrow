@@ -194,7 +194,6 @@ export type UIChanges = {
 export type UIChanges = {
   subscribe: <T>(sub: string) => Observable<T>
   publish: <T>(sub: string, event: T) => void
-  currentState: any
 }
 
 function createUIChangesSubject(): UIChanges {
@@ -212,10 +211,6 @@ function createUIChangesSubject(): UIChanges {
     )
   }
 
-  function currentState<T>() {
-    return commonSubject.getValue() as T
-  }
-
   function publish<T>(subjectName: string, event: T) {
     commonSubject.next({
       subjectName,
@@ -226,7 +221,6 @@ function createUIChangesSubject(): UIChanges {
   return {
     subscribe,
     publish,
-    currentState,
   }
 }
 

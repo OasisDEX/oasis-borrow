@@ -16,11 +16,13 @@ export function useUIChanges<S, A>(
     uiChanges.publish<T>(uiSubjectName, props)
   }
 
-  const initialState: S = Object.keys(uiChanges.currentState()).length
-    ? uiChanges.currentState().payload
+  let lastState = useObservable(uiChanges.subscribe<S>(uiSubjectName));
+
+  const initialState: S = lastState
+    ? lastState
     : initial
 
-  console.log(initialState)
+  console.log(initialState, lastState, initial);
 
   const [uiState, dispatch] = useReducer(handler, initialState)
   useEffect(() => {
