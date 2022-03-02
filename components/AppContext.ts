@@ -511,6 +511,8 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         withdrawPaybackDepositGenerateLogicFactory(CharteredDssProxyActionsContractWrapper),
+        // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
+        // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,
         id,
       ),
