@@ -6,7 +6,7 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import React, { useEffect, useState } from 'react'
 
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
-import { AddFormChange, ADD_FORM_CHANGE } from '../common/UITypes/AddFormChange'
+import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
@@ -53,7 +53,9 @@ export function ProtectionDetailsControl({
 }: ProtectionDetailsControlProps) {
   const { uiChanges } = useAppContext()
 
-  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(uiChanges.lastPayload(ADD_FORM_CHANGE))
+  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(
+    uiChanges.lastPayload(ADD_FORM_CHANGE),
+  )
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<AddFormChange>(ADD_FORM_CHANGE)

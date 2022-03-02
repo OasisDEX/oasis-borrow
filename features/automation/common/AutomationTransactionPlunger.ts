@@ -24,15 +24,11 @@ export function transactionStateHandler(
   finishLoader: (succeded: boolean) => void,
   waitForTx: Subscription,
 ) {
-  console.log("Transaction changes state");
   if (isTxStatusFinal(transactionState.status)) {
-    console.log("Change state and stop", transactionState);
     finishLoader(!isTxStatusFailed(transactionState.status))
     txStatusSetter(transactionState)
     waitForTx.unsubscribe()
-  }else{
-    console.log("Change state and continue");
+  } else {
     txStatusSetter(transactionState)
   }
 }
-

@@ -35,7 +35,9 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   const background = props.sliderPercentageFill
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
         props.sliderPercentageFill.toNumber() || 0
-      }%, ${colors?.primaryAlt} ${props.sliderPercentageFill.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
+      }%, ${colors?.primaryAlt} ${props.sliderPercentageFill.toNumber() || 0}%, ${
+        colors?.primaryAlt
+      } 100%)`
     : 'primaryAlt'
 
   return (
