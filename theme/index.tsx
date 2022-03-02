@@ -75,6 +75,8 @@ const oasisBaseTheme = {
     sliderTrackFill: '#9DA3DA',
     actionInputHover: '#E5E7E8',
     selected: '#EDEDFF',
+    fogBlue: '#D8D9FE',
+    maritimeBlue: '#26283E',
     newsletterInputBorder: 'rgba(120, 122, 155, 0.25)',
   },
   fonts: {
@@ -427,6 +429,9 @@ const oasisBaseTheme = {
       color: 'text.subtitle',
       transition: 'background 0.2s ease-in',
       bg: 'unset',
+      '&:hover': {
+        color: 'maritimeBlue',
+      },
     },
     outline: {
       variant: 'text.paragraph2',

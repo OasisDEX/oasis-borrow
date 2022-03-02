@@ -256,7 +256,7 @@ export function AdjustSlFormLayout({
       {txProgressing && <OpenVaultAnimation />}
       {!txProgressing && !txSuccess && (
         <>
-          <Box>
+          <Box mt={3}>
             <SliderValuePicker {...slValuePickerConfig} />
           </Box>
           <Box>

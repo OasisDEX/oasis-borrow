@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ManageVaultForm } from '../../features/borrow/manage/containers/ManageVaultView'
+import { ManageVaultForm } from '../../features/borrow/manage/containers/ManageVaultForm'
 import { GuniManageMultiplyVaultForm } from '../../features/earn/guni/manage/containers/GuniManageMultiplyVaultForm'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { VaultType } from '../../features/generalManageVault/vaultType'
