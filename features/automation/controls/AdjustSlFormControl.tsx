@@ -312,6 +312,7 @@ export function AdjustSlFormControl({
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice,
+    ethPrice,
     vault,
     ilkData,
     isEditing,

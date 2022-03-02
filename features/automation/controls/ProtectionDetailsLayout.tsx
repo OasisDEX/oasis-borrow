@@ -19,6 +19,7 @@ export interface ProtectionDetailsLayoutProps {
   lockedCollateral: BigNumber
   token: string
   liquidationRatio: BigNumber
+  liquidationPenalty: BigNumber
   afterSlRatio: BigNumber
   isCollateralActive: boolean
 }
@@ -33,6 +34,7 @@ export function ProtectionDetailsLayout({
   lockedCollateral,
   token,
   liquidationRatio,
+  liquidationPenalty,
   afterSlRatio,
   isCollateralActive,
 }: ProtectionDetailsLayoutProps) {
@@ -76,6 +78,7 @@ export function ProtectionDetailsLayout({
           slRatio={slRatio}
           isProtected={isStopLossEnabled}
           liquidationPrice={liquidationPrice}
+          liquidationPenalty={liquidationPenalty}
           debt={vaultDebt}
           liquidationRatio={liquidationRatio}
           token={token}

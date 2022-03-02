@@ -74,6 +74,7 @@ export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsContro
         slRatio={new BigNumber(1.6)}
         afterSlRatio={new BigNumber(1.7)}
         liquidationPrice={new BigNumber(2000)}
+        liquidationPenalty={new BigNumber(0.1)}
         isProtected={isProtected}
         debt={new BigNumber(12000)}
         lockedCollateral={new BigNumber(20)}

@@ -16,7 +16,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
+import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
@@ -95,6 +95,7 @@ interface SetDownsideProtectionInformationProps {
   gasEstimation: ReactNode
   afterStopLossRatio: BigNumber
   tokenPrice: BigNumber
+  ethPrice: BigNumber
   isCollateralActive: boolean
 }
 
@@ -105,6 +106,7 @@ function SetDownsideProtectionInformation({
   gasEstimation,
   afterStopLossRatio,
   tokenPrice,
+  ethPrice,
   isCollateralActive,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
@@ -132,6 +134,15 @@ function SetDownsideProtectionInformation({
     ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
     : `${formatAmount(savingCompareToLiquidation.multipliedBy(tokenPrice), 'USD')} DAI`
 
+  const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
+  const closeVaultGasPrice = new BigNumber(200) // gwei
+  const estimatedFeesWhenSlTriggered = formatFiatBalance(
+    closeVaultGasEstimation
+      .multipliedBy(closeVaultGasPrice)
+      .multipliedBy(ethPrice)
+      .dividedBy(new BigNumber(10).pow(9)),
+  )
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -152,8 +163,8 @@ function SetDownsideProtectionInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.estimated-fees-on-trigger', { token })}`}
-        // TODO replace with correct estimation
-        value={<Flex>${formatAmount(new BigNumber(30), 'USD')}</Flex>}
+        value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
+        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
       <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
       <Box sx={{ fontSize: 2 }}>
@@ -189,6 +200,7 @@ export interface AdjustSlFormLayoutProps {
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
   tokenPrice: BigNumber
+  ethPrice: BigNumber
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
@@ -210,6 +222,7 @@ export function AdjustSlFormLayout({
   addTriggerConfig,
   stopLossLevel,
   tokenPrice,
+  ethPrice,
   vault,
   ilkData,
   isEditing,
@@ -267,6 +280,7 @@ export function AdjustSlFormLayout({
                   gasEstimation={gasEstimation}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
+                  ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
                 />
               </Box>

@@ -3,7 +3,12 @@ import { expect } from 'chai'
 import { beforeEach, describe, it } from 'mocha'
 
 import { billion, million, thousand, zero } from '../zero'
-import { formatAsShorthandNumbers, formatCryptoBalance, formatFiatBalance } from './format'
+import {
+  formatAsShorthandNumbers,
+  formatCryptoBalance,
+  formatDecimalAsPercent,
+  formatFiatBalance,
+} from './format'
 
 describe('Formatting numbers as shorthand ones', () => {
   beforeEach(() => {
@@ -291,5 +296,12 @@ describe('Formatting fiat balances according to number formatting spec', () => {
 
     const negativeAmount = new BigNumber('-0.000000000000').times(billion)
     expect(formatFiatBalance(negativeAmount)).to.eq('0.00')
+  })
+})
+
+describe('Misc formatting helpers', () => {
+  it('should show decimal value as percentage', () => {
+    const amount = new BigNumber(0.0205)
+    expect(formatDecimalAsPercent(amount)).to.eq('2.05%')
   })
 })

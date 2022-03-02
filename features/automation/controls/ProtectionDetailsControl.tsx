@@ -28,6 +28,7 @@ function renderLayout(
     lockedCollateral: vaultData.lockedCollateral,
 
     liquidationRatio: ilkData.liquidationRatio,
+    liquidationPenalty: ilkData.liquidationPenalty,
     isStaticPrice: collateralPrice.isStaticPrice,
     token: vaultData.token,
 
