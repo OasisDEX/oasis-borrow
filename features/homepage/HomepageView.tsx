@@ -111,10 +111,8 @@ export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
-    productCardsData$,
-  )
-  const { value: context } = useObservable(context$)
+  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const [context] = useObservable(context$)
 
   return (
     <Box
@@ -145,7 +143,7 @@ export function HomepageView() {
       >
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
-            value={[productCardsDataValue]}
+            value={[productCardsData]}
             customLoader={
               <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
                 <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />

@@ -16,9 +16,7 @@ import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
-    productCardsData$,
-  )
+  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
 
   const earnEnabled = useFeatureToggle('EarnProduct')
 

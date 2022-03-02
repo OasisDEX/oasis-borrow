@@ -50,9 +50,7 @@ function TabContent(props: {
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
-    productCardsData$,
-  )
+  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const enabled = useFeatureToggle('EarnProduct')
 
   const tabs = (productCardsData: ProductCardData[]) => {
@@ -123,7 +121,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
         <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator value={[productCardsDataValue]} customLoader={<Loader />}>
+          <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
             {([productCardsData]) => {
               return (
                 <TabSwitcher

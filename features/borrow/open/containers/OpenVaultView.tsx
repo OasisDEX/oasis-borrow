@@ -118,7 +118,7 @@ export function OpenVaultContainer(props: OpenVaultState) {
 export function OpenVaultView({ ilk }: { ilk: string }) {
   const { openVault$, accountData$, context$ } = useAppContext()
   const openVaultWithIlk$ = openVault$(ilk)
-  const openVault = useObservable(openVaultWithIlk$)
+  const [openVault, error] = useObservable(openVaultWithIlk$)
 
   useEffect(() => {
     const subscription = createOpenVaultAnalytics$(
@@ -134,8 +134,8 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
   }, [])
 
   return (
-    <WithErrorHandler error={openVault.error}>
-      <WithLoadingIndicator value={openVault.value}>
+    <WithErrorHandler error={error}>
+      <WithLoadingIndicator value={openVault}>
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenVaultContainer {...openVault} />

@@ -14,9 +14,7 @@ import { earnPageCardsData } from '../../helpers/productCards'
 export function EarnView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservable(
-    productCardsData$,
-  )
+  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
 
   return (
     <Grid
@@ -37,7 +35,7 @@ export function EarnView() {
 
       <WithErrorHandler error={[productCardsDataError]}>
         <WithLoadingIndicator
-          value={[productCardsDataValue]}
+          value={[productCardsData]}
           customLoader={
             <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
               <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />

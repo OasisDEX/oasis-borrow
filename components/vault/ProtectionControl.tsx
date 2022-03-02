@@ -45,13 +45,13 @@ interface ProtectionControlProps {
 export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
-  const automationTriggersData = useObservable(autoTriggersData$)
-  const collateralPrices = useObservable(collateralPrices$)
+  const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
+  const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
 
   return !vault.debt.isZero() ? (
-    <WithErrorHandler error={[automationTriggersData.error, collateralPrices.error]}>
+    <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData.value, collateralPrices.value]}
+        value={[automationTriggersData, collateralPrices]}
         customLoader={<VaultContainerSpinner />}
       >
         {([automationTriggersData, collateralPrices]) => {

@@ -129,7 +129,7 @@ function CollateralPricesTable({
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const { value: collateral, error: collateralPricesWithError } = useObservable(collateralPrices$)
+  const [collateralPrices, collateralPricesWithError] = useObservable(collateralPrices$)
   const { t } = useTranslation()
 
   return (
@@ -140,7 +140,7 @@ export function CollateralPricesView() {
       </Grid>
       <WithErrorHandler error={collateralPricesWithError}>
         <WithLoadingIndicator
-          value={collateral}
+          value={collateralPrices}
           customLoader={
             <Box
               sx={{
