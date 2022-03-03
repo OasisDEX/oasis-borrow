@@ -86,6 +86,7 @@ export function AdjustSlFormControl({
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
   const initialVaultCollRatio = new BigNumber(
     ilkData.liquidationRatio
       .plus(vault.collateralizationRatio)
