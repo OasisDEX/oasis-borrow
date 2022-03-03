@@ -54,47 +54,47 @@ describe('manageMultiplyVault', () => {
         state().updateRequiredCollRatio!(requiredCollRatio)
         expect(state().requiredCollRatio).to.deep.equal(requiredCollRatio)
       })
-
-      it('should update buy, buyUSD, buyMax, sell, sellUSD and sellMax amount inputs on proper main action and when slider is hidden', () => {
-        const buyAmount = new BigNumber('2')
-        const buyAmountUSD = new BigNumber('2')
-        const sellAmount = new BigNumber('3')
-        const sellAmountUSD = new BigNumber('3')
-
-        const state = getStateUnpacker(mockManageMultiplyVault$())
-
-        state().updateBuy!(buyAmount)
-        expect(state().buyAmount).to.be.undefined
-        state().updateBuyUSD!(buyAmountUSD)
-        expect(state().buyAmountUSD).to.be.undefined
-
-        state().updateSell!(sellAmount)
-        expect(state().sellAmount).to.be.undefined
-        state().updateSellUSD!(sellAmountUSD)
-        expect(state().sellAmountUSD).to.be.undefined
-
-        state().toggleSliderController!()
-        state().updateBuy!(buyAmount)
-        expect(state().buyAmount).to.deep.equal(buyAmount)
-        state().updateBuyUSD!(buyAmountUSD)
-        expect(state().buyAmountUSD).to.deep.equal(buyAmountUSD)
-        state().updateBuyMax!()
-        expect(state().buyAmount).to.deep.equal(state().maxBuyAmount)
-
-        state().updateSell!(sellAmount)
-        expect(state().sellAmount).to.be.undefined
-
-        state().setMainAction!('sell')
-        state().updateSell!(sellAmount)
-        expect(state().sellAmount).to.deep.equal(sellAmount)
-        state().updateSellUSD!(sellAmountUSD)
-        expect(state().sellAmountUSD).to.deep.equal(sellAmountUSD)
-        state().updateSellMax!()
-        expect(state().sellAmount).to.deep.equal(state().vault.freeCollateral)
-
-        state().updateBuy!(buyAmount)
-        expect(state().buyAmount).to.be.undefined
-      })
+      // TODO to be used when buy / sell functionality will be available on UI
+      //   it('should update buy, buyUSD, buyMax, sell, sellUSD and sellMax amount inputs on proper main action and when slider is hidden', () => {
+      //     const buyAmount = new BigNumber('2')
+      //     const buyAmountUSD = new BigNumber('2')
+      //     const sellAmount = new BigNumber('3')
+      //     const sellAmountUSD = new BigNumber('3')
+      //
+      //     const state = getStateUnpacker(mockManageMultiplyVault$())
+      //
+      //     state().updateBuy!(buyAmount)
+      //     expect(state().buyAmount).to.be.undefined
+      //     state().updateBuyUSD!(buyAmountUSD)
+      //     expect(state().buyAmountUSD).to.be.undefined
+      //
+      //     state().updateSell!(sellAmount)
+      //     expect(state().sellAmount).to.be.undefined
+      //     state().updateSellUSD!(sellAmountUSD)
+      //     expect(state().sellAmountUSD).to.be.undefined
+      //
+      //     state().toggleSliderController!()
+      //     state().updateBuy!(buyAmount)
+      //     expect(state().buyAmount).to.deep.equal(buyAmount)
+      //     state().updateBuyUSD!(buyAmountUSD)
+      //     expect(state().buyAmountUSD).to.deep.equal(buyAmountUSD)
+      //     state().updateBuyMax!()
+      //     expect(state().buyAmount).to.deep.equal(state().maxBuyAmount)
+      //
+      //     state().updateSell!(sellAmount)
+      //     expect(state().sellAmount).to.be.undefined
+      //
+      //     state().setMainAction!('sell')
+      //     state().updateSell!(sellAmount)
+      //     expect(state().sellAmount).to.deep.equal(sellAmount)
+      //     state().updateSellUSD!(sellAmountUSD)
+      //     expect(state().sellAmountUSD).to.deep.equal(sellAmountUSD)
+      //     state().updateSellMax!()
+      //     expect(state().sellAmount).to.deep.equal(state().vault.freeCollateral)
+      //
+      //     state().updateBuy!(buyAmount)
+      //     expect(state().buyAmount).to.be.undefined
+      //   })
     })
 
     describe('other actions', () => {

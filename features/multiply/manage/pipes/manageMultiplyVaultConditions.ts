@@ -346,7 +346,9 @@ export function applyManageVaultConditions(
 
   const exchangeDataRequired =
     originalEditingStage === 'adjustPosition' ||
-    (originalEditingStage === 'otherActions' && otherAction === 'closeVault')
+    (originalEditingStage === 'otherActions' &&
+      (otherAction === 'closeVault' ||
+        (otherAction === 'depositCollateral' && !!requiredCollRatio?.gt(zero))))
 
   const shouldShowExchangeError = exchangeDataRequired && exchangeError
 
