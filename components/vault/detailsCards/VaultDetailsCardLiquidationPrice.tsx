@@ -130,7 +130,7 @@ export function VaultDetailsCardLiquidationPrice({
 
   if (vaultId) {
     const autoTriggersData$ = automationTriggersData$(vaultId)
-    const automationTriggersData = useObservable(autoTriggersData$)
+    const [automationTriggersData] = useObservable(autoTriggersData$)
     const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
     return (

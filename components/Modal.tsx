@@ -275,7 +275,7 @@ export const MODAL_CONTAINER_TREZOR_METAMASK_EIP1559 = 'trezor-metamask-eip1559'
 
 export function ModalTrezorMetamaskEIP1559() {
   const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
+  const [web3Context] = useObservable(web3Context$)
 
   function close() {
     const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)

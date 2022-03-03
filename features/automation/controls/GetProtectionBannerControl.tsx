@@ -17,7 +17,7 @@ export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps
   const { uiChanges, automationTriggersData$ } = useAppContext()
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
-  const automationTriggersData = useObservable(autoTriggersData$)
+  const [automationTriggersData] = useObservable(autoTriggersData$)
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 

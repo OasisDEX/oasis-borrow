@@ -4,7 +4,7 @@ import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useObservableWithError } from 'helpers/observableHook'
+import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -129,9 +129,7 @@ function CollateralPricesTable({
 
 export function CollateralPricesView() {
   const { collateralPrices$ } = useAppContext()
-  const { value: collateral, error: collateralPricesWithError } = useObservableWithError(
-    collateralPrices$,
-  )
+  const [collateralPrices, collateralPricesWithError] = useObservable(collateralPrices$)
   const { t } = useTranslation()
 
   return (
@@ -142,7 +140,7 @@ export function CollateralPricesView() {
       </Grid>
       <WithErrorHandler error={collateralPricesWithError}>
         <WithLoadingIndicator
-          value={collateral}
+          value={collateralPrices}
           customLoader={
             <Box
               sx={{
