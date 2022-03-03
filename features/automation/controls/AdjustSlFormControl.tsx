@@ -96,13 +96,14 @@ export function AdjustSlFormControl({
 
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
+
   const defaultUIState: AddFormChange = {
     collateralActive: isToCollateral,
     selectedSLValue: startingSlRatio.multipliedBy(100),
     txDetails: undefined,
   }
 
-  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) ?? defaultUIState
+  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) ? {...defaultUIState,...uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)} : defaultUIState
 
   const [selectedSLValue, setSelectedSLValue] = useState(initial.selectedSLValue)
 
@@ -119,7 +120,7 @@ export function AdjustSlFormControl({
     }
   }, [])
 
-  const currentUIState = lastUIState || initial
+  const currentUIState = {...initial,...lastUIState};
 
   const replacedTriggerId = triggerId || 0
 
@@ -129,7 +130,6 @@ export function AdjustSlFormControl({
   )
   /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(() => {
-    console.log('redoing gas estimation')
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
       ({ estimateGas }) => estimateGas(addAutomationBotTrigger, txData),
@@ -139,8 +139,8 @@ export function AdjustSlFormControl({
   const gasEstimationData = useObservable(gasEstimationData$)
 
   const isEditing =
-    (!isStopLossEnabled && !selectedSLValue.eq(defaultUIState.selectedSLValue)) ||
-    !stopLossLevel.multipliedBy(100).eq(selectedSLValue) ||
+    (!isStopLossEnabled && !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
+    isStopLossEnabled && !selectedSLValue.multipliedBy(100).eq(stopLossLevel) ||
     collateralActive !== isToCollateral
 
   const currentCollRatio = vault.lockedCollateral
@@ -180,7 +180,7 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const sliderPercentageFill = initial.selectedSLValue
+  const sliderPercentageFill = currentUIState.selectedSLValue
     .minus(liqRatio.times(100))
     .div(currentCollRatio.minus(liqRatio))
 
@@ -297,8 +297,6 @@ export function AdjustSlFormControl({
   const txProgressing =
     !!currentUIState?.txDetails?.txStatus &&
     progressStatuses.includes(currentUIState?.txDetails?.txStatus)
-
-  console.log('txProgressing', currentUIState)
 
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
   const etherscan = ctx.etherscan.url

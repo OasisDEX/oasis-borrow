@@ -32,7 +32,7 @@ function renderLayout(
     isStaticPrice: collateralPrice.isStaticPrice,
     token: vaultData.token,
 
-    afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
+    afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
     isCollateralActive: !!lastUIState?.collateralActive,
   }
   return <ProtectionDetailsLayout {...props} />

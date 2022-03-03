@@ -38,7 +38,8 @@ export function ProtectionDetailsLayout({
   afterSlRatio,
   isCollateralActive,
 }: ProtectionDetailsLayoutProps) {
-  const showAfterPill = !afterSlRatio.eq(slRatio) && !afterSlRatio.eq(0)
+  afterSlRatio = afterSlRatio??new BigNumber(0);
+  const showAfterPill = !!afterSlRatio && !afterSlRatio.eq(slRatio) && !afterSlRatio.eq(0)
 
   const afterPillColors = getAfterPillColors('onSuccess')
 

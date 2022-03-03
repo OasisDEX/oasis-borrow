@@ -17,7 +17,6 @@ import {
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { zero } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -47,22 +46,15 @@ function CancelDownsideProtectionInformation({
 interface CancelCompleteInformationProps {
   liquidationPrice: BigNumber
   tokenPrice: BigNumber
-  txState?: TxState<AutomationBotRemoveTriggerData>
+  txState?: TxStatus,
+  totalCost: BigNumber
 }
 
 function CancelCompleteInformation({
   liquidationPrice,
-  txState,
-  tokenPrice,
+  totalCost
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
-  const successTx = txState?.status === TxStatus.Success
-  const gasUsed = successTx ? new BigNumber(txState.receipt.gasUsed) : zero
-  const effectiveGasPrice = successTx ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
-  const totalCost =
-    !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
-      : zero
 
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
@@ -85,10 +77,8 @@ export interface CancelSlFormLayoutProps {
   toggleForms: () => void
   gasEstimation: ReactNode
   accountIsController: boolean
-  txProgressing: boolean
-  txSuccess: boolean
   etherscan: string
-  txState?: TxState<AutomationBotRemoveTriggerData>
+  txState?: TxStatus
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
@@ -97,8 +87,8 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
-        txProgressing={props.txProgressing}
-        txSuccess={props.txSuccess}
+        txProgressing={!!props.txState && props.txState!== TxStatus.Success && props.txState!== TxStatus.Failure }
+        txSuccess={props.txState === TxStatus.Success }
         translations={{
           editing: {
             header: t('protection.cancel-downside-protection'),
@@ -132,7 +122,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           },
         }}
       />
-      {!props.txProgressing && !props.txSuccess && (
+      {!(props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure) && props.txState!==TxStatus.Success && (
         <Box my={3}>
           <CancelDownsideProtectionInformation
             gasEstimation={props.gasEstimation}
@@ -140,8 +130,8 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           />
         </Box>
       )}
-      {props.txProgressing && <OpenVaultAnimation />}
-      {!props.txProgressing && !props.txSuccess && (
+      {props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure && <OpenVaultAnimation />}
+      {!(props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure) && props.txState!==TxStatus.Success && (
         <MessageCard
           messages={[
             <>
@@ -152,14 +142,14 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           withBullet={false}
         />
       )}
-      {props.txSuccess && (
+      {props.txState===TxStatus.Success && (
         <Box>
           <Flex sx={{ justifyContent: 'center', mb: 4 }}>
             <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
           </Flex>
           <Divider variant="styles.hrVaultFormBottom" mb={4} />
           <CancelCompleteInformation
-            txState={props.txState}
+            totalCost={new BigNumber(200)}
             tokenPrice={props.tokenPrice}
             liquidationPrice={props.liquidationPrice}
           />
@@ -167,19 +157,19 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
       )}
       <Box>
         <TxStatusSection
-          txStatus={props.txState?.status}
+          txStatus={props.txState}
           txHash={(props.txState as any)?.txHash}
           etherscan={props.etherscan}
         />
       </Box>
-      {props.accountIsController && !props.txProgressing && (
+      {props.accountIsController && props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure && (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
           toggleKey={
-            props.txSuccess ? 'protection.set-stop-loss-again' : 'protection.navigate-adjust'
+            props.txState as TxStatus===TxStatus.Success ? 'protection.set-stop-loss-again' : 'protection.navigate-adjust'
           }
-          txSuccess={props.txSuccess}
+          txSuccess={props.txState as TxStatus===TxStatus.Success}
           type="cancel"
         />
       )}

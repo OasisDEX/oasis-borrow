@@ -223,8 +223,10 @@ function createUIChangesSubject(): UIChanges {
     })
   }
 
-  function lastPayload(subject: string): any {
-    return latest[subject]
+  function lastPayload<T>(subject: string): any {
+    const val = latest[subject];
+    console.log("lastPayload", subject, val)
+    return val;
   }
 
   function clear(subject: string): any {

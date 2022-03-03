@@ -1,4 +1,5 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import {
   AutomationBotRemoveTriggerData,
@@ -8,7 +9,8 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
-import React, { useMemo, useState } from 'react'
+import { zero } from 'helpers/zero'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -24,6 +26,8 @@ import {
   extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
+import { AddFormChange, ADD_FORM_CHANGE, formChangeReducer } from '../common/UITypes/AddFormChange'
+import { RemoveFormChange, removeFormReducer, REMOVE_FORM_CHANGE } from '../common/UITypes/RemoveFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
@@ -68,7 +72,21 @@ export function CancelSlFormControl({
   const [collateralActive] = useState(false)
   const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
   const { triggerId, isStopLossEnabled, stopLossLevel } = extractStopLossData(triggerData)
-  const { addGasEstimation$ } = useAppContext()
+  const { addGasEstimation$, uiChanges } = useAppContext()
+  const initial = uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE);
+  const [lastUIState, lastUIStateSetter] = useState<RemoveFormChange | undefined>(initial)
+  
+  useEffect(() => {
+    const uiChanges$ = uiChanges.subscribe<RemoveFormChange>(REMOVE_FORM_CHANGE)
+
+    const subscription = uiChanges$.subscribe((value) => {
+      console.log("New RemoveForm change", value)
+      lastUIStateSetter(value)
+    })
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
 
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
@@ -84,20 +102,19 @@ export function CancelSlFormControl({
     [collateralActive, selectedSLValue, triggerId],
   )
 
-  const gasEstimationData$ = useMemo(
-    () =>
-      addGasEstimation$({ gasEstimationStatus: GasEstimationStatus.unset }, ({ estimateGas }) =>
-        estimateGas(removeAutomationBotTrigger, txData),
-      ),
-    [txData],
-  )
+  const gasEstimationData$ = useMemo(() => {
+    return addGasEstimation$(
+      { gasEstimationStatus: GasEstimationStatus.unset },
+      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, txData),
+    )
+  }, [txData])
 
   const gasEstimationData = useObservable(gasEstimationData$)
+  const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
 
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
-  const [txStatus, txStatusSetter] = useState<TxState<AutomationBotRemoveTriggerData> | undefined>()
 
   determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
@@ -108,7 +125,31 @@ export function CancelSlFormControl({
         return
       }
       const txSendSuccessHandler = (transactionState: TxState<AutomationBotRemoveTriggerData>) =>
-        transactionStateHandler(txStatusSetter, transactionState, finishLoader, waitForTx)
+        transactionStateHandler((transactionState)=>{
+
+          const successTx = transactionState.status === TxStatus.Success || transactionState.status === TxStatus.Failure;
+          
+          const gasUsed = successTx ? new BigNumber((transactionState as any).receipt.gasUsed) : zero
+          const effectiveGasPrice = successTx ? new BigNumber((transactionState as any).receipt.effectiveGasPrice) : zero
+          const totalCost =
+            !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+              ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
+              : zero
+              
+          uiChanges.publish(
+            REMOVE_FORM_CHANGE,
+            removeFormReducer(lastUIState || ({} as RemoveFormChange), {
+              type: 'tx-details',
+              txDetails: {
+                txHash: (transactionState as any).txHash,
+                txStatus: transactionState.status,
+                totalCost
+              },
+            }),
+          )
+        }, transactionState, finishLoader, waitForTx)
+        
+      
 
       const sendTxErrorHandler = () => {
         finishLoader(false)
@@ -126,20 +167,16 @@ export function CancelSlFormControl({
 
   const { token } = vault
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
-  const txSuccess = txStatus?.status === TxStatus.Success
-  const txProgressing = !!txStatus && progressStatuses.includes(txStatus?.status)
   const etherscan = ctx.etherscan.url
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
-    txState: txStatus,
-    gasEstimation: getEstimatedGasFeeText(gasEstimationData),
+    txState: lastUIState?.txDetails?.txStatus,
+    gasEstimation: gasEstimation,
     accountIsController,
     toggleForms,
-    txProgressing,
-    txSuccess,
     etherscan,
   }
 

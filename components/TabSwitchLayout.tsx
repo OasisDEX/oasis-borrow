@@ -1,15 +1,10 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
+import { TAB_CHANGE_SUBJECT, TabChange, VaultViewMode } from 'features/automation/common/UITypes/TabChange'
 import React, { useEffect, useState } from 'react'
 import { Flex, Heading } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-enum VaultViewMode {
-  History,
-  Protection,
-  Overview,
-}
 //TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
 export function TabSwitchLayout({
   defaultMode,
