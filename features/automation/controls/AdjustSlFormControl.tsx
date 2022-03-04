@@ -27,7 +27,6 @@ import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
 import {
-  determineProperDefaults,
   extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
@@ -160,8 +159,6 @@ export function AdjustSlFormControl({
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
   const liqRatio = ilkData.liquidationRatio
-
-  determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,

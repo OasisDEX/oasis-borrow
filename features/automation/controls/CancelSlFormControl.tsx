@@ -20,13 +20,10 @@ import { GasEstimationStatus } from '../../../helpers/form'
 import { useObservable } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { progressStatuses } from '../common/consts/txStatues'
 import {
-  determineProperDefaults,
   extractStopLossData,
   prepareTriggerData,
 } from '../common/StopLossTriggerDataExtractor'
-import { AddFormChange, ADD_FORM_CHANGE, formChangeReducer } from '../common/UITypes/AddFormChange'
 import { RemoveFormChange, removeFormReducer, REMOVE_FORM_CHANGE } from '../common/UITypes/RemoveFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
@@ -115,8 +112,6 @@ export function CancelSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
 
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
-
-  determineProperDefaults(setSelectedSLValue, startingSlRatio)
 
   const removeTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: 'cancel-stop-loss',

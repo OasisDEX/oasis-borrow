@@ -225,7 +225,6 @@ export function AdjustSlFormLayout({
   ethPrice,
   vault,
   ilkData,
-  isEditing,
   gasEstimation,
   etherscan,
   toggleForms,
@@ -233,6 +232,10 @@ export function AdjustSlFormLayout({
   firstStopLossSetup,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
+
+  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue);
+  console.log(`${stopLossLevel} ${selectedSLValue}`)
+  console.log(`${accountIsController} ${txProgressing}`)
 
   return (
     <Grid columns={[1]}>

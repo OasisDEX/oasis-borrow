@@ -66,12 +66,3 @@ export function prepareTriggerData(
     triggerData: buildTriggerData(vaultData.id, triggerTypeVaue, stopLossLevel),
   }
 }
-
-export function determineProperDefaults(
-  setSelectedSLValue: React.Dispatch<React.SetStateAction<BigNumber>>,
-  startingSlRatio: BigNumber,
-) {
-  useEffect(() => {
-    setSelectedSLValue(startingSlRatio.multipliedBy(100))
-  }, [])
-}
