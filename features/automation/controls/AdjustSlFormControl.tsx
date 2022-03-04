@@ -100,9 +100,9 @@ export function AdjustSlFormControl({
 
   const [initialSliderPosition, clearInitialSliderPosition] = useState(true)
 
-  const [testUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
-  const currentUIState = { ...defaultUIState, ...testUIState }
+  const currentUIState = { ...defaultUIState, ...uiState }
 
   const [selectedSLValue, setSelectedSLValue] = useState(currentUIState.selectedSLValue)
 
@@ -156,7 +156,7 @@ export function AdjustSlFormControl({
     onclickHandler: (optionName: string) => {
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(testUIState || ({} as AddFormChange), {
+        formChangeReducer(uiState || ({} as AddFormChange), {
           type: 'close-type',
           toCollateral: optionName === validOptions[0],
         }),
@@ -201,7 +201,7 @@ export function AdjustSlFormControl({
 
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(testUIState || ({} as AddFormChange), {
+        formChangeReducer(uiState || ({} as AddFormChange), {
           type: 'stop-loss',
           stopLoss: slCollRatio,
         }),
@@ -237,7 +237,7 @@ export function AdjustSlFormControl({
 
             uiChanges.publish(
               ADD_FORM_CHANGE,
-              formChangeReducer(testUIState || ({} as AddFormChange), {
+              formChangeReducer(uiState || ({} as AddFormChange), {
                 type: 'tx-details',
                 txDetails: {
                   txHash: (txState as any).txHash,
