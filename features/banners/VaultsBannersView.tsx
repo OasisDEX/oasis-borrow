@@ -21,6 +21,7 @@ type VaultBannerProps = {
   status?: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
+  withClose?: boolean
 }
 
 function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
@@ -45,12 +46,14 @@ export function VaultBanner({
   header,
   subheader,
   color,
+  withClose = true,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
+
   return (
     <>
       {isVisible && (
-        <Banner close={() => setIsVisible(false)}>
+        <Banner close={() => setIsVisible(false)} withClose={withClose}>
           <Flex sx={{ py: 2, pr: 5 }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
@@ -369,9 +372,9 @@ export function VaultNextPriceUpdateCounter({
 
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
-  const state = useObservable(vaultBanners$(id))
+  const [vaultBanners] = useObservable(vaultBanners$(id))
 
-  if (!state) return null
+  if (!vaultBanners) return null
 
   const {
     token,
@@ -381,7 +384,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     unlockedCollateral,
     banner,
     isVaultController,
-  } = state
+  } = vaultBanners
 
   switch (banner) {
     case 'liquidated':

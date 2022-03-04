@@ -1,12 +1,12 @@
 {
   "name": "oasis-borrow",
-  "version": "3.0.2",
+  "version": "3.4.1",
   "license": "Apache-2.0",
   "engines": {
     "node": "16.x"
   },
   "scripts": {
-    "start": "ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
+    "start": "CHOKIDAR_USEPOLLING=true ts-node --project ./tsconfig.dev.json -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts --max-old-space-size=3049",
     "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
@@ -52,6 +52,7 @@
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
     "@prisma/client": "^3.9.1",
+    "@sentry/nextjs": "^6.17.7",
     "@storybook/storybook-deployer": "^2.8.10",
     "@theme-ui/style-guide": "^0.3.5",
     "@types/crypto-js": "^4.0.2",

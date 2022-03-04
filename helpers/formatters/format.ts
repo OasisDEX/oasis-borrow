@@ -114,6 +114,13 @@ export function formatPercent(
   return `${sign}${number.toFixed(precision, roundMode)}%`
 }
 
+export function formatDecimalAsPercent(number: BigNumber) {
+  return formatPercent(number.times(100), {
+    precision: 2,
+    roundMode: BigNumber.ROUND_DOWN,
+  })
+}
+
 export function formatDateTime(time: Date, showMs?: boolean): string {
   return moment(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }

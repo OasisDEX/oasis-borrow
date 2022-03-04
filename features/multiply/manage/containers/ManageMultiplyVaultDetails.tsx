@@ -1,12 +1,10 @@
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
-  VaultDetailsCardNetValue,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -17,6 +15,11 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
+import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
@@ -79,7 +82,8 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice },
+    vault: { token, liquidationPrice, id },
+    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -100,17 +104,32 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const automationEnabled = useFeatureToggle('Automation')
 
   return (
     <Box>
+      {automationEnabled && (
+        <>
+          <GetProtectionBannerControl vaultId={id} />
+          <StopLossBannerControl
+            vaultId={id}
+            liquidationPrice={liquidationPrice}
+            liquidationRatio={liquidationRatio}
+            afterLiquidationPrice={afterLiquidationPrice}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      )}
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            vaultId: id,
           }}
         />
 
@@ -123,7 +142,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           afterPillColors={afterPillColors}
         />
 
-        <VaultDetailsCardCurrentPrice {...props} />
+        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
         <VaultDetailsCardNetValue
           {...{

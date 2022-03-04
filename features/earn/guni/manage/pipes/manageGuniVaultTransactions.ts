@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs'
 
-import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions'
+import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from '../../../../../components/AppContext'
 import { zero } from '../../../../../helpers/zero'

@@ -5,12 +5,14 @@ import { Card, Flex, Text } from 'theme-ui'
 export function CloseVaultCard({
   text,
   icon,
+  optionName,
   onClick,
   isActive,
 }: {
   text: string
   icon: string
-  onClick: () => void
+  optionName: string
+  onClick: (optionName: string) => void
   isActive: boolean
 }) {
   return (
@@ -29,7 +31,7 @@ export function CloseVaultCard({
             }
           : {}),
       }}
-      onClick={onClick}
+      onClick={() => onClick(optionName)}
     >
       <Flex sx={{ alignItems: 'center', px: 2, lineHeight: 2, justifyContent: 'center' }}>
         <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: 2 }} />

@@ -3,11 +3,12 @@ export const FT_LOCAL_STORAGE_KEY = 'features'
 
 type ConfiguredFeatures = Record<Features, boolean>
 
-type Features = 'TestFeature' | 'AnotherTestFeature' | 'EarnProduct'
+type Features = 'TestFeature' | 'AnotherTestFeature' | 'EarnProduct' | 'Automation'
 const configuredFeatures: Record<Features, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
   EarnProduct: false,
+  Automation: false,
   // your feature here....
 }
 
