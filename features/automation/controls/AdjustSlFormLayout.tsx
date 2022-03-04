@@ -203,7 +203,7 @@ export interface AdjustSlFormLayoutProps {
   ethPrice: BigNumber
   vault: Vault
   ilkData: IlkData
-  isEditing: boolean
+  initialSliderPosition: boolean
   etherscan: string
   toggleForms: () => void
   selectedSLValue: BigNumber
@@ -226,6 +226,7 @@ export function AdjustSlFormLayout({
   vault,
   ilkData,
   gasEstimation,
+  initialSliderPosition,
   etherscan,
   toggleForms,
   selectedSLValue,
@@ -233,7 +234,7 @@ export function AdjustSlFormLayout({
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
-  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue)
+  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue) && !initialSliderPosition
 
   return (
     <Grid columns={[1]}>

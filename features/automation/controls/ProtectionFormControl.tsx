@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import React from 'react'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
@@ -38,10 +39,7 @@ export function ProtectionFormControl({
   const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(context$)
 
-  const initial: AutomationFromKind =
-    uiChanges.lastPayload<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)?.currentMode ||
-    AutomationFromKind.ADJUST
-  const [currentForm, setForm] = useState<AutomationFromKind>(initial)
+  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
@@ -54,7 +52,22 @@ export function ProtectionFormControl({
       >
         {([context]) => (
           <VaultFormContainer toggleTitle="Edit Vault">
-            {currentForm === AutomationFromKind.ADJUST ? (
+            {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
+              <CancelSlFormControl
+                vault={vault}
+                ilkData={ilkData}
+                triggerData={automationTriggersData}
+                tx={txHelpersWithError.value}
+                ctx={context}
+                accountIsController={accountIsController}
+                toggleForms={() => {
+                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT, {
+                    currentMode: AutomationFromKind.ADJUST,
+                  })
+                }}
+                collateralPrice={collateralPrices}
+              />
+            ) : (
               <AdjustSlFormControl
                 vault={vault}
                 collateralPrice={collateralPrices}
@@ -64,27 +77,10 @@ export function ProtectionFormControl({
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={() => {
-                  setForm(AutomationFromKind.CANCEL)
                   uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT, {
                     currentMode: AutomationFromKind.CANCEL,
                   })
                 }}
-              />
-            ) : (
-              <CancelSlFormControl
-                vault={vault}
-                ilkData={ilkData}
-                triggerData={automationTriggersData}
-                tx={txHelpersWithError.value}
-                ctx={context}
-                accountIsController={accountIsController}
-                toggleForms={() => {
-                  setForm(AutomationFromKind.ADJUST)
-                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    currentMode: AutomationFromKind.ADJUST,
-                  })
-                }}
-                collateralPrice={collateralPrices}
               />
             )}
           </VaultFormContainer>

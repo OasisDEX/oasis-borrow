@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import React, { useEffect, useState } from 'react'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import React from 'react'
 
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
@@ -51,22 +51,7 @@ export function ProtectionDetailsControl({
   collateralPrices,
   vault,
 }: ProtectionDetailsControlProps) {
-  const { uiChanges } = useAppContext()
-
-  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(
-    uiChanges.lastPayload(ADD_FORM_CHANGE),
-  )
-
-  useEffect(() => {
-    const uiChanges$ = uiChanges.subscribe<AddFormChange>(ADD_FORM_CHANGE)
-
-    const subscription = uiChanges$.subscribe((value) => {
-      lastUIStateSetter(value)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const [lastUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
   return renderLayout(
     extractStopLossData(automationTriggersData),

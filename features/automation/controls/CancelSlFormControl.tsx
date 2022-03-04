@@ -9,8 +9,9 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -65,20 +66,7 @@ export function CancelSlFormControl({
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
-  const initial = uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE)
-  const [lastUIState, lastUIStateSetter] = useState<RemoveFormChange | undefined>(initial)
-
-  useEffect(() => {
-    const uiChanges$ = uiChanges.subscribe<RemoveFormChange>(REMOVE_FORM_CHANGE)
-
-    const subscription = uiChanges$.subscribe((value) => {
-      console.log('New RemoveForm change', value)
-      lastUIStateSetter(value)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const [lastUIState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
 
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
@@ -94,7 +82,6 @@ export function CancelSlFormControl({
   }, [txData])
 
   const gasEstimationData = useObservable(gasEstimationData$) as HasGasEstimation
-  console.log('gasEstimation', gasEstimationData)
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
 

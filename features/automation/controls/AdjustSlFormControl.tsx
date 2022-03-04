@@ -98,6 +98,8 @@ export function AdjustSlFormControl({
     txDetails: undefined,
   }
 
+  const [initialSliderPosition, clearInitialSliderPosition] = useState(true)
+
   const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)
     ? { ...defaultUIState, ...uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) }
     : defaultUIState
@@ -195,6 +197,7 @@ export function AdjustSlFormControl({
     minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
+      clearInitialSliderPosition(false)
       /*TO DO: this is duplicated and can be extracted*/
       const currentCollRatio = vault.lockedCollateral
         .multipliedBy(currentCollateralData!.currentPrice)
@@ -309,7 +312,7 @@ export function AdjustSlFormControl({
     ethPrice,
     vault,
     ilkData,
-    isEditing,
+    initialSliderPosition,
     etherscan,
     selectedSLValue,
     toggleForms,
