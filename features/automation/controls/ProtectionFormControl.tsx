@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
@@ -9,7 +9,11 @@ import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandle
 import { useObservableWithError } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from '../../form/commonValidators'
-import { AutomationFromKind, ProtectionModeChange, PROTECTION_MODE_CHANGE_SUBJECT } from '../common/UITypes/ProtectionFormModeChange'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+  ProtectionModeChange,
+} from '../common/UITypes/ProtectionFormModeChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormControl } from './AdjustSlFormControl'
 import { CancelSlFormControl } from './CancelSlFormControl'
@@ -34,8 +38,10 @@ export function ProtectionFormControl({
   const txHelpersWithError = useObservableWithError(txHelpers$)
   const contextWithError = useObservableWithError(context$)
 
-  const initial :  AutomationFromKind = (uiChanges.lastPayload<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)?.currentMode) || AutomationFromKind.ADJUST;
-  const [currentForm, setForm] = useState<AutomationFromKind>(initial);
+  const initial: AutomationFromKind =
+    uiChanges.lastPayload<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)?.currentMode ||
+    AutomationFromKind.ADJUST
+  const [currentForm, setForm] = useState<AutomationFromKind>(initial)
 
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
@@ -57,9 +63,11 @@ export function ProtectionFormControl({
                 tx={txHelpersWithError.value}
                 ctx={context}
                 accountIsController={accountIsController}
-                toggleForms={()=>{
-                  setForm(AutomationFromKind.CANCEL);
-                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT,{currentMode : AutomationFromKind.CANCEL} );
+                toggleForms={() => {
+                  setForm(AutomationFromKind.CANCEL)
+                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT, {
+                    currentMode: AutomationFromKind.CANCEL,
+                  })
                 }}
               />
             ) : (
@@ -70,9 +78,11 @@ export function ProtectionFormControl({
                 tx={txHelpersWithError.value}
                 ctx={context}
                 accountIsController={accountIsController}
-                toggleForms={()=>{
+                toggleForms={() => {
                   setForm(AutomationFromKind.ADJUST)
-                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT,{currentMode : AutomationFromKind.ADJUST} );
+                  uiChanges.publish<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT, {
+                    currentMode: AutomationFromKind.ADJUST,
+                  })
                 }}
                 collateralPrice={collateralPrices}
               />

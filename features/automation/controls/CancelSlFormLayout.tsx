@@ -38,7 +38,10 @@ function CancelDownsideProtectionInformation({
         label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimationText} />
+      <VaultChangesInformationItem
+        label={`${t('protection.max-cost')}`}
+        value={gasEstimationText}
+      />
     </VaultChangesInformationContainer>
   )
 }
@@ -46,13 +49,13 @@ function CancelDownsideProtectionInformation({
 interface CancelCompleteInformationProps {
   liquidationPrice: BigNumber
   tokenPrice: BigNumber
-  txState?: TxStatus,
+  txState?: TxStatus
   totalCost: BigNumber
 }
 
 function CancelCompleteInformation({
   liquidationPrice,
-  totalCost
+  totalCost,
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
 
@@ -77,21 +80,22 @@ export interface CancelSlFormLayoutProps {
   toggleForms: () => void
   gasEstimation: HasGasEstimation
   accountIsController: boolean
-  etherscan: string,
+  etherscan: string
   cancelCost?: BigNumber
   txState?: TxStatus
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
-  const isTxProgressing = !!props.txState && props.txState!== TxStatus.Success && props.txState!== TxStatus.Failure ;
-  const txIsNotStarted = !props.txState ;
+  const isTxProgressing =
+    !!props.txState && props.txState !== TxStatus.Success && props.txState !== TxStatus.Failure
+  const txIsNotStarted = !props.txState
   const gasEstimationText = getEstimatedGasFeeText(props.gasEstimation)
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
         txProgressing={isTxProgressing}
-        txSuccess={props.txState === TxStatus.Success }
+        txSuccess={props.txState === TxStatus.Success}
         translations={{
           editing: {
             header: t('protection.cancel-downside-protection'),
@@ -145,7 +149,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           withBullet={false}
         />
       )}
-      {props.txState===TxStatus.Success && (
+      {props.txState === TxStatus.Success && (
         <Box>
           <Flex sx={{ justifyContent: 'center', mb: 4 }}>
             <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
@@ -165,17 +169,19 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           etherscan={props.etherscan}
         />
       </Box>
-      {props.accountIsController &&  (
+      {props.accountIsController && (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
-          optionalCleanup = {()=>{
+          optionalCleanup={() => {
             props.toggleForms()
           }}
           toggleKey={
-            props.txState as TxStatus===TxStatus.Success ? 'protection.set-stop-loss-again' : 'protection.navigate-adjust'
+            (props.txState as TxStatus) === TxStatus.Success
+              ? 'protection.set-stop-loss-again'
+              : 'protection.navigate-adjust'
           }
-          txSuccess={props.txState as TxStatus===TxStatus.Success}
+          txSuccess={(props.txState as TxStatus) === TxStatus.Success}
           type="cancel"
         />
       )}

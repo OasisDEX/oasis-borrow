@@ -233,7 +233,7 @@ export function AdjustSlFormLayout({
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
-  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue);
+  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue)
   console.log(`${stopLossLevel} ${selectedSLValue}`)
   console.log(`${accountIsController} ${txProgressing}`)
 

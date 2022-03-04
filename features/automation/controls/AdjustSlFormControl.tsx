@@ -26,10 +26,7 @@ import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesIn
 import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
-import {
-  extractStopLossData,
-  prepareTriggerData,
-} from '../common/StopLossTriggerDataExtractor'
+import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange, formChangeReducer } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
@@ -95,14 +92,15 @@ export function AdjustSlFormControl({
 
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
-
   const defaultUIState: AddFormChange = {
     collateralActive: isToCollateral,
     selectedSLValue: startingSlRatio.multipliedBy(100),
     txDetails: undefined,
   }
 
-  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) ? {...defaultUIState,...uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)} : defaultUIState
+  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)
+    ? { ...defaultUIState, ...uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) }
+    : defaultUIState
 
   const [selectedSLValue, setSelectedSLValue] = useState(initial.selectedSLValue)
 
@@ -119,7 +117,7 @@ export function AdjustSlFormControl({
     }
   }, [])
 
-  const currentUIState = {...initial,...lastUIState};
+  const currentUIState = { ...initial, ...lastUIState }
 
   const replacedTriggerId = triggerId || 0
 
@@ -139,7 +137,7 @@ export function AdjustSlFormControl({
 
   const isEditing =
     (!isStopLossEnabled && !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
-    isStopLossEnabled && !selectedSLValue.multipliedBy(100).eq(stopLossLevel) ||
+    (isStopLossEnabled && !selectedSLValue.multipliedBy(100).eq(stopLossLevel)) ||
     collateralActive !== isToCollateral
 
   const currentCollRatio = vault.lockedCollateral

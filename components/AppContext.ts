@@ -224,9 +224,9 @@ function createUIChangesSubject(): UIChanges {
   }
 
   function lastPayload<T>(subject: string): any {
-    const val = latest[subject];
-    console.log("lastPayload", subject, val)
-    return val;
+    const val: T = latest[subject]
+    console.log('lastPayload', subject, val)
+    return val
   }
 
   function clear(subject: string): any {

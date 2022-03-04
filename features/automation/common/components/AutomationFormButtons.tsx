@@ -28,7 +28,7 @@ export function AutomationFormButtons({
   toggleKey,
   txSuccess,
   type,
-  optionalCleanup
+  optionalCleanup,
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -37,8 +37,7 @@ export function AutomationFormButtons({
     uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
     uiChanges.clear(ADD_FORM_CHANGE)
     uiChanges.clear(REMOVE_FORM_CHANGE)
-    if(optionalCleanup)
-      optionalCleanup();
+    if (optionalCleanup) optionalCleanup()
   }
 
   return (

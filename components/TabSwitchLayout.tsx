@@ -1,5 +1,9 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import { TAB_CHANGE_SUBJECT, TabChange, VaultViewMode } from 'features/automation/common/UITypes/TabChange'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+  VaultViewMode,
+} from 'features/automation/common/UITypes/TabChange'
 import React, { useEffect, useState } from 'react'
 import { Flex, Heading } from 'theme-ui'
 

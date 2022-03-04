@@ -5,13 +5,13 @@ export const REMOVE_FORM_CHANGE = 'REMOVE_FORM_CHANGE'
 
 /* End of section */
 export type Action = {
-      type: 'tx-details'
-      txDetails: {
-        txStatus?: TxStatus
-        txHash?: string,
-        totalCost?: BigNumber
-      }
-    }
+  type: 'tx-details'
+  txDetails: {
+    txStatus?: TxStatus
+    txHash?: string
+    totalCost?: BigNumber
+  }
+}
 
 export function removeFormReducer(state: RemoveFormChange, action: Action): RemoveFormChange {
   switch (action.type) {
@@ -25,7 +25,7 @@ export function removeFormReducer(state: RemoveFormChange, action: Action): Remo
 export interface RemoveFormChange {
   txDetails?: {
     txStatus?: TxStatus
-    txHash?: string,
+    txHash?: string
     totalCost?: BigNumber
   }
 }

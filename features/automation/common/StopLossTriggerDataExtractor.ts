@@ -3,7 +3,6 @@ import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { last } from 'lodash'
-import { useEffect } from 'react'
 
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggerType } from './enums/TriggersTypes'
