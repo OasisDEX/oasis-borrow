@@ -10,11 +10,13 @@ import {
 } from '../../../../components/dumb/RetryableLoadingButton'
 import { VaultViewMode } from '../../../../components/TabSwitchLayout'
 import { ADD_FORM_CHANGE } from '../UITypes/AddFormChange'
+import { REMOVE_FORM_CHANGE } from '../UITypes/RemoveFormChange'
 import { TAB_CHANGE_SUBJECT } from '../UITypes/TabChange'
 
 interface AutomationFormButtonsProps {
   triggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
+  optionalCleanup?: () => void
   toggleKey: string
   txSuccess: boolean
   type?: 'adjust' | 'cancel'
@@ -26,6 +28,7 @@ export function AutomationFormButtons({
   toggleKey,
   txSuccess,
   type,
+  optionalCleanup
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -33,6 +36,9 @@ export function AutomationFormButtons({
   function backToVaultOverview() {
     uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
     uiChanges.clear(ADD_FORM_CHANGE)
+    uiChanges.clear(REMOVE_FORM_CHANGE)
+    if(optionalCleanup)
+      optionalCleanup();
   }
 
   return (

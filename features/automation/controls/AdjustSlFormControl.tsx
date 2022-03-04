@@ -243,7 +243,6 @@ export function AdjustSlFormControl({
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
                 : zero
-            console.log('Inside transactionStateHandler', txState)
 
             uiChanges.publish(
               ADD_FORM_CHANGE,
@@ -256,7 +255,6 @@ export function AdjustSlFormControl({
                 },
               }),
             )
-            console.log('After Inside transactionStateHandler')
           },
           transactionState,
           finishLoader,
@@ -271,9 +269,6 @@ export function AdjustSlFormControl({
       const waitForTx = tx
         .sendWithGasEstimation(addAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-    },
-    onConfirm: () => {
-      /* TODO: Remove it */
     },
     isStopLossEnabled,
     isLoading: false,

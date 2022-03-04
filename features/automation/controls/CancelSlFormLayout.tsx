@@ -1,9 +1,8 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
-import { amountFromWei } from '@oasisdex/utils'
+import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { AutomationBotRemoveTriggerData } from 'blockchain/calls/automationBot'
 import { MessageCard } from 'components/MessageCard'
+import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -13,6 +12,7 @@ import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableL
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
 import { AppLink } from '../../../components/Links'
 import {
+  getEstimatedGasFeeText,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
@@ -22,12 +22,12 @@ import { AutomationFormButtons } from '../common/components/AutomationFormButton
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
 interface CancelDownsideProtectionInformationProps {
-  gasEstimation: ReactNode
+  gasEstimationText: ReactNode
   liquidationPrice: BigNumber
 }
 
 function CancelDownsideProtectionInformation({
-  gasEstimation,
+  gasEstimationText,
   liquidationPrice,
 }: CancelDownsideProtectionInformationProps) {
   const { t } = useTranslation()
@@ -38,7 +38,7 @@ function CancelDownsideProtectionInformation({
         label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimationText} />
     </VaultChangesInformationContainer>
   )
 }
@@ -75,19 +75,22 @@ export interface CancelSlFormLayoutProps {
   tokenPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
-  gasEstimation: ReactNode
+  gasEstimation: HasGasEstimation
   accountIsController: boolean
-  etherscan: string
+  etherscan: string,
+  cancelCost?: BigNumber
   txState?: TxStatus
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
-
+  const isTxProgressing = !!props.txState && props.txState!== TxStatus.Success && props.txState!== TxStatus.Failure ;
+  const txIsNotStarted = !props.txState ;
+  const gasEstimationText = getEstimatedGasFeeText(props.gasEstimation)
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
-        txProgressing={!!props.txState && props.txState!== TxStatus.Success && props.txState!== TxStatus.Failure }
+        txProgressing={isTxProgressing}
         txSuccess={props.txState === TxStatus.Success }
         translations={{
           editing: {
@@ -122,16 +125,16 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           },
         }}
       />
-      {!(props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure) && props.txState!==TxStatus.Success && (
+      {txIsNotStarted && (
         <Box my={3}>
           <CancelDownsideProtectionInformation
-            gasEstimation={props.gasEstimation}
+            gasEstimationText={gasEstimationText}
             liquidationPrice={props.liquidationPrice}
           />
         </Box>
       )}
-      {props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure && <OpenVaultAnimation />}
-      {!(props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure) && props.txState!==TxStatus.Success && (
+      {isTxProgressing && <OpenVaultAnimation />}
+      {txIsNotStarted && (
         <MessageCard
           messages={[
             <>
@@ -149,7 +152,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           </Flex>
           <Divider variant="styles.hrVaultFormBottom" mb={4} />
           <CancelCompleteInformation
-            totalCost={new BigNumber(200)}
+            totalCost={props.cancelCost!}
             tokenPrice={props.tokenPrice}
             liquidationPrice={props.liquidationPrice}
           />
@@ -162,10 +165,13 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           etherscan={props.etherscan}
         />
       </Box>
-      {props.accountIsController && props.txState!==TxStatus.Success && props.txState!==TxStatus.Failure && (
+      {props.accountIsController &&  (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
+          optionalCleanup = {()=>{
+            props.toggleForms()
+          }}
           toggleKey={
             props.txState as TxStatus===TxStatus.Success ? 'protection.set-stop-loss-again' : 'protection.navigate-adjust'
           }

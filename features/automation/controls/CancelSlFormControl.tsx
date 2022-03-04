@@ -15,8 +15,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesInformation'
-import { GasEstimationStatus } from '../../../helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 import { useObservable } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
@@ -30,12 +29,10 @@ import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayou
 
 function prepareRemoveTriggerData(
   vaultData: Vault,
-  isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber,
   triggerId: number,
   removeAllowance: boolean,
 ): AutomationBotRemoveTriggerData {
-  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
+  const baseTriggerData = prepareTriggerData(vaultData, false, new BigNumber(0))
 
   return {
     ...baseTriggerData,
@@ -66,9 +63,7 @@ export function CancelSlFormControl({
   collateralPrice,
   tx,
 }: CancelSlFormControlProps) {
-  const [collateralActive] = useState(false)
-  const [selectedSLValue, setSelectedSLValue] = useState(new BigNumber(0))
-  const { triggerId, isStopLossEnabled, stopLossLevel } = extractStopLossData(triggerData)
+  const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
   const initial = uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE);
   const [lastUIState, lastUIStateSetter] = useState<RemoveFormChange | undefined>(initial)
@@ -91,12 +86,10 @@ export function CancelSlFormControl({
     () =>
       prepareRemoveTriggerData(
         vault,
-        collateralActive,
-        selectedSLValue,
         triggerId,
         removeAllowance,
       ),
-    [collateralActive, selectedSLValue, triggerId],
+    [triggerId],
   )
 
   const gasEstimationData$ = useMemo(() => {
@@ -106,12 +99,10 @@ export function CancelSlFormControl({
     )
   }, [txData])
 
-  const gasEstimationData = useObservable(gasEstimationData$)
-  const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const gasEstimationData = useObservable(gasEstimationData$) as HasGasEstimation
+  console.log("gasEstimation",gasEstimationData);
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
-
-  const startingSlRatio = isStopLossEnabled ? stopLossLevel : ilkData.liquidationRatio
 
   const removeTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: 'cancel-stop-loss',
@@ -169,8 +160,9 @@ export function CancelSlFormControl({
     tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: lastUIState?.txDetails?.txStatus,
-    gasEstimation: gasEstimation,
+    gasEstimation: gasEstimationData,
     accountIsController,
+    cancelCost:uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE)?.txDetails?.totalCost,
     toggleForms,
     etherscan,
   }
