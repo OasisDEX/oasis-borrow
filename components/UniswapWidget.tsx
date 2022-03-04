@@ -1,8 +1,25 @@
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
-
+import { theme } from 'theme'
 // temporarily use detect provider
 import detectEthereumProvider from '@metamask/detect-provider'
+
+const { colors, radii } = theme
+
+const widgetTheme = {
+  accent: colors.primary,
+  primary: colors.primary,
+  secondary: colors.text.subtitle,
+  container: colors.background,
+  active: colors.primary,
+  interactive: colors.surface,
+  module: '#F6F6F6',
+  dialog: colors.background,
+  success: colors.success,
+  error: colors.error,
+  tokenColorExtraction: false,
+  borderRadius: radii.mediumLarge
+}
 
 export function UniswapWidget({ }: { provider: any}) {
   // @ts-ignore
@@ -19,5 +36,5 @@ export function UniswapWidget({ }: { provider: any}) {
   }, [])
 
   // @ts-ignore
-  return <div>Widget:{provider ? <SwapWidget provider={provider} /> : <div>Detecting provider</div>}</div>
+  return provider ? <SwapWidget provider={provider} theme={widgetTheme} /> : <div>Detecting provider</div>
 }
