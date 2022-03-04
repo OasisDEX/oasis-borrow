@@ -16,8 +16,9 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {  useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -75,7 +76,6 @@ export function AdjustSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
 
-  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
   const [firstStopLossSetup] = useState(!isStopLossEnabled)
 
   const token = vault.token
@@ -100,32 +100,23 @@ export function AdjustSlFormControl({
 
   const [initialSliderPosition, clearInitialSliderPosition] = useState(true)
 
-  const initial = uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE)
-    ? { ...defaultUIState, ...uiChanges.lastPayload<AddFormChange>(ADD_FORM_CHANGE) }
-    : defaultUIState
+  const [testUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
-  const [selectedSLValue, setSelectedSLValue] = useState(initial.selectedSLValue)
+  const currentUIState = { ...defaultUIState, ...testUIState }
 
-  const [collateralActive, setCloseToCollateral] = useState(initial.collateralActive)
-
-  useEffect(() => {
-    const uiChanges$ = uiChanges.subscribe<AddFormChange>(ADD_FORM_CHANGE)
-
-    const subscription = uiChanges$.subscribe((value) => {
-      lastUIStateSetter(value)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
-
-  const currentUIState = { ...initial, ...lastUIState }
+  const [selectedSLValue, setSelectedSLValue] = useState(currentUIState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
-    () => prepareAddTriggerData(vault, collateralActive, selectedSLValue, replacedTriggerId),
-    [collateralActive, selectedSLValue, replacedTriggerId],
+    () =>
+      prepareAddTriggerData(
+        vault,
+        currentUIState.collateralActive,
+        selectedSLValue,
+        replacedTriggerId,
+      ),
+    [currentUIState.collateralActive, selectedSLValue, replacedTriggerId],
   )
   /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(() => {
@@ -140,14 +131,14 @@ export function AdjustSlFormControl({
   const isEditing =
     (!isStopLossEnabled && !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.multipliedBy(100).eq(stopLossLevel)) ||
-    collateralActive !== isToCollateral
+    currentUIState.collateralActive !== isToCollateral
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
 
   const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
-    .multipliedBy(initial.selectedSLValue)
+    .multipliedBy(currentUIState.selectedSLValue)
     .dividedBy(100)
     .dividedBy(currentCollRatio)
 
@@ -163,16 +154,15 @@ export function AdjustSlFormControl({
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
-      setCloseToCollateral(optionName === validOptions[0])
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(lastUIState || ({} as AddFormChange), {
+        formChangeReducer(testUIState || ({} as AddFormChange), {
           type: 'close-type',
           toCollateral: optionName === validOptions[0],
         }),
       )
     },
-    isCollateralActive: collateralActive,
+    isCollateralActive: currentUIState.collateralActive,
     collateralTokenSymbol: token,
     collateralTokenIconCircle: tokenData.iconCircle,
   }
@@ -184,10 +174,10 @@ export function AdjustSlFormControl({
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
     sliderPercentageFill,
-    leftBoundry: initial.selectedSLValue,
+    leftBoundry: currentUIState.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
-    lastValue: initial.selectedSLValue,
+    lastValue: currentUIState.selectedSLValue,
     leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
@@ -211,7 +201,7 @@ export function AdjustSlFormControl({
 
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(lastUIState || ({} as AddFormChange), {
+        formChangeReducer(testUIState || ({} as AddFormChange), {
           type: 'stop-loss',
           stopLoss: slCollRatio,
         }),
@@ -247,7 +237,7 @@ export function AdjustSlFormControl({
 
             uiChanges.publish(
               ADD_FORM_CHANGE,
-              formChangeReducer(lastUIState || ({} as AddFormChange), {
+              formChangeReducer(testUIState || ({} as AddFormChange), {
                 type: 'tx-details',
                 txDetails: {
                   txHash: (txState as any).txHash,
