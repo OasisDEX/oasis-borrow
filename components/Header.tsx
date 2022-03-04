@@ -15,7 +15,6 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
-import { SwapWidget } from '@uniswap/widgets'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
@@ -23,6 +22,7 @@ import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
 import { useSharedUI } from './SharedUIProvider'
+import { UniswapWidget } from './UniswapWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -115,7 +115,7 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
-        <SwapWidget />
+        <UniswapWidget provider="hola" />
         <UserSettingsButton />
         <AccountButton />
       </Flex>
