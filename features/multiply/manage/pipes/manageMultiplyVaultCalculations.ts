@@ -841,7 +841,7 @@ export function applyManageVaultCalculations(
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
 
   const maxCollRatio = getMaxPossibleCollRatioOrMax(
-    debtFloor,
+    debt.gt(zero) ? debtFloor.plus(debt) : debtFloor,
     depositAmount.plus(lockedCollateral),
     currentCollateralPrice,
     marketPriceMaxSlippage,
