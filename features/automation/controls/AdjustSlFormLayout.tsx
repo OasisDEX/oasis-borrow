@@ -234,8 +234,6 @@ export function AdjustSlFormLayout({
   const { t } = useTranslation()
 
   const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue)
-  console.log(`${stopLossLevel} ${selectedSLValue}`)
-  console.log(`${accountIsController} ${txProgressing}`)
 
   return (
     <Grid columns={[1]}>

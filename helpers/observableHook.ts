@@ -1,40 +1,9 @@
 import * as Sentry from '@sentry/nextjs'
-import { useAppContext } from 'components/AppContextProvider'
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
-export function useUIChanges<S, A>(
-  handler: (state: S, action: A) => S,
-  initial: S,
-  uiSubjectName: string,
-): {
-  dispatch: React.Dispatch<A>
-  initial: S
-} {
-  const { uiChanges } = useAppContext()
-
-  function publishUIChange<T>(props: T) {
-    uiChanges.publish<T>(uiSubjectName, props)
-  }
-
-  const lastState = uiChanges.lastPayload<S>(uiSubjectName)
-
-  const initialState: S = lastState || initial
-
-  const [uiState, dispatch] = useReducer(handler, initialState)
-  useEffect(() => {
-    publishUIChange(uiState)
-  }, [uiState])
-  return {
-    dispatch: (x) => {
-      console.log('Executing dispatch')
-      return dispatch(x)
-    },
-    initial: initialState,
-  }
-}
 // In order to infer proper type of observable returned by curry from ramda which uses recursive typing
 // we need to postpone inference.
 // Type Unpack is used in order to extract inner type of Observable

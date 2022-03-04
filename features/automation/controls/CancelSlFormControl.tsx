@@ -162,6 +162,7 @@ export function CancelSlFormControl({
     tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: lastUIState?.txDetails?.txStatus,
+    txHash: lastUIState?.txDetails?.txHash,
     gasEstimation: gasEstimationData,
     accountIsController,
     cancelCost: uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE)?.txDetails?.totalCost,

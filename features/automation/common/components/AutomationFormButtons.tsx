@@ -49,11 +49,7 @@ export function AutomationFormButtons({
       )}
       {!triggerConfig.isEditing && !triggerConfig.isStopLossEnabled && !txSuccess && (
         <Box>
-          <Button
-            sx={{ width: '100%', justifySelf: 'center' }}
-            variant="primary"
-            onClick={triggerConfig.onConfirm}
-          >
+          <Button sx={{ width: '100%', justifySelf: 'center' }} variant="primary">
             {t('add-stop-loss')}
           </Button>
         </Box>

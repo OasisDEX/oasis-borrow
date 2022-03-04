@@ -83,6 +83,7 @@ export interface CancelSlFormLayoutProps {
   etherscan: string
   cancelCost?: BigNumber
   txState?: TxStatus
+  txHash?: string
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
@@ -165,7 +166,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
       <Box>
         <TxStatusSection
           txStatus={props.txState}
-          txHash={(props.txState as any)?.txHash}
+          txHash={props.txHash}
           etherscan={props.etherscan}
         />
       </Box>
