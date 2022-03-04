@@ -807,7 +807,6 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    // lockedCollateral: lockedCollateral.plus(collateralDelta),
     lockedCollateral: showSliderController
       ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
       : lockedCollateral.plus(collateralDelta),
@@ -819,7 +818,6 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    // lockedCollateral: lockedCollateral.plus(collateralDelta),
     lockedCollateral: showSliderController
       ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
       : lockedCollateral.plus(collateralDelta),
