@@ -20,7 +20,7 @@ import { ManageMultiplyVaultState, OtherAction } from '../pipes/manageMultiplyVa
 import { MAX_COLL_RATIO } from '../pipes/manageMultiplyVaultCalculations'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
-//TODO max buy token
+//TODO max buy token, not needed right now but may be useful in near feature according to the designs
 // function BuyTokenInput({
 //   vault: { token },
 //   updateBuy,
@@ -53,7 +53,7 @@ import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChan
 //   )
 // }
 
-//TODO max sell token
+//TODO max sell token, not needed right now but may be useful in near feature according to the designs
 // function SellTokenInput({
 //   accountIsController,
 //   updateSell,
@@ -290,19 +290,20 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
 }
 
 function AdjustPositionForm(props: ManageMultiplyVaultState) {
-  // if (showSliderController) {
-  return (
-    <>
-      <SliderInput {...props} />
-      {/* TO BE RESTORED */}
-      {/* <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
-          <Text pr={1}>Or enter an amount of ETH</Text>
-        </Button> */}
-    </>
-  )
-  // }
+  return <SliderInput {...props} />
 
-  // TO BE RESTORED
+  // TODO TO BE RESTORED, not needed right now but may be useful in near feature according to the designs
+  // if (showSliderController) {
+  // return (
+  //   <>
+  //     <SliderInput {...props} />
+  //     <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
+  //       <Text pr={1}>Or enter an amount of ETH</Text>
+  //     </Button>
+  //   </>
+  // )
+  // }
+  //
   // return (
   //   <Box>
   //     <Flex>
