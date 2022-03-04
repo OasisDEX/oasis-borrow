@@ -481,7 +481,14 @@ export function applyManageVaultCalculations(
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
+    vault: {
+      lockedCollateral,
+      debt,
+      debtOffset,
+      lockedCollateralUSD,
+      liquidationPrice,
+      collateralizationRatio,
+    },
     requiredCollRatio,
     quote,
     swap,
@@ -841,12 +848,12 @@ export function applyManageVaultCalculations(
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
 
   const maxCollRatio = getMaxPossibleCollRatioOrMax(
-    debt.gt(zero) ? debtFloor.plus(debt) : debtFloor,
-    depositAmount.plus(lockedCollateral),
+    debtFloor,
+    debt.gt(0) ? depositAmount : depositAmount.plus(lockedCollateral),
     currentCollateralPrice,
     marketPriceMaxSlippage,
     liquidationRatio,
-    zero,
+    debt.gt(0) ? collateralizationRatio : zero,
   )
 
   return {
