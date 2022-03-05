@@ -152,7 +152,7 @@ export function CancelSlFormControl({
     txHash: lastUIState?.txDetails?.txHash,
     gasEstimation: gasEstimationData,
     accountIsController,
-    cancelCost: uiChanges.lastPayload<RemoveFormChange>(REMOVE_FORM_CHANGE)?.txDetails?.totalCost,
+    actualCancelTxCost: lastUIState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
   }

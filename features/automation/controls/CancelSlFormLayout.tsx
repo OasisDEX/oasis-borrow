@@ -81,7 +81,7 @@ export interface CancelSlFormLayoutProps {
   gasEstimation: HasGasEstimation
   accountIsController: boolean
   etherscan: string
-  cancelCost?: BigNumber
+  actualCancelTxCost?: BigNumber
   txState?: TxStatus
   txHash?: string
 }
@@ -157,7 +157,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           </Flex>
           <Divider variant="styles.hrVaultFormBottom" mb={4} />
           <CancelCompleteInformation
-            totalCost={props.cancelCost!}
+            totalCost={props.actualCancelTxCost!}
             tokenPrice={props.tokenPrice}
             liquidationPrice={props.liquidationPrice}
           />
