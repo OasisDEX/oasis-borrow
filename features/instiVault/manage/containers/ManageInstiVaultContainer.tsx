@@ -17,7 +17,6 @@ import { Box, Flex, Grid } from 'theme-ui'
 
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
-import { closeGuniVault } from '../../../earn/guni/manage/pipes/guniActionsCalls'
 
 export function ManageInstiVaultContainer({
   manageVault,
