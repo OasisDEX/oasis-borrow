@@ -8,7 +8,6 @@ import {
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
 import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
 import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manageVaultAnalytics'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -18,13 +17,7 @@ import { Box, Flex, Grid } from 'theme-ui'
 import { ManageInstiVaultState } from '../pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
-export function ManageInstiVaultContainer({
-  manageVault,
-  vaultHistory,
-}: {
-  manageVault: ManageInstiVaultState
-  vaultHistory: VaultHistoryEvent[]
-}) {
+export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
   const {
     vault: { id, ilk },
@@ -67,7 +60,7 @@ export function ManageInstiVaultContainer({
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageInstiVaultDetails {...manageVault} />
-          <VaultHistoryView vaultHistory={vaultHistory} />
+          <VaultHistoryView vaultHistory={manageVault.vaultHistory} />
         </Grid>
         <Box>
           <ManageVaultForm

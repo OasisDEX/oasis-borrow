@@ -77,25 +77,20 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const [manageVault, manageVaultError] = useObservable(manageVaultWithId$)
 
   return (
-    <WithErrorHandler
-      error={[
-        manageVaultError,
-      ]}
-    >
-      <WithLoadingIndicator
-        value={[
-          manageVault,
-        ]}
-        customLoader={<VaultContainerSpinner />}
-      >
+    <WithErrorHandler error={[manageVaultError]}>
+      <WithLoadingIndicator value={[manageVault]} customLoader={<VaultContainerSpinner />}>
         {([generalManageVault]) => {
           switch (generalManageVault.type) {
             case VaultType.Borrow: // todo: add insti vault case
               return (
                 <Container variant="vaultPageContainer">
                   {isInstiVault(id) ? (
-                    <ManageInstiVaultContainer manageVault={{ ...generalManageVault.state, ...instiMockedData }} />
-                  ) : (<ManageVaultContainer manageVault={generalManageVault.state} />)}
+                    <ManageInstiVaultContainer
+                      manageVault={{ ...generalManageVault.state, ...instiMockedData }}
+                    />
+                  ) : (
+                    <ManageVaultContainer manageVault={generalManageVault.state} />
+                  )}
                 </Container>
               )
             case VaultType.Multiply:
