@@ -113,7 +113,7 @@ export function AdjustSlFormControl({
     [txData],
   )
 
-  const gasEstimationData = useObservable(gasEstimationData$)
+  const [gasEstimationData] = useObservable(gasEstimationData$)
 
   type Action =
     | { type: 'stop-loss'; stopLoss: BigNumber }
@@ -135,6 +135,7 @@ export function AdjustSlFormControl({
   const tokenData = getToken(token)
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
   const startingSlRatio = isStopLossEnabled
     ? stopLossLevel
     : new BigNumber(
@@ -302,6 +303,7 @@ export function AdjustSlFormControl({
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice,
+    ethPrice,
     vault,
     ilkData,
     isEditing,
