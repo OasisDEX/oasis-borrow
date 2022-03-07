@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { Box, Card, Divider, Grid, Heading, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'

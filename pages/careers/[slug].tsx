@@ -7,7 +7,7 @@ import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import dynamic from 'next/dynamic'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { Box, Text } from 'theme-ui'
 
 export default function CareerPage({ career }: { career: Career }) {

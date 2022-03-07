@@ -18,7 +18,7 @@ import {
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 

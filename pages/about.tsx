@@ -7,7 +7,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
 export default function AboutPage({ members }: { members: TeamMember[] }) {

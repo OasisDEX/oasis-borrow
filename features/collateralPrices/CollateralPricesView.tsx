@@ -7,7 +7,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { Box, Grid, Heading, Text } from 'theme-ui'
 
 import { TokenSymbol } from '../../components/TokenSymbol'
