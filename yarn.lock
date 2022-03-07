@@ -19136,7 +19136,7 @@ next-i18next@^8.1.0:
     hoist-non-react-statics "^3.2.0"
     i18next "^20.1.0"
     i18next-fs-backend "^1.0.7"
-    next-i18next "^11.8.13"
+    react-i18next "^11.8.13"
 
 next-pwa@^5.4.1:
   version "5.4.1"
@@ -21629,17 +21629,17 @@ react-helmet-async@^1.0.2, react-helmet-async@^1.0.7:
     react-fast-compare "^3.2.0"
     shallowequal "^1.1.0"
 
-next-i18next@^11.3.3:
+react-i18next@^11.3.3:
   version "11.8.9"
-  resolved "https://registry.yarnpkg.com/next-i18next/-/next-i18next-11.8.9.tgz#188039708f99a6114b4437f0e620bf99a6c3c7dd"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.8.9.tgz#188039708f99a6114b4437f0e620bf99a6c3c7dd"
   integrity sha512-HVW4/KtBvXcnzkYeS32IqdGBJJ1fksvqVDnnspsyruO99fhHQaAw1vTSrRpcNE5D8vrOu7B9c6sawfmQJ6OWRg==
   dependencies:
     "@babel/runtime" "^7.13.6"
     html-parse-stringify2 "^2.0.1"
 
-next-i18next@^11.8.13:
+react-i18next@^11.8.13:
   version "11.14.3"
-  resolved "https://registry.yarnpkg.com/next-i18next/-/next-i18next-11.14.3.tgz#b44b5c4d1aadac5211be011827a2830be60f2522"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-11.14.3.tgz#b44b5c4d1aadac5211be011827a2830be60f2522"
   integrity sha512-Hf2aanbKgYxPjG8ZdKr+PBz9sY6sxXuZWizxCYyJD2YzvJ0W9JTQcddVEjDaKyBoCyd3+5HTerdhc9ehFugc6g==
   dependencies:
     "@babel/runtime" "^7.14.5"
@@ -23718,7 +23718,7 @@ storybook-addon-i18next@^1.3.0:
     "@storybook/core-events" "^5.3.17"
     "@storybook/theming" "^5.3.17"
     prop-types "^15.7.2"
-    next-i18next "^11.3.3"
+    react-i18next "^11.3.3"
 
 storybook-addon-outline@^1.4.1:
   version "1.4.1"
