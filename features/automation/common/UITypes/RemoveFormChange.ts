@@ -13,7 +13,10 @@ export type RemoveFormChangeAction = {
   }
 }
 
-export function removeFormReducer(state: RemoveFormChange, action: RemoveFormChangeAction): RemoveFormChange {
+export function removeFormReducer(
+  state: RemoveFormChange,
+  action: RemoveFormChangeAction,
+): RemoveFormChange {
   switch (action.type) {
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }

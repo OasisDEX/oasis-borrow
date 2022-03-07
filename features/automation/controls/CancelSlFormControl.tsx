@@ -24,7 +24,6 @@ import { extractStopLossData, prepareTriggerData } from '../common/StopLossTrigg
 import {
   REMOVE_FORM_CHANGE,
   RemoveFormChange,
-  removeFormReducer,
 } from '../common/UITypes/RemoveFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
@@ -109,17 +108,14 @@ export function CancelSlFormControl({
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
                 : zero
 
-            uiChanges.publish(
-              REMOVE_FORM_CHANGE,
-              {
-                type: 'tx-details',
-                txDetails: {
-                  txHash: (transactionState as any).txHash,
-                  txStatus: transactionState.status,
-                  totalCost,
-                },
+            uiChanges.publish(REMOVE_FORM_CHANGE, {
+              type: 'tx-details',
+              txDetails: {
+                txHash: (transactionState as any).txHash,
+                txStatus: transactionState.status,
+                totalCost,
               },
-            )
+            })
           },
           transactionState,
           finishLoader,

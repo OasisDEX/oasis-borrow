@@ -16,7 +16,10 @@ export type AddFormChangeAction =
       }
     }
 
-export function formChangeReducer(state: AddFormChange, action: AddFormChangeAction): AddFormChange {
+export function formChangeReducer(
+  state: AddFormChange,
+  action: AddFormChangeAction,
+): AddFormChange {
   switch (action.type) {
     case 'stop-loss':
       return { ...state, selectedSLValue: action.stopLoss }

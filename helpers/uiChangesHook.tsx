@@ -2,7 +2,7 @@ import { SupportedUIChangeType } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect, useState } from 'react'
 
-export function useUIChanges<T extends SupportedUIChangeType>(topic: string) : T[] {
+export function useUIChanges<T extends SupportedUIChangeType>(topic: string): T[] {
   const { uiChanges } = useAppContext()
 
   const [lastUIState, lastUIStateSetter] = useState(uiChanges.lastPayload<T>(topic))

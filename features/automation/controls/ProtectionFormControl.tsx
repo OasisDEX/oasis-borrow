@@ -14,7 +14,6 @@ import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
-  ProtectionModeChangeAction,
 } from '../common/UITypes/ProtectionFormModeChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormControl } from './AdjustSlFormControl'
@@ -64,7 +63,7 @@ export function ProtectionFormControl({
                 toggleForms={() => {
                   uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
                     currentMode: AutomationFromKind.ADJUST,
-                    type:'change-mode'
+                    type: 'change-mode',
                   })
                 }}
                 collateralPrice={collateralPrices}
@@ -80,7 +79,7 @@ export function ProtectionFormControl({
                 accountIsController={accountIsController}
                 toggleForms={() => {
                   uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    type:'change-mode',
+                    type: 'change-mode',
                     currentMode: AutomationFromKind.CANCEL,
                   })
                 }}

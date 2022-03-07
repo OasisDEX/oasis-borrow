@@ -18,7 +18,7 @@ import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, {  useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Context } from '../../../blockchain/network'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -28,7 +28,7 @@ import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE, AddFormChange, formChangeReducer } from '../common/UITypes/AddFormChange'
+import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 
@@ -154,13 +154,10 @@ export function AdjustSlFormControl({
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
-      uiChanges.publish(
-        ADD_FORM_CHANGE,
-        {
-          type: 'close-type',
-          toCollateral: optionName === validOptions[0],
-        },
-      )
+      uiChanges.publish(ADD_FORM_CHANGE, {
+        type: 'close-type',
+        toCollateral: optionName === validOptions[0],
+      })
     },
     isCollateralActive: currentUIState.collateralActive,
     collateralTokenSymbol: token,
@@ -199,13 +196,10 @@ export function AdjustSlFormControl({
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
 
-      uiChanges.publish(
-        ADD_FORM_CHANGE,
-        {
-          type: 'stop-loss',
-          stopLoss: slCollRatio,
-        }
-      )
+      uiChanges.publish(ADD_FORM_CHANGE, {
+        type: 'stop-loss',
+        stopLoss: slCollRatio,
+      })
     },
   }
 
@@ -235,17 +229,14 @@ export function AdjustSlFormControl({
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
                 : zero
 
-            uiChanges.publish(
-              ADD_FORM_CHANGE,
-              {
-                type: 'tx-details',
-                txDetails: {
-                  txHash: (txState as any).txHash,
-                  txStatus: txState.status,
-                  txCost: totalCost,
-                },
+            uiChanges.publish(ADD_FORM_CHANGE, {
+              type: 'tx-details',
+              txDetails: {
+                txHash: (txState as any).txHash,
+                txStatus: txState.status,
+                txCost: totalCost,
               },
-            )
+            })
           },
           transactionState,
           finishLoader,

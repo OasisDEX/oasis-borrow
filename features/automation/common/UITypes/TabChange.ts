@@ -6,8 +6,7 @@ export enum VaultViewMode {
   Overview,
 }
 
-export type TabChangeAction =
-  | { type: 'change-tab'; currentMode: VaultViewMode }
+export type TabChangeAction = { type: 'change-tab'; currentMode: VaultViewMode }
 
 export interface TabChange {
   currentMode: VaultViewMode

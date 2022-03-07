@@ -34,7 +34,10 @@ export function AutomationFormButtons({
   const { uiChanges } = useAppContext()
 
   function backToVaultOverview() {
-    uiChanges.publish(TAB_CHANGE_SUBJECT, { type:'change-tab', currentMode: VaultViewMode.Overview })
+    uiChanges.publish(TAB_CHANGE_SUBJECT, {
+      type: 'change-tab',
+      currentMode: VaultViewMode.Overview,
+    })
     uiChanges.clear(ADD_FORM_CHANGE)
     uiChanges.clear(REMOVE_FORM_CHANGE)
     if (optionalCleanup) optionalCleanup()
