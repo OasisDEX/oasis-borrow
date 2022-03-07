@@ -4,7 +4,7 @@ import { GeneralManageVaultState } from '../../features/generalManageVault/gener
 import { VaultHistoryDetailsControl } from '../../features/vaultHistory/VaultHistoryDetailsControl'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 import { GeneralVaultFormControl } from './GeneralVaultFormControl'
@@ -15,17 +15,17 @@ interface HistoryControlProps {
 
 export function HistoryControl({ generalManageVault }: HistoryControlProps) {
   const { vaultHistory$, vaultMultiplyHistory$ } = useAppContext()
-  const vaultHistoryWithError = useObservableWithError(
+  const [vaultHistory, vaultHistoryError] = useObservable(
     vaultHistory$(generalManageVault.state.vault.id),
   )
-  const vaultMultiplyHistoryWithError = useObservableWithError(
+  const [vaultMultiplyHistory, vaultMultiplyHistoryError] = useObservable(
     vaultMultiplyHistory$(generalManageVault.state.vault.id),
   )
 
   return (
-    <WithErrorHandler error={[vaultHistoryWithError.error, vaultMultiplyHistoryWithError.error]}>
+    <WithErrorHandler error={[vaultHistoryError, vaultMultiplyHistoryError]}>
       <WithLoadingIndicator
-        value={[vaultHistoryWithError.value, vaultMultiplyHistoryWithError.value]}
+        value={[vaultHistory, vaultMultiplyHistory]}
         customLoader={<VaultContainerSpinner />}
       >
         {([vaultHistory, vaultMultiplyHistory]) => {

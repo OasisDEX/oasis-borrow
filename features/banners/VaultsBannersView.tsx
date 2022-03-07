@@ -372,9 +372,9 @@ export function VaultNextPriceUpdateCounter({
 
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
-  const state = useObservable(vaultBanners$(id))
+  const [vaultBanners] = useObservable(vaultBanners$(id))
 
-  if (!state) return null
+  if (!vaultBanners) return null
 
   const {
     token,
@@ -384,7 +384,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     unlockedCollateral,
     banner,
     isVaultController,
-  } = state
+  } = vaultBanners
 
   switch (banner) {
     case 'liquidated':
