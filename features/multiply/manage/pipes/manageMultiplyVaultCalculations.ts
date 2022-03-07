@@ -684,7 +684,9 @@ export function applyManageVaultCalculations(
     : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
-  const afterCollateralizationRatio = afterDebt.isZero() ? zero : afterLockedCollateralUSD.div(afterDebt)
+  const afterCollateralizationRatio = afterDebt.isZero()
+    ? zero
+    : afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
   const afterMultiply =
@@ -698,8 +700,8 @@ export function applyManageVaultCalculations(
         })
 
   const afterLiquidationPrice = afterCollateralizationRatio.isZero()
-      ? zero
-      : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
+    ? zero
+    : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
 
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
@@ -844,7 +846,7 @@ export function applyManageVaultCalculations(
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
 
   const maxCollRatio = getMaxPossibleCollRatioOrMax(
-    debtFloor,
+    debt.gt(0) ? debtFloor.plus(debt) : debtFloor,
     debt.gt(0) ? depositAmount : depositAmount.plus(lockedCollateral),
     currentCollateralPrice,
     marketPriceMaxSlippage,
