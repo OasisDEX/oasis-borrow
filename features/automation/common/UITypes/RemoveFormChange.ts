@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 export const REMOVE_FORM_CHANGE = 'REMOVE_FORM_CHANGE'
 
 /* End of section */
-export type Action = {
+export type RemoveFormChangeAction = {
   type: 'tx-details'
   txDetails: {
     txStatus?: TxStatus
@@ -13,7 +13,7 @@ export type Action = {
   }
 }
 
-export function removeFormReducer(state: RemoveFormChange, action: Action): RemoveFormChange {
+export function removeFormReducer(state: RemoveFormChange, action: RemoveFormChangeAction): RemoveFormChange {
   switch (action.type) {
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }
@@ -22,7 +22,7 @@ export function removeFormReducer(state: RemoveFormChange, action: Action): Remo
   }
 }
 
-export interface RemoveFormChange {
+export type RemoveFormChange = {
   txDetails?: {
     txStatus?: TxStatus
     txHash?: string

@@ -46,7 +46,7 @@ export function StopLossBannerControl({
         stopLossLevel={slData.stopLossLevel}
         showAfterPill={showAfterPill}
         handleClick={() => {
-          uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+          uiChanges.publish(TAB_CHANGE_SUBJECT, { type: 'change-tab', currentMode: VaultViewMode.Protection })
           onClick && onClick()
         }}
         compact={compact}

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 export const ADD_FORM_CHANGE = 'ADD_FORM_CHANGE'
 
 /* End of section */
-export type Action =
+export type AddFormChangeAction =
   | { type: 'stop-loss'; stopLoss: BigNumber }
   | { type: 'close-type'; toCollateral: boolean }
   | {
@@ -16,7 +16,7 @@ export type Action =
       }
     }
 
-export function formChangeReducer(state: AddFormChange, action: Action): AddFormChange {
+export function formChangeReducer(state: AddFormChange, action: AddFormChangeAction): AddFormChange {
   switch (action.type) {
     case 'stop-loss':
       return { ...state, selectedSLValue: action.stopLoss }

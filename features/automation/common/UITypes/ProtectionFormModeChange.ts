@@ -5,6 +5,19 @@ export enum AutomationFromKind {
   CANCEL,
 }
 
-export interface ProtectionModeChange {
+export type ProtectionModeChangeAction =
+  | { type: 'change-mode'; currentMode: AutomationFromKind }
+
+export type ProtectionModeChange = {
   currentMode: AutomationFromKind
+}
+
+
+export function protectionModeChangeReducer(state: ProtectionModeChange, action: ProtectionModeChangeAction): ProtectionModeChange {
+  switch (action.type) {
+    case 'change-mode':
+      return { ...state, currentMode: action.currentMode }
+    default:
+      return state
+  }
 }

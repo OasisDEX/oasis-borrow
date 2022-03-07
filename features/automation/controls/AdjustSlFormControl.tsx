@@ -156,10 +156,10 @@ export function AdjustSlFormControl({
     onclickHandler: (optionName: string) => {
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(uiState || ({} as AddFormChange), {
+        {
           type: 'close-type',
           toCollateral: optionName === validOptions[0],
-        }),
+        },
       )
     },
     isCollateralActive: currentUIState.collateralActive,
@@ -201,10 +201,10 @@ export function AdjustSlFormControl({
 
       uiChanges.publish(
         ADD_FORM_CHANGE,
-        formChangeReducer(uiState || ({} as AddFormChange), {
+        {
           type: 'stop-loss',
           stopLoss: slCollRatio,
-        }),
+        }
       )
     },
   }
@@ -237,14 +237,14 @@ export function AdjustSlFormControl({
 
             uiChanges.publish(
               ADD_FORM_CHANGE,
-              formChangeReducer(uiState || ({} as AddFormChange), {
+              {
                 type: 'tx-details',
                 txDetails: {
                   txHash: (txState as any).txHash,
                   txStatus: txState.status,
                   txCost: totalCost,
                 },
-              }),
+              },
             )
           },
           transactionState,

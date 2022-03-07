@@ -111,14 +111,14 @@ export function CancelSlFormControl({
 
             uiChanges.publish(
               REMOVE_FORM_CHANGE,
-              removeFormReducer(lastUIState || ({} as RemoveFormChange), {
+              {
                 type: 'tx-details',
                 txDetails: {
                   txHash: (transactionState as any).txHash,
                   txStatus: transactionState.status,
                   totalCost,
                 },
-              }),
+              },
             )
           },
           transactionState,
