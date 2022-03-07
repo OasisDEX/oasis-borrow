@@ -1,12 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { PageSEOTags } from 'components/HeadTags'
-import { LandingPageLayout, MarketingLayout } from 'components/Layouts'
+import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
 import { groupBy } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { useTranslation } from 'next-i18next'
 import { Box, Button, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => {

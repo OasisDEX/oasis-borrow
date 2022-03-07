@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 import { formatPercent } from '../../../helpers/formatters/format'

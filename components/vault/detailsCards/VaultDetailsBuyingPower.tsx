@@ -1,5 +1,5 @@
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Grid, Heading, Text } from 'theme-ui'
 
 import { ModalProps } from '../../../helpers/modalHook'

@@ -17,8 +17,8 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React, { useState } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
 
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 

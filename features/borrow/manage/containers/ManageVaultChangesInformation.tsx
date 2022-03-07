@@ -9,8 +9,8 @@ import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React, { ReactNode } from 'react'
 import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
 
 export function ManageVaultChangesInformation(props: ManageVaultState & { extraInfo?: ReactNode }) {
   const { t } = useTranslation()
