@@ -18,6 +18,7 @@ import { Box, Grid } from 'theme-ui'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
 import { ManageVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
@@ -104,6 +105,7 @@ export function ManageVaultDetails(
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
+    stopLossTriggered,
   } = props
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -115,6 +117,7 @@ export function ManageVaultDetails(
     <Box>
       {automationEnabled && (
         <>
+          {stopLossTriggered && <StopLossTriggeredBannerControl />}
           <GetProtectionBannerControl vaultId={id} />
           <StopLossBannerControl
             vaultId={id}
@@ -127,15 +130,13 @@ export function ManageVaultDetails(
       )}
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationRatio,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-            vaultId: id,
-          }}
+          liquidationPrice={liquidationPrice}
+          liquidationRatio={liquidationRatio}
+          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+          afterLiquidationPrice={afterLiquidationPrice}
+          afterPillColors={afterPillColors}
+          showAfterPill={showAfterPill}
+          vaultId={id}
         />
         <VaultDetailsCardCollateralizationRatio
           afterPillColors={afterPillColors}

@@ -8,12 +8,12 @@ interface CommonSection {
 }
 
 interface AutomationFormHeaderProps {
-  txProgressing: boolean
-  txSuccess: boolean
+  txProgressing?: boolean
+  txSuccess?: boolean
   translations: {
     editing: CommonSection
-    progressing: CommonSection
-    success: CommonSection
+    progressing?: CommonSection
+    success?: CommonSection
   }
 }
 
@@ -32,15 +32,15 @@ export function AutomationFormHeader({
       )}
       {txProgressing && (
         <FormHeader
-          header={translations.progressing.header}
-          description={translations.progressing.description}
+          header={translations.progressing!.header}
+          description={translations.progressing!.description}
           withDivider
         />
       )}
       {txSuccess && (
         <FormHeader
-          header={translations.success.header}
-          description={translations.success.description}
+          header={translations.success!.header}
+          description={translations.success!.description}
         />
       )}
     </>

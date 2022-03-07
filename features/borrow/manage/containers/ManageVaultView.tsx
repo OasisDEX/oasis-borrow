@@ -4,7 +4,6 @@ import { VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -16,13 +15,7 @@ import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultForm } from './ManageVaultForm'
 
-export function ManageVaultContainer({
-  manageVault,
-  vaultHistory,
-}: {
-  manageVault: ManageVaultState
-  vaultHistory: VaultHistoryEvent[]
-}) {
+export function ManageVaultContainer({ manageVault }: { manageVault: ManageVaultState }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
     vault: { id, ilk },
@@ -58,7 +51,7 @@ export function ManageVaultContainer({
               uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
             }}
           />
-          {!automationEnabled && <VaultHistoryView vaultHistory={vaultHistory} />}
+          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm

@@ -6,6 +6,7 @@ interface HistoryEventBase {
   id: string
   liquidationRatio?: BigNumber
   ethPrice: BigNumber
+  token: string
   reclaim?: boolean
 }
 
@@ -63,6 +64,17 @@ interface WithdrawPaybackEvent extends HistoryEventBase {
   collateralAmount: BigNumber
   oraclePrice: BigNumber
   gasFee?: BigNumber
+}
+
+interface StopLossTriggeredEvent extends HistoryEventBase {
+  kind: 'STOPLOSS-TRIGGERED'
+  daiAmount: BigNumber
+  rate: BigNumber
+  collateralAmount: BigNumber
+  oraclePrice: BigNumber
+  slippage: BigNumber
+  gasFee: BigNumber
+  triggerType: BigNumber
 }
 
 interface AuctionStartedEvent extends HistoryEventBase {
@@ -217,6 +229,7 @@ export type MultiplyEvent =
   | CloseVaultExitDaiMultipleEvent
   | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
+  | StopLossTriggeredEvent
 
 export interface ReturnedEvent {
   kind: string
@@ -251,5 +264,6 @@ export type VaultEvent =
   | MoveSrcEvent
   | MoveDestEvent
   | MultiplyEvent
+  | StopLossTriggeredEvent
 
 export type EventType = VaultEvent['kind']
