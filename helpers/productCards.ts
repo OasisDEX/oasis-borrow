@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { pick, sortBy } from 'lodash'
+import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -365,7 +365,7 @@ export function borrowPageCardsData({
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
-function crvProductCards(productCardsData: ProductCardData[]): ProductCardData[] {
+function crvProductCards(_: ProductCardData[]): ProductCardData[] {
   const tokenMeta = tokens.find((t) => t.symbol === 'CRV')
   if (tokenMeta) {
     const { bannerIcon, bannerGif, background, name } = tokenMeta
