@@ -185,11 +185,6 @@ function SetDownsideProtectionInformation({
             {t('protection.learn-more-about-automation')}
           </AppLink>
         </Text>
-        <Text>
-          <strong>{t('fact')}: </strong>
-          {/* TODO values mocked for now, we will need data source for those */}
-          {t('protection.automation-fact', { success: 12, total: 12 })}
-        </Text>
       </Box>
     </VaultChangesInformationContainer>
   )
