@@ -62,6 +62,8 @@ import {
 import {
   ProtectionModeChange,
   ProtectionModeChangeAction,
+  protectionModeChangeReducer,
+  PROTECTION_MODE_CHANGE_SUBJECT,
 } from 'features/automation/common/UITypes/ProtectionFormModeChange'
 import {
   REMOVE_FORM_CHANGE,
@@ -649,7 +651,7 @@ export function setupAppContext() {
   uiChanges.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
   uiChanges.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChanges.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
-  uiChanges.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
+  uiChanges.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
 
   return {
     web3Context$,
