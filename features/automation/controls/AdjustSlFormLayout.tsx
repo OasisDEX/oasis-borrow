@@ -312,7 +312,7 @@ export function AdjustSlFormLayout({
       <Box>
         <TxStatusSection txStatus={txState} txHash={txHash} etherscan={etherscan} />
       </Box>
-      {accountIsController && !txProgressing && (
+      {isEditing && accountIsController && !txProgressing && (
         <AutomationFormButtons
           triggerConfig={addTriggerConfig}
           toggleForms={toggleForms}

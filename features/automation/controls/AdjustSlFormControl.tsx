@@ -133,10 +133,6 @@ export function AdjustSlFormControl({
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
     currentUIState.collateralActive !== isToCollateral
 
-  console.log("Check isEditing", isEditing);
-  console.log("!isStopLossEnabled && !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))", !isStopLossEnabled, !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100)));
-  console.log("(isStopLossEnabled && !selectedSLValue.multipliedBy(100).eq(stopLossLevel))", isStopLossEnabled, !selectedSLValue.eq(stopLossLevel.multipliedBy(100)), selectedSLValue.multipliedBy(100).toString(), stopLossLevel.toString());
-
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
@@ -158,6 +154,7 @@ export function AdjustSlFormControl({
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
+      clearInitialSliderPosition(false);
       uiChanges.publish(ADD_FORM_CHANGE, {
         type: 'close-type',
         toCollateral: optionName === validOptions[0],
