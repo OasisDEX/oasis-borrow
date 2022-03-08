@@ -1,11 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import React, { useState, useRef } from 'react'
 import { Box, Button } from 'theme-ui'
 import { UniswapWidget } from './UniswapWidget'
+import { provider } from 'web3-core'
 
-export function ExchangeButton() {
+export function ExchangeButton({ web3Provider }: { web3Provider?: provider}) {
   const component = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -34,9 +34,7 @@ export function ExchangeButton() {
           overflowX: 'visible',
           zIndex: 0,
         }}>
-          {/* todo: add withLoadingIndicator, use provider */}
-      <AppSpinner variant="styles.spinner.large" />
-      <UniswapWidget provider="asdf" />
+      <UniswapWidget web3Provider={web3Provider} />
     </Box>
   </Box>
 }

@@ -1,8 +1,8 @@
+import { AppSpinner } from 'helpers/AppSpinner'
 import dynamic from 'next/dynamic'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { theme } from 'theme'
-// temporarily use detect provider
-import detectEthereumProvider from '@metamask/detect-provider'
+import { provider } from 'web3-core'
 
 const { colors, radii } = theme
 
@@ -20,20 +20,10 @@ const widgetTheme = {
   borderRadius: radii.mediumLarge
 }
 
-export function UniswapWidget({ }: { provider: any}) {
+export function UniswapWidget({ web3Provider }: { web3Provider?: provider}) {
   // @ts-ignore
   const SwapWidget = dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), { ssr: false })
 
-  const [provider, setProvider] = useState()  
-
-  useEffect(() => {
-
-    (async () => {
-      setProvider((await detectEthereumProvider()) as any)
-    })()
-    
-  }, [])
-
   // @ts-ignore
-  return provider ? <SwapWidget provider={provider} theme={widgetTheme} /> : <div>Detecting provider</div>
+  return web3Provider ? <SwapWidget provider={web3Provider} theme={widgetTheme} /> : <AppSpinner />
 }

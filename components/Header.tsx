@@ -98,6 +98,13 @@ interface UserAccountProps {
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
 
+  const web3Provider = (() => {
+    const { web3ContextConnected$ } = useAppContext()
+    const web3Context = useObservable(web3ContextConnected$)
+    return web3Context?.status !== 'connectedReadonly' ? 
+      web3Context?.web3.currentProvider: null
+  })()
+
   return (
     <Flex
       sx={{
@@ -113,7 +120,7 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
-        <ExchangeButton />
+        <ExchangeButton web3Provider={web3Provider} />
         <UserSettingsButton />
         <AccountButton />
       </Flex>
