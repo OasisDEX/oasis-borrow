@@ -60,10 +60,10 @@ import {
   formChangeReducer,
 } from 'features/automation/common/UITypes/AddFormChange'
 import {
+  PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
   ProtectionModeChangeAction,
   protectionModeChangeReducer,
-  PROTECTION_MODE_CHANGE_SUBJECT,
 } from 'features/automation/common/UITypes/ProtectionFormModeChange'
 import {
   REMOVE_FORM_CHANGE,
@@ -217,10 +217,7 @@ export type LegalUiChanges = {
 
 export type UIChanges = {
   subscribe: <T extends SupportedUIChangeType>(sub: string) => Observable<T>
-  publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(
-    sub: string,
-    event: K,
-  ) => void
+  publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(sub: string, event: K) => void
   lastPayload: <T extends SupportedUIChangeType>(sub: string) => T
   clear: (sub: string) => void
   configureSubject: <
@@ -257,10 +254,7 @@ function createUIChangesSubject(): UIChanges {
     )
   }
 
-  function publish<K extends LegalUiChanges[keyof LegalUiChanges]>(
-    subjectName: string,
-    event: K,
-  ) {
+  function publish<K extends LegalUiChanges[keyof LegalUiChanges]>(subjectName: string, event: K) {
     const accumulatedEvent = reducers.hasOwnProperty(subjectName)
       ? reducers[subjectName](lastPayload(subjectName) || {}, event)
       : lastPayload(subjectName)

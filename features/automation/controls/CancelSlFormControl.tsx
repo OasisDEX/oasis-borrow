@@ -21,10 +21,7 @@ import { useObservable } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
-import {
-  REMOVE_FORM_CHANGE,
-  RemoveFormChange,
-} from '../common/UITypes/RemoveFormChange'
+import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 

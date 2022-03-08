@@ -170,7 +170,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           etherscan={props.etherscan}
         />
       </Box>
-      {props.accountIsController && !isTxProgressing &&(
+      {props.accountIsController && !isTxProgressing && (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}

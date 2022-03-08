@@ -154,7 +154,7 @@ export function AdjustSlFormControl({
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
-      clearInitialSliderPosition(false);
+      clearInitialSliderPosition(false)
       uiChanges.publish(ADD_FORM_CHANGE, {
         type: 'close-type',
         toCollateral: optionName === validOptions[0],
