@@ -6,6 +6,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import React, { ChangeEvent, useRef, useState } from 'react'
@@ -199,23 +200,7 @@ export function UserSettingsDropdown(
     }
   }, [opened])
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setOpened(false)
-      }
-    }
-
-    if (opened) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [wrapperRef, opened])
+  useOnClickOutside(wrapperRef, () => setOpened(false))
 
   const onClose = () => setOpened(false)
 
