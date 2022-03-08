@@ -599,7 +599,10 @@
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day average",
     "vault-protection": "Vault Protection",
-    "date": "Date"
+    "date": "Date",
+    "overview": "Overview",
+    "protection": "Protection",
+    "history": "History"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",

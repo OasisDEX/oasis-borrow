@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useAppContext } from '../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../components/TabSwitchLayout'
+import { VaultViewMode } from '../../../components/VaultTabSwitch'
 import { VaultHistoryEvent } from '../../vaultHistory/vaultHistory'
 import { TriggerType } from '../common/enums/TriggersTypes'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
