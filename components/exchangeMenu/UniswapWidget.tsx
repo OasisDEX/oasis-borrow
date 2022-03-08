@@ -9,7 +9,6 @@ const { colors, radii } = theme
 const widgetTheme = {
   accent: colors.primary,
   primary: colors.primary,
-  secondary: colors.text.subtitle,
   container: colors.background,
   active: colors.primary,
   interactive: colors.surface,

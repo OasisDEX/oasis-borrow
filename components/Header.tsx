@@ -21,8 +21,8 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
+import { ExchangeButton } from './exchangeMenu/ExchangeButton'
 import { useSharedUI } from './SharedUIProvider'
-import { UniswapWidget } from './UniswapWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -115,7 +115,7 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
-        <UniswapWidget provider="hola" />
+        <ExchangeButton />
         <UserSettingsButton />
         <AccountButton />
       </Flex>
