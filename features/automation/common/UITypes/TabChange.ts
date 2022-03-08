@@ -1,4 +1,4 @@
-import { VaultViewMode } from 'components/TabSwitchLayout'
+import { VaultViewMode } from 'components/VaultTabSwitch'
 
 export const TAB_CHANGE_SUBJECT = 'tabChange'
 
