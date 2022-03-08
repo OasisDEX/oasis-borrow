@@ -38,6 +38,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     otherAction,
     vaultHistory,
     stopLossTriggered,
+    toggle,
   } = props
 
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
@@ -54,7 +55,10 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       {stopLossTriggered && !reopenPositionClicked && automationEnabled ? (
         <StopLossTriggeredFormControl
           vaultHistory={vaultHistory}
-          onClick={() => setReopenPositionClicked(true)}
+          onClick={() => {
+            setReopenPositionClicked(true)
+            toggle && toggle('otherActions')
+          }}
         />
       ) : (
         <>
