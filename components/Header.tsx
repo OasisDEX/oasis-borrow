@@ -97,8 +97,6 @@ interface UserAccountProps {
 
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
-  const { web3ContextConnected$ } = useAppContext()
-  const web3ContextConnected = useObservable(web3ContextConnected$)
 
   return (
     <Flex

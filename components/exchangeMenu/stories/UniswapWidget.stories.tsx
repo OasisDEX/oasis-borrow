@@ -1,6 +1,6 @@
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Flex } from 'theme-ui'
 import { ExchangeButton } from '../ExchangeButton'
 
 import { UniswapWidget } from '../UniswapWidget'
@@ -17,7 +17,9 @@ export const Widget = () => {
 
 export const Menu = () => {
   return <StoryLayout>
-    <ExchangeButton />
+    <Flex sx={{ justifyContent: 'center' }}>
+      <ExchangeButton />
+    </Flex>
   </StoryLayout>
 }
 
