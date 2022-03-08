@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { sortBy } from 'lodash'
+import { pick, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -11,6 +11,7 @@ import {
   getToken,
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
+  tokens,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
 
@@ -38,6 +39,7 @@ export type ProductLandingPagesFiltersKeys =
   | 'MANA'
   | 'MATIC'
   | 'GUSD'
+  | 'Curve LP'
 
 type ProductLandingPagesFiltersIcons =
   | 'star_circle'
@@ -50,6 +52,7 @@ type ProductLandingPagesFiltersIcons =
   | 'mana_circle'
   | 'matic_circle'
   | 'gusd_circle'
+  | 'curve_circle'
 
 export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
@@ -79,6 +82,7 @@ type Ilk =
   | 'UNIV2DAIUSDC-A'
   | 'UNIV2UNIETH-A'
   | 'UNIV2WBTCDAI-A'
+  | 'Curve-LP'
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -153,6 +157,7 @@ export const productCardsConfig: {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
       { name: 'GUSD', icon: 'gusd_circle' },
+      { name: 'Curve LP', icon: 'curve_circle' },
     ],
     featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
     inactiveIlks: [],
@@ -228,6 +233,7 @@ export const productCardsConfig: {
     'UNIV2DAIUSDC-A': 'lp-tokens',
     'UNIV2UNIETH-A': 'lp-tokens',
     'UNIV2WBTCDAI-A': 'lp-tokens',
+    'Curve-LP': 'borrow',
   } as Record<string, string>,
 }
 
@@ -331,7 +337,7 @@ export function borrowPageCardsData({
 }: {
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
-}) {
+}): ProductCardData[] {
   productCardsData = sortCards(productCardsData, productCardsConfig.borrow.ordering, cardsFilter)
 
   if (cardsFilter === 'Featured') {
@@ -352,7 +358,34 @@ export function borrowPageCardsData({
     return ethProductCards(productCardsData)
   }
 
+  if (cardsFilter === 'Curve LP') {
+    return crvProductCards(productCardsData)
+  }
+
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
+}
+
+function crvProductCards(productCardsData: ProductCardData[]): ProductCardData[] {
+  const tokenMeta = tokens.find((t) => t.symbol === 'CRV')
+  if (tokenMeta) {
+    const { bannerIcon, bannerGif, background, name } = tokenMeta
+    return [
+      {
+        ilk: 'Curve-LP',
+        token: 'CRV',
+        liquidationRatio: new BigNumber(20),
+        stabilityFee: new BigNumber(1),
+        currentCollateralPrice: new BigNumber(7),
+        bannerIcon,
+        bannerGif,
+        background,
+        name,
+        isFull: false,
+      },
+    ]
+  } else {
+    return []
+  }
 }
 
 export function createProductCardsData$(
