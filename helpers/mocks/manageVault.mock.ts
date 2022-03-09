@@ -18,10 +18,10 @@ import { switchMap } from 'rxjs/operators'
 
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
-import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
+import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
@@ -194,30 +194,6 @@ function buildMockDependencies({
     saveVaultType$,
     vaultHistory$,
   }
-}
-
-export interface MockManageVaultProps {
-  _context$?: Observable<Context>
-  _txHelpers$?: Observable<TxHelpers>
-  _ilkData$?: Observable<IlkData>
-  _priceInfo$?: Observable<PriceInfo>
-  _balanceInfo$?: Observable<BalanceInfo>
-  _proxyAddress$?: Observable<string | undefined>
-  _collateralAllowance$?: Observable<BigNumber>
-  _daiAllowance$?: Observable<BigNumber>
-  _vault$?: Observable<Vault>
-  _saveVaultType$?: Observable<void>
-
-  ilkData?: MockIlkDataProps
-  priceInfo?: MockPriceInfoProps
-  balanceInfo?: MockBalanceInfoProps
-  vault?: MockVaultProps
-
-  proxyAddress?: string
-  collateralAllowance?: BigNumber
-  daiAllowance?: BigNumber
-  account?: string
-  status?: 'connected'
 }
 
 export function mockManageVault$(

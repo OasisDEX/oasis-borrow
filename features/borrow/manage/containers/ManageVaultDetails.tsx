@@ -18,8 +18,8 @@ import { Box, Grid } from 'theme-ui'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
-import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },

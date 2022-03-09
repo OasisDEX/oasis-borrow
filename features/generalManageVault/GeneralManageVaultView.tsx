@@ -76,17 +76,13 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
             case VaultType.Borrow:
               return (
                 <Container variant="vaultPageContainer">
-                  <ManageVaultContainer
-                    manageVault={generalManageVault.state}
-                  />
+                  <ManageVaultContainer manageVault={generalManageVault.state} />
                 </Container>
               )
             case VaultType.Insti:
               return (
                 <Container variant="vaultPageContainer">
-                  <ManageInstiVaultContainer
-                    manageVault={generalManageVault.state}
-                  />
+                  <ManageInstiVaultContainer manageVault={generalManageVault.state} />
                 </Container>
               )
             case VaultType.Multiply:
