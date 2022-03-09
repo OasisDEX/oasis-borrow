@@ -101,8 +101,7 @@ function UserAccount({ position }: UserAccountProps) {
   const web3Provider = (() => {
     const { web3ContextConnected$ } = useAppContext()
     const web3Context = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? 
-      web3Context?.web3.currentProvider: null
+    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
   })()
 
   return (
