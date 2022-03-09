@@ -18,6 +18,7 @@ import { switchMap } from 'rxjs/operators'
 
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
+import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
@@ -31,6 +32,67 @@ import { mockVault$, MockVaultProps } from './vaults.mock'
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)
 
+const mockedBorrowEvents: VaultHistoryEvent[] = [
+  {
+    token: 'ETH',
+    kind: 'WITHDRAW',
+    collateralAmount: new BigNumber(-2),
+    oraclePrice: new BigNumber(2705),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+  {
+    token: 'ETH',
+    kind: 'GENERATE',
+    daiAmount: new BigNumber(1000),
+    oraclePrice: new BigNumber(2650),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+  {
+    token: 'ETH',
+    kind: 'DEPOSIT',
+    collateralAmount: new BigNumber(5),
+    oraclePrice: new BigNumber(2700),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+]
+
+export interface MockManageVaultProps {
+  _context$?: Observable<Context>
+  _txHelpers$?: Observable<TxHelpers>
+  _ilkData$?: Observable<IlkData>
+  _priceInfo$?: Observable<PriceInfo>
+  _balanceInfo$?: Observable<BalanceInfo>
+  _proxyAddress$?: Observable<string | undefined>
+  _vaultHistory$?: Observable<VaultHistoryEvent[]>
+  _collateralAllowance$?: Observable<BigNumber>
+  _daiAllowance$?: Observable<BigNumber>
+  _vault$?: Observable<Vault>
+  _saveVaultType$?: Observable<void>
+
+  ilkData?: MockIlkDataProps
+  priceInfo?: MockPriceInfoProps
+  balanceInfo?: MockBalanceInfoProps
+  vault?: MockVaultProps
+
+  proxyAddress?: string
+  collateralAllowance?: BigNumber
+  daiAllowance?: BigNumber
+  account?: string
+  status?: 'connected'
+}
+
 function buildMockDependencies({
   _context$,
   _txHelpers$,
@@ -38,10 +100,12 @@ function buildMockDependencies({
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
+  _vaultHistory$,
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
   _saveVaultType$,
+
   ilkData,
   priceInfo,
   balanceInfo,
@@ -84,6 +148,10 @@ function buildMockDependencies({
     return _proxyAddress$ || of(proxyAddress)
   }
 
+  function vaultHistory$() {
+    return _vaultHistory$ || of(mockedBorrowEvents)
+  }
+
   function allowance$(_token: string) {
     return _token === 'DAI'
       ? _daiAllowance$ || daiAllowance
@@ -124,6 +192,7 @@ function buildMockDependencies({
     allowance$,
     vault$,
     saveVaultType$,
+    vaultHistory$
   }
 }
 
@@ -164,6 +233,7 @@ export function mockManageVault$(
     ilkData$,
     vault$,
     saveVaultType$,
+    vaultHistory$
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -177,6 +247,7 @@ export function mockManageVault$(
     vault$,
     saveVaultType$,
     addGasEstimationMock,
+    vaultHistory$,
     withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
     StandardBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,

@@ -497,6 +497,7 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
+        vaultHistory$,
         withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         StandardBorrowManageVaultViewStateProvider,
         id,

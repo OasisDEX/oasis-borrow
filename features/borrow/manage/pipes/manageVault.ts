@@ -24,6 +24,8 @@ import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
+import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
+import { createHistoryChange$ } from './manageHistory'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
 import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
@@ -102,6 +104,7 @@ export interface ManageVaultEnvironment<V extends Vault> {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   priceInfo: PriceInfo
+  vaultHistory: VaultHistoryEvent[]
 }
 
 interface ManageVaultFunctions {
@@ -359,6 +362,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   vault$: (id: BigNumber, chainId: number) => Observable<V>,
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
   vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
   id: BigNumber,
@@ -425,6 +429,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
+                    createHistoryChange$(vaultHistory$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

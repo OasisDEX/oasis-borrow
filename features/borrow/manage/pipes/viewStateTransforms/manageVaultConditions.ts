@@ -207,6 +207,8 @@ export interface ManageVaultConditions {
   customDaiAllowanceAmountLessThanPaybackAmount: boolean
   withdrawCollateralOnVaultUnderDebtFloor: boolean
   depositCollateralOnVaultUnderDebtFloor: boolean
+
+  stopLossTriggered: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -258,6 +260,8 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   withdrawCollateralOnVaultUnderDebtFloor: false,
   depositCollateralOnVaultUnderDebtFloor: false,
+
+  stopLossTriggered: false,
 }
 
 export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
@@ -298,6 +302,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     isMultiplyTransitionStage,
     afterDebt,
     txError,
+    vaultHistory,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -540,6 +545,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     'multiplyTransitionFailure',
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
+  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+
   return {
     ...state,
     canProgress,
@@ -587,5 +594,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
 
     withdrawCollateralOnVaultUnderDebtFloor,
     depositCollateralOnVaultUnderDebtFloor,
+
+    stopLossTriggered,
   }
 }

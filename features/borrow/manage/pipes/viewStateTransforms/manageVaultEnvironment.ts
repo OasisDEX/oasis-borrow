@@ -2,7 +2,8 @@ import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 
-import { BalanceInfoChange } from '../../../../shared/balanceInfo'
+import { BalanceInfoChange } from '../../../shared/balanceInfo'
+import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 export type ManageVaultEnvironmentChange =
@@ -10,6 +11,7 @@ export type ManageVaultEnvironmentChange =
   | BalanceInfoChange
   | IlkDataChange
   | VaultChange
+  | VaultHistoryChange
 
 export function applyManageVaultEnvironment<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
@@ -40,6 +42,13 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
     return {
       ...state,
       vault: change.vault,
+    }
+  }
+
+  if (change.kind === 'vaultHistory') {
+    return {
+      ...state,
+      vaultHistory: change.vaultHistory,
     }
   }
 

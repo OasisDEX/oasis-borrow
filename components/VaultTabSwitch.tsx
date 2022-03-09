@@ -1,5 +1,6 @@
 import { Box, Button, Grid } from '@theme-ui/components'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Flex, Heading } from 'theme-ui'
 
@@ -10,24 +11,27 @@ enum VaultViewMode {
   Protection,
   Overview,
 }
-//TODO: make number of tabs and labels and controls configurable - refactor replace it with TabSwitcher ~ŁW
-export function TabSwitchLayout({
+
+export function VaultTabSwitch({
   defaultMode,
   heading,
   headerControl,
   overViewControl,
   historyControl,
   protectionControl,
+  showProtectionTab,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
   heading: JSX.Element
   headerControl: JSX.Element
-  historyControl?: JSX.Element
-  protectionControl?: JSX.Element
+  historyControl: JSX.Element
+  protectionControl: JSX.Element
+  showProtectionTab: boolean
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
   const { uiChanges } = useAppContext()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -43,6 +47,8 @@ export function TabSwitchLayout({
     return currentMode === activeMode ? 'tab' : 'tabInactive'
   }
 
+  const buttonSx = { flex: 1, px: 4 }
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
@@ -57,30 +63,40 @@ export function TabSwitchLayout({
           {heading}
         </Heading>
       </Flex>
-      <Grid
-        columns={3}
-        sx={{ zIndex: 1, width: '40%', backgroundColor: 'fadedWhite' }}
+      <Flex
+        sx={{
+          zIndex: 1,
+          maxWidth: 'fit-content',
+          backgroundColor: 'fadedWhite',
+          bg: 'backgroundAlt',
+          borderRadius: '60px',
+        }}
         variant="vaultEditingControllerContainer"
       >
         <Button
           onClick={() => setMode(VaultViewMode.Overview)}
           variant={getVariant(mode, VaultViewMode.Overview)}
+          sx={buttonSx}
         >
-          Overview
+          {t('system.overview')}
         </Button>
-        <Button
-          onClick={() => setMode(VaultViewMode.Protection)}
-          variant={getVariant(mode, VaultViewMode.Protection)}
-        >
-          Protection
-        </Button>
+        {showProtectionTab && (
+          <Button
+            onClick={() => setMode(VaultViewMode.Protection)}
+            variant={getVariant(mode, VaultViewMode.Protection)}
+            sx={buttonSx}
+          >
+            {t('system.protection')}
+          </Button>
+        )}
         <Button
           onClick={() => setMode(VaultViewMode.History)}
           variant={getVariant(mode, VaultViewMode.History)}
+          sx={buttonSx}
         >
-          History
+          {t('system.history')}
         </Button>
-      </Grid>
+      </Flex>
       <Box sx={{ zIndex: 1 }}>
         {headerControl}
         {mode === VaultViewMode.Overview
