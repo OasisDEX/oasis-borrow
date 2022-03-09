@@ -203,11 +203,11 @@ export interface AdjustSlFormLayoutProps {
   ethPrice: BigNumber
   vault: Vault
   ilkData: IlkData
-  initialSliderPosition: boolean
   etherscan: string
   toggleForms: () => void
   selectedSLValue: BigNumber
   firstStopLossSetup: boolean
+  isEditing: boolean
 }
 
 export function AdjustSlFormLayout({
@@ -226,15 +226,13 @@ export function AdjustSlFormLayout({
   vault,
   ilkData,
   gasEstimation,
-  initialSliderPosition,
   etherscan,
   toggleForms,
   selectedSLValue,
   firstStopLossSetup,
+  isEditing,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
-
-  const isEditing = !stopLossLevel.multipliedBy(100).eq(selectedSLValue) && !initialSliderPosition
 
   return (
     <Grid columns={[1]}>
@@ -312,7 +310,7 @@ export function AdjustSlFormLayout({
       <Box>
         <TxStatusSection txStatus={txState} txHash={txHash} etherscan={etherscan} />
       </Box>
-      {isEditing && accountIsController && !txProgressing && (
+      {accountIsController && !txProgressing && (
         <AutomationFormButtons
           triggerConfig={addTriggerConfig}
           toggleForms={toggleForms}

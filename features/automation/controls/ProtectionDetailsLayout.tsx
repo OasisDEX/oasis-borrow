@@ -22,6 +22,7 @@ export interface ProtectionDetailsLayoutProps {
   liquidationPenalty: BigNumber
   afterSlRatio: BigNumber
   isCollateralActive: boolean
+  isEditing: boolean
 }
 
 export function ProtectionDetailsLayout({
@@ -37,10 +38,8 @@ export function ProtectionDetailsLayout({
   liquidationPenalty,
   afterSlRatio,
   isCollateralActive,
+  isEditing,
 }: ProtectionDetailsLayoutProps) {
-  afterSlRatio = afterSlRatio ?? new BigNumber(0)
-  const showAfterPill = !!afterSlRatio && !afterSlRatio.eq(slRatio) && !afterSlRatio.eq(0)
-
   const afterPillColors = getAfterPillColors('onSuccess')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
@@ -55,7 +54,7 @@ export function ProtectionDetailsLayout({
           slRatio={slRatio}
           collateralizationRatio={collateralizationRatio}
           isProtected={isStopLossEnabled}
-          showAfterPill={showAfterPill}
+          showAfterPill={isEditing}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}
         />
@@ -64,7 +63,7 @@ export function ProtectionDetailsLayout({
           liquidationPrice={liquidationPrice}
           liquidationRatio={liquidationRatio}
           isProtected={isStopLossEnabled}
-          showAfterPill={showAfterPill}
+          showAfterPill={isEditing}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}
         />
@@ -83,7 +82,7 @@ export function ProtectionDetailsLayout({
           debt={vaultDebt}
           liquidationRatio={liquidationRatio}
           token={token}
-          showAfterPill={showAfterPill}
+          showAfterPill={isEditing}
           lockedCollateral={lockedCollateral}
           afterSlRatio={afterSlRatio}
           afterPillColors={afterPillColors}

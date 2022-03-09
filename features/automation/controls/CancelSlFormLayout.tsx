@@ -174,9 +174,6 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
-          optionalCleanup={() => {
-            props.toggleForms()
-          }}
           toggleKey={
             (props.txState as TxStatus) === TxStatus.Success
               ? 'protection.set-stop-loss-again'
