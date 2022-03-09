@@ -9,14 +9,15 @@ import {
   RetryableLoadingButtonProps,
 } from '../../../../components/dumb/RetryableLoadingButton'
 import { VaultViewMode } from '../../../../components/TabSwitchLayout'
-import { ADD_FORM_CHANGE } from '../UITypes/AddFormChange'
-import { REMOVE_FORM_CHANGE } from '../UITypes/RemoveFormChange'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+} from '../UITypes/ProtectionFormModeChange'
 import { TAB_CHANGE_SUBJECT } from '../UITypes/TabChange'
 
 interface AutomationFormButtonsProps {
   triggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
-  optionalCleanup?: () => void
   toggleKey: string
   txSuccess: boolean
   type?: 'adjust' | 'cancel'
@@ -28,7 +29,6 @@ export function AutomationFormButtons({
   toggleKey,
   txSuccess,
   type,
-  optionalCleanup,
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -38,23 +38,17 @@ export function AutomationFormButtons({
       type: 'change-tab',
       currentMode: VaultViewMode.Overview,
     })
-    uiChanges.clear(ADD_FORM_CHANGE)
-    uiChanges.clear(REMOVE_FORM_CHANGE)
-    if (optionalCleanup) optionalCleanup()
+    uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+      currentMode: AutomationFromKind.ADJUST,
+      type: 'change-mode',
+    })
   }
 
   return (
     <>
-      {(triggerConfig.isEditing || triggerConfig.isStopLossEnabled) && !txSuccess && (
+      {!txSuccess && (
         <Box>
           <RetryableLoadingButton {...triggerConfig} />
-        </Box>
-      )}
-      {!triggerConfig.isEditing && !triggerConfig.isStopLossEnabled && !txSuccess && (
-        <Box>
-          <Button sx={{ width: '100%', justifySelf: 'center' }} variant="primary">
-            {t('add-stop-loss')}
-          </Button>
         </Box>
       )}
       {txSuccess && (

@@ -12,17 +12,24 @@ interface GeneralManageControlProps {
 }
 
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
-  const { generalManageVault$ } = useAppContext()
+  const { generalManageVault$, automationTriggersData$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
   const generalManageVaultWithError = useObservableWithError(generalManageVaultWithId$)
+  const autoTriggersData$ = automationTriggersData$(id)
+  const autoTriggersDataWithError = useObservableWithError(autoTriggersData$)
 
   return (
-    <WithErrorHandler error={[generalManageVaultWithError.error]}>
+    <WithErrorHandler error={[generalManageVaultWithError.error, autoTriggersDataWithError.error]}>
       <WithLoadingIndicator
-        value={[generalManageVaultWithError.value]}
+        value={[generalManageVaultWithError.value, autoTriggersDataWithError.value]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([generalManageVault]) => <GeneralManageLayout generalManageVault={generalManageVault} />}
+        {([generalManageVault, autoTriggersData]) => (
+          <GeneralManageLayout
+            generalManageVault={generalManageVault}
+            autoTriggersData={autoTriggersData}
+          />
+        )}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

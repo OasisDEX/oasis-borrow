@@ -27,6 +27,7 @@ import { getEstimatedGasFeeText } from '../../../components/vault/VaultChangesIn
 import { GasEstimationStatus } from '../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
+import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
@@ -92,31 +93,16 @@ export function AdjustSlFormControl({
 
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
-  const defaultUIState: AddFormChange = {
-    collateralActive: isToCollateral,
-    selectedSLValue: startingSlRatio.multipliedBy(100),
-    txDetails: undefined,
-  }
-
-  const [initialSliderPosition, clearInitialSliderPosition] = useState(true)
-
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
-  const currentUIState = { ...defaultUIState, ...uiState }
-
-  const [selectedSLValue, setSelectedSLValue] = useState(currentUIState.selectedSLValue)
+  const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
     () =>
-      prepareAddTriggerData(
-        vault,
-        currentUIState.collateralActive,
-        selectedSLValue,
-        replacedTriggerId,
-      ),
-    [currentUIState.collateralActive, selectedSLValue, replacedTriggerId],
+      prepareAddTriggerData(vault, uiState.collateralActive, selectedSLValue, replacedTriggerId),
+    [uiState.collateralActive, selectedSLValue, replacedTriggerId],
   )
   /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(() => {
@@ -128,17 +114,26 @@ export function AdjustSlFormControl({
 
   const gasEstimationData = useObservable(gasEstimationData$)
 
-  const isEditing =
-    (!isStopLossEnabled && !currentUIState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
-    (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
-    currentUIState.collateralActive !== isToCollateral
+  // const isEditing =
+  //   (!isStopLossEnabled && !uiState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
+  //   (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
+  //   uiState.collateralActive !== isToCollateral
+
+  const isEditing = getIsEditingProtection({
+    isStopLossEnabled,
+    selectedSLValue: uiState.selectedSLValue,
+    startingSlRatio,
+    stopLossLevel,
+    collateralActive: uiState.collateralActive,
+    isToCollateral,
+  })
 
   const currentCollRatio = vault.lockedCollateral
     .multipliedBy(currentCollateralData!.currentPrice)
     .dividedBy(vault.debt)
 
   const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
-    .multipliedBy(currentUIState.selectedSLValue)
+    .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
     .dividedBy(currentCollRatio)
 
@@ -154,28 +149,27 @@ export function AdjustSlFormControl({
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
     onclickHandler: (optionName: string) => {
-      clearInitialSliderPosition(false)
       uiChanges.publish(ADD_FORM_CHANGE, {
         type: 'close-type',
         toCollateral: optionName === validOptions[0],
       })
     },
-    isCollateralActive: currentUIState.collateralActive,
+    isCollateralActive: uiState.collateralActive,
     collateralTokenSymbol: token,
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const sliderPercentageFill = currentUIState.selectedSLValue
+  const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
     .div(currentCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
     sliderPercentageFill,
-    leftBoundry: currentUIState.selectedSLValue,
+    leftBoundry: uiState.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
-    lastValue: currentUIState.selectedSLValue,
+    lastValue: uiState.selectedSLValue,
     leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
     rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
@@ -185,7 +179,6 @@ export function AdjustSlFormControl({
     minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
-      clearInitialSliderPosition(false)
       /*TO DO: this is duplicated and can be extracted*/
       const currentCollRatio = vault.lockedCollateral
         .multipliedBy(currentCollateralData!.currentPrice)
@@ -257,7 +250,10 @@ export function AdjustSlFormControl({
     isLoading: false,
     isRetry: false,
     isEditing,
-    disabled: !isOwner || (!isEditing && currentUIState?.txDetails?.txStatus !== TxStatus.Success),
+    disabled:
+      !isOwner ||
+      (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
+      (!isEditing && !uiState?.txDetails),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -270,8 +266,7 @@ export function AdjustSlFormControl({
     .div(dynamicStopLossPrice)
 
   const txProgressing =
-    !!currentUIState?.txDetails?.txStatus &&
-    progressStatuses.includes(currentUIState?.txDetails?.txStatus)
+    !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
   const etherscan = ctx.etherscan.url
@@ -281,10 +276,10 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: currentUIState?.txDetails?.txStatus,
+    txState: uiState?.txDetails?.txStatus,
     txProgressing,
-    txCost: currentUIState?.txDetails?.txCost,
-    txHash: currentUIState?.txDetails?.txHash,
+    txCost: uiState?.txDetails?.txCost,
+    txHash: uiState?.txDetails?.txHash,
     gasEstimation,
     accountIsController,
     stopLossLevel,
@@ -294,11 +289,11 @@ export function AdjustSlFormControl({
     ethPrice,
     vault,
     ilkData,
-    initialSliderPosition,
     etherscan,
     selectedSLValue,
     toggleForms,
     firstStopLossSetup,
+    isEditing,
   }
 
   return <AdjustSlFormLayout {...props} />
