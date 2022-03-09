@@ -22,7 +22,7 @@ export function ExchangeButton({ web3Provider }: { web3Provider?: provider}) {
           position: 'absolute',
           top: 'auto',
           left: 'auto',
-          right: 0,
+          right: 1,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',

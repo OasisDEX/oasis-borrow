@@ -5,7 +5,7 @@ import { theme } from 'theme'
 import { provider } from 'web3-core'
 import { Box, Flex } from 'theme-ui'
 
-const { colors, radii, fonts } = theme
+const { colors, radii } = theme
 
 const widgetTheme = {
   accent: colors.primary,
@@ -19,9 +19,6 @@ const widgetTheme = {
   error: colors.error,
   tokenColorExtraction: false,
   borderRadius: radii.mediumLarge,
-  fontFamily: fonts.body,
-  fontFamilyVariable: fonts.body,
-  fontFamilyCode: fonts.body,
 }
 
 const cssPaths = {
