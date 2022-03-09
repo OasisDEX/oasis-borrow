@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import React, { useState, useRef } from 'react'
-import { Box, Button } from 'theme-ui'
+import { Box, Button, Flex } from 'theme-ui'
 import { UniswapWidget } from './UniswapWidget'
 import { provider } from 'web3-core'
 
@@ -9,14 +8,13 @@ export function ExchangeButton({ web3Provider }: { web3Provider?: provider}) {
   const component = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
-  useOnClickOutside(component, () => setIsOpen(false))
 
-  return <Box ref={component} sx={{ position: 'relative', display: 'inline-block' }}>
-    <Button
-      variant="menuButton" sx={{ px: 2 }}
+  return <Flex ref={component} sx={{ position: 'relative', mr: 2, pr: 1 }}>
+     <Button
+      variant="menuButtonRound"
       onClick={() => setIsOpen(!isOpen)}
       >
-      <Icon name="exchange" size="auto" width="32" sx={{ mx: 1 }} />
+      {isOpen ? <Icon name="close" size="auto" width="20"/> : <Icon name="exchange" size="auto" width="32"/>}
     </Button>
     <Box sx={{
           display: isOpen ? 'block' : 'none',
@@ -36,5 +34,5 @@ export function ExchangeButton({ web3Provider }: { web3Provider?: provider}) {
         }}>
       <UniswapWidget web3Provider={web3Provider} />
     </Box>
-  </Box>
+  </Flex>
 }

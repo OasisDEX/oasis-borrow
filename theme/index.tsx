@@ -662,6 +662,15 @@ const oasisBaseTheme = {
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
     },
+    menuButtonRound: {
+      variant: 'buttons.menuButton',
+      width: '46px',
+      height: '46px',
+      padding: 0,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     unStyled: {
       background: 'unset',
       border: 'unset',
