@@ -1,6 +1,7 @@
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import dynamic from 'next/dynamic'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Flex } from 'theme-ui'
 import { provider } from 'web3-core'
@@ -30,14 +31,18 @@ const cssPaths = {
 }
 
 export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
-  // @ts-ignore
-  const SwapWidget = dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
-    ssr: false,
-  })
+  const [SwapWidget, setSwapWidget] = useState()
+
+  useEffect(() => {
+    // @ts-ignore
+    setSwapWidget(dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
+      ssr: false,
+    }))
+  }, [])
 
   const { swapBtn, token1Btn, token2Btn } = cssPaths
 
-  return web3Provider ? (
+  return web3Provider && SwapWidget ? (
     <Box
       sx={{
         [swapBtn]: { border: '3px solid', borderColor: 'primary' },
