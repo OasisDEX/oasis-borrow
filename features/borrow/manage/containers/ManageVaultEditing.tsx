@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
 function DepositInput({
@@ -18,7 +18,7 @@ function DepositInput({
   updateDepositMax,
   priceInfo: { currentCollateralPrice },
   collapsed,
-}: ManageVaultState & { collapsed?: boolean }) {
+}: ManageStandardBorrowVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
       collapsed={collapsed}
@@ -47,7 +47,7 @@ function GenerateInput({
   updateGenerate,
   updateGenerateMax,
   collapsed,
-}: ManageVaultState & { collapsed?: boolean }) {
+}: ManageStandardBorrowVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
       collapsed={collapsed}
@@ -77,7 +77,7 @@ function WithdrawInput({
   updateWithdrawMax,
   priceInfo: { currentCollateralPrice },
   collapsed,
-}: ManageVaultState & { collapsed?: boolean }) {
+}: ManageStandardBorrowVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
       collapsed={collapsed}
@@ -106,7 +106,7 @@ function PaybackInput({
   updatePayback,
   updatePaybackMax,
   collapsed,
-}: ManageVaultState & { collapsed?: boolean }) {
+}: ManageStandardBorrowVaultState & { collapsed?: boolean }) {
   return (
     <VaultActionInput
       collapsed={collapsed}
@@ -123,7 +123,9 @@ function PaybackInput({
   )
 }
 
-export function ManageVaultEditing(props: ManageVaultState & { extraInfo?: ReactNode }) {
+export function ManageVaultEditing(
+  props: ManageStandardBorrowVaultState & { extraInfo?: ReactNode },
+) {
   const { t } = useTranslation()
 
   const {

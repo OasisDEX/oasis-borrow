@@ -15,12 +15,12 @@ import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
 import { ManageVaultEditing } from './ManageVaultEditing'
 
-function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
+function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
@@ -50,7 +50,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageVaultState) {
 }
 
 export function ManageVaultForm(
-  props: ManageVaultState & { hideMultiply?: boolean; extraInfo?: ReactNode },
+  props: ManageStandardBorrowVaultState & { hideMultiply?: boolean; extraInfo?: ReactNode },
 ) {
   const {
     isEditingStage,

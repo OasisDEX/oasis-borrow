@@ -14,16 +14,15 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../pipes/manageVault'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
   const {
-    vault: { id, ilk },
+    vault: { id, originationFeePercent, instiIlkName },
     clear,
     ilkData,
-    originationFee,
     originationFeeUSD,
   } = manageVault
 
@@ -44,10 +43,14 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      <DefaultVaultHeader header={t('vault.insti-header', { ilk, id })} ilkData={ilkData} id={id}>
+      <DefaultVaultHeader
+        header={t('vault.insti-header', { ilk: instiIlkName, id })}
+        ilkData={ilkData}
+        id={id}
+      >
         <VaultIlkDetailsItem
           label={t('manage-insti-vault.origination-fee')}
-          value={`${formatPercent(originationFee.times(100), { precision: 2 })}`}
+          value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
           tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
           styles={{
             tooltip: {
@@ -69,7 +72,11 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
               <>
                 <VaultChangesInformationItem
                   label={t('manage-insti-vault.origination-fee')}
-                  value={<Flex>{`$${formatAmount(originationFeeUSD, 'USD')}`}</Flex>}
+                  value={
+                    <Flex>
+                      {originationFeeUSD ? `$${formatAmount(originationFeeUSD, 'USD')}` : '$ -- '}
+                    </Flex>
+                  }
                 />
                 <VaultChangesInformationEstimatedGasFee {...manageVault} />
               </>

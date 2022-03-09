@@ -10,12 +10,16 @@ import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultForm } from './ManageVaultForm'
 
-export function ManageVaultContainer({ manageVault }: { manageVault: ManageVaultState }) {
+export function ManageVaultContainer({
+  manageVault,
+}: {
+  manageVault: ManageStandardBorrowVaultState
+}) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
     vault: { id, ilk },
