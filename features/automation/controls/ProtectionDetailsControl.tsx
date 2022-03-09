@@ -24,13 +24,6 @@ function renderLayout(
 ) {
   const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
 
-  // const initialVaultCollRatio = new BigNumber(
-  //   ilkData.liquidationRatio
-  //     .plus(vaultData.collateralizationRatio)
-  //     .dividedBy(2)
-  //     .toFixed(2, BigNumber.ROUND_CEIL),
-  // )
-
   const initialVaultCollRatio = getInitialVaultCollRatio({
     liquidationRatio: ilkData.liquidationRatio,
     collateralizationRatio: vaultData.collateralizationRatio,
@@ -57,12 +50,6 @@ function renderLayout(
 
     afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
     isCollateralActive: !!lastUIState?.collateralActive,
-    // isEditing:
-    //   (!triggersData.isStopLossEnabled &&
-    //     !lastUIState.selectedSLValue.eq(initialVaultCollRatio.multipliedBy(100))) ||
-    //   (triggersData.isStopLossEnabled &&
-    //     !lastUIState.selectedSLValue.eq(triggersData.stopLossLevel.multipliedBy(100))) ||
-    //   lastUIState.collateralActive !== triggersData.isToCollateral,
     isEditing: getIsEditingProtection({
       isStopLossEnabled: triggersData.isStopLossEnabled,
       selectedSLValue: lastUIState.selectedSLValue,

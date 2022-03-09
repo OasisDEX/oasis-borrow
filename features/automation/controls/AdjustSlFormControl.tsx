@@ -114,11 +114,6 @@ export function AdjustSlFormControl({
 
   const gasEstimationData = useObservable(gasEstimationData$)
 
-  // const isEditing =
-  //   (!isStopLossEnabled && !uiState.selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
-  //   (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
-  //   uiState.collateralActive !== isToCollateral
-
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
     selectedSLValue: uiState.selectedSLValue,

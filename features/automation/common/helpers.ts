@@ -1,9 +1,5 @@
 import BigNumber from 'bignumber.js'
 
-// export const helpers() {
-//   return null
-// }
-
 export function getInitialVaultCollRatio({
   liquidationRatio,
   collateralizationRatio,
