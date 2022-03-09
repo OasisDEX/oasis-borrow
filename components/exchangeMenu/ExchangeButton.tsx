@@ -31,6 +31,8 @@ export function ExchangeButton({ web3Provider }: { web3Provider?: provider}) {
           border: 'none',
           overflowX: 'visible',
           zIndex: 0,
+          minWidth: 7,
+          minHeight: 7
         }}>
       <UniswapWidget web3Provider={web3Provider} />
     </Box>
