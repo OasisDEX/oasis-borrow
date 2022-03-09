@@ -192,7 +192,7 @@ function buildMockDependencies({
     allowance$,
     vault$,
     saveVaultType$,
-    vaultHistory$
+    vaultHistory$,
   }
 }
 
@@ -233,7 +233,7 @@ export function mockManageVault$(
     ilkData$,
     vault$,
     saveVaultType$,
-    vaultHistory$
+    vaultHistory$,
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -270,6 +270,7 @@ export function mockManageInstiVault$(
     balanceInfo$,
     ilkData$,
     saveVaultType$,
+    vaultHistory$,
   } = buildMockDependencies(args)
 
   function instiVault$(): Observable<InstiVault> {
@@ -304,6 +305,7 @@ export function mockManageInstiVault$(
     instiVault$,
     saveVaultType$,
     addGasEstimationMock,
+    vaultHistory$,
     withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
     InstitutionalBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
