@@ -8,7 +8,7 @@ import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
 } from '../../../../components/dumb/RetryableLoadingButton'
-import { VaultViewMode } from '../../../../components/TabSwitchLayout'
+import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { TAB_CHANGE_SUBJECT } from '../UITypes/TabChange'
 
 interface AutomationFormButtonsProps {
