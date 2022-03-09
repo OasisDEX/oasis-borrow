@@ -1,5 +1,4 @@
 import { AppSpinner } from 'helpers/AppSpinner'
-import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { theme } from 'theme'
@@ -34,10 +33,12 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   const [SwapWidget, setSwapWidget] = useState()
 
   useEffect(() => {
-    // @ts-ignore
-    setSwapWidget(dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
-      ssr: false,
-    }))
+    setSwapWidget(
+      // @ts-ignore
+      dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
+        ssr: false,
+      }),
+    )
   }, [])
 
   const { swapBtn, token1Btn, token2Btn } = cssPaths
