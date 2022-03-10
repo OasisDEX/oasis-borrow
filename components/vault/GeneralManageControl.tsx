@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { GeneralManageLayout } from './GeneralManageLayout'
 
@@ -14,14 +14,20 @@ interface GeneralManageControlProps {
 export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const { generalManageVault$, automationTriggersData$ } = useAppContext()
   const generalManageVaultWithId$ = generalManageVault$(id)
-  const generalManageVaultWithError = useObservableWithError(generalManageVaultWithId$)
+  const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const autoTriggersData$ = automationTriggersData$(id)
-  const autoTriggersDataWithError = useObservableWithError(autoTriggersData$)
+  const [autoTriggersData, autoTriggersDataError] = useObservable(autoTriggersData$)
+
+  useEffect(() => {
+    return () => {
+      generalManageVault?.state.clear()
+    }
+  }, [])
 
   return (
-    <WithErrorHandler error={[generalManageVaultWithError.error, autoTriggersDataWithError.error]}>
+    <WithErrorHandler error={[generalManageVaultError, autoTriggersDataError]}>
       <WithLoadingIndicator
-        value={[generalManageVaultWithError.value, autoTriggersDataWithError.value]}
+        value={[generalManageVault, autoTriggersData]}
         customLoader={<VaultContainerSpinner />}
       >
         {([generalManageVault, autoTriggersData]) => (

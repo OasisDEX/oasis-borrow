@@ -4,29 +4,15 @@ import { Observable } from 'rxjs'
 
 export type Unpack<T extends Observable<any>> = T extends Observable<infer U> ? U : never
 
-// In order to infer proper type of observable returned by curry from ramda which uses recursive typing
-// we need to postpone inference.
-// Type Unpack is used in order to extract inner type of Observable
-export function useObservable<O extends Observable<any>>(o$: O): Unpack<O> | undefined {
-  const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
-
-  useEffect(() => {
-    const subscription = o$.subscribe(
-      (v: Unpack<O>) => setValue(v),
-      (error) => {
-        console.log('error', error)
-        Sentry.captureException(error)
-      },
-    )
-    return () => subscription.unsubscribe()
-  }, [o$])
-
-  return value
+function raiseObservableErrorInSentry(e: any) {
+  if (e instanceof Error) {
+    Sentry.captureException(e)
+  } else {
+    Sentry.captureException(new Error(JSON.stringify(e)))
+  }
 }
 
-export function useObservableWithError<O extends Observable<any>>(
-  o$: O,
-): { value: Unpack<O> | undefined; error: any } {
+export function useObservable<O extends Observable<any>>(o$: O): [Unpack<O> | undefined, any] {
   const [value, setValue] = useState<Unpack<O> | undefined>(undefined)
   const [error, setError] = useState<any>(undefined)
 
@@ -35,11 +21,11 @@ export function useObservableWithError<O extends Observable<any>>(
       (v: Unpack<O>) => setValue(v),
       (e) => {
         setError(e)
-        Sentry.captureException(e)
+        raiseObservableErrorInSentry(e)
       },
     )
     return () => subscription.unsubscribe()
   }, [o$])
 
-  return { value, error }
+  return [value, error]
 }

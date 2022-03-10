@@ -20,6 +20,7 @@ import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/d
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
@@ -99,6 +100,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     totalGasSpentUSD,
     vault,
     priceInfo,
+    stopLossTriggered,
   } = props
   const openModal = useModal()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -110,6 +112,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     <Box>
       {automationEnabled && (
         <>
+          {stopLossTriggered && <StopLossTriggeredBannerControl />}
           <GetProtectionBannerControl vaultId={id} />
           <StopLossBannerControl
             vaultId={id}

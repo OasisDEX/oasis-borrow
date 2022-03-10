@@ -215,6 +215,7 @@ export interface ManageVaultConditions {
 
   highSlippage: boolean
   invalidSlippage: boolean
+  stopLossTriggered: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -274,6 +275,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   highSlippage: false,
   invalidSlippage: false,
+  stopLossTriggered: false,
 }
 
 export function applyManageVaultConditions(
@@ -328,6 +330,7 @@ export function applyManageVaultConditions(
     txError,
 
     invalidSlippage,
+    vaultHistory,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -346,7 +349,7 @@ export function applyManageVaultConditions(
 
   const exchangeDataRequired =
     originalEditingStage === 'adjustPosition' ||
-    (originalEditingStage === 'otherActions' && otherAction === 'closeVault')
+    (originalEditingStage === 'otherActions' && otherAction === 'closeVault' && !debt.isZero())
 
   const shouldShowExchangeError = exchangeDataRequired && exchangeError
 
@@ -591,6 +594,8 @@ export function applyManageVaultConditions(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
+  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+
   return {
     ...state,
     canProgress,
@@ -645,5 +650,6 @@ export function applyManageVaultConditions(
     hasToDepositCollateralOnEmptyVault,
 
     highSlippage,
+    stopLossTriggered,
   }
 }

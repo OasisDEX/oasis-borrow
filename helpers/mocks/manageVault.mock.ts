@@ -4,7 +4,11 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
-import { createManageVault$, ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
+import {
+  createManageVault$,
+  ManageInstiVaultState,
+  ManageStandardBorrowVaultState,
+} from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -14,6 +18,10 @@ import { switchMap } from 'rxjs/operators'
 
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
+import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
+import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
+import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
@@ -24,6 +32,42 @@ import { mockVault$, MockVaultProps } from './vaults.mock'
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)
 
+const mockedBorrowEvents: VaultHistoryEvent[] = [
+  {
+    token: 'ETH',
+    kind: 'WITHDRAW',
+    collateralAmount: new BigNumber(-2),
+    oraclePrice: new BigNumber(2705),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+  {
+    token: 'ETH',
+    kind: 'GENERATE',
+    daiAmount: new BigNumber(1000),
+    oraclePrice: new BigNumber(2650),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+  {
+    token: 'ETH',
+    kind: 'DEPOSIT',
+    collateralAmount: new BigNumber(5),
+    oraclePrice: new BigNumber(2700),
+    ethPrice: new BigNumber(2650),
+    rate: new BigNumber(1),
+    hash: '0x',
+    timestamp: 'string',
+    id: 'string',
+  },
+]
+
 export interface MockManageVaultProps {
   _context$?: Observable<Context>
   _txHelpers$?: Observable<TxHelpers>
@@ -31,6 +75,7 @@ export interface MockManageVaultProps {
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
+  _vaultHistory$?: Observable<VaultHistoryEvent[]>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
@@ -48,17 +93,19 @@ export interface MockManageVaultProps {
   status?: 'connected'
 }
 
-export function mockManageVault$({
+function buildMockDependencies({
   _context$,
   _txHelpers$,
   _ilkData$,
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
+  _vaultHistory$,
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
   _saveVaultType$,
+
   ilkData,
   priceInfo,
   balanceInfo,
@@ -68,7 +115,7 @@ export function mockManageVault$({
   daiAllowance,
   account = '0xVaultController',
   status = 'connected',
-}: MockManageVaultProps = {}): Observable<ManageVaultState> {
+}: MockManageVaultProps = {}) {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
   const context$ =
@@ -101,6 +148,10 @@ export function mockManageVault$({
     return _proxyAddress$ || of(proxyAddress)
   }
 
+  function vaultHistory$() {
+    return _vaultHistory$ || of(mockedBorrowEvents)
+  }
+
   function allowance$(_token: string) {
     return _token === 'DAI'
       ? _daiAllowance$ || daiAllowance
@@ -130,7 +181,38 @@ export function mockManageVault$({
     return _saveVaultType$ || of(undefined)
   }
 
-  return createManageVault$(
+  return {
+    token,
+    context$,
+    txHelpers$,
+    priceInfo$,
+    ilkData$,
+    balanceInfo$,
+    proxyAddress$,
+    allowance$,
+    vault$,
+    saveVaultType$,
+    vaultHistory$,
+  }
+}
+
+export function mockManageVault$(
+  args: MockManageVaultProps = {},
+): Observable<ManageStandardBorrowVaultState> {
+  const {
+    context$,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilkData$,
+    vault$,
+    saveVaultType$,
+    vaultHistory$,
+  } = buildMockDependencies(args)
+
+  return createManageVault$<Vault, ManageStandardBorrowVaultState>(
     context$ as Observable<Context>,
     txHelpers$,
     proxyAddress$,
@@ -141,7 +223,67 @@ export function mockManageVault$({
     vault$,
     saveVaultType$,
     addGasEstimationMock,
+    vaultHistory$,
     withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+    StandardBorrowManageVaultViewStateProvider,
+    MOCK_VAULT_ID,
+  )
+}
+
+export interface MockManageInstiVaultProps extends MockManageVaultProps {
+  _instiVault$?: Observable<InstiVault>
+}
+
+export function mockManageInstiVault$(
+  args: MockManageInstiVaultProps = {},
+): Observable<ManageInstiVaultState> {
+  const {
+    context$,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilkData$,
+    saveVaultType$,
+    vaultHistory$,
+  } = buildMockDependencies(args)
+
+  function instiVault$(): Observable<InstiVault> {
+    function charterNib$() {
+      return of(new BigNumber(1))
+    }
+    function charterPeace$() {
+      return of(new BigNumber(2))
+    }
+    function charterUline$() {
+      return of(new BigNumber(3))
+    }
+    const instiVault$ = createInstiVault$(
+      () => mockVault$(),
+      charterNib$,
+      charterPeace$,
+      charterUline$,
+      new BigNumber(1),
+    )
+
+    return args._instiVault$ || instiVault$
+  }
+
+  return createManageVault$<InstiVault, ManageInstiVaultState>(
+    context$ as Observable<Context>,
+    txHelpers$,
+    proxyAddress$,
+    allowance$,
+    priceInfo$,
+    balanceInfo$,
+    ilkData$,
+    instiVault$,
+    saveVaultType$,
+    addGasEstimationMock,
+    vaultHistory$,
+    withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+    InstitutionalBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
   )
 }

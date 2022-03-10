@@ -134,8 +134,8 @@ function ConnectedHeader() {
   const { pathname } = useRouter()
   const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
-  const accountData = useObservable(accountData$)
-  const context = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [context] = useObservable(context$)
   const earnEnabled = useFeatureToggle('EarnProduct')
 
   const numberOfVaults =
@@ -335,7 +335,7 @@ function MobileMenu() {
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const { context$ } = useAppContext()
-  const context = useObservable(context$)
+  const [context] = useObservable(context$)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
   const isConnected = !!(context as ContextConnected)?.account
 
@@ -564,7 +564,7 @@ function DisconnectedHeader() {
 
 export function AppHeader() {
   const { context$ } = useAppContext()
-  const context = useObservable(context$)
+  const [context] = useObservable(context$)
 
   return context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />
 }

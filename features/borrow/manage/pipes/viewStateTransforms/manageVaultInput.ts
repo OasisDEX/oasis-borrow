@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { zero } from 'helpers/zero'
 
-import { ManageVaultChange, ManageVaultState } from './manageVault'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 interface DepositChange {
   kind: 'deposit'
@@ -61,19 +61,22 @@ export type ManageVaultInputChange =
   | PaybackChange
   | PaybackMaxChange
 
-export const depositAndGenerateDefaults: Partial<ManageVaultState> = {
+export const depositAndGenerateDefaults: Partial<ManageStandardBorrowVaultState> = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
 }
 
-export const paybackAndWithdrawDefaults: Partial<ManageVaultState> = {
+export const paybackAndWithdrawDefaults: Partial<ManageStandardBorrowVaultState> = {
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
   paybackAmount: undefined,
 }
 
-export function applyManageVaultInput(change: ManageVaultChange, state: ManageVaultState) {
+export function applyManageVaultInput<VaultState extends ManageStandardBorrowVaultState>(
+  change: ManageVaultChange,
+  state: VaultState,
+): VaultState {
   const {
     stage,
     priceInfo,
@@ -143,7 +146,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
 
   if (change.kind === 'generate' && canGenerate) {
     const { generateAmount } = change
-    return {
+    const thing = {
       ...state,
       generateAmount,
       ...(!generateAmount &&
@@ -154,6 +157,7 @@ export function applyManageVaultInput(change: ManageVaultChange, state: ManageVa
         }),
       ...paybackAndWithdrawDefaults,
     }
+    return thing
   }
 
   if (change.kind === 'generateMax' && canGenerate) {

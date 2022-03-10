@@ -77,7 +77,7 @@ export function CancelSlFormControl({
     )
   }, [txData])
 
-  const gasEstimationData = useObservable(gasEstimationData$) as HasGasEstimation
+  const [gasEstimationData] = useObservable(gasEstimationData$) as HasGasEstimation
 
   const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
 

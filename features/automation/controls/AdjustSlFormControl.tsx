@@ -112,7 +112,7 @@ export function AdjustSlFormControl({
     )
   }, [txData])
 
-  const gasEstimationData = useObservable(gasEstimationData$)
+  const [gasEstimationData] = useObservable(gasEstimationData$)
 
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,

@@ -1,27 +1,24 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { VaultViewMode } from 'components/TabSwitchLayout'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
+import { VaultViewMode } from 'components/VaultTabSwitch'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
 import { ManageVaultForm } from './ManageVaultForm'
 
 export function ManageVaultContainer({
   manageVault,
-  vaultHistory,
 }: {
-  manageVault: ManageVaultState
-  vaultHistory: VaultHistoryEvent[]
+  manageVault: ManageStandardBorrowVaultState
 }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
@@ -61,7 +58,7 @@ export function ManageVaultContainer({
               })
             }}
           />
-          {!automationEnabled && <VaultHistoryView vaultHistory={vaultHistory} />}
+          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm

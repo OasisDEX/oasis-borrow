@@ -8,7 +8,7 @@ import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
 } from '../../../../components/dumb/RetryableLoadingButton'
-import { VaultViewMode } from '../../../../components/TabSwitchLayout'
+import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,

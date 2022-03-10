@@ -15,8 +15,8 @@ function VaultHeadingManage({ vaultId }: VaultHeadingManageProps) {
   const { t } = useTranslation()
 
   const { ilkDataList$, vault$ } = useAppContext()
-  const ilkDataList = useObservable(ilkDataList$)
-  const vault = useObservable(vault$(vaultId))
+  const [ilkDataList] = useObservable(ilkDataList$)
+  const [vault] = useObservable(vault$(vaultId))
 
   const ilkData = ilkDataList?.filter((x) => x.ilk === vault?.ilk)[0]
 

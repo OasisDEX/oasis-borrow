@@ -10,6 +10,7 @@ export function checkVaultTypeLocalStorage$(id: BigNumber): Observable<VaultType
 }
 
 export enum VaultType {
+  Insti = 'insti',
   Borrow = 'borrow',
   Multiply = 'multiply',
 }
@@ -45,23 +46,4 @@ export function saveVaultTypeForAccount(
   } else {
     onFailure()
   }
-}
-
-/**
- * @deprecated The method should not be used unless for some reason there will be requirement
- * to duplicate data in localStorage of user's browser or for some experimental/dev reasoon
- */
-export function saveVaultTypeLocalStorage$(
-  id: BigNumber,
-  token: string,
-  vaultType: VaultType,
-): Observable<void> {
-  localStorage.setItem(`vault-type/${id.toFixed(0)}`, vaultType)
-
-  return of(undefined).pipe(delay(2000))
-}
-
-export function isInstiVault(vaultID: BigNumber) {
-  const INSTI_VAULT_IDS: BigNumber[] = [] // add your vault id here for testing
-  return INSTI_VAULT_IDS.some((bn) => bn.eq(vaultID))
 }

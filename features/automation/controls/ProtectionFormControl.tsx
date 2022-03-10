@@ -7,7 +7,7 @@ import { useAppContext } from '../../../components/AppContextProvider'
 import { VaultFormContainer } from '../../../components/vault/VaultFormContainer'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../../helpers/observableHook'
+import { useObservable } from '../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from '../../form/commonValidators'
 import {
@@ -36,8 +36,8 @@ export function ProtectionFormControl({
 }: Props) {
   const { txHelpers$, context$, uiChanges } = useAppContext()
 
-  const txHelpersWithError = useObservableWithError(txHelpers$)
-  const contextWithError = useObservableWithError(context$)
+  const [txHelpers, txHelpersError] = useObservable(txHelpers$)
+  const [context, contextError] = useObservable(context$)
 
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
@@ -45,11 +45,8 @@ export function ProtectionFormControl({
   const accountIsController = accountIsConnected && account === vault.controller
 
   return (
-    <WithErrorHandler error={[contextWithError.error]}>
-      <WithLoadingIndicator
-        value={[contextWithError.value]}
-        customLoader={<VaultContainerSpinner />}
-      >
+    <WithErrorHandler error={[contextError, txHelpersError]}>
+      <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
         {([context]) => (
           <VaultFormContainer toggleTitle="Edit Vault">
             {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
@@ -57,7 +54,7 @@ export function ProtectionFormControl({
                 vault={vault}
                 ilkData={ilkData}
                 triggerData={automationTriggersData}
-                tx={txHelpersWithError.value}
+                tx={txHelpers}
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={() => {
@@ -74,7 +71,7 @@ export function ProtectionFormControl({
                 collateralPrice={collateralPrices}
                 ilkData={ilkData}
                 triggerData={automationTriggersData}
-                tx={txHelpersWithError.value}
+                tx={txHelpers}
                 ctx={context}
                 accountIsController={accountIsController}
                 toggleForms={() => {
