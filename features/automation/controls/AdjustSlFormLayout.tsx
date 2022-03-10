@@ -19,7 +19,7 @@ import {
 import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
 import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { one, zero } from '../../../helpers/zero'
+import { one } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
