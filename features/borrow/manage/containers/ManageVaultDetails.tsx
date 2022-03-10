@@ -19,7 +19,7 @@ import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
@@ -28,7 +28,7 @@ export function ManageVaultDetailsSummary({
   daiYieldFromTotalCollateral,
   afterPillColors,
   showAfterPill,
-}: ManageVaultState & AfterPillProps) {
+}: ManageStandardBorrowVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -94,7 +94,7 @@ export function ManageVaultDetailsSummary({
 }
 
 export function ManageVaultDetails(
-  props: ManageVaultState & { onBannerButtonClickHandler: () => void },
+  props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
 ) {
   const {
     vault: { id, token, liquidationPrice, lockedCollateral, lockedCollateralUSD },

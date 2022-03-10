@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../pipes/manageVault'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
@@ -22,12 +22,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
-    activeCollRatio,
-
-    activeCollRatioPriceUSD,
-    termEnd,
-    fixedFee,
-    nextFixedFee,
+    vault: { activeCollRatio, activeCollRatioPriceUSD, termEnd, fixedFee, nextFixedFee },
   } = props
   const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)

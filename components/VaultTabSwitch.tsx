@@ -8,7 +8,7 @@ import { Flex, Heading } from 'theme-ui'
 import { useAppContext } from './AppContextProvider'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
-enum VaultViewMode {
+export enum VaultViewMode {
   Overview,
   Protection,
   History,
@@ -169,5 +169,3 @@ export function VaultTabSwitch({
     </Grid>
   )
 }
-
-export { VaultViewMode }
