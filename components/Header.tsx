@@ -95,6 +95,27 @@ interface UserAccountProps {
   position: 'fixed' | 'relative'
 }
 
+function PositionsLink() {
+  const { accountData$, context$ } = useAppContext()
+  const accountData = useObservable(accountData$)
+  const context = useObservable(context$)
+  const { pathname } = useRouter()
+  const { t } = useTranslation()
+
+  const numberOfVaults =
+    accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
+
+  return <AppLink
+      variant="links.navHeader"
+      sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
+      href={`/owner/${(context as ContextConnected)?.account}`}
+      onClick={() => trackingEvents.yourVaults()}
+    >
+      {t('your-vaults')}{' '}
+      {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+  </AppLink>
+}
+
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
 
@@ -142,15 +163,9 @@ function navLinkColor(isActive: boolean) {
 
 function ConnectedHeader() {
   const { pathname } = useRouter()
-  const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
-  const accountData = useObservable(accountData$)
-  const context = useObservable(context$)
   const earnEnabled = useFeatureToggle('EarnProduct')
-
-  const numberOfVaults =
-    accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
-
+  
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
@@ -172,15 +187,7 @@ function ConnectedHeader() {
             >
               <Logo />
               <Flex sx={{ ml: 5, zIndex: 1 }}>
-                <AppLink
-                  variant="links.navHeader"
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
-                  href={`/owner/${(context as ContextConnected)?.account}`}
-                  onClick={() => trackingEvents.yourVaults()}
-                >
-                  {t('your-vaults')}{' '}
-                  {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-                </AppLink>
+                <PositionsLink />
                 <AppLink
                   variant="links.navHeader"
                   href={HEADER_LINKS.multiply}
@@ -218,14 +225,7 @@ function ConnectedHeader() {
         <BasicHeader variant="appContainer">
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
-            <AppLink
-              variant="nav"
-              sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
-              href={`/owner/${(context as ContextConnected)?.account}`}
-              onClick={() => trackingEvents.yourVaults()}
-            >
-              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-            </AppLink>
+            <PositionsLink />
           </Flex>
           <MobileMenu />
           <UserAccount position="fixed" />
