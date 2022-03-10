@@ -8,7 +8,7 @@ import { TxMetaKind } from '../txMeta'
 import { MockDssProxyActionsSmartContractWrapper } from './adapters/dssProxyActionsSmartContractWrapper.mock'
 import { vaultActionsLogicFactory } from './vaultActionsLogicFactory'
 
-describe('ProxyActions', () => {
+describe('vaultActionsLogicFactory', () => {
   describe('withdrawAndPayback', () => {
     type TestData = {
       testName: string
