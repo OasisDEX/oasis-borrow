@@ -20,6 +20,7 @@ import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
+import { progressStatuses } from '../common/consts/txStatues'
 
 interface CancelDownsideProtectionInformationProps {
   gasEstimationText: ReactNode
@@ -88,10 +89,10 @@ export interface CancelSlFormLayoutProps {
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
-  const isTxProgressing =
-    !!props.txState && props.txState !== TxStatus.Success && props.txState !== TxStatus.Failure
-  const txIsNotStarted = !props.txState
+
+  const isTxProgressing = !!props.txState && progressStatuses.includes(props.txState)
   const gasEstimationText = getEstimatedGasFeeText(props.gasEstimation)
+
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
@@ -130,26 +131,26 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           },
         }}
       />
-      {txIsNotStarted && (
-        <Box my={3}>
-          <CancelDownsideProtectionInformation
-            gasEstimationText={gasEstimationText}
-            liquidationPrice={props.liquidationPrice}
+      {props.txState !== TxStatus.Success && !isTxProgressing && (
+        <>
+          <Box my={3}>
+            <CancelDownsideProtectionInformation
+              gasEstimationText={gasEstimationText}
+              liquidationPrice={props.liquidationPrice}
+            />
+          </Box>
+          <MessageCard
+            messages={[
+              <>
+                <strong>{t(`notice`)}</strong>: {t('protection.cancel-notice')}
+              </>,
+            ]}
+            type="warning"
+            withBullet={false}
           />
-        </Box>
+        </>
       )}
       {isTxProgressing && <OpenVaultAnimation />}
-      {txIsNotStarted && (
-        <MessageCard
-          messages={[
-            <>
-              <strong>{t(`notice`)}</strong>: {t('protection.cancel-notice')}
-            </>,
-          ]}
-          type="warning"
-          withBullet={false}
-        />
-      )}
       {props.txState === TxStatus.Success && (
         <Box>
           <Flex sx={{ justifyContent: 'center', mb: 4 }}>
