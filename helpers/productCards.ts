@@ -11,7 +11,6 @@ import {
   getToken,
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
-  tokens,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
 
@@ -82,7 +81,7 @@ type Ilk =
   | 'UNIV2DAIUSDC-A'
   | 'UNIV2UNIETH-A'
   | 'UNIV2WBTCDAI-A'
-  | 'Curve-LP'
+  | 'CRVV1ETHSTETH-A'
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -233,7 +232,7 @@ export const productCardsConfig: {
     'UNIV2DAIUSDC-A': 'lp-tokens',
     'UNIV2UNIETH-A': 'lp-tokens',
     'UNIV2WBTCDAI-A': 'lp-tokens',
-    'Curve-LP': 'borrow',
+    'CRVV1ETHSTETH-A': 'borrow',
   } as Record<string, string>,
 }
 
@@ -359,33 +358,10 @@ export function borrowPageCardsData({
   }
 
   if (cardsFilter === 'Curve LP') {
-    return crvProductCards(productCardsData)
+    return productCardsData.filter((card) => card.ilk === 'CRVV1ETHSTETH-A')
   }
 
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
-}
-
-function crvProductCards(_: ProductCardData[]): ProductCardData[] {
-  const tokenMeta = tokens.find((t) => t.symbol === 'CRV')
-  if (tokenMeta) {
-    const { bannerIcon, bannerGif, background, name } = tokenMeta
-    return [
-      {
-        ilk: 'Curve-LP',
-        token: 'CRV',
-        liquidationRatio: new BigNumber(20),
-        stabilityFee: new BigNumber(1),
-        currentCollateralPrice: new BigNumber(7),
-        bannerIcon,
-        bannerGif,
-        background,
-        name,
-        isFull: false,
-      },
-    ]
-  } else {
-    return []
-  }
 }
 
 export function createProductCardsData$(
@@ -398,8 +374,9 @@ export function createProductCardsData$(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
           return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) =>
-              of({
+            switchMap((priceInfo) => {
+              console.log(`ilk.liquidationRatio ${ilk.token}`, ilk.liquidationRatio.toString())
+              return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
@@ -410,8 +387,8 @@ export function createProductCardsData$(
                 background: tokenMeta.background,
                 name: tokenMeta.name,
                 isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              }),
-            ),
+              })
+            }),
           )
         }),
       ),

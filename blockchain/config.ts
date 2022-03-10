@@ -86,6 +86,7 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
+  'CRVV1ETHSTETH-A',
 ]
 
 const tokensMainnet = {

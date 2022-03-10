@@ -542,7 +542,7 @@ export const tokens = [
     tags: ['stablecoin'],
   },
   {
-    symbol: 'CRV',
+    symbol: 'CRVV1ETHSTETH',
     precision: 18,
     digits: 5,
     digitsInstant: 2,
