@@ -686,7 +686,13 @@ export function setupAppContext() {
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
 
-  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(vaults$, ilksWithBalance$))
+  const automationTriggersData$ = memoize(
+    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
+  )
+
+  const vaultsOverview$ = memoize(
+    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
+  )
 
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
@@ -706,10 +712,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
-
-  const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
-  )
 
   const uiChanges = initializeUIChanges()
 

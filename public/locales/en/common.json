@@ -883,7 +883,8 @@
     "cancel-notice": "Cancelling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
     "find-more-about-setting-stop-loss": "Find out more about setting stop loss →",
     "set-stop-loss-again": "Set up stop loss again",
-    "sl-triggered-gas-estimation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing."
+    "sl-triggered-gas-estimation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
+    "stop-loss-on": "Stop Loss On"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
