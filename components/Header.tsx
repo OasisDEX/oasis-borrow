@@ -119,7 +119,7 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
-        <Box sx={{ display: ['none', 'flex'] }}>
+        <Box sx={{ display: ['none', web3Provider ? 'flex' : 'none'] }}>
           <ExchangeButton web3Provider={web3Provider} />
         </Box>
         <UserSettingsButton />
