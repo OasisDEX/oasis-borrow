@@ -6,12 +6,28 @@ import {
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
+import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from './proxyActions'
 
 export const CharteredDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
+  open(context: ContextConnected, data: OpenData): NonPayableTransactionObject<string> {
+    throw 'cannot open chartered vault manually'
+  },
+
+  openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
+    throw 'cannot open chartered vault manually'
+  },
+
+  openLockGemAndDraw(
+    context: ContextConnected,
+    data: OpenData,
+  ): NonPayableTransactionObject<string> {
+    throw 'cannot open chartered vault manually'
+  },
+
   resolveContractAddress(context: ContextConnected): string {
     return context.dssProxyActionsCharter.address
   },
+
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return context
       .contract<DssProxyActionsCharter>(context.dssProxyActionsCharter)

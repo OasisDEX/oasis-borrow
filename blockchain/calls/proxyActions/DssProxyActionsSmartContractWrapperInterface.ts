@@ -3,7 +3,7 @@ import {
   PayableTransactionObject,
 } from '../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../network'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
+import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from './proxyActions'
 
 export interface DssProxyActionsSmartContractWrapperInterface {
   resolveContractAddress: (context: ContextConnected) => string
@@ -72,4 +72,16 @@ export interface DssProxyActionsSmartContractWrapperInterface {
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ) => NonPayableTransactionObject<void>
+
+  openLockETHAndDraw: (
+    context: ContextConnected,
+    data: OpenData,
+  ) => PayableTransactionObject<string>
+
+  openLockGemAndDraw: (
+    context: ContextConnected,
+    data: OpenData,
+  ) => NonPayableTransactionObject<string>
+
+  open: (context: ContextConnected, data: OpenData) => NonPayableTransactionObject<string>
 }

@@ -1,3 +1,5 @@
+import Web3 from 'web3'
+
 import { DssProxyActions } from '../../../types/web3-v1-contracts/dss-proxy-actions'
 import {
   NonPayableTransactionObject,
@@ -6,9 +8,50 @@ import {
 import { ContextConnected } from '../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../utils'
 import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
+import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from './proxyActions'
 
 export const StandardDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
+  openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
+    const { dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
+    const { generateAmount, ilk } = data
+    return contract<DssProxyActions>(context.dssProxyActions).methods.openLockETHAndDraw(
+      dssCdpManager.address,
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(generateAmount, 'DAI').toFixed(0),
+    )
+  },
+
+  openLockGemAndDraw(
+    context: ContextConnected,
+    data: OpenData,
+  ): NonPayableTransactionObject<string> {
+    const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
+    const { depositAmount, generateAmount, token, ilk } = data
+    return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
+      dssCdpManager.address,
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(depositAmount, token).toFixed(0),
+      amountToWei(generateAmount, 'DAI').toFixed(0),
+      true,
+    )
+  },
+
+  open(context: ContextConnected, data: OpenData): NonPayableTransactionObject<string> {
+    const { dssProxyActions, dssCdpManager, contract } = context
+    const { ilk, proxyAddress } = data
+    return contract<DssProxyActions>(dssProxyActions).methods.open(
+      dssCdpManager.address,
+      Web3.utils.utf8ToHex(ilk),
+      proxyAddress,
+    )
+  },
+
   resolveContractAddress(context: ContextConnected): string {
     return context.dssProxyActions.address
   },

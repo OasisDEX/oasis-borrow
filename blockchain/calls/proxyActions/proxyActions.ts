@@ -13,7 +13,6 @@ import { DssGuniProxyActions } from 'types/ethers-contracts'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
-import Web3 from 'web3'
 
 import { TxMetaKind } from '../txMeta'
 import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
@@ -72,6 +71,7 @@ export function getWithdrawAndPaybackCallData(
 export interface WithdrawPaybackDepositGenerateLogicInterface {
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
+  open: TransactionDef<OpenData>
 }
 
 export function withdrawPaybackDepositGenerateLogicFactory(
@@ -114,6 +114,21 @@ export function withdrawPaybackDepositGenerateLogicFactory(
       options: ({ token, depositAmount }) =>
         token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
     },
+    open: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getOpenCallData(data, context, proxyActionsSmartContractWrapper).encodeABI(),
+        ]
+      },
+      options: ({ token, depositAmount }) =>
+        token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    },
   }
 }
 
@@ -127,7 +142,7 @@ export type DepositAndGenerateData = {
   proxyAddress: string
 }
 
-export function getDepositAndGenerateCallData(
+function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
   proxyActionsContract: DssProxyActionsSmartContractWrapperInterface,
@@ -162,75 +177,20 @@ export type OpenData = {
   proxyAddress: string
 }
 
-function getOpenCallData(data: OpenData, context: ContextConnected) {
-  const { dssProxyActions, dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
-  const { depositAmount, generateAmount, token, ilk, proxyAddress } = data
+function getOpenCallData(
+  data: OpenData,
+  context: ContextConnected,
+  proxyActionWrapper: DssProxyActionsSmartContractWrapperInterface,
+) {
+  const { depositAmount, generateAmount, token } = data
 
-  if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
+  if (depositAmount.gt(zero) && generateAmount.gte(zero)) {
     if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
-        dssCdpManager.address,
-        mcdJug.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        Web3.utils.utf8ToHex(ilk),
-        amountToWei(generateAmount, 'DAI').toFixed(0),
-      )
+      return proxyActionWrapper.openLockETHAndDraw(context, data)
     }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
-      dssCdpManager.address,
-      mcdJug.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      Web3.utils.utf8ToHex(ilk),
-      amountToWei(depositAmount, token).toFixed(0),
-      amountToWei(generateAmount, 'DAI').toFixed(0),
-      true,
-    )
+    return proxyActionWrapper.openLockGemAndDraw(context, data)
   }
-
-  if (depositAmount.gt(zero) && generateAmount.isZero()) {
-    if (token === 'ETH') {
-      return contract<DssProxyActions>(dssProxyActions).methods.openLockETHAndDraw(
-        dssCdpManager.address,
-        mcdJug.address,
-        joins[ilk],
-        mcdJoinDai.address,
-        Web3.utils.utf8ToHex(ilk),
-        zero.toFixed(0),
-      )
-    }
-
-    return contract<DssProxyActions>(dssProxyActions).methods.openLockGemAndDraw(
-      dssCdpManager.address,
-      mcdJug.address,
-      joins[ilk],
-      mcdJoinDai.address,
-      Web3.utils.utf8ToHex(ilk),
-      amountToWei(depositAmount, token).toFixed(0),
-      zero.toFixed(0),
-      true,
-    )
-  }
-
-  return contract<DssProxyActions>(dssProxyActions).methods.open(
-    dssCdpManager.address,
-    Web3.utils.utf8ToHex(ilk),
-    proxyAddress,
-  )
-}
-
-export const open: TransactionDef<OpenData> = {
-  call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
-  },
-  prepareArgs: (data, context) => {
-    const { dssProxyActions } = context
-    return [dssProxyActions.address, getOpenCallData(data, context).encodeABI()]
-  },
-  options: ({ token, depositAmount }) =>
-    token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+  return proxyActionWrapper.open(context, data)
 }
 
 export type OpenMultiplyData = {

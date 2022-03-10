@@ -1,5 +1,8 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { open, OpenData } from 'blockchain/calls/proxyActions/proxyActions'
+import {
+  OpenData,
+  withdrawPaybackDepositGenerateLogicFactory,
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -9,6 +12,7 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 
+import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -83,14 +87,17 @@ export function openVault(
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
 ) {
-  sendWithGasEstimation(open, {
-    kind: TxMetaKind.open,
-    generateAmount: generateAmount || zero,
-    depositAmount: depositAmount || zero,
-    proxyAddress: proxyAddress!,
-    ilk,
-    token,
-  })
+  sendWithGasEstimation(
+    withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper).open,
+    {
+      kind: TxMetaKind.open,
+      generateAmount: generateAmount || zero,
+      depositAmount: depositAmount || zero,
+      proxyAddress: proxyAddress!,
+      ilk,
+      token,
+    },
+  )
     .pipe(
       transactionToX<OpenVaultChange, OpenData>(
         { kind: 'txWaitingForApproval' },
@@ -137,14 +144,17 @@ export function applyEstimateGas(
     const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
 
     if (proxyAddress && (generateAmount || depositAmount)) {
-      return estimateGas(open, {
-        kind: TxMetaKind.open,
-        generateAmount: generateAmount || zero,
-        depositAmount: depositAmount || zero,
-        proxyAddress,
-        ilk,
-        token,
-      })
+      return estimateGas(
+        withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper).open,
+        {
+          kind: TxMetaKind.open,
+          generateAmount: generateAmount || zero,
+          depositAmount: depositAmount || zero,
+          proxyAddress,
+          ilk,
+          token,
+        },
+      )
     }
 
     return undefined

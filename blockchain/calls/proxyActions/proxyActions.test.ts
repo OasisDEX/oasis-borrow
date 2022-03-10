@@ -1,201 +1,169 @@
 import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockContextConnected } from 'helpers/mocks/context.mock'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { describe } from 'mocha'
 
-import { PROXY_ACTIONS } from '../../addresses/mainnet.json'
-import { CharteredDssProxyActionsContractWrapper } from './charteredDssProxyActionsContractWrapper'
-import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
+import { TxMetaKind } from '../txMeta'
+import { MockDssProxyActionsSmartContractWrapper } from './dssProxyActionsSmartContractWrapper.mock'
 import {
-  DepositAndGenerateData,
-  getDepositAndGenerateCallData,
-  getWithdrawAndPaybackCallData,
-  WithdrawAndPaybackData,
   withdrawPaybackDepositGenerateLogicFactory,
 } from './proxyActions'
-import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
-import { TxMetaKind } from '../txMeta'
 
 describe('ProxyActions', () => {
-  describe('proxyActionsFactory', () => {
-    const mockWithdrawAndPaybackData: WithdrawAndPaybackData = {
-      kind: TxMetaKind.withdrawAndPayback,
-      id: new BigNumber(1),
-      token: 'ETH',
-      ilk: 'ETH-A',
-      withdrawAmount: new BigNumber(2),
-      paybackAmount: new BigNumber(3),
-      proxyAddress: PROXY_ACTIONS,
-      shouldPaybackAll: false,
-    }
-
-    const mockDepositAndGenerateData: DepositAndGenerateData = {
-      kind: TxMetaKind.depositAndGenerate,
-      id: new BigNumber(1),
-      token: 'ETH',
-      ilk: 'ETH-A',
-      depositAmount: new BigNumber(2),
-      generateAmount: new BigNumber(3),
-      proxyAddress: PROXY_ACTIONS,
-    }
-
-    function runTest(
-      dssProxyAction: DssProxyActionsSmartContractWrapperInterface,
-      expectedAddress: string,
-    ): void {
-      const proxyAction = withdrawPaybackDepositGenerateLogicFactory(dssProxyAction)
-
-      const withdrawAndPaybackArgs = proxyAction.withdrawAndPayback.prepareArgs(
-        mockWithdrawAndPaybackData,
-        mockContextConnected,
-      )
-      const depositAndGenerateArgs = proxyAction.depositAndGenerate.prepareArgs(
-        mockDepositAndGenerateData,
-        mockContextConnected,
-      )
-
-      const PROXY_ADDRESS_ARG = 0
-      expect(withdrawAndPaybackArgs[PROXY_ADDRESS_ARG]).to.eq(expectedAddress)
-      expect(depositAndGenerateArgs[PROXY_ADDRESS_ARG]).to.eq(expectedAddress)
-    }
-
-    it('uses dssProxyActions contract for standard vaults', () => {
-      runTest(StandardDssProxyActionsContractWrapper, mockContextConnected.dssProxyActions.address)
-    })
-
-    it('uses dssProxyActionsCharter contract for institutional vaults', () => {
-      runTest(
-        CharteredDssProxyActionsContractWrapper,
-        mockContextConnected.dssProxyActionsCharter.address,
-      )
-    })
-  })
-
-  describe('getWithdrawAndPaybackCallData', () => {
-    interface ConstructWithdrawAndPaybackProps {
+  describe('withdrawAndPayback', () => {
+    type TestData = {
+      testName: string
       token: 'ETH' | 'WBTC'
-      withdrawAmount?: BigNumber
-      paybackAmount?: BigNumber
-      shouldPaybackAll?: boolean
+      withdrawAmount: number
+      paybackAmount: number
+      shouldPaybackAll: boolean
+      expectedMethodName: string
     }
 
-    function constructWithdrawAndPayback({
+    function runTest({
+      testName,
       token,
-      withdrawAmount = zero,
-      paybackAmount = zero,
-      shouldPaybackAll = false,
-    }: ConstructWithdrawAndPaybackProps): string {
-      return (getWithdrawAndPaybackCallData(
+      withdrawAmount,
+      paybackAmount,
+      shouldPaybackAll,
+      expectedMethodName,
+    }: TestData) {
+      const withdrawAmountBigNumber = new BigNumber(withdrawAmount)
+      const paybackAmountBigNumber = new BigNumber(paybackAmount)
+
+      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+        MockDssProxyActionsSmartContractWrapper,
+      ).withdrawAndPayback.prepareArgs(
         {
           kind: TxMetaKind.withdrawAndPayback,
           proxyAddress: '0xProxyAddress',
           id: one,
           token,
-          withdrawAmount,
-          paybackAmount,
-          ilk: `${token}-A`,
+          withdrawAmount: withdrawAmountBigNumber,
+          paybackAmount: paybackAmountBigNumber,
           shouldPaybackAll,
+          ilk: `${token}-A`,
         },
         mockContextConnected,
-        StandardDssProxyActionsContractWrapper,
-      ) as any)._method.name
+      )
+
+      const proxyActionAddress = proxyActionCall[0]
+
+      const methodCalled = proxyActionCall[1] as string
+      const actualMethodName = JSON.parse(methodCalled).method
+
+      it(testName, () => {
+        expect(actualMethodName).to.eq(expectedMethodName)
+        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
+      })
     }
 
-    it('should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'ETH',
-          withdrawAmount: one,
-          paybackAmount: new BigNumber('2000'),
-          shouldPaybackAll: true,
-        }),
-      ).to.deep.equal('wipeAllAndFreeETH')
-    })
+    const tests: Array<TestData> = [
+      {
+        testName:
+          'should call wipeAllAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true',
+        token: 'ETH',
+        withdrawAmount: 1,
+        paybackAmount: 2000,
+        shouldPaybackAll: true,
+        expectedMethodName: 'wipeAllAndFreeETH',
+      },
+      {
+        testName:
+          'should call wipeAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is false',
+        token: 'ETH',
+        withdrawAmount: 1,
+        paybackAmount: 2000,
+        shouldPaybackAll: false,
+        expectedMethodName: 'wipeAndFreeETH',
+      },
 
-    it('should call wipeAndFreeETH() when withdrawAmount & paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is false', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'ETH',
-          withdrawAmount: one,
-          paybackAmount: new BigNumber('2000'),
-        }),
-      ).to.deep.equal('wipeAndFreeETH')
-    })
+      {
+        testName:
+          'should call wipeAllAndFreeGem() when withdrawAmount & paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is true',
+        token: 'WBTC',
+        withdrawAmount: 1,
+        paybackAmount: 2000,
+        shouldPaybackAll: true,
+        expectedMethodName: 'wipeAllAndFreeGem',
+      },
 
-    it('should call wipeAllAndFreeGem() when withdrawAmount & paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is true', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'WBTC',
-          withdrawAmount: one,
-          paybackAmount: new BigNumber('2000'),
-          shouldPaybackAll: true,
-        }),
-      ).to.deep.equal('wipeAllAndFreeGem')
-    })
+      {
+        testName:
+          'should call wipeAndFreeGem() when withdrawAmount & paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is false',
+        token: 'WBTC',
+        withdrawAmount: 1,
+        paybackAmount: 2000,
+        shouldPaybackAll: false,
+        expectedMethodName: 'wipeAndFreeGem',
+      },
 
-    it('should call wipeAndFreeGem() when withdrawAmount & paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is false', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'WBTC',
-          withdrawAmount: one,
-          paybackAmount: new BigNumber('2000'),
-        }),
-      ).to.deep.equal('wipeAndFreeGem')
-    })
+      {
+        testName:
+          'should call freeETH() when withdrawAmount is greater than zero, paybackAmount is zero, token is ETH and the shouldPaybackAll flag is false',
+        token: 'ETH',
+        withdrawAmount: 1,
+        paybackAmount: 0,
+        shouldPaybackAll: false,
+        expectedMethodName: 'freeETH',
+      },
 
-    it('should call freeETH() when withdrawAmount is greater than zero, paybackAmount is zero, token is ETH and the shouldPaybackAll flag is false', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'ETH',
-          withdrawAmount: one,
-        }),
-      ).to.deep.equal('freeETH')
-    })
+      {
+        testName:
+          'should call freeGem() when withdrawAmount is greater than zero, paybackAmount is zero, token is WBTC and the shouldPaybackAll flag is false',
+        token: 'WBTC',
+        withdrawAmount: 1,
+        paybackAmount: 0,
+        shouldPaybackAll: false,
+        expectedMethodName: 'freeGem',
+      },
 
-    it('should call freeGem() when withdrawAmount is greater than zero, paybackAmount is zero, token is WBTC and the shouldPaybackAll flag is false', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'WBTC',
-          withdrawAmount: one,
-        }),
-      ).to.deep.equal('freeGem')
-    })
+      {
+        testName:
+          'should call wipeAll() when withdrawAmount is zero, paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is true',
+        token: 'ETH',
+        withdrawAmount: 0,
+        paybackAmount: 1000,
+        shouldPaybackAll: true,
+        expectedMethodName: 'wipeAll',
+      },
 
-    it('should call wipeAll() when withdrawAmount is zero, paybackAmount is greater than zero, token is ETH/WBTC and the shouldPaybackAll flag is true', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'WBTC',
-          paybackAmount: new BigNumber('1000'),
-          shouldPaybackAll: true,
-        }),
-      ).to.deep.equal('wipeAll')
-      expect(
-        constructWithdrawAndPayback({
-          token: 'ETH',
-          paybackAmount: new BigNumber('1000'),
-          shouldPaybackAll: true,
-        }),
-      ).to.deep.equal('wipeAll')
-    })
+      {
+        testName:
+          'should call wipeAll() when withdrawAmount is zero, paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is true',
+        token: 'WBTC',
+        withdrawAmount: 0,
+        paybackAmount: 1000,
+        shouldPaybackAll: true,
+        expectedMethodName: 'wipeAll',
+      },
 
-    it('should call wipe() when withdrawAmount is zero, paybackAmount is greater than zero, token is ETH/WBTC and the shouldPaybackAll flag is false', () => {
-      expect(
-        constructWithdrawAndPayback({
-          token: 'WBTC',
-          paybackAmount: new BigNumber('1000'),
-        }),
-      ).to.deep.equal('wipe')
-      expect(
-        constructWithdrawAndPayback({
-          token: 'ETH',
-          paybackAmount: new BigNumber('1000'),
-        }),
-      ).to.deep.equal('wipe')
-    })
+      {
+        testName:
+          'should call wipe() when withdrawAmount is zero, paybackAmount is greater than zero, token is ETH and the shouldPaybackAll flag is false',
+        token: 'ETH',
+        withdrawAmount: 0,
+        paybackAmount: 1000,
+        shouldPaybackAll: false,
+        expectedMethodName: 'wipe',
+      },
+
+      {
+        testName:
+          'should call wipe() when withdrawAmount is zero, paybackAmount is greater than zero, token is WBTC and the shouldPaybackAll flag is false',
+        token: 'WBTC',
+        withdrawAmount: 0,
+        paybackAmount: 1000,
+        shouldPaybackAll: false,
+        expectedMethodName: 'wipe',
+      },
+    ]
+
+    tests.forEach(runTest)
   })
 
-  describe('getDepositAndGenerateCallData', () => {
+  describe('depositAndGenerate', () => {
     interface TestData {
       testName: string
       depositAmount: number
@@ -213,7 +181,10 @@ describe('ProxyActions', () => {
     }: TestData): void {
       const depositAmountBigNumber = new BigNumber(depositAmount)
       const generateAmountBigNumber = new BigNumber(generateAmount)
-      const actualMethodName = (getDepositAndGenerateCallData(
+
+      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+        MockDssProxyActionsSmartContractWrapper,
+      ).depositAndGenerate.prepareArgs(
         {
           kind: TxMetaKind.depositAndGenerate,
           proxyAddress: '0xProxyAddress',
@@ -224,11 +195,16 @@ describe('ProxyActions', () => {
           ilk: `${token}-A`,
         },
         mockContextConnected,
-        StandardDssProxyActionsContractWrapper,
-      ) as any)._method.name
+      )
+
+      const proxyActionAddress = proxyActionCall[0]
+
+      const methodCalled = proxyActionCall[1] as string
+      const actualMethodName = JSON.parse(methodCalled).method
 
       it(testName, () => {
         expect(actualMethodName).to.eq(expectedMethodCalled)
+        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
       })
     }
 
@@ -283,5 +259,95 @@ describe('ProxyActions', () => {
     ]
 
     testData.forEach(runTest)
+  })
+
+  describe('open', () => {
+    type TestData = {
+      testName: string
+      depositAmount: number
+      generateAmount: number
+      token: 'ETH' | 'WBTC'
+      expectedMethod: string
+    }
+
+    function runTest({
+      testName,
+      depositAmount,
+      generateAmount,
+      expectedMethod,
+      token,
+    }: TestData): void {
+      const depositAmountBigNumber = new BigNumber(depositAmount)
+      const generateAmountBigNumber = new BigNumber(generateAmount)
+
+      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+        MockDssProxyActionsSmartContractWrapper,
+      ).open.prepareArgs(
+        {
+          kind: TxMetaKind.open,
+          proxyAddress: '0xProxyAddress',
+          token,
+          depositAmount: depositAmountBigNumber,
+          generateAmount: generateAmountBigNumber,
+          ilk: `${token}-A`,
+        },
+        mockContextConnected,
+      )
+
+      const proxyActionAddress = proxyActionCall[0]
+
+      const methodCalled = proxyActionCall[1] as string
+      const actualMethodName = JSON.parse(methodCalled).method
+
+      it(testName, () => {
+        expect(actualMethodName).to.eq(expectedMethod)
+        expect(proxyActionAddress).to.eq('0x-mock-dss-proxy-action-address')
+      })
+    }
+
+    const tests: Array<TestData> = [
+      {
+        testName:
+          'should call openLockETHAndDraw() when depositAmount > zero, generateAmount > zero and token is ETH',
+        depositAmount: 1,
+        generateAmount: 1,
+        token: 'ETH',
+        expectedMethod: 'openLockETHAndDraw',
+      },
+      {
+        testName:
+          'should call openLockGemAndDraw() when depositAmount > zero, generateAmount > zero and token is WBTC',
+        depositAmount: 1,
+        generateAmount: 1,
+        token: 'WBTC',
+        expectedMethod: 'openLockGemAndDraw',
+      },
+      {
+        testName:
+          'should call openLockETHAndDraw() when depositAmount > zero, generateAmount == zero and token is ETH',
+        depositAmount: 1,
+        generateAmount: 0,
+        token: 'ETH',
+        expectedMethod: 'openLockETHAndDraw',
+      },
+      {
+        testName:
+          'should call openLockGemAndDraw() when depositAmount > zero, generateAmount == zero and token is WBTC',
+        depositAmount: 1,
+        generateAmount: 0,
+        token: 'WBTC',
+        expectedMethod: 'openLockGemAndDraw',
+      },
+
+      {
+        testName: 'should call open() in all other cases',
+        depositAmount: 0,
+        generateAmount: 0,
+        token: 'WBTC',
+        expectedMethod: 'open',
+      },
+    ]
+
+    tests.forEach(runTest)
   })
 })
