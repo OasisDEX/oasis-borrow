@@ -2,12 +2,6 @@ import { VaultViewMode } from 'components/VaultTabSwitch'
 
 export const TAB_CHANGE_SUBJECT = 'tabChange'
 
-export enum VaultViewMode {
-  History,
-  Protection,
-  Overview,
-}
-
 export type TabChangeAction = { type: 'change-tab'; currentMode: VaultViewMode }
 
 export interface TabChange {
