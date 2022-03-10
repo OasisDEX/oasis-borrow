@@ -375,7 +375,6 @@ export function createProductCardsData$(
           const tokenMeta = getToken(ilk.token)
           return priceInfo$(ilk.token).pipe(
             switchMap((priceInfo) => {
-              console.log(`ilk.liquidationRatio ${ilk.token}`, ilk.liquidationRatio.toString())
               return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
