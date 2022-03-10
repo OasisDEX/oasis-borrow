@@ -4,18 +4,18 @@ import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { one, zero } from 'helpers/zero'
 import { describe } from 'mocha'
 
-import { PROXY_ACTIONS } from './addresses/mainnet.json'
-import { CharteredDssProxyActionsContractWrapper } from './calls/proxyActions/charteredDssProxyActionsContractWrapper'
-import { DssProxyActionsSmartContractWrapperInterface } from './calls/proxyActions/DssProxyActionsSmartContractWrapperInterface'
+import { PROXY_ACTIONS } from '../../addresses/mainnet.json'
+import { CharteredDssProxyActionsContractWrapper } from './charteredDssProxyActionsContractWrapper'
+import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
 import {
   DepositAndGenerateData,
   getDepositAndGenerateCallData,
   getWithdrawAndPaybackCallData,
   WithdrawAndPaybackData,
   withdrawPaybackDepositGenerateLogicFactory,
-} from './calls/proxyActions/proxyActions'
-import { StandardDssProxyActionsContractWrapper } from './calls/proxyActions/standardDssProxyActionsContractWrapper'
-import { TxMetaKind } from './calls/txMeta'
+} from './proxyActions'
+import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
+import { TxMetaKind } from '../txMeta'
 
 describe('ProxyActions', () => {
   describe('proxyActionsFactory', () => {
