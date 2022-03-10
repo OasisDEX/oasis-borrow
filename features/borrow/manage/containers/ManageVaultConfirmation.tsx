@@ -4,11 +4,11 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
-export function ManageVaultConfirmation(props: ManageVaultState) {
-  const [vaultChange, setVaultChanges] = useState<ManageVaultState>(props)
+export function ManageVaultConfirmation(props: ManageStandardBorrowVaultState) {
+  const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {
       setVaultChanges(props)
@@ -29,7 +29,7 @@ export function ManageVaultConfirmationStatus({
   stage,
   etherscan,
   manageTxHash,
-}: ManageVaultState) {
+}: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
 
   if (stage === 'manageInProgress') {

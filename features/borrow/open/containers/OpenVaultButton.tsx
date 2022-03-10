@@ -69,7 +69,7 @@ function openVaultPrimaryButtonText({
 
 export function OpenVaultButton(props: OpenVaultState) {
   const { accountData$ } = useAppContext()
-  const accountData = useObservable(accountData$)
+  const [accountData] = useObservable(accountData$)
   const { t } = useTranslation()
   const { replace } = useRedirect()
   const {

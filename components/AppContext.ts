@@ -16,6 +16,8 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
+import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
+import { charterNib, charterPeace, charterUline, urnProxy } from 'blockchain/calls/charter'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -35,9 +37,11 @@ import {
   WithdrawAndPaybackData,
   withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
+import { createUrnResolver$ } from 'blockchain/calls/urnResolver'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   createGasPrice$,
   createOraclePriceData$,
@@ -50,12 +54,16 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$ } from 'blockchain/vaults'
+import { createController$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
-import { createManageVault$ } from 'features/borrow/manage/pipes/manageVault'
+import {
+  createManageVault$,
+  ManageInstiVaultState,
+  ManageStandardBorrowVaultState,
+} from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
@@ -95,6 +103,7 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
+import { CharteredDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/charteredDssProxyActionsContractWrapper'
 import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
@@ -108,6 +117,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -117,7 +128,9 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
+import { createCheckVaultType$, VaultIdToTypeMapping } from '../features/shared/checkVaultType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
@@ -290,12 +303,18 @@ export function setupAppContext() {
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
+  const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
   const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
+
+  const charterNib$ = observe(onEveryBlock$, context$, charterNib)
+  const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
+  const charterUline$ = observe(onEveryBlock$, context$, charterUline)
+  const charterUrnProxy$ = observe(onEveryBlock$, context$, urnProxy)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
@@ -325,6 +344,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const urnResolver$ = curry(createUrnResolver$)(cdpManagerIlks$, cdpManagerUrns$, charterUrnProxy$)
+
   const vault$ = memoize(
     (id: BigNumber) =>
       createVault$(
@@ -341,6 +362,17 @@ export function setupAppContext() {
         id,
       ),
     bigNumberTostring,
+  )
+
+  const instiVault$ = memoize(
+    // todo: insti-vault switch back to smart contract vaules when contract is deployed
+    curry(createInstiVault$)(vault$, charterNib$, charterPeace$, charterUline$),
+    // curry(createInstiVault$)(
+    //   vault$,
+    //   () => of(new BigNumber(0.1)),
+    //   () => of(new BigNumber(0.22)),
+    //   () => of(new BigNumber(3)),
+    // ),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
@@ -460,7 +492,7 @@ export function setupAppContext() {
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
-      createManageVault$(
+      createManageVault$<Vault, ManageStandardBorrowVaultState>(
         context$,
         txHelpers$,
         proxyAddress$,
@@ -471,7 +503,32 @@ export function setupAppContext() {
         vault$,
         saveVaultUsingApi$,
         addGasEstimation$,
+        vaultHistory$,
         withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+        StandardBorrowManageVaultViewStateProvider,
+        id,
+      ),
+    bigNumberTostring,
+  )
+
+  const manageInstiVault$ = memoize(
+    (id: BigNumber) =>
+      createManageVault$<InstiVault, ManageInstiVaultState>(
+        context$,
+        txHelpers$,
+        proxyAddress$,
+        allowance$,
+        priceInfo$,
+        balanceInfo$,
+        ilkData$,
+        instiVault$,
+        saveVaultUsingApi$,
+        addGasEstimation$,
+        vaultHistory$,
+        withdrawPaybackDepositGenerateLogicFactory(CharteredDssProxyActionsContractWrapper),
+        // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
+        // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+        InstitutionalBorrowManageVaultViewStateProvider,
         id,
       ),
     bigNumberTostring,
@@ -534,9 +591,17 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  const checkVault$ = memoize((id: BigNumber) => curry(checkVaultTypeUsingApi$)(context$, id))
+  // const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = { 27609: VaultType.Insti }
+  const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = {}
+
+  const checkVault$: (id: BigNumber) => Observable<VaultType> = curry(createCheckVaultType$)(
+    curry(checkVaultTypeUsingApi$)(context$),
+    HARDCODED_VAULT_TYPES,
+  )
+
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
+      manageInstiVault$,
       manageMultiplyVault$,
       manageGuniVault$,
       manageVault$,
@@ -593,6 +658,7 @@ export function setupAppContext() {
     ilks$,
     openVault$,
     manageVault$,
+    manageInstiVault$,
     manageMultiplyVault$,
     manageGuniVault$,
     vaultsOverview$,
@@ -615,6 +681,7 @@ export function setupAppContext() {
     connectedContext$,
     productCardsData$,
     addGasEstimation$,
+    instiVault$,
   }
 }
 

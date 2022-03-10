@@ -9,6 +9,7 @@ import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
+import * as dssCharter from './abi/dss-charter.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
@@ -27,6 +28,7 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as cdpRegistry from './abi/cdp-registry.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -116,6 +118,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
@@ -136,6 +139,7 @@ const protoMain = {
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
@@ -157,6 +161,7 @@ const protoMain = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  ilks: [] as string[], // I need to find better name for ilks that are managed by cropJoin and charter
 }
 
 export type NetworkConfig = typeof protoMain
@@ -187,6 +192,7 @@ const kovan: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, kovanAddresses.MCD_VAT),
@@ -198,6 +204,7 @@ const kovan: NetworkConfig = {
     dssProxyActionsCharter,
     kovanAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -226,6 +233,7 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+  ilks: [],
 }
 
 const goerli: NetworkConfig = {
@@ -253,6 +261,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
   vat: contractDesc(vat, goerliAddresses.MCD_VAT),
@@ -264,9 +273,10 @@ const goerli: NetworkConfig = {
     dssProxyActionsCharter,
     goerliAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x24E54706B100e2061Ed67fAe6894791ec421B421',
+    '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   guniResolver: '0x',
@@ -274,9 +284,9 @@ const goerli: NetworkConfig = {
   automationBot: contractDesc(automationBot, '0x8A08e91326Ac93fBcfcFb13912cEDdcb7Fc28f71'),
   serviceRegistry: '0xb61702e17A88196A418EdDaedf1d62E316fD5873',
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
-  lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
-  noFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  noFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
   etherscan: {
@@ -293,6 +303,7 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  ilks: ['INST-ETH-A'],
 }
 
 const hardhat: NetworkConfig = {
