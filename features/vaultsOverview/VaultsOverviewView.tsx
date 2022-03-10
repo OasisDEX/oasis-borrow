@@ -45,7 +45,6 @@ const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[]
                 afterPillColors={{ color: 'onSuccess', bg: 'success' }}
                 sx={{ mt: 0 }}
               >
-                Stop Loss On
                 {t('protection.stop-loss-on')}
               </VaultDetailsAfterPill>
             </Box>
