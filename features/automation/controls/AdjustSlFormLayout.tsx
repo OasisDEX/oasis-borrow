@@ -16,6 +16,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
 import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../theme/animations'
@@ -285,22 +286,27 @@ export function AdjustSlFormLayout({
       )}
 
       {txState === TxStatus.Success && (
-        <Box>
-          <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
-          </Flex>
-          <Divider variant="styles.hrVaultFormBottom" mb={4} />
-          <ProtectionCompleteInformation
-            token={token}
-            txState={txState}
-            stopLossLevel={stopLossLevel}
-            tokenPrice={tokenPrice}
-            vault={vault}
-            ilkData={ilkData}
-            isCollateralActive={closePickerConfig.isCollateralActive}
-            txCost={txCost!}
-          />
-        </Box>
+        <>
+          <Box>
+            <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
+              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
+            </Flex>
+            <Divider variant="styles.hrVaultFormBottom" mb={4} />
+            <ProtectionCompleteInformation
+              token={token}
+              txState={txState}
+              stopLossLevel={stopLossLevel}
+              tokenPrice={tokenPrice}
+              vault={vault}
+              ilkData={ilkData}
+              isCollateralActive={closePickerConfig.isCollateralActive}
+              txCost={txCost!}
+            />
+          </Box>
+          <Box>
+            <VaultChangesWithADelayCard />
+          </Box>
+        </>
       )}
       <Box>
         <TxStatusSection txStatus={txState} txHash={txHash} etherscan={etherscan} />

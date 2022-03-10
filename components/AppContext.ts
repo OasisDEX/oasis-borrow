@@ -301,6 +301,17 @@ function createUIChangesSubject(): UIChanges {
   }
 }
 
+function initializeUIChanges() {
+  const uiChangesSubject = createUIChangesSubject()
+
+  uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
+  uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
+  uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+
+  return uiChangesSubject
+}
+
 export function setupAppContext() {
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
@@ -700,11 +711,7 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const uiChanges = createUIChangesSubject()
-  uiChanges.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
-  uiChanges.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
-  uiChanges.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
-  uiChanges.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+  const uiChanges = initializeUIChanges()
 
   return {
     web3Context$,

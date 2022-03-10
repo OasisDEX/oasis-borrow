@@ -16,6 +16,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
@@ -152,17 +153,22 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
       )}
       {isTxProgressing && <OpenVaultAnimation />}
       {props.txState === TxStatus.Success && (
-        <Box>
-          <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
-          </Flex>
-          <Divider variant="styles.hrVaultFormBottom" mb={4} />
-          <CancelCompleteInformation
-            totalCost={props.actualCancelTxCost!}
-            tokenPrice={props.tokenPrice}
-            liquidationPrice={props.liquidationPrice}
-          />
-        </Box>
+        <>
+          <Box>
+            <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+              <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
+            </Flex>
+            <Divider variant="styles.hrVaultFormBottom" mb={4} />
+            <CancelCompleteInformation
+              totalCost={props.actualCancelTxCost!}
+              tokenPrice={props.tokenPrice}
+              liquidationPrice={props.liquidationPrice}
+            />
+          </Box>
+          <Box>
+            <VaultChangesWithADelayCard />
+          </Box>
+        </>
       )}
       <Box>
         <TxStatusSection
