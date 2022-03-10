@@ -52,7 +52,10 @@ export function ManageVaultContainer({
           <ManageVaultDetails
             {...manageVault}
             onBannerButtonClickHandler={() => {
-              uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Protection,
+              })
             }}
           />
           {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}

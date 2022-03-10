@@ -21,7 +21,10 @@ export function StopLossTriggeredFormControl({
   const { uiChanges } = useAppContext()
 
   const handleClick = () => {
-    uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Overview })
+    uiChanges.publish(TAB_CHANGE_SUBJECT, {
+      type: 'change-tab',
+      currentMode: VaultViewMode.Overview,
+    })
     onClick()
   }
 

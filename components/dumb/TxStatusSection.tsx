@@ -1,30 +1,31 @@
-import { TxMeta, TxState, TxStatus } from '@oasisdex/transactions'
+import { TxStatus } from '@oasisdex/transactions'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { progressStatuses } from '../../features/automation/common/consts/txStatues'
 import { TxStatusCardProgress, TxStatusCardSuccess } from '../vault/TxStatusCard'
 
-export interface TxStatusSectionProps<A extends TxMeta> {
-  txState?: TxState<A>
+export interface TxStatusSectionProps {
+  txStatus?: TxStatus
   etherscan: string
+  txHash: string | undefined
 }
 
-export function TxStatusSection<A extends TxMeta>(props: TxStatusSectionProps<A>) {
+export function TxStatusSection(props: TxStatusSectionProps) {
   const { t } = useTranslation()
 
-  if (props.txState) {
-    const txStatus = props.txState.status
+  if (props.txStatus) {
+    const txStatus = props.txStatus
     const txHash =
       txStatus === TxStatus.Propagating ||
       txStatus === TxStatus.WaitingForConfirmation ||
       txStatus === TxStatus.Success
-        ? props.txState.txHash
+        ? props.txHash
         : ''
 
     return (
       <>
-        {txStatus && progressStatuses.includes(txStatus) && (
+        {txStatus && txHash && progressStatuses.includes(txStatus) && (
           <TxStatusCardProgress
             text={t('waiting-confirmation')}
             etherscan={props.etherscan}

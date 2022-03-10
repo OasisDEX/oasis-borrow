@@ -55,6 +55,30 @@ import {
 import { createController$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import {
+  ADD_FORM_CHANGE,
+  AddFormChange,
+  AddFormChangeAction,
+  formChangeReducer,
+} from 'features/automation/common/UITypes/AddFormChange'
+import {
+  PROTECTION_MODE_CHANGE_SUBJECT,
+  ProtectionModeChange,
+  ProtectionModeChangeAction,
+  protectionModeChangeReducer,
+} from 'features/automation/common/UITypes/ProtectionFormModeChange'
+import {
+  REMOVE_FORM_CHANGE,
+  RemoveFormChange,
+  RemoveFormChangeAction,
+  removeFormReducer,
+} from 'features/automation/common/UITypes/RemoveFormChange'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+  TabChangeAction,
+  tabChangeReducer,
+} from 'features/automation/common/UITypes/TabChange'
 import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
@@ -189,32 +213,51 @@ function createTxHelpers$(
   )
 }
 
-/* TODO: Try changing to:
+export type SupportedUIChangeType =
+  | AddFormChange
+  | RemoveFormChange
+  | TabChange
+  | ProtectionModeChange
 
-export type UiChangesTypes = {
-  AdjustSlForm: AddFormChange
+export type LegalUiChanges = {
+  AddFormChange: AddFormChangeAction
+  RemoveFormChange: RemoveFormChangeAction
+  TabChange: TabChangeAction
+  ProtectionModeChange: ProtectionModeChangeAction
 }
 
 export type UIChanges = {
-  subscribe: <T extends keyof UiChangesTypes>(sub: T) => Observable<UiChangesTypes[T]>
-  publish: <T extends keyof UiChangesTypes>(sub: T, event: UiChangesTypes[T]) => void
+  subscribe: <T extends SupportedUIChangeType>(sub: string) => Observable<T>
+  publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(sub: string, event: K) => void
+  lastPayload: <T extends SupportedUIChangeType>(sub: string) => T
+  clear: (sub: string) => void
+  configureSubject: <
+    T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]
+  >(
+    subject: string,
+    reducer: (prev: T, event: K) => T,
+  ) => void
 }
 
-*/
+export type UIReducer = (prev: any, event: any) => any
 
-export type UIChanges = {
-  subscribe: <T>(sub: string) => Observable<T>
-  publish: <T>(sub: string, event: T) => void
+export type ReducersMap = {
+  [key: string]: UIReducer
 }
 
 function createUIChangesSubject(): UIChanges {
+  const latest: any = {}
+
+  const reducers: ReducersMap = {} //TODO: Is there a way to strongly type this ?
+
   interface PublisherRecord {
     subjectName: string
-    payload: any
+    payload: SupportedUIChangeType
   }
   const commonSubject = new Subject<PublisherRecord>()
 
-  function subscribe<T>(subjectName: string): Observable<T> {
+  function subscribe<T extends SupportedUIChangeType>(subjectName: string): Observable<T> {
     return commonSubject.pipe(
       filter((x) => x.subjectName === subjectName),
       map((x) => x.payload as T),
@@ -222,17 +265,51 @@ function createUIChangesSubject(): UIChanges {
     )
   }
 
-  function publish<T>(subjectName: string, event: T) {
+  function publish<K extends LegalUiChanges[keyof LegalUiChanges]>(subjectName: string, event: K) {
+    const accumulatedEvent = reducers.hasOwnProperty(subjectName)
+      ? reducers[subjectName](lastPayload(subjectName) || {}, event)
+      : lastPayload(subjectName)
+    latest[subjectName] = accumulatedEvent
     commonSubject.next({
       subjectName,
-      payload: event,
+      payload: accumulatedEvent,
     })
+  }
+
+  function lastPayload<T>(subject: string): T {
+    const val: T = latest[subject]
+    return val
+  }
+
+  function clear(subject: string): any {
+    delete latest[subject]
+  }
+
+  function configureSubject<
+    T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]
+  >(subject: string, reducer: (prev: T, event: K) => T): void {
+    reducers[subject] = reducer
   }
 
   return {
     subscribe,
     publish,
+    lastPayload,
+    clear,
+    configureSubject,
   }
+}
+
+function initializeUIChanges() {
+  const uiChangesSubject = createUIChangesSubject()
+
+  uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
+  uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
+  uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+
+  return uiChangesSubject
 }
 
 export function setupAppContext() {
@@ -634,7 +711,7 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const uiChanges = createUIChangesSubject()
+  const uiChanges = initializeUIChanges()
 
   return {
     web3Context$,

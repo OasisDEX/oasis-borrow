@@ -3,7 +3,6 @@ import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { last } from 'lodash'
-import { useEffect } from 'react'
 
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggerType } from './enums/TriggersTypes'
@@ -65,13 +64,4 @@ export function prepareTriggerData(
     proxyAddress: vaultData.owner,
     triggerData: buildTriggerData(vaultData.id, triggerTypeVaue, stopLossLevel),
   }
-}
-
-export function determineProperDefaults(
-  setSelectedSLValue: React.Dispatch<React.SetStateAction<BigNumber>>,
-  startingSlRatio: BigNumber,
-) {
-  useEffect(() => {
-    setSelectedSLValue(startingSlRatio.multipliedBy(100))
-  }, [])
 }

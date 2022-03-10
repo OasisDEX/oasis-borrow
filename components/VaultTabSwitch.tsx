@@ -6,7 +6,7 @@ import { Flex, Heading } from 'theme-ui'
 
 import { useAppContext } from './AppContextProvider'
 
-enum VaultViewMode {
+export enum VaultViewMode {
   History,
   Protection,
   Overview,
@@ -108,5 +108,3 @@ export function VaultTabSwitch({
     </Grid>
   )
 }
-
-export { VaultViewMode }
