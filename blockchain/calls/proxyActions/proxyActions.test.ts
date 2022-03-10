@@ -5,10 +5,8 @@ import { one } from 'helpers/zero'
 import { describe } from 'mocha'
 
 import { TxMetaKind } from '../txMeta'
-import { MockDssProxyActionsSmartContractWrapper } from './dssProxyActionsSmartContractWrapper.mock'
-import {
-  withdrawPaybackDepositGenerateLogicFactory,
-} from './proxyActions'
+import { MockDssProxyActionsSmartContractWrapper } from './adapters/dssProxyActionsSmartContractWrapper.mock'
+import { vaultActionsLogicFactory } from './proxyActions'
 
 describe('ProxyActions', () => {
   describe('withdrawAndPayback', () => {
@@ -32,7 +30,7 @@ describe('ProxyActions', () => {
       const withdrawAmountBigNumber = new BigNumber(withdrawAmount)
       const paybackAmountBigNumber = new BigNumber(paybackAmount)
 
-      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+      const proxyActionCall = vaultActionsLogicFactory(
         MockDssProxyActionsSmartContractWrapper,
       ).withdrawAndPayback.prepareArgs(
         {
@@ -182,7 +180,7 @@ describe('ProxyActions', () => {
       const depositAmountBigNumber = new BigNumber(depositAmount)
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
-      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+      const proxyActionCall = vaultActionsLogicFactory(
         MockDssProxyActionsSmartContractWrapper,
       ).depositAndGenerate.prepareArgs(
         {
@@ -280,7 +278,7 @@ describe('ProxyActions', () => {
       const depositAmountBigNumber = new BigNumber(depositAmount)
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
-      const proxyActionCall = withdrawPaybackDepositGenerateLogicFactory(
+      const proxyActionCall = vaultActionsLogicFactory(
         MockDssProxyActionsSmartContractWrapper,
       ).open.prepareArgs(
         {

@@ -5,7 +5,7 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
-  WithdrawPaybackDepositGenerateLogicInterface,
+  VaultActionsLogicInterface,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -231,7 +231,7 @@ export function manageVaultDepositAndGenerate(
     proxyAddress,
     vault: { ilk, token, id },
   }: ManageStandardBorrowVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -281,7 +281,7 @@ export function manageVaultWithdrawAndPayback(
     vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageStandardBorrowVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -456,7 +456,7 @@ export function createProxy(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
-  dssProxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  dssProxyActions: VaultActionsLogicInterface,
   state: ManageStandardBorrowVaultState,
 ): Observable<ManageStandardBorrowVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {

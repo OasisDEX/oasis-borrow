@@ -16,7 +16,7 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
 import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
@@ -172,7 +172,7 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   saveVaultType$: SaveVaultType,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
   change: (ch: ManageVaultChange) => void,
   state: ManageStandardBorrowVaultState,
 ): ManageStandardBorrowVaultState {
@@ -363,7 +363,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
   vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
   id: BigNumber,
 ): Observable<VS> {

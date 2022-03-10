@@ -15,8 +15,8 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 
 import { TxMetaKind } from '../txMeta'
-import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
-import { StandardDssProxyActionsContractWrapper } from './standardDssProxyActionsContractWrapper'
+import { DssProxyActionsSmartContractWrapperInterface } from './adapters/DssProxyActionsSmartContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from './adapters/standardDssProxyActionsContractWrapper'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback
@@ -29,7 +29,7 @@ export type WithdrawAndPaybackData = {
   shouldPaybackAll: boolean
 }
 
-export function getWithdrawAndPaybackCallData(
+function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
   proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
@@ -68,16 +68,31 @@ export function getWithdrawAndPaybackCallData(
   throw new Error('Could not make correct proxyActions call')
 }
 
-export interface WithdrawPaybackDepositGenerateLogicInterface {
+export interface VaultActionsLogicInterface {
+  open: TransactionDef<OpenData>
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
-  open: TransactionDef<OpenData>
 }
 
-export function withdrawPaybackDepositGenerateLogicFactory(
+export function vaultActionsLogicFactory(
   proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
-): WithdrawPaybackDepositGenerateLogicInterface {
+): VaultActionsLogicInterface {
   return {
+    open: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          getOpenCallData(data, context, proxyActionsSmartContractWrapper).encodeABI(),
+        ]
+      },
+      options: ({ token, depositAmount }) =>
+        token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
+    },
     withdrawAndPayback: {
       call: ({ proxyAddress }, { contract }) => {
         return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
@@ -109,21 +124,6 @@ export function withdrawPaybackDepositGenerateLogicFactory(
             context,
             proxyActionsSmartContractWrapper,
           ).encodeABI(),
-        ]
-      },
-      options: ({ token, depositAmount }) =>
-        token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
-    },
-    open: {
-      call: ({ proxyAddress }, { contract }) => {
-        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
-          'execute(address,bytes)'
-        ]
-      },
-      prepareArgs: (data, context) => {
-        return [
-          proxyActionsSmartContractWrapper.resolveContractAddress(context),
-          getOpenCallData(data, context, proxyActionsSmartContractWrapper).encodeABI(),
         ]
       },
       options: ({ token, depositAmount }) =>

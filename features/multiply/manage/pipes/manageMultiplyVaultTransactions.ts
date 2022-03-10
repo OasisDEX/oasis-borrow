@@ -8,7 +8,7 @@ import {
   DepositAndGenerateData,
   MultiplyAdjustData,
   WithdrawAndPaybackData,
-  withdrawPaybackDepositGenerateLogicFactory,
+  vaultActionsLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
@@ -20,7 +20,7 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
+import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -318,8 +318,7 @@ export function manageVaultDepositAndGenerate(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
-            .depositAndGenerate,
+          vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
           {
             kind: TxMetaKind.depositAndGenerate,
             generateAmount,
@@ -370,8 +369,7 @@ export function manageVaultWithdrawAndPayback(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
-            .withdrawAndPayback,
+          vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
           {
             kind: TxMetaKind.withdrawAndPayback,
             withdrawAmount,
@@ -696,8 +694,7 @@ export function applyEstimateGas(
 
           if (isDepositAndGenerate) {
             return estimateGas(
-              withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
-                .depositAndGenerate,
+              vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
               {
                 kind: TxMetaKind.depositAndGenerate,
                 generateAmount: generateAmount || zero,
@@ -710,8 +707,7 @@ export function applyEstimateGas(
             )
           } else {
             return estimateGas(
-              withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper)
-                .withdrawAndPayback,
+              vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
               {
                 kind: TxMetaKind.withdrawAndPayback,
                 withdrawAmount: withdrawAmount || zero,

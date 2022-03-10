@@ -1,9 +1,9 @@
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
-} from '../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../network'
-import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from './proxyActions'
+} from '../../../../types/web3-v1-contracts/types'
+import { ContextConnected } from '../../../network'
+import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from '../proxyActions'
 
 export interface DssProxyActionsSmartContractWrapperInterface {
   resolveContractAddress: (context: ContextConnected) => string
