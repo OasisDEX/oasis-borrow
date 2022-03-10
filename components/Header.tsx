@@ -95,7 +95,7 @@ interface UserAccountProps {
   position: 'fixed' | 'relative'
 }
 
-function PositionsLink() {
+function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   const { accountData$, context$ } = useAppContext()
   const accountData = useObservable(accountData$)
   const context = useObservable(context$)
@@ -107,12 +107,13 @@ function PositionsLink() {
 
   return <AppLink
       variant="links.navHeader"
-      sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
+      sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')), display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', ...sx }}
       href={`/owner/${(context as ContextConnected)?.account}`}
       onClick={() => trackingEvents.yourVaults()}
-    >
-      {t('your-vaults')}{' '}
-      {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+    > 
+        <Icon name="home" size="auto" width="20" sx={{ mr: 2, position: 'relative', top: '-1px', flexShrink: 0 }} />
+        {t('my-positions')}{' '}
+        {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
   </AppLink>
 }
 
@@ -140,9 +141,11 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
-        <Box sx={{ display: ['none', web3Provider ? 'flex' : 'none'] }}>
+        <PositionsLink sx={{ display: ['none', 'flex'] }} />
+        { web3Provider ? 
+        <Box sx={{ display: ['none', 'block']}}>
           <ExchangeButton web3Provider={web3Provider} />
-        </Box>
+        </Box> : null }
         <UserSettingsButton />
         <AccountButton />
       </Flex>
@@ -187,7 +190,6 @@ function ConnectedHeader() {
             >
               <Logo />
               <Flex sx={{ ml: 5, zIndex: 1 }}>
-                <PositionsLink />
                 <AppLink
                   variant="links.navHeader"
                   href={HEADER_LINKS.multiply}

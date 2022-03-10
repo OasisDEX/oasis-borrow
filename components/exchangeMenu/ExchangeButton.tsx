@@ -1,19 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useOnClickOutside } from 'helpers/useOnClickOutside'
 import React, { useRef, useState } from 'react'
-import { Box, Button, Flex } from 'theme-ui'
+import { Box, Button, Flex, SxStyleProp } from 'theme-ui'
 import { provider } from 'web3-core'
 
 import { UniswapWidget } from './UniswapWidget'
 
-export function ExchangeButton({ web3Provider }: { web3Provider?: provider }) {
+export function ExchangeButton({ web3Provider, sx }: { web3Provider?: provider, sx?: SxStyleProp }) {
   const componentRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
   useOnClickOutside(componentRef, () => setIsOpen(false))
 
   return (
-    <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
+    <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1, ...sx }}>
       <Button variant="menuButtonRound" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? (
           <Icon name="chevron_up" size="auto" width="24" />
