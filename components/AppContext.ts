@@ -495,6 +495,7 @@ export function setupAppContext() {
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
+      vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
       ilk,
     ),
   )

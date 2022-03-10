@@ -12,6 +12,8 @@ import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { vaultActionsLogicFactory } from '../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 
 export function addGasEstimationMock<T>(state: T) {
   return of(state)
@@ -107,6 +109,7 @@ export function mockOpenVault$({
     ilkData$,
     ilkToToken$,
     addGasEstimationMock,
+    vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
     ilk,
   )
 }

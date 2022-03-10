@@ -363,7 +363,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  proxyActions: VaultActionsLogicInterface,
+  vaultActions: VaultActionsLogicInterface,
   vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
   id: BigNumber,
 ): Observable<VS> {
@@ -438,13 +438,13 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     scan(vaultViewStateProvider.applyChange, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$, proxyActions)),
+                    switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
                     map(
                       curry(addTransitions)(
                         txHelpers$,
                         connectedProxyAddress$,
                         saveVaultType$,
-                        proxyActions,
+                        vaultActions,
                         change,
                       ),
                     ),

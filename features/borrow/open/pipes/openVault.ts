@@ -49,6 +49,7 @@ import {
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
+import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -157,6 +158,7 @@ export type OpenVaultState = MutableOpenVaultState &
 
 function addTransitions(
   txHelpers: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
@@ -232,7 +234,7 @@ function addTransitions(
   if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
-      progress: () => openVault(txHelpers, change, state),
+      progress: () => openVault(txHelpers, vaultActions, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -271,6 +273,7 @@ export function createOpenVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
   addGasEstimation$: AddGasEstimationFunction,
+  vaultActions: VaultActionsLogicInterface,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
@@ -366,8 +369,15 @@ export function createOpenVault$(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
-                      switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers,
+                          vaultActions,
+                          connectedProxyAddress$,
+                          change,
+                        ),
+                      ),
                     )
                   }),
                 ),

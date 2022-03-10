@@ -456,7 +456,7 @@ export function createProxy(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
-  dssProxyActions: VaultActionsLogicInterface,
+  vaultActions: VaultActionsLogicInterface,
   state: ManageStandardBorrowVaultState,
 ): Observable<ManageStandardBorrowVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
@@ -474,7 +474,7 @@ export function applyEstimateGas(
       const isDepositAndGenerate = depositAmount || generateAmount
 
       if (isDepositAndGenerate) {
-        return estimateGas(dssProxyActions.depositAndGenerate, {
+        return estimateGas(vaultActions.depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -484,7 +484,7 @@ export function applyEstimateGas(
           id,
         })
       } else {
-        return estimateGas(dssProxyActions.withdrawAndPayback, {
+        return estimateGas(vaultActions.withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,

@@ -12,7 +12,10 @@ import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/c
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
-import { vaultActionsLogicFactory } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import {
+  vaultActionsLogicFactory,
+  VaultActionsLogicInterface,
+} from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,
@@ -82,10 +85,11 @@ export function applyOpenVaultTransaction(
 
 export function openVault(
   { sendWithGasEstimation }: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
 ) {
-  sendWithGasEstimation(vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).open, {
+  sendWithGasEstimation(vaultActions.open, {
     kind: TxMetaKind.open,
     generateAmount: generateAmount || zero,
     depositAmount: depositAmount || zero,
@@ -133,13 +137,14 @@ export function openVault(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
+  vaultActions: VaultActionsLogicInterface,
   state: OpenVaultState,
 ): Observable<OpenVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
 
     if (proxyAddress && (generateAmount || depositAmount)) {
-      return estimateGas(vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).open, {
+      return estimateGas(vaultActions.open, {
         kind: TxMetaKind.open,
         generateAmount: generateAmount || zero,
         depositAmount: depositAmount || zero,
