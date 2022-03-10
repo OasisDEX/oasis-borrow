@@ -5,8 +5,12 @@ import {
 } from '../../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
-import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
-import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from '../proxyActions'
+import {
+  DepositAndGenerateData,
+  DssProxyActionsSmartContractWrapperInterface,
+  OpenData,
+  WithdrawAndPaybackData,
+} from './DssProxyActionsSmartContractWrapperInterface'
 
 export const CharteredDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
   open(context: ContextConnected, data: OpenData): NonPayableTransactionObject<string> {

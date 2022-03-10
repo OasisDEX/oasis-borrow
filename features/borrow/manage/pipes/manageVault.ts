@@ -16,7 +16,6 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
 import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
@@ -46,6 +45,7 @@ import {
   ManageVaultTransitionChange,
   progressManage,
 } from './viewStateTransforms/manageVaultTransitions'
+import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'

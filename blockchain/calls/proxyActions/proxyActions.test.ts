@@ -6,7 +6,7 @@ import { describe } from 'mocha'
 
 import { TxMetaKind } from '../txMeta'
 import { MockDssProxyActionsSmartContractWrapper } from './adapters/dssProxyActionsSmartContractWrapper.mock'
-import { vaultActionsLogicFactory } from './proxyActions'
+import { vaultActionsLogicFactory } from './vaultActionsLogicFactory'
 
 describe('ProxyActions', () => {
   describe('withdrawAndPayback', () => {

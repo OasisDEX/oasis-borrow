@@ -7,8 +7,12 @@ import {
 } from '../../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
-import { DssProxyActionsSmartContractWrapperInterface } from './DssProxyActionsSmartContractWrapperInterface'
-import { DepositAndGenerateData, OpenData, WithdrawAndPaybackData } from '../proxyActions'
+import {
+  DepositAndGenerateData,
+  DssProxyActionsSmartContractWrapperInterface,
+  OpenData,
+  WithdrawAndPaybackData,
+} from './DssProxyActionsSmartContractWrapperInterface'
 
 export const StandardDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
   openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {

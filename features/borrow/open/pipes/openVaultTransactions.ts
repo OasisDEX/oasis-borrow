@@ -1,5 +1,4 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { OpenData, vaultActionsLogicFactory } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -12,6 +11,8 @@ import { Observable, of } from 'rxjs'
 import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
+import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { vaultActionsLogicFactory } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,

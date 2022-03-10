@@ -2,11 +2,6 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import {
-  DepositAndGenerateData,
-  WithdrawAndPaybackData,
-  VaultActionsLogicInterface,
-} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -16,6 +11,11 @@ import { filter, first, switchMap } from 'rxjs/operators'
 
 import { TxError } from '../../../../../helpers/types'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
+import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from '../../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 type ProxyChange =
   | {

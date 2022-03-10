@@ -27,14 +27,10 @@ import {
 import {
   CloseGuniMultiplyData,
   CloseVaultData,
-  DepositAndGenerateData,
   MultiplyAdjustData,
-  OpenData,
   OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
-  WithdrawAndPaybackData,
-  vaultActionsLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
@@ -157,6 +153,12 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import {
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
+} from '../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { vaultActionsLogicFactory } from '../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 export type TxData =
   | OpenData

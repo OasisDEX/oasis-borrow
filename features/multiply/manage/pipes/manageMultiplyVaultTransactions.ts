@@ -5,10 +5,7 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   adjustMultiplyVault,
   closeVaultCall,
-  DepositAndGenerateData,
   MultiplyAdjustData,
-  WithdrawAndPaybackData,
-  vaultActionsLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
@@ -23,6 +20,11 @@ import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
+import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { vaultActionsLogicFactory } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 type ProxyChange =
   | {
