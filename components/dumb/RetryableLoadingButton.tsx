@@ -9,7 +9,6 @@ export interface RetryableLoadingButtonProps {
   isLoading: boolean
   disabled: boolean
   isStopLossEnabled: boolean
-  onConfirm?: () => void
   isEditing?: boolean
 }
 

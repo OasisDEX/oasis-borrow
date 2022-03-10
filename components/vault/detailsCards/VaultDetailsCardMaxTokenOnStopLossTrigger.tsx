@@ -3,12 +3,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Heading, Text } from 'theme-ui'
 
-import { formatAmount } from '../../../helpers/formatters/format'
+import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
 import { one, zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
-function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalProps) {
+function VaultDetailsCardMaxTokenOnStopLossTriggerModal({
+  close,
+  token,
+  liquidationPenalty,
+}: ModalProps<{ token: string; liquidationPenalty: BigNumber }>) {
   const { t } = useTranslation()
 
   return (
@@ -18,7 +22,12 @@ function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalP
           {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
         </Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          VaultDetailsCardMaxTokenOnStopLossTriggerModal dummy modal
+          {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger-desc', {
+            token,
+            liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {
+              precision: 2,
+            }),
+          })}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -112,7 +121,12 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
           </>
         )
       }
-      openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, { token })}
+      openModal={() =>
+        openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, {
+          token: isCollateralActive ? token : 'DAI',
+          liquidationPenalty,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )

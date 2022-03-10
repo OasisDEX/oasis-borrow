@@ -55,8 +55,8 @@ export function AccountIndicator({
 export function AccountButton() {
   const { vaultFormToggleTitle } = useSharedUI()
   const { accountData$, context$ } = useAppContext()
-  const accountData = useObservable(accountData$)
-  const context = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [context] = useObservable(context$)
   const { t } = useTranslation()
   const openModal = useModal()
 
@@ -138,10 +138,10 @@ export function AccountButton() {
 
 export function AccountModal({ close }: ModalProps) {
   const { web3Context$, accountData$, context$ } = useAppContext()
-  const accountData = useObservable(accountData$)
-  const web3Context = useObservable(web3Context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
-  const context = useObservable(context$)
+  const [context] = useObservable(context$)
   const provider = new ethers.providers.JsonRpcProvider(context?.infuraUrl)
   const { t } = useTranslation()
 

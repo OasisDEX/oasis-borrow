@@ -1,33 +1,35 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
-import { amountFromWei } from '@oasisdex/utils'
+import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { AutomationBotRemoveTriggerData } from 'blockchain/calls/automationBot'
 import { MessageCard } from 'components/MessageCard'
+import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image } from 'theme-ui'
+import { Divider, Flex, Image, Text } from 'theme-ui'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
+import { AppLink } from '../../../components/Links'
 import {
+  getEstimatedGasFeeText,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { zero } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
+import { progressStatuses } from '../common/consts/txStatues'
 
 interface CancelDownsideProtectionInformationProps {
-  gasEstimation: ReactNode
+  gasEstimationText: ReactNode
   liquidationPrice: BigNumber
 }
 
 function CancelDownsideProtectionInformation({
-  gasEstimation,
+  gasEstimationText,
   liquidationPrice,
 }: CancelDownsideProtectionInformationProps) {
   const { t } = useTranslation()
@@ -38,7 +40,10 @@ function CancelDownsideProtectionInformation({
         label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      <VaultChangesInformationItem
+        label={`${t('protection.max-cost')}`}
+        value={gasEstimationText}
+      />
     </VaultChangesInformationContainer>
   )
 }
@@ -46,27 +51,20 @@ function CancelDownsideProtectionInformation({
 interface CancelCompleteInformationProps {
   liquidationPrice: BigNumber
   tokenPrice: BigNumber
-  txState?: TxState<AutomationBotRemoveTriggerData>
+  txState?: TxStatus
+  totalCost: BigNumber
 }
 
 function CancelCompleteInformation({
   liquidationPrice,
-  txState,
-  tokenPrice,
+  totalCost,
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
-  const successTx = txState?.status === TxStatus.Success
-  const gasUsed = successTx ? new BigNumber(txState.receipt.gasUsed) : zero
-  const effectiveGasPrice = successTx ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
-  const totalCost =
-    !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
-      : zero
 
   return (
-    <VaultChangesInformationContainer title={t('cancel-stoploss.cancel-summary')}>
+    <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
       <VaultChangesInformationItem
-        label={`${t('system.liquidation-price')}`}
+        label={`${t('cancel-stoploss.liquidation')}`}
         value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
       />
       <VaultChangesInformationItem
@@ -82,22 +80,25 @@ export interface CancelSlFormLayoutProps {
   tokenPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
-  gasEstimation: ReactNode
+  gasEstimation: HasGasEstimation
   accountIsController: boolean
-  txProgressing: boolean
-  txSuccess: boolean
   etherscan: string
-  txState?: TxState<AutomationBotRemoveTriggerData>
+  actualCancelTxCost?: BigNumber
+  txState?: TxStatus
+  txHash?: string
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
-  const messages = [t(`notice`)]
+
+  const isTxProgressing = !!props.txState && progressStatuses.includes(props.txState)
+  const gasEstimationText = getEstimatedGasFeeText(props.gasEstimation)
+
   return (
     <Grid columns={[1]}>
       <AutomationFormHeader
-        txProgressing={props.txProgressing}
-        txSuccess={props.txSuccess}
+        txProgressing={isTxProgressing}
+        txSuccess={props.txState === TxStatus.Success}
         translations={{
           editing: {
             header: t('protection.cancel-downside-protection'),
@@ -105,48 +106,88 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           },
           progressing: {
             header: t('protection.cancelling-downside-protection'),
-            description: t('protection.cancelling-downside-protection-desc'),
+            description: (
+              <>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                  {t('protection.cancelling-downside-protection-desc')}
+                </Text>
+                <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'lavender' }}>
+                  {t('protection.position-again-at-risk')}
+                </Text>
+              </>
+            ),
           },
           success: {
             header: t('protection.cancel-protection-complete'),
-            description: t('protection.cancel-protection-complete-desc'),
+            description: (
+              <>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                  {t('protection.cancel-protection-complete-desc')}
+                </Text>
+                <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
+                  {t('protection.find-more-about-setting-stop-loss')}
+                </AppLink>
+              </>
+            ),
           },
         }}
       />
-      {!props.txProgressing && !props.txSuccess && (
-        <Box>
-          <CancelDownsideProtectionInformation
-            gasEstimation={props.gasEstimation}
-            liquidationPrice={props.liquidationPrice}
+      {props.txState !== TxStatus.Success && !isTxProgressing && (
+        <>
+          <Box my={3}>
+            <CancelDownsideProtectionInformation
+              gasEstimationText={gasEstimationText}
+              liquidationPrice={props.liquidationPrice}
+            />
+          </Box>
+          <MessageCard
+            messages={[
+              <>
+                <strong>{t(`notice`)}</strong>: {t('protection.cancel-notice')}
+              </>,
+            ]}
+            type="warning"
+            withBullet={false}
           />
-        </Box>
+        </>
       )}
-      {props.txProgressing && <OpenVaultAnimation />}
-      {!props.txProgressing && !props.txSuccess && (
-        <MessageCard {...{ messages, type: 'warning' }} withBullet={false} />
-      )}
-      {props.txSuccess && (
-        <Box>
-          <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
-          </Flex>
-          <Divider variant="styles.hrVaultFormBottom" mb={4} />
-          <CancelCompleteInformation
-            txState={props.txState}
-            tokenPrice={props.tokenPrice}
-            liquidationPrice={props.liquidationPrice}
-          />
-        </Box>
+      {isTxProgressing && <OpenVaultAnimation />}
+      {props.txState === TxStatus.Success && (
+        <>
+          <Box>
+            <Flex sx={{ justifyContent: 'center', mb: 4 }}>
+              <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
+            </Flex>
+            <Divider variant="styles.hrVaultFormBottom" mb={4} />
+            <CancelCompleteInformation
+              totalCost={props.actualCancelTxCost!}
+              tokenPrice={props.tokenPrice}
+              liquidationPrice={props.liquidationPrice}
+            />
+          </Box>
+          <Box>
+            <VaultChangesWithADelayCard />
+          </Box>
+        </>
       )}
       <Box>
-        <TxStatusSection txState={props.txState} etherscan={props.etherscan} />
+        <TxStatusSection
+          txStatus={props.txState}
+          txHash={props.txHash}
+          etherscan={props.etherscan}
+        />
       </Box>
-      {props.accountIsController && !props.txProgressing && (
+      {props.accountIsController && !isTxProgressing && (
         <AutomationFormButtons
           triggerConfig={props.removeTriggerConfig}
           toggleForms={props.toggleForms}
-          toggleKey="protection.navigate-adjust"
-          txSuccess={props.txState?.status === TxStatus.Success}
+          toggleKey={
+            (props.txState as TxStatus) === TxStatus.Success
+              ? 'protection.set-stop-loss-again'
+              : 'protection.navigate-adjust'
+          }
+          txSuccess={(props.txState as TxStatus) === TxStatus.Success}
+          type="cancel"
         />
       )}
     </Grid>

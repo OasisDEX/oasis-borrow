@@ -2,11 +2,11 @@ import { Box, Flex, Grid, Slider, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { SxStyleProp } from 'theme-ui'
+import { SxStyleProp, useThemeUI } from 'theme-ui'
 
 export interface SliderValuePickerProps {
   sliderKey: string
-  background: string
+  sliderPercentageFill: BigNumber
   leftBoundry: BigNumber
   leftBoundryFormatter: (input: BigNumber) => string
   rightBoundry: BigNumber
@@ -23,11 +23,22 @@ export interface SliderValuePickerProps {
 
 export function SliderValuePicker(props: SliderValuePickerProps) {
   const { t } = useTranslation()
+  const {
+    theme: { colors },
+  } = useThemeUI()
 
   const leftLabel = t(`slider.${props.sliderKey}.left-label`)
   const rightLabel = t(`slider.${props.sliderKey}.right-label`)
   const leftFooter = t(`slider.${props.sliderKey}.left-footer`)
   const rightFooter = t(`slider.${props.sliderKey}.right-footer`)
+
+  const background = props.sliderPercentageFill
+    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+        props.sliderPercentageFill.toNumber() || 0
+      }%, ${colors?.primaryAlt} ${props.sliderPercentageFill.toNumber() || 0}%, ${
+        colors?.primaryAlt
+      } 100%)`
+    : 'primaryAlt'
 
   return (
     <Grid gap={2}>
@@ -56,7 +67,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
       </Box>
       <Box my={1}>
         <Slider
-          sx={{ ...props.rightBoundryStyling, background: props.background }}
+          sx={{ ...props.rightBoundryStyling, background }}
           disabled={props.disabled}
           step={props.step}
           min={props.minBoundry?.toNumber()}

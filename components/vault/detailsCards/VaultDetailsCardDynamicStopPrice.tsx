@@ -1,20 +1,35 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Grid, Heading, Text } from 'theme-ui'
+import { Card, Grid, Heading, Text } from 'theme-ui'
 
 import { formatAmount } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
-function VaultDetailsDynamicStopPriceModal({ close }: ModalProps) {
+function VaultDetailsDynamicStopPriceModal({
+  close,
+  dynamicStopPrice,
+}: ModalProps<{ dynamicStopPrice: BigNumber }>) {
+  const { t } = useTranslation()
+
   return (
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
-        <Heading variant="header3">Dynamic Stop Price Modal</Heading>
+        <Heading variant="header3">
+          {t('manage-multiply-vault.card.dynamic-stop-loss-price')}
+        </Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          VaultDetailsDynamicStopPriceModal dummy modal
+          {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc')}
         </Text>
+        <Text variant="header4" sx={{ fontWeight: 'semiBold' }}>
+          {t('manage-multiply-vault.card.current-dynamic-stop-loss-price')}
+        </Text>
+        <Card variant="vaultDetailsCardModal">
+          <Heading variant="header3">
+            {!dynamicStopPrice.isZero() ? `$${formatAmount(dynamicStopPrice, 'USD')}` : '-'}
+          </Heading>
+        </Card>
       </Grid>
     </VaultDetailsCardModal>
   )
@@ -58,7 +73,7 @@ export function VaultDetailsCardDynamicStopPrice({
         )
       }
       valueAfter={showAfterPill && `$${formatAmount(afterDynamicStopPrice, 'USD')}`}
-      openModal={() => openModal(VaultDetailsDynamicStopPriceModal)}
+      openModal={() => openModal(VaultDetailsDynamicStopPriceModal, { dynamicStopPrice })}
       afterPillColors={afterPillColors}
     />
   )

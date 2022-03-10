@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Container } from 'theme-ui'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
@@ -9,7 +10,7 @@ import { ProtectionFormControl } from '../../features/automation/controls/Protec
 import { VaultBanner } from '../../features/banners/VaultsBannersView'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
@@ -45,15 +46,13 @@ interface ProtectionControlProps {
 export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
-  const automationTriggersDataWithError = useObservableWithError(autoTriggersData$)
-  const collateralPricesWithError = useObservableWithError(collateralPrices$)
+  const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
+  const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
 
   return !vault.debt.isZero() ? (
-    <WithErrorHandler
-      error={[automationTriggersDataWithError.error, collateralPricesWithError.error]}
-    >
+    <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
-        value={[automationTriggersDataWithError.value, collateralPricesWithError.value]}
+        value={[automationTriggersData, collateralPrices]}
         customLoader={<VaultContainerSpinner />}
       >
         {([automationTriggersData, collateralPrices]) => {
@@ -82,6 +81,8 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
       </WithLoadingIndicator>
     </WithErrorHandler>
   ) : (
-    <ZeroDebtProtectionBanner />
+    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+      <ZeroDebtProtectionBanner />
+    </Container>
   )
 }

@@ -395,7 +395,6 @@ export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
   },
   prepareArgs: (data, context) => {
     const { guniProxyActions } = context
-    console.log({ guniProxyActions })
     return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
   },
 }

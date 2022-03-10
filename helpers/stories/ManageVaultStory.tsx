@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { SharedUIContext } from 'components/SharedUIProvider'
@@ -14,7 +15,7 @@ import {
 } from 'helpers/mocks/manageVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
-import { EMPTY, of } from 'rxjs'
+import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
@@ -96,6 +97,7 @@ export function manageVaultStory({
       context$: of({ etherscan: 'url' }),
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
+          () => from([]),
           // @ts-ignore, don't need to mock Multiply here
           () => of(EMPTY),
           () => of(EMPTY),
@@ -117,21 +119,21 @@ export function manageVaultStory({
             setVaultFormToggleTitle: () => null,
           }}
         >
-          <ManageVaultStoryContainer title={title} />
+          <ManageVaultStoryContainer title={title} vaultId={vault?.id || MOCK_VAULT_ID} />
         </SharedUIContext.Provider>
       </appContext.Provider>
     )
   }
 }
 
-const ManageVaultStoryContainer = ({ title }: { title?: string }) => {
+const ManageVaultStoryContainer = ({ title, vaultId }: { title?: string; vaultId: BigNumber }) => {
   if (!isAppContextAvailable()) return null
 
   return (
     <Container variant="appContainer">
       <Grid>
         {title && <Card>{title}</Card>}
-        <GeneralManageControl id={MOCK_VAULT_ID} />
+        <GeneralManageControl id={vaultId} />
       </Grid>
     </Container>
   )

@@ -1,8 +1,8 @@
-import { MainAction, ManageVaultChange, ManageVaultState } from './manageVault'
+import { MainAction, ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 import { allowanceDefaults } from './manageVaultAllowances'
 import { depositAndGenerateDefaults, paybackAndWithdrawDefaults } from './manageVaultInput'
 
-export const manageVaultFormDefaults: Partial<ManageVaultState> = {
+export const manageVaultFormDefaults: Partial<ManageStandardBorrowVaultState> = {
   ...allowanceDefaults,
   ...depositAndGenerateDefaults,
   ...paybackAndWithdrawDefaults,
@@ -25,10 +25,10 @@ export type ManageVaultFormChange =
       mainAction: MainAction
     }
 
-export function applyManageVaultForm(
+export function applyManageVaultForm<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: VaultState,
+): VaultState {
   const {
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,

@@ -1,8 +1,6 @@
-import { TxState, TxStatus } from '@oasisdex/transactions'
-import { amountFromWei } from '@oasisdex/utils'
+import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useTranslation } from 'next-i18next'
@@ -18,9 +16,13 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../components/vault/VaultChangesInformation'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
+import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
+import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
+<<<<<<< HEAD
 import { one, zero } from '../../../helpers/zero'
+=======
+>>>>>>> dev
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -32,27 +34,20 @@ interface AdjustSlFormInformationProps {
   ilkData: IlkData
   token: string
   isCollateralActive: boolean
-  txState?: TxState<AutomationBotAddTriggerData>
+  txState?: TxStatus
+  txCost: BigNumber
 }
 
 function ProtectionCompleteInformation({
-  tokenPrice,
   stopLossLevel,
   vault,
   ilkData,
   token,
   isCollateralActive,
-  txState,
+  txCost,
+  tokenPrice,
 }: AdjustSlFormInformationProps) {
   const { t } = useTranslation()
-
-  const successTx = txState?.status === TxStatus.Success
-  const gasUsed = successTx ? new BigNumber(txState.receipt.gasUsed) : zero
-  const effectiveGasPrice = successTx ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
-  const totalCost =
-    !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
-      : zero
 
   const dynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -92,7 +87,7 @@ function ProtectionCompleteInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}
-        value={<Flex>${formatAmount(totalCost, 'USD')}</Flex>}
+        value={<Flex>${formatAmount(txCost, 'USD')}</Flex>}
       />
     </VaultChangesInformationContainer>
   )
@@ -105,6 +100,7 @@ interface SetDownsideProtectionInformationProps {
   gasEstimation: ReactNode
   afterStopLossRatio: BigNumber
   tokenPrice: BigNumber
+  ethPrice: BigNumber
   isCollateralActive: boolean
 }
 
@@ -115,6 +111,7 @@ function SetDownsideProtectionInformation({
   gasEstimation,
   afterStopLossRatio,
   tokenPrice,
+  ethPrice,
   isCollateralActive,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
@@ -143,6 +140,15 @@ function SetDownsideProtectionInformation({
     ? `${formatAmount(savingCompareToLiquidation, token)} ${token}`
     : `${formatAmount(savingCompareToLiquidation.multipliedBy(tokenPrice), 'USD')} DAI`
 
+  const closeVaultGasEstimation = new BigNumber(1300000) // average based on historical data from blockchain
+  const closeVaultGasPrice = new BigNumber(200) // gwei
+  const estimatedFeesWhenSlTriggered = formatFiatBalance(
+    closeVaultGasEstimation
+      .multipliedBy(closeVaultGasPrice)
+      .multipliedBy(ethPrice)
+      .dividedBy(new BigNumber(10).pow(9)),
+  )
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -163,8 +169,8 @@ function SetDownsideProtectionInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.estimated-fees-on-trigger', { token })}`}
-        // TODO replace with correct estimation
-        value={<Flex>${formatAmount(new BigNumber(30), 'USD')}</Flex>}
+        value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
+        tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
       <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
       <Box sx={{ fontSize: 2 }}>
@@ -174,11 +180,6 @@ function SetDownsideProtectionInformation({
           <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
             {t('protection.learn-more-about-automation')}
           </AppLink>
-        </Text>
-        <Text>
-          <strong>{t('fact')}: </strong>
-          {/* TODO values mocked for now, we will need data source for those */}
-          {t('protection.automation-fact', { success: 12, total: 12 })}
         </Text>
       </Box>
     </VaultChangesInformationContainer>
@@ -193,40 +194,44 @@ export interface AdjustSlFormLayoutProps {
   gasEstimation: ReactNode
   accountIsController: boolean
   txProgressing: boolean
-  txSuccess: boolean
-  txState?: TxState<AutomationBotAddTriggerData>
+  txState?: TxStatus
+  txHash?: string
+  txCost?: BigNumber
   stopLossLevel: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
   tokenPrice: BigNumber
+  ethPrice: BigNumber
   vault: Vault
   ilkData: IlkData
-  isEditing: boolean
   etherscan: string
   toggleForms: () => void
   selectedSLValue: BigNumber
   firstStopLossSetup: boolean
+  isEditing: boolean
 }
 
 export function AdjustSlFormLayout({
   token,
   txProgressing,
-  txSuccess,
   txState,
+  txHash,
+  txCost,
   slValuePickerConfig,
   closePickerConfig,
   accountIsController,
   addTriggerConfig,
   stopLossLevel,
   tokenPrice,
+  ethPrice,
   vault,
   ilkData,
-  isEditing,
   gasEstimation,
   etherscan,
   toggleForms,
   selectedSLValue,
   firstStopLossSetup,
+  isEditing,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
@@ -234,7 +239,7 @@ export function AdjustSlFormLayout({
     <Grid columns={[1]}>
       <AutomationFormHeader
         txProgressing={txProgressing}
-        txSuccess={txSuccess}
+        txSuccess={txState === TxStatus.Success}
         translations={{
           editing: {
             header: t('protection.set-downside-protection'),
@@ -255,9 +260,9 @@ export function AdjustSlFormLayout({
         }}
       />
       {txProgressing && <OpenVaultAnimation />}
-      {!txProgressing && !txSuccess && (
+      {!txProgressing && txState !== TxStatus.Success && (
         <>
-          <Box>
+          <Box mt={3}>
             <SliderValuePicker {...slValuePickerConfig} />
           </Box>
           <Box>
@@ -276,6 +281,7 @@ export function AdjustSlFormLayout({
                   gasEstimation={gasEstimation}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
+                  ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
                 />
               </Box>
@@ -284,32 +290,38 @@ export function AdjustSlFormLayout({
         </>
       )}
 
-      {txSuccess && (
-        <Box>
-          <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
-          </Flex>
-          <Divider variant="styles.hrVaultFormBottom" mb={4} />
-          <ProtectionCompleteInformation
-            token={token}
-            txState={txState}
-            stopLossLevel={stopLossLevel}
-            tokenPrice={tokenPrice}
-            vault={vault}
-            ilkData={ilkData}
-            isCollateralActive={closePickerConfig.isCollateralActive}
-          />
-        </Box>
+      {txState === TxStatus.Success && (
+        <>
+          <Box>
+            <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
+              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
+            </Flex>
+            <Divider variant="styles.hrVaultFormBottom" mb={4} />
+            <ProtectionCompleteInformation
+              token={token}
+              txState={txState}
+              stopLossLevel={stopLossLevel}
+              tokenPrice={tokenPrice}
+              vault={vault}
+              ilkData={ilkData}
+              isCollateralActive={closePickerConfig.isCollateralActive}
+              txCost={txCost!}
+            />
+          </Box>
+          <Box>
+            <VaultChangesWithADelayCard />
+          </Box>
+        </>
       )}
       <Box>
-        <TxStatusSection txState={txState} etherscan={etherscan} />
+        <TxStatusSection txStatus={txState} txHash={txHash} etherscan={etherscan} />
       </Box>
       {accountIsController && !txProgressing && (
         <AutomationFormButtons
           triggerConfig={addTriggerConfig}
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
-          txSuccess={txState?.status === TxStatus.Success}
+          txSuccess={txState === TxStatus.Success}
         />
       )}
     </Grid>
