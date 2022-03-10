@@ -19,6 +19,7 @@ import {
 import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
 import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
+import { one } from '../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -121,11 +122,12 @@ function SetDownsideProtectionInformation({
     .minus(vault.debt)
     .div(afterDynamicStopLossPrice)
 
-  const ethDuringLiquidation = vault.debt
-    .times(ilkData.liquidationRatio)
+  const ethDuringLiquidation = vault.lockedCollateral
+    .times(vault.liquidationPrice)
+    .minus(vault.debt.multipliedBy(one.plus(ilkData.liquidationPenalty)))
     .div(vault.liquidationPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(afterMaxToken)
+  const savingCompareToLiquidation = afterMaxToken.minus(ethDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(afterMaxToken, token)} ${token}`
