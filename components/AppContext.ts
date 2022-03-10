@@ -16,7 +16,8 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
+import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
+import { charterNib, charterPeace, charterUline, urnProxy } from 'blockchain/calls/charter'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -36,6 +37,7 @@ import {
   WithdrawAndPaybackData,
   withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
+import { createUrnResolver$ } from 'blockchain/calls/urnResolver'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
@@ -378,6 +380,7 @@ export function setupAppContext() {
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
+  const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
@@ -388,6 +391,7 @@ export function setupAppContext() {
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
   const charterUline$ = observe(onEveryBlock$, context$, charterUline)
+  const charterUrnProxy$ = observe(onEveryBlock$, context$, urnProxy)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
@@ -416,6 +420,8 @@ export function setupAppContext() {
     curry(createController$)(proxyOwner$, cdpManagerOwner$),
     bigNumberTostring,
   )
+
+  const urnResolver$ = curry(createUrnResolver$)(cdpManagerIlks$, cdpManagerUrns$, charterUrnProxy$)
 
   const vault$ = memoize(
     (id: BigNumber) =>

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { IlkData } from 'blockchain/ilks'
 import { OraclePriceData } from 'blockchain/prices'
 import { createVault$, Vault } from 'blockchain/vaults'
@@ -83,6 +84,10 @@ export function mockVault$({
 
   function cdpManagerOwner$() {
     return of(DEFAULT_PROXY_ADDRESS)
+  }
+
+  function cdpRegistryOwns$() {
+    return of('0x0000000000000000000000000000000000000000')
   }
 
   function controller$() {

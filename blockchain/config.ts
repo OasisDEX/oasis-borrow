@@ -28,6 +28,7 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as cdpRegistry from './abi/cdp-registry.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -138,6 +139,7 @@ const protoMain = {
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
@@ -159,6 +161,7 @@ const protoMain = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  ilks: [] as string[], // I need to find better name for ilks that are managed by cropJoin and charter
 }
 
 export type NetworkConfig = typeof protoMain
@@ -201,6 +204,7 @@ const kovan: NetworkConfig = {
     dssProxyActionsCharter,
     kovanAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -229,6 +233,7 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+  ilks: [],
 }
 
 const goerli: NetworkConfig = {
@@ -268,6 +273,7 @@ const goerli: NetworkConfig = {
     dssProxyActionsCharter,
     goerliAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
@@ -297,6 +303,7 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  ilks: ['INST-ETH-A'],
 }
 
 const hardhat: NetworkConfig = {
