@@ -24,7 +24,7 @@ export const charterUline: CallDef<{ ilk: string; usr: string }, BigNumber> = {
 }
 
 // usr is the dssProxy address
-export const urnProxy: CallDef<string, string> = {
+export const charterUrnProxy: CallDef<string, string> = {
   call: (_, { contract, dssCharter }) => contract<DssCharter>(dssCharter).methods.proxy,
   prepareArgs: (usr) => [usr],
 }

@@ -1,10 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { cropJoinIlks, charterIlks } from 'blockchain/config'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
-
-const instiIlks = ['INST-ETH-A']
-
-const cropJoinIlks = ['CRVSETHETH-A']
 
 export enum MakerVaultType {
   CHARTER,
@@ -30,12 +27,12 @@ export function createVaultResolver$(
 ): Observable<VaultResolve> {
   return cdpToIlk$(cdpId).pipe(
     switchMap((ilk) => {
-      if (instiIlks.includes(ilk)) {
+      if (charterIlks.includes(ilk)) {
         return cdpRegistryOwns$(cdpId).pipe(
           switchMap((usr) =>
             combineLatest(
-              // charterUrnProxy$(usr)
-              of('0x04eE2920ea8D355c4e31C3267643aFDa2Abbde04'),
+              charterUrnProxy$(usr),
+              // of('0x04eE2920ea8D355c4e31C3267643aFDa2Abbde04'),
               proxyOwner$(usr),
             ).pipe(
               map(([urnAddress, controller]) => ({

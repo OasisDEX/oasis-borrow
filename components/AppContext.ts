@@ -17,7 +17,7 @@ import {
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
-import { charterNib, charterPeace, charterUline, urnProxy } from 'blockchain/calls/charter'
+import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -390,7 +390,7 @@ export function setupAppContext() {
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
   const charterUline$ = observe(onEveryBlock$, context$, charterUline)
-  const charterUrnProxy$ = observe(onEveryBlock$, context$, urnProxy)
+  const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)

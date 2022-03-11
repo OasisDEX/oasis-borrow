@@ -48,6 +48,10 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
+export const charterIlks = ['INST-ETH-A']
+
+export const cropJoinIlks = [] as string[]
+
 export const supportedIlks = [
   /* export just for test purposes */ 'ETH-A',
   'ETH-B',
@@ -89,8 +93,8 @@ export const supportedIlks = [
   'WBTC-B',
   'WBTC-C',
 
-  'INST-ETH-A',
-  'INST-WBTC-A',
+  ...charterIlks,
+  ...cropJoinIlks,
 ]
 
 const tokensMainnet = {
@@ -264,7 +268,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
-  dssCharter: contractDesc(dssCharter, '0x0000'),
+  dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
   vat: contractDesc(vat, goerliAddresses.MCD_VAT),
