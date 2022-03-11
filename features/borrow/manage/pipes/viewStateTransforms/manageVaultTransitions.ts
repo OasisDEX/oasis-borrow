@@ -3,13 +3,13 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import {
   defaultMutableManageVaultState,
+  ManageStandardBorrowVaultState,
   ManageVaultChange,
   ManageVaultEditingStage,
-  ManageVaultState,
-} from './manageVault'
+} from '../manageVault'
 import { defaultManageVaultCalculations } from './manageVaultCalculations'
 import { defaultManageVaultConditions } from './manageVaultConditions'
 import { manageVaultFormDefaults } from './manageVaultForm'
@@ -64,10 +64,10 @@ export type ManageVaultTransitionChange =
       kind: 'clear'
     }
 
-export function applyManageVaultTransition(
+export function applyManageVaultTransition<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: VaultState,
+): VaultState {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
 
@@ -261,7 +261,7 @@ export function applyManageVaultTransition(
 
 export function progressManage(
   txHelpers$: Observable<TxHelpers>,
-  state: ManageVaultState,
+  state: ManageStandardBorrowVaultState,
   change: (ch: ManageVaultChange) => void,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {

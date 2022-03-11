@@ -3,12 +3,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Grid, Heading, Text } from 'theme-ui'
 
-import { formatAmount } from '../../../helpers/formatters/format'
+import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { zero } from '../../../helpers/zero'
+import { one, zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
-function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalProps) {
+function VaultDetailsCardMaxTokenOnStopLossTriggerModal({
+  close,
+  token,
+  liquidationPenalty,
+}: ModalProps<{ token: string; liquidationPenalty: BigNumber }>) {
   const { t } = useTranslation()
 
   return (
@@ -18,7 +22,12 @@ function VaultDetailsCardMaxTokenOnStopLossTriggerModal({ close, token }: ModalP
           {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
         </Heading>
         <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
-          VaultDetailsCardMaxTokenOnStopLossTriggerModal dummy modal
+          {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger-desc', {
+            token,
+            liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {
+              precision: 2,
+            }),
+          })}
         </Text>
       </Grid>
     </VaultDetailsCardModal>
@@ -29,6 +38,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   slRatio,
   afterSlRatio,
   liquidationPrice,
+  liquidationPenalty,
   afterPillColors,
   showAfterPill,
   isProtected,
@@ -42,6 +52,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
   slRatio: BigNumber
   afterSlRatio: BigNumber
   liquidationPrice: BigNumber
+  liquidationPenalty: BigNumber
   isProtected: boolean
   debt: BigNumber
   liquidationRatio: BigNumber
@@ -52,7 +63,11 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 } & AfterPillProps) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+
+  const ethDuringLiquidation = lockedCollateral
+    .times(liquidationPrice)
+    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
+    .div(liquidationPrice)
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
 
@@ -67,7 +82,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
     .minus(debt)
     .div(afterDynamicStopPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(maxToken)
+  const savingCompareToLiquidation = maxToken.minus(ethDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`
@@ -106,7 +121,12 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
           </>
         )
       }
-      openModal={() => openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, { token })}
+      openModal={() =>
+        openModal(VaultDetailsCardMaxTokenOnStopLossTriggerModal, {
+          token: isCollateralActive ? token : 'DAI',
+          liquidationPenalty,
+        })
+      }
       afterPillColors={afterPillColors}
     />
   )

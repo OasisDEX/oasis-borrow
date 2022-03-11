@@ -269,7 +269,7 @@ export function UserSettingsDropdown(
 
 export function UserSettingsButton() {
   const { userSettings$ } = useAppContext()
-  const userSettings = useObservable(userSettings$)
+  const [userSettings] = useObservable(userSettings$)
   const [opened, setOpened] = useState(false)
   const { t } = useTranslation()
 

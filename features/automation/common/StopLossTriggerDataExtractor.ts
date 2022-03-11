@@ -3,7 +3,6 @@ import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { ethers } from 'ethers'
 import { last } from 'lodash'
-import { useEffect } from 'react'
 
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggerType } from './enums/TriggersTypes'
@@ -12,7 +11,7 @@ function decodeTriggerData(rawBytes: string) {
   const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'uint16', 'uint256'], rawBytes)
   return {
     cdpId: new BigNumber(values[0].toString()),
-    triggerType: new BigNumber(values[0].toString()).toNumber(),
+    triggerType: new BigNumber(values[1].toString()).toNumber(),
     stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
   }
 }
@@ -65,13 +64,4 @@ export function prepareTriggerData(
     proxyAddress: vaultData.owner,
     triggerData: buildTriggerData(vaultData.id, triggerTypeVaue, stopLossLevel),
   }
-}
-
-export function determineProperDefaults(
-  setSelectedSLValue: React.Dispatch<React.SetStateAction<BigNumber>>,
-  startingSlRatio: BigNumber,
-) {
-  useEffect(() => {
-    setSelectedSLValue(startingSlRatio.multipliedBy(100))
-  }, [])
 }

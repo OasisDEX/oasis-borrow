@@ -14,7 +14,7 @@ import {
 } from 'helpers/mocks/manageMultiplyVault.mock'
 import { memoize } from 'lodash'
 import React, { useEffect } from 'react'
-import { EMPTY, of } from 'rxjs'
+import { EMPTY, from, of } from 'rxjs'
 import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
@@ -92,6 +92,7 @@ export function manageMultiplyVaultStory({
       context$: of({ etherscan: 'url' }),
       generalManageVault$: memoize(() =>
         createGeneralManageVault$(
+          () => from([]),
           () => obs$,
           () => obs$,
           // @ts-ignore, don't need to mock regular here

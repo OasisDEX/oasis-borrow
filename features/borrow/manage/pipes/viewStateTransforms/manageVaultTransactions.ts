@@ -14,8 +14,8 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
-import { TxError } from '../../../../helpers/types'
-import { ManageVaultChange, ManageVaultState } from './manageVault'
+import { TxError } from '../../../../../helpers/types'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 type ProxyChange =
   | {
@@ -88,10 +88,10 @@ export type ManageVaultTransactionChange =
   | DaiAllowanceChange
   | ManageChange
 
-export function applyManageVaultTransaction(
+export function applyManageVaultTransaction<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
-  state: ManageVaultState,
-): ManageVaultState {
+  state: VaultState,
+): VaultState {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,
@@ -225,7 +225,12 @@ export function applyManageVaultTransaction(
 export function manageVaultDepositAndGenerate(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, vault: { ilk, token, id } }: ManageVaultState,
+  {
+    generateAmount,
+    depositAmount,
+    proxyAddress,
+    vault: { ilk, token, id },
+  }: ManageStandardBorrowVaultState,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
@@ -275,7 +280,7 @@ export function manageVaultWithdrawAndPayback(
     proxyAddress,
     vault: { ilk, token, id },
     shouldPaybackAll,
-  }: ManageVaultState,
+  }: ManageStandardBorrowVaultState,
   proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
 ) {
   txHelpers$
@@ -320,7 +325,7 @@ export function manageVaultWithdrawAndPayback(
 export function setDaiAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
+  state: ManageStandardBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -359,7 +364,7 @@ export function setDaiAllowance(
 export function setCollateralAllowance(
   txHelpers$: Observable<TxHelpers>,
   change: (ch: ManageVaultChange) => void,
-  state: ManageVaultState,
+  state: ManageStandardBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -403,7 +408,7 @@ export function createProxy(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: ManageVaultChange) => void,
-  { safeConfirmations }: ManageVaultState,
+  { safeConfirmations }: ManageStandardBorrowVaultState,
 ) {
   txHelpers$
     .pipe(
@@ -452,8 +457,8 @@ export function createProxy(
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
   dssProxyActions: WithdrawPaybackDepositGenerateLogicInterface,
-  state: ManageVaultState,
-): Observable<ManageVaultState> {
+  state: ManageStandardBorrowVaultState,
+): Observable<ManageStandardBorrowVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const {
       proxyAddress,

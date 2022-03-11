@@ -4,9 +4,7 @@ import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -17,9 +15,12 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
@@ -99,6 +100,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     totalGasSpentUSD,
     vault,
     priceInfo,
+    stopLossTriggered,
   } = props
   const openModal = useModal()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -110,6 +112,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     <Box>
       {automationEnabled && (
         <>
+          {stopLossTriggered && <StopLossTriggeredBannerControl />}
           <GetProtectionBannerControl vaultId={id} />
           <StopLossBannerControl
             vaultId={id}
@@ -124,10 +127,12 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             liquidationPriceCurrentPriceDifference,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,
+            vaultId: id,
           }}
         />
 

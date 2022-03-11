@@ -69,11 +69,10 @@ export async function getConnector(
         alert(message)
         throw new Error(message)
       }
-      const connector = new WalletLinkConnector({
+      return new WalletLinkConnector({
         url: rpcUrls[network],
         appName: dappName,
       })
-      return connector
     }
     case 'walletConnect':
       return new WalletConnectConnector({
@@ -283,7 +282,7 @@ export function getConnectionKindMessage(connectionKind: ConnectionKind) {
 
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
+  const [web3Context] = useObservable(web3Context$)
   const { t } = useTranslation()
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
@@ -506,7 +505,7 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
 export function WithConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
+  const [web3Context] = useObservable(web3Context$)
 
   useEffect(() => {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
@@ -528,7 +527,7 @@ export function WithConnection({ children }: WithChildren) {
 export function WithWalletConnection({ children }: WithChildren) {
   const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
-  const web3Context = useObservable(web3Context$)
+  const [web3Context] = useObservable(web3Context$)
 
   useEffect(() => {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {

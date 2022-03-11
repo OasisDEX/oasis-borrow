@@ -4,9 +4,7 @@ import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsBuyingPowerModal,
   VaultDetailsCard,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
@@ -18,6 +16,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
+import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 
 function OpenMultiplyVaultDetailsSummary({
@@ -89,6 +89,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
     stage,
     marketPrice,
     priceInfo,
+    ilkData: { liquidationRatio },
   } = props
   const openModal = useModal()
 
@@ -110,6 +111,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
         <VaultDetailsCardLiquidationPrice
           {...{
             liquidationPrice,
+            liquidationRatio,
             afterLiquidationPrice,
             afterPillColors,
             showAfterPill,

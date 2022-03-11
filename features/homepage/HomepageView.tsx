@@ -14,7 +14,7 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable, useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
@@ -111,10 +111,8 @@ export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
-    productCardsData$,
-  )
-  const context = useObservable(context$)
+  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const [context] = useObservable(context$)
 
   return (
     <Box
@@ -145,7 +143,7 @@ export function HomepageView() {
       >
         <WithErrorHandler error={[productCardsDataError]}>
           <WithLoadingIndicator
-            value={[productCardsDataValue]}
+            value={[productCardsData]}
             customLoader={
               <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
                 <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />

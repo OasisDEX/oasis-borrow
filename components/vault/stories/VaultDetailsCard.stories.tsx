@@ -74,6 +74,7 @@ export const MaxTokenOnStopLossTrigger = ({ hasAfter, isProtected }: CardsContro
         slRatio={new BigNumber(1.6)}
         afterSlRatio={new BigNumber(1.7)}
         liquidationPrice={new BigNumber(2000)}
+        liquidationPenalty={new BigNumber(0.1)}
         isProtected={isProtected}
         debt={new BigNumber(12000)}
         lockedCollateral={new BigNumber(20)}
@@ -105,9 +106,11 @@ export const LiquidationPrice = ({ hasAfter, hasBottom }: CardsControl) => {
     <MaxWidthWrapper>
       <VaultDetailsCardLiquidationPrice
         liquidationPrice={new BigNumber(800)}
+        liquidationRatio={new BigNumber(1.2)}
         afterLiquidationPrice={new BigNumber(900)}
         liquidationPriceCurrentPriceDifference={hasBottom ? new BigNumber(0.02) : undefined}
         showAfterPill={hasAfter}
+        vaultId={new BigNumber(1)}
       />
     </MaxWidthWrapper>
   )
