@@ -9,8 +9,8 @@ import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   DepositAndGenerateData,
-  ProxyActionsSmartContractAdapterInterface,
   OpenData,
+  ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
 

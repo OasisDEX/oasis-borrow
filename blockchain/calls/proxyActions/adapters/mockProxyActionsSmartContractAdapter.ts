@@ -6,8 +6,8 @@ import {
 import { ContextConnected } from '../../../network'
 import {
   DepositAndGenerateData,
-  ProxyActionsSmartContractAdapterInterface,
   OpenData,
+  ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
 

@@ -7,8 +7,8 @@ import { amountToWei } from '../../utils'
 import { TransactionDef } from '../callsHelpers'
 import {
   DepositAndGenerateData,
-  ProxyActionsSmartContractAdapterInterface,
   OpenData,
+  ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './adapters/ProxyActionsSmartContractAdapterInterface'
 
