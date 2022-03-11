@@ -121,13 +121,13 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
-import { CharteredDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/adapters/charteredDssProxyActionsContractWrapper'
+import { CharteredDssProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import {
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
-} from '../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
-import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
+} from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { StandardDssProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
@@ -495,7 +495,7 @@ export function setupAppContext() {
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
-      vaultActionsLogic(StandardDssProxyActionsContractWrapper),
+      vaultActionsLogic(StandardDssProxyActionsContractAdapter),
       ilk,
     ),
   )
@@ -578,7 +578,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        vaultActionsLogic(StandardDssProxyActionsContractWrapper),
+        vaultActionsLogic(StandardDssProxyActionsContractAdapter),
         StandardBorrowManageVaultViewStateProvider,
         id,
       ),
@@ -599,7 +599,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        vaultActionsLogic(new CharteredDssProxyActionsContractWrapper()),
+        vaultActionsLogic(new CharteredDssProxyActionsContractAdapter()),
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,

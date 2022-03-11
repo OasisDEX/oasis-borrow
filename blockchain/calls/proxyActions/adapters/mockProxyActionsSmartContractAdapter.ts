@@ -6,10 +6,10 @@ import {
 import { ContextConnected } from '../../../network'
 import {
   DepositAndGenerateData,
-  DssProxyActionsSmartContractWrapperInterface,
+  ProxyActionsSmartContractAdapterInterface,
   OpenData,
   WithdrawAndPaybackData,
-} from './DssProxyActionsSmartContractWrapperInterface'
+} from './ProxyActionsSmartContractAdapterInterface'
 
 function createMockPayableTransactionObject<T>(name: string): PayableTransactionObject<T> {
   return {
@@ -32,7 +32,7 @@ function createMockPayableTransactionObject<T>(name: string): PayableTransaction
   }
 }
 
-export const MockDssProxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
+export const MockProxyActionsSmartContractAdapter: ProxyActionsSmartContractAdapterInterface = {
   open(_: ContextConnected, __: OpenData): NonPayableTransactionObject<string> {
     return createMockPayableTransactionObject<string>('open')
   },

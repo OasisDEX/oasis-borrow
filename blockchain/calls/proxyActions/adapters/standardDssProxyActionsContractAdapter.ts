@@ -9,12 +9,12 @@ import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   DepositAndGenerateData,
-  DssProxyActionsSmartContractWrapperInterface,
+  ProxyActionsSmartContractAdapterInterface,
   OpenData,
   WithdrawAndPaybackData,
-} from './DssProxyActionsSmartContractWrapperInterface'
+} from './ProxyActionsSmartContractAdapterInterface'
 
-export const StandardDssProxyActionsContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
+export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface = {
   openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
     const { dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
     const { generateAmount, ilk } = data

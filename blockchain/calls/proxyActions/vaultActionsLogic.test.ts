@@ -5,7 +5,7 @@ import { one } from 'helpers/zero'
 import { describe } from 'mocha'
 
 import { TxMetaKind } from '../txMeta'
-import { MockDssProxyActionsSmartContractWrapper } from './adapters/dssProxyActionsSmartContractWrapper.mock'
+import { MockProxyActionsSmartContractAdapter } from './adapters/mockProxyActionsSmartContractAdapter'
 import { vaultActionsLogic } from './vaultActionsLogic'
 
 describe('vaultActionsLogic', () => {
@@ -31,7 +31,7 @@ describe('vaultActionsLogic', () => {
       const paybackAmountBigNumber = new BigNumber(paybackAmount)
 
       const proxyActionCall = vaultActionsLogic(
-        MockDssProxyActionsSmartContractWrapper,
+        MockProxyActionsSmartContractAdapter,
       ).withdrawAndPayback.prepareArgs(
         {
           kind: TxMetaKind.withdrawAndPayback,
@@ -181,7 +181,7 @@ describe('vaultActionsLogic', () => {
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
       const proxyActionCall = vaultActionsLogic(
-        MockDssProxyActionsSmartContractWrapper,
+        MockProxyActionsSmartContractAdapter,
       ).depositAndGenerate.prepareArgs(
         {
           kind: TxMetaKind.depositAndGenerate,
@@ -279,7 +279,7 @@ describe('vaultActionsLogic', () => {
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
       const proxyActionCall = vaultActionsLogic(
-        MockDssProxyActionsSmartContractWrapper,
+        MockProxyActionsSmartContractAdapter,
       ).open.prepareArgs(
         {
           kind: TxMetaKind.open,

@@ -7,10 +7,10 @@ import { amountToWei } from '../../utils'
 import { TransactionDef } from '../callsHelpers'
 import {
   DepositAndGenerateData,
-  DssProxyActionsSmartContractWrapperInterface,
+  ProxyActionsSmartContractAdapterInterface,
   OpenData,
   WithdrawAndPaybackData,
-} from './adapters/DssProxyActionsSmartContractWrapperInterface'
+} from './adapters/ProxyActionsSmartContractAdapterInterface'
 
 export interface VaultActionsLogicInterface {
   open: TransactionDef<OpenData>
@@ -19,7 +19,7 @@ export interface VaultActionsLogicInterface {
 }
 
 export function vaultActionsLogic(
-  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
+  proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
 ): VaultActionsLogicInterface {
   return {
     open: {
@@ -79,7 +79,7 @@ export function vaultActionsLogic(
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
+  proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
@@ -118,7 +118,7 @@ export function getWithdrawAndPaybackCallData(
 function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  proxyActionsContract: DssProxyActionsSmartContractWrapperInterface,
+  proxyActionsContract: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 
@@ -144,7 +144,7 @@ function getDepositAndGenerateCallData(
 function getOpenCallData(
   data: OpenData,
   context: ContextConnected,
-  proxyActionWrapper: DssProxyActionsSmartContractWrapperInterface,
+  proxyActionWrapper: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { depositAmount, generateAmount, token } = data
 

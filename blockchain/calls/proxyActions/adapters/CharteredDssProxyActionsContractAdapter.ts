@@ -2,9 +2,9 @@ import { ContractDesc } from '@oasisdex/web3-context'
 
 import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
 import { ContextConnected } from '../../../network'
-import { ManagerlessDssProxyActionsContractWrapper } from './managerlessDssProxyActionsAdapter'
+import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
 
-export class CharteredDssProxyActionsContractWrapper extends ManagerlessDssProxyActionsContractWrapper<
+export class CharteredDssProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<
   DssProxyActionsCharter
 > {
   resolveContractDesc(context: ContextConnected): ContractDesc {

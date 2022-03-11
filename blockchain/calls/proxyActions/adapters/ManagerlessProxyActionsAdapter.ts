@@ -11,14 +11,14 @@ import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   DepositAndGenerateData,
-  DssProxyActionsSmartContractWrapperInterface,
+  ProxyActionsSmartContractAdapterInterface,
   OpenData,
   WithdrawAndPaybackData,
-} from './DssProxyActionsSmartContractWrapperInterface'
+} from './ProxyActionsSmartContractAdapterInterface'
 
-export abstract class ManagerlessDssProxyActionsContractWrapper<
+export abstract class ManagerlessProxyActionsContractAdapter<
   DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCurve
-> implements DssProxyActionsSmartContractWrapperInterface {
+> implements ProxyActionsSmartContractAdapterInterface {
   resolveContractAddress(context: ContextConnected): string {
     return this.resolveContractDesc(context).address
   }

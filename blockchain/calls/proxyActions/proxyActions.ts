@@ -15,7 +15,7 @@ import { DssProxyActions } from 'types/web3-v1-contracts/dss-proxy-actions'
 import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-actions'
 
 import { TxMetaKind } from '../txMeta'
-import { StandardDssProxyActionsContractWrapper } from './adapters/standardDssProxyActionsContractWrapper'
+import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
 import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'
 
 export type OpenMultiplyData = {
@@ -463,7 +463,7 @@ export const closeVaultCall: TransactionDef<CloseVaultData> = {
             shouldPaybackAll: true,
           },
           context,
-          StandardDssProxyActionsContractWrapper,
+          StandardDssProxyActionsContractAdapter,
         ).encodeABI(),
       ]
     }

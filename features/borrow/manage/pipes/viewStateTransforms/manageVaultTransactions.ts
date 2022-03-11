@@ -12,7 +12,7 @@ import { filter, first, switchMap } from 'rxjs/operators'
 import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
-} from '../../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+} from '../../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxError } from '../../../../../helpers/types'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'

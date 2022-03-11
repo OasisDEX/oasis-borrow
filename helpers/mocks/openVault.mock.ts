@@ -8,7 +8,7 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
 
-import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
+import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
@@ -109,7 +109,7 @@ export function mockOpenVault$({
     ilkData$,
     ilkToToken$,
     addGasEstimationMock,
-    vaultActionsLogic(StandardDssProxyActionsContractWrapper),
+    vaultActionsLogic(StandardDssProxyActionsContractAdapter),
     ilk,
   )
 }

@@ -37,7 +37,7 @@ export type OpenData = {
   proxyAddress: string
 }
 
-export interface DssProxyActionsSmartContractWrapperInterface {
+export interface ProxyActionsSmartContractAdapterInterface {
   resolveContractAddress: (context: ContextConnected) => string
 
   lockETHAndDraw: (
