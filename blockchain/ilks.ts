@@ -35,7 +35,7 @@ export function createIlkData$(
   spotIlks$: CallObservable<typeof spotIlk>,
   jugIlks$: CallObservable<typeof jugIlk>,
   dogIlks$: CallObservable<typeof dogIlk>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
   ilk: string,
 ): Observable<IlkData> {
   return combineLatest(
@@ -43,7 +43,7 @@ export function createIlkData$(
     spotIlks$(ilk),
     jugIlks$(ilk),
     dogIlks$(ilk),
-    ilkToToken$,
+    ilkToToken$(ilk),
   ).pipe(
     switchMap(
       ([
@@ -51,7 +51,7 @@ export function createIlkData$(
         { priceFeedAddress, liquidationRatio },
         { stabilityFee, feeLastLevied },
         { liquidatorAddress, liquidationPenalty },
-        ilkToToken,
+        token,
       ]) => {
         const collateralizationDangerThreshold = liquidationRatio.times(
           COLLATERALIZATION_DANGER_OFFSET.plus(one),
@@ -74,7 +74,7 @@ export function createIlkData$(
           feeLastLevied,
           liquidatorAddress,
           liquidationPenalty,
-          token: ilkToToken(ilk),
+          token,
           ilk,
           ilkDebt: normalizedIlkDebt
             .times(debtScalingFactor)

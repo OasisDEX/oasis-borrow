@@ -269,7 +269,7 @@ export function createOpenVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
   addGasEstimation$: AddGasEstimationFunction,
   ilk: string,
 ): Observable<OpenVaultState> {
@@ -278,10 +278,9 @@ export function createOpenVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-          switchMap(([context, txHelpers, ilkToToken]) => {
+        combineLatest(context$, txHelpers$, ilkToToken$(ilk)).pipe(
+          switchMap(([context, txHelpers, token]) => {
             const account = context.account
-            const token = ilkToToken(ilk)
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

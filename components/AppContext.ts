@@ -37,7 +37,7 @@ import {
   WithdrawAndPaybackData,
   withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
-import { createUrnResolver$ } from 'blockchain/calls/urnResolver'
+import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
@@ -135,6 +135,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 
 export type TxData =
   | OpenData
@@ -171,8 +172,6 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 ) => Observable<S>
 
 export type TxHelpers$ = Observable<TxHelpers>
-
-export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
@@ -335,28 +334,29 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
+  const ilkToToken$ = curry(createIlkToToken$)(context$)
+
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
 
-  const controller$ = memoize(
-    curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumberTostring,
+  const urnResolver$ = curry(createVaultResolver$)(
+    cdpManagerIlks$,
+    cdpManagerUrns$,
+    charterUrnProxy$,
+    cdpRegistryOwns$,
+    cdpManagerOwner$,
+    proxyOwner$,
   )
-
-  const urnResolver$ = curry(createUrnResolver$)(cdpManagerIlks$, cdpManagerUrns$, charterUrnProxy$)
 
   const vault$ = memoize(
     (id: BigNumber) =>
       createVault$(
-        cdpManagerUrns$,
-        cdpManagerIlks$,
-        cdpManagerOwner$,
+        urnResolver$,
         vatUrns$,
         vatGem$,
         ilkData$,
         oraclePriceData$,
-        controller$,
         ilkToToken$,
         context$,
         id,
