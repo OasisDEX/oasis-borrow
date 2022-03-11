@@ -14,7 +14,7 @@ export const GRADIENTS = {
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
-  breakpoints: ['48em', '56em', '64em'],
+  breakpoints: ['48em', '60em', '68em'],
   colors: {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
