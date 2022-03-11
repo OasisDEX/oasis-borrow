@@ -3,7 +3,9 @@ import { expect } from 'chai'
 import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
 
+import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultAdjustPositionValidations', () => {
@@ -96,6 +98,18 @@ describe('manageVaultAdjustPositionValidations', () => {
     expect(state().errorMessages).to.deep.eq([])
     legacyToggle(state())
     expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
+    expect(state().canProgress).to.deep.eq(false)
+  })
+
+  it('validates if next coll ratio is below stop loss level', () => {
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({ _automationTriggersData$: of(mockedStopLossTrigger) }),
+    )
+
+    // state().stopLossData = extractStopLossData(mockedStopLossTrigger)
+    state().updateRequiredCollRatio!(new BigNumber(2))
+
+    expect(state().errorMessages).to.deep.eq(['afterCollRatioBelowStopLossRatio'])
     expect(state().canProgress).to.deep.eq(false)
   })
 })

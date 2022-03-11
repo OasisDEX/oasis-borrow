@@ -5,7 +5,9 @@ import { mockManageMultiplyVault$ } from 'helpers/mocks/manageMultiplyVault.mock
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
 
+import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultOtherActionsValidations', () => {
@@ -315,5 +317,51 @@ describe('manageVaultOtherActionsValidations', () => {
     state().setOtherAction!('withdrawCollateral')
     expect(state().errorMessages).to.deep.eq(['hasToDepositCollateralOnEmptyVault'])
     expect(state().canProgress).to.deep.eq(false)
+  })
+
+  it('validates if next coll ratio on collateral withdraw is below stop loss level', () => {
+    const withdrawAmountStopLossError = new BigNumber(0.05)
+
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({
+        ilkData: {
+          debtFloor: new BigNumber('1500'),
+        },
+        vault: {
+          collateral: new BigNumber('3.4'),
+          debt: new BigNumber('1990'),
+          ilk: 'ETH-A',
+        },
+        _automationTriggersData$: of(mockedStopLossTrigger),
+      }),
+    )
+
+    legacyToggle(state())
+    state().setOtherAction!('withdrawCollateral')
+    state().updateWithdrawAmount!(withdrawAmountStopLossError)
+    expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
+  })
+
+  it('validates if next coll ratio on dai withdraw is below stop loss level', () => {
+    const withdrawAmountStopLossError = new BigNumber(500)
+
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({
+        ilkData: {
+          debtFloor: new BigNumber('1500'),
+        },
+        vault: {
+          collateral: new BigNumber('3.4'),
+          debt: new BigNumber('1990'),
+          ilk: 'ETH-A',
+        },
+        _automationTriggersData$: of(mockedStopLossTrigger),
+      }),
+    )
+
+    legacyToggle(state())
+    state().setOtherAction!('withdrawDai')
+    state().updateGenerateAmount!(withdrawAmountStopLossError)
+    expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
   })
 })

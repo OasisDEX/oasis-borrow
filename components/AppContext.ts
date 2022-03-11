@@ -621,6 +621,7 @@ export function setupAppContext() {
         userSettings$,
         vaultMultiplyHistory$,
         saveVaultUsingApi$,
+        automationTriggersData$,
         id,
       ),
     bigNumberTostring,
