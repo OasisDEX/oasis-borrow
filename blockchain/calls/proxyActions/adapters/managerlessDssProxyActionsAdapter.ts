@@ -14,6 +14,7 @@ import {
   OpenData,
   WithdrawAndPaybackData,
 } from './DssProxyActionsSmartContractWrapperInterface'
+import Web3 from 'web3'
 
 export abstract class ManagerlessDssProxyActionsContractWrapper<
   DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCurve
@@ -22,21 +23,47 @@ export abstract class ManagerlessDssProxyActionsContractWrapper<
     return this.resolveContractDesc(context).address
   }
 
-  abstract resolveContractDesc(context: ContextConnected): ContractDesc
+  protected abstract resolveContractDesc(context: ContextConnected): ContractDesc
 
   open(context: ContextConnected, data: OpenData): NonPayableTransactionObject<string> {
-    throw 'cannot open chartered vault manually'
+    const { contract } = context
+    const { ilk, proxyAddress } = data
+    return contract<DssProxyActionsType>(this.resolveContractDesc(context)).methods.open(
+      Web3.utils.utf8ToHex(ilk),
+      proxyAddress,
+    )
   }
 
   openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
-    throw 'cannot open chartered vault manually'
+    const { mcdJoinDai, mcdJug, joins, contract } = context
+    const { generateAmount, ilk } = data
+    return contract<DssProxyActionsType>(
+      this.resolveContractDesc(context),
+    ).methods.openLockETHAndDraw(
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(generateAmount, 'DAI').toFixed(0),
+    )
   }
 
   openLockGemAndDraw(
     context: ContextConnected,
     data: OpenData,
   ): NonPayableTransactionObject<string> {
-    throw 'cannot open chartered vault manually'
+    const { mcdJoinDai, mcdJug, joins, contract } = context
+    const { depositAmount, generateAmount, token, ilk } = data
+    return contract<DssProxyActionsType>(
+      this.resolveContractDesc(context),
+    ).methods.openLockGemAndDraw(
+      mcdJug.address,
+      joins[ilk],
+      mcdJoinDai.address,
+      Web3.utils.utf8ToHex(ilk),
+      amountToWei(depositAmount, token).toFixed(0),
+      amountToWei(generateAmount, 'DAI').toFixed(0),
+    )
   }
 
   draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
