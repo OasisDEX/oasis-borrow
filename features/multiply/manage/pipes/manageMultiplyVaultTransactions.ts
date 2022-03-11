@@ -17,14 +17,14 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
-import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
-import { TxError } from '../../../../helpers/types'
-import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
 } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 import { vaultActionsLogicFactory } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { TxError } from '../../../../helpers/types'
+import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
 type ProxyChange =
   | {

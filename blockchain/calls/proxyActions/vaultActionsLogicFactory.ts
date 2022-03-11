@@ -1,3 +1,9 @@
+import { zero } from '../../../helpers/zero'
+import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
+import dsProxy from '../../abi/ds-proxy.json'
+import { contractDesc } from '../../config'
+import { ContextConnected } from '../../network'
+import { amountToWei } from '../../utils'
 import { TransactionDef } from '../callsHelpers'
 import {
   DepositAndGenerateData,
@@ -5,12 +11,6 @@ import {
   OpenData,
   WithdrawAndPaybackData,
 } from './adapters/DssProxyActionsSmartContractWrapperInterface'
-import { ContextConnected } from '../../network'
-import { zero } from '../../../helpers/zero'
-import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
-import { contractDesc } from '../../config'
-import dsProxy from '../../abi/ds-proxy.json'
-import { amountToWei } from '../../utils'
 
 export interface VaultActionsLogicInterface {
   open: TransactionDef<OpenData>

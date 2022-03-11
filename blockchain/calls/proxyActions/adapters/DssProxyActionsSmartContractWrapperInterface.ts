@@ -1,10 +1,11 @@
+import { BigNumber } from 'bignumber.js'
+
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
 } from '../../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../../network'
 import { TxMetaKind } from '../../txMeta'
-import { BigNumber } from 'bignumber.js'
 
 export type WithdrawAndPaybackData = {
   kind: TxMetaKind.withdrawAndPayback

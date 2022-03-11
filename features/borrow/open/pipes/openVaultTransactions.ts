@@ -8,14 +8,10 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 
-import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
+import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
+import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
-import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
-import {
-  vaultActionsLogicFactory,
-  VaultActionsLogicInterface,
-} from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 export function applyOpenVaultTransaction(
   state: OpenVaultState,

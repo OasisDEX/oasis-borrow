@@ -122,7 +122,13 @@ import {
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
 import { CharteredDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/adapters/charteredDssProxyActionsContractWrapper'
+import {
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
+} from '../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
+import { vaultActionsLogicFactory } from '../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -153,12 +159,6 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
-import {
-  DepositAndGenerateData,
-  OpenData,
-  WithdrawAndPaybackData,
-} from '../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
-import { vaultActionsLogicFactory } from '../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 
 export type TxData =
   | OpenData
@@ -599,7 +599,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        vaultActionsLogicFactory(CharteredDssProxyActionsContractWrapper),
+        vaultActionsLogicFactory(new CharteredDssProxyActionsContractWrapper()),
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,

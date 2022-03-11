@@ -9,13 +9,13 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
-import { TxError } from '../../../../../helpers/types'
-import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
 } from '../../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
 import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { TxError } from '../../../../../helpers/types'
+import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
 type ProxyChange =
   | {

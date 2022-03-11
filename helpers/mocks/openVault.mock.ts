@@ -8,12 +8,12 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
 
+import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
+import { vaultActionsLogicFactory } from '../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
-import { vaultActionsLogicFactory } from '../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
-import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
 
 export function addGasEstimationMock<T>(state: T) {
   return of(state)
