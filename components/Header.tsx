@@ -119,6 +119,7 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
 
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+  const exchangeEnabled = useFeatureToggle('Exchange')
 
   const web3Provider = (() => {
     const { web3ContextConnected$ } = useAppContext()
@@ -142,7 +143,7 @@ function UserAccount({ position }: UserAccountProps) {
     >
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
-        { web3Provider ? 
+        { exchangeEnabled && web3Provider ? 
         <Box sx={{ display: ['none', 'block']}}>
           <ExchangeButton web3Provider={web3Provider} />
         </Box> : null }
