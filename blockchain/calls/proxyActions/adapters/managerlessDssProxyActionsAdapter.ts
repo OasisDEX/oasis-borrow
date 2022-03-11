@@ -1,4 +1,5 @@
 import { ContractDesc } from '@oasisdex/web3-context'
+import Web3 from 'web3'
 
 import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
 import { DssProxyActionsCurve } from '../../../../types/web3-v1-contracts/dss-proxy-actions-curve'
@@ -14,7 +15,6 @@ import {
   OpenData,
   WithdrawAndPaybackData,
 } from './DssProxyActionsSmartContractWrapperInterface'
-import Web3 from 'web3'
 
 export abstract class ManagerlessDssProxyActionsContractWrapper<
   DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCurve

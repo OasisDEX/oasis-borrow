@@ -14,8 +14,8 @@ import {
 function createMockPayableTransactionObject<T>(name: string): PayableTransactionObject<T> {
   return {
     arguments: [],
-    call: (tx?: PayableTx) => {
-      return Promise.reject('not implemented')
+    call: (_?: PayableTx) => {
+      throw new Error('not implemented')
     },
     encodeABI: () => {
       const call = {
@@ -23,97 +23,79 @@ function createMockPayableTransactionObject<T>(name: string): PayableTransaction
       }
       return JSON.stringify(call)
     },
-    estimateGas: (tx?: PayableTx) => {
-      return Promise.reject('not implemented')
+    estimateGas: (_?: PayableTx) => {
+      throw new Error('not implemented')
     },
-    send: (tx?: PayableTx) => {
-      throw 'not implemented'
+    send: (_?: PayableTx) => {
+      throw new Error('not implemented')
     },
   }
 }
 
 export const MockDssProxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface = {
-  open(context: ContextConnected, data: OpenData): NonPayableTransactionObject<string> {
+  open(_: ContextConnected, __: OpenData): NonPayableTransactionObject<string> {
     return createMockPayableTransactionObject<string>('open')
   },
-  openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
+  openLockETHAndDraw(_: ContextConnected, __: OpenData): PayableTransactionObject<string> {
     return createMockPayableTransactionObject('openLockETHAndDraw')
   },
-  openLockGemAndDraw(
-    context: ContextConnected,
-    data: OpenData,
-  ): NonPayableTransactionObject<string> {
+  openLockGemAndDraw(_: ContextConnected, __: OpenData): NonPayableTransactionObject<string> {
     return createMockPayableTransactionObject('openLockGemAndDraw')
   },
-  draw(context: ContextConnected, data: DepositAndGenerateData): NonPayableTransactionObject<void> {
+  draw(_: ContextConnected, __: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('draw')
   },
-  freeETH(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
-  ): NonPayableTransactionObject<void> {
+  freeETH(_: ContextConnected, __: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('freeETH')
   },
-  freeGem(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
-  ): NonPayableTransactionObject<void> {
+  freeGem(_: ContextConnected, __: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('freeGem')
   },
-  lockETH(context: ContextConnected, data: DepositAndGenerateData): PayableTransactionObject<void> {
+  lockETH(_: ContextConnected, __: DepositAndGenerateData): PayableTransactionObject<void> {
     return createMockPayableTransactionObject('lockETH')
   },
-  lockETHAndDraw(
-    context: ContextConnected,
-    data: DepositAndGenerateData,
-  ): PayableTransactionObject<void> {
+  lockETHAndDraw(_: ContextConnected, __: DepositAndGenerateData): PayableTransactionObject<void> {
     return createMockPayableTransactionObject('lockETHAndDraw')
   },
-  lockGem(
-    context: ContextConnected,
-    data: DepositAndGenerateData,
-  ): NonPayableTransactionObject<void> {
+  lockGem(_: ContextConnected, __: DepositAndGenerateData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('lockGem')
   },
   lockGemAndDraw(
-    context: ContextConnected,
-    data: DepositAndGenerateData,
+    _: ContextConnected,
+    __: DepositAndGenerateData,
   ): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('lockGemAndDraw')
   },
-  resolveContractAddress(context: ContextConnected): string {
+  resolveContractAddress(_: ContextConnected): string {
     return '0x-mock-dss-proxy-action-address'
   },
-  wipe(context: ContextConnected, data: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
+  wipe(_: ContextConnected, __: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipe')
   },
-  wipeAll(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
-  ): NonPayableTransactionObject<void> {
+  wipeAll(_: ContextConnected, __: WithdrawAndPaybackData): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipeAll')
   },
   wipeAllAndFreeETH(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
+    _: ContextConnected,
+    __: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipeAllAndFreeETH')
   },
   wipeAllAndFreeGem(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
+    _: ContextConnected,
+    __: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipeAllAndFreeGem')
   },
   wipeAndFreeETH(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
+    _: ContextConnected,
+    __: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipeAndFreeETH')
   },
   wipeAndFreeGem(
-    context: ContextConnected,
-    data: WithdrawAndPaybackData,
+    _: ContextConnected,
+    __: WithdrawAndPaybackData,
   ): NonPayableTransactionObject<void> {
     return createMockPayableTransactionObject('wipeAndFreeGem')
   },
