@@ -105,16 +105,32 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   const numberOfVaults =
     accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
-  return <AppLink
+  return (
+    <AppLink
       variant="links.navHeader"
-      sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')), display: 'flex', alignItems: 'center', whiteSpace: 'nowrap', ...sx }}
+      sx={{
+        mr: 4,
+        color: navLinkColor(pathname.includes('owner')),
+        display: 'flex',
+        alignItems: 'center',
+        whiteSpace: 'nowrap',
+        ...sx,
+      }}
       href={`/owner/${(context as ContextConnected)?.account}`}
       onClick={() => trackingEvents.yourVaults()}
-    > 
-        <Icon name="home" size="auto" width="20" sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }} />
-        <Box sx={{ display: ['inline', 'none', 'inline']}}>{t('my-positions')}</Box>
-        {numberOfVaults ? numberOfVaults > 0 && <Box sx={{ display: 'inline', ml: 1}}>{`(${numberOfVaults})`}</Box> : ''}
-  </AppLink>
+    >
+      <Icon
+        name="home"
+        size="auto"
+        width="20"
+        sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
+      />
+      <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
+      {numberOfVaults
+        ? numberOfVaults > 0 && <Box sx={{ display: 'inline', ml: 1 }}>{`(${numberOfVaults})`}</Box>
+        : ''}
+    </AppLink>
+  )
 }
 
 function UserAccount({ position }: UserAccountProps) {
@@ -143,10 +159,11 @@ function UserAccount({ position }: UserAccountProps) {
     >
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
-        { exchangeEnabled && web3Provider ? 
-        <Box sx={{ display: ['none', 'block']}}>
-          <ExchangeButton web3Provider={web3Provider} />
-        </Box> : null }
+        {exchangeEnabled && web3Provider ? (
+          <Box sx={{ display: ['none', 'block'] }}>
+            <ExchangeButton web3Provider={web3Provider} />
+          </Box>
+        ) : null}
         <UserSettingsButton />
         <AccountButton />
       </Flex>
@@ -169,7 +186,7 @@ function ConnectedHeader() {
   const { pathname } = useRouter()
   const { t } = useTranslation()
   const earnEnabled = useFeatureToggle('EarnProduct')
-  
+
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>

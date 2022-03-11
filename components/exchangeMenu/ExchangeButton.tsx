@@ -6,7 +6,13 @@ import { provider } from 'web3-core'
 
 import { UniswapWidget } from './UniswapWidget'
 
-export function ExchangeButton({ web3Provider, sx }: { web3Provider?: provider, sx?: SxStyleProp }) {
+export function ExchangeButton({
+  web3Provider,
+  sx,
+}: {
+  web3Provider?: provider
+  sx?: SxStyleProp
+}) {
   const componentRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
