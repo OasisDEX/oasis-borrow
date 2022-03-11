@@ -16,9 +16,9 @@ export function ExchangeButton({ web3Provider, sx }: { web3Provider?: provider, 
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1, ...sx }}>
       <Button variant="menuButtonRound" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? (
-          <Icon name="chevron_up" size="auto" width="24" />
+          <Icon name="chevron_up" size="auto" width="14" />
         ) : (
-          <Icon name="exchange" size="auto" width="32" />
+          <Icon name="exchange" size="auto" width="20" />
         )}
       </Button>
       <Box
