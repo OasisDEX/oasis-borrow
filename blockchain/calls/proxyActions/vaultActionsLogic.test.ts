@@ -6,9 +6,9 @@ import { describe } from 'mocha'
 
 import { TxMetaKind } from '../txMeta'
 import { MockDssProxyActionsSmartContractWrapper } from './adapters/dssProxyActionsSmartContractWrapper.mock'
-import { vaultActionsLogicFactory } from './vaultActionsLogicFactory'
+import { vaultActionsLogic } from './vaultActionsLogic'
 
-describe('vaultActionsLogicFactory', () => {
+describe('vaultActionsLogic', () => {
   describe('withdrawAndPayback', () => {
     type TestData = {
       testName: string
@@ -30,7 +30,7 @@ describe('vaultActionsLogicFactory', () => {
       const withdrawAmountBigNumber = new BigNumber(withdrawAmount)
       const paybackAmountBigNumber = new BigNumber(paybackAmount)
 
-      const proxyActionCall = vaultActionsLogicFactory(
+      const proxyActionCall = vaultActionsLogic(
         MockDssProxyActionsSmartContractWrapper,
       ).withdrawAndPayback.prepareArgs(
         {
@@ -180,7 +180,7 @@ describe('vaultActionsLogicFactory', () => {
       const depositAmountBigNumber = new BigNumber(depositAmount)
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
-      const proxyActionCall = vaultActionsLogicFactory(
+      const proxyActionCall = vaultActionsLogic(
         MockDssProxyActionsSmartContractWrapper,
       ).depositAndGenerate.prepareArgs(
         {
@@ -278,7 +278,7 @@ describe('vaultActionsLogicFactory', () => {
       const depositAmountBigNumber = new BigNumber(depositAmount)
       const generateAmountBigNumber = new BigNumber(generateAmount)
 
-      const proxyActionCall = vaultActionsLogicFactory(
+      const proxyActionCall = vaultActionsLogic(
         MockDssProxyActionsSmartContractWrapper,
       ).open.prepareArgs(
         {

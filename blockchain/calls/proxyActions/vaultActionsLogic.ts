@@ -18,7 +18,7 @@ export interface VaultActionsLogicInterface {
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
-export function vaultActionsLogicFactory(
+export function vaultActionsLogic(
   proxyActionsSmartContractWrapper: DssProxyActionsSmartContractWrapperInterface,
 ): VaultActionsLogicInterface {
   return {

@@ -3,7 +3,7 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,

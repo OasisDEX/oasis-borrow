@@ -22,7 +22,7 @@ import {
   WithdrawAndPaybackData,
 } from '../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
-import { vaultActionsLogicFactory } from '../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { vaultActionsLogic } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -320,7 +320,7 @@ export function manageVaultDepositAndGenerate(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
+          vaultActionsLogic(StandardDssProxyActionsContractWrapper).depositAndGenerate,
           {
             kind: TxMetaKind.depositAndGenerate,
             generateAmount,
@@ -371,7 +371,7 @@ export function manageVaultWithdrawAndPayback(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
         sendWithGasEstimation(
-          vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
+          vaultActionsLogic(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
           {
             kind: TxMetaKind.withdrawAndPayback,
             withdrawAmount,
@@ -696,7 +696,7 @@ export function applyEstimateGas(
 
           if (isDepositAndGenerate) {
             return estimateGas(
-              vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).depositAndGenerate,
+              vaultActionsLogic(StandardDssProxyActionsContractWrapper).depositAndGenerate,
               {
                 kind: TxMetaKind.depositAndGenerate,
                 generateAmount: generateAmount || zero,
@@ -709,7 +709,7 @@ export function applyEstimateGas(
             )
           } else {
             return estimateGas(
-              vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
+              vaultActionsLogic(StandardDssProxyActionsContractWrapper).withdrawAndPayback,
               {
                 kind: TxMetaKind.withdrawAndPayback,
                 withdrawAmount: withdrawAmount || zero,

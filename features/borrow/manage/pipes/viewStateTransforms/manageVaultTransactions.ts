@@ -13,7 +13,7 @@ import {
   DepositAndGenerateData,
   WithdrawAndPaybackData,
 } from '../../../../../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
-import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxError } from '../../../../../helpers/types'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 

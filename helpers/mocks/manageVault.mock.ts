@@ -17,7 +17,7 @@ import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
-import { vaultActionsLogicFactory } from '../../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
@@ -224,7 +224,7 @@ export function mockManageVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
+    vaultActionsLogic(StandardDssProxyActionsContractWrapper),
     StandardBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
   )
@@ -282,7 +282,7 @@ export function mockManageInstiVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
+    vaultActionsLogic(StandardDssProxyActionsContractWrapper),
     InstitutionalBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
   )

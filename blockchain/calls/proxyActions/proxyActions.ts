@@ -16,7 +16,7 @@ import { MultiplyProxyActions } from 'types/web3-v1-contracts/multiply-proxy-act
 
 import { TxMetaKind } from '../txMeta'
 import { StandardDssProxyActionsContractWrapper } from './adapters/standardDssProxyActionsContractWrapper'
-import { getWithdrawAndPaybackCallData } from './vaultActionsLogicFactory'
+import { getWithdrawAndPaybackCallData } from './vaultActionsLogic'
 
 export type OpenMultiplyData = {
   kind: TxMetaKind.multiply

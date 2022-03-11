@@ -128,7 +128,7 @@ import {
   WithdrawAndPaybackData,
 } from '../blockchain/calls/proxyActions/adapters/DssProxyActionsSmartContractWrapperInterface'
 import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractWrapper'
-import { vaultActionsLogicFactory } from '../blockchain/calls/proxyActions/vaultActionsLogicFactory'
+import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -495,7 +495,7 @@ export function setupAppContext() {
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
-      vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
+      vaultActionsLogic(StandardDssProxyActionsContractWrapper),
       ilk,
     ),
   )
@@ -578,7 +578,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        vaultActionsLogicFactory(StandardDssProxyActionsContractWrapper),
+        vaultActionsLogic(StandardDssProxyActionsContractWrapper),
         StandardBorrowManageVaultViewStateProvider,
         id,
       ),
@@ -599,7 +599,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        vaultActionsLogicFactory(new CharteredDssProxyActionsContractWrapper()),
+        vaultActionsLogic(new CharteredDssProxyActionsContractWrapper()),
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,
