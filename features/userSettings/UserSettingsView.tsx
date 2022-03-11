@@ -283,20 +283,20 @@ export function UserSettingsButton() {
         sx={{ mr: 1, px: [2, 3], width: ['40px', 'auto'] }}
       >
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
-          <Text sx={{ display: ['none', 'block'] }}>{t('user-settings.button-menu')}</Text>
+          <Text sx={{ display: ['none', 'none', 'block'] }}>{t('user-settings.button-menu')}</Text>
           <Icon
             size="auto"
             width="12"
             height="7"
             name={opened ? 'chevron_up' : 'chevron_down'}
-            sx={{ display: ['none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
+            sx={{ display: ['none', 'none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
           />
           <Icon
             size="auto"
             width="16"
             height="16"
             name="settings"
-            sx={{ display: ['block', 'none'] }}
+            sx={{ display: ['block', 'block', 'none'], flexShrink: 0 }}
           />
         </Flex>
       </Button>

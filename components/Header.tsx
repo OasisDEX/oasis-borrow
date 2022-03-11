@@ -111,9 +111,9 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
       href={`/owner/${(context as ContextConnected)?.account}`}
       onClick={() => trackingEvents.yourVaults()}
     > 
-        <Icon name="home" size="auto" width="20" sx={{ mr: 2, position: 'relative', top: '-1px', flexShrink: 0 }} />
-        {t('my-positions')}{' '}
-        {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
+        <Icon name="home" size="auto" width="20" sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }} />
+        <Box sx={{ display: ['inline', 'none', 'inline']}}>{t('my-positions')}</Box>
+        {numberOfVaults ? numberOfVaults > 0 && <Box sx={{ display: 'inline', ml: 1}}>{`(${numberOfVaults})`}</Box> : ''}
   </AppLink>
 }
 
