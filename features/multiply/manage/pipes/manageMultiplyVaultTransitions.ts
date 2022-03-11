@@ -270,7 +270,7 @@ export function progressAdjust(
       return manageVaultWithdrawAndPayback(txHelpers$, change, {
         ...state,
         withdrawAmount: state.maxWithdrawAmount,
-      }) //TODO ask sebastian why this is needed
+      })
     }
     if (state.otherAction === 'closeVault') {
       return closeVault(txHelpers$, context, change, state)

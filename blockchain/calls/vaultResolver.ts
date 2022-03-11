@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-const instiIlks = ['INST-ETH-A', 'NEXO-ETH-A']
+const instiIlks = ['INST-ETH-A']
 
 const cropJoinIlks = ['CRVSETHETH-A']
 
