@@ -109,23 +109,21 @@ export function mockVault$({
       ),
     )
   }
+  // TODO fix test
+  // return createVault$(
 
-  return createVault$(
-    cdpManagerUrns$,
-    cdpManagerIlks$,
-    cdpManagerOwner$,
-    vatUrns$,
-    vatGem$,
-    ilkData$,
-    oraclePriceData$,
-    controller$,
-    ilkToToken$,
-    mockContextConnected$({
-      account: defaultController,
-      status: 'connected',
-    }),
-    id,
-  )
+  //   vatUrns$,
+  //   vatGem$,
+  //   ilkData$,
+  //   oraclePriceData$,
+  //   controller$,
+
+  //   mockContextConnected$({
+  //     account: defaultController,
+  //     status: 'connected',
+  //   }),
+  //   id,
+  // )
 }
 
 export function mockVaults(props: MockVaultProps = {}) {
