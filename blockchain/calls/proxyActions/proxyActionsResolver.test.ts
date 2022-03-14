@@ -7,8 +7,8 @@ import { proxyActionsAdapterResolver$ } from './proxyActionsAdapterResolver'
 
 describe('proxyActionsAdapterResolver', () => {
   describe('crate from ilk (open new vault)', () => {
-    it('returns a cropjoin proxy actions for CRVV1ETHSTETH ilk', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'CRVV1ETHSTETH' })
+    it('returns a cropjoin proxy actions for CRVV1ETHSTETH-A ilk', () => {
+      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'CRVV1ETHSTETH-A' })
 
       const state = getStateUnpacker(adapter$)
 
@@ -22,12 +22,12 @@ describe('proxyActionsAdapterResolver', () => {
       expect(state().AdapterType).to.eq(ProxyActionsAdapterType.STANDARD)
     })
     it('throws when trying to open a charter vault', () => {
-      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'INST_ETH_A' })
+      const adapter$ = proxyActionsAdapterResolver$({ ilk: 'INST-ETH-A' })
 
       const state = getStateUnpacker(adapter$)
 
       expect(state).to.throw(
-        'can not create a proxy actions adapter from an INST_ETH_A ilk - adapter is not tested for opening vaults',
+        'can not create a proxy actions adapter from an INST-ETH-A ilk - adapter is not tested for opening vaults',
       )
     })
   })

@@ -5,6 +5,7 @@ import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDss
 import { CropjoinProxyActionsContractAdapter } from './adapters/CropjoinProxyActionsSmartContractAdapter'
 import { ProxyActionsSmartContractAdapterInterface } from './adapters/ProxyActionsSmartContractAdapterInterface'
 import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
+import { charterIlks, cropJoinIlks } from '../../config'
 
 type Args = ResolveFromIlkArgs | ResolveFromMakerVaultTypeArgs
 
@@ -33,14 +34,14 @@ function resolveFromMakerVaultType({
 function resolveFromIlk({
   ilk,
 }: ResolveFromIlkArgs): Observable<ProxyActionsSmartContractAdapterInterface> {
-  if (ilk === 'CRVV1ETHSTETH') {
+  if (cropJoinIlks.includes(ilk)) {
     return of(new CropjoinProxyActionsContractAdapter())
   }
 
-  if (ilk === 'INST_ETH_A') {
+  if (charterIlks.includes(ilk)) {
     return throwError(
       new Error(
-        'can not create a proxy actions adapter from an INST_ETH_A ilk - adapter is not tested for opening vaults',
+        `can not create a proxy actions adapter from an ${ilk} ilk - adapter is not tested for opening vaults`,
       ),
     )
   }

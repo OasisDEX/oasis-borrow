@@ -104,6 +104,7 @@ export const supportedBorrowIlks = [
   'UNIV2DAIUSDC-A',
   'UNIV2UNIETH-A',
   'UNIV2WBTCDAI-A',
+  'CRVV1ETHSTETH-A',
 ]
 
 export const supportedMultiplyIlks = [
