@@ -102,12 +102,12 @@ describe('manageVaultAdjustPositionValidations', () => {
   })
 
   it('validates if next coll ratio is below stop loss level', () => {
+    const requiredCollRatioBelowStopLoss = new BigNumber(2)
     const state = getStateUnpacker(
       mockManageMultiplyVault$({ _automationTriggersData$: of(mockedStopLossTrigger) }),
     )
 
-    // state().stopLossData = extractStopLossData(mockedStopLossTrigger)
-    state().updateRequiredCollRatio!(new BigNumber(2))
+    state().updateRequiredCollRatio!(requiredCollRatioBelowStopLoss)
 
     expect(state().errorMessages).to.deep.eq(['afterCollRatioBelowStopLossRatio'])
     expect(state().canProgress).to.deep.eq(false)
