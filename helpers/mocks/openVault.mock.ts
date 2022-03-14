@@ -9,7 +9,6 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { Observable, of } from 'rxjs'
 
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
