@@ -26,6 +26,7 @@ export function validateErrors(
     withdrawCollateralOnVaultUnderDebtFloor,
     depositCollateralOnVaultUnderDebtFloor,
     ledgerWalletContractDataDisabled,
+    afterCollRatioBelowStopLossRatio,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -46,6 +47,7 @@ export function validateErrors(
         debtWillBeLessThanDebtFloor,
         withdrawCollateralOnVaultUnderDebtFloor,
         depositCollateralOnVaultUnderDebtFloor,
+        afterCollRatioBelowStopLossRatio,
       }),
     )
   }

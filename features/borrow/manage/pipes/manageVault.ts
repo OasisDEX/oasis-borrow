@@ -25,6 +25,11 @@ import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
 import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
+import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
+import {
+  createStopLossDataChange$,
+  TriggersData,
+} from '../../../automation/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
@@ -165,6 +170,7 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
+    stopLossData?: StopLossTriggerData
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
@@ -374,6 +380,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
     makerVaultType: MakerVaultType
   }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<VS> {
   return context$.pipe(
@@ -441,6 +448,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
                     createHistoryChange$(vaultHistory$, id),
+                    createStopLossDataChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

@@ -663,7 +663,8 @@
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
-    "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting"
+    "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
+    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -835,7 +836,7 @@
   "protection": {
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting stop loss",
-    "set-downside-protection": "Set downside protection",
+    "set-downside-protection": "Set Downside Protection",
     "set-downside-protection-desc": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
@@ -883,7 +884,8 @@
     "cancel-notice": "Cancelling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
     "find-more-about-setting-stop-loss": "Find out more about setting stop loss →",
     "set-stop-loss-again": "Set up stop loss again",
-    "sl-triggered-gas-estimation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing."
+    "sl-triggered-gas-estimation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
+    "stop-loss-on": "Stop Loss On"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

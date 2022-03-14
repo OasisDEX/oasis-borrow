@@ -1,9 +1,11 @@
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { useEffect } from 'react'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
 import { useAppContext } from '../../../components/AppContextProvider'
+import { useSharedUI } from '../../../components/SharedUIProvider'
 import { VaultFormContainer } from '../../../components/vault/VaultFormContainer'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
@@ -35,6 +37,15 @@ export function ProtectionFormControl({
   account,
 }: Props) {
   const { txHelpers$, context$, uiChanges } = useAppContext()
+  const { t } = useTranslation()
+  const { setVaultFormOpened } = useSharedUI()
+  const isTouchDevice = window && 'ontouchstart' in window
+
+  useEffect(() => {
+    if (isTouchDevice && !automationTriggersData.isAutomationEnabled) {
+      setVaultFormOpened(true)
+    }
+  }, [])
 
   const [txHelpers, txHelpersError] = useObservable(txHelpers$)
   const [context, contextError] = useObservable(context$)
@@ -48,7 +59,13 @@ export function ProtectionFormControl({
     <WithErrorHandler error={[contextError, txHelpersError]}>
       <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
         {([context]) => (
-          <VaultFormContainer toggleTitle="Edit Vault">
+          <VaultFormContainer
+            toggleTitle={
+              automationTriggersData.isAutomationEnabled
+                ? t('protection.set-downside-protection')
+                : t('protection.edit-vault-protection')
+            }
+          >
             {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
               <CancelSlFormControl
                 vault={vault}

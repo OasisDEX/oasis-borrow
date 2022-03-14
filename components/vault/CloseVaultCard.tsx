@@ -33,8 +33,16 @@ export function CloseVaultCard({
       }}
       onClick={() => onClick(optionName)}
     >
-      <Flex sx={{ alignItems: 'center', px: 2, lineHeight: 2, justifyContent: 'center' }}>
-        <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: 2 }} />
+      <Flex
+        sx={{
+          alignItems: 'center',
+          px: 2,
+          lineHeight: 2,
+          justifyContent: 'center',
+          flexDirection: ['column', 'row'],
+        }}
+      >
+        <Icon name={icon} size="auto" width="26px" height="26px" sx={{ mr: [0, 2] }} />
         <Text ml={1}>{text}</Text>
       </Flex>
     </Card>
