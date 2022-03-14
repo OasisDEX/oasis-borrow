@@ -421,6 +421,7 @@ export function setupAppContext() {
     cdpManagerIlks$,
     cdpManagerUrns$,
     charterUrnProxy$,
+    charterUrnProxy$,
     cdpRegistryOwns$,
     cdpManagerOwner$,
     proxyOwner$,

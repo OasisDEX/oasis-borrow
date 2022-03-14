@@ -29,6 +29,7 @@ import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
+import * as dssCropper from './abi/dss-cropper.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -146,6 +147,7 @@ const protoMain = {
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
   ),
+  dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
   cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
@@ -233,6 +235,7 @@ const kovan: NetworkConfig = {
   ethtx: {
     url: 'https://ethtx.info/kovan',
   },
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   tokensMainnet: protoMain.tokensMainnet,
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -286,6 +289,7 @@ const goerli: NetworkConfig = {
     '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0x8A08e91326Ac93fBcfcFb13912cEDdcb7Fc28f71'),

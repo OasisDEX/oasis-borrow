@@ -20,6 +20,7 @@ export function createVaultResolver$(
   cdpToIlk$: (cdpId: BigNumber) => Observable<string>,
   cdpManagerUrns$: (cdpId: BigNumber) => Observable<string>,
   charterUrnProxy$: (usr: string) => Observable<string>,
+  cropperUrnProxy$: (usr: string) => Observable<string>,
   cdpRegistryOwns$: (cdpId: BigNumber) => Observable<string>,
   cdpManagerOwner$: (cdpId: BigNumber) => Observable<string>,
   proxyOwner$: (proxyAddress: string) => Observable<string>,
@@ -30,11 +31,7 @@ export function createVaultResolver$(
       if (charterIlks.includes(ilk)) {
         return cdpRegistryOwns$(cdpId).pipe(
           switchMap((usr) =>
-            combineLatest(
-              charterUrnProxy$(usr),
-              // of('0x04eE2920ea8D355c4e31C3267643aFDa2Abbde04'),
-              proxyOwner$(usr),
-            ).pipe(
+            combineLatest(charterUrnProxy$(usr), proxyOwner$(usr)).pipe(
               map(([urnAddress, controller]) => ({
                 ilk,
                 owner: usr,
@@ -46,8 +43,21 @@ export function createVaultResolver$(
           ),
         )
       }
+
       if (cropJoinIlks.includes(ilk)) {
-        throw new Error('cropJoinIlks not implemented')
+        return cdpRegistryOwns$(cdpId).pipe(
+          switchMap((usr) =>
+            combineLatest(cropperUrnProxy$(usr), proxyOwner$(usr)).pipe(
+              map(([urnAddress, controller]) => ({
+                ilk,
+                owner: usr,
+                controller,
+                urnAddress,
+                type: MakerVaultType.CROP_JOIN,
+              })),
+            ),
+          ),
+        )
       }
 
       return combineLatest(cdpManagerOwner$(cdpId), cdpManagerUrns$(cdpId)).pipe(
