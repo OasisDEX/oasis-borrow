@@ -16,7 +16,7 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
+import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
@@ -37,6 +37,7 @@ import {
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
+import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
@@ -51,7 +52,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -131,7 +132,7 @@ import {
 } from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { spotIlk } from '../blockchain/calls/spot'
-import { networksById } from '../blockchain/config'
+import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
   createAccount$,
@@ -380,6 +381,7 @@ export function setupAppContext() {
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
+  const cdpRegistryCdps$ = observe(onEveryBlock$, context$, cdpRegistryCdps)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
@@ -416,6 +418,26 @@ export function setupAppContext() {
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
+
+  const charterCdps$ = memoize(
+    curry(createGetRegistryCdps$)(
+      onEveryBlock$,
+      context$,
+      cdpRegistryCdps$,
+      proxyAddress$,
+      charterIlks,
+    ),
+  )
+  const cropJoinCdps$ = memoize(
+    curry(createGetRegistryCdps$)(
+      onEveryBlock$,
+      context$,
+      cdpRegistryCdps$,
+      proxyAddress$,
+      cropJoinIlks,
+    ),
+  )
+  const standardCdps$ = memoize(curry(createStandardCdps$)(onEveryBlock$, proxyAddress$, context$))
 
   const urnResolver$ = curry(createVaultResolver$)(
     cdpManagerIlks$,
@@ -460,7 +482,13 @@ export function setupAppContext() {
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
-  const vaults$ = memoize(curry(createVaults$)(onEveryBlock$, context$, proxyAddress$, vault$))
+  const vaults$ = memoize(
+    curry(createVaults$)(onEveryBlock$, vault$, context$, [
+      charterCdps$,
+      cropJoinCdps$,
+      standardCdps$,
+    ]),
+  )
 
   const ilks$ = createIlks$(context$)
 

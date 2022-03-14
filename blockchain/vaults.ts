@@ -36,41 +36,53 @@ export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
   )
 }
 
+export function createStandardCdps$(
+  onEveryBlock$: Observable<number>,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  context$: Observable<Context>,
+  address: string,
+): Observable<BigNumber[]> {
+  return onEveryBlock$.pipe(
+    switchMap(() => context$),
+    switchMap((context) =>
+      proxyAddress$(address).pipe(
+        switchMap((proxyAddress) =>
+          proxyAddress === undefined
+            ? of([])
+            : call(
+                context,
+                getCdps,
+              )({ proxyAddress, descending: true }).pipe(
+                map(({ ids }) => ids.map((id) => new BigNumber(id))),
+              ),
+        ),
+      ),
+    ),
+  )
+}
+
+interface CdpIdsResolver {
+  (address: string): Observable<BigNumber[]>
+}
 export function createVaults$(
   onEveryBlock$: Observable<number>,
-  context$: Observable<Context>,
-  proxyAddress$: (address: string) => Observable<string | undefined>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  context$: Observable<Context>,
+  cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
-  return combineLatest(context$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of([])
-
-      function fetchVaultIds(): Observable<string[]> {
-        return onEveryBlock$.pipe(
-          switchMap(() =>
-            call(
-              context,
-              getCdps,
-            )({ proxyAddress: proxyAddress!, descending: true }).pipe(
-              switchMap(({ ids }) => of(ids)),
-            ),
-          ),
-        )
-      }
-
-      return fetchVaultIds().pipe(
+  return combineLatest(onEveryBlock$, context$).pipe(
+    switchMap(([_, context]) =>
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+        map((nestedIds) => nestedIds.flat()),
         switchMap((ids) =>
-          ids.length === 0
-            ? of([])
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id), context.chainId))),
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
         ),
-        distinctUntilChanged(isEqual),
-        switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
-      )
-    }),
-    shareReplay(1),
+        distinctUntilChanged<Vault[]>(isEqual),
+        switchMap((vaults) => fetchVaultsType(vaults)),
+        shareReplay(1),
+      ),
+    ),
   )
 }
 
