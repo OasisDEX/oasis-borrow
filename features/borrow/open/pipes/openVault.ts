@@ -11,6 +11,11 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
 import {
@@ -157,6 +162,7 @@ export type OpenVaultState = MutableOpenVaultState &
 
 function addTransitions(
   txHelpers: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
@@ -232,7 +238,7 @@ function addTransitions(
   if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
-      progress: () => openVault(txHelpers, change, state),
+      progress: () => openVault(txHelpers, vaultActions, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -271,6 +277,11 @@ export function createOpenVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: (ilk: string) => Observable<string>,
   addGasEstimation$: AddGasEstimationFunction,
+  proxyActionsAdapterResolver$: ({
+    ilk,
+  }: {
+    ilk: string
+  }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
@@ -278,8 +289,13 @@ export function createOpenVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$(ilk)).pipe(
-          switchMap(([context, txHelpers, token]) => {
+        combineLatest(
+          context$,
+          txHelpers$,
+          ilkToToken$(ilk),
+          proxyActionsAdapterResolver$({ ilk }),
+        ).pipe(
+          switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
             const account = context.account
             return combineLatest(
               priceInfo$(token),
@@ -292,6 +308,7 @@ export function createOpenVault$(
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
+                    const vaultActions = vaultActionsLogic(proxyActionsAdapter)
                     const change$ = new Subject<OpenVaultChange>()
 
                     function change(ch: OpenVaultChange) {
@@ -365,8 +382,15 @@ export function createOpenVault$(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
-                      switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers,
+                          vaultActions,
+                          connectedProxyAddress$,
+                          change,
+                        ),
+                      ),
                     )
                   }),
                 ),

@@ -2,11 +2,6 @@ import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
 import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
-import {
-  DepositAndGenerateData,
-  WithdrawAndPaybackData,
-  WithdrawPaybackDepositGenerateLogicInterface,
-} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { transactionToX } from 'helpers/form'
@@ -14,6 +9,11 @@ import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { filter, first, switchMap } from 'rxjs/operators'
 
+import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from '../../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxError } from '../../../../../helpers/types'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
 
@@ -231,7 +231,7 @@ export function manageVaultDepositAndGenerate(
     proxyAddress,
     vault: { ilk, token, id },
   }: ManageStandardBorrowVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -281,7 +281,7 @@ export function manageVaultWithdrawAndPayback(
     vault: { ilk, token, id },
     shouldPaybackAll,
   }: ManageStandardBorrowVaultState,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
 ) {
   txHelpers$
     .pipe(
@@ -456,7 +456,7 @@ export function createProxy(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
-  dssProxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  vaultActions: VaultActionsLogicInterface,
   state: ManageStandardBorrowVaultState,
 ): Observable<ManageStandardBorrowVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
@@ -474,7 +474,7 @@ export function applyEstimateGas(
       const isDepositAndGenerate = depositAmount || generateAmount
 
       if (isDepositAndGenerate) {
-        return estimateGas(dssProxyActions.depositAndGenerate, {
+        return estimateGas(vaultActions.depositAndGenerate, {
           kind: TxMetaKind.depositAndGenerate,
           generateAmount: generateAmount || zero,
           depositAmount: depositAmount || zero,
@@ -484,7 +484,7 @@ export function applyEstimateGas(
           id,
         })
       } else {
-        return estimateGas(dssProxyActions.withdrawAndPayback, {
+        return estimateGas(vaultActions.withdrawAndPayback, {
           kind: TxMetaKind.withdrawAndPayback,
           withdrawAmount: withdrawAmount || zero,
           paybackAmount: paybackAmount || zero,

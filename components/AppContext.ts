@@ -29,14 +29,10 @@ import {
 import {
   CloseGuniMultiplyData,
   CloseVaultData,
-  DepositAndGenerateData,
   MultiplyAdjustData,
-  OpenData,
   OpenGuniMultiplyData,
   OpenMultiplyData,
   ReclaimData,
-  WithdrawAndPaybackData,
-  withdrawPaybackDepositGenerateLogicFactory,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
@@ -128,8 +124,12 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
-import { CharteredDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/charteredDssProxyActionsContractWrapper'
-import { StandardDssProxyActionsContractWrapper } from '../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
+import {
+  DepositAndGenerateData,
+  OpenData,
+  WithdrawAndPaybackData,
+} from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { spotIlk } from '../blockchain/calls/spot'
 import { networksById } from '../blockchain/config'
 import {
@@ -500,6 +500,7 @@ export function setupAppContext() {
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
+      proxyActionsAdapterResolver$,
       ilk,
     ),
   )
@@ -582,7 +583,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+        proxyActionsAdapterResolver$,
         StandardBorrowManageVaultViewStateProvider,
         id,
       ),
@@ -603,7 +604,7 @@ export function setupAppContext() {
         saveVaultUsingApi$,
         addGasEstimation$,
         vaultHistory$,
-        withdrawPaybackDepositGenerateLogicFactory(CharteredDssProxyActionsContractWrapper),
+        proxyActionsAdapterResolver$,
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,

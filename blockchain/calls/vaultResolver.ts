@@ -4,9 +4,9 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 export enum MakerVaultType {
-  CHARTER,
-  CROP_JOIN,
-  STANDARD,
+  CHARTER = 'CHARTER',
+  CROP_JOIN = 'CROP_JOIN',
+  STANDARD = 'STANDARD',
 }
 
 export interface VaultResolve {

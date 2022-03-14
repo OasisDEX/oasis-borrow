@@ -14,6 +14,7 @@ import * as dssCharter from './abi/dss-charter.json'
 import * as dssCropper from './abi/dss-cropper.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
+import * as dssProxyActionsCurve from './abi/dss-proxy-actions-curve.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
@@ -51,7 +52,7 @@ const etherscanAPIKey =
 
 export const charterIlks = ['INST-ETH-A']
 
-export const cropJoinIlks = [] as string[]
+export const cropJoinIlks = ['CRVV1ETHSTETH-A']
 
 export const supportedIlks = [
   /* export just for test purposes */ 'ETH-A',
@@ -149,6 +150,10 @@ const protoMain = {
   ),
   dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
   cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
+  dssProxyActionsCurve: contractDesc(
+    dssProxyActionsCurve,
+    '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
+  ),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
   lowerFeesExchange: contractDesc(exchange, '0x12dcc776525c35836b10026929558208d1258b91'),
@@ -170,7 +175,6 @@ const protoMain = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
-  ilks: [] as string[], // I need to find better name for ilks that are managed by cropJoin and charter
 }
 
 export type NetworkConfig = typeof protoMain
@@ -214,6 +218,7 @@ const kovan: NetworkConfig = {
     kovanAddresses.PROXY_ACTIONS_CHARTER,
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x'),
+  dssProxyActionsCurve: contractDesc(dssProxyActionsCurve, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -243,7 +248,6 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
-  ilks: [],
 }
 
 const goerli: NetworkConfig = {
@@ -284,6 +288,7 @@ const goerli: NetworkConfig = {
     goerliAddresses.PROXY_ACTIONS_CHARTER,
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
+  dssProxyActionsCurve: contractDesc(dssProxyActionsCurve, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
@@ -314,7 +319,6 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
-  ilks: ['INST-ETH-A'],
 }
 
 const hardhat: NetworkConfig = {
