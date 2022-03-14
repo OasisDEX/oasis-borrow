@@ -22,3 +22,9 @@ export const charterUline: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   prepareArgs: ({ ilk, usr }) => [Web3.utils.utf8ToHex(ilk), usr],
   postprocess: (uline: any) => new BigNumber(uline).div(RAD),
 }
+
+// usr is the dssProxy address
+export const charterUrnProxy: CallDef<string, string> = {
+  call: (_, { contract, dssCharter }) => contract<DssCharter>(dssCharter).methods.proxy,
+  prepareArgs: (usr) => [usr],
+}

@@ -16,7 +16,9 @@ import {
   TransactionDef,
 } from 'blockchain/calls/callsHelpers'
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
-import { charterNib, charterPeace, charterUline } from 'blockchain/calls/charter'
+import { cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
+import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
+import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -33,6 +35,7 @@ import {
   ReclaimData,
 } from 'blockchain/calls/proxyActions/proxyActions'
 import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
+import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
@@ -48,7 +51,7 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createController$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import { createVault$, createVaults$, Vault } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -193,8 +196,6 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 ) => Observable<S>
 
 export type TxHelpers$ = Observable<TxHelpers>
-
-export const ilkToToken$ = of((ilk: string) => ilk.split('-')[0])
 
 function createTxHelpers$(
   context$: Observable<ContextConnected>,
@@ -378,6 +379,7 @@ export function setupAppContext() {
   const cdpManagerUrns$ = observe(onEveryBlock$, context$, cdpManagerUrns, bigNumberTostring)
   const cdpManagerIlks$ = observe(onEveryBlock$, context$, cdpManagerIlks, bigNumberTostring)
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
+  const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
@@ -388,6 +390,7 @@ export function setupAppContext() {
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
   const charterUline$ = observe(onEveryBlock$, context$, charterUline)
+  const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
@@ -408,26 +411,30 @@ export function setupAppContext() {
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
+  const ilkToToken$ = curry(createIlkToToken$)(context$)
+
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
 
-  const controller$ = memoize(
-    curry(createController$)(proxyOwner$, cdpManagerOwner$),
-    bigNumberTostring,
+  const urnResolver$ = curry(createVaultResolver$)(
+    cdpManagerIlks$,
+    cdpManagerUrns$,
+    charterUrnProxy$,
+    charterUrnProxy$,
+    cdpRegistryOwns$,
+    cdpManagerOwner$,
+    proxyOwner$,
   )
 
   const vault$ = memoize(
     (id: BigNumber) =>
       createVault$(
-        cdpManagerUrns$,
-        cdpManagerIlks$,
-        cdpManagerOwner$,
+        urnResolver$,
         vatUrns$,
         vatGem$,
         ilkData$,
         oraclePriceData$,
-        controller$,
         ilkToToken$,
         context$,
         id,

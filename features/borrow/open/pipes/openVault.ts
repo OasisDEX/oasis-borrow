@@ -275,7 +275,7 @@ export function createOpenVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
   addGasEstimation$: AddGasEstimationFunction,
   proxyActionsAdapterResolver$: ({
     ilk,
@@ -292,12 +292,11 @@ export function createOpenVault$(
         combineLatest(
           context$,
           txHelpers$,
-          ilkToToken$,
+          ilkToToken$(ilk),
           proxyActionsAdapterResolver$({ ilk }),
         ).pipe(
-          switchMap(([context, txHelpers, ilkToToken, proxyActionsAdapter]) => {
+          switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
             const account = context.account
-            const token = ilkToToken(ilk)
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),

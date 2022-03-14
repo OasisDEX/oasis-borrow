@@ -4,7 +4,6 @@ import { JugIlk } from 'blockchain/calls/jug'
 import { SpotIlk } from 'blockchain/calls/spot'
 import { VatIlk } from 'blockchain/calls/vat'
 import { createIlkData$, IlkData, IlkDataList } from 'blockchain/ilks'
-import { ilkToToken$ } from 'components/AppContext'
 import { SECONDS_PER_YEAR } from 'components/constants'
 import { Decimal } from 'decimal.js'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -134,7 +133,14 @@ export function mockIlkData$({
     )
   }
 
-  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$, ilk || defaultIlk)
+  return createIlkData$(
+    vatIlks$,
+    spotIlks$,
+    jugIlks$,
+    dogIlks$,
+    (_ilk: string) => of('ETH'),
+    ilk || defaultIlk,
+  )
 }
 
 export function mockIlkData(props: MockIlkDataProps = {}) {

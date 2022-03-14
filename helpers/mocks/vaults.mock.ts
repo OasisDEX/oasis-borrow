@@ -1,8 +1,8 @@
 import { BigNumber } from 'bignumber.js'
+import { MakerVaultType } from 'blockchain/calls/vaultResolver'
 import { IlkData } from 'blockchain/ilks'
 import { OraclePriceData } from 'blockchain/prices'
 import { createVault$, Vault } from 'blockchain/vaults'
-import { ilkToToken$ } from 'components/AppContext'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
@@ -73,22 +73,6 @@ export function mockVault$({
     )
   }
 
-  function cdpManagerUrns$() {
-    return _cdpManagerUrns$ || of('0xUrnAddress')
-  }
-
-  function cdpManagerIlks$() {
-    return of(ilk || 'WBTC-A')
-  }
-
-  function cdpManagerOwner$() {
-    return of(DEFAULT_PROXY_ADDRESS)
-  }
-
-  function controller$() {
-    return of(defaultController)
-  }
-
   function vatGem$() {
     return of(zero)
   }
@@ -106,15 +90,20 @@ export function mockVault$({
   }
 
   return createVault$(
-    cdpManagerUrns$,
-    cdpManagerIlks$,
-    cdpManagerOwner$,
+    () =>
+      of({
+        urnAddress: '0xUrnAddress',
+        controller: '0xVaultController',
+        ilk: 'WBTC-A',
+        owner: '0xProxyAddress',
+        type: MakerVaultType.STANDARD,
+      }),
     vatUrns$,
     vatGem$,
     ilkData$,
     oraclePriceData$,
-    controller$,
-    ilkToToken$,
+    (_ilk: string) => of('WBTC'),
+
     mockContextConnected$({
       account: defaultController,
       status: 'connected',
