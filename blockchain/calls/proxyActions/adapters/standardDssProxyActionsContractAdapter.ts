@@ -10,11 +10,14 @@ import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   DepositAndGenerateData,
   OpenData,
+  ProxyActionsAdapterType,
   ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
 
 export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface = {
+  AdapterType: ProxyActionsAdapterType.STANDARD,
+
   openLockETHAndDraw(context: ContextConnected, data: OpenData): PayableTransactionObject<string> {
     const { dssCdpManager, mcdJoinDai, mcdJug, joins, contract } = context
     const { generateAmount, ilk } = data

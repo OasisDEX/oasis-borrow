@@ -7,6 +7,7 @@ import { ContextConnected } from '../../../network'
 import {
   DepositAndGenerateData,
   OpenData,
+  ProxyActionsAdapterType,
   ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
@@ -33,6 +34,8 @@ function createMockPayableTransactionObject<T>(name: string): PayableTransaction
 }
 
 export const MockProxyActionsSmartContractAdapter: ProxyActionsSmartContractAdapterInterface = {
+  AdapterType: ProxyActionsAdapterType.MOCK,
+
   open(_: ContextConnected, __: OpenData): NonPayableTransactionObject<string> {
     return createMockPayableTransactionObject<string>('open')
   },

@@ -37,8 +37,18 @@ export type OpenData = {
   proxyAddress: string
 }
 
+export enum ProxyActionsAdapterType {
+  STANDARD = 'STANDARD',
+  CHARTER = 'CHARTER',
+  CROPJOIN = 'CROPJOIN',
+  MOCK = 'MOCK',
+}
+
 export interface ProxyActionsSmartContractAdapterInterface {
   resolveContractAddress: (context: ContextConnected) => string
+
+  // used for testing
+  AdapterType: ProxyActionsAdapterType
 
   lockETHAndDraw: (
     context: ContextConnected,

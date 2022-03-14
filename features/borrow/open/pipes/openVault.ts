@@ -11,7 +11,11 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
 import {
@@ -273,7 +277,11 @@ export function createOpenVault$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilkToToken$: Observable<(ilk: string) => string>,
   addGasEstimation$: AddGasEstimationFunction,
-  vaultActions: VaultActionsLogicInterface,
+  proxyActionsAdapterResolver$: ({
+    ilk,
+  }: {
+    ilk: string
+  }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
@@ -281,8 +289,13 @@ export function createOpenVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-          switchMap(([context, txHelpers, ilkToToken]) => {
+        combineLatest(
+          context$,
+          txHelpers$,
+          ilkToToken$,
+          proxyActionsAdapterResolver$({ ilk }),
+        ).pipe(
+          switchMap(([context, txHelpers, ilkToToken, proxyActionsAdapter]) => {
             const account = context.account
             const token = ilkToToken(ilk)
             return combineLatest(
@@ -296,6 +309,7 @@ export function createOpenVault$(
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
+                    const vaultActions = vaultActionsLogic(proxyActionsAdapter)
                     const change$ = new Subject<OpenVaultChange>()
 
                     function change(ch: OpenVaultChange) {

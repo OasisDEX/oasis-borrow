@@ -79,36 +79,36 @@ export function vaultActionsLogic(
 export function getWithdrawAndPaybackCallData(
   data: WithdrawAndPaybackData,
   context: ContextConnected,
-  proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
+  proxyActionsSmartContractAdapter: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { token, withdrawAmount, paybackAmount, shouldPaybackAll } = data
 
   if (withdrawAmount.gt(zero) && paybackAmount.gt(zero)) {
     if (token === 'ETH') {
       if (shouldPaybackAll) {
-        return proxyActionsSmartContractWrapper.wipeAllAndFreeETH(context, data)
+        return proxyActionsSmartContractAdapter.wipeAllAndFreeETH(context, data)
       }
-      return proxyActionsSmartContractWrapper.wipeAndFreeETH(context, data)
+      return proxyActionsSmartContractAdapter.wipeAndFreeETH(context, data)
     }
 
     if (shouldPaybackAll) {
-      return proxyActionsSmartContractWrapper.wipeAllAndFreeGem(context, data)
+      return proxyActionsSmartContractAdapter.wipeAllAndFreeGem(context, data)
     }
-    return proxyActionsSmartContractWrapper.wipeAndFreeGem(context, data)
+    return proxyActionsSmartContractAdapter.wipeAndFreeGem(context, data)
   }
 
   if (withdrawAmount.gt(zero)) {
     if (token === 'ETH') {
-      return proxyActionsSmartContractWrapper.freeETH(context, data)
+      return proxyActionsSmartContractAdapter.freeETH(context, data)
     }
-    return proxyActionsSmartContractWrapper.freeGem(context, data)
+    return proxyActionsSmartContractAdapter.freeGem(context, data)
   }
 
   if (paybackAmount.gt(zero)) {
     if (shouldPaybackAll) {
-      return proxyActionsSmartContractWrapper.wipeAll(context, data)
+      return proxyActionsSmartContractAdapter.wipeAll(context, data)
     }
-    return proxyActionsSmartContractWrapper.wipe(context, data)
+    return proxyActionsSmartContractAdapter.wipe(context, data)
   }
 
   // would be nice to remove this for Unreachable error case in the future
@@ -118,41 +118,41 @@ export function getWithdrawAndPaybackCallData(
 function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
-  proxyActionsContract: ProxyActionsSmartContractAdapterInterface,
+  proxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { token, depositAmount, generateAmount } = data
 
   if (depositAmount.gt(zero) && generateAmount.gt(zero)) {
     if (token === 'ETH') {
-      return proxyActionsContract.lockETHAndDraw(context, data)
+      return proxyActionsContractAdapter.lockETHAndDraw(context, data)
     }
 
-    return proxyActionsContract.lockGemAndDraw(context, data)
+    return proxyActionsContractAdapter.lockGemAndDraw(context, data)
   }
 
   if (depositAmount.gt(zero)) {
     if (token === 'ETH') {
-      return proxyActionsContract.lockETH(context, data)
+      return proxyActionsContractAdapter.lockETH(context, data)
     }
 
-    return proxyActionsContract.lockGem(context, data)
+    return proxyActionsContractAdapter.lockGem(context, data)
   }
 
-  return proxyActionsContract.draw(context, data)
+  return proxyActionsContractAdapter.draw(context, data)
 }
 
 function getOpenCallData(
   data: OpenData,
   context: ContextConnected,
-  proxyActionWrapper: ProxyActionsSmartContractAdapterInterface,
+  proxyActionAdapter: ProxyActionsSmartContractAdapterInterface,
 ) {
   const { depositAmount, generateAmount, token } = data
 
   if (depositAmount.gt(zero) && generateAmount.gte(zero)) {
     if (token === 'ETH') {
-      return proxyActionWrapper.openLockETHAndDraw(context, data)
+      return proxyActionAdapter.openLockETHAndDraw(context, data)
     }
-    return proxyActionWrapper.openLockGemAndDraw(context, data)
+    return proxyActionAdapter.openLockGemAndDraw(context, data)
   }
-  return proxyActionWrapper.open(context, data)
+  return proxyActionAdapter.open(context, data)
 }

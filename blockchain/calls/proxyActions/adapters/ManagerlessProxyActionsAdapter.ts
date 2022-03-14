@@ -12,6 +12,7 @@ import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
   DepositAndGenerateData,
   OpenData,
+  ProxyActionsAdapterType,
   ProxyActionsSmartContractAdapterInterface,
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
@@ -19,6 +20,8 @@ import {
 export abstract class ManagerlessProxyActionsContractAdapter<
   DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCurve
 > implements ProxyActionsSmartContractAdapterInterface {
+  abstract AdapterType: ProxyActionsAdapterType
+
   resolveContractAddress(context: ContextConnected): string {
     return this.resolveContractDesc(context).address
   }
