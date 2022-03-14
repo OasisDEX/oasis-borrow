@@ -57,6 +57,8 @@ export function createStandardCdps$(
         ),
       ),
     ),
+    distinctUntilChanged(isEqual),
+    shareReplay(1),
   )
 }
 
