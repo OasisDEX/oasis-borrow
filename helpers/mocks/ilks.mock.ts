@@ -138,7 +138,7 @@ export function mockIlkData$({
     spotIlks$,
     jugIlks$,
     dogIlks$,
-    (_ilk: string) => of('ETH'),
+    (ilk: string) => of(ilk.split('-')[0]),
     ilk || defaultIlk,
   )
 }
