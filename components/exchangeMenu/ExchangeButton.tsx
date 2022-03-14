@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Flex, SxStyleProp } from 'theme-ui'
 import { provider } from 'web3-core'
 
