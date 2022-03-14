@@ -72,8 +72,9 @@ export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewSt
       currentStep: 1,
       clear: () => change({ kind: 'clear' }),
       gasEstimationStatus: GasEstimationStatus.unset,
-      injectStateOverride,
       vaultHistory: [],
+      stopLossData: undefined,
+      injectStateOverride,
     }
     return initialState
   },

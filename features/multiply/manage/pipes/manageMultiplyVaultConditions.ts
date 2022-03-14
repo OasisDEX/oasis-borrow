@@ -7,6 +7,7 @@ import { zero } from 'helpers/zero'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
+  afterCollRatioBelowStopLossRatioValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -216,6 +217,7 @@ export interface ManageVaultConditions {
   highSlippage: boolean
   invalidSlippage: boolean
   stopLossTriggered: boolean
+  afterCollRatioBelowStopLossRatio: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -276,6 +278,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   highSlippage: false,
   invalidSlippage: false,
   stopLossTriggered: false,
+  afterCollRatioBelowStopLossRatio: false,
 }
 
 export function applyManageVaultConditions(
@@ -331,6 +334,7 @@ export function applyManageVaultConditions(
 
     invalidSlippage,
     vaultHistory,
+    stopLossData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -531,6 +535,14 @@ export function applyManageVaultConditions(
 
   const highSlippage = exchangeDataRequired && slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
 
+  const afterCollRatioBelowStopLossRatio =
+    !!stopLossData?.isStopLossEnabled &&
+    afterCollRatioBelowStopLossRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      stopLossRatio: stopLossData.stopLossLevel,
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -551,7 +563,8 @@ export function applyManageVaultConditions(
       withdrawCollateralOnVaultUnderDebtFloor ||
       shouldShowExchangeError ||
       hasToDepositCollateralOnEmptyVault ||
-      invalidSlippage)
+      invalidSlippage ||
+      afterCollRatioBelowStopLossRatio)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -651,5 +664,6 @@ export function applyManageVaultConditions(
 
     highSlippage,
     stopLossTriggered,
+    afterCollRatioBelowStopLossRatio,
   }
 }

@@ -124,6 +124,8 @@ export function VaultErrors({
         )
       case 'invalidSlippage':
         return translate('invalid-slippage')
+      case 'afterCollRatioBelowStopLossRatio':
+        return translate('after-coll-ratio-below-stop-loss-ratio')
 
       default:
         throw new UnreachableCaseError(message)

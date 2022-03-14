@@ -393,3 +393,18 @@ export function daiAllowanceProgressionDisabledValidator({
       customDaiAllowanceAmountLessThanPaybackAmount)
   )
 }
+
+export function afterCollRatioBelowStopLossRatioValidator({
+  afterCollateralizationRatio,
+  afterCollateralizationRatioAtNextPrice,
+  stopLossRatio,
+}: {
+  afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  stopLossRatio: BigNumber
+}) {
+  return (
+    afterCollateralizationRatio.lt(stopLossRatio) ||
+    afterCollateralizationRatioAtNextPrice.lt(stopLossRatio)
+  )
+}

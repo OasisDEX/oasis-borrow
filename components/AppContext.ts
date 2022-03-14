@@ -577,6 +577,7 @@ export function setupAppContext() {
         vaultHistory$,
         withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         StandardBorrowManageVaultViewStateProvider,
+        automationTriggersData$,
         id,
       ),
     bigNumberTostring,
@@ -600,6 +601,7 @@ export function setupAppContext() {
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageVaultViewStateProvider,
+        automationTriggersData$,
         id,
       ),
     bigNumberTostring,
@@ -621,6 +623,7 @@ export function setupAppContext() {
         userSettings$,
         vaultMultiplyHistory$,
         saveVaultUsingApi$,
+        automationTriggersData$,
         id,
       ),
     bigNumberTostring,
