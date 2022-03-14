@@ -133,14 +133,7 @@ export function mockIlkData$({
     )
   }
 
-  return createIlkData$(
-    vatIlks$,
-    spotIlks$,
-    jugIlks$,
-    dogIlks$,
-    (ilk: string) => of(ilk.split('-')[0]),
-    ilk || defaultIlk,
-  )
+  return createIlkData$(vatIlks$, spotIlks$, jugIlks$, dogIlks$, mockIlkToToken$, ilk || defaultIlk)
 }
 
 export function mockIlkData(props: MockIlkDataProps = {}) {
@@ -168,4 +161,8 @@ export function mockIlkDataList() {
   })
 
   return [cheapest, zeroDebt, popular, newest].map((mockIlkData) => mockIlkData()) as IlkDataList
+}
+
+export function mockIlkToToken$(ilk: string) {
+  return of(ilk.split('-')[0])
 }

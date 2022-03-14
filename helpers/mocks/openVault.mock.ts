@@ -11,7 +11,7 @@ import { Observable, of } from 'rxjs'
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
 import { mockContextConnected$ } from './context.mock'
-import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
+import { mockIlkData$, MockIlkDataProps, mockIlkToToken$ } from './ilks.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 
 export function addGasEstimationMock<T>(state: T) {
@@ -97,10 +97,6 @@ export function mockOpenVault$({
     return _allowance$ || of(allowance)
   }
 
-  function ilkToToken$() {
-    return of('WBTC')
-  }
-
   return createOpenVault$(
     context$,
     txHelpers$,
@@ -110,7 +106,7 @@ export function mockOpenVault$({
     balanceInfo$,
     ilks$,
     ilkData$,
-    ilkToToken$,
+    mockIlkToToken$,
     addGasEstimationMock,
     () => of(StandardDssProxyActionsContractAdapter),
     ilk,

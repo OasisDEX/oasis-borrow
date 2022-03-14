@@ -10,7 +10,7 @@ import { Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 
 import { mockContextConnected$ } from './context.mock'
-import { mockIlkData$ } from './ilks.mock'
+import { mockIlkData$, mockIlkToToken$ } from './ilks.mock'
 import { mockPriceInfo$ } from './priceInfo.mock'
 
 export interface MockVaultProps {
@@ -94,7 +94,7 @@ export function mockVault$({
       of({
         urnAddress: '0xUrnAddress',
         controller: '0xVaultController',
-        ilk: 'WBTC-A',
+        ilk: ilk || 'WBTC-A',
         owner: '0xProxyAddress',
         type: MakerVaultType.STANDARD,
       }),
@@ -102,8 +102,7 @@ export function mockVault$({
     vatGem$,
     ilkData$,
     oraclePriceData$,
-    (_ilk: string) => of('WBTC'),
-
+    mockIlkToToken$,
     mockContextConnected$({
       account: defaultController,
       status: 'connected',
