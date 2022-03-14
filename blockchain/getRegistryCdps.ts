@@ -2,7 +2,8 @@ import BigNumber from 'bignumber.js'
 import isEqual from 'lodash/isEqual'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
+
 import { Context } from './network'
 
 function filterSupportedIlksOnNetwork(joins: Record<string, string>, ilks: string[]): string[] {

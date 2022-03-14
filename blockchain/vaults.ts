@@ -42,9 +42,8 @@ export function createStandardCdps$(
   context$: Observable<Context>,
   address: string,
 ): Observable<BigNumber[]> {
-  return onEveryBlock$.pipe(
-    switchMap(() => context$),
-    switchMap((context) =>
+  return combineLatest(onEveryBlock$, context$).pipe(
+    switchMap(([_, context]) =>
       proxyAddress$(address).pipe(
         switchMap((proxyAddress) =>
           proxyAddress === undefined
