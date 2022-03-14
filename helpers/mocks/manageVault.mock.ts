@@ -19,6 +19,7 @@ import { switchMap } from 'rxjs/operators'
 import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
 import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
 import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
+import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
 import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
@@ -27,6 +28,7 @@ import { mockContext$ } from './context.mock'
 import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
+import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
@@ -76,6 +78,7 @@ export interface MockManageVaultProps {
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
   _vaultHistory$?: Observable<VaultHistoryEvent[]>
+  _automationTriggersData$?: Observable<TriggersData>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
@@ -101,6 +104,7 @@ function buildMockDependencies({
   _balanceInfo$,
   _proxyAddress$,
   _vaultHistory$,
+  _automationTriggersData$,
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
@@ -152,6 +156,10 @@ function buildMockDependencies({
     return _vaultHistory$ || of(mockedBorrowEvents)
   }
 
+  function automationTriggersData$() {
+    return _automationTriggersData$ || of(mockedEmptyStopLossTrigger)
+  }
+
   function allowance$(_token: string) {
     return _token === 'DAI'
       ? _daiAllowance$ || daiAllowance
@@ -193,6 +201,7 @@ function buildMockDependencies({
     vault$,
     saveVaultType$,
     vaultHistory$,
+    automationTriggersData$,
   }
 }
 
@@ -210,6 +219,7 @@ export function mockManageVault$(
     vault$,
     saveVaultType$,
     vaultHistory$,
+    automationTriggersData$,
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -226,6 +236,7 @@ export function mockManageVault$(
     vaultHistory$,
     withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
     StandardBorrowManageVaultViewStateProvider,
+    automationTriggersData$,
     MOCK_VAULT_ID,
   )
 }
@@ -247,6 +258,7 @@ export function mockManageInstiVault$(
     ilkData$,
     saveVaultType$,
     vaultHistory$,
+    automationTriggersData$,
   } = buildMockDependencies(args)
 
   function instiVault$(): Observable<InstiVault> {
@@ -284,6 +296,7 @@ export function mockManageInstiVault$(
     vaultHistory$,
     withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
     InstitutionalBorrowManageVaultViewStateProvider,
+    automationTriggersData$,
     MOCK_VAULT_ID,
   )
 }

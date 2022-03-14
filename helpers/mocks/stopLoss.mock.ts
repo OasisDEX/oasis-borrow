@@ -1,5 +1,6 @@
 import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
 
+// mock with 300% stop loss level
 export const mockedStopLossTrigger: TriggersData = {
   isAutomationEnabled: true,
   triggers: [
