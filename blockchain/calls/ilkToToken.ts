@@ -32,7 +32,6 @@ export function createIlkToToken$(context$: Observable<Context>, ilk: string): O
         }),
       ),
     ),
-    catchError(() => of(undefined)),
     shareReplay(1),
   )
 }
