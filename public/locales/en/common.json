@@ -835,7 +835,7 @@
   "protection": {
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting stop loss",
-    "set-downside-protection": "Set downside protection",
+    "set-downside-protection": "Set Downside Protection",
     "set-downside-protection-desc": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
