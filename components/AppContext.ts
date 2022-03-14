@@ -761,6 +761,7 @@ export function setupAppContext() {
     productCardsData$,
     addGasEstimation$,
     instiVault$,
+    ilkToToken$,
   }
 }
 
