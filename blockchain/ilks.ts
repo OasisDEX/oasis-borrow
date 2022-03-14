@@ -12,7 +12,11 @@ import { distinctUntilChanged, map, retry, shareReplay, switchMap } from 'rxjs/o
 
 export function createIlks$(context$: Observable<Context>): Observable<string[]> {
   return context$.pipe(
-    map((context) => Object.keys(context.joins).filter((join) => join !== 'DAI' && join !== 'SAI')),
+    map((context) =>
+      Object.keys(context.joins).filter(
+        (join) => !['DAI', 'SAI', 'CRVV1ETHSTETH-A'].includes(join),
+      ),
+    ),
   )
 }
 
