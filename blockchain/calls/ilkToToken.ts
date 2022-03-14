@@ -1,6 +1,6 @@
 import { contractDesc } from 'blockchain/config'
-import { defer, Observable, of } from 'rxjs'
-import { catchError, map, shareReplay, switchMap } from 'rxjs/operators'
+import { defer, Observable } from 'rxjs'
+import { map, shareReplay, switchMap } from 'rxjs/operators'
 import { McdGemJoin } from 'types/web3-v1-contracts/mcd-gem-join'
 
 import * as mcdGemJoinAbi from '../abi/mcd-gem-join.json'
