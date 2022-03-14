@@ -109,7 +109,7 @@ export function mockOpenVault$({
     ilkData$,
     ilkToToken$,
     addGasEstimationMock,
-    vaultActionsLogic(StandardDssProxyActionsContractAdapter),
+    () => of(StandardDssProxyActionsContractAdapter),
     ilk,
   )
 }

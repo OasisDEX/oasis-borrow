@@ -28,6 +28,7 @@ import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
+import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 
 export const MOCK_VAULT_ID = one
 export const MOCK_CHAIN_ID = new BigNumber(2137)
@@ -224,7 +225,7 @@ export function mockManageVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    vaultActionsLogic(StandardDssProxyActionsContractAdapter),
+    () => of(StandardDssProxyActionsContractAdapter),
     StandardBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
   )
@@ -282,7 +283,7 @@ export function mockManageInstiVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    vaultActionsLogic(StandardDssProxyActionsContractAdapter),
+    () => of(new CharteredDssProxyActionsContractAdapter()),
     InstitutionalBorrowManageVaultViewStateProvider,
     MOCK_VAULT_ID,
   )
