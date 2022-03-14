@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useOnClickOutside } from 'helpers/useOnClickOutside'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useRef, useState } from 'react'
 import { Box, Button, Flex, SxStyleProp } from 'theme-ui'
 import { provider } from 'web3-core'
@@ -13,10 +13,9 @@ export function ExchangeButton({
   web3Provider?: provider
   sx?: SxStyleProp
 }) {
-  const componentRef = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
 
-  useOnClickOutside(componentRef, () => setIsOpen(false))
+  const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
 
   return (
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1, ...sx }}>

@@ -6,7 +6,7 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useOnClickOutside } from 'helpers/useOnClickOutside'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import React, { ChangeEvent, useRef, useState } from 'react'
@@ -192,7 +192,6 @@ export function UserSettingsDropdown(
     setOpened,
   } = props
   const { t } = useTranslation()
-  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!opened) {
@@ -200,7 +199,7 @@ export function UserSettingsDropdown(
     }
   }, [opened])
 
-  useOnClickOutside(wrapperRef, () => setOpened(false))
+  const wrapperRef = useOutsideElementClickHandler(() => setOpened(false))
 
   const onClose = () => setOpened(false)
 
