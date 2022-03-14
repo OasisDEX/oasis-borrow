@@ -1,6 +1,5 @@
 import { VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
@@ -10,7 +9,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerOwner } from './calls/cdpManager'
-import { getCdps } from './calls/getCdps'
+import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
@@ -37,26 +36,19 @@ export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
 }
 
 export function createStandardCdps$(
-  onEveryBlock$: Observable<number>,
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  context$: Observable<Context>,
+  getCdps$: (arg: GetCdpsArgs) => Observable<GetCdpsResult>,
   address: string,
 ): Observable<BigNumber[]> {
-  return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([_, context]) =>
-      proxyAddress$(address).pipe(
-        switchMap((proxyAddress) =>
-          proxyAddress === undefined
-            ? of([])
-            : call(
-                context,
-                getCdps,
-              )({ proxyAddress, descending: true }).pipe(
-                map(({ ids }) => ids.map((id) => new BigNumber(id))),
-              ),
-        ),
-      ),
-    ),
+  return proxyAddress$(address).pipe(
+    switchMap((proxyAddress) => {
+      if (proxyAddress === undefined) {
+        return of([])
+      }
+      return getCdps$({ proxyAddress, descending: true }).pipe(
+        map(({ ids }) => ids.map((id) => new BigNumber(id))),
+      )
+    }),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )

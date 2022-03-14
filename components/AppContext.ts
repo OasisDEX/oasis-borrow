@@ -18,6 +18,7 @@ import {
 import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from 'blockchain/calls/cdpManager'
 import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
+import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
@@ -399,6 +400,8 @@ export function setupAppContext() {
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
 
+  const getCdps$ = observe(onEveryBlock$, context$, getCdps)
+
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
   )
@@ -437,7 +440,7 @@ export function setupAppContext() {
       cropJoinIlks,
     ),
   )
-  const standardCdps$ = memoize(curry(createStandardCdps$)(onEveryBlock$, proxyAddress$, context$))
+  const standardCdps$ = memoize(curry(createStandardCdps$)(proxyAddress$, getCdps$))
 
   const urnResolver$ = curry(createVaultResolver$)(
     cdpManagerIlks$,
