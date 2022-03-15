@@ -291,6 +291,7 @@ describe('manageVaultValidations', () => {
   })
 
   it('validates if next coll ratio on dai generate action is below stop loss level', () => {
+    localStorage.setItem('features', '{"Automation":true}')
     const generateAmountStopLossError = new BigNumber(500)
 
     const state = getStateUnpacker(
@@ -314,6 +315,7 @@ describe('manageVaultValidations', () => {
   })
 
   it('validates if next coll ratio on collateral withdraw action is below stop loss level', () => {
+    localStorage.setItem('features', '{"Automation":true}')
     const withdrawCollateralStopLossError = new BigNumber(0.5)
 
     const state = getStateUnpacker(

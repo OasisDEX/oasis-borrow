@@ -7,6 +7,7 @@ import { combineLatest } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged, switchMap } from 'rxjs/operators'
 
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { extractStopLossData } from '../automation/common/StopLossTriggerDataExtractor'
 import { TriggersData } from '../automation/triggers/AutomationTriggersData'
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
@@ -28,6 +29,8 @@ export function createVaultsOverview$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   address: string,
 ): Observable<VaultsOverview> {
+  const automationEnabled = useFeatureToggle('Automation')
+
   const vaultsAddress$ = vaults$(address)
 
   const vaultWithAutomationData$ = vaults$(address).pipe(
@@ -44,12 +47,12 @@ export function createVaultsOverview$(
 
   return combineLatest(
     vaultsWithFilter$(
-      vaultWithAutomationData$.pipe(
+      (automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
         map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
       ),
     ),
     vaultsWithFilter$(
-      vaultWithAutomationData$.pipe(
+      (automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
         map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
       ),
     ),

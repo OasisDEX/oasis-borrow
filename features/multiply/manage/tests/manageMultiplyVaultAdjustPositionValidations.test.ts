@@ -102,6 +102,7 @@ describe('manageVaultAdjustPositionValidations', () => {
   })
 
   it('validates if next coll ratio is below stop loss level', () => {
+    localStorage.setItem('features', '{"Automation":true}')
     const requiredCollRatioBelowStopLoss = new BigNumber(2)
     const state = getStateUnpacker(
       mockManageMultiplyVault$({ _automationTriggersData$: of(mockedStopLossTrigger) }),
