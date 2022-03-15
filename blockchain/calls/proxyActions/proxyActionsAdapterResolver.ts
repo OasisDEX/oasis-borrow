@@ -1,11 +1,11 @@
 import { Observable, of, throwError } from 'rxjs'
 
+import { charterIlks, cropJoinIlks } from '../../config'
 import { MakerVaultType } from '../vaultResolver'
 import { CharteredDssProxyActionsContractAdapter } from './adapters/CharteredDssProxyActionsContractAdapter'
 import { CropjoinProxyActionsContractAdapter } from './adapters/CropjoinProxyActionsSmartContractAdapter'
 import { ProxyActionsSmartContractAdapterInterface } from './adapters/ProxyActionsSmartContractAdapterInterface'
 import { StandardDssProxyActionsContractAdapter } from './adapters/standardDssProxyActionsContractAdapter'
-import { charterIlks, cropJoinIlks } from '../../config'
 
 type Args = ResolveFromIlkArgs | ResolveFromMakerVaultTypeArgs
 

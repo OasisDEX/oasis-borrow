@@ -122,9 +122,9 @@ import {
   mergeMap,
   shareReplay,
   switchMap,
-  tap,
 } from 'rxjs/operators'
 
+import { cropperUrnProxy } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
@@ -170,7 +170,6 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
-import { cropperUrnProxy } from '../blockchain/calls/cropper'
 
 export type TxData =
   | OpenData
