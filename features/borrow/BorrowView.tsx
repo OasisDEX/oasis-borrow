@@ -22,7 +22,7 @@ export function BorrowView() {
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
 
-  const filters = useFeatureToggle('Curve')
+  const filters = useFeatureToggle('steETH')
     ? productCardsConfig.borrow.cardsFilters
     : productCardsConfig.borrow.cardsFilters.filter((cf) => cf.name !== 'Curve LP')
 
