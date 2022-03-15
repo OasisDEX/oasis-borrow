@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import isEqual from 'lodash/isEqual'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
-import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operators'
 
 import { Context } from './network'
 
@@ -34,7 +34,7 @@ export function createGetRegistryCdps$(
 
           return combineLatest(
             supportedIlks.map((ilk) => getRegistryCdp$({ ilk, usr: proxyAddress })),
-          )
+          ).pipe(map((cdpids) => cdpids.filter((id) => id !== null)))
         }),
       ),
     ),

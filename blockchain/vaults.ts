@@ -72,7 +72,7 @@ export function createVaults$(
           ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
         ),
         distinctUntilChanged<Vault[]>(isEqual),
-        switchMap((vaults) => fetchVaultsType(vaults)),
+        switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
         shareReplay(1),
       ),
     ),
