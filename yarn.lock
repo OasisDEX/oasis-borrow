@@ -7335,10 +7335,10 @@
     tiny-invariant "^1.1.0"
     toformat "^2.0.0"
 
-"@uniswap/smart-order-router@^2.5.10":
-  version "2.5.19"
-  resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.5.19.tgz#b8545346bccccf06af0e1267c6326a6abed9cd93"
-  integrity sha512-riMsynkNP1PBckNNIrzcpgwyusujbqn1KaU9mE5gw5CbRvC6vQKAwfoHzRjA41lTHHPMZjv23fAZvNFZvJWsZg==
+"@uniswap/smart-order-router@^2.5.20":
+  version "2.5.20"
+  resolved "https://registry.yarnpkg.com/@uniswap/smart-order-router/-/smart-order-router-2.5.20.tgz#e772df1ac3e3f607c1b2aa1fd47c1c0db84d5433"
+  integrity sha512-ecAnSIlMow1aEG9WgK+Z4vfbzrtN5K7aDnvXIHlxWjowsg+3EiKzuPzoOVUJsYWJ2s2DPPAnfV794rYtQ2OYeA==
   dependencies:
     "@bitauth/libauth" "^1.17.1"
     "@ethersproject/bignumber" "^5.1.1"
@@ -7486,10 +7486,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@uniswap/widgets@^0.0.22-beta":
-  version "0.0.22-beta"
-  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.22-beta.tgz#d759a6014c51ff8d6eddbc98fa261d54459c8099"
-  integrity sha512-VY7n1FruIIcR9FO3i6zkgLnhXOFul0MWD6oN5eyP3BLcQvz7ySYD4HiSFf9d0RHHuV++33ggY1sbmxULYrlnfA==
+"@uniswap/widgets@^0.0.23-beta":
+  version "0.0.23-beta"
+  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.23-beta.tgz#5dce6704d1413c6332dd16fd9c971be559f76911"
+  integrity sha512-2eR9Mi6StUZ4DRnfUgWkLMurqNss3vQCQrcvGZcb5QD4jyUc05Fxb4u4Em321YWnSdvY08/7t3H4VHWERbVmrw==
   dependencies:
     "@babel/runtime" "^7.17.0"
     "@ethersproject/abi" "^5.4.1"
@@ -7514,7 +7514,7 @@
     "@uniswap/redux-multicall" "^1.0.0"
     "@uniswap/router-sdk" "^1.0.3"
     "@uniswap/sdk-core" "^3.0.1"
-    "@uniswap/smart-order-router" "^2.5.10"
+    "@uniswap/smart-order-router" "^2.5.20"
     "@uniswap/token-lists" "^1.0.0-beta.27"
     "@uniswap/v2-sdk" "^3.0.1"
     "@uniswap/v3-sdk" "^3.8.2"
