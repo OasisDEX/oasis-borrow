@@ -113,7 +113,15 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { dogIlk } from '../blockchain/calls/dog'
 import {
@@ -160,6 +168,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import { cropperUrnProxy } from '../blockchain/calls/cropper'
 
 export type TxData =
   | OpenData
@@ -392,6 +401,8 @@ export function setupAppContext() {
   const charterUline$ = observe(onEveryBlock$, context$, charterUline)
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
+  const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
+
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
@@ -421,7 +432,7 @@ export function setupAppContext() {
     cdpManagerIlks$,
     cdpManagerUrns$,
     charterUrnProxy$,
-    charterUrnProxy$,
+    cropperUrnProxy$,
     cdpRegistryOwns$,
     cdpManagerOwner$,
     proxyOwner$,

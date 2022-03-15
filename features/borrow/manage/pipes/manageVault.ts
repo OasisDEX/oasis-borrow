@@ -394,7 +394,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
-            proxyActionsAdapterResolver$({ makerVaultType: MakerVaultType.STANDARD }),
+            proxyActionsAdapterResolver$({ makerVaultType: vault.makerType }),
           ).pipe(
             first(),
             switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, proxyActionsAdapter]) => {

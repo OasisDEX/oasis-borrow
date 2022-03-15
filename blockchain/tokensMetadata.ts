@@ -554,7 +554,7 @@ export const tokens = [
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
-    tags: [],
+    tags: ['lp-token'],
   },
 ]
 
