@@ -13,5 +13,7 @@ export const cdpRegistryOwns: CallDef<BigNumber, string> = {
 export const cdpRegistryCdps: CallDef<{ ilk: string; usr: string }, BigNumber | null> = {
   call: (_, { contract, cdpRegistry }) => contract<CdpRegistry>(cdpRegistry).methods.cdps,
   prepareArgs: ({ ilk, usr }) => [Web3.utils.utf8ToHex(ilk), usr],
-  postprocess: (cdpId: any) => (cdpId === 0 ? null : new BigNumber(cdpId)),
+  postprocess: (cdpId: any) => {
+    return parseInt(cdpId) === 0 ? null : new BigNumber(cdpId)
+  },
 }
