@@ -1,12 +1,54 @@
+import { BigNumber } from 'bignumber.js'
+
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
-} from '../../../types/web3-v1-contracts/types'
-import { ContextConnected } from '../../network'
-import { DepositAndGenerateData, WithdrawAndPaybackData } from './proxyActions'
+} from '../../../../types/web3-v1-contracts/types'
+import { ContextConnected } from '../../../network'
+import { TxMetaKind } from '../../txMeta'
 
-export interface DssProxyActionsSmartContractWrapperInterface {
+export type WithdrawAndPaybackData = {
+  kind: TxMetaKind.withdrawAndPayback
+  id: BigNumber
+  token: string
+  ilk: string
+  withdrawAmount: BigNumber
+  paybackAmount: BigNumber
+  proxyAddress: string
+  shouldPaybackAll: boolean
+}
+
+export type DepositAndGenerateData = {
+  kind: TxMetaKind.depositAndGenerate
+  id: BigNumber
+  token: string
+  ilk: string
+  depositAmount: BigNumber
+  generateAmount: BigNumber
+  proxyAddress: string
+}
+
+export type OpenData = {
+  kind: TxMetaKind.open
+  token: string
+  ilk: string
+  depositAmount: BigNumber
+  generateAmount: BigNumber
+  proxyAddress: string
+}
+
+export enum ProxyActionsAdapterType {
+  STANDARD = 'STANDARD',
+  CHARTER = 'CHARTER',
+  CROPJOIN = 'CROPJOIN',
+  MOCK = 'MOCK',
+}
+
+export interface ProxyActionsSmartContractAdapterInterface {
   resolveContractAddress: (context: ContextConnected) => string
+
+  // used for testing
+  AdapterType: ProxyActionsAdapterType
 
   lockETHAndDraw: (
     context: ContextConnected,
@@ -72,4 +114,16 @@ export interface DssProxyActionsSmartContractWrapperInterface {
     context: ContextConnected,
     data: WithdrawAndPaybackData,
   ) => NonPayableTransactionObject<void>
+
+  openLockETHAndDraw: (
+    context: ContextConnected,
+    data: OpenData,
+  ) => PayableTransactionObject<string>
+
+  openLockGemAndDraw: (
+    context: ContextConnected,
+    data: OpenData,
+  ) => NonPayableTransactionObject<string>
+
+  open: (context: ContextConnected, data: OpenData) => NonPayableTransactionObject<string>
 }

@@ -15,11 +15,16 @@ import {
   productCardsConfig,
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function BorrowView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+
+  const filters = useFeatureToggle('steETH')
+    ? productCardsConfig.borrow.cardsFilters
+    : productCardsConfig.borrow.cardsFilters.filter((cf) => cf.name !== 'Curve LP')
 
   return (
     <Grid
@@ -48,7 +53,7 @@ export function BorrowView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
+            <ProductCardsFilter filters={filters}>
               {(cardsFilter: ProductLandingPagesFiltersKeys) => {
                 const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
 

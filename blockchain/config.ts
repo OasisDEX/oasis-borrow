@@ -5,13 +5,16 @@ import { Dictionary } from 'ts-essentials'
 
 import { Abi } from '../helpers/types'
 import * as automationBot from './abi/automation-bot.json'
+import * as cdpRegistry from './abi/cdp-registry.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
 import * as dssCharter from './abi/dss-charter.json'
+import * as dssCropper from './abi/dss-cropper.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
+import * as dssProxyActionsCropjoin from './abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
@@ -46,6 +49,10 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+
+export const charterIlks = ['INST-ETH-A']
+
+export const cropJoinIlks = ['CRVV1ETHSTETH-A']
 
 export const supportedIlks = [
   /* export just for test purposes */ 'ETH-A',
@@ -87,6 +94,9 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
+
+  ...charterIlks,
+  ...cropJoinIlks,
 ]
 
 const tokensMainnet = {
@@ -117,7 +127,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
-  dssCharter: contractDesc(dssCharter, '0x0000'),
+  dssCharter: contractDesc(dssCharter, '0x0000123'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
@@ -125,10 +135,7 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
-  dssProxyActionsCharter: contractDesc(
-    dssProxyActionsCharter,
-    mainnetAddresses.PROXY_ACTIONS_CHARTER,
-  ),
+  dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
   serviceRegistry: '0x', // TODO: add address
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
@@ -137,6 +144,12 @@ const protoMain = {
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
+  ),
+  dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
+  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
+  dssProxyActionsCropjoin: contractDesc(
+    dssProxyActionsCropjoin,
+    '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
   ),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
@@ -201,6 +214,8 @@ const kovan: NetworkConfig = {
     dssProxyActionsCharter,
     kovanAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -222,6 +237,7 @@ const kovan: NetworkConfig = {
   ethtx: {
     url: 'https://ethtx.info/kovan',
   },
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   tokensMainnet: protoMain.tokensMainnet,
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -248,6 +264,7 @@ const goerli: NetworkConfig = {
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
+    'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
   },
   getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
   mcdOsms: getOsms(goerliAddresses, supportedIlks),
@@ -256,7 +273,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
-  dssCharter: contractDesc(dssCharter, '0x0000'),
+  dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
   vat: contractDesc(vat, goerliAddresses.MCD_VAT),
@@ -268,11 +285,14 @@ const goerli: NetworkConfig = {
     dssProxyActionsCharter,
     goerliAddresses.PROXY_ACTIONS_CHARTER,
   ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0x8A08e91326Ac93fBcfcFb13912cEDdcb7Fc28f71'),
@@ -306,7 +326,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  // cacheApi: 'http://localhost:3001/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

@@ -16,7 +16,12 @@ import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../blockchain/calls/proxyActions/proxyActions'
+import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
 import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
@@ -178,7 +183,7 @@ function addTransitions(
   txHelpers$: Observable<TxHelpers>,
   proxyAddress$: Observable<string | undefined>,
   saveVaultType$: SaveVaultType,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
   change: (ch: ManageVaultChange) => void,
   state: ManageStandardBorrowVaultState,
 ): ManageStandardBorrowVaultState {
@@ -369,7 +374,11 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   saveVaultType$: SaveVaultType,
   addGasEstimation$: AddGasEstimationFunction,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActionsAdapterResolver$: ({
+    makerVaultType,
+  }: {
+    makerVaultType: MakerVaultType
+  }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
@@ -385,9 +394,11 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
+            proxyActionsAdapterResolver$({ makerVaultType: vault.makerType }),
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, proxyActionsAdapter]) => {
+              const vaultActions = vaultActionsLogic(proxyActionsAdapter)
               vault.chainId = context.chainId
               const collateralAllowance$ =
                 account && proxyAddress
@@ -446,13 +457,13 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     scan(vaultViewStateProvider.applyChange, initialState),
                     map(validateErrors),
                     map(validateWarnings),
-                    switchMap(curry(applyEstimateGas)(addGasEstimation$, proxyActions)),
+                    switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
                     map(
                       curry(addTransitions)(
                         txHelpers$,
                         connectedProxyAddress$,
                         saveVaultType$,
-                        proxyActions,
+                        vaultActions,
                         change,
                       ),
                     ),

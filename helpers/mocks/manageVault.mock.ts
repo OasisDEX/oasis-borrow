@@ -16,8 +16,8 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { withdrawPaybackDepositGenerateLogicFactory } from '../../blockchain/calls/proxyActions/proxyActions'
-import { StandardDssProxyActionsContractWrapper } from '../../blockchain/calls/proxyActions/standardDssProxyActionsContractWrapper'
+import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
+import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
 import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
@@ -234,7 +234,7 @@ export function mockManageVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+    () => of(StandardDssProxyActionsContractAdapter),
     StandardBorrowManageVaultViewStateProvider,
     automationTriggersData$,
     MOCK_VAULT_ID,
@@ -294,7 +294,7 @@ export function mockManageInstiVault$(
     saveVaultType$,
     addGasEstimationMock,
     vaultHistory$,
-    withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
+    () => of(new CharteredDssProxyActionsContractAdapter()),
     InstitutionalBorrowManageVaultViewStateProvider,
     automationTriggersData$,
     MOCK_VAULT_ID,

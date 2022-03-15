@@ -38,6 +38,7 @@ export type ProductLandingPagesFiltersKeys =
   | 'MANA'
   | 'MATIC'
   | 'GUSD'
+  | 'Curve LP'
 
 type ProductLandingPagesFiltersIcons =
   | 'star_circle'
@@ -50,6 +51,7 @@ type ProductLandingPagesFiltersIcons =
   | 'mana_circle'
   | 'matic_circle'
   | 'gusd_circle'
+  | 'curve_circle'
 
 export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
@@ -79,6 +81,7 @@ type Ilk =
   | 'UNIV2DAIUSDC-A'
   | 'UNIV2UNIETH-A'
   | 'UNIV2WBTCDAI-A'
+  | 'CRVV1ETHSTETH-A'
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -101,6 +104,7 @@ export const supportedBorrowIlks = [
   'UNIV2DAIUSDC-A',
   'UNIV2UNIETH-A',
   'UNIV2WBTCDAI-A',
+  'CRVV1ETHSTETH-A',
 ]
 
 export const supportedMultiplyIlks = [
@@ -153,6 +157,7 @@ export const productCardsConfig: {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
       { name: 'GUSD', icon: 'gusd_circle' },
+      { name: 'Curve LP', icon: 'curve_circle' },
     ],
     featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
     inactiveIlks: [],
@@ -228,6 +233,7 @@ export const productCardsConfig: {
     'UNIV2DAIUSDC-A': 'lp-tokens',
     'UNIV2UNIETH-A': 'lp-tokens',
     'UNIV2WBTCDAI-A': 'lp-tokens',
+    'CRVV1ETHSTETH-A': 'borrow',
   } as Record<string, string>,
 }
 
@@ -331,7 +337,7 @@ export function borrowPageCardsData({
 }: {
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
-}) {
+}): ProductCardData[] {
   productCardsData = sortCards(productCardsData, productCardsConfig.borrow.ordering, cardsFilter)
 
   if (cardsFilter === 'Featured') {
@@ -352,6 +358,10 @@ export function borrowPageCardsData({
     return ethProductCards(productCardsData)
   }
 
+  if (cardsFilter === 'Curve LP') {
+    return productCardsData.filter((card) => card.ilk === 'CRVV1ETHSTETH-A')
+  }
+
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
@@ -365,8 +375,8 @@ export function createProductCardsData$(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
           return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) =>
-              of({
+            switchMap((priceInfo) => {
+              return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
@@ -377,8 +387,8 @@ export function createProductCardsData$(
                 background: tokenMeta.background,
                 name: tokenMeta.name,
                 isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              }),
-            ),
+              })
+            }),
           )
         }),
       ),

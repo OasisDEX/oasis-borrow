@@ -1,6 +1,5 @@
 import { VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
@@ -9,10 +8,11 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import { cdpManagerIlks, cdpManagerOwner, cdpManagerUrns } from './calls/cdpManager'
-import { getCdps } from './calls/getCdps'
+import { cdpManagerOwner } from './calls/cdpManager'
+import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
+import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
 
@@ -35,45 +35,52 @@ export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
   )
 }
 
-export function createVaults$(
-  onEveryBlock$: Observable<number>,
-  context$: Observable<Context>,
+export function createStandardCdps$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  getCdps$: (arg: GetCdpsArgs) => Observable<GetCdpsResult>,
   address: string,
-): Observable<VaultWithType[]> {
-  return combineLatest(context$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of([])
-
-      function fetchVaultIds(): Observable<string[]> {
-        return onEveryBlock$.pipe(
-          switchMap(() =>
-            call(
-              context,
-              getCdps,
-            )({ proxyAddress: proxyAddress!, descending: true }).pipe(
-              switchMap(({ ids }) => of(ids)),
-            ),
-          ),
-        )
+): Observable<BigNumber[]> {
+  return proxyAddress$(address).pipe(
+    switchMap((proxyAddress) => {
+      if (proxyAddress === undefined) {
+        return of([])
       }
-
-      return fetchVaultIds().pipe(
-        switchMap((ids) =>
-          ids.length === 0
-            ? of([])
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id), context.chainId))),
-        ),
-        distinctUntilChanged(isEqual),
-        switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
+      return getCdps$({ proxyAddress, descending: true }).pipe(
+        map(({ ids }) => ids.map((id) => new BigNumber(id))),
       )
     }),
+    distinctUntilChanged(isEqual),
     shareReplay(1),
   )
 }
 
+interface CdpIdsResolver {
+  (address: string): Observable<BigNumber[]>
+}
+export function createVaults$(
+  onEveryBlock$: Observable<number>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  context$: Observable<Context>,
+  cdpIdResolvers: CdpIdsResolver[],
+  address: string,
+): Observable<VaultWithType[]> {
+  return combineLatest(onEveryBlock$, context$).pipe(
+    switchMap(([_, context]) =>
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+        map((nestedIds) => nestedIds.flat()),
+        switchMap((ids) =>
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
+        ),
+        distinctUntilChanged<Vault[]>(isEqual),
+        switchMap((vaults) => fetchVaultsType(vaults)),
+        shareReplay(1),
+      ),
+    ),
+  )
+}
+
 export interface Vault {
+  makerType: MakerVaultType
   id: BigNumber
   owner: string
   controller?: string
@@ -121,166 +128,164 @@ export function createController$(
 }
 
 export function createVault$(
-  cdpManagerUrns$: CallObservable<typeof cdpManagerUrns>,
-  cdpManagerIlks$: CallObservable<typeof cdpManagerIlks>,
-  cdpManagerOwner$: CallObservable<typeof cdpManagerOwner>,
+  vaultResolver$: (cdpId: BigNumber) => Observable<VaultResolve>,
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
-  controller$: (id: BigNumber) => Observable<string | undefined>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
   id: BigNumber,
 ): Observable<Vault> {
-  return combineLatest(
-    cdpManagerUrns$(id),
-    cdpManagerIlks$(id),
-    cdpManagerOwner$(id),
-    controller$(id),
-    ilkToToken$,
-    context$,
-  ).pipe(
-    switchMap(([urnAddress, ilk, owner, controller, ilkToToken, context]) => {
-      const token = ilkToToken(ilk)
-      return combineLatest(
-        vatUrns$({ ilk, urnAddress }),
-        vatGem$({ ilk, urnAddress }),
-        oraclePriceData$(token),
-        ilkData$(ilk),
-      ).pipe(
-        switchMap(
-          ([
-            { collateral, normalizedDebt },
-            unlockedCollateral,
-            { currentPrice, nextPrice },
-            {
-              debtScalingFactor,
-              liquidationRatio,
-              collateralizationDangerThreshold,
-              collateralizationWarningThreshold,
-              stabilityFee,
-              ilkDebtAvailable,
-            },
-          ]) => {
-            const collateralUSD = collateral.times(currentPrice)
-            const collateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
+  return vaultResolver$(id).pipe(
+    switchMap(({ urnAddress, ilk, owner, type: makerType, controller }) =>
+      combineLatest(ilkToToken$(ilk), context$).pipe(
+        switchMap(([token, context]) => {
+          return combineLatest(
+            vatUrns$({ ilk, urnAddress }),
+            vatGem$({ ilk, urnAddress }),
+            oraclePriceData$(token),
+            ilkData$(ilk),
+          ).pipe(
+            switchMap(
+              ([
+                { collateral, normalizedDebt },
+                unlockedCollateral,
+                { currentPrice, nextPrice },
+                {
+                  debtScalingFactor,
+                  liquidationRatio,
+                  collateralizationDangerThreshold,
+                  collateralizationWarningThreshold,
+                  stabilityFee,
+                  ilkDebtAvailable,
+                },
+              ]) => {
+                const collateralUSD = collateral.times(currentPrice)
+                const collateralUSDAtNextPrice = nextPrice
+                  ? collateral.times(nextPrice)
+                  : currentPrice
 
-            const debt = debtScalingFactor.times(normalizedDebt)
+                const debt = debtScalingFactor.times(normalizedDebt)
 
-            const debtOffset = !debt.isZero()
-              ? debt
-                  .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
-                  .minus(debt)
-                  .dp(18, BigNumber.ROUND_DOWN)
-              : new BigNumber('1e-18')
+                const debtOffset = !debt.isZero()
+                  ? debt
+                      .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
+                      .minus(debt)
+                      .dp(18, BigNumber.ROUND_DOWN)
+                  : new BigNumber('1e-18')
 
-            const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
+                const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
 
-            const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
-            const backingCollateralUSD = backingCollateral.times(currentPrice)
-            const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(nextPrice)
+                const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
+                const backingCollateralUSD = backingCollateral.times(currentPrice)
+                const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(
+                  nextPrice,
+                )
 
-            const freeCollateral = backingCollateral.gte(collateral)
-              ? zero
-              : collateral.minus(backingCollateral)
-            const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
-              ? zero
-              : collateral.minus(backingCollateralAtNextPrice)
+                const freeCollateral = backingCollateral.gte(collateral)
+                  ? zero
+                  : collateral.minus(backingCollateral)
+                const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
+                  ? zero
+                  : collateral.minus(backingCollateralAtNextPrice)
 
-            const freeCollateralUSD = freeCollateral.times(currentPrice)
-            const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
+                const freeCollateralUSD = freeCollateral.times(currentPrice)
+                const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
 
-            const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
-            const collateralizationRatioAtNextPrice = debt.isZero()
-              ? zero
-              : collateralUSDAtNextPrice.div(debt)
+                const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
+                const collateralizationRatioAtNextPrice = debt.isZero()
+                  ? zero
+                  : collateralUSDAtNextPrice.div(debt)
 
-            const maxAvailableDebt = collateralUSD.div(liquidationRatio)
-            const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
+                const maxAvailableDebt = collateralUSD.div(liquidationRatio)
+                const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
 
-            const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
-              ? maxAvailableDebt.minus(debt)
-              : zero
+                const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
+                  ? maxAvailableDebt.minus(debt)
+                  : zero
 
-            const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
-              ? maxAvailableDebtAtNextPrice.minus(debt)
-              : zero
+                const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
+                  ? maxAvailableDebtAtNextPrice.minus(debt)
+                  : zero
 
-            const liquidationPrice = collateral.eq(zero)
-              ? zero
-              : debt.times(liquidationRatio).div(collateral)
+                const liquidationPrice = collateral.eq(zero)
+                  ? zero
+                  : debt.times(liquidationRatio).div(collateral)
 
-            const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
-              ? availableDebt
-              : ilkDebtAvailable.gt(zero)
-              ? ilkDebtAvailable
-              : zero
-            const atRiskLevelWarning =
-              collateralizationRatio.gte(collateralizationDangerThreshold) &&
-              collateralizationRatio.lt(collateralizationWarningThreshold)
+                const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
+                  ? availableDebt
+                  : ilkDebtAvailable.gt(zero)
+                  ? ilkDebtAvailable
+                  : zero
+                const atRiskLevelWarning =
+                  collateralizationRatio.gte(collateralizationDangerThreshold) &&
+                  collateralizationRatio.lt(collateralizationWarningThreshold)
 
-            const atRiskLevelDanger =
-              collateralizationRatio.gte(liquidationRatio) &&
-              collateralizationRatio.lt(collateralizationDangerThreshold)
+                const atRiskLevelDanger =
+                  collateralizationRatio.gte(liquidationRatio) &&
+                  collateralizationRatio.lt(collateralizationDangerThreshold)
 
-            const underCollateralized =
-              !collateralizationRatio.isZero() && collateralizationRatio.lt(liquidationRatio)
+                const underCollateralized =
+                  !collateralizationRatio.isZero() && collateralizationRatio.lt(liquidationRatio)
 
-            const atRiskLevelWarningAtNextPrice =
-              collateralizationRatioAtNextPrice.gte(collateralizationDangerThreshold) &&
-              collateralizationRatioAtNextPrice.lt(collateralizationWarningThreshold)
+                const atRiskLevelWarningAtNextPrice =
+                  collateralizationRatioAtNextPrice.gte(collateralizationDangerThreshold) &&
+                  collateralizationRatioAtNextPrice.lt(collateralizationWarningThreshold)
 
-            const atRiskLevelDangerAtNextPrice =
-              collateralizationRatioAtNextPrice.gte(liquidationRatio) &&
-              collateralizationRatioAtNextPrice.lt(collateralizationDangerThreshold)
+                const atRiskLevelDangerAtNextPrice =
+                  collateralizationRatioAtNextPrice.gte(liquidationRatio) &&
+                  collateralizationRatioAtNextPrice.lt(collateralizationDangerThreshold)
 
-            const underCollateralizedAtNextPrice =
-              !collateralizationRatioAtNextPrice.isZero() &&
-              collateralizationRatioAtNextPrice.lt(liquidationRatio)
+                const underCollateralizedAtNextPrice =
+                  !collateralizationRatioAtNextPrice.isZero() &&
+                  collateralizationRatioAtNextPrice.lt(liquidationRatio)
 
-            return of({
-              id,
-              ilk,
-              token,
-              address: urnAddress,
-              owner,
-              controller,
-              lockedCollateral: collateral,
-              lockedCollateralUSD: collateralUSD,
-              backingCollateral,
-              backingCollateralUSD,
-              freeCollateral,
-              freeCollateralUSD,
-              lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
-              backingCollateralAtNextPrice,
-              backingCollateralUSDAtNextPrice,
-              freeCollateralAtNextPrice,
-              freeCollateralUSDAtNextPrice,
-              normalizedDebt,
-              debt,
-              debtOffset,
-              availableDebt,
-              availableDebtAtNextPrice,
-              unlockedCollateral,
-              collateralizationRatio,
-              collateralizationRatioAtNextPrice,
-              liquidationPrice,
-              daiYieldFromLockedCollateral,
+                return of({
+                  id,
+                  makerType,
+                  ilk,
+                  token,
+                  address: urnAddress,
+                  owner,
+                  controller,
+                  lockedCollateral: collateral,
+                  lockedCollateralUSD: collateralUSD,
+                  backingCollateral,
+                  backingCollateralUSD,
+                  freeCollateral,
+                  freeCollateralUSD,
+                  lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
+                  backingCollateralAtNextPrice,
+                  backingCollateralUSDAtNextPrice,
+                  freeCollateralAtNextPrice,
+                  freeCollateralUSDAtNextPrice,
+                  normalizedDebt,
+                  debt,
+                  debtOffset,
+                  availableDebt,
+                  availableDebtAtNextPrice,
+                  unlockedCollateral,
+                  collateralizationRatio,
+                  collateralizationRatioAtNextPrice,
+                  liquidationPrice,
+                  daiYieldFromLockedCollateral,
 
-              atRiskLevelWarning,
-              atRiskLevelDanger,
-              underCollateralized,
-              atRiskLevelWarningAtNextPrice,
-              atRiskLevelDangerAtNextPrice,
-              underCollateralizedAtNextPrice,
-              chainId: context.chainId,
-            })
-          },
-        ),
-      )
-    }),
-    shareReplay(1),
+                  atRiskLevelWarning,
+                  atRiskLevelDanger,
+                  underCollateralized,
+                  atRiskLevelWarningAtNextPrice,
+                  atRiskLevelDangerAtNextPrice,
+                  underCollateralizedAtNextPrice,
+                  chainId: context.chainId,
+                })
+              },
+            ),
+          )
+        }),
+        shareReplay(1),
+      ),
+    ),
   )
 }
 

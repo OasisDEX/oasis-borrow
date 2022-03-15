@@ -32,10 +32,11 @@ export function createBalance$(
 
 export function createCollateralTokens$(
   ilks$: Observable<string[]>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
 ): Observable<string[]> {
-  return combineLatest(ilks$, ilkToToken$).pipe(
-    switchMap(([ilks, ilkToToken]) => of([...new Set(ilks.map(ilkToToken))])),
+  return ilks$.pipe(
+    switchMap((ilks) => combineLatest(ilks.map((ilk) => ilkToToken$(ilk)))),
+    switchMap((tokens) => of([...new Set(tokens)])),
   )
 }
 
