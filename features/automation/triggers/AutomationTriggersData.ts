@@ -7,6 +7,7 @@ import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
+import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 
@@ -41,6 +42,7 @@ export function createAutomationTriggersData(
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
+  console.trace('dsadsa')
   return onEveryBlock$.pipe(
     withLatestFrom(context$, vauit$(id)),
     mergeMap(([, , vault]) => {
@@ -61,12 +63,16 @@ export function createStopLossDataChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
-  return automationTriggersData$(id).pipe(
-    map((triggerData) => ({
-      kind: 'stopLossData',
-      stopLossData: extractStopLossData(triggerData),
-    })),
-  )
+  const automationEnabled = useFeatureToggle('Automation')
+
+  return automationEnabled
+    ? automationTriggersData$(id).pipe(
+        map((triggerData) => ({
+          kind: 'stopLossData',
+          stopLossData: extractStopLossData(triggerData),
+        })),
+      )
+    : []
 }
 
 export interface StopLossChange {
