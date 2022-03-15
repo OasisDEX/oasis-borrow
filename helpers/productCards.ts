@@ -159,7 +159,7 @@ export const productCardsConfig: {
       { name: 'GUSD', icon: 'gusd_circle' },
       { name: 'Curve LP', icon: 'curve_circle' },
     ],
-    featuredCards: ['ETH-C', 'WBTC-C', 'LINK-A'],
+    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -169,6 +169,7 @@ export const productCardsConfig: {
       'ETH-C': 'lowest-fees-for-borrowing',
       'WBTC-C': 'lowest-fees-for-borrowing',
       'WSTETH-A': 'staking-rewards',
+      'CRVV1ETHSTETH-A': 'staking-rewards',
     },
   },
   multiply: {
@@ -204,7 +205,7 @@ export const productCardsConfig: {
   },
   landing: {
     featuredCards: {
-      borrow: ['ETH-C', 'WBTC-C', 'LINK-A'],
+      borrow: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A'],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
     },
