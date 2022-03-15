@@ -8,6 +8,7 @@ const paramsSchema = z.object({
 })
 
 export async function getMultipleVaults(req: express.Request, res: express.Response) {
+  console.log(req.query)
   const { id } = paramsSchema.parse(req.query)
   const parsedIds = !isArray(id) ? [parseInt(id, 10)] : id.map((el) => parseInt(el, 10))
 
