@@ -27,6 +27,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     shouldShowExchangeError,
     ledgerWalletContractDataDisabled,
     invalidSlippage,
+    afterCollRatioBelowStopLossRatio,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -50,6 +51,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
         hasToDepositCollateralOnEmptyVault,
         shouldShowExchangeError,
         invalidSlippage,
+        afterCollRatioBelowStopLossRatio,
       }),
     )
   }

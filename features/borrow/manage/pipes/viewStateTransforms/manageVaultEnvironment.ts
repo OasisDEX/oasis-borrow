@@ -2,6 +2,7 @@ import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 
+import { StopLossChange } from '../../../../automation/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../../vaultHistory/vaultHistory'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
@@ -12,6 +13,7 @@ export type ManageVaultEnvironmentChange =
   | IlkDataChange
   | VaultChange
   | VaultHistoryChange
+  | StopLossChange
 
 export function applyManageVaultEnvironment<VaultState extends ManageStandardBorrowVaultState>(
   change: ManageVaultChange,
@@ -49,6 +51,13 @@ export function applyManageVaultEnvironment<VaultState extends ManageStandardBor
     return {
       ...state,
       vaultHistory: change.vaultHistory,
+    }
+  }
+
+  if (change.kind === 'stopLossData') {
+    return {
+      ...state,
+      stopLossData: change.stopLossData,
     }
   }
 

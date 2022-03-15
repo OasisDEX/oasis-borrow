@@ -5,9 +5,11 @@ import { Vault } from 'blockchain/vaults'
 import { GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
 import { Observable } from 'rxjs'
-import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
+import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
+import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
+import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 
 // TODO - ŁW - Implement tests for this file
 
@@ -54,4 +56,25 @@ export function createAutomationTriggersData(
     }),
     shareReplay(1),
   )
+}
+
+export function createStopLossDataChange$(
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  id: BigNumber,
+) {
+  const automationEnabled = useFeatureToggle('Automation')
+
+  return automationEnabled
+    ? automationTriggersData$(id).pipe(
+        map((triggerData) => ({
+          kind: 'stopLossData',
+          stopLossData: extractStopLossData(triggerData),
+        })),
+      )
+    : []
+}
+
+export interface StopLossChange {
+  kind: 'stopLossData'
+  stopLossData: StopLossTriggerData
 }

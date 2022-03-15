@@ -21,6 +21,11 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
+import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
+import {
+  createStopLossDataChange$,
+  TriggersData,
+} from '../../../automation/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
@@ -250,6 +255,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
+    stopLossData?: StopLossTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -471,6 +477,7 @@ export function createManageMultiplyVault$(
   slippageLimit$: Observable<UserSettingsState>,
   vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -524,6 +531,7 @@ export function createManageMultiplyVault$(
                     vault,
                     priceInfo,
                     vaultHistory: [],
+                    stopLossData: undefined,
                     balanceInfo,
                     ilkData,
                     account,
@@ -556,6 +564,7 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
+                    createStopLossDataChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
