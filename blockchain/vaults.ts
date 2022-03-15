@@ -1,6 +1,5 @@
 import { VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
-import { call } from 'blockchain/calls/callsHelpers'
 import { Context } from 'blockchain/network'
 import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
@@ -10,7 +9,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cdpManagerOwner } from './calls/cdpManager'
-import { getCdps } from './calls/getCdps'
+import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
@@ -36,41 +35,47 @@ export function fetchVaultsType(vaults: Vault[]): Observable<VaultWithType[]> {
   )
 }
 
-export function createVaults$(
-  onEveryBlock$: Observable<number>,
-  context$: Observable<Context>,
+export function createStandardCdps$(
   proxyAddress$: (address: string) => Observable<string | undefined>,
-  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  getCdps$: (arg: GetCdpsArgs) => Observable<GetCdpsResult>,
   address: string,
-): Observable<VaultWithType[]> {
-  return combineLatest(context$, proxyAddress$(address)).pipe(
-    switchMap(([context, proxyAddress]) => {
-      if (!proxyAddress) return of([])
-
-      function fetchVaultIds(): Observable<string[]> {
-        return onEveryBlock$.pipe(
-          switchMap(() =>
-            call(
-              context,
-              getCdps,
-            )({ proxyAddress: proxyAddress!, descending: true }).pipe(
-              switchMap(({ ids }) => of(ids)),
-            ),
-          ),
-        )
+): Observable<BigNumber[]> {
+  return proxyAddress$(address).pipe(
+    switchMap((proxyAddress) => {
+      if (proxyAddress === undefined) {
+        return of([])
       }
-
-      return fetchVaultIds().pipe(
-        switchMap((ids) =>
-          ids.length === 0
-            ? of([])
-            : combineLatest(ids.map((id) => vault$(new BigNumber(id), context.chainId))),
-        ),
-        distinctUntilChanged(isEqual),
-        switchMap((vaults) => (vaults.length === 0 ? of(vaults) : fetchVaultsType(vaults))),
+      return getCdps$({ proxyAddress, descending: true }).pipe(
+        map(({ ids }) => ids.map((id) => new BigNumber(id))),
       )
     }),
+    distinctUntilChanged(isEqual),
     shareReplay(1),
+  )
+}
+
+interface CdpIdsResolver {
+  (address: string): Observable<BigNumber[]>
+}
+export function createVaults$(
+  onEveryBlock$: Observable<number>,
+  vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
+  context$: Observable<Context>,
+  cdpIdResolvers: CdpIdsResolver[],
+  address: string,
+): Observable<VaultWithType[]> {
+  return combineLatest(onEveryBlock$, context$).pipe(
+    switchMap(([_, context]) =>
+      combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
+        map((nestedIds) => nestedIds.flat()),
+        switchMap((ids) =>
+          ids.length === 0 ? of([]) : combineLatest(ids.map((id) => vault$(id, context.chainId))),
+        ),
+        distinctUntilChanged<Vault[]>(isEqual),
+        switchMap((vaults) => fetchVaultsType(vaults)),
+        shareReplay(1),
+      ),
+    ),
   )
 }
 
