@@ -42,7 +42,6 @@ export function createAutomationTriggersData(
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
-  console.trace('dsadsa')
   return onEveryBlock$.pipe(
     withLatestFrom(context$, vauit$(id)),
     mergeMap(([, , vault]) => {
