@@ -14,7 +14,7 @@ import * as dssCharter from './abi/dss-charter.json'
 import * as dssCropper from './abi/dss-cropper.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
 import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
-import * as dssProxyActionsCurve from './abi/dss-proxy-actions-curve.json'
+import * as dssProxyActionsCropjoin from './abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
@@ -147,8 +147,8 @@ const protoMain = {
   ),
   dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
   cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
-  dssProxyActionsCurve: contractDesc(
-    dssProxyActionsCurve,
+  dssProxyActionsCropjoin: contractDesc(
+    dssProxyActionsCropjoin,
     '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
   ),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
@@ -215,7 +215,7 @@ const kovan: NetworkConfig = {
     kovanAddresses.PROXY_ACTIONS_CHARTER,
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x'),
-  dssProxyActionsCurve: contractDesc(dssProxyActionsCurve, '0x'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
@@ -286,7 +286,7 @@ const goerli: NetworkConfig = {
     goerliAddresses.PROXY_ACTIONS_CHARTER,
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
-  dssProxyActionsCurve: contractDesc(dssProxyActionsCurve, '0x'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',

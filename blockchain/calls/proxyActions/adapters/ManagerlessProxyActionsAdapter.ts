@@ -2,7 +2,7 @@ import { ContractDesc } from '@oasisdex/web3-context'
 import Web3 from 'web3'
 
 import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
-import { DssProxyActionsCurve } from '../../../../types/web3-v1-contracts/dss-proxy-actions-curve'
+import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,
@@ -18,7 +18,7 @@ import {
 } from './ProxyActionsSmartContractAdapterInterface'
 
 export abstract class ManagerlessProxyActionsContractAdapter<
-  DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCurve
+  DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCropjoin
 > implements ProxyActionsSmartContractAdapterInterface {
   abstract AdapterType: ProxyActionsAdapterType
 
