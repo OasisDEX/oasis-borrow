@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
 
+import { CanOpenVaultResult } from '../helpers/createCanCreateVaultForIlk'
 import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
-import { CanOpenVaultResult } from '../helpers/createCanCreateVaultForIlk'
 
 function InactiveCard() {
   return (

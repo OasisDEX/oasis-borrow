@@ -121,15 +121,7 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, iif, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { cropperUrnProxy } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
@@ -175,9 +167,9 @@ import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckVaultType$, VaultIdToTypeMapping } from '../features/shared/checkVaultType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
+import { createCanCreateVaultForIlk$ } from '../helpers/createCanCreateVaultForIlk'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
-import { createCanCreateVaultForIlk$ } from '../helpers/createCanCreateVaultForIlk'
 
 export type TxData =
   | OpenData
@@ -753,14 +745,7 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const canCreateVaultForIlkMock = () => of(true)
-
-  const productCardsData$ = createProductCardsData$(
-    ilkDataList$,
-    priceInfo$,
-    // canCreateVaultForIlkMock,
-    canCreateVaultForIlk$,
-  )
+  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$, canCreateVaultForIlk$)
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),

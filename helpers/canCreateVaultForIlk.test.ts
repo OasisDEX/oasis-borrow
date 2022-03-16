@@ -1,10 +1,10 @@
+import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 
 import { createCanCreateVaultForIlk$ } from './createCanCreateVaultForIlk'
+import { mockIlkData } from './mocks/ilks.mock'
 import { mockVaults$ } from './mocks/vaults.mock'
 import { getStateUnpacker } from './testHelpers'
-import { mockIlkData, mockIlkData$ } from './mocks/ilks.mock'
-import BigNumber from 'bignumber.js'
 
 describe('create can create vault', () => {
   it('lets the user create a sethCRV vault if they do not already have one', () => {

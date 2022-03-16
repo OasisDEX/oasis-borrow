@@ -1,8 +1,8 @@
 import { Observable, of } from 'rxjs'
-import { map, tap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
-import { Vault } from '../blockchain/vaults'
 import { IlkData } from '../blockchain/ilks'
+import { Vault } from '../blockchain/vaults'
 
 function userAlreadyHasSethCRVVault(usersVaults: Vault[], ilk: IlkData) {
   return (

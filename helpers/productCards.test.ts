@@ -4,6 +4,7 @@ import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { of } from 'rxjs'
 
+import { mockCanCreateVaultForIlk$ } from './createCanCreateVaultForIlk'
 import { mockPriceInfo$ } from './mocks/priceInfo.mock'
 import {
   borrowPageCardsData,
@@ -11,7 +12,6 @@ import {
   landingPageCardsData,
   multiplyPageCardsData,
 } from './productCards'
-import { mockCanCreateVaultForIlk$ } from './createCanCreateVaultForIlk'
 
 const wbtcA = mockIlkData({
   token: 'WTBC',
