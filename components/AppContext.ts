@@ -121,7 +121,15 @@ import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
 import { combineLatest, iif, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  startWith,
+  switchMap,
+} from 'rxjs/operators'
 
 import { cropperUrnProxy } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
@@ -503,10 +511,9 @@ export function setupAppContext() {
     ]),
   )
 
-  const userVaults$: Observable<VaultWithType[]> = context$.pipe(
-    switchMap((ctx) =>
-      iif(() => ctx.status === 'connected', vaults$((ctx as ContextConnected).account), of([])),
-    ),
+  const userVaults$: Observable<VaultWithType[]> = connectedContext$.pipe(
+    switchMap((ctx) => vaults$(ctx.account)),
+    startWith([]),
     shareReplay(1),
   )
 
