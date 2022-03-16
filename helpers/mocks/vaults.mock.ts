@@ -6,7 +6,7 @@ import { createVault$, Vault } from 'blockchain/vaults'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { one, zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import { combineLatest, Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
 
 import { mockContextConnected$ } from './context.mock'
@@ -113,4 +113,8 @@ export function mockVault$({
 
 export function mockVaults(props: MockVaultProps = {}) {
   return getStateUnpacker(mockVault$(props))
+}
+
+export function mockVaults$(vaultData: MockVaultProps[]): Observable<Vault[]> {
+  return combineLatest(vaultData.map((vd) => mockVault$(vd)))
 }

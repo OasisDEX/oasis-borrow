@@ -53,7 +53,13 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import {
+  createStandardCdps$,
+  createVault$,
+  createVaults$,
+  Vault,
+  VaultWithType,
+} from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -114,8 +120,16 @@ import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiply
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { curry } from 'ramda'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { combineLatest, iif, Observable, of, Subject } from 'rxjs'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import { cropperUrnProxy } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
@@ -163,6 +177,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import { createCanCreateVaultForIlk$ } from '../helpers/createCanCreateVaultForIlk'
 
 export type TxData =
   | OpenData
@@ -496,6 +511,15 @@ export function setupAppContext() {
     ]),
   )
 
+  const userVaults$: Observable<VaultWithType[]> = context$.pipe(
+    switchMap((ctx) =>
+      iif(() => ctx.status === 'connected', vaults$((ctx as ContextConnected).account), of([])),
+    ),
+    shareReplay(1),
+  )
+
+  const canCreateVaultForIlk$ = memoize(curry(createCanCreateVaultForIlk$)(userVaults$))
+
   const ilks$ = createIlks$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
@@ -729,7 +753,14 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const canCreateVaultForIlkMock = () => of(true)
+
+  const productCardsData$ = createProductCardsData$(
+    ilkDataList$,
+    priceInfo$,
+    // canCreateVaultForIlkMock,
+    canCreateVaultForIlk$,
+  )
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),

@@ -11,6 +11,7 @@ import {
   landingPageCardsData,
   multiplyPageCardsData,
 } from './productCards'
+import { mockCanCreateVaultForIlk$ } from './createCanCreateVaultForIlk'
 
 const wbtcA = mockIlkData({
   token: 'WTBC',
@@ -91,7 +92,9 @@ const crv = mockIlkData({
 
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
-    const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
+    const state = getStateUnpacker(
+      createProductCardsData$(of([wbtcA]), () => mockPriceInfo$(), mockCanCreateVaultForIlk$),
+    )
 
     expect(state()[0]).to.eql({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -103,13 +106,17 @@ describe('createProductCardsData$', () => {
       name: 'Wrapped Bitcoin',
       stabilityFee: new BigNumber(0.045),
       token: 'WBTC',
-      isFull: false,
+      canCreateVault: { canOpen: true },
     })
   })
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(
+        of([wbtcB, ethB, guni, wsteth]),
+        () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
+      ),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -125,7 +132,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: ethB.token,
@@ -137,7 +144,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: guni.token,
@@ -149,14 +156,18 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
         background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
         name: 'GUNIV3 DAI/USDC 0.01%',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
     ])
   })
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(
+        of([wbtcB, ethB, guni, wsteth]),
+        () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
+      ),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -175,7 +186,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: ethB.token,
@@ -187,7 +198,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: guni.token,
@@ -199,14 +210,18 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
         background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
         name: 'GUNIV3 DAI/USDC 0.01%',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
     ])
   })
 
   it('should return correct multiple page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(
+        of([wbtcA, ethA, linkA, wsteth]),
+        () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
+      ),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -225,7 +240,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: wsteth.token,
@@ -237,14 +252,18 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wstETH.gif',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
         name: 'WSTETH',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
     ])
   })
 
   it('should return correct borrow page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth, crv]), () => mockPriceInfo$()),
+      createProductCardsData$(
+        of([wbtcC, ethA, ethC, linkA, wsteth, crv]),
+        () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
+      ),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -263,7 +282,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: ethC.token,
@@ -275,7 +294,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'Ether',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: crv.token,
@@ -287,15 +306,17 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/crv_steth_eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
         name: 'stETH/ETH CRV',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
     ])
   })
 
   it('should return correct borrow page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth, renbtc]), () =>
-        mockPriceInfo$(),
+      createProductCardsData$(
+        of([wbtcA, ethA, ethC, linkA, wsteth, renbtc]),
+        () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
       ),
     )
 
@@ -312,7 +333,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/renBTC.gif',
         background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
         name: 'renBTC',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
       {
         token: wbtcA.token,
@@ -324,7 +345,7 @@ describe('createProductCardsData$', () => {
         bannerGif: '/static/img/tokens/wbtc.gif',
         background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
         name: 'Wrapped Bitcoin',
-        isFull: false,
+        canCreateVault: { canOpen: true },
       },
     ])
   })
@@ -334,6 +355,7 @@ describe('createProductCardsData$', () => {
       createProductCardsData$(
         of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB, wbtcB, wbtcC]),
         () => mockPriceInfo$(),
+        mockCanCreateVaultForIlk$,
       ),
     )
 
@@ -355,5 +377,15 @@ describe('createProductCardsData$', () => {
     expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
   })
 
-  it('does not sort product cards that have no custom ordering')
+  it('shows steCRV ilk as full when the user already has one', () => {
+    const state = getStateUnpacker(
+      createProductCardsData$(
+        of([wbtcA, crv]),
+        () => mockPriceInfo$(),
+        () => of({ canOpen: false, excuse: 'user-already-has-vault' }),
+      ),
+    )
+
+    expect(state()[0].canCreateVault.canOpen).to.eq(false)
+  })
 })

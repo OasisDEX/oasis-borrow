@@ -169,7 +169,6 @@
   "get-started": "Comenzar",
   "go-to-vault": "Ir al Vault #{{id}}",
   "here": "aquí",
-  "full": "Completo",
   "history": {
     "auction_finished_v2": "Subasta <0>#{{auctionId}}</0> finalizada, <0>{{remainingCollateral}} {{token}}</0> restantes",
     "auction_started": "Subasta iniciada, <0>{{collateralAmount}} {{token}}</0> tomado para cubrir <0>{{daiAmount}} Dai</0>",
@@ -995,7 +994,8 @@
       "staking-rewards": "Recompensas de staking",
       "max-exposure": "Máxima exposición a {{token}}"
     },
-    "unprofitable-position": "Esta posición probablemente no sea rentable en este momento. Continúe si está seguro sobre lo que está haciendo."
+    "unprofitable-position": "Esta posición probablemente no sea rentable en este momento. Continúe si está seguro sobre lo que está haciendo.",
+    "vault-full": "Completo"
   },
   "product-card-banner": {
     "with": "Con {{value}} {{token}} 👇",

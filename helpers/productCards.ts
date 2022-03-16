@@ -3,7 +3,7 @@ import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { IlkDataList } from '../blockchain/ilks'
+import { IlkData, IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
@@ -13,6 +13,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { CanOpenVaultResult } from './createCanCreateVaultForIlk'
 
 export interface ProductCardData {
   token: string
@@ -24,7 +25,7 @@ export interface ProductCardData {
   bannerGif: string
   background: string
   name: string
-  isFull: boolean
+  canCreateVault: CanOpenVaultResult
 }
 
 export type ProductLandingPagesFiltersKeys =
@@ -369,14 +370,15 @@ export function borrowPageCardsData({
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
+  canCreateVaultForIlk$: (ilk: IlkData) => Observable<CanOpenVaultResult>,
 ): Observable<ProductCardData[]> {
   return ilkDataList$.pipe(
-    switchMap((ilkDataList) =>
-      combineLatest(
+    switchMap((ilkDataList) => {
+      return combineLatest(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
-          return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) => {
+          return combineLatest(priceInfo$(ilk.token), canCreateVaultForIlk$(ilk)).pipe(
+            switchMap(([priceInfo, canCreateVault]) => {
               return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
@@ -387,12 +389,12 @@ export function createProductCardsData$(
                 bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.background,
                 name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+                canCreateVault,
               })
             }),
           )
         }),
-      ),
-    ),
+      )
+    }),
   )
 }

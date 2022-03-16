@@ -71,7 +71,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       }}
       background={cardData.background}
       inactive={productCardsConfig.multiply.inactiveIlks.includes(cardData.ilk)}
-      isFull={cardData.isFull}
+      canCreateVault={cardData.canCreateVault}
       floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''}
     />
   )

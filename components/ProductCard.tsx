@@ -7,6 +7,7 @@ import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
+import { CanOpenVaultResult } from '../helpers/createCanCreateVaultForIlk'
 
 function InactiveCard() {
   return (
@@ -126,7 +127,7 @@ export interface ProductCardProps {
   rightSlot: { title: string; value: ReactNode }
   button: { link: string; text: string }
   background: string
-  isFull: boolean
+  canCreateVault: CanOpenVaultResult
   floatingLabelText?: string
   inactive?: boolean
 }
@@ -141,7 +142,7 @@ export function ProductCard({
   rightSlot,
   button,
   background,
-  isFull,
+  canCreateVault,
   floatingLabelText,
   inactive,
 }: ProductCardProps) {
@@ -220,7 +221,7 @@ export function ProductCard({
             <Flex>
               <AppLink
                 href={button.link}
-                disabled={isFull}
+                disabled={!canCreateVault.canOpen}
                 sx={{ width: '100%' }}
                 onClick={handleClick}
               >
@@ -234,16 +235,20 @@ export function ProductCard({
                     alignItems: 'center',
                     justifyContent: 'center',
                     boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                    backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                    backgroundColor: inactive || !canCreateVault.canOpen ? '#80818A' : 'primary',
                     '&:hover': {
                       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
                       transition: '0.2s ease-in',
-                      backgroundColor: isFull ? '#80818A' : 'primary',
-                      cursor: isFull ? 'default' : 'pointer',
+                      backgroundColor: !canCreateVault.canOpen ? '#80818A' : 'primary',
+                      cursor: !canCreateVault.canOpen ? 'default' : 'pointer',
                     },
                   }}
                 >
-                  {isFull ? t('full') : !clicked ? button.text : ''}
+                  {!canCreateVault.canOpen
+                    ? t(`product-card.${canCreateVault.excuse}`)
+                    : !clicked
+                    ? button.text
+                    : ''}
                   {clicked && (
                     <Spinner
                       variant="styles.spinner.medium"

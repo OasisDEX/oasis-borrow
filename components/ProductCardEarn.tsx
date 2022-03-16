@@ -108,7 +108,7 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       }}
       background={cardData.background}
       inactive={productCardsConfig.earn.inactiveIlks.includes(cardData.ilk)}
-      isFull={cardData.isFull}
+      canCreateVault={cardData.canCreateVault}
       floatingLabelText={tagKey ? t(`product-card.tags.${tagKey}`, { token: cardData.token }) : ''}
     />
   )
