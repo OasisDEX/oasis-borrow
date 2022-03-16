@@ -270,18 +270,6 @@ describe('createProductCardsData$', () => {
         name: 'Ether',
         isFull: false,
       },
-      {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        bannerGif: '/static/img/tokens/link.gif',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
-        isFull: false,
-      },
     ])
   })
 
