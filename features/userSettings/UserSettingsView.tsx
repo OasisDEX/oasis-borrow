@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { AccountIndicator } from 'features/account/Account'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
@@ -10,10 +12,20 @@ import { useObservable } from 'helpers/observableHook'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useRef, useState } from 'react'
 import { useEffect } from 'react'
 import { createNumberMask } from 'text-mask-addons'
-import { Box, Button, Card, Flex, Grid, Link as ThemeLink, SxStyleProp, Text } from 'theme-ui'
+import {
+  Box,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Link as ThemeLink,
+  SxStyleProp,
+  Text,
+  Textarea,
+} from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
 import {
@@ -179,6 +191,54 @@ function SlippageSettingsForm(props: UserSettingsState) {
   )
 }
 
+function WalletInfo() {
+  const { web3Context$, context$ } = useAppContext()
+  const [web3Context] = useObservable(web3Context$)
+  const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
+
+  const { t } = useTranslation()
+
+  function copyToClipboard() {
+    const clipboardContent = clipboardContentRef.current
+
+    if (clipboardContent) {
+      clipboardContent.select()
+      document.execCommand('copy')
+    }
+  }
+
+  if (web3Context?.status !== 'connected') return null
+
+  const { account, connectionKind } = web3Context
+
+  return (
+    <Grid>
+      <Flex sx={{ justifyContent: 'space-between' }}>
+        {connectionKind === 'network' ? (
+          <Text sx={{ fontWeight: 'semiBold' }}>{t('connected-in-readonly-mode')}</Text>
+        ) : (
+          <Text sx={{ fontWeight: 'semiBold' }}>
+            {t('connected-with', {
+              connectionKind: getConnectionKindMessage(connectionKind),
+            })}
+          </Text>
+        )}
+      </Flex>
+      <Flex sx={{ alignItems: 'center' }}>
+        <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
+        <Text onClick={() => copyToClipboard()}>{t('copy')}</Text>
+        {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
+        <Textarea
+          ref={clipboardContentRef}
+          sx={{ position: 'absolute', top: '-1000px', left: '-1000px' }}
+          value={account}
+          readOnly
+        />
+      </Flex>
+    </Grid>
+  )
+}
+
 export function UserSettingsDropdown(
   props: UserSettingsState & { opened: boolean; setOpened: (opened: boolean) => void },
 ) {
@@ -229,6 +289,7 @@ export function UserSettingsDropdown(
         ref={wrapperRef}
       >
         <MobileSidePanelClose opened={opened} onClose={onClose} />
+        <WalletInfo />
         <SlippageSettingsForm {...props} />
         {/* Gas settings will go here */}
         {!slippage.eq(slippageInput) && (
@@ -276,7 +337,8 @@ export function UserSettingsButton() {
 
   const { t } = useTranslation()
 
-  if (!userSettings || !context || context.status === 'connectedReadonly' || !accountData) return null
+  if (!userSettings || !context || context.status === 'connectedReadonly' || !accountData)
+    return null
 
   return (
     <Flex sx={{ position: 'relative', mr: 2 }}>
@@ -287,7 +349,7 @@ export function UserSettingsButton() {
       >
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
           <Text sx={{ display: ['none', 'none', 'block'] }}>
-            <AccountIndicator address={context.account} ensName={accountData.ensName} />  
+            <AccountIndicator address={context.account} ensName={accountData.ensName} />
           </Text>
           <Icon
             size="auto"
