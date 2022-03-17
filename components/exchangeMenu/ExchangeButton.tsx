@@ -21,7 +21,9 @@ export function ExchangeButton({
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1, ...sx }}>
       <Button variant="menuButtonRound" onClick={() => setIsOpen(!isOpen)}>
         {isOpen ? (
-          <Icon name="chevron_up" size="auto" width="14" />
+          <Box sx={{ transform: ['rotateZ(180deg)', null] }}>
+            <Icon name="chevron_up" size="auto" width="14" />
+          </Box>
         ) : (
           <Icon name="exchange" size="auto" width="20" />
         )}
