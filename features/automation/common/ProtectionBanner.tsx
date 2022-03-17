@@ -27,10 +27,10 @@ export function ProtectionBanner({
       close={() => {
         handleClose()
       }}
-      sx={{ marginBottom: 3, height: '160px' }}
+      sx={{ marginBottom: 3, height: '160px', py: '24px' }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
-        <Heading variant="header2" as="h1" sx={{ mb: 2, zIndex: 1 }}>
+        <Heading variant="header2" as="h1" sx={{ mb: 2, zIndex: 1, fontSize: '28px' }}>
           {heading}
         </Heading>
         <Text

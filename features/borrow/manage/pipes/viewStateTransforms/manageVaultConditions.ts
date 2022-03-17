@@ -5,6 +5,7 @@ import { zero } from 'helpers/zero'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
+  afterCollRatioBelowStopLossRatioValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -209,6 +210,7 @@ export interface ManageVaultConditions {
   depositCollateralOnVaultUnderDebtFloor: boolean
 
   stopLossTriggered: boolean
+  afterCollRatioBelowStopLossRatio: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -262,6 +264,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
   depositCollateralOnVaultUnderDebtFloor: false,
 
   stopLossTriggered: false,
+  afterCollRatioBelowStopLossRatio: false,
 }
 
 export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
@@ -303,6 +306,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     afterDebt,
     txError,
     vaultHistory,
+    stopLossData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -483,6 +487,14 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     depositAmount.lt(debtFloor) &&
     afterDebt.lt(debtFloor)
 
+  const afterCollRatioBelowStopLossRatio =
+    !!stopLossData?.isStopLossEnabled &&
+    afterCollRatioBelowStopLossRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      stopLossRatio: stopLossData.stopLossLevel,
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -500,7 +512,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
       paybackAmountExceedsDaiBalance ||
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
-      depositCollateralOnVaultUnderDebtFloor)
+      depositCollateralOnVaultUnderDebtFloor ||
+      afterCollRatioBelowStopLossRatio)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -596,5 +609,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     depositCollateralOnVaultUnderDebtFloor,
 
     stopLossTriggered,
+    afterCollRatioBelowStopLossRatio,
   }
 }

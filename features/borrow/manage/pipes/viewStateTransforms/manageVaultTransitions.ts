@@ -3,7 +3,7 @@ import { TxHelpers } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { Observable } from 'rxjs'
 
-import { WithdrawPaybackDepositGenerateLogicInterface } from '../../../../../blockchain/calls/proxyActions/proxyActions'
+import { VaultActionsLogicInterface } from '../../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import {
   defaultMutableManageVaultState,
   ManageStandardBorrowVaultState,
@@ -263,7 +263,7 @@ export function progressManage(
   txHelpers$: Observable<TxHelpers>,
   state: ManageStandardBorrowVaultState,
   change: (ch: ManageVaultChange) => void,
-  proxyActions: WithdrawPaybackDepositGenerateLogicInterface,
+  proxyActions: VaultActionsLogicInterface,
 ) {
   const { depositAmount, generateAmount } = state
   const isDepositAndGenerate = depositAmount || generateAmount

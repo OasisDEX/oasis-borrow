@@ -5,7 +5,7 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { CommonVaultState, WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
 type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
 
@@ -69,7 +69,8 @@ export function getAfterPillColors(collRatioColor: CollRatioColor) {
 export function VaultDetailsAfterPill({
   children,
   afterPillColors,
-}: WithChildren & AfterPillProps) {
+  sx = {},
+}: WithChildren & AfterPillProps & SxProps) {
   return (
     <Card
       sx={{
@@ -84,6 +85,7 @@ export function VaultDetailsAfterPill({
         lineHeight: 2,
         fontSize: 1,
         ...afterPillColors,
+        ...sx,
       }}
     >
       <Box sx={{ px: 1 }}>{children}</Box>

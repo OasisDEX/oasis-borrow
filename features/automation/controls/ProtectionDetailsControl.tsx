@@ -1,12 +1,17 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import React, { useEffect, useState } from 'react'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import React from 'react'
 
+import {
+  getInitialVaultCollRatio,
+  getIsEditingProtection,
+  getStartingSlRatio,
+} from '../common/helpers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
-import { AddFormChange } from '../common/UITypes/AddFormChange'
+import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
 
@@ -15,9 +20,20 @@ function renderLayout(
   vaultData: Vault,
   collateralPrices: CollateralPricesWithFilters,
   ilkData: IlkData,
-  lastUIState: AddFormChange | undefined,
+  lastUIState: AddFormChange,
 ) {
   const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
+
+  const initialVaultCollRatio = getInitialVaultCollRatio({
+    liquidationRatio: ilkData.liquidationRatio,
+    collateralizationRatio: vaultData.collateralizationRatio,
+  })
+
+  const startingSlRatio = getStartingSlRatio({
+    stopLossLevel: triggersData.stopLossLevel,
+    isStopLossEnabled: triggersData.isStopLossEnabled,
+    initialVaultCollRatio,
+  })
 
   const props: ProtectionDetailsLayoutProps = {
     isStopLossEnabled: triggersData.isStopLossEnabled,
@@ -32,9 +48,16 @@ function renderLayout(
     isStaticPrice: collateralPrice.isStaticPrice,
     token: vaultData.token,
 
-    afterSlRatio: lastUIState ? lastUIState.selectedSLValue.dividedBy(100) : new BigNumber(0),
-    isEditing: !!lastUIState?.isEditing,
+    afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
     isCollateralActive: !!lastUIState?.collateralActive,
+    isEditing: getIsEditingProtection({
+      isStopLossEnabled: triggersData.isStopLossEnabled,
+      selectedSLValue: lastUIState.selectedSLValue,
+      startingSlRatio,
+      stopLossLevel: triggersData.stopLossLevel,
+      collateralActive: lastUIState.collateralActive,
+      isToCollateral: triggersData.isToCollateral,
+    }),
   }
   return <ProtectionDetailsLayout {...props} />
 }
@@ -52,21 +75,7 @@ export function ProtectionDetailsControl({
   collateralPrices,
   vault,
 }: ProtectionDetailsControlProps) {
-  const uiSubjectName = 'AdjustSlForm'
-  const { uiChanges } = useAppContext()
-
-  const [lastUIState, lastUIStateSetter] = useState<AddFormChange | undefined>(undefined)
-
-  useEffect(() => {
-    const uiChanges$ = uiChanges.subscribe<AddFormChange>(uiSubjectName)
-
-    const subscription = uiChanges$.subscribe((value) => {
-      lastUIStateSetter(value)
-    })
-    return () => {
-      subscription.unsubscribe()
-    }
-  }, [])
+  const [lastUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
   return renderLayout(
     extractStopLossData(automationTriggersData),

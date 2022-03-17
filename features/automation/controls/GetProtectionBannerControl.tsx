@@ -26,7 +26,10 @@ export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps
   return !slData?.isStopLossEnabled && !isBannerClosed ? (
     <GetProtectionBannerLayout
       handleClick={() => {
-        uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+        uiChanges.publish(TAB_CHANGE_SUBJECT, {
+          type: 'change-tab',
+          currentMode: VaultViewMode.Protection,
+        })
       }}
       handleClose={handleClose}
     />

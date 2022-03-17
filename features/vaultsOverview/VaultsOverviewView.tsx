@@ -20,21 +20,35 @@ import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
+import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
+import { StopLossTriggerData } from '../automation/common/StopLossTriggerDataExtractor'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
 
-const vaultsColumns: ColumnDef<Vault, VaultsFilterState>[] = [
+const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {
     headerLabel: 'system.asset',
     header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ ilk, token }) => {
+    cell: ({ ilk, token, isStopLossEnabled }) => {
       const tokenInfo = getToken(token)
+      const { t } = useTranslation()
+
       return (
         <Flex>
           <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
           <Box sx={{ whiteSpace: 'nowrap' }}>{ilk}</Box>
+          {isStopLossEnabled && (
+            <Box ml={2}>
+              <VaultDetailsAfterPill
+                afterPillColors={{ color: 'onSuccess', bg: 'success' }}
+                sx={{ mt: 0 }}
+              >
+                {t('protection.stop-loss-on')}
+              </VaultDetailsAfterPill>
+            </Box>
+          )}
         </Flex>
       )
     },

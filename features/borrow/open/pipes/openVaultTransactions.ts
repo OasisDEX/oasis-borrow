@@ -1,5 +1,4 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { open, OpenData } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -9,6 +8,8 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 
+import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -80,10 +81,11 @@ export function applyOpenVaultTransaction(
 
 export function openVault(
   { sendWithGasEstimation }: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
   change: (ch: OpenVaultChange) => void,
   { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
 ) {
-  sendWithGasEstimation(open, {
+  sendWithGasEstimation(vaultActions.open, {
     kind: TxMetaKind.open,
     generateAmount: generateAmount || zero,
     depositAmount: depositAmount || zero,
@@ -131,13 +133,14 @@ export function openVault(
 
 export function applyEstimateGas(
   addGasEstimation$: AddGasEstimationFunction,
+  vaultActions: VaultActionsLogicInterface,
   state: OpenVaultState,
 ): Observable<OpenVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
     const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
 
     if (proxyAddress && (generateAmount || depositAmount)) {
-      return estimateGas(open, {
+      return estimateGas(vaultActions.open, {
         kind: TxMetaKind.open,
         generateAmount: generateAmount || zero,
         depositAmount: depositAmount || zero,

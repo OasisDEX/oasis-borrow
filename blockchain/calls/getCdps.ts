@@ -2,7 +2,7 @@ import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
 
 import { CallDef } from '../../blockchain/calls/callsHelpers'
 
-interface GetCdpsArgs {
+export interface GetCdpsArgs {
   proxyAddress: string
   descending: boolean
 }

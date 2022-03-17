@@ -4,6 +4,8 @@ import { compareBigNumber } from 'helpers/compare'
 import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
+
+import { StopLossTriggerData } from '../automation/common/StopLossTriggerDataExtractor'
 export type VaultSortBy =
   | 'collateral'
   | 'debt'
@@ -102,7 +104,7 @@ function search(vaults: Vault[], search: string) {
 }
 
 export interface VaultsWithFilters {
-  data: Vault[]
+  data: (Vault & StopLossTriggerData)[]
   filters: VaultsFilterState
   isLoading: boolean
 }

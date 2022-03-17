@@ -73,8 +73,6 @@ export function createGasPrice$(
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
           )
-        } else {
-          console.log('defaults', gasFees)
         }
         return gasFees
       },
