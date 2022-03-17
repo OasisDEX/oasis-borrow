@@ -669,8 +669,8 @@ const oasisBaseTheme = {
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
-      width: '46px',
-      height: '46px',
+      width: ['40px', '46px'],
+      height: ['40px', '46px'],
       padding: 0,
       display: 'flex',
       justifyContent: 'center',

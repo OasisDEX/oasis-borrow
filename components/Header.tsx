@@ -160,7 +160,7 @@ function UserAccount({ position }: UserAccountProps) {
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
         {exchangeEnabled && web3Provider ? (
-          <Box sx={{ display: ['none', 'block'] }}>
+          <Box>
             <ExchangeButton web3Provider={web3Provider} />
           </Box>
         ) : null}
