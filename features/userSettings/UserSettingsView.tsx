@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
+import { AccountIndicator } from 'features/account/Account'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
@@ -267,12 +268,15 @@ export function UserSettingsDropdown(
 }
 
 export function UserSettingsButton() {
-  const { userSettings$ } = useAppContext()
+  const { accountData$, userSettings$, context$ } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
   const [opened, setOpened] = useState(false)
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+
   const { t } = useTranslation()
 
-  if (!userSettings) return null
+  if (!userSettings || !context || context.status === 'connectedReadonly' || !accountData) return null
 
   return (
     <Flex sx={{ position: 'relative', mr: 2 }}>
@@ -282,7 +286,9 @@ export function UserSettingsButton() {
         sx={{ mr: 1, px: [2, 3], width: ['40px', 'auto'] }}
       >
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
-          <Text sx={{ display: ['none', 'none', 'block'] }}>{t('user-settings.button-menu')}</Text>
+          <Text sx={{ display: ['none', 'none', 'block'] }}>
+            <AccountIndicator address={context.account} ensName={accountData.ensName} />  
+          </Text>
           <Icon
             size="auto"
             width="12"

@@ -3,7 +3,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
-import { AccountButton } from 'features/account/Account'
 import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -133,7 +132,7 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-function UserAccount({ position }: UserAccountProps) {
+function UserMenu({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
 
@@ -165,7 +164,6 @@ function UserAccount({ position }: UserAccountProps) {
           </Box>
         ) : null}
         <UserSettingsButton />
-        <AccountButton />
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['block', 'none'] }}>
@@ -237,7 +235,7 @@ function ConnectedHeader() {
                 <AssetsDropdown />
               </Flex>
             </Flex>
-            <UserAccount position="relative" />
+            <UserMenu position="relative" />
           </>
         </BasicHeader>
       </Box>
@@ -248,7 +246,7 @@ function ConnectedHeader() {
             <PositionsLink />
           </Flex>
           <MobileMenu />
-          <UserAccount position="fixed" />
+          <UserMenu position="fixed" />
         </BasicHeader>
       </Box>
     </>
