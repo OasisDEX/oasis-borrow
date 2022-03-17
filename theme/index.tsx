@@ -14,7 +14,7 @@ export const GRADIENTS = {
 const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
-  breakpoints: ['48em', '56em', '64em'],
+  breakpoints: ['48em', '60em', '68em'],
   colors: {
     primary: '#25273D',
     primaryAlt: '#D3D4D8',
@@ -666,6 +666,15 @@ const oasisBaseTheme = {
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
+    },
+    menuButtonRound: {
+      variant: 'buttons.menuButton',
+      width: '46px',
+      height: '46px',
+      padding: 0,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     unStyled: {
       background: 'unset',

@@ -6,9 +6,10 @@ import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
-import React, { ChangeEvent, useRef, useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useEffect } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Button, Card, Flex, Grid, Link as ThemeLink, SxStyleProp, Text } from 'theme-ui'
@@ -191,7 +192,6 @@ export function UserSettingsDropdown(
     setOpened,
   } = props
   const { t } = useTranslation()
-  const wrapperRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!opened) {
@@ -199,23 +199,7 @@ export function UserSettingsDropdown(
     }
   }, [opened])
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setOpened(false)
-      }
-    }
-
-    if (opened) {
-      document.addEventListener('mousedown', handleClickOutside)
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [wrapperRef, opened])
+  const wrapperRef = useOutsideElementClickHandler(() => setOpened(false))
 
   const onClose = () => setOpened(false)
 
@@ -298,20 +282,20 @@ export function UserSettingsButton() {
         sx={{ mr: 1, px: [2, 3], width: ['40px', 'auto'] }}
       >
         <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
-          <Text sx={{ display: ['none', 'block'] }}>{t('user-settings.button-menu')}</Text>
+          <Text sx={{ display: ['none', 'none', 'block'] }}>{t('user-settings.button-menu')}</Text>
           <Icon
             size="auto"
             width="12"
             height="7"
             name={opened ? 'chevron_up' : 'chevron_down'}
-            sx={{ display: ['none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
+            sx={{ display: ['none', 'none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
           />
           <Icon
             size="auto"
             width="16"
             height="16"
             name="settings"
-            sx={{ display: ['block', 'none'] }}
+            sx={{ display: ['block', 'block', 'none'], flexShrink: 0 }}
           />
         </Flex>
       </Button>
