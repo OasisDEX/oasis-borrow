@@ -6,7 +6,7 @@ import { ModalProps } from '../helpers/modalHook'
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { Modal, ModalCloseIcon } from './Modal'
 
-export function SwitchWalletModal({ close }: ModalProps) {
+export function SwitchNetworkModal({ close }: ModalProps) {
   const { t } = useTranslation()
 
   const handleSwitch = () => null
