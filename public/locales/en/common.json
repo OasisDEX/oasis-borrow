@@ -8,6 +8,9 @@
     "careers-link": "Join Us",
     "pics-title": "Meet the team"
   },
+  "wallet-wrong-network": "Oops, your wallet is not on the right network.",
+  "wallet-wrong-network-desc": "It seems your wallet is running on a different network from Oasis.app. Please manually change the network in your wallet, or you can click the button below.",
+  "switch-network": "Switch network",
   "acceptance-check-failed": "Acceptance check failed",
   "acceptance-save-failed": "Acceptance save failed",
   "acceptance-save-in-progress": "Saving acceptance...",
