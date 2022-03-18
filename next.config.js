@@ -1,11 +1,15 @@
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
+  options: {
+    providerImportSource: "@mdx-js/react",
+  },
 })
 const withPWA = require('next-pwa')
 const TerserPlugin = require('terser-webpack-plugin')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { withSentryConfig } = require('@sentry/nextjs')
@@ -68,11 +72,15 @@ const conf = withBundleAnalyzer(
         // Moment.js locales take up a lot of space, so it's good to remove unused ones. "en" is there by default and can not be removed
         // config.plugins.push(new MomentLocalesPlugin({ localesToKeep: ['es', 'pt'] }))
 
-        // if (!isServer) {
-        //   config.node = {
-        //     fs: 'empty',
-        //   }
-        // }
+        if (!isServer) {
+          config.resolve = {
+            ...config.resolve,
+            fallback: {
+              "fs": false,
+            }
+          }
+          config.plugins.push(new NodePolyfillPlugin())
+        }
 
         if (!isProduction) {
           config.watch = true
