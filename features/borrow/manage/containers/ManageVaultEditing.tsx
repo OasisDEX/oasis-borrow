@@ -124,7 +124,7 @@ function PaybackInput({
 }
 
 export function ManageVaultEditing(
-  props: ManageStandardBorrowVaultState & { extraInfo?: ReactNode },
+  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
 ) {
   const { t } = useTranslation()
 

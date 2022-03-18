@@ -64,7 +64,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
         <Box>
           <ManageVaultForm
             hideMultiply={true}
-            extraInfo={
+            txnCostDisplay={
               <>
                 <VaultChangesInformationItem
                   label={t('manage-insti-vault.origination-fee')}

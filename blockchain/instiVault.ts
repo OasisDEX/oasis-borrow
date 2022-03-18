@@ -3,6 +3,7 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from './vaults'
+import moment from 'moment'
 
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber
@@ -10,8 +11,8 @@ export interface InstiVault extends Vault {
   activeCollRatioPriceUSD: BigNumber
   debtCeiling: BigNumber
   termEnd: Date
-  fixedFee: BigNumber
-  nextFixedFee: BigNumber
+  currentFixedFee: BigNumber
+  nextFeeChange: string
 }
 
 export function createInstiVault$(
@@ -39,9 +40,9 @@ export function createInstiVault$(
               activeCollRatio: peace,
               activeCollRatioPriceUSD: peace,
               debtCeiling: uline,
-              termEnd: new Date('2022-03-02'),
-              fixedFee: new BigNumber(0.2),
-              nextFixedFee: new BigNumber(0.3),
+              termEnd: moment().add(3, 'months').toDate(),
+              currentFixedFee: new BigNumber(0.015),
+              nextFeeChange: '1.4% in 20.4m',
             })),
           ),
         ),

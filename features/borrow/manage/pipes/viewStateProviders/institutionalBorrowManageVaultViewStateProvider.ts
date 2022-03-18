@@ -27,11 +27,12 @@ import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowMana
 function applyManageInstiVaultCalculations(
   viewState: ManageInstiVaultState,
 ): ManageInstiVaultState {
+  const originationFeeUSD = viewState.generateAmount?.times(
+    viewState.vault.originationFeePercent.dividedBy(100),
+  )
   return {
     ...viewState,
-    originationFeeUSD: viewState.generateAmount?.times(
-      viewState.vault.originationFeePercent.dividedBy(100),
-    ),
+    originationFeeUSD,
   }
 }
 

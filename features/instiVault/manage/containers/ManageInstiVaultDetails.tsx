@@ -22,7 +22,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
-    vault: { activeCollRatio, activeCollRatioPriceUSD, termEnd, fixedFee, nextFixedFee },
+    vault: { activeCollRatio, activeCollRatioPriceUSD, termEnd, currentFixedFee, nextFeeChange },
   } = props
   const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -52,13 +52,13 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         />
         <VaultDetailsCard
           title={t('manage-insti-vault.card.current-fixed-fee')}
-          value={formatDecimalAsPercent(fixedFee)}
+          value={formatDecimalAsPercent(currentFixedFee)}
           valueBottom={
             <>
               <Text as="span" sx={{ color: 'text.subtitle' }}>
                 {t('manage-insti-vault.card.next-fee-change')}{' '}
               </Text>
-              {formatDecimalAsPercent(nextFixedFee)}
+              {nextFeeChange}
             </>
           }
           {...afterPill}
