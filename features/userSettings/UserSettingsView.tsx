@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { disconnect, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { AccountIndicator } from 'features/account/Account'
@@ -34,6 +34,7 @@ import {
   UserSettingsState,
   UserSettingsWarningMessages,
 } from './userSettings'
+import { AppLink } from 'components/Links'
 function SlippageOptionButton({
   option,
   onClick,
@@ -262,6 +263,8 @@ export function UserSettingsDropdown(
     setOpened,
   } = props
   const { t } = useTranslation()
+  const { web3Context$ } = useAppContext()
+  const [web3Context] = useObservable(web3Context$)
 
   useEffect(() => {
     if (!opened) {
@@ -332,6 +335,51 @@ export function UserSettingsDropdown(
             {t('user-settings.update-failure')}
           </Text>
         )}
+        <Button
+          variant="textual"
+          sx={{
+            textAlign: 'left',
+            p: 0,
+            verticalAlign: 'baseline',
+          }}
+          onClick={() => disconnect(web3Context)}
+        >
+          {t('disconnect')}
+        </Button>
+        <Flex
+          sx={{
+            fontWeight: 'semiBold',
+            px: 3,
+            my: 3,
+            py: 1,
+            mx: 1,
+          }}
+        >
+          <AppLink
+            sx={{ color: 'primary', mr: 3 }}
+            withAccountPrefix={false}
+            href="/terms"
+            onClick={close}
+          >
+            {t('account-terms')}
+          </AppLink>
+          <AppLink
+            sx={{ color: 'primary', mr: 3 }}
+            withAccountPrefix={false}
+            href="/privacy"
+            onClick={close}
+          >
+            {t('account-privacy')}
+          </AppLink>
+          <AppLink
+            sx={{ color: 'primary' }}
+            withAccountPrefix={false}
+            href="/support"
+            onClick={close}
+          >
+            {t('account-support')}
+          </AppLink>
+        </Flex>
       </Card>
     </MobileSidePanelPortal>
   )
