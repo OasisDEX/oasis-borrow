@@ -450,7 +450,7 @@ export function defaultMutableManageMultiplyVaultState(
     daiAllowanceAmount: maxUint256,
     selectedCollateralAllowanceRadio: 'unlimited',
     selectedDaiAllowanceRadio: 'unlimited',
-    showSliderController: true,
+    showSliderController: false,
     closeVaultTo: 'collateral',
     mainAction: 'buy',
     otherAction: 'depositCollateral',

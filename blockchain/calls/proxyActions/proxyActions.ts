@@ -279,6 +279,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       exchange: defaultExchange.address,
     } as any
 
+    if (data.depositCollateral.gt(zero)) {
+      return contract<MultiplyProxyActions>(
+        dssMultiplyProxyActions,
+      ).methods.increaseMultipleDepositCollateral(exchangeData, cdpData, serviceRegistry)
+    }
+
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.increaseMultiple(
       exchangeData,
       cdpData,
