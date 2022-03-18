@@ -192,7 +192,8 @@ function SlippageSettingsForm(props: UserSettingsState) {
 }
 
 function WalletInfo() {
-  const { web3Context$, context$ } = useAppContext()
+  const { accountData$, web3Context$ } = useAppContext()
+  const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
 
@@ -235,6 +236,14 @@ function WalletInfo() {
           readOnly
         />
       </Flex>
+      {accountData &&
+        <Flex>
+          <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={[24, 30]} />
+          <Box sx={{ mx: 2, color: 'onWarning' }}>
+            {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
+          </Box>
+        </Flex>
+     }
     </Grid>
   )
 }
