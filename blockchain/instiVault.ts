@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from './vaults'
-import moment from 'moment'
 
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber

@@ -176,6 +176,7 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
+  transactionFeeETH?: BigNumber
   originationFeeUSD?: BigNumber
 }
 

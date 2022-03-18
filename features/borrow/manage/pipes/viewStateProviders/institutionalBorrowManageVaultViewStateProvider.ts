@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
 
 import {
@@ -24,15 +25,26 @@ import {
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
 
-function applyManageInstiVaultCalculations(
-  viewState: ManageInstiVaultState,
-): ManageInstiVaultState {
-  const originationFeeUSD = viewState.generateAmount?.times(
-    viewState.vault.originationFeePercent.dividedBy(100),
-  )
+function applyInstiTxnCostCalculations(viewState: ManageInstiVaultState): ManageInstiVaultState {
+  const originationFeeUSD = new BigNumber(100)
+
+  const transactionFeeUsd = originationFeeUSD?.plus(10)
+
+  const transactionFeeETH = transactionFeeUsd?.div(2808)
+
+  // todo ADES: switch to real logic
+  // const originationFeeUSD = viewState.generateAmount?.times(
+  //   viewState.vault.originationFeePercent.dividedBy(100),
+  // )
+  //
+  // const transactionFeeUsd = originationFeeUSD?.plus(viewState.gasEstimationUsd!)
+  //
+  // const transactionFeeETH = transactionFeeUsd?.div(viewState.priceInfo.currentEthPrice!)
+
   return {
     ...viewState,
     originationFeeUSD,
+    transactionFeeETH,
   }
 }
 
@@ -60,7 +72,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     const s6 = applyManageVaultEnvironment<ManageInstiVaultState>(change, s5)
     const s7 = applyManageVaultInjectedOverride<ManageInstiVaultState>(change, s6)
     const s8 = applyManageVaultCalculations<ManageInstiVaultState>(s7)
-    const s9 = applyManageInstiVaultCalculations(s8)
+    const s9 = applyInstiTxnCostCalculations(s8)
     const s10 = applyManageVaultStageCategorisation<ManageInstiVaultState>(s9)
     const s11 = applyManageVaultConditions<ManageInstiVaultState>(s10)
     return applyManageVaultSummary<ManageInstiVaultState>(s11)

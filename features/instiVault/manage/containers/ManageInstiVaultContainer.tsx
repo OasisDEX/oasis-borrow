@@ -2,7 +2,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import {
-  VaultChangesInformationEstimatedGasFee,
+  getEstimatedGasFeeText,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
@@ -23,6 +23,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
     vault: { id, originationFeePercent, ilk },
     clear,
     ilkData,
+    transactionFeeETH,
     originationFeeUSD,
   } = manageVault
 
@@ -67,14 +68,29 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
             txnCostDisplay={
               <>
                 <VaultChangesInformationItem
-                  label={t('manage-insti-vault.origination-fee')}
+                  label={t('transaction-fee')}
                   value={
                     <Flex>
-                      {originationFeeUSD ? `$${formatAmount(originationFeeUSD, 'USD')}` : '$ -- '}
+                      {transactionFeeETH
+                        ? `${formatAmount(transactionFeeETH, 'ETH')} ETH`
+                        : 'Pending...'}
                     </Flex>
                   }
                 />
-                <VaultChangesInformationEstimatedGasFee {...manageVault} />
+                <Box sx={{ marginLeft: 3 }}>
+                  <VaultChangesInformationItem
+                    label={t('manage-insti-vault.origination-fee')}
+                    value={
+                      <Flex>
+                        {originationFeeUSD ? `$${formatAmount(originationFeeUSD, 'USD')}` : '$ -- '}
+                      </Flex>
+                    }
+                  />
+                  <VaultChangesInformationItem
+                    label={'Estimated gas fee'}
+                    value={getEstimatedGasFeeText(manageVault)}
+                  />
+                </Box>
               </>
             }
             {...manageVault}
