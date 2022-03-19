@@ -3,10 +3,11 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
-import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
+import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -20,8 +21,8 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
-import { ExchangeButton } from './exchangeMenu/ExchangeButton'
 import { useSharedUI } from './SharedUIProvider'
+import { UniswapWidget } from './UniswapWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -132,6 +133,43 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
+
+function ButtonDropdown({ buttonContents, round, children }: { buttonContents: JSX.Element, round?: boolean } & WithChildren) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
+
+  return (
+    <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
+      <Button variant={round ? 'menuButtonRound' : 'menuButton'} onClick={() => setIsOpen(!isOpen)}>
+        {buttonContents}
+      </Button>
+      <Box
+        sx={{
+          display: isOpen ? 'block' : 'none',
+          p: 0,
+          position: 'absolute',
+          top: 'auto',
+          left: 'auto',
+          right: 1,
+          bottom: 0,
+          transform: 'translateY(calc(100% + 10px))',
+          bg: 'background',
+          boxShadow: 'userSettingsCardDropdown',
+          borderRadius: 'mediumLarge',
+          border: 'none',
+          overflowX: 'visible',
+          zIndex: 0,
+          minWidth: 7,
+          minHeight: 7,
+        }}
+      >
+        {children}
+      </Box>
+    </Flex>
+  )
+}
+
 function UserMenu({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
@@ -159,11 +197,18 @@ function UserMenu({ position }: UserAccountProps) {
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
         {exchangeEnabled && web3Provider ? (
-          <Box>
-            <ExchangeButton web3Provider={web3Provider} />
-          </Box>
-        ) : null}
-        <UserSettingsButton />
+          <ButtonDropdown 
+            buttonContents={<Icon name="exchange" size="auto" width="20" />}
+            round={true}
+          >
+            <UniswapWidget web3Provider={web3Provider} />
+          </ButtonDropdown>
+        ): null}
+        <ButtonDropdown 
+          buttonContents={<UserSettingsButtonContents />}
+        >
+          <UserSettings />
+        </ButtonDropdown>
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['block', 'none'] }}>

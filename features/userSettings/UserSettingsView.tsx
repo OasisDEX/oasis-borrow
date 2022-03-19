@@ -35,6 +35,7 @@ import {
   UserSettingsWarningMessages,
 } from './userSettings'
 import { AppLink } from 'components/Links'
+
 function SlippageOptionButton({
   option,
   onClick,
@@ -116,11 +117,18 @@ function SlippageLimitMessages({
   )
 }
 
-function SlippageSettingsForm(props: UserSettingsState) {
-  const { slippageInput, setSlippageInput, errors, warnings, slippage } = props
+function SlippageSettingsForm() {
+  const { userSettings$  } = useAppContext()
+  const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const [customOpened, setCustomOpened] = useState(false)
 
+  if (!userSettings) {
+    return null
+  }
+
+  const { slippageInput, setSlippageInput, errors, warnings, slippage } = userSettings
+  
   return (
     <Box>
       <Box>
@@ -249,182 +257,126 @@ function WalletInfo() {
   )
 }
 
-export function UserSettingsDropdown(
-  props: UserSettingsState & { opened: boolean; setOpened: (opened: boolean) => void },
-) {
+export function UserSettings() {
+  const { userSettings$  } = useAppContext()
+  const [userSettings] = useObservable(userSettings$)
+  const { t } = useTranslation()
+  const { web3Context$ } = useAppContext()
+  const [web3Context] = useObservable(web3Context$)
+
+  if (!userSettings) {
+    return null
+  }
+
   const {
     slippage,
     slippageInput,
     stage,
     saveSettings,
     canProgress,
-    reset,
-    opened,
-    setOpened,
-  } = props
-  const { t } = useTranslation()
-  const { web3Context$ } = useAppContext()
-  const [web3Context] = useObservable(web3Context$)
+  } = userSettings
 
-  useEffect(() => {
-    if (!opened) {
-      reset()
-    }
-  }, [opened])
-
-  const wrapperRef = useOutsideElementClickHandler(() => setOpened(false))
-
-  const onClose = () => setOpened(false)
-
-  return (
-    <MobileSidePanelPortal>
-      <Card
-        sx={{
-          display: ['block', opened ? 'block' : 'none'],
-          p: [4, 4],
-          pt: [0, 4],
-          position: ['fixed', 'absolute'],
-          top: [0, 'auto'],
-          left: [0, 'auto'],
-          right: 0,
-          bottom: 0,
-          minWidth: ['100%', '380px'],
-          transition: ['0.3s transform ease-in-out', '0s'],
-          transform: [`translateX(${opened ? '0' : '100'}%)`, 'translateY(calc(100% + 10px))'],
-          bg: ['background'],
-          boxShadow: ['none', 'userSettingsCardDropdown'],
-          borderRadius: ['0px', 'mediumLarge'],
-          border: 'none',
-          overflowX: ['hidden', 'visible'],
-          zIndex: ['modal', 0],
-        }}
-        ref={wrapperRef}
-      >
-        <MobileSidePanelClose opened={opened} onClose={onClose} />
-        <WalletInfo />
-        <SlippageSettingsForm {...props} />
-        {/* Gas settings will go here */}
-        {!slippage.eq(slippageInput) && (
-          <Button
-            disabled={!canProgress || stage === 'inProgress'}
-            onClick={saveSettings}
-            sx={{ mt: 2, width: '100%' }}
-          >
-            <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-              {stage === 'inProgress' && (
-                <AppSpinner
-                  variant="styles.spinner.large"
-                  sx={{ color: 'surface', display: 'flex', mr: 2 }}
-                />
-              )}
-              <Text>
-                {stage === 'inProgress'
-                  ? t('user-settings.button-in-progress')
-                  : t('user-settings.button')}
-              </Text>
-            </Flex>
-          </Button>
-        )}
-        {stage === 'success' && (
-          <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
-            {t('user-settings.update-success')}
-          </Text>
-        )}
-        {stage === 'failure' && (
-          <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
-            {t('user-settings.update-failure')}
-          </Text>
-        )}
+  return <Box>
+      <WalletInfo />
+      <SlippageSettingsForm />
+      {/* Gas settings will go here */}
+      {!slippage.eq(slippageInput) && (
         <Button
-          variant="textual"
-          sx={{
-            textAlign: 'left',
-            p: 0,
-            verticalAlign: 'baseline',
-          }}
-          onClick={() => disconnect(web3Context)}
+          disabled={!canProgress || stage === 'inProgress'}
+          onClick={saveSettings}
+          sx={{ mt: 2, width: '100%' }}
         >
-          {t('disconnect')}
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            {stage === 'inProgress' && (
+              <AppSpinner
+                variant="styles.spinner.large"
+                sx={{ color: 'surface', display: 'flex', mr: 2 }}
+              />
+            )}
+            <Text>
+              {stage === 'inProgress'
+                ? t('user-settings.button-in-progress')
+                : t('user-settings.button')}
+            </Text>
+          </Flex>
         </Button>
-        <Flex
-          sx={{
-            fontWeight: 'semiBold',
-            px: 3,
-            my: 3,
-            py: 1,
-            mx: 1,
-          }}
+      )}
+      {stage === 'success' && (
+        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+          {t('user-settings.update-success')}
+        </Text>
+      )}
+      {stage === 'failure' && (
+        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+          {t('user-settings.update-failure')}
+        </Text>
+      )}
+      <Button
+        variant="textual"
+        sx={{
+          textAlign: 'left',
+          p: 0,
+          verticalAlign: 'baseline',
+        }}
+        onClick={() => disconnect(web3Context)}
+      >
+        {t('disconnect')}
+      </Button>
+      <Flex
+        sx={{
+          fontWeight: 'semiBold',
+          px: 3,
+          my: 3,
+          py: 1,
+          mx: 1,
+        }}
+      >
+        <AppLink
+          sx={{ color: 'primary', mr: 3 }}
+          withAccountPrefix={false}
+          href="/terms"
+          onClick={close}
         >
-          <AppLink
-            sx={{ color: 'primary', mr: 3 }}
-            withAccountPrefix={false}
-            href="/terms"
-            onClick={close}
-          >
-            {t('account-terms')}
-          </AppLink>
-          <AppLink
-            sx={{ color: 'primary', mr: 3 }}
-            withAccountPrefix={false}
-            href="/privacy"
-            onClick={close}
-          >
-            {t('account-privacy')}
-          </AppLink>
-          <AppLink
-            sx={{ color: 'primary' }}
-            withAccountPrefix={false}
-            href="/support"
-            onClick={close}
-          >
-            {t('account-support')}
-          </AppLink>
-        </Flex>
-      </Card>
-    </MobileSidePanelPortal>
-  )
+          {t('account-terms')}
+        </AppLink>
+        <AppLink
+          sx={{ color: 'primary', mr: 3 }}
+          withAccountPrefix={false}
+          href="/privacy"
+          onClick={close}
+        >
+          {t('account-privacy')}
+        </AppLink>
+        <AppLink
+          sx={{ color: 'primary' }}
+          withAccountPrefix={false}
+          href="/support"
+          onClick={close}
+        >
+          {t('account-support')}
+        </AppLink>
+      </Flex>
+  </Box>
 }
 
-export function UserSettingsButton() {
-  const { accountData$, userSettings$, context$ } = useAppContext()
-  const [userSettings] = useObservable(userSettings$)
-  const [opened, setOpened] = useState(false)
+export function UserSettingsButtonContents() {
+  const { accountData$, context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
 
-  const { t } = useTranslation()
-
-  if (!userSettings || !context || context.status === 'connectedReadonly' || !accountData)
+  if (!context || context.status === 'connectedReadonly' || !accountData)
     return null
 
-  return (
-    <Flex sx={{ position: 'relative', mr: 2 }}>
-      <Button
-        variant="menuButton"
-        onClick={() => setOpened(!opened)}
-        sx={{ mr: 1, px: [2, 3], width: ['40px', 'auto'] }}
-      >
-        <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: [0, 1] }}>
-          <Text sx={{ display: ['none', 'none', 'block'] }}>
-            <AccountIndicator address={context.account} ensName={accountData.ensName} />
-          </Text>
-          <Icon
-            size="auto"
-            width="12"
-            height="7"
-            name={opened ? 'chevron_up' : 'chevron_down'}
-            sx={{ display: ['none', 'none', 'block'], ml: '6px', position: 'relative', top: '1px' }}
-          />
-          <Icon
-            size="auto"
-            width="16"
-            height="16"
-            name="settings"
-            sx={{ display: ['block', 'block', 'none'], flexShrink: 0 }}
-          />
-        </Flex>
-      </Button>
-      <UserSettingsDropdown {...userSettings} opened={opened} setOpened={setOpened} />
-    </Flex>
-  )
+  return <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: 3 }}>
+    <Text sx={{ display: ['none', 'none', 'block'] }}>
+      <AccountIndicator address={context.account} ensName={accountData.ensName} />
+    </Text>
+    <Icon
+      size="auto"
+      width="16"
+      height="16"
+      name="settings"
+      sx={{ flexShrink: 0 }}
+    />
+  </Flex>
 }
