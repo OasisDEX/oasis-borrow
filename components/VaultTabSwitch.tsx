@@ -2,7 +2,7 @@ import { Box, Button, Grid } from '@theme-ui/components'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
-import ReactSelect, { OptionProps, ValueType } from 'react-select'
+import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
 import { Flex, Heading } from 'theme-ui'
 
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
@@ -45,7 +45,24 @@ function VaultTabButton({ onClick, variant, children }: VaultTabButtonProps) {
   )
 }
 
+const InputWithTag = ({ data }: SingleValueProps<VaultTabSwitchOption>) => {
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  return (
+    <Flex sx={{ alignItems: 'center' }}>
+      {(data as VaultTabSwitchOption).label}
+      {(data as VaultTabSwitchOptionAutomationBasicBuyAndSell).withTag &&
+        automationBasicBuyAndSellEnabled && (
+          <VaultTabTag
+            isEnabled={(data as VaultTabSwitchOptionAutomationBasicBuyAndSell).isTagEnabled}
+          />
+        )}
+    </Flex>
+  )
+}
+
 function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOption>) {
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+
   return (
     <Box
       {...innerProps}
@@ -59,7 +76,12 @@ function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOpti
         },
       }}
     >
-      <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body' }}>{data.label}</Flex>
+      <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}>
+        {data.label}
+        {data.withTag && automationBasicBuyAndSellEnabled && (
+          <VaultTabTag isEnabled={data.isTagEnabled} />
+        )}
+      </Flex>
     </Box>
   )
 }
@@ -67,6 +89,13 @@ function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOpti
 type VaultTabSwitchOption = {
   value: VaultViewMode
   label: keyof typeof VaultViewMode
+}
+
+type VaultTabSwitchOptionAutomationBasicBuyAndSell = {
+  value: VaultViewMode
+  label: keyof typeof VaultViewMode
+  withTag: boolean
+  isTagEnabled?: boolean
 }
 
 export function VaultTabSwitch({
@@ -116,14 +145,23 @@ export function VaultTabSwitch({
   const vaultViewModeTuples = vaultViewModeEntries.splice(
     -Math.ceil(vaultViewModeEntries.length / 2),
   )
-  const options = useMemo(
-    () =>
-      vaultViewModeTuples.map(([label, value]) => ({
-        value,
-        label,
-      })) as VaultTabSwitchOption[],
-    [],
-  )
+  const options = useMemo(() => {
+    const tagMap = {
+      [VaultViewMode.Protection]: protectionEnabled,
+    } as Record<VaultViewMode, boolean>
+
+    return automationBasicBuyAndSellEnabled
+      ? (vaultViewModeTuples.map(([label, value]) => ({
+          value,
+          label,
+          withTag: Object.keys(tagMap).includes(value.toString()),
+          isTagEnabled: tagMap[value as VaultViewMode],
+        })) as VaultTabSwitchOptionAutomationBasicBuyAndSell[])
+      : (vaultViewModeTuples.map(([label, value]) => ({
+          value,
+          label,
+        })) as VaultTabSwitchOption[])
+  }, [])
 
   const value = useMemo(
     () => options.find((option) => option.value === mode) as VaultTabSwitchOption,
@@ -154,7 +192,7 @@ export function VaultTabSwitch({
         <ReactSelect<VaultTabSwitchOption>
           options={options}
           onChange={handleSelectChange}
-          components={{ ...selectComponents, Option }}
+          components={{ ...selectComponents, Option, SingleValue: InputWithTag }}
           value={value}
           isOptionSelected={(option) => option.value === mode}
           isSearchable={false}
