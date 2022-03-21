@@ -33,6 +33,9 @@ import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 import { assert } from 'ts-essentials'
 
+import { useModal } from '../../helpers/modalHook'
+import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
+
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
@@ -48,9 +51,17 @@ const rpcUrls: { [chainId: number]: string } = mapValues(
 export async function getConnector(
   connectorKind: ConnectionKind,
   network: number,
-  options: Record<string, unknown> = {},
+  options: Record<string, any> = {},
 ) {
   assert(rpcUrls[network], 'Unsupported chainId!')
+
+  if (connectorKind !== 'injected' && connectorKind !== 'network' && network !== 1) {
+    options.switchNetworkModal('appNetwork')
+    throw new Error(
+      `Your wallet only supports Mainnet and current application network is ${network}. Please switch.`,
+    )
+  }
+
   switch (connectorKind) {
     case 'injected': {
       const connector = new InjectedConnector({
@@ -58,20 +69,16 @@ export async function getConnector(
       })
       const connectorChainId = Number.parseInt((await connector.getChainId()) as string)
       if (network !== connectorChainId) {
-        alert('Browser ethereum provider and URL network param do not match!')
+        options.switchNetworkModal(connectorKind)
         throw new Error('Browser ethereum provider and URL network param do not match!')
       }
       return connector
     }
     case 'walletLink': {
-      if (network !== 1) {
-        const message = `Wallet link only supports mainnet and your network is ${network}. Please switch`
-        alert(message)
-        throw new Error(message)
-      }
       return new WalletLinkConnector({
         url: rpcUrls[network],
         appName: dappName,
+        supportedChainIds: [1],
       })
     }
     case 'walletConnect':
@@ -286,6 +293,9 @@ export function ConnectWallet() {
   const { t } = useTranslation()
   const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = React.useState(false)
+  const openModal = useModal()
+  const switchNetworkModal = (type: SwitchNetworkModalType) =>
+    openModal(SwitchNetworkModal, { type })
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
@@ -301,6 +311,17 @@ export function ConnectWallet() {
     })
     return () => subscription.unsubscribe()
   }, [])
+
+  useEffect(() => {
+    if (web3Context?.status === 'error') {
+      if (
+        web3Context.error instanceof UnsupportedChainIdError ||
+        web3Context.error.name === 'TransportStatusError' // error when application is not selected on the ledger
+      ) {
+        switchNetworkModal('userNetwork')
+      }
+    }
+  }, [web3Context?.status])
 
   if (!web3Context) {
     return null
@@ -368,18 +389,11 @@ export function ConnectWallet() {
       }}
     >
       <Heading as="h1">{t('connect-wallet')}</Heading>
-      {web3Context.status === 'error' &&
-        ((web3Context.error instanceof UnsupportedChainIdError && (
-          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>
-              {t('metamask-unsupported-network')}
-            </Text>
-          </Alert>
-        )) || (
-          <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
-            <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
-          </Alert>
-        ))}
+      {web3Context.status === 'error' && (
+        <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
+          <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
+        </Alert>
+      )}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
         {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
@@ -394,6 +408,8 @@ export function ConnectWallet() {
                 connectionKind: connectionKindMsg,
               })
 
+          const networkId = getNetworkId()
+
           return (
             <ConnectWalletButton
               {...{
@@ -405,8 +421,12 @@ export function ConnectWallet() {
                   web3Context.status === 'connecting'
                     ? undefined
                     : connectionKind === 'ledger'
-                    ? () => setConnectingLedger(true)
-                    : connect(web3Context, connectionKind, getNetworkId()),
+                    ? networkId !== 1
+                      ? () => switchNetworkModal('appNetwork')
+                      : () => setConnectingLedger(true)
+                    : connect(web3Context, connectionKind, networkId, {
+                        switchNetworkModal,
+                      }),
                 missingInjectedWallet,
               }}
             />
@@ -452,7 +472,6 @@ function autoConnect(
       if (firstTime && web3Context.status === 'notConnected' && serialized) {
         const { connectionKind, magicLinkEmail } = JSON.parse(serialized) as AutoConnectLocalStorage
         if (connectionKind !== 'ledger' && connectionKind !== 'trezor') {
-          console.log('autoConnecting from localStorage', connectionKind, defaultChainId)
           const connector = await getConnector(connectionKind, defaultChainId, {
             email: magicLinkEmail,
           })
