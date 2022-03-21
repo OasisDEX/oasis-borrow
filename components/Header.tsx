@@ -91,10 +91,6 @@ export function BackArrow() {
   )
 }
 
-interface UserAccountProps {
-  position: 'fixed' | 'relative'
-}
-
 function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   const { accountData$, context$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
@@ -141,7 +137,10 @@ function ButtonDropdown({ buttonContents, round, children }: { buttonContents: J
 
   return (
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
-      <Button variant={round ? 'menuButtonRound' : 'menuButton'} onClick={() => setIsOpen(!isOpen)} sx={{ border: isOpen ? '1px solid black' : null }}>
+      <Button variant={round ? 'menuButtonRound' : 'menuButton'} 
+        onClick={() => setIsOpen(!isOpen)} 
+        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary' }}
+      >
         {buttonContents}
       </Button>
       <Box
@@ -170,7 +169,7 @@ function ButtonDropdown({ buttonContents, round, children }: { buttonContents: J
   )
 }
 
-function UserMenu({ position }: UserAccountProps) {
+function UserDesktopMenu() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
 
@@ -183,12 +182,7 @@ function UserMenu({ position }: UserAccountProps) {
   return (
     <Flex
       sx={{
-        position,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        bg: ['rgba(255,255,255,0.9)', 'transparent'],
-        p: [3, 0],
+        p: 0,
         justifyContent: 'space-between',
         gap: 2,
         zIndex: 3,
@@ -219,6 +213,26 @@ function UserMenu({ position }: UserAccountProps) {
       )}
     </Flex>
   )
+}
+
+function MobileBottomMenu() {
+  return <Flex
+    sx={{
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      bg: 'rgba(255,255,255,0.9)',
+      p: 3,
+      justifyContent: 'space-between',
+      gap: 2,
+      zIndex: 3,
+    }}
+  >
+    <Button variant="menuButton">
+      <UserSettingsButtonContents />
+    </Button>
+  </Flex>
 }
 
 function navLinkColor(isActive: boolean) {
@@ -280,7 +294,7 @@ function ConnectedHeader() {
                 <AssetsDropdown />
               </Flex>
             </Flex>
-            <UserMenu position="relative" />
+            <UserDesktopMenu />
           </>
         </BasicHeader>
       </Box>
@@ -291,7 +305,7 @@ function ConnectedHeader() {
             <PositionsLink />
           </Flex>
           <MobileMenu />
-          <UserMenu position="fixed" />
+          <MobileBottomMenu />
         </BasicHeader>
       </Box>
     </>

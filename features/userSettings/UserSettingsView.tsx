@@ -128,7 +128,7 @@ function SlippageSettingsForm() {
   }
 
   const { slippageInput, setSlippageInput, errors, warnings, slippage } = userSettings
-  
+
   return (
     <Box>
       <Box>
@@ -368,7 +368,7 @@ export function UserSettingsButtonContents() {
     return null
 
   return <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: 3 }}>
-    <Text sx={{ display: ['none', 'none', 'block'] }}>
+    <Text>
       <AccountIndicator address={context.account} ensName={accountData.ensName} />
     </Text>
     <Icon
