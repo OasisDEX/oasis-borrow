@@ -5,7 +5,7 @@ import { Grid, Heading, Text } from 'theme-ui'
 
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { zero } from '../../../helpers/zero'
+import { one, zero } from '../../../helpers/zero'
 import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 function VaultDetailsCardMaxTokenOnStopLossTriggerModal({
@@ -63,7 +63,11 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
 } & AfterPillProps) {
   const { t } = useTranslation()
   const openModal = useModal()
-  const ethDuringLiquidation = debt.times(liquidationRatio).div(liquidationPrice)
+
+  const ethDuringLiquidation = lockedCollateral
+    .times(liquidationPrice)
+    .minus(debt.multipliedBy(one.plus(liquidationPenalty)))
+    .div(liquidationPrice)
 
   const dynamicStopPrice = liquidationPrice.div(liquidationRatio).times(slRatio)
 
@@ -78,7 +82,7 @@ export function VaultDetailsCardMaxTokenOnStopLossTrigger({
     .minus(debt)
     .div(afterDynamicStopPrice)
 
-  const savingCompareToLiquidation = ethDuringLiquidation.minus(maxToken)
+  const savingCompareToLiquidation = maxToken.minus(ethDuringLiquidation)
 
   const maxTokenOrDai = isCollateralActive
     ? `${formatAmount(maxToken, token)} ${token}`

@@ -541,6 +541,21 @@ export const tokens = [
     bannerGif: '',
     tags: ['stablecoin'],
   },
+  {
+    symbol: 'CRVV1ETHSTETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'stETH/ETH CRV',
+    icon: 'curve_circle_color',
+    iconCircle: 'curve_circle_color',
+    iconColor: 'curve_circle_color',
+    color: '#ff077d',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
+    tags: ['lp-token'],
+  },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers

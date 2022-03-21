@@ -32,7 +32,7 @@ export function VaultHeaderLayout({
           color: 'text.subtitle',
           display: ['grid', 'flex'],
           gridTemplateColumns: '1fr 1fr',
-          gap: [3, 0],
+          gap: [2, 0],
         }}
       >
         <VaultIlkDetailsItem

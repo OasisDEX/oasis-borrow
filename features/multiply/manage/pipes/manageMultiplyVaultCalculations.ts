@@ -18,6 +18,7 @@ import {
 } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
 
+import { getMaxPossibleCollRatioOrMax } from '../../open/pipes/openMultiplyVaultCalculations'
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
 
 // This value ought to be coupled in relation to how much we round the raw debt
@@ -478,9 +479,16 @@ export function applyManageVaultCalculations(
 ): ManageMultiplyVaultState {
   const {
     balanceInfo: { collateralBalance, daiBalance },
-    ilkData: { liquidationRatio, ilkDebtAvailable },
+    ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
     priceInfo: { currentCollateralPrice, nextCollateralPrice },
-    vault: { lockedCollateral, debt, debtOffset, lockedCollateralUSD, liquidationPrice },
+    vault: {
+      lockedCollateral,
+      debt,
+      debtOffset,
+      lockedCollateralUSD,
+      liquidationPrice,
+      collateralizationRatio,
+    },
     requiredCollRatio,
     quote,
     swap,
@@ -493,6 +501,7 @@ export function applyManageVaultCalculations(
     originalEditingStage,
     closeVaultTo,
     vaultHistory,
+    showSliderController,
   } = state
 
   const vaultHasZeroCollateral = lockedCollateral.eq(zero)
@@ -668,26 +677,31 @@ export function applyManageVaultCalculations(
 
   const afterDebt = isCloseAction ? zero : debt.plus(borrowedDaiAmount).plus(loanFee)
 
-  const afterLockedCollateral = isCloseAction ? zero : lockedCollateral.plus(collateralDelta)
+  const afterLockedCollateral = isCloseAction
+    ? zero
+    : showSliderController
+    ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
+    : lockedCollateral.plus(collateralDelta)
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
 
-  const afterCollateralizationRatio =
-    vaultHasZeroCollateral || afterDebt.isZero() ? zero : afterLockedCollateralUSD.div(afterDebt)
+  const afterCollateralizationRatio = afterDebt.isZero()
+    ? zero
+    : afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
-  const afterMultiply = vaultHasZeroCollateral
-    ? zero
-    : isCloseAction || afterLockedCollateralUSD.isZero()
-    ? one
-    : calculateMultiply({
-        debt: afterDebt,
-        lockedCollateralUSD: afterLockedCollateralUSD,
-      })
-
-  const afterLiquidationPrice =
-    vaultHasZeroCollateral || afterCollateralizationRatio.isZero()
+  const afterMultiply =
+    vaultHasZeroCollateral && afterDebt.isZero()
       ? zero
-      : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
+      : isCloseAction || afterLockedCollateralUSD.isZero()
+      ? one
+      : calculateMultiply({
+          debt: afterDebt,
+          lockedCollateralUSD: afterLockedCollateralUSD,
+        })
+
+  const afterLiquidationPrice = afterCollateralizationRatio.isZero()
+    ? zero
+    : currentCollateralPrice.times(liquidationRatio).div(afterCollateralizationRatio)
 
   const exchangeAction = collateralDelta.isNegative() ? 'SELL_COLLATERAL' : 'BUY_COLLATERAL'
 
@@ -793,7 +807,9 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    lockedCollateral: showSliderController
+      ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
+      : lockedCollateral.plus(collateralDelta),
     price: currentCollateralPrice,
   })
 
@@ -802,7 +818,9 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    lockedCollateral: lockedCollateral.plus(collateralDelta),
+    lockedCollateral: showSliderController
+      ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
+      : lockedCollateral.plus(collateralDelta),
     price: nextCollateralPrice,
   })
 
@@ -826,6 +844,15 @@ export function applyManageVaultCalculations(
   const currentPnL = calculatePNL(vaultHistory, netValueUSD)
 
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
+
+  const maxCollRatio = getMaxPossibleCollRatioOrMax(
+    debt.gt(0) ? debtFloor.plus(debt) : debtFloor,
+    debt.gt(0) ? depositAmount : depositAmount.plus(lockedCollateral),
+    currentCollateralPrice,
+    marketPriceMaxSlippage,
+    liquidationRatio,
+    debt.gt(0) ? collateralizationRatio : zero,
+  )
 
   return {
     ...state,
@@ -867,6 +894,7 @@ export function applyManageVaultCalculations(
 
     afterCollateralBalance,
     shouldPaybackAll,
+    maxCollRatio,
 
     netValueUSD,
     afterNetValueUSD,

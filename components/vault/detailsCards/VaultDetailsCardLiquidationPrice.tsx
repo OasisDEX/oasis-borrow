@@ -107,6 +107,7 @@ export function VaultDetailsCardLiquidationPrice({
   const openModal = useModal()
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
+  const automationEnabled = useFeatureToggle('Automation')
 
   const cardDetailsData = {
     title: t('system.liquidation-price'),
@@ -128,7 +129,7 @@ export function VaultDetailsCardLiquidationPrice({
     afterPillColors,
   }
 
-  if (vaultId) {
+  if (vaultId && automationEnabled) {
     const autoTriggersData$ = automationTriggersData$(vaultId)
     const [automationTriggersData] = useObservable(autoTriggersData$)
     const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
@@ -143,6 +144,24 @@ export function VaultDetailsCardLiquidationPrice({
             liquidationPriceCurrentPriceDifference,
             vaultId,
             isStopLossEnabled: slData?.isStopLossEnabled,
+          })
+        }
+      />
+    )
+  }
+
+  // TODO this condition should be removed on automation release
+  if (vaultId) {
+    return (
+      <VaultDetailsCard
+        {...cardDetailsData}
+        openModal={() =>
+          openModal(VaultDetailsLiquidationModal, {
+            liquidationPrice,
+            liquidationRatio,
+            liquidationPriceCurrentPriceDifference,
+            vaultId,
+            isStopLossEnabled: false,
           })
         }
       />

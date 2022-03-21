@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { useTranslation } from 'next-i18next'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
@@ -57,7 +56,9 @@ export function VaultDetailsCardCollaterlizationRatioModal({
   )
 }
 
-export function VaultDetailsCardCollateralizationRatio(props: ManageVaultState & AfterPillProps) {
+export function VaultDetailsCardCollateralizationRatio(
+  props: ManageStandardBorrowVaultState & AfterPillProps,
+) {
   const {
     vault: { collateralizationRatio },
     afterCollateralizationRatio,

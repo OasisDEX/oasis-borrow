@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Container } from 'theme-ui'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Vault } from '../../blockchain/vaults'
@@ -80,6 +81,8 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
       </WithLoadingIndicator>
     </WithErrorHandler>
   ) : (
-    <ZeroDebtProtectionBanner />
+    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+      <ZeroDebtProtectionBanner />
+    </Container>
   )
 }

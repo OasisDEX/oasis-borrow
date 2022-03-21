@@ -13,19 +13,17 @@ import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 
 export interface ManageMultiplyVaultContainerProps {
   manageVault: ManageMultiplyVaultState
-  vaultHistory: VaultHistoryEvent[]
 }
 
 interface ManageMultiplyVaultContainerComponents {
   header: (props: DefaultVaultHeaderProps) => JSX.Element
   details: (props: ManageMultiplyVaultState) => JSX.Element
   form: (props: ManageMultiplyVaultState) => JSX.Element
-  history: (props: Pick<ManageMultiplyVaultContainerProps, 'vaultHistory'>) => JSX.Element
+  history: (props: { vaultHistory: VaultHistoryEvent[] }) => JSX.Element
 }
 
 export function ManageMultiplyVaultContainer({
   manageVault,
-  vaultHistory,
   header: Header,
   details: Details,
   form: Form,
@@ -67,7 +65,7 @@ export function ManageMultiplyVaultContainer({
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />
-          {!automationEnabled && <History vaultHistory={vaultHistory} />}
+          {!automationEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <Form {...manageVault} />

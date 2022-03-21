@@ -7,6 +7,7 @@ import { zero } from 'helpers/zero'
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
+  afterCollRatioBelowStopLossRatioValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -215,6 +216,8 @@ export interface ManageVaultConditions {
 
   highSlippage: boolean
   invalidSlippage: boolean
+  stopLossTriggered: boolean
+  afterCollRatioBelowStopLossRatio: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -274,6 +277,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   highSlippage: false,
   invalidSlippage: false,
+  stopLossTriggered: false,
+  afterCollRatioBelowStopLossRatio: false,
 }
 
 export function applyManageVaultConditions(
@@ -328,6 +333,8 @@ export function applyManageVaultConditions(
     txError,
 
     invalidSlippage,
+    vaultHistory,
+    stopLossData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -346,7 +353,9 @@ export function applyManageVaultConditions(
 
   const exchangeDataRequired =
     originalEditingStage === 'adjustPosition' ||
-    (originalEditingStage === 'otherActions' && otherAction === 'closeVault' && !debt.isZero())
+    (originalEditingStage === 'otherActions' &&
+      ((otherAction === 'closeVault' && !debt.isZero()) ||
+        (otherAction === 'depositCollateral' && !!requiredCollRatio?.gt(zero))))
 
   const shouldShowExchangeError = exchangeDataRequired && exchangeError
 
@@ -528,6 +537,14 @@ export function applyManageVaultConditions(
 
   const highSlippage = exchangeDataRequired && slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
 
+  const afterCollRatioBelowStopLossRatio =
+    !!stopLossData?.isStopLossEnabled &&
+    afterCollRatioBelowStopLossRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      stopLossRatio: stopLossData.stopLossLevel,
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -548,7 +565,8 @@ export function applyManageVaultConditions(
       withdrawCollateralOnVaultUnderDebtFloor ||
       shouldShowExchangeError ||
       hasToDepositCollateralOnEmptyVault ||
-      invalidSlippage)
+      invalidSlippage ||
+      afterCollRatioBelowStopLossRatio)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -590,6 +608,8 @@ export function applyManageVaultConditions(
     'borrowTransitionWaitingForConfirmation',
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+
+  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
 
   return {
     ...state,
@@ -645,5 +665,7 @@ export function applyManageVaultConditions(
     hasToDepositCollateralOnEmptyVault,
 
     highSlippage,
+    stopLossTriggered,
+    afterCollRatioBelowStopLossRatio,
   }
 }

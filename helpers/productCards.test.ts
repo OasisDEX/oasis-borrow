@@ -82,6 +82,13 @@ const guni = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
+const crv = mockIlkData({
+  token: 'CRVV1ETHSTETH',
+  ilk: 'CRVV1ETHSTETH-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
@@ -237,7 +244,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct borrow page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth, crv]), () => mockPriceInfo$()),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -271,15 +278,15 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: linkA.token,
-        ilk: linkA.ilk,
-        liquidationRatio: linkA.liquidationRatio,
-        stabilityFee: linkA.stabilityFee,
+        token: crv.token,
+        ilk: crv.ilk,
+        liquidationRatio: crv.liquidationRatio,
+        stabilityFee: crv.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        bannerIcon: '/static/img/tokens/link.png',
-        bannerGif: '/static/img/tokens/link.gif',
-        background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
-        name: 'Chainlink',
+        bannerIcon: '/static/img/tokens/crv_steth_eth.png',
+        bannerGif: '/static/img/tokens/crv_steth_eth.gif',
+        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+        name: 'stETH/ETH CRV',
         isFull: false,
       },
     ])

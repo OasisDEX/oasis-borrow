@@ -21,6 +21,7 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
+import { ExchangeButton } from './exchangeMenu/ExchangeButton'
 import { useSharedUI } from './SharedUIProvider'
 
 const {
@@ -94,8 +95,53 @@ interface UserAccountProps {
   position: 'fixed' | 'relative'
 }
 
+function PositionsLink({ sx }: { sx?: SxStyleProp }) {
+  const { accountData$, context$ } = useAppContext()
+  const [accountData] = useObservable(accountData$)
+  const [context] = useObservable(context$)
+  const { pathname } = useRouter()
+  const { t } = useTranslation()
+
+  const numberOfVaults =
+    accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
+
+  return (
+    <AppLink
+      variant="links.navHeader"
+      sx={{
+        mr: 4,
+        color: navLinkColor(pathname.includes('owner')),
+        display: 'flex',
+        alignItems: 'center',
+        whiteSpace: 'nowrap',
+        ...sx,
+      }}
+      href={`/owner/${(context as ContextConnected)?.account}`}
+      onClick={() => trackingEvents.yourVaults()}
+    >
+      <Icon
+        name="home"
+        size="auto"
+        width="20"
+        sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
+      />
+      <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
+      {numberOfVaults
+        ? numberOfVaults > 0 && <Box sx={{ display: 'inline', ml: 1 }}>{`(${numberOfVaults})`}</Box>
+        : ''}
+    </AppLink>
+  )
+}
+
 function UserAccount({ position }: UserAccountProps) {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
+  const exchangeEnabled = useFeatureToggle('Exchange')
+
+  const web3Provider = (() => {
+    const { web3ContextConnected$ } = useAppContext()
+    const [web3Context] = useObservable(web3ContextConnected$)
+    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
+  })()
 
   return (
     <Flex
@@ -112,6 +158,12 @@ function UserAccount({ position }: UserAccountProps) {
       }}
     >
       <Flex>
+        <PositionsLink sx={{ display: ['none', 'flex'] }} />
+        {exchangeEnabled && web3Provider ? (
+          <Box sx={{ display: ['none', 'block'] }}>
+            <ExchangeButton web3Provider={web3Provider} />
+          </Box>
+        ) : null}
         <UserSettingsButton />
         <AccountButton />
       </Flex>
@@ -132,14 +184,8 @@ function navLinkColor(isActive: boolean) {
 
 function ConnectedHeader() {
   const { pathname } = useRouter()
-  const { accountData$, context$ } = useAppContext()
   const { t } = useTranslation()
-  const [accountData] = useObservable(accountData$)
-  const [context] = useObservable(context$)
   const earnEnabled = useFeatureToggle('EarnProduct')
-
-  const numberOfVaults =
-    accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
   return (
     <>
@@ -162,15 +208,6 @@ function ConnectedHeader() {
             >
               <Logo />
               <Flex sx={{ ml: 5, zIndex: 1 }}>
-                <AppLink
-                  variant="links.navHeader"
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
-                  href={`/owner/${(context as ContextConnected)?.account}`}
-                  onClick={() => trackingEvents.yourVaults()}
-                >
-                  {t('your-vaults')}{' '}
-                  {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-                </AppLink>
                 <AppLink
                   variant="links.navHeader"
                   href={HEADER_LINKS.multiply}
@@ -208,14 +245,7 @@ function ConnectedHeader() {
         <BasicHeader variant="appContainer">
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
-            <AppLink
-              variant="nav"
-              sx={{ mr: 4, color: navLinkColor(pathname.includes('owner')) }}
-              href={`/owner/${(context as ContextConnected)?.account}`}
-              onClick={() => trackingEvents.yourVaults()}
-            >
-              {t('your-vaults')} {numberOfVaults ? numberOfVaults > 0 && `(${numberOfVaults})` : ''}
-            </AppLink>
+            <PositionsLink />
           </Flex>
           <MobileMenu />
           <UserAccount position="fixed" />

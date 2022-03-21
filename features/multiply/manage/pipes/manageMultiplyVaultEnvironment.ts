@@ -3,6 +3,7 @@ import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
 
+import { StopLossChange } from '../../../automation/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -14,6 +15,7 @@ export type ManageVaultEnvironmentChange =
   | VaultChange
   | VaultHistoryChange
   | SlippageChange
+  | StopLossChange
 
 export function applyManageVaultEnvironment(
   change: ManageMultiplyVaultChange,
@@ -58,6 +60,13 @@ export function applyManageVaultEnvironment(
     return {
       ...state,
       vaultHistory: change.vaultHistory,
+    }
+  }
+
+  if (change.kind === 'stopLossData') {
+    return {
+      ...state,
+      stopLossData: change.stopLossData,
     }
   }
 

@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import React, { useCallback } from 'react'
 
 import { useAppContext } from '../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../components/TabSwitchLayout'
+import { VaultViewMode } from '../../../components/VaultTabSwitch'
 import { useObservable } from '../../../helpers/observableHook'
 import { useSessionStorage } from '../../../helpers/useSessionStorage'
 import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
@@ -26,7 +26,10 @@ export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps
   return !slData?.isStopLossEnabled && !isBannerClosed ? (
     <GetProtectionBannerLayout
       handleClick={() => {
-        uiChanges.publish(TAB_CHANGE_SUBJECT, { currentMode: VaultViewMode.Protection })
+        uiChanges.publish(TAB_CHANGE_SUBJECT, {
+          type: 'change-tab',
+          currentMode: VaultViewMode.Protection,
+        })
       }}
       handleClose={handleClose}
     />
