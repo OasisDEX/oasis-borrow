@@ -1,12 +1,15 @@
 import { Box, Button, Grid } from '@theme-ui/components'
 import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { OptionProps, ValueType } from 'react-select'
 import { Flex, Heading } from 'theme-ui'
 
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import { fadeInAnimation } from '../theme/animations'
 import { useAppContext } from './AppContextProvider'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
+import { VaultTabTag } from './vault/VaultTabTag'
 
 export enum VaultViewMode {
   Overview,
@@ -14,9 +17,32 @@ export enum VaultViewMode {
   History,
 }
 
-type VaultTabSwitchOption = {
-  value: VaultViewMode
-  label: keyof typeof VaultViewMode
+interface VaultTabButtonProps {
+  onClick: () => void
+  variant: string
+  children: ReactNode
+}
+
+function VaultTabButton({ onClick, variant, children }: VaultTabButtonProps) {
+  return (
+    <Box sx={{ position: 'relative' }}>
+      <Button onClick={onClick} variant={variant}>
+        {children}
+      </Button>
+      {variant === 'vaultTab' && (
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-3px',
+            borderBottom: '3px solid',
+            borderColor: 'primary',
+            width: '100%',
+            ...fadeInAnimation,
+          }}
+        />
+      )}
+    </Box>
+  )
 }
 
 function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOption>) {
@@ -38,6 +64,11 @@ function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOpti
   )
 }
 
+type VaultTabSwitchOption = {
+  value: VaultViewMode
+  label: keyof typeof VaultViewMode
+}
+
 export function VaultTabSwitch({
   defaultMode,
   heading,
@@ -46,6 +77,7 @@ export function VaultTabSwitch({
   historyControl,
   protectionControl,
   showProtectionTab,
+  protectionEnabled,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
@@ -54,10 +86,12 @@ export function VaultTabSwitch({
   historyControl: JSX.Element
   protectionControl: JSX.Element
   showProtectionTab: boolean
+  protectionEnabled: boolean
 }): JSX.Element {
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -70,6 +104,9 @@ export function VaultTabSwitch({
   }, [])
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
+    if (automationBasicBuyAndSellEnabled) {
+      return currentMode === activeMode ? 'vaultTab' : 'vaultTabInactive'
+    }
     return currentMode === activeMode ? 'tab' : 'tabInactive'
   }
 
@@ -124,39 +161,71 @@ export function VaultTabSwitch({
         />
       </Box>
       <Box sx={{ display: ['none', 'block'], zIndex: 1 }}>
-        <Flex
-          sx={{
-            maxWidth: 'fit-content',
-            backgroundColor: 'fadedWhite',
-            bg: 'backgroundAlt',
-            borderRadius: '60px',
-          }}
-          variant="vaultEditingControllerContainer"
-        >
-          <Button
-            onClick={() => setMode(VaultViewMode.Overview)}
-            variant={getVariant(mode, VaultViewMode.Overview)}
-            sx={buttonSx}
+        {automationBasicBuyAndSellEnabled ? (
+          <Flex
+            sx={{
+              borderBottom: '3px solid',
+              borderColor: 'rgba(37, 39, 61, 0.1)',
+              width: '100%',
+            }}
           >
-            {t('system.overview')}
-          </Button>
-          {showProtectionTab && (
+            <VaultTabButton
+              onClick={() => setMode(VaultViewMode.Overview)}
+              variant={getVariant(mode, VaultViewMode.Overview)}
+            >
+              {t('system.overview')}
+            </VaultTabButton>
+            {showProtectionTab && (
+              <VaultTabButton
+                onClick={() => setMode(VaultViewMode.Protection)}
+                variant={getVariant(mode, VaultViewMode.Protection)}
+              >
+                {t('system.protection')}
+                <VaultTabTag isEnabled={protectionEnabled} />
+              </VaultTabButton>
+            )}
+            <VaultTabButton
+              onClick={() => setMode(VaultViewMode.History)}
+              variant={getVariant(mode, VaultViewMode.History)}
+            >
+              {t('system.history')}
+            </VaultTabButton>
+          </Flex>
+        ) : (
+          <Flex
+            sx={{
+              maxWidth: 'fit-content',
+              backgroundColor: 'fadedWhite',
+              bg: 'backgroundAlt',
+              borderRadius: '60px',
+            }}
+            variant="vaultEditingControllerContainer"
+          >
             <Button
-              onClick={() => setMode(VaultViewMode.Protection)}
-              variant={getVariant(mode, VaultViewMode.Protection)}
+              onClick={() => setMode(VaultViewMode.Overview)}
+              variant={getVariant(mode, VaultViewMode.Overview)}
               sx={buttonSx}
             >
-              {t('system.protection')}
+              {t('system.overview')}
             </Button>
-          )}
-          <Button
-            onClick={() => setMode(VaultViewMode.History)}
-            variant={getVariant(mode, VaultViewMode.History)}
-            sx={buttonSx}
-          >
-            {t('system.history')}
-          </Button>
-        </Flex>
+            {showProtectionTab && (
+              <Button
+                onClick={() => setMode(VaultViewMode.Protection)}
+                variant={getVariant(mode, VaultViewMode.Protection)}
+                sx={buttonSx}
+              >
+                {t('system.protection')}
+              </Button>
+            )}
+            <Button
+              onClick={() => setMode(VaultViewMode.History)}
+              variant={getVariant(mode, VaultViewMode.History)}
+              sx={buttonSx}
+            >
+              {t('system.history')}
+            </Button>
+          </Flex>
+        )}
       </Box>
       <Box sx={{ zIndex: 1 }}>
         {headerControl}

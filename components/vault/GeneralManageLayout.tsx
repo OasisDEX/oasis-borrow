@@ -82,6 +82,8 @@ export function GeneralManageLayout({
     })
   }, [isStopLossEnabled])
 
+  const protectionEnabled = !!generalManageVault.state.stopLossData?.isStopLossEnabled
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vault.id} />
@@ -95,6 +97,7 @@ export function GeneralManageLayout({
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
         showProtectionTab={showProtectionTab}
+        protectionEnabled={protectionEnabled}
       />
     </Grid>
   )
