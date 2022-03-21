@@ -313,11 +313,13 @@ export function ConnectWallet() {
   }, [])
 
   useEffect(() => {
-    if (web3Context?.status === 'error' && web3Context.error.name === 'TransportStatusError') {
-      switchNetworkModal('userNetwork')
-    }
-    if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
-      switchNetworkModal('userNetwork')
+    if (web3Context?.status === 'error') {
+      if (
+        web3Context.error instanceof UnsupportedChainIdError ||
+        web3Context.error.name === 'TransportStatusError' // error when application is not selected on the ledger
+      ) {
+        switchNetworkModal('userNetwork')
+      }
     }
   }, [web3Context?.status])
 
