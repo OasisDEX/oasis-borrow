@@ -900,7 +900,7 @@ describe('manageVault', () => {
       genericManageVaultTests(createManageInstiVault$)
     })
 
-    it('should initialise origination fee USD with undefined', () => {
+    it('should initialise origination fee USD with zero', () => {
       const charterNib$ = () => of(new BigNumber(1))
       const charterPeace$ = () => of(new BigNumber(2))
       const charterUline$ = () => of(new BigNumber(3))
@@ -914,7 +914,7 @@ describe('manageVault', () => {
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
-      expect(state().originationFeeUSD).to.eq(undefined)
+      expect(state().originationFeeUSD).to.eql(zero)
     })
 
     it('should contain origination fee in USD in the view state', () => {
