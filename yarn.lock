@@ -7486,10 +7486,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@uniswap/widgets@^0.0.23-beta":
-  version "0.0.23-beta"
-  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.23-beta.tgz#5dce6704d1413c6332dd16fd9c971be559f76911"
-  integrity sha512-2eR9Mi6StUZ4DRnfUgWkLMurqNss3vQCQrcvGZcb5QD4jyUc05Fxb4u4Em321YWnSdvY08/7t3H4VHWERbVmrw==
+"@uniswap/widgets@^0.0.25-beta":
+  version "0.0.25-beta"
+  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.25-beta.tgz#f586776b2e220ee0f8a471929cbd42f6c4733f56"
+  integrity sha512-b373KM6gkRz0xLGGwbst++4THqzqW6O9cmtREt8vNOJ6AimPNsC7BNdmnO7ymOrQaT+02c/7ZNmn+Wl9JrSYIA==
   dependencies:
     "@babel/runtime" "^7.17.0"
     "@ethersproject/abi" "^5.4.1"

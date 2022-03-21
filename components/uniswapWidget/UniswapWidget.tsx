@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Flex } from 'theme-ui'
 import { provider } from 'web3-core'
+import tokenList from './tokenList.json'
 
 const { colors, radii } = theme
 
@@ -51,7 +52,11 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
       }}
     >
       {/* @ts-ignore */}
-      <SwapWidget provider={web3Provider} theme={widgetTheme} />
+      <SwapWidget 
+        provider={web3Provider} 
+        theme={widgetTheme} 
+        tokenList={tokenList.tokens}
+      />
     </Box>
   ) : (
     <Flex sx={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>

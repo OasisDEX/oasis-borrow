@@ -22,7 +22,7 @@ import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
 import { useSharedUI } from './SharedUIProvider'
-import { UniswapWidget } from './UniswapWidget'
+import { UniswapWidget } from './uniswapWidget/UniswapWidget'
 
 const {
   publicRuntimeConfig: { apiHost },
@@ -141,7 +141,7 @@ function ButtonDropdown({ buttonContents, round, children }: { buttonContents: J
 
   return (
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
-      <Button variant={round ? 'menuButtonRound' : 'menuButton'} onClick={() => setIsOpen(!isOpen)}>
+      <Button variant={round ? 'menuButtonRound' : 'menuButton'} onClick={() => setIsOpen(!isOpen)} sx={{ border: isOpen ? '1px solid black' : null }}>
         {buttonContents}
       </Button>
       <Box
