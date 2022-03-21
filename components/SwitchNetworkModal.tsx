@@ -68,7 +68,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
 
   async function handleSwitch() {
     if (ethereum) {
-      await w.ethereum.request({
+      await ethereum.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId: '0x' + appNetworkId.toString(16) }],
       })
