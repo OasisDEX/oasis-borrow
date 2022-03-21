@@ -283,7 +283,7 @@ const goerli: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(
     dssProxyActionsCharter,
-    goerliAddresses.PROXY_ACTIONS_CHARTER,
+    '0xfFb896D7BEf704DF73abc9A2EBf295CE236c5919',
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
   dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),

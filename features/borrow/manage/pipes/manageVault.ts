@@ -38,21 +38,43 @@ import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import { createHistoryChange$ } from './manageHistory'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
 import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
-import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
-import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
-import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
-import { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
-import { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
-import { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
-import { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
+import {
+  applyManageVaultAllowance,
+  ManageVaultAllowanceChange,
+} from './viewStateTransforms/manageVaultAllowances'
+import {
+  applyManageVaultCalculations,
+  ManageVaultCalculations,
+} from './viewStateTransforms/manageVaultCalculations'
+import {
+  applyManageVaultConditions,
+  applyManageVaultStageCategorisation,
+  ManageVaultConditions,
+} from './viewStateTransforms/manageVaultConditions'
+import {
+  applyManageVaultEnvironment,
+  ManageVaultEnvironmentChange,
+} from './viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm, ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from './viewStateTransforms/manageVaultInjectedOverride'
+import {
+  applyManageVaultInput,
+  ManageVaultInputChange,
+} from './viewStateTransforms/manageVaultInput'
+import {
+  applyManageVaultSummary,
+  ManageVaultSummary,
+} from './viewStateTransforms/manageVaultSummary'
 import {
   applyEstimateGas,
+  applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
 } from './viewStateTransforms/manageVaultTransactions'
 import {
+  applyManageVaultTransition,
   ManageVaultTransitionChange,
   progressManage,
 } from './viewStateTransforms/manageVaultTransitions'
@@ -363,6 +385,23 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
+function applyChange<VS extends ManageStandardBorrowVaultState>(
+  state: VS,
+  change: ManageVaultChange,
+): VS {
+  const s1 = applyManageVaultInput(change, state)
+  const s2 = applyManageVaultForm(change, s1)
+  const s3 = applyManageVaultAllowance(change, s2)
+  const s4 = applyManageVaultTransition(change, s3)
+  const s5 = applyManageVaultTransaction(change, s4)
+  const s6 = applyManageVaultEnvironment(change, s5)
+  const s7 = applyManageVaultInjectedOverride(change, s6)
+  const s8 = applyManageVaultCalculations(s7)
+  const s9 = applyManageVaultStageCategorisation(s8)
+  const s10 = applyManageVaultConditions(s9)
+  return applyManageVaultSummary(s10)
+}
+
 export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -455,10 +494,11 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan(vaultViewStateProvider.applyChange, initialState),
+                    scan<ManageVaultChange, VS>(applyChange, initialState),
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                    map(vaultViewStateProvider.addTxnCost),
                     map(
                       curry(addTransitions)(
                         txHelpers$,

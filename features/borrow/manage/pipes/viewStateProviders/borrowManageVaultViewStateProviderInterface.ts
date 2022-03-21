@@ -24,5 +24,5 @@ export type CreateInitialVaultStateArgs<V extends Vault> = {
 
 export interface BorrowManageVaultViewStateProviderInterface<V extends Vault, ViewState> {
   createInitialVaultState(args: CreateInitialVaultStateArgs<V>): ViewState
-  applyChange(viewState: ViewState, change: ManageVaultChange): ViewState
+  addTxnCost(viewState: ViewState): ViewState
 }
