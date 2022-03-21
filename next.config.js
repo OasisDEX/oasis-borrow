@@ -1,7 +1,7 @@
 const withMDX = require('@next/mdx')({
   extension: /\.(md|mdx)$/,
   options: {
-    providerImportSource: "@mdx-js/react",
+    providerImportSource: '@mdx-js/react',
   },
 })
 const withPWA = require('next-pwa')
@@ -9,7 +9,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
-const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { withSentryConfig } = require('@sentry/nextjs')
@@ -76,8 +76,8 @@ const conf = withBundleAnalyzer(
           config.resolve = {
             ...config.resolve,
             fallback: {
-              "fs": false,
-            }
+              fs: false,
+            },
           }
           config.plugins.push(new NodePolyfillPlugin())
         }
