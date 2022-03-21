@@ -264,7 +264,9 @@ const goerli: NetworkConfig = {
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
+    // Todo: move to goerli network config when available at changelog.makerdao.com
     'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
+    'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
   getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
   mcdOsms: getOsms(goerliAddresses, supportedIlks),

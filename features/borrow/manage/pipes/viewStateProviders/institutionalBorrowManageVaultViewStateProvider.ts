@@ -24,12 +24,6 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
 
     const transactionFeeETH = transactionFeeUsd?.div(viewState.priceInfo.currentEthPrice!)
 
-    console.log('viewState.generateAmount', viewState.generateAmount)
-    console.log('viewState.vault.originationFeePercent', viewState.vault.originationFeePercent)
-    console.log('originationFeeUSD', originationFeeUSD)
-    console.log('transactionFeeUsd', transactionFeeUsd)
-    console.log('transactionFeeETH', transactionFeeETH)
-
     return {
       ...viewState,
       originationFeeUSD,
