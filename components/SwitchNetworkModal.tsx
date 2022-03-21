@@ -95,7 +95,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
             {type === 'appNetwork' && t('app-wrong-network-desc')}
             {type === 'userNetwork' && t('user-wrong-network-desc')}
           </Text>
-          {ethereum.isMetaMask && type === 'injected' && (
+          {ethereum?.isMetaMask && type === 'injected' && (
             <Button variant="primary" sx={{ fontSize: 3, width: '100%' }} onClick={handleSwitch}>
               {t('switch-network')}
             </Button>
