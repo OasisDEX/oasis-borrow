@@ -481,9 +481,6 @@ export function setupAppContext() {
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
-  // const vaultHistory$ = memoize(
-  //   curry(createVaultMultiplyHistory$)(context$, onEveryBlock$, vault$),
-  // )
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 

@@ -24,8 +24,7 @@ import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
 function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
-    // TODO return t(`history.${event.kind.toLowerCase()}`, { eventType: event.eventType })
-    return t(`history.stoploss`, { eventType: event.eventType })
+    return t(`history.${event.kind}`, { eventType: event.eventType })
   }
 
   return t(`history.${event.kind.toLowerCase()}`, {
@@ -323,7 +322,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const { t } = useTranslation()
 
   const spitedEvents = flatten(vaultHistory.map(splitEvents))
-  console.log(vaultHistory)
+
   return (
     <Box>
       <Heading variant="header3" sx={{ mb: [4, 3] }}>

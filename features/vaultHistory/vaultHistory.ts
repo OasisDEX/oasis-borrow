@@ -8,12 +8,7 @@ import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import {
-  MultiplyEvent,
-  ReturnedAutomationEvent,
-  ReturnedEvent,
-  VaultEvent,
-} from './vaultHistoryEvents'
+import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 type WithSplitMark<T> = T & { splitId?: number }
 
@@ -144,9 +139,9 @@ const query = gql`
 `
 
 const triggerEventsQuery = gql`
-  query triggerEvents($id: BigFloat) {
+  query triggerEvents($cdpId: BigFloat) {
     allTriggerEvents(
-      filter: { cdpId: { equalTo: $id } }
+      filter: { cdpId: { equalTo: $cdpId } }
       orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
     ) {
       nodes {
@@ -162,15 +157,6 @@ const triggerEventsQuery = gql`
     }
   }
 `
-
-export type VaultMultiplyHistoryEvent = MultiplyEvent & {
-  token: string
-  etherscan?: {
-    url: string
-    apiUrl: string
-    apiKey: string
-  }
-}
 
 function parseBigNumbersFields(
   event: Partial<ReturnedEvent & ReturnedAutomationEvent>,
@@ -234,7 +220,7 @@ async function getVaultAutomationHistory(
   client: GraphQLClient,
   id: BigNumber,
 ): Promise<ReturnedAutomationEvent[]> {
-  const triggersData = await client.request(triggerEventsQuery, { id: id.toNumber() })
+  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
   return triggersData.allTriggerEvents.nodes
 }
 
@@ -289,5 +275,17 @@ export function createVaultHistory$(
         catchError(() => of([])),
       )
     }),
+  )
+}
+
+export function createHistoryChange$(
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  id: BigNumber,
+) {
+  return vaultHistory$(id).pipe(
+    map((vaultHistory) => ({
+      kind: 'vaultHistory',
+      vaultHistory,
+    })),
   )
 }

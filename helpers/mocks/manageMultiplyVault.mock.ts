@@ -38,7 +38,7 @@ export interface MockManageMultiplyVaultProps {
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
-  _vaultMultiplyHistory$?: Observable<VaultHistoryEvent[]>
+  _vaultHistory$?: Observable<VaultHistoryEvent[]>
   _automationTriggersData$?: Observable<TriggersData>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
@@ -65,7 +65,7 @@ export function mockManageMultiplyVault$({
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
-  _vaultMultiplyHistory$,
+  _vaultHistory$,
   _automationTriggersData$,
   _collateralAllowance$,
   _daiAllowance$,
@@ -115,8 +115,8 @@ export function mockManageMultiplyVault$({
     return _proxyAddress$ || of(proxyAddress)
   }
 
-  function vaultMultiplyHistory$() {
-    return _vaultMultiplyHistory$ || of(mockedMultiplyEvents)
+  function vaultHistory$() {
+    return _vaultHistory$ || of(mockedMultiplyEvents)
   }
 
   function automationTriggersData$() {
@@ -164,7 +164,7 @@ export function mockManageMultiplyVault$({
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
     slippageLimitMock(),
-    vaultMultiplyHistory$,
+    vaultHistory$,
     saveVaultType$,
     automationTriggersData$,
     MOCK_VAULT_ID,
