@@ -21,6 +21,7 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
+import { MobileSidePanelClose, MobileSidePanelPortal } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
 
@@ -216,23 +217,51 @@ function UserDesktopMenu() {
 }
 
 function MobileBottomMenu() {
-  return <Flex
-    sx={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      bg: 'rgba(255,255,255,0.9)',
-      p: 3,
-      justifyContent: 'space-between',
-      gap: 2,
-      zIndex: 3,
-    }}
-  >
-    <Button variant="menuButton">
-      <UserSettingsButtonContents />
-    </Button>
-  </Flex>
+  const [opened, setOpened] = useState(false)
+
+  return <>
+    <Flex
+      sx={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        bg: 'rgba(255,255,255,0.9)',
+        p: 3,
+        justifyContent: 'space-between',
+        gap: 2,
+        zIndex: 3,
+      }}
+    >
+      <Button variant="menuButton" onClick={() => setOpened(true)}>
+        <UserSettingsButtonContents />
+      </Button>
+    </Flex>
+    <MobileSidePanelPortal>
+      <Box
+        sx={{
+          display: 'block',
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          transition: '0.3s transform ease-in-out',
+          transform: `translateY(${opened ? '0' : '100'}%)`,
+          bg: 'background',
+          p: 3,
+          pt: 0,
+          zIndex: 'modal',
+        }}
+      >
+        <MobileSidePanelClose opened={opened} onClose={() => setOpened(false)} />
+        <Card variant="vaultFormContainer">
+          <Grid gap={4} p={[0, 2]}>
+            <UserSettings />
+          </Grid>
+        </Card>
+      </Box>
+    </MobileSidePanelPortal>
+  </>
 }
 
 function navLinkColor(isActive: boolean) {
