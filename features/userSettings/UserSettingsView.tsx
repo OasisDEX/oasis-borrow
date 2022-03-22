@@ -1,19 +1,21 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { disconnect, getConnectionDetails, getWalletKind } from 'components/connectWallet/ConnectWallet'
-import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
-import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
+import {
+  disconnect,
+  getConnectionDetails,
+  getWalletKind,
+} from 'components/connectWallet/ConnectWallet'
+import { AppLink } from 'components/Links'
 import { AccountIndicator } from 'features/account/Account'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
+import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { formatPercent, formatPrecision } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import React, { ChangeEvent, useRef, useState } from 'react'
-import { useEffect } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import {
   Box,
@@ -34,7 +36,6 @@ import {
   UserSettingsState,
   UserSettingsWarningMessages,
 } from './userSettings'
-import { AppLink } from 'components/Links'
 
 function SlippageOptionButton({
   option,
@@ -118,7 +119,7 @@ function SlippageLimitMessages({
 }
 
 function SlippageSettingsForm() {
-  const { userSettings$  } = useAppContext()
+  const { userSettings$ } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const [customOpened, setCustomOpened] = useState(false)
@@ -205,7 +206,7 @@ function WalletInfo() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
-  
+
   const { t } = useTranslation()
 
   function copyToClipboard() {
@@ -236,20 +237,20 @@ function WalletInfo() {
           readOnly
         />
       </Flex>
-      {accountData &&
+      {accountData && (
         <Flex>
           <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={[24, 30]} />
           <Box sx={{ mx: 2, color: 'onWarning' }}>
             {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
           </Box>
         </Flex>
-     }
+      )}
     </Grid>
   )
 }
 
 export function UserSettings() {
-  const { userSettings$  } = useAppContext()
+  const { userSettings$ } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
@@ -259,15 +260,10 @@ export function UserSettings() {
     return null
   }
 
-  const {
-    slippage,
-    slippageInput,
-    stage,
-    saveSettings,
-    canProgress,
-  } = userSettings
+  const { slippage, slippageInput, stage, saveSettings, canProgress } = userSettings
 
-  return <Box>
+  return (
+    <Box>
       <WalletInfo />
       <SlippageSettingsForm />
       {/* Gas settings will go here */}
@@ -347,7 +343,8 @@ export function UserSettings() {
           {t('account-support')}
         </AppLink>
       </Flex>
-  </Box>
+    </Box>
+  )
 }
 
 export function UserSettingsButtonContents() {
@@ -356,25 +353,26 @@ export function UserSettingsButtonContents() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
 
-  if (!context || context.status === 'connectedReadonly' || !accountData || web3Context?.status !== 'connected')
+  if (
+    !context ||
+    context.status === 'connectedReadonly' ||
+    !accountData ||
+    web3Context?.status !== 'connected'
+  )
     return null
 
   const { connectionKind } = web3Context
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
-  return <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', px: 3 }}>
-    <Flex>
-      <Icon name={userIcon!} />
-      <Text>
-        <AccountIndicator address={context.account} ensName={accountData.ensName} />
-      </Text>
+  return (
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', px: 3 }}>
+      <Flex>
+        <Icon name={userIcon!} />
+        <Text>
+          <AccountIndicator address={context.account} ensName={accountData.ensName} />
+        </Text>
+      </Flex>
+      <Icon size="auto" width="16" height="16" name="settings" sx={{ flexShrink: 0 }} />
     </Flex>
-    <Icon
-      size="auto"
-      width="16"
-      height="16"
-      name="settings"
-      sx={{ flexShrink: 0 }}
-    />
-  </Flex>
+  )
 }

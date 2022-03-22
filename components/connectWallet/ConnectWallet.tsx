@@ -119,7 +119,6 @@ export async function getConnector(
   }
 }
 
-
 const SUPPORTED_WALLETS: ConnectionKind[] = [
   'injected',
   'walletConnect',
@@ -221,8 +220,18 @@ function connect(
     }
   }
 }
-type InjectedWalletKind = 'metamask' | 'imtoken' | 'alphawallet' | 'trust' | 'coinbase' | 'mist'
-| 'parity' | 'infura' | 'localhost' | 'unknowninjected' | 'nonexistent'
+type InjectedWalletKind =
+  | 'metamask'
+  | 'imtoken'
+  | 'alphawallet'
+  | 'trust'
+  | 'coinbase'
+  | 'mist'
+  | 'parity'
+  | 'infura'
+  | 'localhost'
+  | 'unknowninjected'
+  | 'nonexistent'
 
 export function getInjectedWalletKind(): InjectedWalletKind {
   const w = window as any
@@ -256,41 +265,41 @@ export function getInjectedWalletKind(): InjectedWalletKind {
 
 type WalletKind = Exclude<ConnectionKind, 'injected'> | InjectedWalletKind
 interface ConnectionDetail {
-  friendlyName: string,
-  connectIcon?: string,
+  friendlyName: string
+  connectIcon?: string
   userIcon?: UserWalletIconName
 }
 
-const connectionDetails : Record<WalletKind, ConnectionDetail> = {
+const connectionDetails: Record<WalletKind, ConnectionDetail> = {
   walletConnect: {
     friendlyName: 'WalletConnect',
     connectIcon: 'wallet_connect_color',
-    userIcon: 'walletConnect_user'
+    userIcon: 'walletConnect_user',
   },
   walletLink: {
     friendlyName: 'Coinbase wallet',
     connectIcon: 'coinbase_color',
-    userIcon: 'walletLink_user'
+    userIcon: 'walletLink_user',
   },
   portis: {
     friendlyName: 'Portis wallet',
     connectIcon: 'portis',
-    userIcon: 'portis_user'
+    userIcon: 'portis_user',
   },
   myetherwallet: {
     friendlyName: 'My Ether Wallet',
     connectIcon: 'myetherwallet',
-    userIcon: 'myetherwallet_user'
+    userIcon: 'myetherwallet_user',
   },
   trezor: {
     friendlyName: 'Trezor',
     connectIcon: 'trezor',
-    userIcon: 'trezor_user'
+    userIcon: 'trezor_user',
   },
   ledger: {
     friendlyName: 'Ledger',
     connectIcon: 'ledger',
-    userIcon: 'ledger_user'
+    userIcon: 'ledger_user',
   },
   network: {
     friendlyName: 'Network',
@@ -298,61 +307,55 @@ const connectionDetails : Record<WalletKind, ConnectionDetail> = {
   gnosisSafe: {
     friendlyName: 'Gnosis Safe',
     connectIcon: 'gnosis_safe',
-    userIcon: 'gnosisSafe_user'
+    userIcon: 'gnosisSafe_user',
   },
   magicLink: {
     friendlyName: 'MagicLink',
   },
   imtoken: {
-    friendlyName: 'IMToken'
+    friendlyName: 'IMToken',
   },
   metamask: {
     friendlyName: 'MetaMask',
     connectIcon: 'metamask_color',
-    userIcon: 'metamask_user'
+    userIcon: 'metamask_user',
   },
   alphawallet: {
-    friendlyName: 'Alpha Wallet'
+    friendlyName: 'Alpha Wallet',
   },
   trust: {
-    friendlyName: 'Trust'
+    friendlyName: 'Trust',
   },
   coinbase: {
-    friendlyName: 'Coinbase'
+    friendlyName: 'Coinbase',
   },
   mist: {
-    friendlyName: 'Mist'
+    friendlyName: 'Mist',
   },
   parity: {
-    friendlyName: 'Parity'
+    friendlyName: 'Parity',
   },
   infura: {
-    friendlyName: 'Infura'
+    friendlyName: 'Infura',
   },
   localhost: {
-    friendlyName: 'Localhost'
+    friendlyName: 'Localhost',
   },
   unknowninjected: {
-    friendlyName: 'Injected provider'
+    friendlyName: 'Injected provider',
   },
   nonexistent: {
-    friendlyName: ''
-  }
-}
-
-// Set default wallet icon
-for(const wallet in connectionDetails) {
-  if (!connectionDetails[(wallet as WalletKind)].userIcon) {
-    connectionDetails[(wallet as WalletKind)].userIcon = 'someWallet_user'
-  }
+    friendlyName: '',
+  },
 }
 
 export function getConnectionDetails(walletKind: WalletKind): ConnectionDetail {
-  return connectionDetails[walletKind]
+  // Set default wallet icon
+  return { ...{ userIcon: 'someWallet_user' }, ...connectionDetails[walletKind] }
 }
 
-export function getWalletKind(connectionKind: ConnectionKind) : WalletKind {
-  return connectionKind == 'injected' ? getInjectedWalletKind() : connectionKind
+export function getWalletKind(connectionKind: ConnectionKind): WalletKind {
+  return connectionKind === 'injected' ? getInjectedWalletKind() : connectionKind
 }
 
 export function ConnectWallet() {
@@ -456,12 +459,12 @@ export function ConnectWallet() {
           </Alert>
         ))}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
-        {SUPPORTED_WALLETS.map(connectionKind => {
+        {SUPPORTED_WALLETS.map((connectionKind) => {
           const isConnecting =
             (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
             web3Context.connectionKind === connectionKind
           const walletKind = getWalletKind(connectionKind)
-          const {friendlyName, connectIcon} = getConnectionDetails(walletKind)
+          const { friendlyName, connectIcon } = getConnectionDetails(walletKind)
           const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
           const missingInjectedWallet = walletKind === 'nonexistent'
           const description = missingInjectedWallet
@@ -469,7 +472,7 @@ export function ConnectWallet() {
             : t(descriptionTranslation, {
                 connectionKind: friendlyName,
               })
-          
+
           return (
             <ConnectWalletButton
               {...{

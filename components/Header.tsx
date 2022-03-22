@@ -130,16 +130,20 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-
-function ButtonDropdown({ buttonContents, round, children }: { buttonContents: JSX.Element, round?: boolean } & WithChildren) {
+function ButtonDropdown({
+  buttonContents,
+  round,
+  children,
+}: { buttonContents: JSX.Element; round?: boolean } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
 
   return (
     <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
-      <Button variant={round ? 'menuButtonRound' : 'menuButton'} 
-        onClick={() => setIsOpen(!isOpen)} 
+      <Button
+        variant={round ? 'menuButtonRound' : 'menuButton'}
+        onClick={() => setIsOpen(!isOpen)}
         sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary' }}
       >
         {buttonContents}
@@ -192,16 +196,14 @@ function UserDesktopMenu() {
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
         {exchangeEnabled && web3Provider ? (
-          <ButtonDropdown 
+          <ButtonDropdown
             buttonContents={<Icon name="exchange" size="auto" width="20" />}
             round={true}
           >
             <UniswapWidget web3Provider={web3Provider} />
           </ButtonDropdown>
-        ): null}
-        <ButtonDropdown 
-          buttonContents={<UserSettingsButtonContents />}
-        >
+        ) : null}
+        <ButtonDropdown buttonContents={<UserSettingsButtonContents />}>
           <UserSettings />
         </ButtonDropdown>
       </Flex>
@@ -219,49 +221,51 @@ function UserDesktopMenu() {
 function MobileBottomMenu() {
   const [opened, setOpened] = useState(false)
 
-  return <>
-    <Flex
-      sx={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        bg: 'rgba(255,255,255,0.9)',
-        p: 3,
-        justifyContent: 'space-between',
-        gap: 2,
-        zIndex: 3,
-      }}
-    >
-      <Button variant="menuButton" onClick={() => setOpened(true)}>
-        <UserSettingsButtonContents />
-      </Button>
-    </Flex>
-    <MobileSidePanelPortal>
-      <Box
+  return (
+    <>
+      <Flex
         sx={{
-          display: 'block',
           position: 'fixed',
+          bottom: 0,
           left: 0,
           right: 0,
-          bottom: 0,
-          transition: '0.3s transform ease-in-out',
-          transform: `translateY(${opened ? '0' : '100'}%)`,
-          bg: 'background',
+          bg: 'rgba(255,255,255,0.9)',
           p: 3,
-          pt: 0,
-          zIndex: 'modal',
+          justifyContent: 'space-between',
+          gap: 2,
+          zIndex: 3,
         }}
       >
-        <MobileSidePanelClose opened={opened} onClose={() => setOpened(false)} />
-        <Card variant="vaultFormContainer">
-          <Grid gap={4} p={[0, 2]}>
-            <UserSettings />
-          </Grid>
-        </Card>
-      </Box>
-    </MobileSidePanelPortal>
-  </>
+        <Button variant="menuButton" onClick={() => setOpened(true)}>
+          <UserSettingsButtonContents />
+        </Button>
+      </Flex>
+      <MobileSidePanelPortal>
+        <Box
+          sx={{
+            display: 'block',
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            transition: '0.3s transform ease-in-out',
+            transform: `translateY(${opened ? '0' : '100'}%)`,
+            bg: 'background',
+            p: 3,
+            pt: 0,
+            zIndex: 'modal',
+          }}
+        >
+          <MobileSidePanelClose opened={opened} onClose={() => setOpened(false)} />
+          <Card variant="vaultFormContainer">
+            <Grid gap={4} p={[0, 2]}>
+              <UserSettings />
+            </Grid>
+          </Card>
+        </Box>
+      </MobileSidePanelPortal>
+    </>
+  )
 }
 
 function navLinkColor(isActive: boolean) {
