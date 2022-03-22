@@ -1715,6 +1715,8 @@ const userWalletIcons = {
   }
 }
 
+export type UserWalletIconName = keyof typeof userWalletIcons
+
 export const icons = {
   ...daiUiIcons,
   ...brandingIcons,

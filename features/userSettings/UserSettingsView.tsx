@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { disconnect, getConnectionKindMessage } from 'components/connectWallet/ConnectWallet'
+import { disconnect, getConnectionDetails } from 'components/connectWallet/ConnectWallet'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { AccountIndicator } from 'features/account/Account'
@@ -229,7 +229,7 @@ function WalletInfo() {
         ) : (
           <Text sx={{ fontWeight: 'semiBold' }}>
             {t('connected-with', {
-              connectionKind: getConnectionKindMessage(connectionKind),
+              connectionKind: getConnectionDetails(connectionKind).friendlyName,
             })}
           </Text>
         )}
