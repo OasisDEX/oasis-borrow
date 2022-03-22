@@ -209,7 +209,8 @@
     "close_guni_vault_to_dai": "Closed Vault, exited to Dai",
     "close_vault_to_collateral": "Closed Vault, exited to collateral",
     "sold": "Sold",
-    "total-fees": "Total fees"
+    "total-fees": "Total fees",
+    "stoploss": "Stop Loss trigger {{eventType}}"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",

@@ -9,7 +9,12 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
 import { fetchWithOperationId, VaultHistoryEvent } from './vaultHistory'
-import { MultiplyEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import {
+  MultiplyEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from './vaultHistoryEvents'
 
 const query = gql`
   query vaultMultiplyHistories($urn: String) {
@@ -76,6 +81,26 @@ const query = gql`
   }
 `
 
+const triggerEventsQuery = gql`
+  query triggerEvents($id: BigFloat) {
+    allTriggerEvents(
+      filter: { cdpId: { equalTo: $id } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        id
+        triggerId
+        cdpId
+        number
+        kind
+        eventType
+        hash
+        timestamp
+      }
+    }
+  }
+`
+
 export type VaultMultiplyHistoryEvent = MultiplyEvent & {
   token: string
   etherscan?: {
@@ -85,7 +110,9 @@ export type VaultMultiplyHistoryEvent = MultiplyEvent & {
   }
 }
 
-function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
+function parseBigNumbersFields(
+  event: Partial<ReturnedEvent & ReturnedAutomationEvent>,
+): VaultEvent {
   const bigNumberFields = [
     'marketPrice',
     'beforeLockedCollateral',
@@ -141,6 +168,14 @@ async function getVaultMultiplyHistory(
   return data.allVaultMultiplyHistories.nodes
 }
 
+async function getVaultAutomationHistory(
+  client: GraphQLClient,
+  id: BigNumber,
+): Promise<ReturnedAutomationEvent[]> {
+  const triggersData = await client.request(triggerEventsQuery, { id: id.toNumber() })
+  return triggersData.allTriggerEvents.nodes
+}
+
 function addReclaimFlag(events: VaultHistoryEvent[]) {
   return events.map((event, index, array) => {
     if (index === 0) {
@@ -170,12 +205,19 @@ export function createVaultMultiplyHistory$(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address }]) => {
+    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address, id }]) => {
       return onEveryBlock$.pipe(
-        switchMap(() => getVaultMultiplyHistory(makeClient(cacheApi), address.toLowerCase())),
-        map((returnedEvents) =>
+        switchMap(() => {
+          const apiClient = makeClient(cacheApi)
+
+          return combineLatest(
+            getVaultMultiplyHistory(apiClient, address.toLowerCase()),
+            getVaultAutomationHistory(apiClient, id),
+          )
+        }),
+        map(([returnedEvents, returnedAutomationEvents]) =>
           flatten(
-            returnedEvents
+            [...returnedEvents, ...returnedAutomationEvents]
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
               .map(parseBigNumbersFields),
           ),

@@ -609,7 +609,10 @@ export function applyManageVaultConditions(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+  const stopLossTriggered =
+    !!vaultHistory.length &&
+    'triggerId' in vaultHistory[1] &&
+    vaultHistory[1].eventType === 'executed'
 
   return {
     ...state,
