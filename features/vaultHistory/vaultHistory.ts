@@ -266,6 +266,7 @@ export function createVaultHistory$(
         map(([returnedEvents, returnedAutomationEvents]) =>
           flatten(
             [...returnedEvents, ...returnedAutomationEvents]
+              .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
               .map(parseBigNumbersFields),
           ),
