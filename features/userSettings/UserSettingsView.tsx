@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
-import { disconnect, getConnectionDetails } from 'components/connectWallet/ConnectWallet'
+import { disconnect, getConnectionDetails, getWalletKind } from 'components/connectWallet/ConnectWallet'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { AccountIndicator } from 'features/account/Account'
@@ -205,7 +205,7 @@ function WalletInfo() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
-
+  
   const { t } = useTranslation()
 
   function copyToClipboard() {
@@ -220,21 +220,12 @@ function WalletInfo() {
   if (web3Context?.status !== 'connected') return null
 
   const { account, connectionKind } = web3Context
+  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
   return (
     <Grid>
-      <Flex sx={{ justifyContent: 'space-between' }}>
-        {connectionKind === 'network' ? (
-          <Text sx={{ fontWeight: 'semiBold' }}>{t('connected-in-readonly-mode')}</Text>
-        ) : (
-          <Text sx={{ fontWeight: 'semiBold' }}>
-            {t('connected-with', {
-              connectionKind: getConnectionDetails(connectionKind).friendlyName,
-            })}
-          </Text>
-        )}
-      </Flex>
       <Flex sx={{ alignItems: 'center' }}>
+        <Icon name={userIcon!} />
         <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
         <Text onClick={() => copyToClipboard()}>{t('copy')}</Text>
         {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
@@ -360,17 +351,24 @@ export function UserSettings() {
 }
 
 export function UserSettingsButtonContents() {
-  const { accountData$, context$ } = useAppContext()
+  const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
 
-  if (!context || context.status === 'connectedReadonly' || !accountData)
+  if (!context || context.status === 'connectedReadonly' || !accountData || web3Context?.status !== 'connected')
     return null
 
-  return <Flex sx={{ alignItems: 'center', justifyContent: 'center', px: 3 }}>
-    <Text>
-      <AccountIndicator address={context.account} ensName={accountData.ensName} />
-    </Text>
+  const { connectionKind } = web3Context
+  const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
+
+  return <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', px: 3 }}>
+    <Flex>
+      <Icon name={userIcon!} />
+      <Text>
+        <AccountIndicator address={context.account} ensName={accountData.ensName} />
+      </Text>
+    </Flex>
     <Icon
       size="auto"
       width="16"

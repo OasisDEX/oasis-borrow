@@ -254,14 +254,14 @@ export function getInjectedWalletKind(): InjectedWalletKind {
   return 'unknowninjected'
 }
 
-type WalletKind = ConnectionKind | InjectedWalletKind
+type WalletKind = Exclude<ConnectionKind, 'injected'> | InjectedWalletKind
 interface ConnectionDetail {
   friendlyName: string,
   connectIcon?: string,
   userIcon?: UserWalletIconName
 }
 
-const CONNECTION_DETAILS : Record<WalletKind, ConnectionDetail> = {
+const connectionDetails : Record<WalletKind, ConnectionDetail> = {
   walletConnect: {
     friendlyName: 'WalletConnect',
     connectIcon: 'wallet_connect_color',
@@ -335,16 +335,20 @@ const CONNECTION_DETAILS : Record<WalletKind, ConnectionDetail> = {
   unknowninjected: {
     friendlyName: 'Injected provider'
   },
-  injected: {
-    friendlyName: 'Injected provider'
-  },
   nonexistent: {
     friendlyName: ''
   }
 }
 
+// Set default wallet icon
+for(const wallet in connectionDetails) {
+  if (!connectionDetails[(wallet as WalletKind)].userIcon) {
+    connectionDetails[(wallet as WalletKind)].userIcon = 'someWallet_user'
+  }
+}
+
 export function getConnectionDetails(walletKind: WalletKind): ConnectionDetail {
-  return CONNECTION_DETAILS[walletKind]
+  return connectionDetails[walletKind]
 }
 
 export function getWalletKind(connectionKind: ConnectionKind) : WalletKind {
