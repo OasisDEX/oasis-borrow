@@ -559,9 +559,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
   const stopLossTriggered =
-    !!vaultHistory[1] &&
-    'triggerId' in vaultHistory[1] &&
-    vaultHistory[1].eventType === 'executed'
+    !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
   return {
     ...state,
