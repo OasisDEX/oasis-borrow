@@ -10,6 +10,7 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
+import { MultiplySurveyButtons } from '../../../../../pages/multiply'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
@@ -48,6 +49,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
               clear={openVault.clear}
             />
+            <MultiplySurveyButtons />
           </Container>
         )}
       </WithLoadingIndicator>

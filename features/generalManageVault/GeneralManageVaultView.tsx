@@ -18,6 +18,7 @@ import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMul
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { GeneralManageVaultState } from './generalManageVault'
 import { VaultType } from './vaultType'
+import { MultiplySurveyButtons } from '../../pages/multiply'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
@@ -107,6 +108,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       history={VaultHistoryView}
                     />
                   )}
+                  <MultiplySurveyButtons />
                 </Container>
               )
           }

@@ -72,7 +72,6 @@ export function ManageMultiplyVaultContainer({
           <Form {...manageVault} />
         </Box>
       </Grid>
-      <MultiplySurveyButtons />
     </>
   )
 }
