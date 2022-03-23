@@ -12,7 +12,7 @@ import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
-import { createTransactionManager } from './transactionManager'
+import { createTransactionManager } from '../transactionManager'
 
 interface MockContextProviderProps extends WithChildren {
   web3Context: Web3Context
@@ -118,7 +118,7 @@ stories.add('Connected MagicLink Kovan', () => {
   )
 })
 
-stories.add('Connected with pending transaction delayed', () => {
+export const Aasdf = () => {
   const date = new Date()
   date.setSeconds(date.getSeconds() + 2)
 
@@ -131,4 +131,9 @@ stories.add('Connected with pending transaction delayed', () => {
       <AppHeader />
     </MockContextProvider>
   )
-})
+}
+
+// eslint-disable-next-line import/no-default-export
+export default {
+  title: "AccountInHeaderA"
+}
