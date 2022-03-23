@@ -8,6 +8,7 @@ import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipe
 import { createManageMultiplyVaultAnalytics$ } from '../../../features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from '../../../features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
+import { MultiplySurveyButtons } from '../../../pages/multiply'
 import { useAppContext } from '../../AppContextProvider'
 import { DefaultVaultHeaderProps } from '../DefaultVaultHeader'
 
@@ -71,6 +72,7 @@ export function ManageMultiplyVaultContainer({
           <Form {...manageVault} />
         </Box>
       </Grid>
+      <MultiplySurveyButtons />
     </>
   )
 }
