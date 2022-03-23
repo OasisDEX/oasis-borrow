@@ -6,9 +6,9 @@ import React from 'react'
 import { WithConnection } from '../components/connectWallet/ConnectWallet'
 import { ProductPagesLayout } from '../components/Layouts'
 import { MultiplyView } from '../features/multiply/MultiplyView'
+import { useLocalStorage } from '../helpers/useLocalStorage'
 import { useBreakpointIndex } from '../theme/useBreakpointIndex'
 import { useTheme } from '../theme/useThemeUI'
-import { useLocalStorage } from '../helpers/useLocalStorage'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
