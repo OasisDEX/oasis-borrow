@@ -1,13 +1,10 @@
 import { storiesOf } from '@storybook/react'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Box, Container, Heading } from 'theme-ui'
-import { TxState } from '@oasisdex/transactions'
+import { Container, Heading } from 'theme-ui'
 import { Web3Context } from '@oasisdex/web3-context'
 import { AppContext } from 'components/AppContext'
-import { TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
-import { AppHeader } from 'components/Header'
 import { ModalProvider } from 'helpers/modalHook'
 import { of } from 'rxjs'
 import Web3 from 'web3'
@@ -18,12 +15,6 @@ import BigNumber from 'bignumber.js'
 
 const stories = storiesOf('User settings', module)
 
-
-interface MockContextProviderProps extends WithChildren {
-  web3Context: Web3Context
-  title: string
-  transactions?: TxState<TxData>[]
-}
 
 const protoWeb3Context: Web3Context = {
   chainId: 42,
@@ -47,7 +38,7 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
   )
 }
 
-const BASE_PROPS: UserSettingsState & { opened: boolean; setOpened: () => void } = {
+const settings: UserSettingsState = {
   stage: 'editing',
   slippage: SLIPPAGE_DEFAULT,
   slippageInput: SLIPPAGE_DEFAULT,
@@ -56,27 +47,19 @@ const BASE_PROPS: UserSettingsState & { opened: boolean; setOpened: () => void }
   canProgress: true,
   errors: [],
   warnings: [],
-  opened: false,
-  setOpened: () => null,
-}
-
-const BASE_PROPS_CHANGED_VALUE: UserSettingsState & { opened: boolean; setOpened: () => void } = {
-  ...BASE_PROPS,
-  slippageInput: SLIPPAGE_OPTIONS[1],
 }
 
 function MockContextProvider({
   children,
   title,
-  web3Context,
-  transactions = [],
-}: MockContextProviderProps) {
+  userSettings,
+}: {
+  title: string
+  userSettings: UserSettingsState
+} & WithChildren ) {
   const ctx = ({
-    web3Context$: of(web3Context),
-    context$: of({
-      etherscan: { url: 'etherscan' },
-    }),
-    userSettings$: of(BASE_PROPS),
+    web3Context$: of(protoWeb3Context),
+    userSettings$: of(userSettings),
     accountData$: of({daiBalance: new BigNumber(1000)})
   } as any) as AppContext
 
@@ -89,13 +72,9 @@ function MockContextProvider({
   )
 }
 
-
-
-
-
 stories.add('Editing start', () => {
   return (
-    <MockContextProvider title="Editing start Slippage" web3Context={protoWeb3Context}>
+    <MockContextProvider title="Editing start Slippage" userSettings={settings}>
       <UserSettings />
     </MockContextProvider>
   )
@@ -103,32 +82,36 @@ stories.add('Editing start', () => {
 
 stories.add('Editing', () => {
   return (
-    <StoryContainer title="Editing Slippage">
-      {/* <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} /> */}
-    </StoryContainer>
+    <MockContextProvider title="Editing Slippage"
+      userSettings={{ ...settings, slippageInput: SLIPPAGE_OPTIONS[1]}}>
+       <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('In progress', () => {
   return (
-    <StoryContainer title="In progress">
-      {/* <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="inProgress" /> */}
-    </StoryContainer>
+    <MockContextProvider title="In progress" 
+      userSettings={{ ...settings, stage: 'inProgress'}}>
+       <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('Failure', () => {
   return (
-    <StoryContainer title="Failure">
-      {/* <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="failure" /> */}
-    </StoryContainer>
+    <MockContextProvider title="Failure" 
+      userSettings={{ ...settings, stage: 'failure'}}>
+       <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('Success', () => {
   return (
-    <StoryContainer title="Success">
-      {/* <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="success" /> */}
-    </StoryContainer>
+    <MockContextProvider title="Success" 
+      userSettings={{ ...settings, stage: 'success'}}>
+       <UserSettings />
+    </MockContextProvider>
   )
 })
