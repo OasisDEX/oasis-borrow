@@ -10,7 +10,6 @@ import { WithChildren } from 'helpers/types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
-import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
@@ -24,10 +23,7 @@ import { AssetsSelect } from './AssetsSelect'
 import { MobileSidePanelClose, MobileSidePanelPortal } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
-
-const {
-  publicRuntimeConfig: { apiHost },
-} = getConfig()
+import { LINKS } from 'helpers/constants'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -300,26 +296,26 @@ function ConnectedHeader() {
               <Flex sx={{ ml: 5, zIndex: 1 }}>
                 <AppLink
                   variant="links.navHeader"
-                  href={HEADER_LINKS.multiply}
+                  href={LINKS.multiply}
                   sx={{
                     mr: 4,
-                    color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)),
+                    color: navLinkColor(pathname.includes(LINKS.multiply)),
                   }}
                 >
                   {t('nav.multiply')}
                 </AppLink>
                 <AppLink
                   variant="links.navHeader"
-                  href={HEADER_LINKS.borrow}
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+                  href={LINKS.borrow}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
                 >
                   {t('nav.borrow')}
                 </AppLink>
                 {earnEnabled && (
                   <AppLink
                     variant="links.navHeader"
-                    href={HEADER_LINKS.earn}
-                    sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                    href={LINKS.earn}
+                    sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
                   >
                     {t('nav.earn')}
                   </AppLink>
@@ -343,15 +339,6 @@ function ConnectedHeader() {
       </Box>
     </>
   )
-}
-
-const HEADER_LINKS = {
-  'dai-wallet': `${apiHost}/daiwallet`,
-  learn: 'https://kb.oasis.app',
-  blog: 'https://blog.oasis.app',
-  multiply: `/multiply`,
-  borrow: `/borrow`,
-  earn: '/earn',
 }
 
 function HeaderDropdown({
@@ -463,17 +450,17 @@ function MobileMenu() {
     {
       titleKey: 'nav.products',
       links: [
-        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
-        { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
+        { labelKey: 'nav.multiply', url: LINKS.multiply },
+        { labelKey: 'nav.borrow', url: LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
+        { labelKey: 'nav.dai-wallet', url: LINKS['dai-wallet'] },
       ],
     },
     {
       titleKey: 'nav.resources',
       links: [
-        { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-        { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
+        { labelKey: 'nav.learn', url: LINKS['learn'] },
+        { labelKey: 'nav.blog', url: LINKS['blog'] },
       ],
     },
   ]
@@ -482,9 +469,9 @@ function MobileMenu() {
     {
       titleKey: 'nav.products',
       links: [
-        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+        { labelKey: 'nav.multiply', url: LINKS.multiply },
+        { labelKey: 'nav.borrow', url: LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
       ],
     },
   ]
@@ -620,23 +607,23 @@ function DisconnectedHeader() {
             <Logo />
             <AppLink
               variant="links.navHeader"
-              href={HEADER_LINKS.multiply}
-              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
+              href={LINKS.multiply}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.multiply)) }}
             >
               {t('nav.multiply')}
             </AppLink>
             <AppLink
               variant="links.navHeader"
-              href={HEADER_LINKS.borrow}
-              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+              href={LINKS.borrow}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.borrow)) }}
             >
               {t('nav.borrow')}
             </AppLink>
             {earnEnabled && (
               <AppLink
                 variant="links.navHeader"
-                href={HEADER_LINKS.earn}
-                sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                href={LINKS.earn}
+                sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
               >
                 {t('nav.earn')}
               </AppLink>
