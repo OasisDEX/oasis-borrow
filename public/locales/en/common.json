@@ -210,7 +210,12 @@
     "close_vault_to_collateral": "Closed Vault, exited to collateral",
     "sold": "Sold",
     "total-fees": "Total fees",
-    "stop-loss": "Stop Loss trigger {{eventType}}"
+    "stop-loss": "Stop Loss trigger"
+  },
+  "triggers": {
+    "added": "added",
+    "removed": "removed",
+    "executed": "executed"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",

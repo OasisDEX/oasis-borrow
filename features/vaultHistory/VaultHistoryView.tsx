@@ -24,7 +24,7 @@ import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
 function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
-    return t(`history.${event.kind}`, { eventType: event.eventType })
+    return `${t(`history.${event.kind}`)} ${t(`triggers.${event.eventType}`)}`
   }
 
   return t(`history.${event.kind.toLowerCase()}`, {
