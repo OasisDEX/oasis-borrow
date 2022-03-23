@@ -6233,6 +6233,19 @@
   resolved "https://registry.yarnpkg.com/@typechain/web3-v1/-/web3-v1-2.0.0.tgz#71ce7265181c8cbb03b1f7212256a23b9b809472"
   integrity sha512-gpl9Tk6Ha38GScuMf7O2BvX7nFvWakSlm4w1LxCZ8BEJgbjarrsBX2YdgrB2jHm2pBZCaBJUZGR5b9qywSJNdw==
 
+"@typeform/embed-react@^1.13.0":
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/@typeform/embed-react/-/embed-react-1.13.0.tgz#9b50f0b880f212480b95d4ec2f1390998b2d3561"
+  integrity sha512-LSN7DQ1Eg9U7IvbfSfn152SspkkSaWlsWytEAGsqmau/HtH99T2ra/FoQ/zPajAObmWWpdH3p/jQiUL96vytPw==
+  dependencies:
+    "@typeform/embed" "1.34.1"
+    fast-deep-equal "^3.1.3"
+
+"@typeform/embed@1.34.1":
+  version "1.34.1"
+  resolved "https://registry.yarnpkg.com/@typeform/embed/-/embed-1.34.1.tgz#53f1f0b6fee7af24aa2446cf2e258c042df2e48f"
+  integrity sha512-FdteCw0TKHcNiSmz0t0CfFfK4xL7pc6jce/FWZJ9MLPTKcMzwaAvdaQ0Byll2kSG1RtNv+dfcBtth7xjhCKs3Q==
+
 "@types/anymatch@*":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@types/anymatch/-/anymatch-1.3.1.tgz#336badc1beecb9dacc38bea2cf32adf627a8421a"
