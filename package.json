@@ -125,6 +125,7 @@
     "request": "^2.88.2",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
+    "storybook-addon-next-router": "^3.1.1",
     "text-mask-addons": "^3.7.2",
     "theme-ui": "^0.3.1",
     "ts-essentials": "^7.0.1",
