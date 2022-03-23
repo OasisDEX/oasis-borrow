@@ -9,6 +9,8 @@ import { MultiplyView } from '../features/multiply/MultiplyView'
 import { useLocalStorage } from '../helpers/useLocalStorage'
 import { useBreakpointIndex } from '../theme/useBreakpointIndex'
 import { useTheme } from '../theme/useThemeUI'
+import { Box } from 'theme-ui'
+import { Global } from '@emotion/core'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -16,7 +18,9 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-function MultiplySurveyButtons() {
+const typeformPopoverButton = '.tf-v1-popover .tf-v1-popover-button'
+
+export function MultiplySurveyButtons() {
   const breakpoint = useBreakpointIndex()
   const { theme } = useTheme()
   const btnColor = theme.colors.link
@@ -25,17 +29,30 @@ function MultiplySurveyButtons() {
     'multiply-survey-2022-03-23-was-closed',
     false,
   )
+
   return (
     <>
-      {breakpoint === 0 && !wasClosed && (
-        <Popover
-          id="H52MeocX"
-          buttonColor={btnColor}
-          shareGaInstance={true}
-          onClose={() => setWasOpenedAndClosed(true)}
-        />
+      {breakpoint <= 1 && !wasClosed && (
+        <>
+          {breakpoint === 0 && (
+            <Global
+              styles={() => ({
+                [typeformPopoverButton]: {
+                  bottom: '70px',
+                },
+              })}
+            />
+          )}
+
+          <Popover
+            id="H52MeocX"
+            buttonColor={btnColor}
+            shareGaInstance={true}
+            onClose={() => setWasOpenedAndClosed(true)}
+          />
+        </>
       )}
-      {breakpoint > 0 && !wasClosed && (
+      {breakpoint > 1 && !wasClosed && (
         <Sidetab
           id="H52MeocX"
           buttonText={t('help-shape-the-future-of-multiply')}
@@ -43,7 +60,7 @@ function MultiplySurveyButtons() {
           shareGaInstance={true}
           onClose={() => setWasOpenedAndClosed(true)}
         >
-          Help shape the future of Multiply
+          {t('help-shape-the-future-of-multiply')}
         </Sidetab>
       )}
     </>
