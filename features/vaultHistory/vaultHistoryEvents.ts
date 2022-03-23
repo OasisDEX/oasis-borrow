@@ -162,6 +162,7 @@ export interface MultiplyBaseEvent {
   totalFee: BigNumber
   gasFee: BigNumber // in wei
   rate: BigNumber
+  token: string
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
@@ -191,7 +192,7 @@ interface DecreaseMultipleEvent extends MultiplyBaseEvent {
   sold: BigNumber
 }
 
-interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_DAI'
   sold: BigNumber
   exitDai: BigNumber
@@ -203,7 +204,7 @@ interface CloseGuniVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   exitDai: BigNumber
 }
 
-interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
   exitCollateral: BigNumber
