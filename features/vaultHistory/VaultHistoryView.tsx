@@ -322,7 +322,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const { t } = useTranslation()
 
   const spitedEvents = flatten(vaultHistory.map(splitEvents))
-  console.log(vaultHistory)
+
   return (
     <Box>
       <Heading variant="header3" sx={{ mb: [4, 3] }}>
