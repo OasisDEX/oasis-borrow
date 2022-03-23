@@ -144,7 +144,7 @@ function ButtonDropdown({
       <Button
         variant={round ? 'menuButtonRound' : 'menuButton'}
         onClick={() => setIsOpen(!isOpen)}
-        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary' }}
+        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary', p: 1 }}
       >
         {buttonContents}
       </Button>

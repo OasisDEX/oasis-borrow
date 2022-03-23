@@ -7,7 +7,6 @@ import {
   getWalletKind,
 } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
-import { AccountIndicator } from 'features/account/Account'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -365,14 +364,16 @@ export function UserSettingsButtonContents() {
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', px: 3 }}>
-      <Flex>
-        <Icon name={userIcon!} />
-        <Text>
-          <AccountIndicator address={context.account} ensName={accountData.ensName} />
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+      <Flex sx={{ alignItems: 'center'}}>
+        <Icon name={userIcon!} size="auto" width="42" />
+        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', ml: 3 }}>
+          {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
-      <Icon size="auto" width="16" height="16" name="settings" sx={{ flexShrink: 0 }} />
+      <Flex sx={{ ml: 2 }}>
+        <Icon size="auto" width="16" height="16" name="settings" sx={{ flexShrink: 0, m: '13px' }} />
+      </Flex>
     </Flex>
   )
 }
