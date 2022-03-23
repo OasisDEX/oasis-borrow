@@ -127,14 +127,12 @@ function SlippageSettingsForm() {
     return null
   }
 
-  const { slippageInput, setSlippageInput, errors, warnings, slippage } = userSettings
+  const { slippage, slippageInput, setSlippageInput, errors, warnings, stage, saveSettings, canProgress } = userSettings
 
   return (
+    <>
     <Box>
       <Box>
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 2 }}>
-          {t('user-settings.slippage-limit.preset-title')}
-        </Text>
         <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
           {t('user-settings.slippage-limit.preset-description')}
         </Text>
@@ -197,6 +195,38 @@ function SlippageSettingsForm() {
       </Box>
       <SlippageLimitMessages {...{ errors, warnings }} />
     </Box>
+    {!slippage.eq(slippageInput) && (
+      <Button
+        disabled={!canProgress || stage === 'inProgress'}
+        onClick={saveSettings}
+        sx={{ mt: 2, width: '100%' }}
+      >
+        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+          {stage === 'inProgress' && (
+            <AppSpinner
+              variant="styles.spinner.large"
+              sx={{ color: 'surface', display: 'flex', mr: 2 }}
+            />
+          )}
+          <Text>
+            {stage === 'inProgress'
+              ? t('user-settings.button-in-progress')
+              : t('user-settings.button')}
+          </Text>
+        </Flex>
+      </Button>
+    )}
+    {stage === 'success' && (
+      <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+        {t('user-settings.update-success')}
+      </Text>
+    )}
+    {stage === 'failure' && (
+      <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+        {t('user-settings.update-failure')}
+      </Text>
+    )}
+    </>
   )
 }
 
@@ -225,78 +255,49 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} />
-        <Text sx={{ fontSize: 5, mx: 1 }}>{formatAddress(account)}</Text>
-        <Text onClick={() => copyToClipboard()}>{t('copy')}</Text>
-        {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
-        <Textarea
-          ref={clipboardContentRef}
-          sx={{ position: 'absolute', top: '-1000px', left: '-1000px' }}
-          value={account}
-          readOnly
-        />
+        <Icon name={userIcon!} size="auto" width={32} />
+        <Grid sx={{ gap: 0 }}>
+          <Flex>
+            <Text variant="address">{formatAddress(account)}</Text>
+            <Text onClick={() => copyToClipboard()}>{t('copy')}</Text>
+            {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
+            <Textarea
+              ref={clipboardContentRef}
+              sx={{ position: 'absolute', top: '-1000px', left: '-1000px' }}
+              value={account}
+              readOnly
+            />
+          </Flex>
+          {accountData && (
+            <Flex>
+              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+              <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
+                {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
+              </Text>
+            </Flex>
+          )}
+        </Grid>
       </Flex>
-      {accountData && (
-        <Flex>
-          <Icon sx={{ zIndex: 1 }} name="dai_circle_color" size={[24, 30]} />
-          <Box sx={{ mx: 2, color: 'onWarning' }}>
-            {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
-          </Box>
-        </Flex>
-      )}
     </Grid>
   )
 }
 
 export function UserSettings() {
-  const { userSettings$ } = useAppContext()
-  const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
 
-  if (!userSettings) {
-    return null
-  }
-
-  const { slippage, slippageInput, stage, saveSettings, canProgress } = userSettings
-
   return (
-    <Box>
+    <Box sx={{ p: 4, minWidth: '380px' }}>
+      <Text variant="headerSettings">
+        {t('wallet')}
+      </Text>
       <WalletInfo />
+      <Text variant="headerSettings">
+        {t('user-settings.slippage-limit.preset-title')}
+      </Text>
       <SlippageSettingsForm />
-      {/* Gas settings will go here */}
-      {!slippage.eq(slippageInput) && (
-        <Button
-          disabled={!canProgress || stage === 'inProgress'}
-          onClick={saveSettings}
-          sx={{ mt: 2, width: '100%' }}
-        >
-          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-            {stage === 'inProgress' && (
-              <AppSpinner
-                variant="styles.spinner.large"
-                sx={{ color: 'surface', display: 'flex', mr: 2 }}
-              />
-            )}
-            <Text>
-              {stage === 'inProgress'
-                ? t('user-settings.button-in-progress')
-                : t('user-settings.button')}
-            </Text>
-          </Flex>
-        </Button>
-      )}
-      {stage === 'success' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
-          {t('user-settings.update-success')}
-        </Text>
-      )}
-      {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
-          {t('user-settings.update-failure')}
-        </Text>
-      )}
+      <Box sx={{ borderTop: '1px solid #E7EDEF' }} />
       <Button
         variant="textual"
         sx={{
@@ -367,7 +368,7 @@ export function UserSettingsButtonContents() {
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center'}}>
         <Icon name={userIcon!} size="auto" width="42" />
-        <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', ml: 3 }}>
+        <Text variant="address" sx={{ ml: 3 }}>
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>

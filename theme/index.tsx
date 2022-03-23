@@ -132,6 +132,13 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
+    headerSettings: {
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: 'heading',
+      fontSize: 4,
+      color: 'primary',
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -165,7 +172,7 @@ const oasisBaseTheme = {
       color: 'text.subtitle',
     },
     caption: {
-      variant: 'paragraph4',
+      variant: 'text.paragraph4',
       fontWeight: 'heading',
       textTransform: 'uppercase',
       letterSpacing: '0.04em',
@@ -188,6 +195,10 @@ const oasisBaseTheme = {
         variant: 'text.paragraph1',
         color: 'text.focused',
       },
+    },
+    address: {
+      variant: 'paragraph3',
+      fontWeight: 'semiBold'
     },
   },
   borders: {
