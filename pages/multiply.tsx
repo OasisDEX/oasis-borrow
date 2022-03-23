@@ -8,6 +8,7 @@ import { ProductPagesLayout } from '../components/Layouts'
 import { MultiplyView } from '../features/multiply/MultiplyView'
 import { useBreakpointIndex } from '../theme/useBreakpointIndex'
 import { useTheme } from '../theme/useThemeUI'
+import { useLocalStorage } from '../helpers/useLocalStorage'
 
 export const getStaticProps = async ({ locale }: { locale: string }) => ({
   props: {
@@ -20,23 +21,27 @@ function MultiplySurveyButtons() {
   const { theme } = useTheme()
   const btnColor = theme.colors.link
   const { t } = useTranslation()
-
+  const [wasClosed, setWasOpenedAndClosed] = useLocalStorage(
+    'multiply-survey-2022-03-23-was-closed',
+    false,
+  )
   return (
     <>
-      {breakpoint === 0 && (
+      {breakpoint === 0 && !wasClosed && (
         <Popover
           id="H52MeocX"
           buttonColor={btnColor}
           shareGaInstance={true}
-          tooltip={t('help-shape-the-future-of-multiply')}
+          onClose={() => setWasOpenedAndClosed(true)}
         />
       )}
-      {breakpoint > 0 && (
+      {breakpoint > 0 && !wasClosed && (
         <Sidetab
           id="H52MeocX"
           buttonText={t('help-shape-the-future-of-multiply')}
           buttonColor={btnColor}
           shareGaInstance={true}
+          onClose={() => setWasOpenedAndClosed(true)}
         >
           Help shape the future of Multiply
         </Sidetab>
