@@ -471,7 +471,18 @@ export function setupAppContext() {
   )
 
   const instiVault$ = memoize(
-    curry(createInstiVault$)(vault$, charterNib$, charterPeace$, charterUline$),
+    curry(createInstiVault$)(
+      urnResolver$,
+      vatUrns$,
+      vatGem$,
+      ilkData$,
+      oraclePriceData$,
+      ilkToToken$,
+      context$,
+      charterNib$,
+      charterPeace$,
+      charterUline$,
+    ),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))

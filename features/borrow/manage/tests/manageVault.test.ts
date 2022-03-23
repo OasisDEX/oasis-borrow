@@ -21,8 +21,6 @@ import { zero } from 'helpers/zero'
 import { BehaviorSubject, of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
 
-import { createInstiVault$ } from '../../../../blockchain/instiVault'
-
 type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }
 ;(global as GlobalMock).window = {
   location: { reload: () => null },
@@ -901,16 +899,7 @@ describe('manageVault', () => {
     })
 
     it('should initialise origination fee USD with zero', () => {
-      const charterNib$ = () => of(new BigNumber(1))
-      const charterPeace$ = () => of(new BigNumber(2))
-      const charterUline$ = () => of(new BigNumber(3))
-      const instiVault$ = createInstiVault$(
-        () => mockVault$(),
-        charterNib$,
-        charterPeace$,
-        charterUline$,
-        new BigNumber(1),
-      )
+      const { instiVault$ } = mockVault$()
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
@@ -918,26 +907,14 @@ describe('manageVault', () => {
     })
 
     it('should contain origination fee in USD in the view state', () => {
-      function createStream(
-        startValue: number,
-      ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
-        const bs = new BehaviorSubject<BigNumber>(new BigNumber(startValue))
-        return [bs, () => bs]
-      }
-
-      const [charterNib$, charterNibCtor] = createStream(1)
-
+      const charterNib$ = new BehaviorSubject<BigNumber>(new BigNumber(1))
       const depositAmount = new BigNumber('5')
       const generateAmount = new BigNumber('3000')
       const secondGenerateAmount = new BigNumber('5000')
 
-      const instiVault$ = createInstiVault$(
-        () => mockVault$(),
-        charterNibCtor,
-        () => of(new BigNumber(2)),
-        () => of(new BigNumber(3)),
-        new BigNumber(1),
-      )
+      const { instiVault$ } = mockVault$({
+        _charterNib$: charterNib$,
+      })
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 

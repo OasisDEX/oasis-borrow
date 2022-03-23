@@ -17,7 +17,7 @@ describe('createVaultBanners$', () => {
       createVaultsBanners$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
-        () => mockVault$(),
+        () => mockVault$().vault$,
         () => of([]),
         one,
       ),
@@ -42,7 +42,7 @@ describe('createVaultBanners$', () => {
             collateral: new BigNumber(2),
             ilk: 'ETH',
             priceInfo: priceInfo(),
-          }),
+          }).vault$,
         () => of([]),
         one,
       ),
@@ -60,7 +60,7 @@ describe('createVaultBanners$', () => {
             debt: new BigNumber(1000),
             collateral: new BigNumber(1),
             ilk: 'ETH',
-          }),
+          }).vault$,
         () => of([]),
         one,
       ),
@@ -73,7 +73,7 @@ describe('createVaultBanners$', () => {
       createVaultsBanners$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
-        () => mockVault$(),
+        () => mockVault$().vault$,
         () =>
           of<VaultHistoryEvent[]>([
             {
@@ -100,7 +100,7 @@ describe('createVaultBanners$', () => {
       createVaultsBanners$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
-        () => mockVault$(),
+        () => mockVault$().vault$,
         () =>
           of<VaultHistoryEvent[]>([
             {
@@ -128,7 +128,7 @@ describe('createVaultBanners$', () => {
       createVaultsBanners$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
-        () => mockVault$(),
+        () => mockVault$().vault$,
         () =>
           of<VaultHistoryEvent[]>([
             {
@@ -160,7 +160,7 @@ describe('createVaultBanners$', () => {
             debt: new BigNumber(1000),
             collateral: new BigNumber(1),
             ilk: 'ETH',
-          }),
+          }).vault$,
         () =>
           of<VaultHistoryEvent[]>([
             {
@@ -199,7 +199,7 @@ describe('createVaultBanners$', () => {
             collateral: new BigNumber(2),
             ilk: 'ETH',
             priceInfo: priceInfo(),
-          }),
+          }).vault$,
         () =>
           of<VaultHistoryEvent[]>([
             {

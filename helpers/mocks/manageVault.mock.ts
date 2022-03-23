@@ -18,7 +18,7 @@ import { switchMap } from 'rxjs/operators'
 
 import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
-import { createInstiVault$, InstiVault } from '../../blockchain/instiVault'
+import { InstiVault } from '../../blockchain/instiVault'
 import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
 import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
@@ -179,7 +179,7 @@ function buildMockDependencies({
             _ilkData$: ilkData$(),
             priceInfo,
             ...vault,
-          })
+          }).vault$
         }),
       )
     )
@@ -262,22 +262,7 @@ export function mockManageInstiVault$(
   } = buildMockDependencies(args)
 
   function instiVault$(): Observable<InstiVault> {
-    function charterNib$() {
-      return of(new BigNumber(1))
-    }
-    function charterPeace$() {
-      return of(new BigNumber(2))
-    }
-    function charterUline$() {
-      return of(new BigNumber(3))
-    }
-    const instiVault$ = createInstiVault$(
-      () => mockVault$(),
-      charterNib$,
-      charterPeace$,
-      charterUline$,
-      new BigNumber(1),
-    )
+    const { instiVault$ } = mockVault$()
 
     return args._instiVault$ || instiVault$
   }
