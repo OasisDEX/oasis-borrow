@@ -73,6 +73,7 @@ const oasisBaseTheme = {
     bull: '#1AAB9B',
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
+    sliderActiveFill: '#878BFC',
     actionInputHover: '#E5E7E8',
     selected: '#EDEDFF',
     fogBlue: '#D8D9FE',

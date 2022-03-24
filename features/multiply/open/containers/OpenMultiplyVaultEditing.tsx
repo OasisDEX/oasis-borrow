@@ -9,6 +9,7 @@ import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 import { zero } from '../../../../helpers/zero'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
+import { MultipleRangeSlider } from '../../../../components/vault/MultipleRangeSlider'
 
 export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   const {
@@ -131,6 +132,14 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             <Text>Decrease risk</Text>
             <Text>Increase risk</Text>
           </Flex>
+        </Box>
+        <Box>
+          <MultipleRangeSlider
+            min={170}
+            max={300}
+            onChange={({ min, max }) => console.log(`min = ${min}, max = ${max}`)}
+            // multiply={250}
+          />
         </Box>
       </Grid>
       {!inputAmountsEmpty && <Divider />}
