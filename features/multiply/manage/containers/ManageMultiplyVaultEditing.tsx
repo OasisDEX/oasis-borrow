@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
   formatAmount,
@@ -20,70 +20,70 @@ import { ManageMultiplyVaultState, OtherAction } from '../pipes/manageMultiplyVa
 import { MAX_COLL_RATIO } from '../pipes/manageMultiplyVaultCalculations'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
 
-//TODO max buy token
-function BuyTokenInput({
-  vault: { token },
-  updateBuy,
-  updateBuyUSD,
-  updateBuyMax,
-  buyAmountUSD,
-  buyAmount,
-  priceInfo: { currentCollateralPrice },
-}: ManageMultiplyVaultState) {
-  const maxDepositAmount = zero
-  const maxDepositAmountUSD = zero
+//TODO max buy token, not needed right now but may be useful in near feature according to the designs
+// function BuyTokenInput({
+//   vault: { token },
+//   updateBuy,
+//   updateBuyUSD,
+//   updateBuyMax,
+//   buyAmountUSD,
+//   buyAmount,
+//   priceInfo: { currentCollateralPrice },
+// }: ManageMultiplyVaultState) {
+//   const maxDepositAmount = zero
+//   const maxDepositAmountUSD = zero
+//
+//   return (
+//     <VaultActionInput
+//       action="Buy"
+//       token={token}
+//       tokenUsdPrice={currentCollateralPrice}
+//       showMax={true}
+//       hasAuxiliary={true}
+//       onSetMax={updateBuyMax!}
+//       maxAmountLabel={'Buying power'}
+//       amount={buyAmount}
+//       auxiliaryAmount={buyAmountUSD}
+//       maxAmount={maxDepositAmount}
+//       maxAuxiliaryAmount={maxDepositAmountUSD}
+//       onChange={handleNumericInput(updateBuy!)}
+//       onAuxiliaryChange={handleNumericInput(updateBuyUSD!)}
+//       hasError={false}
+//     />
+//   )
+// }
 
-  return (
-    <VaultActionInput
-      action="Buy"
-      token={token}
-      tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
-      onSetMax={updateBuyMax!}
-      maxAmountLabel={'Buying power'}
-      amount={buyAmount}
-      auxiliaryAmount={buyAmountUSD}
-      maxAmount={maxDepositAmount}
-      maxAuxiliaryAmount={maxDepositAmountUSD}
-      onChange={handleNumericInput(updateBuy!)}
-      onAuxiliaryChange={handleNumericInput(updateBuyUSD!)}
-      hasError={false}
-    />
-  )
-}
-
-//TODO max sell token
-function SellTokenInput({
-  accountIsController,
-  updateSell,
-  updateSellUSD,
-  updateSellMax,
-  sellAmount,
-  sellAmountUSD,
-  vault: { token, freeCollateral, freeCollateralUSD },
-  priceInfo: { currentCollateralPrice },
-}: ManageMultiplyVaultState) {
-  return (
-    <VaultActionInput
-      action="Sell"
-      amount={sellAmount}
-      tokenUsdPrice={currentCollateralPrice}
-      token={token}
-      showMax={true}
-      hasAuxiliary={true}
-      disabled={!accountIsController}
-      maxAmount={freeCollateral}
-      maxAmountLabel={'Max'}
-      onSetMax={updateSellMax}
-      onChange={handleNumericInput(updateSell!)}
-      auxiliaryAmount={sellAmountUSD}
-      maxAuxiliaryAmount={freeCollateralUSD}
-      onAuxiliaryChange={handleNumericInput(updateSellUSD!)}
-      hasError={false}
-    />
-  )
-}
+//TODO max sell token, not needed right now but may be useful in near feature according to the designs
+// function SellTokenInput({
+//   accountIsController,
+//   updateSell,
+//   updateSellUSD,
+//   updateSellMax,
+//   sellAmount,
+//   sellAmountUSD,
+//   vault: { token, freeCollateral, freeCollateralUSD },
+//   priceInfo: { currentCollateralPrice },
+// }: ManageMultiplyVaultState) {
+//   return (
+//     <VaultActionInput
+//       action="Sell"
+//       amount={sellAmount}
+//       tokenUsdPrice={currentCollateralPrice}
+//       token={token}
+//       showMax={true}
+//       hasAuxiliary={true}
+//       disabled={!accountIsController}
+//       maxAmount={freeCollateral}
+//       maxAmountLabel={'Max'}
+//       onSetMax={updateSellMax}
+//       onChange={handleNumericInput(updateSell!)}
+//       auxiliaryAmount={sellAmountUSD}
+//       maxAuxiliaryAmount={freeCollateralUSD}
+//       onAuxiliaryChange={handleNumericInput(updateSellUSD!)}
+//       hasError={false}
+//     />
+//   )
+// }
 
 function DepositTokenInput({
   maxDepositAmount,
@@ -205,13 +205,14 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     collapsed,
     multiply,
     hasToDepositCollateralOnEmptyVault,
+    depositAmount,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
+  const sliderMax = depositAmount?.gt(zero) ? maxCollRatio : MAX_COLL_RATIO
   const slider = new BigNumber(100).minus(
-    sliderValue.minus(liquidationRatio).div(maxCollRatio.minus(liquidationRatio)).times(100) ||
-      zero,
+    sliderValue.minus(liquidationRatio).div(sliderMax.minus(liquidationRatio)).times(100) || zero,
   )
 
   const sliderBackground =
@@ -263,7 +264,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
           disabled={hasToDepositCollateralOnEmptyVault}
           step={5}
           min={liquidationRatio.times(100).toNumber()}
-          max={MAX_COLL_RATIO.times(100).toNumber()}
+          max={sliderMax.times(100).toNumber()}
           value={
             requiredCollRatio?.times(100).toNumber() || collateralizationRatio.times(100).toNumber()
           }
@@ -289,51 +290,45 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
 }
 
 function AdjustPositionForm(props: ManageMultiplyVaultState) {
-  const {
-    vault: { token },
-    showSliderController,
-    toggleSliderController,
-    mainAction,
-    setMainAction,
-  } = props
+  return <SliderInput {...props} />
 
-  if (showSliderController) {
-    return (
-      <>
-        <SliderInput {...props} />
-        {/* TO BE RESTORED */}
-        {/* <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
-          <Text pr={1}>Or enter an amount of ETH</Text>
-        </Button> */}
-      </>
-    )
-  }
-
-  return (
-    <Box>
-      <Flex>
-        <Button
-          onClick={() => setMainAction!('buy')}
-          variant={mainAction === 'buy' ? 'beanActive' : 'bean'}
-          sx={{ mr: 2 }}
-        >
-          Buy {token}
-        </Button>
-        <Button
-          onClick={() => setMainAction!('sell')}
-          variant={mainAction === 'sell' ? 'beanActive' : 'bean'}
-        >
-          Sell {token}
-        </Button>
-      </Flex>
-      <Box mt={3} pb={2}>
-        {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
-      </Box>
-      <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
-        <Text pr={1}>Or use the risk slider</Text>
-      </Button>
-    </Box>
-  )
+  // TODO TO BE RESTORED, not needed right now but may be useful in near feature according to the designs
+  // if (showSliderController) {
+  // return (
+  //   <>
+  //     <SliderInput {...props} />
+  //     <Button sx={{ py: 2 }} variant="actionOption" onClick={toggleSliderController!}>
+  //       <Text pr={1}>Or enter an amount of ETH</Text>
+  //     </Button>
+  //   </>
+  // )
+  // }
+  //
+  // return (
+  //   <Box>
+  //     <Flex>
+  //       <Button
+  //         onClick={() => setMainAction!('buy')}
+  //         variant={mainAction === 'buy' ? 'beanActive' : 'bean'}
+  //         sx={{ mr: 2 }}
+  //       >
+  //         Buy {token}
+  //       </Button>
+  //       <Button
+  //         onClick={() => setMainAction!('sell')}
+  //         variant={mainAction === 'sell' ? 'beanActive' : 'bean'}
+  //       >
+  //         Sell {token}
+  //       </Button>
+  //     </Flex>
+  //     <Box mt={3} pb={2}>
+  //       {mainAction === 'buy' ? <BuyTokenInput {...props} /> : <SellTokenInput {...props} />}
+  //     </Box>
+  //     <Button sx={{ py: 2 }} variant="actionOption" mt={3} onClick={toggleSliderController!}>
+  //       <Text pr={1}>Or use the risk slider</Text>
+  //     </Button>
+  //   </Box>
+  // )
 }
 
 const OTHER_ACTIONS_OPTIONS: { value: OtherAction; label: string }[] = [
@@ -483,29 +478,31 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
 }
 
 function DepositCollateralAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const { showSliderController, toggleSliderController, depositAmount } = props
 
   return (
     <Grid gap={2}>
       <DepositTokenInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Increase multiply with this transaction</Text>
-        </Button>
+      {depositAmount?.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Increase multiply with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }

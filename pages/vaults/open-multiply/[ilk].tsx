@@ -9,6 +9,7 @@ import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { supportedMultiplyIlks } from '../../../helpers/productCards'
+import { MultiplySurveyButtons } from '../../multiply'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
@@ -39,7 +40,10 @@ export default function OpenVault({ ilk }: { ilk: string }) {
         {multiplyContainerMap[ilk] ? (
           multiplyContainerMap[ilk](ilk)
         ) : (
-          <OpenMultiplyVaultView ilk={ilk} />
+          <>
+            <OpenMultiplyVaultView ilk={ilk} />
+            <MultiplySurveyButtons />
+          </>
         )}
       </WithTermsOfService>
     </WithWalletConnection>
