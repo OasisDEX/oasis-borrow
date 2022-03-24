@@ -23,13 +23,22 @@ const widgetTheme = {
   borderRadius: radii.mediumLarge,
 }
 
+const wrapperPath = 'div > div:nth-child(2) > div:nth-child(2)'
+
 const cssPaths = {
-  swapBtn: 'div > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div > button',
+  swapBtn: `${wrapperPath} > div:nth-child(2) > div > button`,
   token1Btn:
-    'div > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > button',
+    `${wrapperPath} > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > button`,
   token2Btn:
-    'div > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > button',
+    `${wrapperPath} > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > button`,
+  input1:
+    `${wrapperPath} > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div > input`,
+  input2:
+    `${wrapperPath} > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div > input`,
+  confirmBtn:
+    `${wrapperPath} > div:nth-child(3) > div > div:nth-child(5) > button`
 }
+
 
 export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   const [SwapWidget, setSwapWidget] = useState()
@@ -43,14 +52,27 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
     )
   }, [])
 
-  const { swapBtn, token1Btn, token2Btn } = cssPaths
+  const { swapBtn, token1Btn, token2Btn, input1, input2, confirmBtn } = cssPaths
 
   return web3Provider && SwapWidget ? (
     <Box
       sx={{
-        [swapBtn]: { border: '3px solid', borderColor: 'primary' },
-        [token1Btn + ', ' + token2Btn]: { border: '1px solid', borderColor: 'primary' },
+        [swapBtn]: { border: '3px solid', borderColor: 'border', ':hover': { borderColor: 'primary', bg: 'surface' } },
+        [token1Btn + '[color="interactive"], ' + token2Btn + '[color="interactive"]']: { border: '1px solid', borderColor: 'border', ':hover': { borderColor: 'primary', bg: 'surface'} },
       }}
+      css={`
+        ${token1Btn} > div > div, ${token2Btn} > div > div {
+          font-size: 18px !important;
+        }
+
+        ${input1}, ${input2} {
+          font-family: '"FT Polar Trial", "Helvetica Neue", sans-serif' !important;
+        }
+
+        ${confirmBtn} {
+          border-radius: 32px !important;
+        }
+      `}
     >
       {/* @ts-ignore */}
       <SwapWidget provider={web3Provider} theme={widgetTheme} tokenList={tokenList.tokens} />

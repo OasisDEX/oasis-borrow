@@ -308,7 +308,7 @@ export function UserSettings() {
         }}
         onClick={() => disconnect(web3Context)}
       >
-        <Icon name="sign_out" color="primaryEmphasis" />
+        <Icon name="sign_out" color="primaryEmphasis" size="auto" width={20} />
         <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primaryEmphasis', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>
@@ -316,9 +316,9 @@ export function UserSettings() {
       <Flex
         sx={{
           px: 0,
-          my: 3,
-          py: 1,
-          mx: 1,
+          mt: 3,
+          pb: 1,
+          pt: 2
         }}
       >
         <AppLink
