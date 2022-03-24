@@ -4,6 +4,7 @@ import { ThemeProvider } from 'theme-ui'
 import { theme } from '../theme'
 import { I18nextProvider } from 'react-i18next'
 import i18n from './i18n'
+import { RouterContext } from 'next/dist/next-server/lib/router-context'
 
 addDecorator((storyFn) => <I18nextProvider i18n={i18n}>{storyFn()}</I18nextProvider>)
 addDecorator((storyFn) => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>)
@@ -14,5 +15,8 @@ export const parameters = {
   options: {
     showPanel: false,
     panelPosition: 'right',
+  },
+  nextRouter: {
+    Provider: RouterContext.Provider,
   },
 }

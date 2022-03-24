@@ -3,14 +3,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
-import { AccountButton } from 'features/account/Account'
-import { UserSettingsButton } from 'features/userSettings/UserSettingsView'
+import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { LINKS } from 'helpers/constants'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
-import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
@@ -21,12 +21,9 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
-import { ExchangeButton } from './exchangeMenu/ExchangeButton'
+import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
-
-const {
-  publicRuntimeConfig: { apiHost },
-} = getConfig()
+import { UniswapWidget } from './uniswapWidget/UniswapWidget'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -91,10 +88,6 @@ export function BackArrow() {
   )
 }
 
-interface UserAccountProps {
-  position: 'fixed' | 'relative'
-}
-
 function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   const { accountData$, context$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
@@ -133,25 +126,76 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-function UserAccount({ position }: UserAccountProps) {
+function ButtonDropdown({
+  buttonContents,
+  round,
+  dropdownSx,
+  children,
+}: { buttonContents: JSX.Element; round?: boolean; dropdownSx?: SxStyleProp } & WithChildren) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
+
+  return (
+    <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
+      <Button
+        variant={round ? 'menuButtonRound' : 'menuButton'}
+        onClick={() => setIsOpen(!isOpen)}
+        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary', p: 1 }}
+      >
+        {buttonContents}
+      </Button>
+      <Box
+        sx={{
+          display: isOpen ? 'block' : 'none',
+          p: 0,
+          position: 'absolute',
+          top: 'auto',
+          left: 'auto',
+          right: 1,
+          bottom: 0,
+          transform: 'translateY(calc(100% + 10px))',
+          bg: 'background',
+          boxShadow: 'userSettingsCardDropdown',
+          borderRadius: 'mediumLarge',
+          border: 'none',
+          overflowX: 'visible',
+          zIndex: 0,
+          minWidth: 7,
+          minHeight: 7,
+          ...dropdownSx,
+        }}
+      >
+        {children}
+      </Box>
+    </Flex>
+  )
+}
+
+function UserDesktopMenu() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
 
-  const web3Provider = (() => {
-    const { web3ContextConnected$ } = useAppContext()
-    const [web3Context] = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-  })()
+  const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
+  const [web3ContextConnected] = useObservable(web3ContextConnected$)
+  const web3Provider =
+    web3ContextConnected?.status !== 'connectedReadonly'
+      ? web3ContextConnected?.web3.currentProvider
+      : null
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
+
+  const shouldHideSettings =
+    !context ||
+    context.status === 'connectedReadonly' ||
+    !accountData ||
+    web3Context?.status !== 'connected'
 
   return (
     <Flex
       sx={{
-        position,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        bg: ['rgba(255,255,255,0.9)', 'transparent'],
-        p: [3, 0],
+        p: 0,
         justifyContent: 'space-between',
         gap: 2,
         zIndex: 3,
@@ -160,12 +204,22 @@ function UserAccount({ position }: UserAccountProps) {
       <Flex>
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
         {exchangeEnabled && web3Provider ? (
-          <Box sx={{ display: ['none', 'block'] }}>
-            <ExchangeButton web3Provider={web3Provider} />
-          </Box>
+          <ButtonDropdown
+            buttonContents={<Icon name="exchange" size="auto" width="20" />}
+            round={true}
+          >
+            <UniswapWidget web3Provider={web3Provider} />
+          </ButtonDropdown>
         ) : null}
-        <UserSettingsButton />
-        <AccountButton />
+        {!shouldHideSettings && (
+          <ButtonDropdown
+            buttonContents={
+              <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
+            }
+          >
+            <UserSettings sx={{ p: 4, minWidth: '380px' }} />
+          </ButtonDropdown>
+        )}
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['block', 'none'] }}>
@@ -178,6 +232,79 @@ function UserAccount({ position }: UserAccountProps) {
   )
 }
 
+function MobileBottomMenu() {
+  const [opened, setOpened] = useState(false)
+  const { accountData$, context$, web3Context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
+
+  if (
+    !context ||
+    context.status === 'connectedReadonly' ||
+    !accountData ||
+    web3Context?.status !== 'connected'
+  )
+    return null
+
+  return (
+    <>
+      <Flex
+        sx={{
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          bg: 'rgba(255,255,255,0.9)',
+          p: 3,
+          justifyContent: 'space-between',
+          gap: 2,
+          zIndex: 3,
+        }}
+      >
+        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: '100%' }}>
+          <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
+        </Button>
+      </Flex>
+      <MobileSidePanelPortal>
+        <Box
+          sx={{
+            display: 'block',
+            position: 'fixed',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            transition: '0.3s transform ease-in-out',
+            transform: `translateY(${opened ? '0' : '100'}%)`,
+            bg: 'background',
+            p: 3,
+            pt: 0,
+            zIndex: 'modal',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              py: 1,
+            }}
+          >
+            <ModalCloseIcon
+              close={() => setOpened(false)}
+              sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+              size={3}
+            />
+          </Box>
+          <Card variant="vaultFormContainer" sx={{ p: 2 }}>
+            <UserSettings />
+          </Card>
+        </Box>
+      </MobileSidePanelPortal>
+    </>
+  )
+}
+
 function navLinkColor(isActive: boolean) {
   return isActive ? 'primary' : 'lavender'
 }
@@ -186,6 +313,13 @@ function ConnectedHeader() {
   const { pathname } = useRouter()
   const { t } = useTranslation()
   const earnEnabled = useFeatureToggle('EarnProduct')
+  const exchangeEnabled = useFeatureToggle('Exchange')
+
+  const web3Provider = (() => {
+    const { web3ContextConnected$ } = useAppContext()
+    const [web3Context] = useObservable(web3ContextConnected$)
+    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
+  })()
 
   return (
     <>
@@ -210,26 +344,26 @@ function ConnectedHeader() {
               <Flex sx={{ ml: 5, zIndex: 1 }}>
                 <AppLink
                   variant="links.navHeader"
-                  href={HEADER_LINKS.multiply}
+                  href={LINKS.multiply}
                   sx={{
                     mr: 4,
-                    color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)),
+                    color: navLinkColor(pathname.includes(LINKS.multiply)),
                   }}
                 >
                   {t('nav.multiply')}
                 </AppLink>
                 <AppLink
                   variant="links.navHeader"
-                  href={HEADER_LINKS.borrow}
-                  sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+                  href={LINKS.borrow}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.borrow)) }}
                 >
                   {t('nav.borrow')}
                 </AppLink>
                 {earnEnabled && (
                   <AppLink
                     variant="links.navHeader"
-                    href={HEADER_LINKS.earn}
-                    sx={{ mr: 4, color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                    href={LINKS.earn}
+                    sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
                   >
                     {t('nav.earn')}
                   </AppLink>
@@ -237,7 +371,7 @@ function ConnectedHeader() {
                 <AssetsDropdown />
               </Flex>
             </Flex>
-            <UserAccount position="relative" />
+            <UserDesktopMenu />
           </>
         </BasicHeader>
       </Box>
@@ -245,23 +379,31 @@ function ConnectedHeader() {
         <BasicHeader variant="appContainer">
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
-            <PositionsLink />
           </Flex>
+          {exchangeEnabled && web3Provider ? (
+            <Box sx={{ mr: 2 }}>
+              <ButtonDropdown
+                buttonContents={<Icon name="exchange" size="auto" width="20" />}
+                round={true}
+                dropdownSx={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  right: 'unset',
+                  bottom: 'unset',
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }}
+              >
+                <UniswapWidget web3Provider={web3Provider} />
+              </ButtonDropdown>
+            </Box>
+          ) : null}
           <MobileMenu />
-          <UserAccount position="fixed" />
+          <MobileBottomMenu />
         </BasicHeader>
       </Box>
     </>
   )
-}
-
-const HEADER_LINKS = {
-  'dai-wallet': `${apiHost}/daiwallet`,
-  learn: 'https://kb.oasis.app',
-  blog: 'https://blog.oasis.app',
-  multiply: `/multiply`,
-  borrow: `/borrow`,
-  earn: '/earn',
 }
 
 function HeaderDropdown({
@@ -364,37 +506,15 @@ function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
-  const isConnected = !!(context as ContextConnected)?.account
 
-  const MOBILE_MENU_DISCONNECTED_SECTIONS = [
+  const MOBILE_MENU_SECTIONS = [
     {
       titleKey: 'nav.products',
       links: [
-        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
-        { labelKey: 'nav.dai-wallet', url: HEADER_LINKS['dai-wallet'] },
-      ],
-    },
-    {
-      titleKey: 'nav.resources',
-      links: [
-        { labelKey: 'nav.learn', url: HEADER_LINKS['learn'] },
-        { labelKey: 'nav.blog', url: HEADER_LINKS['blog'] },
-      ],
-    },
-  ]
-
-  const MOBILE_MENU_CONNECTED_SECTIONS = [
-    {
-      titleKey: 'nav.products',
-      links: [
-        { labelKey: 'nav.multiply', url: HEADER_LINKS.multiply },
-        { labelKey: 'nav.borrow', url: HEADER_LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: HEADER_LINKS.earn }] : []),
+        { labelKey: 'nav.multiply', url: LINKS.multiply },
+        { labelKey: 'nav.borrow', url: LINKS.borrow },
+        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
       ],
     },
   ]
@@ -429,67 +549,36 @@ function MobileMenu() {
           p: 5,
         }}
       >
-        <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {!isConnected &&
-            MOBILE_MENU_DISCONNECTED_SECTIONS.map((section) => (
-              <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
-          {isConnected &&
-            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
-              <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
+        <Grid sx={{ rowGap: 4, mt: 3, mx: 'auto', maxWidth: 7 }}>
+          <PositionsLink />
+          {MOBILE_MENU_SECTIONS.map((section) => (
+            <Grid key={section.titleKey}>
+              {section.links.map((link) =>
+                link.url ? (
+                  <AppLink
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{
+                      textDecoration: 'none',
+                      color: navLinkColor(pathname.includes(link.url)),
+                    }}
+                    href={link.url}
+                    onClick={closeMenu}
+                  >
+                    {t(link.labelKey)}
+                  </AppLink>
+                ) : (
+                  <Text
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{ fontWeight: 'semiBold' }}
+                  >
+                    {t(link.labelKey)}
+                  </Text>
+                ),
+              )}
+            </Grid>
+          ))}
           <Grid>
             <Text variant="links.navHeader">{t('nav.assets')}</Text>
             <AssetsSelect
@@ -507,12 +596,17 @@ function MobileMenu() {
           </Grid>
         </Grid>
       </Box>
-      <Icon
-        name={isOpen ? 'close' : 'menu'}
-        sx={{ zIndex: 'mobileMenu', cursor: 'pointer' }}
-        onClick={() => setIsOpen(!isOpen)}
-        size="18px"
-      />
+      <Button
+        variant="menuButtonRound"
+        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}
+      >
+        <Icon
+          name={isOpen ? 'close' : 'menu'}
+          onClick={() => setIsOpen(!isOpen)}
+          size="auto"
+          width="12px"
+        />
+      </Button>
     </>
   )
 }
@@ -530,23 +624,23 @@ function DisconnectedHeader() {
             <Logo />
             <AppLink
               variant="links.navHeader"
-              href={HEADER_LINKS.multiply}
-              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.multiply)) }}
+              href={LINKS.multiply}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.multiply)) }}
             >
               {t('nav.multiply')}
             </AppLink>
             <AppLink
               variant="links.navHeader"
-              href={HEADER_LINKS.borrow}
-              sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.borrow)) }}
+              href={LINKS.borrow}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.borrow)) }}
             >
               {t('nav.borrow')}
             </AppLink>
             {earnEnabled && (
               <AppLink
                 variant="links.navHeader"
-                href={HEADER_LINKS.earn}
-                sx={{ color: navLinkColor(pathname.includes(HEADER_LINKS.earn)) }}
+                href={LINKS.earn}
+                sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
               >
                 {t('nav.earn')}
               </AppLink>
