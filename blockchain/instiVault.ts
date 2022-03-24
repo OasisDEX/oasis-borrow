@@ -16,7 +16,6 @@ export interface InstiVault extends Vault {
   originationFeePercent: BigNumber
   activeCollRatio: BigNumber
   activeCollRatioPriceUSD: BigNumber
-  debtCeiling: BigNumber
   termEnd: Date
   currentFixedFee: BigNumber
   nextFeeChange: string
@@ -31,9 +30,11 @@ export function createInstiVault$(
   ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
 
-  charterNib$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
-  charterPeace$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
-  charterUline$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  charter: {
+    nib$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+    peace$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+    uline$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+  },
 
   id: BigNumber,
 ): Observable<InstiVault> {
@@ -42,9 +43,9 @@ export function createInstiVault$(
       combineLatest(
         ilkToToken$(ilk),
         context$,
-        charterNib$({ ilk, usr: owner }),
-        charterPeace$({ ilk, usr: owner }),
-        charterUline$({ ilk, usr: owner }),
+        charter.nib$({ ilk, usr: owner }),
+        charter.peace$({ ilk, usr: owner }),
+        charter.uline$({ ilk, usr: owner }),
       ).pipe(
         switchMap(([token, context, nib, peace, uline]) => {
           return combineLatest(
@@ -64,9 +65,9 @@ export function createInstiVault$(
                   collateralizationDangerThreshold,
                   collateralizationWarningThreshold,
                   stabilityFee,
-                  ilkDebtAvailable,
                 },
               ]) => {
+                const ilkDebtAvailable = uline.minus(normalizedDebt.times(debtScalingFactor))
                 return of({
                   id,
                   makerType,
@@ -94,7 +95,6 @@ export function createInstiVault$(
                   originationFeePercent: nib,
                   activeCollRatio: peace,
                   activeCollRatioPriceUSD: peace,
-                  debtCeiling: uline,
                   termEnd: moment().add(3, 'months').toDate(),
                   currentFixedFee: new BigNumber(0.015),
                   nextFeeChange: '1.4% in 20.4m',

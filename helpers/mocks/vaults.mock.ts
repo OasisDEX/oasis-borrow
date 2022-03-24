@@ -155,9 +155,11 @@ export function mockVault$({
         account: defaultController,
         status: 'connected',
       }),
-      charterNib$,
-      charterPeace$,
-      charterUline$,
+      {
+        nib$: charterNib$,
+        peace$: charterPeace$,
+        uline$: charterUline$,
+      },
       id,
     ),
   }

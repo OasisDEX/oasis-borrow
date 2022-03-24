@@ -405,6 +405,12 @@ export function setupAppContext() {
 
   const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
+  const charter = {
+    nib$: (args: { ilk: string; usr: string }) => charterNib$(args),
+    peace$: (args: { ilk: string; usr: string }) => charterPeace$(args),
+    uline$: (args: { ilk: string; usr: string }) => charterUline$(args),
+  }
+
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
   )
@@ -479,9 +485,7 @@ export function setupAppContext() {
       oraclePriceData$,
       ilkToToken$,
       context$,
-      charterNib$,
-      charterPeace$,
-      charterUline$,
+      charter,
     ),
   )
 
