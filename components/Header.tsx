@@ -4,6 +4,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
+import { LINKS } from 'helpers/constants'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
@@ -23,7 +24,6 @@ import { AssetsSelect } from './AssetsSelect'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
-import { LINKS } from 'helpers/constants'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -131,7 +131,7 @@ function ButtonDropdown({
   round,
   dropdownSx,
   children,
-}: { buttonContents: JSX.Element; round?: boolean, dropdownSx?: SxStyleProp } & WithChildren) {
+}: { buttonContents: JSX.Element; round?: boolean; dropdownSx?: SxStyleProp } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
@@ -163,7 +163,7 @@ function ButtonDropdown({
           zIndex: 0,
           minWidth: 7,
           minHeight: 7,
-          ...dropdownSx
+          ...dropdownSx,
         }}
       >
         {children}
@@ -178,17 +178,19 @@ function UserDesktopMenu() {
 
   const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
-  const web3Provider = web3ContextConnected?.status !== 'connectedReadonly' ? web3ContextConnected?.web3.currentProvider : null
+  const web3Provider =
+    web3ContextConnected?.status !== 'connectedReadonly'
+      ? web3ContextConnected?.web3.currentProvider
+      : null
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
 
-  const shouldHideSettings = (
+  const shouldHideSettings =
     !context ||
     context.status === 'connectedReadonly' ||
     !accountData ||
     web3Context?.status !== 'connected'
-  )
 
   return (
     <Flex
@@ -209,9 +211,15 @@ function UserDesktopMenu() {
             <UniswapWidget web3Provider={web3Provider} />
           </ButtonDropdown>
         ) : null}
-        {!shouldHideSettings && <ButtonDropdown buttonContents={<UserSettingsButtonContents {...{context, accountData, web3Context}} />}>
-          <UserSettings sx={{p: 4, minWidth: '380px'}} />
-        </ButtonDropdown>}
+        {!shouldHideSettings && (
+          <ButtonDropdown
+            buttonContents={
+              <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
+            }
+          >
+            <UserSettings sx={{ p: 4, minWidth: '380px' }} />
+          </ButtonDropdown>
+        )}
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['block', 'none'] }}>
@@ -255,7 +263,7 @@ function MobileBottomMenu() {
         }}
       >
         <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: '100%' }}>
-          <UserSettingsButtonContents {...{context, accountData, web3Context}} />
+          <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
       </Flex>
       <MobileSidePanelPortal>
@@ -274,20 +282,20 @@ function MobileBottomMenu() {
             zIndex: 'modal',
           }}
         >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            py: 1,
-          }}
-        >
-        <ModalCloseIcon
-          close={() => setOpened(false)}
-          sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
-          size={3}
-        />
-      </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+              py: 1,
+            }}
+          >
+            <ModalCloseIcon
+              close={() => setOpened(false)}
+              sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+              size={3}
+            />
+          </Box>
           <Card variant="vaultFormContainer" sx={{ p: 2 }}>
             <UserSettings />
           </Card>
@@ -377,12 +385,19 @@ function ConnectedHeader() {
               <ButtonDropdown
                 buttonContents={<Icon name="exchange" size="auto" width="20" />}
                 round={true}
-                dropdownSx={{ position: 'fixed', top: '50%', left: '50%', right: 'unset', bottom: 'unset', transform: 'translateX(-50%) translateY(-50%)'}}
+                dropdownSx={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  right: 'unset',
+                  bottom: 'unset',
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }}
               >
                 <UniswapWidget web3Provider={web3Provider} />
               </ButtonDropdown>
             </Box>
-        ) : null}
+          ) : null}
           <MobileMenu />
           <MobileBottomMenu />
         </BasicHeader>
@@ -536,34 +551,34 @@ function MobileMenu() {
       >
         <Grid sx={{ rowGap: 4, mt: 3, mx: 'auto', maxWidth: 7 }}>
           <PositionsLink />
-          { MOBILE_MENU_SECTIONS.map((section) => (
-              <Grid key={section.titleKey}>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
+          {MOBILE_MENU_SECTIONS.map((section) => (
+            <Grid key={section.titleKey}>
+              {section.links.map((link) =>
+                link.url ? (
+                  <AppLink
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{
+                      textDecoration: 'none',
+                      color: navLinkColor(pathname.includes(link.url)),
+                    }}
+                    href={link.url}
+                    onClick={closeMenu}
+                  >
+                    {t(link.labelKey)}
+                  </AppLink>
+                ) : (
+                  <Text
+                    key={link.labelKey}
+                    variant="text.paragraph1"
+                    sx={{ fontWeight: 'semiBold' }}
+                  >
+                    {t(link.labelKey)}
+                  </Text>
+                ),
+              )}
+            </Grid>
+          ))}
           <Grid>
             <Text variant="links.navHeader">{t('nav.assets')}</Text>
             <AssetsSelect
@@ -581,7 +596,10 @@ function MobileMenu() {
           </Grid>
         </Grid>
       </Box>
-      <Button variant="menuButtonRound" sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}>
+      <Button
+        variant="menuButtonRound"
+        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}
+      >
         <Icon
           name={isOpen ? 'close' : 'menu'}
           onClick={() => setIsOpen(!isOpen)}

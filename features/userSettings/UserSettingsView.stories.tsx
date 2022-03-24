@@ -1,20 +1,19 @@
-import { storiesOf } from '@storybook/react'
-import { WithChildren } from 'helpers/types'
-import React from 'react'
-import { Box, Container, Heading } from 'theme-ui'
 import { Web3Context } from '@oasisdex/web3-context'
+import { storiesOf } from '@storybook/react'
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { ModalProvider } from 'helpers/modalHook'
+import { WithChildren } from 'helpers/types'
+import React from 'react'
 import { of } from 'rxjs'
+import { Box, Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
 import { SLIPPAGE_DEFAULT, SLIPPAGE_OPTIONS, UserSettingsState } from './userSettings'
 import { UserSettings } from './UserSettingsView'
-import BigNumber from 'bignumber.js'
 
 const stories = storiesOf('User settings', module)
-
 
 const protoWeb3Context: Web3Context = {
   chainId: 42,
@@ -33,16 +32,17 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
       <Heading variant="smallHeading" sx={{ mt: 5, mb: 3, textAlign: 'right' }}>
         {title}
       </Heading>
-      <Box sx={{bg: 'pink', p: 6}}>
-      <Box sx={{
-        bg: 'surface',
-        boxShadow: 'userSettingsCardDropdown',
-        borderRadius: 'mediumLarge',
-        width: '380px',
-      }}
-      >
-            {children}
-      </Box>
+      <Box sx={{ bg: 'pink', p: 6 }}>
+        <Box
+          sx={{
+            bg: 'surface',
+            boxShadow: 'userSettingsCardDropdown',
+            borderRadius: 'mediumLarge',
+            width: '380px',
+          }}
+        >
+          {children}
+        </Box>
       </Box>
     </Container>
   )
@@ -66,11 +66,11 @@ function MockContextProvider({
 }: {
   title: string
   userSettings: UserSettingsState
-} & WithChildren ) {
+} & WithChildren) {
   const ctx = ({
     web3Context$: of(protoWeb3Context),
     userSettings$: of(userSettings),
-    accountData$: of({daiBalance: new BigNumber(1000)})
+    accountData$: of({ daiBalance: new BigNumber(1000) }),
   } as any) as AppContext
 
   return (
@@ -92,36 +92,35 @@ stories.add('Editing start', () => {
 
 stories.add('Editing', () => {
   return (
-    <MockContextProvider title="Editing Slippage"
-      userSettings={{ ...settings, slippageInput: SLIPPAGE_OPTIONS[1]}}>
-       <UserSettings />
+    <MockContextProvider
+      title="Editing Slippage"
+      userSettings={{ ...settings, slippageInput: SLIPPAGE_OPTIONS[1] }}
+    >
+      <UserSettings />
     </MockContextProvider>
   )
 })
 
 stories.add('In progress', () => {
   return (
-    <MockContextProvider title="In progress" 
-      userSettings={{ ...settings, stage: 'inProgress'}}>
-       <UserSettings />
+    <MockContextProvider title="In progress" userSettings={{ ...settings, stage: 'inProgress' }}>
+      <UserSettings />
     </MockContextProvider>
   )
 })
 
 stories.add('Failure', () => {
   return (
-    <MockContextProvider title="Failure" 
-      userSettings={{ ...settings, stage: 'failure'}}>
-       <UserSettings />
+    <MockContextProvider title="Failure" userSettings={{ ...settings, stage: 'failure' }}>
+      <UserSettings />
     </MockContextProvider>
   )
 })
 
 stories.add('Success', () => {
   return (
-    <MockContextProvider title="Success" 
-      userSettings={{ ...settings, stage: 'success'}}>
-       <UserSettings />
+    <MockContextProvider title="Success" userSettings={{ ...settings, stage: 'success' }}>
+      <UserSettings />
     </MockContextProvider>
   )
 })

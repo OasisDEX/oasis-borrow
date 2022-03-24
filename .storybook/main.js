@@ -7,9 +7,9 @@ module.exports = {
     '../components/**/*.stories.tsx',
   ],
   addons: [
-    '@storybook/addon-links', 
-    '@storybook/addon-essentials', 
-    '@storybook/addon-postcss', 
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-postcss',
     'storybook-addon-next-router',
   ],
   // typescript: {

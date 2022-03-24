@@ -200,7 +200,7 @@ const oasisBaseTheme = {
     address: {
       variant: 'paragraph3',
       fontWeight: 'medium',
-      letterSpacing: '0.02em'
+      letterSpacing: '0.02em',
     },
   },
   borders: {
@@ -688,7 +688,7 @@ const oasisBaseTheme = {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      flexShrink: 0
+      flexShrink: 0,
     },
     unStyled: {
       background: 'unset',
@@ -780,8 +780,8 @@ const oasisBaseTheme = {
       color: 'primaryEmphasis',
       fontWeight: 'medium',
       fontSize: 1,
-      textDecoration: 'none'
-    }
+      textDecoration: 'none',
+    },
   },
   icons,
   radio: {

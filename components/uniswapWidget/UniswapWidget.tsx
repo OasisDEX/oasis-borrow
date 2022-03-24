@@ -28,25 +28,17 @@ const wrapperPath = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
 const cssPaths = {
   // main screen
   swapBtn: `${wrapperPath} > div:nth-of-type(2) > div > button`,
-  token1Btn:
-    `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
-  token2Btn:
-    `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
-  input1:
-    `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
-  input2:
-    `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
-  confirmBtn:
-    `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(4) > button`,
+  token1Btn: `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
+  token2Btn: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
+  input1: `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
+  input2: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
+  confirmBtn: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(4) > button`,
 
   // token selection
-  hoverAppended: // this is used by the widget to expand the hover effect through the scrollbar
-    `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(1)`,
-  tokenOption:
-    `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`
-
+  // this is used by the widget to expand the hover effect through the scrollbar
+  hoverAppended: `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(1)`,
+  tokenOption: `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
 }
-
 
 export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   const [SwapWidget, setSwapWidget] = useState()
@@ -65,10 +57,18 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   return web3Provider && SwapWidget ? (
     <Box
       sx={{
-        [swapBtn]: { border: '3px solid', borderColor: 'border', ':hover': { borderColor: 'primary', bg: 'surface' } },
-        [token1Btn + '[color="interactive"], ' + token2Btn + '[color="interactive"]']: { border: '1px solid', borderColor: 'border', ':hover': { borderColor: 'primary', bg: 'surface'} },
+        [swapBtn]: {
+          border: '3px solid',
+          borderColor: 'border',
+          ':hover': { borderColor: 'primary', bg: 'surface' },
+        },
+        [token1Btn + '[color="interactive"], ' + token2Btn + '[color="interactive"]']: {
+          border: '1px solid',
+          borderColor: 'border',
+          ':hover': { borderColor: 'primary', bg: 'surface' },
+        },
         [hoverAppended]: { display: 'none' },
-        [tokenOption]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px' }
+        [tokenOption]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px' },
       }}
       css={`
         ${token1Btn} > div > div, ${token2Btn} > div > div {

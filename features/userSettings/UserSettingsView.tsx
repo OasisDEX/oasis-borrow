@@ -127,105 +127,114 @@ function SlippageSettingsForm() {
     return null
   }
 
-  const { slippage, slippageInput, setSlippageInput, errors, warnings, stage, saveSettings, canProgress } = userSettings
+  const {
+    slippage,
+    slippageInput,
+    setSlippageInput,
+    errors,
+    warnings,
+    stage,
+    saveSettings,
+    canProgress,
+  } = userSettings
 
   return (
     <>
-    <Box>
       <Box>
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
-          {t('user-settings.slippage-limit.preset-description')}
-        </Text>
-        <Link href="/support#using-multiply" passHref>
-          <ThemeLink target="_self" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
-            {t('user-settings.slippage-limit.read-more')}
-          </ThemeLink>
-        </Link>
-        <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
-          Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
-        </Text>
-        <Flex>
-          {SLIPPAGE_OPTIONS.map((option) => (
-            <SlippageOptionButton
-              key={option.toFixed()}
-              option={option}
-              onClick={() => setSlippageInput(option)}
-              active={slippageInput.eq(option)}
-            />
-          ))}
-        </Flex>
-      </Box>
-      <Box my={3}>
-        <Flex
-          sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
-          onClick={() => setCustomOpened(!customOpened)}
-        >
-          <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
-            {t('user-settings.slippage-limit.custom-title')}
+        <Box>
+          <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
+            {t('user-settings.slippage-limit.preset-description')}
           </Text>
-          <Icon
-            size="auto"
-            width="12"
-            height="7"
-            name={customOpened ? 'chevron_up' : 'chevron_down'}
-            sx={{ ml: '6px', position: 'relative', top: '1px' }}
-          />
-        </Flex>
-        {customOpened && (
-          <Card sx={{ mt: 3, borderRadius: 'mediumLarge' }}>
-            <Grid px={2} gap={2}>
-              <Text variant="paragraph3" sx={{ fontWeight: 'medium' }}>
-                {t('user-settings.slippage-limit.custom-label')}
-              </Text>
-              <BigNumberInput
-                type="text"
-                mask={createNumberMask({
-                  allowDecimal: true,
-                  prefix: '',
-                })}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setSlippageInput(new BigNumber(e.target.value).div(100))
-                }
-                value={slippageInput ? formatPrecision(slippageInput.times(100), 2) : undefined}
-                sx={{ variant: 'forms.inputSecondary' }}
+          <Link href="/support#using-multiply" passHref>
+            <ThemeLink target="_self" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
+              {t('user-settings.slippage-limit.read-more')}
+            </ThemeLink>
+          </Link>
+          <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
+            Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
+          </Text>
+          <Flex>
+            {SLIPPAGE_OPTIONS.map((option) => (
+              <SlippageOptionButton
+                key={option.toFixed()}
+                option={option}
+                onClick={() => setSlippageInput(option)}
+                active={slippageInput.eq(option)}
               />
-            </Grid>
-          </Card>
-        )}
-      </Box>
-      <SlippageLimitMessages {...{ errors, warnings }} />
-    </Box>
-    {!slippage.eq(slippageInput) && (
-      <Button
-        disabled={!canProgress || stage === 'inProgress'}
-        onClick={saveSettings}
-        sx={{ mt: 2, width: '100%' }}
-      >
-        <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
-          {stage === 'inProgress' && (
-            <AppSpinner
-              variant="styles.spinner.large"
-              sx={{ color: 'surface', display: 'flex', mr: 2 }}
+            ))}
+          </Flex>
+        </Box>
+        <Box my={3}>
+          <Flex
+            sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
+            onClick={() => setCustomOpened(!customOpened)}
+          >
+            <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
+              {t('user-settings.slippage-limit.custom-title')}
+            </Text>
+            <Icon
+              size="auto"
+              width="12"
+              height="7"
+              name={customOpened ? 'chevron_up' : 'chevron_down'}
+              sx={{ ml: '6px', position: 'relative', top: '1px' }}
             />
+          </Flex>
+          {customOpened && (
+            <Card sx={{ mt: 3, borderRadius: 'mediumLarge' }}>
+              <Grid px={2} gap={2}>
+                <Text variant="paragraph3" sx={{ fontWeight: 'medium' }}>
+                  {t('user-settings.slippage-limit.custom-label')}
+                </Text>
+                <BigNumberInput
+                  type="text"
+                  mask={createNumberMask({
+                    allowDecimal: true,
+                    prefix: '',
+                  })}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setSlippageInput(new BigNumber(e.target.value).div(100))
+                  }
+                  value={slippageInput ? formatPrecision(slippageInput.times(100), 2) : undefined}
+                  sx={{ variant: 'forms.inputSecondary' }}
+                />
+              </Grid>
+            </Card>
           )}
-          <Text>
-            {stage === 'inProgress'
-              ? t('user-settings.button-in-progress')
-              : t('user-settings.button')}
-          </Text>
-        </Flex>
-      </Button>
-    )}
-    {stage === 'success' && (
-      <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
-        {t('user-settings.update-success')}
-      </Text>
-    )}
-    {stage === 'failure' && (
-      <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
-        {t('user-settings.update-failure')}
-      </Text>
-    )}
+        </Box>
+        <SlippageLimitMessages {...{ errors, warnings }} />
+      </Box>
+      {!slippage.eq(slippageInput) && (
+        <Button
+          disabled={!canProgress || stage === 'inProgress'}
+          onClick={saveSettings}
+          sx={{ mt: 2, width: '100%' }}
+        >
+          <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>
+            {stage === 'inProgress' && (
+              <AppSpinner
+                variant="styles.spinner.large"
+                sx={{ color: 'surface', display: 'flex', mr: 2 }}
+              />
+            )}
+            <Text>
+              {stage === 'inProgress'
+                ? t('user-settings.button-in-progress')
+                : t('user-settings.button')}
+            </Text>
+          </Flex>
+        </Button>
+      )}
+      {stage === 'success' && (
+        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+          {t('user-settings.update-success')}
+        </Text>
+      )}
+      {stage === 'failure' && (
+        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+          {t('user-settings.update-failure')}
+        </Text>
+      )}
     </>
   )
 }
@@ -255,11 +264,18 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }}/>
+        <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
-            <Text variant="address" sx={{ fontSize: 2 }}>{formatAddress(account, 6)}</Text>
-            <Text sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }} onClick={() => copyToClipboard()}>{t('copy')}</Text>
+            <Text variant="address" sx={{ fontSize: 2 }}>
+              {formatAddress(account, 6)}
+            </Text>
+            <Text
+              sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }}
+              onClick={() => copyToClipboard()}
+            >
+              {t('copy')}
+            </Text>
             {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
             <Textarea
               ref={clipboardContentRef}
@@ -282,16 +298,14 @@ function WalletInfo() {
   )
 }
 
-export function UserSettings({ sx }: { sx?: SxStyleProp}) {
+export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
 
   return (
     <Box sx={sx}>
-      <Text variant="headerSettings">
-        {t('wallet')}
-      </Text>
+      <Text variant="headerSettings">{t('wallet')}</Text>
       <WalletInfo />
       <Text variant="headerSettings" sx={{ mt: 4 }}>
         {t('user-settings.slippage-limit.preset-title')}
@@ -304,7 +318,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp}) {
           p: 0,
           my: 16,
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
         onClick={() => disconnect(web3Context)}
       >
@@ -318,7 +332,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp}) {
           px: 0,
           mt: 3,
           pb: 1,
-          pt: 2
+          pt: 2,
         }}
       >
         <AppLink
@@ -339,12 +353,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp}) {
         >
           {t('account-privacy')}
         </AppLink>
-        <AppLink
-          variant="settings"
-          withAccountPrefix={false}
-          href="/support"
-          onClick={close}
-        >
+        <AppLink variant="settings" withAccountPrefix={false} href="/support" onClick={close}>
           {t('account-support')}
         </AppLink>
       </Flex>
@@ -352,20 +361,26 @@ export function UserSettings({ sx }: { sx?: SxStyleProp}) {
   )
 }
 
-export function UserSettingsButtonContents({ context, accountData, web3Context} : any) {
+export function UserSettingsButtonContents({ context, accountData, web3Context }: any) {
   const { connectionKind } = web3Context
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
   return (
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
-      <Flex sx={{ alignItems: 'center'}}>
+      <Flex sx={{ alignItems: 'center' }}>
         <Icon name={userIcon!} size="auto" width="42" />
         <Text variant="address" sx={{ ml: 3 }}>
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
       <Flex sx={{ ml: 2 }}>
-        <Icon size="auto" width="16" height="16" name="settings" sx={{ flexShrink: 0, m: '13px' }} />
+        <Icon
+          size="auto"
+          width="16"
+          height="16"
+          name="settings"
+          sx={{ flexShrink: 0, m: '13px' }}
+        />
       </Flex>
     </Flex>
   )

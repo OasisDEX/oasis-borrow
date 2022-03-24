@@ -1,7 +1,7 @@
-import { storiesOf } from '@storybook/react'
-import React from 'react'
 import { TxState } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
+import { storiesOf } from '@storybook/react'
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
@@ -9,10 +9,10 @@ import { AppHeader } from 'components/Header'
 import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
+import React from 'react'
 import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
-import BigNumber from 'bignumber.js'
 
 const stories = storiesOf('Header', module)
 
@@ -55,12 +55,7 @@ const userSettings: UserSettingsState = {
   warnings: [],
 }
 
-function MockContextProvider({
-  children,
-  title,
-  web3Context,
-  transactions = [],
-}: MockContextProviderProps) {
+function MockContextProvider({ children, title, web3Context }: MockContextProviderProps) {
   const ctx = ({
     web3Context$: of(web3Context),
     context$: of({
@@ -68,7 +63,7 @@ function MockContextProvider({
     }),
     readonlyAccount$: of(undefined),
     userSetting$: of(userSettings),
-    accountData$: of({daiBalance: new BigNumber(1000)})
+    accountData$: of({ daiBalance: new BigNumber(1000) }),
   } as any) as AppContext
 
   return (
@@ -144,4 +139,3 @@ stories.add('Connected Metamask Kovan', () => {
     </MockContextProvider>
   )
 })
-
