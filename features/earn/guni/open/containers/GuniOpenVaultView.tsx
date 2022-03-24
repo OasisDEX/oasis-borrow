@@ -7,10 +7,10 @@ import { OpenMultiplyVaultContainer } from '../../../../../components/vault/comm
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../../../../helpers/observableHook'
+import { MultiplySurveyButtons } from '../../../../../pages/multiply'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
-import { MultiplySurveyButtons } from '../../../../../pages/multiply'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { t } = useTranslation()

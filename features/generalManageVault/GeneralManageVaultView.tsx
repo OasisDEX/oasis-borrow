@@ -9,6 +9,7 @@ import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
+import { MultiplySurveyButtons } from '../../pages/multiply'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -18,7 +19,6 @@ import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMul
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { GeneralManageVaultState } from './generalManageVault'
 import { VaultType } from './vaultType'
-import { MultiplySurveyButtons } from '../../pages/multiply'
 
 interface GeneralManageVaultViewProps {
   generalManageVault: GeneralManageVaultState
