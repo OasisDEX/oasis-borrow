@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { throttle } from 'lodash'
 import React, {
   ChangeEvent,
   MouseEvent,
+  ReactNode,
   RefObject,
   useCallback,
   useEffect,
@@ -9,10 +11,12 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 
-import { formatAmount, formatPercent } from '../../helpers/formatters/format'
+import { formatPercent } from '../../helpers/formatters/format'
+import { OasisTheme } from '../../theme'
 import { useBreakpointIndex } from '../../theme/useBreakpointIndex'
+import { useTheme } from '../../theme/useThemeUI'
 
 function getSliderBoxBoundaries(boxRef: RefObject<HTMLDivElement>) {
   const box = boxRef.current?.getBoundingClientRect()
@@ -42,39 +46,63 @@ function convertValuesToPercents({
   }
 }
 
+function getSliderBackgroundGradient({
+  theme,
+  value0InPercent,
+  value1InPercent,
+}: {
+  theme: OasisTheme
+  value0InPercent: number
+  value1InPercent: number
+}) {
+  const { colors } = theme
+  return `linear-gradient(to right, ${colors.primaryAlt}  0%, ${colors.primaryAlt} ${value0InPercent}%,
+    ${colors.sliderActiveFill} ${value0InPercent}%,  ${colors.sliderActiveFill} ${value1InPercent}%,
+    ${colors.primaryAlt} ${value1InPercent}%, ${colors.primaryAlt} 100%)`
+}
+
 interface SliderValues {
   value0: number
   value1: number
+}
+
+interface SliderValueColors {
+  value0: string
+  value1: string
 }
 
 interface MultipleRangeSliderProps {
   min: number
   max: number
   onChange: (value: SliderValues) => void
-  defaultValues: SliderValues
+  defaultValue: SliderValues
+  valueColors: SliderValueColors
   multiply?: number
   step?: number
+  minDescription?: ReactNode
+  maxDescription?: ReactNode
 }
 
 export function MultipleRangeSlider({
   min,
   max,
   onChange,
-  defaultValues,
+  defaultValue,
+  valueColors,
   multiply,
   step = 5,
+  minDescription = '',
+  maxDescription = '',
 }: MultipleRangeSliderProps) {
-  const [sliderValue, setSliderValue] = useState(defaultValues)
+  const [sliderValue, setSliderValue] = useState(defaultValue)
   const [side, setSide] = useState('')
   const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
   const sliderBoxRef = useRef<HTMLDivElement>(null)
-  const {
-    theme: { colors },
-  } = useThemeUI()
+  const { theme } = useTheme()
   const breakpoint = useBreakpointIndex()
 
-  const mobile = breakpoint === 0
   const { value0, value1 } = sliderValue
+  const mobile = breakpoint === 0
 
   useEffect(() => {
     const handleBoundariesUpdate = () => {
@@ -92,7 +120,9 @@ export function MultipleRangeSlider({
 
   useEffect(() => {
     if (multiply) {
-      setSliderValue({ value0: multiply - step, value1: multiply + step })
+      const newValue = { value0: multiply - step, value1: multiply + step }
+      setSliderValue(newValue)
+      onChange(newValue)
     }
   }, [multiply])
 
@@ -119,10 +149,10 @@ export function MultipleRangeSlider({
     [value0, value1, max, min],
   )
 
-  const sliderBackground = `
-    linear-gradient(to right, ${colors?.primaryAlt}  0%, ${colors?.primaryAlt} ${value0InPercent}%,
-    ${colors?.sliderActiveFill} ${value0InPercent}%,  ${colors?.sliderActiveFill} ${value1InPercent}%,
-    ${colors?.primaryAlt} ${value1InPercent}%, ${colors?.primaryAlt} 100%)`
+  const sliderBackground = useMemo(
+    () => getSliderBackgroundGradient({ theme, value0InPercent, value1InPercent }),
+    [value0InPercent, value1InPercent],
+  )
 
   const multiplyMarkPercentagePosition = useMemo(
     () => (multiply ? ((multiply - min) / (max - min)) * 100 : 0),
@@ -130,7 +160,7 @@ export function MultipleRangeSlider({
   )
 
   const handleMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
+    throttle((e: MouseEvent<HTMLDivElement>) => {
       const { sliderBoxLeftBoundary, sliderBoxRightBoundary } = sliderBoxBoundaries
       const mouseXPosition =
         ((e.clientX - sliderBoxLeftBoundary) / (sliderBoxRightBoundary - sliderBoxLeftBoundary)) *
@@ -143,7 +173,7 @@ export function MultipleRangeSlider({
       } else {
         setSide('left')
       }
-    },
+    }, 400),
     [sliderBoxBoundaries, value0InPercent, value1InPercent, multiplyMarkPercentagePosition],
   )
 
@@ -160,16 +190,19 @@ export function MultipleRangeSlider({
           }}
         >
           <Grid gap={2}>
-            <Text>Liquidation Price</Text>
-            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-              ${formatAmount(new BigNumber(value0), 'USD')}
+            <Text>Sell Trigger Ratio</Text>
+            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold', color: valueColors.value0 }}>
+              {formatPercent(new BigNumber(value0), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
             </Text>
           </Grid>
           <Grid gap={2}>
-            <Text>Collateral Ratio</Text>
+            <Text>Buy Trigger Ratio</Text>
             <Text
               variant="paragraph1"
-              sx={{ fontWeight: 'semiBold', textAlign: 'right', color: 'onSuccess' }}
+              sx={{ fontWeight: 'semiBold', textAlign: 'right', color: valueColors.value1 }}
             >
               {formatPercent(new BigNumber(value1), {
                 precision: 2,
@@ -240,7 +273,9 @@ export function MultipleRangeSlider({
                   position: 'absolute',
                   transform: 'translateX(-50%)',
                   left: `${multiplyMarkPercentagePosition}%`,
-                  top: '-25px',
+                  top: '-18px',
+                  variant: 'text.paragraph4',
+                  fontWeight: 'semiBold',
                 }}
               >
                 {multiply / 100}x
@@ -257,8 +292,12 @@ export function MultipleRangeSlider({
             color: 'text.subtitle',
           }}
         >
-          <Text>{min}</Text>
-          <Text>{max}</Text>
+          <Text>
+            {min}% {minDescription}
+          </Text>
+          <Text>
+            {max}% {maxDescription}
+          </Text>
         </Flex>
       </Box>
     </Box>

@@ -148,9 +148,11 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           <MultipleRangeSlider
             min={170}
             max={300}
-            onChange={({ value0, value1 }) => console.log(`min = ${value0}, max = ${value1}`)}
-            defaultValues={{ value0: 245, value1: 255 }}
+            onChange={() => null}
+            defaultValue={{ value0: 245, value1: 255 }}
+            valueColors={{ value0: 'onWarning', value1: 'onSuccess' }}
             multiply={multiplyy}
+            minDescription="(min. ratio with stop loss/basic sell)"
           />
         </Box>
         {/*TODO TO BE REMOVED*/}
