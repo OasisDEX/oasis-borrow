@@ -160,7 +160,7 @@ function SlippageSettingsForm() {
           sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
           onClick={() => setCustomOpened(!customOpened)}
         >
-          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'inherit' }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
             {t('user-settings.slippage-limit.custom-title')}
           </Text>
           <Icon
@@ -174,7 +174,7 @@ function SlippageSettingsForm() {
         {customOpened && (
           <Card sx={{ mt: 3, borderRadius: 'mediumLarge' }}>
             <Grid px={2} gap={2}>
-              <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+              <Text variant="paragraph3" sx={{ fontWeight: 'medium' }}>
                 {t('user-settings.slippage-limit.custom-label')}
               </Text>
               <BigNumberInput
@@ -255,11 +255,11 @@ function WalletInfo() {
   return (
     <Grid>
       <Flex sx={{ alignItems: 'center' }}>
-        <Icon name={userIcon!} size="auto" width={32} />
-        <Grid sx={{ gap: 0 }}>
-          <Flex>
-            <Text variant="address">{formatAddress(account)}</Text>
-            <Text onClick={() => copyToClipboard()}>{t('copy')}</Text>
+        <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }}/>
+        <Grid sx={{ gap: 0, width: '100%' }}>
+          <Flex sx={{ justifyContent: 'space-between' }}>
+            <Text variant="address" sx={{ fontSize: 2 }}>{formatAddress(account, 6)}</Text>
+            <Text sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }} onClick={() => copyToClipboard()}>{t('copy')}</Text>
             {/* Textarea element used for copy to clipboard using native API, custom positioning outside of screen */}
             <Textarea
               ref={clipboardContentRef}
@@ -293,33 +293,37 @@ export function UserSettings() {
         {t('wallet')}
       </Text>
       <WalletInfo />
-      <Text variant="headerSettings">
+      <Text variant="headerSettings" sx={{ mt: 4 }}>
         {t('user-settings.slippage-limit.preset-title')}
       </Text>
       <SlippageSettingsForm />
-      <Box sx={{ borderTop: '1px solid #E7EDEF' }} />
+      <Box sx={{ borderTop: '1px solid #E7EDEF', mt: 3 }} />
       <Button
         variant="textual"
         sx={{
-          textAlign: 'left',
           p: 0,
-          verticalAlign: 'baseline',
+          my: 16,
+          display: 'flex',
+          alignItems: 'center'
         }}
         onClick={() => disconnect(web3Context)}
       >
-        {t('disconnect')}
+        <Icon name="sign_out" color="primaryEmphasis" />
+        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primaryEmphasis', ml: 2 }}>
+          {t('disconnect-wallet')}
+        </Text>
       </Button>
       <Flex
         sx={{
-          fontWeight: 'semiBold',
-          px: 3,
+          px: 0,
           my: 3,
           py: 1,
           mx: 1,
         }}
       >
         <AppLink
-          sx={{ color: 'primary', mr: 3 }}
+          variant="settings"
+          sx={{ mr: 3 }}
           withAccountPrefix={false}
           href="/terms"
           onClick={close}
@@ -327,7 +331,8 @@ export function UserSettings() {
           {t('account-terms')}
         </AppLink>
         <AppLink
-          sx={{ color: 'primary', mr: 3 }}
+          variant="settings"
+          sx={{ mr: 3 }}
           withAccountPrefix={false}
           href="/privacy"
           onClick={close}
@@ -335,7 +340,7 @@ export function UserSettings() {
           {t('account-privacy')}
         </AppLink>
         <AppLink
-          sx={{ color: 'primary' }}
+          variant="settings"
           withAccountPrefix={false}
           href="/support"
           onClick={close}

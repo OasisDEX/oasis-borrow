@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Container, Heading } from 'theme-ui'
+import { Box, Container, Heading } from 'theme-ui'
 import { Web3Context } from '@oasisdex/web3-context'
 import { AppContext } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
@@ -33,7 +33,17 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
       <Heading variant="smallHeading" sx={{ mt: 5, mb: 3, textAlign: 'right' }}>
         {title}
       </Heading>
-      {children}
+      <Box sx={{bg: 'pink', p: 6}}>
+      <Box sx={{
+        bg: 'surface',
+        boxShadow: 'userSettingsCardDropdown',
+        borderRadius: 'mediumLarge',
+        width: '380px',
+      }}
+      >
+            {children}
+      </Box>
+      </Box>
     </Container>
   )
 }

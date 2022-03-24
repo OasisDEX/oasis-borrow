@@ -134,10 +134,11 @@ const oasisBaseTheme = {
     },
     headerSettings: {
       fontFamily: 'body',
-      fontWeight: 'semiBold',
+      fontWeight: 'medium',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
+      mb: 3,
     },
     paragraph1: {
       fontFamily: 'body',
@@ -198,7 +199,8 @@ const oasisBaseTheme = {
     },
     address: {
       variant: 'paragraph3',
-      fontWeight: 'semiBold'
+      fontWeight: 'medium',
+      letterSpacing: '0.02em'
     },
   },
   borders: {
@@ -773,6 +775,12 @@ const oasisBaseTheme = {
         textDecoration: 'underline',
       },
     },
+    settings: {
+      color: 'primaryEmphasis',
+      fontWeight: 'medium',
+      fontSize: 1,
+      textDecoration: 'none'
+    }
   },
   icons,
   radio: {
