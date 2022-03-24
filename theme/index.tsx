@@ -682,12 +682,13 @@ const oasisBaseTheme = {
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
-      width: ['40px', '50px'],
-      height: ['40px', '50px'],
+      width: '50px',
+      height: '50px',
       padding: 0,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      flexShrink: 0
     },
     unStyled: {
       background: 'unset',

@@ -20,7 +20,7 @@ import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { AssetsSelect } from './AssetsSelect'
-import { MobileSidePanelClose, MobileSidePanelPortal } from './Modal'
+import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
 import { LINKS } from 'helpers/constants'
@@ -174,11 +174,19 @@ function UserDesktopMenu() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
 
-  const web3Provider = (() => {
-    const { web3ContextConnected$ } = useAppContext()
-    const [web3Context] = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-  })()
+  const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
+  const [web3ContextConnected] = useObservable(web3ContextConnected$)
+  const web3Provider = web3ContextConnected?.status !== 'connectedReadonly' ? web3ContextConnected?.web3.currentProvider : null
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
+
+  const shouldHideSettings = (
+    !context ||
+    context.status === 'connectedReadonly' ||
+    !accountData ||
+    web3Context?.status !== 'connected'
+  )
 
   return (
     <Flex
@@ -199,9 +207,9 @@ function UserDesktopMenu() {
             <UniswapWidget web3Provider={web3Provider} />
           </ButtonDropdown>
         ) : null}
-        <ButtonDropdown buttonContents={<UserSettingsButtonContents />}>
-          <UserSettings />
-        </ButtonDropdown>
+        {!shouldHideSettings && <ButtonDropdown buttonContents={<UserSettingsButtonContents {...{context, accountData, web3Context}} />}>
+          <UserSettings sx={{p: 4, minWidth: '380px'}} />
+        </ButtonDropdown>}
       </Flex>
       {vaultFormToggleTitle && (
         <Box sx={{ display: ['block', 'none'] }}>
@@ -216,6 +224,18 @@ function UserDesktopMenu() {
 
 function MobileBottomMenu() {
   const [opened, setOpened] = useState(false)
+  const { accountData$, context$, web3Context$ } = useAppContext()
+  const [context] = useObservable(context$)
+  const [accountData] = useObservable(accountData$)
+  const [web3Context] = useObservable(web3Context$)
+
+  if (
+    !context ||
+    context.status === 'connectedReadonly' ||
+    !accountData ||
+    web3Context?.status !== 'connected'
+  )
+    return null
 
   return (
     <>
@@ -232,8 +252,8 @@ function MobileBottomMenu() {
           zIndex: 3,
         }}
       >
-        <Button variant="menuButton" onClick={() => setOpened(true)}>
-          <UserSettingsButtonContents />
+        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: '100%' }}>
+          <UserSettingsButtonContents {...{context, accountData, web3Context}} />
         </Button>
       </Flex>
       <MobileSidePanelPortal>
@@ -252,11 +272,22 @@ function MobileBottomMenu() {
             zIndex: 'modal',
           }}
         >
-          <MobileSidePanelClose opened={opened} onClose={() => setOpened(false)} />
-          <Card variant="vaultFormContainer">
-            <Grid gap={4} p={[0, 2]}>
-              <UserSettings />
-            </Grid>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            py: 1,
+          }}
+        >
+        <ModalCloseIcon
+          close={() => setOpened(false)}
+          sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+          size={3}
+        />
+      </Box>
+          <Card variant="vaultFormContainer" sx={{ p: 2 }}>
+            <UserSettings />
           </Card>
         </Box>
       </MobileSidePanelPortal>
@@ -272,6 +303,13 @@ function ConnectedHeader() {
   const { pathname } = useRouter()
   const { t } = useTranslation()
   const earnEnabled = useFeatureToggle('EarnProduct')
+  const exchangeEnabled = useFeatureToggle('Exchange')
+
+  const web3Provider = (() => {
+    const { web3ContextConnected$ } = useAppContext()
+    const [web3Context] = useObservable(web3ContextConnected$)
+    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
+  })()
 
   return (
     <>
@@ -331,8 +369,17 @@ function ConnectedHeader() {
         <BasicHeader variant="appContainer">
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
-            <PositionsLink />
           </Flex>
+          {exchangeEnabled && web3Provider ? (
+            <Box sx={{ mr: 2 }}>
+              <ButtonDropdown
+                buttonContents={<Icon name="exchange" size="auto" width="20" />}
+                round={true}
+              >
+                <UniswapWidget web3Provider={web3Provider} />
+              </ButtonDropdown>
+            </Box>
+        ) : null}
           <MobileMenu />
           <MobileBottomMenu />
         </BasicHeader>
@@ -441,31 +488,9 @@ function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
-  const isConnected = !!(context as ContextConnected)?.account
 
-  const MOBILE_MENU_DISCONNECTED_SECTIONS = [
-    {
-      titleKey: 'nav.products',
-      links: [
-        { labelKey: 'nav.multiply', url: LINKS.multiply },
-        { labelKey: 'nav.borrow', url: LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
-        { labelKey: 'nav.dai-wallet', url: LINKS['dai-wallet'] },
-      ],
-    },
-    {
-      titleKey: 'nav.resources',
-      links: [
-        { labelKey: 'nav.learn', url: LINKS['learn'] },
-        { labelKey: 'nav.blog', url: LINKS['blog'] },
-      ],
-    },
-  ]
-
-  const MOBILE_MENU_CONNECTED_SECTIONS = [
+  const MOBILE_MENU_SECTIONS = [
     {
       titleKey: 'nav.products',
       links: [
@@ -506,41 +531,10 @@ function MobileMenu() {
           p: 5,
         }}
       >
-        <Grid sx={{ rowGap: 5, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {!isConnected &&
-            MOBILE_MENU_DISCONNECTED_SECTIONS.map((section) => (
+        <Grid sx={{ rowGap: 4, mt: 3, mx: 'auto', maxWidth: 7 }}>
+          <PositionsLink />
+          { MOBILE_MENU_SECTIONS.map((section) => (
               <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
-                {section.links.map((link) =>
-                  link.url ? (
-                    <AppLink
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{
-                        textDecoration: 'none',
-                        color: navLinkColor(pathname.includes(link.url)),
-                      }}
-                      href={link.url}
-                      onClick={closeMenu}
-                    >
-                      {t(link.labelKey)}
-                    </AppLink>
-                  ) : (
-                    <Text
-                      key={link.labelKey}
-                      variant="text.paragraph1"
-                      sx={{ fontWeight: 'semiBold' }}
-                    >
-                      {t(link.labelKey)}
-                    </Text>
-                  ),
-                )}
-              </Grid>
-            ))}
-          {isConnected &&
-            MOBILE_MENU_CONNECTED_SECTIONS.map((section) => (
-              <Grid key={section.titleKey}>
-                <Text variant="links.navHeader">{t(section.titleKey)}</Text>
                 {section.links.map((link) =>
                   link.url ? (
                     <AppLink
@@ -584,12 +578,14 @@ function MobileMenu() {
           </Grid>
         </Grid>
       </Box>
-      <Icon
-        name={isOpen ? 'close' : 'menu'}
-        sx={{ zIndex: 'mobileMenu', cursor: 'pointer' }}
-        onClick={() => setIsOpen(!isOpen)}
-        size="18px"
-      />
+      <Button variant="menuButtonRound" sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}>
+        <Icon
+          name={isOpen ? 'close' : 'menu'}
+          onClick={() => setIsOpen(!isOpen)}
+          size="auto"
+          width="12px"
+        />
+      </Button>
     </>
   )
 }

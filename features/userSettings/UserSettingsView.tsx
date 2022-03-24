@@ -282,13 +282,13 @@ function WalletInfo() {
   )
 }
 
-export function UserSettings() {
+export function UserSettings({ sx }: { sx?: SxStyleProp}) {
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
 
   return (
-    <Box sx={{ p: 4, minWidth: '380px' }}>
+    <Box sx={sx}>
       <Text variant="headerSettings">
         {t('wallet')}
       </Text>
@@ -352,20 +352,7 @@ export function UserSettings() {
   )
 }
 
-export function UserSettingsButtonContents() {
-  const { accountData$, context$, web3Context$ } = useAppContext()
-  const [context] = useObservable(context$)
-  const [accountData] = useObservable(accountData$)
-  const [web3Context] = useObservable(web3Context$)
-
-  if (
-    !context ||
-    context.status === 'connectedReadonly' ||
-    !accountData ||
-    web3Context?.status !== 'connected'
-  )
-    return null
-
+export function UserSettingsButtonContents({ context, accountData, web3Context} : any) {
   const { connectionKind } = web3Context
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 

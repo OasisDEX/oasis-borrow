@@ -60,7 +60,7 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
     )
   }, [])
 
-  const { swapBtn, token1Btn, token2Btn, input1, input2, confirmBtn, hoverAppended, tokenOption } = cssPaths
+  const { swapBtn, token1Btn, token2Btn, confirmBtn, hoverAppended, tokenOption } = cssPaths
 
   return web3Provider && SwapWidget ? (
     <Box
@@ -73,10 +73,6 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
       css={`
         ${token1Btn} > div > div, ${token2Btn} > div > div {
           font-size: 18px !important;
-        }
-
-        ${input1}, ${input2} {
-          font-family: '"FT Polar Trial", "Helvetica Neue", sans-serif' !important;
         }
 
         ${confirmBtn} {
