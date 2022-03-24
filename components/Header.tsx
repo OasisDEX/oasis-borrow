@@ -129,8 +129,9 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
 function ButtonDropdown({
   buttonContents,
   round,
+  dropdownSx,
   children,
-}: { buttonContents: JSX.Element; round?: boolean } & WithChildren) {
+}: { buttonContents: JSX.Element; round?: boolean, dropdownSx?: SxStyleProp } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
@@ -162,6 +163,7 @@ function ButtonDropdown({
           zIndex: 0,
           minWidth: 7,
           minHeight: 7,
+          ...dropdownSx
         }}
       >
         {children}
@@ -375,6 +377,7 @@ function ConnectedHeader() {
               <ButtonDropdown
                 buttonContents={<Icon name="exchange" size="auto" width="20" />}
                 round={true}
+                dropdownSx={{ position: 'fixed', top: '50%', left: '50%', right: 'unset', bottom: 'unset', transform: 'translateX(-50%) translateY(-50%)'}}
               >
                 <UniswapWidget web3Provider={web3Provider} />
               </ButtonDropdown>
