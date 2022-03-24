@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 import { HOUR, SECONDS_PER_YEAR } from '../components/constants'
 import { one, zero } from '../helpers/zero'
 
-export function maths(
+export function buildPosition(
   collateral: BigNumber,
   currentPrice: BigNumber,
   nextPrice: BigNumber,

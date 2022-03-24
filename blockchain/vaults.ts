@@ -13,7 +13,7 @@ import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
-import { maths } from './vault.maths'
+import { buildPosition } from './vault.maths'
 
 BigNumber.config({
   POW_PRECISION: 100,
@@ -172,7 +172,7 @@ export function createVault$(
                   normalizedDebt,
                   unlockedCollateral,
                   chainId: context.chainId,
-                  ...maths(
+                  ...buildPosition(
                     collateral,
                     currentPrice,
                     nextPrice,

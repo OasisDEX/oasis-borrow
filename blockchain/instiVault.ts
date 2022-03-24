@@ -9,7 +9,7 @@ import { VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { Context } from './network'
 import { OraclePriceData } from './prices'
-import { maths } from './vault.maths'
+import { buildPosition } from './vault.maths'
 import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
@@ -80,7 +80,7 @@ export function createInstiVault$(
                   normalizedDebt,
                   unlockedCollateral,
                   chainId: context.chainId,
-                  ...maths(
+                  ...buildPosition(
                     collateral,
                     currentPrice,
                     nextPrice,
