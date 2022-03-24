@@ -55,6 +55,7 @@
     "@sentry/nextjs": "^6.17.7",
     "@storybook/storybook-deployer": "^2.8.10",
     "@theme-ui/style-guide": "^0.3.5",
+    "@typeform/embed-react": "^1.13.0",
     "@types/crypto-js": "^4.0.2",
     "@types/ethereumjs-tx": "^2.0.0",
     "@types/mixpanel-browser": "^2.23.1",
