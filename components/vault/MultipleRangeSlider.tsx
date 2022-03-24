@@ -1,355 +1,266 @@
-// import React, { useCallback, useEffect, useState, useRef } from 'react'
-//
-// const sliderStyle = {
-//   position: 'relative',
-//   width: '200px',
-// }
-//
-// const sliderRightLeftStyle = {
-//   color: '#dee2e6',
-//   fontSize: '12px',
-//   marginTop: '20px',
-//   position: 'absolute',
-// }
-//
-// const sliderLeftStyle = {
-//   left: '6px',
-// }
-//
-// const sliderRightStyle = {
-//   right: '-4px',
-// }
-//
-// const sliderTrackStyle = {
-//   backgroundColor: '#ced4da',
-//   width: '100%',
-//   zIndex: 1,
-//   borderRadius: '3px',
-//   height: '5px',
-//   position: 'absolute',
-// }
-//
-// const sliderRangeStyle = {
-//   backgroundColor: '#9fe5e1',
-//   zIndex: 2,
-//   borderRadius: '3px',
-//   height: '5px',
-//   position: 'absolute',
-// }
-//
-// // const thumbStyle = {
-// //   pointerEvents: 'none',
-// //   position: 'absolute',
-// //   height: '0',
-// //   width: '200px',
-// //   outline: 'none',
-// //   '&::WebkitAppearance': 'none',
-// //   '&::WebkitTapHighlightColor': 'transparent',
-// //   '&::WebkitSliderThumb': {
-// //     backgroundColor: '#f1f5f7',
-// //     border: 'none',
-// //     borderRadius: '50%',
-// //     boxShadow: '0 0 1px 1px #ced4da',
-// //     cursor: 'pointer',
-// //     height: '18px',
-// //     width: '18px',
-// //     marginTop: '4px',
-// //     pointerEvents: 'all',
-// //     position: ' relative',
-// //   },
-// // }
-//
-// const thumbStyle = {
-//   pointerEvents: 'none',
-//   position: 'absolute',
-//   height: '0',
-//   width: '200px',
-//   outline: 'none',
-//   WebkitAppearance: 'none',
-//   WebkitTapHighlightColor: 'transparent',
-//   '&::WebkitSliderThumb': {
-//     backgroundColor: '#f1f5f7',
-//     border: 'none',
-//     borderRadius: '50%',
-//     boxShadow: '0 0 1px 1px #ced4da',
-//     cursor: 'pointer',
-//     height: '18px',
-//     width: '18px',
-//     marginTop: '4px',
-//     pointerEvents: 'all',
-//     position: ' relative',
-//   },
-// }
-//
-// export function MultipleRangeSlider({ min, max, onChange }) {
-//   const [minVal, setMinVal] = useState(min)
-//   const [maxVal, setMaxVal] = useState(max)
-//   const minValRef = useRef(null)
-//   const maxValRef = useRef(null)
-//   const range = useRef(null)
-//
-//   // Convert to percentage
-//   const getPercent = useCallback((value) => Math.round(((value - min) / (max - min)) * 100), [
-//     min,
-//     max,
-//   ])
-//
-//   // Set width of the range to decrease from the left side
-//   useEffect(() => {
-//     if (maxValRef.current) {
-//       const minPercent = getPercent(minVal)
-//       const maxPercent = getPercent(+maxValRef.current.value) // Preceding with '+' converts the value from type string to type number
-//
-//       if (range.current) {
-//         range.current.style.left = `${minPercent}%`
-//         range.current.style.width = `${maxPercent - minPercent}%`
-//       }
-//     }
-//   }, [minVal, getPercent])
-//
-//   // Set width of the range to decrease from the right side
-//   useEffect(() => {
-//     if (minValRef.current) {
-//       const minPercent = getPercent(+minValRef.current.value)
-//       const maxPercent = getPercent(maxVal)
-//
-//       if (range.current) {
-//         range.current.style.width = `${maxPercent - minPercent}%`
-//       }
-//     }
-//   }, [maxVal, getPercent])
-//
-//   // Get min and max values when their state changes
-//   useEffect(() => {
-//     onChange({ min: minVal, max: maxVal })
-//   }, [minVal, maxVal, onChange])
-//
-//   return (
-//     <div className="container">
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={minVal}
-//         ref={minValRef}
-//         onChange={(event) => {
-//           const value = Math.min(+event.target.value, maxVal - 1)
-//           setMinVal(value)
-//           event.target.value = value.toString()
-//         }}
-//         // className={classnames('thumb thumb--zindex-3', {
-//         //   'thumb--zindex-5': minVal > max - 100,
-//         // })}
-//         style={{ ...thumbStyle, zIndex: minVal > max - 100 ? 5 : 3 }}
-//       />
-//       <input
-//         type="range"
-//         min={min}
-//         max={max}
-//         value={maxVal}
-//         ref={maxValRef}
-//         onChange={(event) => {
-//           const value = Math.max(+event.target.value, minVal + 1)
-//           setMaxVal(value)
-//           event.target.value = value.toString()
-//         }}
-//         // className="thumb thumb--zindex-4"
-//         style={{ ...thumbStyle, zIndex: 4 }}
-//       />
-//
-//       <div style={sliderStyle}>
-//         <div style={sliderTrackStyle} />
-//         <div ref={range} style={sliderRangeStyle} />
-//         <div style={{ ...sliderRightLeftStyle, ...sliderLeftStyle }}>{minVal}</div>
-//         <div style={{ ...sliderRightLeftStyle, ...sliderRightStyle }}>{maxVal}</div>
-//       </div>
-//     </div>
-//   )
-// }
-
-import { Box, Flex, Slider, useThemeUI } from 'theme-ui'
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useRef, useState } from 'react'
-import { TRANSITIONS } from '../../theme'
-import { fromEvent } from 'rxjs'
-import { sampleTime } from 'rxjs/operators'
+import React, {
+  ChangeEvent,
+  MouseEvent,
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
+import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
-export const useMousePosition = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
-  const mouseMove$ = fromEvent<MouseEvent>(document, 'mousemove').pipe(sampleTime(500))
+import { formatAmount, formatPercent } from '../../helpers/formatters/format'
+import { useBreakpointIndex } from '../../theme/useBreakpointIndex'
 
-  useEffect(() => {
-    const setFromEvent = (e) => setPosition({ x: e.clientX, y: e.clientY })
-    // window.addEventListener('mousemove', setFromEvent)
-    const subs = mouseMove$.subscribe(setFromEvent)
+function getSliderBoxBoundaries(boxRef: RefObject<HTMLDivElement>) {
+  const box = boxRef.current?.getBoundingClientRect()
 
-    return () => {
-      // window.removeEventListener('mousemove', setFromEvent)
-      subs.unsubscribe()
-    }
-  }, [])
-
-  return position
+  return { sliderBoxLeftBoundary: box?.left || 0, sliderBoxRightBoundary: box?.right || 0 }
 }
 
-export function MultipleRangeSlider({ min, max, onChange, multiply }) {
-  const [value0, setValue0] = useState(245)
-  const [value1, setValue1] = useState(255)
-  const sliderRef = useRef()
-  const sss = useRef()
-  // const position = useMousePosition()
-  // console.log(sliderRef.current.getBoundingClientRect())
+const sliderDefaultBoundaries = {
+  sliderBoxLeftBoundary: 0,
+  sliderBoxRightBoundary: 0,
+}
+
+function convertValuesToPercents({
+  value0,
+  value1,
+  max,
+  min,
+}: {
+  value0: number
+  value1: number
+  max: number
+  min: number
+}) {
+  return {
+    value0InPercent: ((value0 - min) / (max - min)) * 100,
+    value1InPercent: ((value1 - min) / (max - min)) * 100,
+  }
+}
+
+interface SliderValues {
+  value0: number
+  value1: number
+}
+
+interface MultipleRangeSliderProps {
+  min: number
+  max: number
+  onChange: (value: SliderValues) => void
+  defaultValues: SliderValues
+  multiply?: number
+  step?: number
+}
+
+export function MultipleRangeSlider({
+  min,
+  max,
+  onChange,
+  defaultValues,
+  multiply,
+  step = 5,
+}: MultipleRangeSliderProps) {
+  const [sliderValue, setSliderValue] = useState(defaultValues)
+  const [side, setSide] = useState('')
+  const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
+  const sliderBoxRef = useRef<HTMLDivElement>(null)
   const {
     theme: { colors },
   } = useThemeUI()
-  const [side, setSide] = useState('')
-  console.log(side)
+  const breakpoint = useBreakpointIndex()
 
-  // console.log(sss.current)
-  function handleChange0(e) {
-    if (e.target.value > value1 - 5 || e.target.value > multiply - 5) {
-      // if (e.target.value > value1 - 5) {
-      return
+  const mobile = breakpoint === 0
+  const { value0, value1 } = sliderValue
+
+  useEffect(() => {
+    const handleBoundariesUpdate = () => {
+      const { sliderBoxLeftBoundary, sliderBoxRightBoundary } = getSliderBoxBoundaries(sliderBoxRef)
+      setSliderBoxBoundaries({ sliderBoxLeftBoundary, sliderBoxRightBoundary })
     }
+    handleBoundariesUpdate()
 
-    setValue0(e.target.value)
-    onChange(e.target.value)
-  }
+    window.addEventListener('resize', handleBoundariesUpdate)
 
-  function handleChange1(e) {
-    if (e.target.value < Number(value0) + 5 || e.target.value < multiply + 5) {
-      // if (e.target.value < Number(value0) + 5) {
-      return
+    return () => {
+      window.removeEventListener('resize', handleBoundariesUpdate)
     }
-    setValue1(e.target.value)
-    onChange(e.target.value)
-  }
+  }, [])
 
-  const value0Conv = ((value0 - min) / (max - min)) * 100
-  const value1Conv = ((value1 - min) / (max - min)) * 100
-
-  const sliderBackground = `linear-gradient(to right, ${colors?.primaryAlt}  0%, ${colors?.primaryAlt} ${value0Conv}%, ${colors?.sliderActiveFill} ${value0Conv}%,  ${colors?.sliderActiveFill} ${value1Conv}%, ${colors?.primaryAlt} ${value1Conv}%, ${colors?.primaryAlt} 100%)`
-
-  const multiplyMarkPosition = ((multiply - min) / (max - min)) * 100
-
-  function handleMouseMove(e) {
-    const box = sliderRef.current?.getBoundingClientRect()
-    const left = box.left
-    const right = box.right
-    // const center = (left + right) / 2
-    const mouseXPosition = ((e.clientX - left) / (right - left)) * 100
-    // const rightPerc = ((e.clientX - min) / (max - min)) * 100
-    // console.log(center)
-    const centralReference = multiplyMarkPosition || (value0Conv + value1Conv) / 2
-
-    if (mouseXPosition > centralReference) {
-      setSide('right')
-    } else {
-      setSide('left')
+  useEffect(() => {
+    if (multiply) {
+      setSliderValue({ value0: multiply - step, value1: multiply + step })
     }
-  }
+  }, [multiply])
 
-  // useEffect(() => {
-  //   const box = sliderRef.current?.getBoundingClientRect()
-  //   const left = box.left
-  //   const right = box.right
-  //   const center = (left + right) / 2
-  //
-  //   if (position.x > center) {
-  //     setSide('right')
-  //   } else {
-  //     setSide('left')
-  //   }
-  // }, [position.x])
+  const handleChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>, slider: number) => {
+      const newValue = Number(e.target.value)
+
+      if (slider === 0 && (newValue > value1 - step || (multiply && newValue > multiply - step))) {
+        return
+      }
+
+      if (slider === 1 && (newValue < value0 + step || (multiply && newValue < multiply + step))) {
+        return
+      }
+
+      setSliderValue((prev) => ({ ...prev, [`value${slider}`]: newValue }))
+      onChange({ ...sliderValue, [`value${slider}`]: newValue })
+    },
+    [step, value1, multiply],
+  )
+
+  const { value0InPercent, value1InPercent } = useMemo(
+    () => convertValuesToPercents({ value0, value1, max, min }),
+    [value0, value1, max, min],
+  )
+
+  const sliderBackground = `
+    linear-gradient(to right, ${colors?.primaryAlt}  0%, ${colors?.primaryAlt} ${value0InPercent}%,
+    ${colors?.sliderActiveFill} ${value0InPercent}%,  ${colors?.sliderActiveFill} ${value1InPercent}%,
+    ${colors?.primaryAlt} ${value1InPercent}%, ${colors?.primaryAlt} 100%)`
+
+  const multiplyMarkPercentagePosition = useMemo(
+    () => (multiply ? ((multiply - min) / (max - min)) * 100 : 0),
+    [multiply, min, max],
+  )
+
+  const handleMouseMove = useCallback(
+    (e: MouseEvent<HTMLDivElement>) => {
+      const { sliderBoxLeftBoundary, sliderBoxRightBoundary } = sliderBoxBoundaries
+      const mouseXPosition =
+        ((e.clientX - sliderBoxLeftBoundary) / (sliderBoxRightBoundary - sliderBoxLeftBoundary)) *
+        100
+      const centralReference =
+        multiplyMarkPercentagePosition || (value0InPercent + value1InPercent) / 2
+
+      if (mouseXPosition > centralReference) {
+        setSide('right')
+      } else {
+        setSide('left')
+      }
+    },
+    [sliderBoxBoundaries, value0InPercent, value1InPercent, multiplyMarkPercentagePosition],
+  )
 
   return (
-    <Box sx={{ position: 'relative' }}>
-      <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-        <Box>{value0}</Box>
-        <Box>{value1}</Box>
-      </Flex>
-      <Box onMouseMove={handleMouseMove} ref={sliderRef}>
+    <Box>
+      <Box>
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            fontWeight: 'semiBold',
+            color: 'text.subtitle',
+            mb: 3,
+          }}
+        >
+          <Grid gap={2}>
+            <Text>Liquidation Price</Text>
+            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+              ${formatAmount(new BigNumber(value0), 'USD')}
+            </Text>
+          </Grid>
+          <Grid gap={2}>
+            <Text>Collateral Ratio</Text>
+            <Text
+              variant="paragraph1"
+              sx={{ fontWeight: 'semiBold', textAlign: 'right', color: 'onSuccess' }}
+            >
+              {formatPercent(new BigNumber(value1), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+          </Grid>
+        </Flex>
+      </Box>
+      <Box onMouseMove={handleMouseMove} ref={sliderBoxRef} sx={{ position: 'relative', mb: 3 }}>
         <Slider
-          ref={sss}
-          step={5}
+          step={step}
           min={min}
           max={max}
           value={value0}
-          onChange={handleChange0}
+          onChange={(e) => handleChange(e, 0)}
           sx={{
-            // pointerEvents: 'none',
-            pointerEvents: side === 'left' ? 'all' : 'none',
+            pointerEvents: side === 'left' && !mobile ? 'all' : 'none',
             background: sliderBackground,
             '&::-webkit-slider-thumb': {
               backgroundColor: 'onWarning',
-              zIndex: 500,
               pointerEvents: 'all',
             },
           }}
         />
         <Slider
-          step={5}
+          step={step}
           min={min}
           max={max}
           value={value1}
-          onChange={handleChange1}
+          onChange={(e) => handleChange(e, 1)}
           sx={{
             position: 'absolute',
-            top: '24px',
-            pointerEvents: side === 'right' ? 'all' : 'none',
+            top: '-7px',
+            pointerEvents: side === 'right' && !mobile ? 'all' : 'none',
             backgroundColor: 'unset',
             '&::-webkit-slider-thumb': {
               backgroundColor: 'onSuccess',
-              zIndex: 500,
               pointerEvents: 'all',
             },
           }}
-        />{' '}
-      </Box>
-
-      {multiply && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: '19px',
-            // right: `calc((100% - 20px) - ${multiplyMarkPosition}%)`,
-            left: `50%`,
-            // left: `${50}%`,
-            transform: 'translateX(-50%)',
-            width: 'calc(100% - 20px)',
-            height: '30px',
-            pointerEvents: 'none',
-            // backgroundColor: '#878BFC',
-          }}
-        >
-          <Box sx={{ position: 'relative', width: '100%' }}>
-            <Box
-              sx={{
-                position: 'absolute',
-                width: '3px',
-                height: '30px',
-                transform: 'translateX(-50%)',
-                backgroundColor: 'sliderActiveFill',
-                left: `${multiplyMarkPosition}%`,
-              }}
-            />
-            <Box
-              sx={{
-                position: 'absolute',
-                transform: 'translateX(-50%)',
-                left: `${multiplyMarkPosition}%`,
-                top: '-25px',
-              }}
-            >
-              {multiply / 100}x
+        />
+        {multiply && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '-13px',
+              left: `50%`,
+              transform: 'translateX(-50%)',
+              width: 'calc(100% - 20px)',
+              height: '30px',
+              pointerEvents: 'none',
+            }}
+          >
+            <Box sx={{ position: 'relative', width: '100%' }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '3px',
+                  height: '30px',
+                  transform: 'translateX(-50%)',
+                  backgroundColor: 'sliderActiveFill',
+                  left: `${multiplyMarkPercentagePosition}%`,
+                }}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  transform: 'translateX(-50%)',
+                  left: `${multiplyMarkPercentagePosition}%`,
+                  top: '-25px',
+                }}
+              >
+                {multiply / 100}x
+              </Box>
             </Box>
           </Box>
-        </Box>
-      )}
-      <Flex sx={{ justifyContent: 'space-between', width: '100%' }}>
-        <Box>{min}</Box>
-        <Box>{max}</Box>
-      </Flex>
+        )}
+      </Box>
+      <Box>
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            color: 'text.subtitle',
+          }}
+        >
+          <Text>{min}</Text>
+          <Text>{max}</Text>
+        </Flex>
+      </Box>
     </Box>
   )
 }

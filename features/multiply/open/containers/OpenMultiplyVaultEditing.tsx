@@ -3,13 +3,13 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
+import { MultipleRangeSlider } from '../../../../components/vault/MultipleRangeSlider'
 import { zero } from '../../../../helpers/zero'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
-import { MultipleRangeSlider } from '../../../../components/vault/MultipleRangeSlider'
 
 export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   const {
@@ -50,6 +50,9 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           colors?.primaryAlt
         } 100%)`
       : 'primaryAlt'
+
+  // TODO TO BE REMOVED
+  const [multiplyy, setMultiply] = useState(250)
 
   return (
     <Grid gap={4}>
@@ -133,14 +136,24 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             <Text>Increase risk</Text>
           </Flex>
         </Box>
+        {/*TODO TO BE REMOVED*/}
+        <Box>
+          <button onClick={() => setMultiply(125)}>1.25x</button>
+          <button onClick={() => setMultiply(150)}>1.5x</button>
+          <button onClick={() => setMultiply(200)}>2x</button>
+          <button onClick={() => setMultiply(250)}>2.5x</button>
+          <button onClick={() => setMultiply(300)}>3x</button>
+        </Box>
         <Box>
           <MultipleRangeSlider
             min={170}
             max={300}
-            onChange={({ min, max }) => console.log(`min = ${min}, max = ${max}`)}
-            // multiply={250}
+            onChange={({ value0, value1 }) => console.log(`min = ${value0}, max = ${value1}`)}
+            defaultValues={{ value0: 245, value1: 255 }}
+            multiply={multiplyy}
           />
         </Box>
+        {/*TODO TO BE REMOVED*/}
       </Grid>
       {!inputAmountsEmpty && <Divider />}
       <OpenMultiplyVaultChangesInformation {...props} />
