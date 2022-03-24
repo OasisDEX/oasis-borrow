@@ -77,8 +77,12 @@ interface MultipleRangeSliderProps {
   onChange: (value: SliderValues) => void
   defaultValue: SliderValues
   valueColors: SliderValueColors
+  leftDescription: ReactNode
+  rightDescription: ReactNode
   multiply?: number
   step?: number
+  leftThumbColor?: string
+  rightThumbColor?: string
   minDescription?: ReactNode
   maxDescription?: ReactNode
 }
@@ -91,6 +95,10 @@ export function MultipleRangeSlider({
   valueColors,
   multiply,
   step = 5,
+  leftThumbColor = 'onWarning',
+  rightThumbColor = 'onSuccess',
+  leftDescription,
+  rightDescription,
   minDescription = '',
   maxDescription = '',
 }: MultipleRangeSliderProps) {
@@ -173,7 +181,7 @@ export function MultipleRangeSlider({
       } else {
         setSide('left')
       }
-    }, 400),
+    }, 100),
     [sliderBoxBoundaries, value0InPercent, value1InPercent, multiplyMarkPercentagePosition],
   )
 
@@ -190,7 +198,7 @@ export function MultipleRangeSlider({
           }}
         >
           <Grid gap={2}>
-            <Text>Sell Trigger Ratio</Text>
+            <Text>{leftDescription}</Text>
             <Text variant="paragraph1" sx={{ fontWeight: 'semiBold', color: valueColors.value0 }}>
               {formatPercent(new BigNumber(value0), {
                 precision: 2,
@@ -199,7 +207,7 @@ export function MultipleRangeSlider({
             </Text>
           </Grid>
           <Grid gap={2}>
-            <Text>Buy Trigger Ratio</Text>
+            <Text>{rightDescription}</Text>
             <Text
               variant="paragraph1"
               sx={{ fontWeight: 'semiBold', textAlign: 'right', color: valueColors.value1 }}
@@ -223,7 +231,7 @@ export function MultipleRangeSlider({
             pointerEvents: side === 'left' && !mobile ? 'all' : 'none',
             background: sliderBackground,
             '&::-webkit-slider-thumb': {
-              backgroundColor: 'onWarning',
+              backgroundColor: leftThumbColor,
               pointerEvents: 'all',
             },
           }}
@@ -240,7 +248,7 @@ export function MultipleRangeSlider({
             pointerEvents: side === 'right' && !mobile ? 'all' : 'none',
             backgroundColor: 'unset',
             '&::-webkit-slider-thumb': {
-              backgroundColor: 'onSuccess',
+              backgroundColor: rightThumbColor,
               pointerEvents: 'all',
             },
           }}

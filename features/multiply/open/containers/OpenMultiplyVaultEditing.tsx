@@ -152,6 +152,8 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             defaultValue={{ value0: 245, value1: 255 }}
             valueColors={{ value0: 'onWarning', value1: 'onSuccess' }}
             multiply={multiplyy}
+            leftDescription="Sell Trigger Ratio"
+            rightDescription="Buy Trigger Ratio"
             minDescription="(min. ratio with stop loss/basic sell)"
           />
         </Box>
