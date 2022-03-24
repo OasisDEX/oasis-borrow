@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { throttle } from 'lodash'
 import React, {
   ChangeEvent,
@@ -13,7 +12,6 @@ import React, {
 } from 'react'
 import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
 
-import { formatPercent } from '../../helpers/formatters/format'
 import { OasisTheme } from '../../theme'
 import { useBreakpointIndex } from '../../theme/useBreakpointIndex'
 import { useTheme } from '../../theme/useThemeUI'
@@ -200,10 +198,7 @@ export function MultipleRangeSlider({
           <Grid gap={2}>
             <Text>{leftDescription}</Text>
             <Text variant="paragraph1" sx={{ fontWeight: 'semiBold', color: valueColors.value0 }}>
-              {formatPercent(new BigNumber(value0), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
+              {value0}%
             </Text>
           </Grid>
           <Grid gap={2}>
@@ -212,10 +207,7 @@ export function MultipleRangeSlider({
               variant="paragraph1"
               sx={{ fontWeight: 'semiBold', textAlign: 'right', color: valueColors.value1 }}
             >
-              {formatPercent(new BigNumber(value1), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
+              {value1}%
             </Text>
           </Grid>
         </Flex>
