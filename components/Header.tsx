@@ -521,6 +521,20 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
+function MobileMenuLink({isActive, children}: { isActive: boolean } & WithChildren) {
+  return <Box sx={{ 
+      ':hover': { bg: '#F6F6F6' },
+      borderRadius: 'medium',
+      p: 3,
+      textDecoration: 'none'
+    }}
+    >
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', color: navLinkColor(isActive)}}>
+      {children}
+      </Text>
+    </Box>
+}
+
 export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
@@ -563,24 +577,23 @@ export function MobileMenu() {
           overflowY: 'auto',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'unset' : 'none',
-          p: 5,
+          p: 4,
         }}
       >
-        <Grid sx={{ rowGap: 4, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          {isConnected && <PositionsLink>
+        <Grid sx={{ rowGap: 0, mt: 2 }}>
+          {isConnected && <PositionsLink sx={{ display: 'block', width: '100%'}}>
+            <MobileMenuLink isActive={pathname.includes('owner')}>
             {t('my-positions')} <VaultCount />
+            </MobileMenuLink>
           </PositionsLink>}
           {links.map((link) => <AppLink
                 key={link.labelKey}
-                variant="text.paragraph1"
-                sx={{
-                  textDecoration: 'none',
-                  color: navLinkColor(pathname.includes(link.url)),
-                }}
                 href={link.url}
                 onClick={closeMenu}
               >
+                <MobileMenuLink isActive={pathname.includes(link.url)}>
                 {t(link.labelKey)}
+                </MobileMenuLink>
               </AppLink>
           )}
           <Grid>
