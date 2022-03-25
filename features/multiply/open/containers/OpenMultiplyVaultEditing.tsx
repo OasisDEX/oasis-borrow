@@ -52,7 +52,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
       : 'primaryAlt'
 
   // TODO TO BE REMOVED
-  const [multiplyy, setMultiply] = useState(250)
+  const [middleMark, setMiddleMark] = useState({ text: '2.5x', value: 250 })
 
   return (
     <Grid gap={4}>
@@ -138,23 +138,24 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
         </Box>
         {/*TODO TO BE REMOVED*/}
         <Box>
-          <button onClick={() => setMultiply(125)}>1.25x</button>
-          <button onClick={() => setMultiply(150)}>1.5x</button>
-          <button onClick={() => setMultiply(200)}>2x</button>
-          <button onClick={() => setMultiply(250)}>2.5x</button>
-          <button onClick={() => setMultiply(300)}>3x</button>
+          <button onClick={() => setMiddleMark({ text: '1.25x', value: 125 })}>1.25x</button>
+          <button onClick={() => setMiddleMark({ text: '1.5x', value: 150 })}>1.5x</button>
+          <button onClick={() => setMiddleMark({ text: '2x', value: 200 })}>2x</button>
+          <button onClick={() => setMiddleMark({ text: '2.5x', value: 250 })}>2.5x</button>
+          <button onClick={() => setMiddleMark({ text: '3x', value: 300 })}>3x</button>
         </Box>
         <Box>
           <MultipleRangeSlider
-            min={170}
-            max={300}
+            min={130}
+            max={320}
             onChange={() => null}
             defaultValue={{ value0: 245, value1: 255 }}
             valueColors={{ value0: 'onWarning', value1: 'onSuccess' }}
-            multiply={multiplyy}
+            middleMark={middleMark}
             leftDescription="Sell Trigger Ratio"
             rightDescription="Buy Trigger Ratio"
             minDescription="(min. ratio with stop loss/basic sell)"
+            step={5}
           />
         </Box>
         {/*TODO TO BE REMOVED*/}

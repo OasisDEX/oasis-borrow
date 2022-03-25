@@ -77,7 +77,7 @@ interface MultipleRangeSliderProps {
   valueColors: SliderValueColors
   leftDescription: ReactNode
   rightDescription: ReactNode
-  multiply?: number
+  middleMark?: { text: string; value: number }
   step?: number
   leftThumbColor?: string
   rightThumbColor?: string
@@ -91,7 +91,7 @@ export function MultipleRangeSlider({
   onChange,
   defaultValue,
   valueColors,
-  multiply,
+  middleMark,
   step = 5,
   leftThumbColor = 'onWarning',
   rightThumbColor = 'onSuccess',
@@ -125,29 +125,38 @@ export function MultipleRangeSlider({
   }, [])
 
   useEffect(() => {
-    if (multiply) {
-      const newValue = { value0: multiply - step, value1: multiply + step }
+    if (middleMark) {
+      const newValue = {
+        value0: middleMark.value - step,
+        value1: middleMark.value + step,
+      }
       setSliderValue(newValue)
       onChange(newValue)
     }
-  }, [multiply])
+  }, [middleMark?.value])
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>, slider: number) => {
       const newValue = Number(e.target.value)
 
-      if (slider === 0 && (newValue > value1 - step || (multiply && newValue > multiply - step))) {
+      if (
+        slider === 0 &&
+        (newValue > value1 - step || (middleMark && newValue > middleMark.value - step))
+      ) {
         return
       }
 
-      if (slider === 1 && (newValue < value0 + step || (multiply && newValue < multiply + step))) {
+      if (
+        slider === 1 &&
+        (newValue < value0 + step || (middleMark && newValue < middleMark.value + step))
+      ) {
         return
       }
 
       setSliderValue((prev) => ({ ...prev, [`value${slider}`]: newValue }))
       onChange({ ...sliderValue, [`value${slider}`]: newValue })
     },
-    [step, value1, multiply],
+    [step, value1, middleMark?.value],
   )
 
   const { value0InPercent, value1InPercent } = useMemo(
@@ -160,9 +169,9 @@ export function MultipleRangeSlider({
     [value0InPercent, value1InPercent],
   )
 
-  const multiplyMarkPercentagePosition = useMemo(
-    () => (multiply ? ((multiply - min) / (max - min)) * 100 : 0),
-    [multiply, min, max],
+  const middleMarkPercentagePosition = useMemo(
+    () => (middleMark ? ((middleMark.value - min) / (max - min)) * 100 : 0),
+    [middleMark?.value, min, max],
   )
 
   const handleMouseMove = useCallback(
@@ -172,7 +181,7 @@ export function MultipleRangeSlider({
         ((e.clientX - sliderBoxLeftBoundary) / (sliderBoxRightBoundary - sliderBoxLeftBoundary)) *
         100
       const centralReference =
-        multiplyMarkPercentagePosition || (value0InPercent + value1InPercent) / 2
+        middleMarkPercentagePosition || (value0InPercent + value1InPercent) / 2
 
       if (mouseXPosition > centralReference) {
         setSide('right')
@@ -180,7 +189,7 @@ export function MultipleRangeSlider({
         setSide('left')
       }
     }, 100),
-    [sliderBoxBoundaries, value0InPercent, value1InPercent, multiplyMarkPercentagePosition],
+    [sliderBoxBoundaries, value0InPercent, value1InPercent, middleMarkPercentagePosition],
   )
 
   return (
@@ -192,7 +201,7 @@ export function MultipleRangeSlider({
             justifyContent: 'space-between',
             fontWeight: 'semiBold',
             color: 'text.subtitle',
-            mb: 3,
+            mb: '24px',
           }}
         >
           <Grid gap={2}>
@@ -245,7 +254,7 @@ export function MultipleRangeSlider({
             },
           }}
         />
-        {multiply && (
+        {middleMark && (
           <Box
             sx={{
               position: 'absolute',
@@ -265,20 +274,20 @@ export function MultipleRangeSlider({
                   height: '30px',
                   transform: 'translateX(-50%)',
                   backgroundColor: 'sliderActiveFill',
-                  left: `${multiplyMarkPercentagePosition}%`,
+                  left: `${middleMarkPercentagePosition}%`,
                 }}
               />
               <Box
                 sx={{
                   position: 'absolute',
                   transform: 'translateX(-50%)',
-                  left: `${multiplyMarkPercentagePosition}%`,
+                  left: `${middleMarkPercentagePosition}%`,
                   top: '-18px',
                   variant: 'text.paragraph4',
                   fontWeight: 'semiBold',
                 }}
               >
-                {multiply / 100}x
+                {middleMark.text}
               </Box>
             </Box>
           </Box>
