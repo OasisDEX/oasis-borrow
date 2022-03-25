@@ -284,14 +284,16 @@ function WalletInfo() {
               readOnly
             />
           </Flex>
-          {accountData && (
-            <Flex>
+          <Flex>
+          {accountData && accountData.daiBalance && (
+            <>
               <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
               <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
-                {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
+                {formatCryptoBalance(accountData.daiBalance)}
               </Text>
-            </Flex>
+            </>
           )}
+          </Flex>
         </Grid>
       </Flex>
     </Grid>
