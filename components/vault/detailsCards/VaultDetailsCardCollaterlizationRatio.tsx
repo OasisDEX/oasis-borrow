@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 

@@ -1,5 +1,6 @@
 import { VaultType } from '@prisma/client'
-import express from 'express'
+import jwt from 'express-jwt'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -12,8 +13,25 @@ const vaultSchema = z.object({
   chainId: z.number(),
 })
 
-export async function createOrUpdate(req: express.Request, res: express.Response) {
+function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result)
+      }
+
+      return resolve(result)
+    })
+  })
+}
+
+export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
+  await runMiddleware(
+    req,
+    res,
+    jwt({ secret: process.env.CHALLENGE_JWT_SECRET!, algorithms: ['HS512'] }),
+  )
   const user = getUserFromRequest(req)
 
   const vaultData = {
@@ -39,8 +57,8 @@ export async function createOrUpdate(req: express.Request, res: express.Response
       update: vaultData,
       create: vaultData,
     })
-    return res.sendStatus(200)
+    return res.status(200).send('OK')
   } else {
-    return res.sendStatus(401)
+    return res.status(401).send('Unauthorized')
   }
 }

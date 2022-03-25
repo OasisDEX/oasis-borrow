@@ -1,5 +1,6 @@
-import express from 'express'
+
 import jwt from 'jsonwebtoken'
+import { NextApiHandler } from 'next'
 import { v4 as uuid } from 'uuid'
 import * as z from 'zod'
 
@@ -21,7 +22,7 @@ const inputSchema = z.object({
   address: address,
 })
 
-export function makeChallenge(options: { challengeJWTSecret: string }): express.Handler {
+export function makeChallenge(options: { challengeJWTSecret: string }): NextApiHandler {
   return (req, res) => {
     const body = inputSchema.parse(req.body)
 

@@ -19,4 +19,6 @@ function getPrismaClient() {
 
 const prisma = getPrismaClient()
 
+console.log('PRISMA')
+
 export { prisma }

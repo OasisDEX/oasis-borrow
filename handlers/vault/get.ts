@@ -1,5 +1,5 @@
 import { Vault } from '@prisma/client'
-import express from 'express'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -8,8 +8,8 @@ const paramsSchema = z.object({
   chainId: z.string(),
 })
 
-export async function getVault(req: express.Request, res: express.Response) {
-  const params = paramsSchema.parse(req.params)
+export async function getVault(req: NextApiRequest, res: NextApiResponse) {
+  const params = paramsSchema.parse(req.query)
 
   const vault = await selectVaultByIdAndChainId({
     vault_id: parseInt(params.id, 10),
@@ -17,7 +17,7 @@ export async function getVault(req: express.Request, res: express.Response) {
   })
 
   if (vault === undefined || vault == null) {
-    return res.sendStatus(404)
+    return res.status(404).send('Not Found')
   } else {
     return res.status(200).json({
       vaultId: vault.vault_id,
