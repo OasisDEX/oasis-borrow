@@ -643,14 +643,17 @@ export function MobileMenu() {
             </AppLink>
           ))}
         </Grid>
+        <Box sx={{ color: 'lavender', ':hover': { color: 'primary' }, position: 'absolute', 
+          bottom: 5, left: '50%', transform: 'translateX(-50%)', cursor: 'pointer' }} onClick={() => setIsOpen(false)}>
+          <Icon name="mobile_menu_close" size="auto" width="50" />
+        </Box>
       </Box>
       <Button
         variant="menuButtonRound"
-        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : undefined }}
       >
         <Icon
-          name={isOpen ? 'close' : 'menu'}
-          onClick={() => setIsOpen(!isOpen)}
+          name={'menu'}
+          onClick={() => setIsOpen(true)}
           size="auto"
           width="20px"
           color="lavender"
