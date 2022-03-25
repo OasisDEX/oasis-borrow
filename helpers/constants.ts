@@ -3,4 +3,3 @@ export const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/
 
 // eslint-disable-next-line
 export const POSITIVE_REALS = /^[+]?([0-9]+(?:[\.][0-9]*)?|\.[0-9]+)$/
-
