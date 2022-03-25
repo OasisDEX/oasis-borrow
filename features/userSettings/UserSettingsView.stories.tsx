@@ -1,25 +1,54 @@
+import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
+import BigNumber from 'bignumber.js'
+import { AppContext } from 'components/AppContext'
+import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
+import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
+import { of } from 'rxjs'
 import { Box, Container, Heading } from 'theme-ui'
+import Web3 from 'web3'
 
 import { SLIPPAGE_DEFAULT, SLIPPAGE_OPTIONS, UserSettingsState } from './userSettings'
-import { UserSettingsDropdown } from './UserSettingsView'
+import { UserSettings } from './UserSettingsView'
 
 const stories = storiesOf('User settings', module)
 
+const protoWeb3Context: Web3Context = {
+  chainId: 42,
+  status: 'connected',
+  deactivate: () => null,
+  account: '0xdA1810f583320Bd25BD30130fD5Db06591bEf915',
+  connectionKind: 'injected',
+  web3: {} as Web3,
+}
+
 const StoryContainer = ({ children, title }: { title: string } & WithChildren) => {
+  if (!isAppContextAvailable()) return null
+
   return (
     <Container variant="appContainer">
-      <Heading variant="smallHeading" sx={{ mt: 5, mb: 3, textAlign: 'left' }}>
+      <Heading variant="smallHeading" sx={{ mt: 5, mb: 3, textAlign: 'right' }}>
         {title}
       </Heading>
-      <Box sx={{ position: 'relative' }}>{children}</Box>
+      <Box sx={{ bg: 'pink', p: 6 }}>
+        <Box
+          sx={{
+            bg: 'surface',
+            boxShadow: 'userSettingsCardDropdown',
+            borderRadius: 'mediumLarge',
+            width: '380px',
+          }}
+        >
+          {children}
+        </Box>
+      </Box>
     </Container>
   )
 }
 
-const BASE_PROPS: UserSettingsState & { opened: boolean; setOpened: () => void } = {
+const settings: UserSettingsState = {
   stage: 'editing',
   slippage: SLIPPAGE_DEFAULT,
   slippageInput: SLIPPAGE_DEFAULT,
@@ -28,51 +57,70 @@ const BASE_PROPS: UserSettingsState & { opened: boolean; setOpened: () => void }
   canProgress: true,
   errors: [],
   warnings: [],
-  opened: false,
-  setOpened: () => null,
 }
 
-const BASE_PROPS_CHANGED_VALUE: UserSettingsState & { opened: boolean; setOpened: () => void } = {
-  ...BASE_PROPS,
-  slippageInput: SLIPPAGE_OPTIONS[1],
+function MockContextProvider({
+  children,
+  title,
+  userSettings,
+}: {
+  title: string
+  userSettings: UserSettingsState
+} & WithChildren) {
+  const ctx = ({
+    web3Context$: of(protoWeb3Context),
+    userSettings$: of(userSettings),
+    accountData$: of({ daiBalance: new BigNumber(1000) }),
+  } as any) as AppContext
+
+  return (
+    <appContext.Provider value={ctx as any}>
+      <ModalProvider>
+        <StoryContainer {...{ title }}>{children}</StoryContainer>
+      </ModalProvider>
+    </appContext.Provider>
+  )
 }
 
 stories.add('Editing start', () => {
   return (
-    <StoryContainer title="Editing start Slippage">
-      <UserSettingsDropdown {...BASE_PROPS} />
-    </StoryContainer>
+    <MockContextProvider title="Editing start Slippage" userSettings={settings}>
+      <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('Editing', () => {
   return (
-    <StoryContainer title="Editing Slippage">
-      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} />
-    </StoryContainer>
+    <MockContextProvider
+      title="Editing Slippage"
+      userSettings={{ ...settings, slippageInput: SLIPPAGE_OPTIONS[1] }}
+    >
+      <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('In progress', () => {
   return (
-    <StoryContainer title="In progress">
-      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="inProgress" />
-    </StoryContainer>
+    <MockContextProvider title="In progress" userSettings={{ ...settings, stage: 'inProgress' }}>
+      <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('Failure', () => {
   return (
-    <StoryContainer title="Failure">
-      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="failure" />
-    </StoryContainer>
+    <MockContextProvider title="Failure" userSettings={{ ...settings, stage: 'failure' }}>
+      <UserSettings />
+    </MockContextProvider>
   )
 })
 
 stories.add('Success', () => {
   return (
-    <StoryContainer title="Success">
-      <UserSettingsDropdown {...BASE_PROPS_CHANGED_VALUE} stage="success" />
-    </StoryContainer>
+    <MockContextProvider title="Success" userSettings={{ ...settings, stage: 'success' }}>
+      <UserSettings />
+    </MockContextProvider>
   )
 })
