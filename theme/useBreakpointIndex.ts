@@ -25,7 +25,3 @@ export function useBreakpointIndex() {
 
   return value
 }
-
-export function useOnMobile() {
-  return useBreakpointIndex() === 0
-}

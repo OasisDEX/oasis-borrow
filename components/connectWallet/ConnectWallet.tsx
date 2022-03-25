@@ -31,7 +31,6 @@ import React, { useEffect } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
 import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
-import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
 
 import { useModal } from '../../helpers/modalHook'
@@ -126,19 +125,24 @@ export async function getConnector(
   }
 }
 
-const SUPPORTED_WALLETS: ConnectionKind[] = [
-  'injected',
-  'walletConnect',
-  'walletLink',
-  'portis',
-  'myetherwallet',
-  'trezor',
-  'gnosisSafe',
+interface SupportedWallet {
+  iconName: string
+  connectionKind: ConnectionKind
+}
+
+const SUPPORTED_WALLETS: SupportedWallet[] = [
+  { iconName: 'metamask_color', connectionKind: 'injected' },
+  { iconName: 'wallet_connect_color', connectionKind: 'walletConnect' },
+  { iconName: 'coinbase_color', connectionKind: 'walletLink' },
+  { iconName: 'portis', connectionKind: 'portis' },
+  { iconName: 'myetherwallet', connectionKind: 'myetherwallet' },
+  { iconName: 'trezor', connectionKind: 'trezor' },
+  { iconName: 'gnosis_safe', connectionKind: 'gnosisSafe' },
 ]
 
 const isFirefox = browserDetect().name === 'firefox'
 if (!isFirefox) {
-  SUPPORTED_WALLETS.push('ledger')
+  SUPPORTED_WALLETS.push({ iconName: 'ledger', connectionKind: 'ledger' })
 }
 
 function ConnectWalletButtonWrapper({
@@ -227,142 +231,60 @@ function connect(
     }
   }
 }
-type InjectedWalletKind =
-  | 'metamask'
-  | 'imtoken'
-  | 'alphawallet'
-  | 'trust'
-  | 'coinbase'
-  | 'mist'
-  | 'parity'
-  | 'infura'
-  | 'localhost'
-  | 'unknowninjected'
-  | 'nonexistent'
 
-export function getInjectedWalletKind(): InjectedWalletKind {
+export function getInjectedWalletKind() {
   const w = window as any
 
-  if (w.imToken) return 'imtoken'
+  if (w.imToken) return 'IMToken'
 
-  if (w.ethereum?.isMetaMask) return 'metamask'
+  if (w.ethereum?.isMetaMask) return 'MetaMask'
 
-  if (!w.web3 || typeof w.web3.currentProvider === 'undefined') return 'nonexistent'
+  if (!w.web3 || typeof w.web3.currentProvider === 'undefined') return undefined
 
-  if (w.web3.currentProvider.isAlphaWallet) return 'alphawallet'
+  if (w.web3.currentProvider.isAlphaWallet) return 'Alpha Wallet'
 
-  if (w.web3.currentProvider.isTrust) return 'trust'
+  if (w.web3.currentProvider.isTrust) return 'Trust'
 
-  if (typeof w.SOFA !== 'undefined') return 'coinbase'
+  if (typeof w.SOFA !== 'undefined') return 'Coinbase'
 
-  if (typeof w.__CIPHER__ !== 'undefined') return 'coinbase'
+  if (typeof w.__CIPHER__ !== 'undefined') return 'Coinbase'
 
-  if (w.web3.currentProvider.constructor.name === 'EthereumProvider') return 'mist'
+  if (w.web3.currentProvider.constructor.name === 'EthereumProvider') return 'Mist'
 
-  if (w.web3.currentProvider.constructor.name === 'Web3FrameProvider') return 'parity'
+  if (w.web3.currentProvider.constructor.name === 'Web3FrameProvider') return 'Parity'
 
   if (w.web3.currentProvider.host && w.web3.currentProvider.host.indexOf('infura') !== -1)
-    return 'infura'
+    return 'Infura'
 
   if (w.web3.currentProvider.host && w.web3.currentProvider.host.indexOf('localhost') !== -1)
-    return 'localhost'
+    return 'Localhost'
 
-  return 'unknowninjected'
+  return 'Injected provider'
 }
 
-type WalletKind = Exclude<ConnectionKind, 'injected'> | InjectedWalletKind
-interface ConnectionDetail {
-  friendlyName: string
-  connectIcon?: string
-  userIcon?: UserWalletIconName
-}
-
-const connectionDetails: Record<WalletKind, ConnectionDetail> = {
-  walletConnect: {
-    friendlyName: 'WalletConnect',
-    connectIcon: 'wallet_connect_color',
-    userIcon: 'walletConnect_user',
-  },
-  walletLink: {
-    friendlyName: 'Coinbase wallet',
-    connectIcon: 'coinbase_color',
-    userIcon: 'walletLink_user',
-  },
-  portis: {
-    friendlyName: 'Portis wallet',
-    connectIcon: 'portis',
-    userIcon: 'portis_user',
-  },
-  myetherwallet: {
-    friendlyName: 'My Ether Wallet',
-    connectIcon: 'myetherwallet',
-    userIcon: 'myetherwallet_user',
-  },
-  trezor: {
-    friendlyName: 'Trezor',
-    connectIcon: 'trezor',
-    userIcon: 'trezor_user',
-  },
-  ledger: {
-    friendlyName: 'Ledger',
-    connectIcon: 'ledger',
-    userIcon: 'ledger_user',
-  },
-  network: {
-    friendlyName: 'Network',
-  },
-  gnosisSafe: {
-    friendlyName: 'Gnosis Safe',
-    connectIcon: 'gnosis_safe',
-    userIcon: 'gnosisSafe_user',
-  },
-  magicLink: {
-    friendlyName: 'MagicLink',
-  },
-  imtoken: {
-    friendlyName: 'IMToken',
-  },
-  metamask: {
-    friendlyName: 'MetaMask',
-    connectIcon: 'metamask_color',
-    userIcon: 'metamask_user',
-  },
-  alphawallet: {
-    friendlyName: 'Alpha Wallet',
-  },
-  trust: {
-    friendlyName: 'Trust',
-  },
-  coinbase: {
-    friendlyName: 'Coinbase',
-  },
-  mist: {
-    friendlyName: 'Mist',
-  },
-  parity: {
-    friendlyName: 'Parity',
-  },
-  infura: {
-    friendlyName: 'Infura',
-  },
-  localhost: {
-    friendlyName: 'Localhost',
-  },
-  unknowninjected: {
-    friendlyName: 'Injected provider',
-  },
-  nonexistent: {
-    friendlyName: '',
-  },
-}
-
-export function getConnectionDetails(walletKind: WalletKind): ConnectionDetail {
-  // Set default wallet icon
-  return { ...{ userIcon: 'someWallet_user' }, ...connectionDetails[walletKind] }
-}
-
-export function getWalletKind(connectionKind: ConnectionKind): WalletKind {
-  return connectionKind === 'injected' ? getInjectedWalletKind() : connectionKind
+export function getConnectionKindMessage(connectionKind: ConnectionKind) {
+  switch (connectionKind) {
+    case 'injected':
+      return getInjectedWalletKind()
+    case 'walletConnect':
+      return 'WalletConnect'
+    case 'walletLink':
+      return 'Coinbase wallet'
+    case 'portis':
+      return 'Portis wallet'
+    case 'myetherwallet':
+      return 'My Ether Wallet'
+    case 'trezor':
+      return 'Trezor'
+    case 'ledger':
+      return 'Ledger'
+    case 'network':
+      return 'Network'
+    case 'gnosisSafe':
+      return 'Gnosis Safe'
+    case 'magicLink':
+      return 'MagicLink'
+  }
 }
 
 export function ConnectWallet() {
@@ -473,18 +395,17 @@ export function ConnectWallet() {
         </Alert>
       )}
       <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
-        {SUPPORTED_WALLETS.map((connectionKind) => {
+        {SUPPORTED_WALLETS.map(({ iconName, connectionKind }) => {
           const isConnecting =
             (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
             web3Context.connectionKind === connectionKind
-          const walletKind = getWalletKind(connectionKind)
-          const { friendlyName, connectIcon } = getConnectionDetails(walletKind)
+          const connectionKindMsg = getConnectionKindMessage(connectionKind)
           const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
-          const missingInjectedWallet = walletKind === 'nonexistent'
+          const missingInjectedWallet = connectionKindMsg === undefined
           const description = missingInjectedWallet
             ? t('connect-install-metamask')
             : t(descriptionTranslation, {
-                connectionKind: friendlyName,
+                connectionKind: connectionKindMsg,
               })
 
           const networkId = getNetworkId()
@@ -494,7 +415,7 @@ export function ConnectWallet() {
               {...{
                 key: connectionKind,
                 isConnecting,
-                iconName: connectIcon || 'metamask_color', // todo: use some default icon instead of metamask
+                iconName,
                 description,
                 connect:
                   web3Context.status === 'connecting'

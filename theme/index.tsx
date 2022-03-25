@@ -132,14 +132,6 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
-    headerSettings: {
-      fontFamily: 'body',
-      fontWeight: 'medium',
-      lineHeight: 'heading',
-      fontSize: 4,
-      color: 'primary',
-      mb: 3,
-    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -173,7 +165,7 @@ const oasisBaseTheme = {
       color: 'text.subtitle',
     },
     caption: {
-      variant: 'text.paragraph4',
+      variant: 'paragraph4',
       fontWeight: 'heading',
       textTransform: 'uppercase',
       letterSpacing: '0.04em',
@@ -196,11 +188,6 @@ const oasisBaseTheme = {
         variant: 'text.paragraph1',
         color: 'text.focused',
       },
-    },
-    address: {
-      variant: 'paragraph3',
-      fontWeight: 'medium',
-      letterSpacing: '0.02em',
     },
   },
   borders: {
@@ -682,13 +669,12 @@ const oasisBaseTheme = {
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
-      width: '50px',
-      height: '50px',
+      width: '46px',
+      height: '46px',
       padding: 0,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      flexShrink: 0,
     },
     unStyled: {
       background: 'unset',
@@ -775,12 +761,6 @@ const oasisBaseTheme = {
       '&:focus-visible': {
         textDecoration: 'underline',
       },
-    },
-    settings: {
-      color: 'primaryEmphasis',
-      fontWeight: 'medium',
-      fontSize: 1,
-      textDecoration: 'none',
     },
   },
   icons,

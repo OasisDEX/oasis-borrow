@@ -21,7 +21,7 @@ import {
   SxStyleProp,
   Text,
 } from 'theme-ui'
-import { useOnMobile } from 'theme/useBreakpointIndex'
+import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
 import { disconnect } from './connectWallet/ConnectWallet'
@@ -232,9 +232,10 @@ export function ModalErrorMessage({ message }: { message: string }) {
 }
 
 export function MobileSidePanelPortal({ children }: WithChildren) {
-  const onMobile = useOnMobile()
+  const breakpoint = useBreakpointIndex()
+  const mobile = breakpoint === 0
 
-  return onMobile ? ReactDOM.createPortal(children, document.body) : children
+  return mobile ? ReactDOM.createPortal(children, document.body) : children
 }
 
 export function MobileSidePanelClose({
@@ -244,9 +245,10 @@ export function MobileSidePanelClose({
   opened: boolean
   onClose: () => void
 }) {
-  const onMobile = useOnMobile()
+  const breakpoint = useBreakpointIndex()
+  const mobile = breakpoint === 0
 
-  return onMobile ? (
+  return mobile ? (
     <Box>
       {opened && <ModalHTMLOverflow />}
       <Box
