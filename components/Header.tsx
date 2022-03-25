@@ -127,11 +127,11 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
 }
 
 function ButtonDropdown({
-  buttonContents,
+  ButtonContents,
   round,
   dropdownSx,
   children,
-}: { buttonContents: JSX.Element; round?: boolean; dropdownSx?: SxStyleProp } & WithChildren) {
+}: { ButtonContents: React.ComponentType<{ active?: boolean }>; round?: boolean; dropdownSx?: SxStyleProp } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
@@ -141,9 +141,11 @@ function ButtonDropdown({
       <Button
         variant={round ? 'menuButtonRound' : 'menuButton'}
         onClick={() => setIsOpen(!isOpen)}
-        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary', p: 1 }}
+        sx={{ p: 1, '&, :focus': {
+          outline: isOpen ? '1px solid' : null, outlineColor: 'primary'
+        } }}
       >
-        {buttonContents}
+        <ButtonContents active={isOpen} />
       </Button>
       <Box
         sx={{
@@ -192,6 +194,7 @@ function UserDesktopMenu() {
     !accountData ||
     web3Context?.status !== 'connected'
 
+  
   return (
     <Flex
       sx={{
@@ -205,7 +208,7 @@ function UserDesktopMenu() {
         <PositionsLink sx={{ display: ['none', 'flex'] }} />
         {exchangeEnabled && web3Provider ? (
           <ButtonDropdown
-            buttonContents={<Icon name="exchange" size="auto" width="20" />}
+            ButtonContents={({ active }) => <Icon name="exchange" size="auto" width="20" color={ active ? 'primary' : 'lavender'} />}
             round={true}
           >
             <UniswapWidget web3Provider={web3Provider} />
@@ -213,8 +216,8 @@ function UserDesktopMenu() {
         ) : null}
         {!shouldHideSettings && (
           <ButtonDropdown
-            buttonContents={
-              <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
+            ButtonContents={
+              ({ active }) => <UserSettingsButtonContents {...{ context, accountData, web3Context, active }} />
             }
           >
             <UserSettings sx={{ p: 4, minWidth: '380px' }} />
@@ -383,7 +386,7 @@ function ConnectedHeader() {
           {exchangeEnabled && web3Provider ? (
             <Box sx={{ mr: 2 }}>
               <ButtonDropdown
-                buttonContents={<Icon name="exchange" size="auto" width="20" />}
+                ButtonContents={({ active }) => <Icon name="exchange" size="auto" width="20" color={ active ? 'primary' : 'lavender'} />}
                 round={true}
                 dropdownSx={{
                   position: 'fixed',
@@ -502,7 +505,7 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-function MobileMenu() {
+export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
@@ -604,7 +607,8 @@ function MobileMenu() {
           name={isOpen ? 'close' : 'menu'}
           onClick={() => setIsOpen(!isOpen)}
           size="auto"
-          width="12px"
+          width="20px"
+          color="lavender"
         />
       </Button>
     </>

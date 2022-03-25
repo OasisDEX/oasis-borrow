@@ -361,7 +361,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function UserSettingsButtonContents({ context, accountData, web3Context }: any) {
+export function UserSettingsButtonContents({ context, accountData, web3Context, active }: any) {
   const { connectionKind } = web3Context
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
@@ -380,6 +380,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context }
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
+          color={ active ? 'primary' : 'lavender'}
         />
       </Flex>
     </Flex>
