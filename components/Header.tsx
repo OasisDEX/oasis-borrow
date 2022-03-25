@@ -526,7 +526,8 @@ function MobileMenuLink({isActive, children}: { isActive: boolean } & WithChildr
       ':hover': { bg: '#F6F6F6' },
       borderRadius: 'medium',
       p: 3,
-      textDecoration: 'none'
+      textDecoration: 'none',
+      cursor: 'pointer'
     }}
     >
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', color: navLinkColor(isActive)}}>
@@ -542,6 +543,7 @@ export function MobileMenu() {
   const [context] = useObservable(context$)
   const [isOpen, setIsOpen] = useState(false)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
+  const [showAssets, setShowAssets] = useState(false)
 
   const isConnected = !!(context as ContextConnected)?.account
   const links =[
@@ -580,7 +582,7 @@ export function MobileMenu() {
           p: 4,
         }}
       >
-        <Grid sx={{ rowGap: 0, mt: 2 }}>
+        <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'none' : 'grid' }}>
           {isConnected && <PositionsLink sx={{ display: 'block', width: '100%'}}>
             <MobileMenuLink isActive={pathname.includes('owner')}>
             {t('my-positions')} <VaultCount />
@@ -596,22 +598,34 @@ export function MobileMenu() {
                 </MobileMenuLink>
               </AppLink>
           )}
-          <Grid>
-            <Text variant="links.navHeader">{t('nav.assets')}</Text>
-            <AssetsSelect
-              options={LANDING_PILLS.map((asset) => ({
-                label: asset.label,
-                icon: asset.icon,
-                link: asset.link,
-              }))}
-              handleChange={closeMenu}
-            />
-          </Grid>
+          <Box onClick={() => setShowAssets(true)}>
+            <MobileMenuLink isActive={false}>
+              <Flex sx={{ alignItems: 'center' }}>
+                {t('nav.assets')} <Icon name="chevron_right" sx={{ ml: 1 }} />
+              </Flex>
+            </MobileMenuLink>
+          </Box>
+        </Grid>
+        <Grid sx={{rowGap: 0, mt: 3, display: showAssets ? 'grid' : 'none'}}>
+          <Box onClick={() => setShowAssets(false)}>
+            <MobileMenuLink isActive={false}>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Icon name="chevron_left" sx={{ mr: 1 }}/> {t('nav.assets')} 
+              </Flex>
+            </MobileMenuLink>
+          </Box>
+          {LANDING_PILLS.map((asset) => <AppLink key={asset.label} href={asset.link}>
+            <MobileMenuLink isActive={false}>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1}} /> {asset.label} 
+              </Flex>
+            </MobileMenuLink>
+          </AppLink>)}
         </Grid>
       </Box>
       <Button
         variant="menuButtonRound"
-        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}
+        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : undefined }}
       >
         <Icon
           name={isOpen ? 'close' : 'menu'}
