@@ -10,10 +10,10 @@ import {
   ContentQuestion,
   ContentTypeSupport,
 } from 'features/content/support/support'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import getConfig from 'next/config'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { TRANSITIONS } from 'theme'
 import { Box, Flex, Heading } from 'theme-ui'
 

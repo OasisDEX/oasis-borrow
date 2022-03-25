@@ -2,9 +2,10 @@ import { MagicLinkConnector, NetworkName } from '@oasisdex/connectors'
 import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { networksById } from 'blockchain/config'
 import { EMAIL_REGEX } from 'helpers/constants'
-import { curry } from 'ramda'
 import { identity, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, tap } from 'rxjs/operators'
+
+import curry from 'ramda/src/curry'
 
 export function getMagicLinkKey(network: number) {
   return networksById[network.toString()].magicLink.apiKey

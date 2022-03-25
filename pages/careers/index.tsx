@@ -4,11 +4,22 @@ import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
 import { groupBy } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  const careers = await Promise.all(getCareerFileNames().map((file) => getCareerByFileName(file)))
+  const translations = await serverSideTranslations(locale, ['common'])
+
+  return {
+    props: {
+      careers,
+      ...translations,
+    },
+  }
+}
 export default function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
   const careersByArea = groupBy(careers, 'area')
@@ -124,15 +135,4 @@ CareersPage.seoTags = (
 CareersPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
-}
-
-export const getStaticProps = async ({ locale }: { locale: string }) => {
-  const careers = await Promise.all(getCareerFileNames().map((file) => getCareerByFileName(file)))
-
-  return {
-    props: {
-      careers,
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
 }
