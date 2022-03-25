@@ -81,7 +81,13 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
       `}
     >
       {/* @ts-ignore */}
-      <SwapWidget provider={web3Provider} theme={widgetTheme} tokenList={tokenList.tokens} />
+      <SwapWidget
+        provider={web3Provider}
+        theme={widgetTheme}
+        tokenList={tokenList.tokens}
+        convenienceFee={20}
+        convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
+      />
     </Box>
   ) : (
     <Flex sx={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
