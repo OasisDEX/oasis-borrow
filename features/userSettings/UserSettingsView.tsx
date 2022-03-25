@@ -268,7 +268,7 @@ function WalletInfo() {
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
             <Text variant="address" sx={{ fontSize: 2 }}>
-              {formatAddress(account, 6)}
+              {accountData?.ensName || formatAddress(account, 6)}
             </Text>
             <Text
               sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }}
