@@ -624,14 +624,15 @@ export function MobileMenu() {
             </MobileMenuLink>
           </Box>
         </Grid>
-        <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'grid' : 'none' }}>
-          <Box onClick={() => setShowAssets(false)}>
+        <Grid sx={{ rowGap: 4, mt: 3, display: showAssets ? 'grid' : 'none' }}>
+          <Box onClick={() => setShowAssets(false)} sx={{ justifySelf: 'flex-start' }}>
             <MobileMenuLink isActive={false}>
               <Flex sx={{ alignItems: 'center' }}>
                 <Icon name="chevron_left" sx={{ mr: 1 }} /> {t('nav.assets')}
               </Flex>
             </MobileMenuLink>
           </Box>
+          <Grid sx={{ rowGap: 0 }}>
           {LANDING_PILLS.map((asset) => (
             <AppLink key={asset.label} href={asset.link}>
               <MobileMenuLink isActive={false}>
@@ -642,6 +643,7 @@ export function MobileMenu() {
               </MobileMenuLink>
             </AppLink>
           ))}
+          </Grid>
         </Grid>
         <Box sx={{ color: 'lavender', ':hover': { color: 'primary' }, position: 'absolute', 
           bottom: 5, left: '50%', transform: 'translateX(-50%)', cursor: 'pointer' }} onClick={() => setIsOpen(false)}>
