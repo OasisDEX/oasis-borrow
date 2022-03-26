@@ -250,6 +250,7 @@ function MobileSettings() {
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
+  const componentRef = useOutsideElementClickHandler(() => setOpened(false))
 
   if (
     !context ||
@@ -297,14 +298,16 @@ function MobileSettings() {
             p: 3,
             pt: 0,
             zIndex: 'modal',
+            boxShadow: 'userSettingsCardDropdown'
           }}
+          ref={componentRef}
         >
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
-              py: 1,
+              pt: 2,
             }}
           >
             <ModalCloseIcon
