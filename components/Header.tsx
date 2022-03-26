@@ -11,7 +11,7 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, Fragment } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
@@ -176,7 +176,6 @@ function ButtonDropdown({
 }
 
 function UserDesktopMenu() {
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
   const { t } = useTranslation()
   const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
@@ -240,18 +239,12 @@ function UserDesktopMenu() {
           </ButtonDropdown>
         )}
       </Flex>
-      {vaultFormToggleTitle && (
-        <Box sx={{ display: ['block', 'none'] }}>
-          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
-            <Box>{vaultFormToggleTitle}</Box>
-          </Button>
-        </Box>
-      )}
     </Flex>
   )
 }
 
 function MobileSettings() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const [opened, setOpened] = useState(false)
   const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -281,9 +274,14 @@ function MobileSettings() {
           zIndex: 3,
         }}
       >
-        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: '100%' }}>
+        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: vaultFormToggleTitle ? undefined: '100%' }}>
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
+        {vaultFormToggleTitle && (
+          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+            <Box>{vaultFormToggleTitle}</Box>
+          </Button>
+        )}
       </Flex>
       <MobileSidePanelPortal>
         <Box
@@ -350,7 +348,7 @@ function ConnectedHeader() {
   })()
 
   return (
-    <>
+    <React.Fragment>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader
           sx={{
@@ -437,7 +435,7 @@ function ConnectedHeader() {
           <MobileSettings />
         </BasicHeader>
       </Box>
-    </>
+    </React.Fragment>
   )
 }
 
