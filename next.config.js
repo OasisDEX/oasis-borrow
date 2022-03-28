@@ -30,6 +30,7 @@ const conf = withBundleAnalyzer(
         // !! WARN !!
         ignoreBuildErrors: isProduction,
       },
+      productionBrowserSourceMaps: true,
       cssModules: true,
       pageExtensions: ['mdx', 'tsx'],
       publicRuntimeConfig: {
@@ -65,10 +66,17 @@ const conf = withBundleAnalyzer(
 
         if (isProduction) {
         }
-        // config.optimization = {
-        //   minimize: true,
-        //   minimizer: [new TerserPlugin()],
-        // }
+
+        config.optimization = {
+          minimize: true,
+          minimizer: [
+            new TerserPlugin({
+              terserOptions: {
+                mangle: false,
+              },
+            }),
+          ],
+        }
         // Moment.js locales take up a lot of space, so it's good to remove unused ones. "en" is there by default and can not be removed
         // config.plugins.push(new MomentLocalesPlugin({ localesToKeep: ['es', 'pt'] }))
 
