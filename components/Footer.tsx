@@ -149,11 +149,11 @@ export function TemporaryFooter() {
 function SocialWithLogo() {
   return (
     <Grid gap={3}>
-      <Box sx={{ height: '27px', width: '100%' }}>
+      <Box sx={{ height: '27px', width: '100px' }}>
         <Image
           src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')}
           height="27px"
-          width="100%"
+          width="100px"
         />
       </Box>
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
