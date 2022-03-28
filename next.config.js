@@ -71,6 +71,8 @@ const conf = withBundleAnalyzer(
           minimize: true,
           minimizer: [
             new TerserPlugin({
+              // TODO: Figure out how to disable mangling partially without breaking the aplication.
+              // To test if your changes break the app or no - go to /owner/<address> page for an account that has some vaults and see if they are displayed.
               terserOptions: {
                 mangle: false,
               },
