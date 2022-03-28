@@ -47,7 +47,7 @@ export function createInstiVault$(
         charter.peace$({ ilk, usr: owner }),
         charter.uline$({ ilk, usr: owner }),
       ).pipe(
-        switchMap(([token, context, nib, peace, uline]) => {
+        switchMap(([token, context, charteredFee, minActiveColRatio, charteredDebtCeiling]) => {
           return combineLatest(
             vatUrns$({ ilk, urnAddress }),
             vatGem$({ ilk, urnAddress }),
@@ -68,7 +68,7 @@ export function createInstiVault$(
                 },
               ]) => {
                 const debt = normalizedDebt.times(debtScalingFactor)
-                const ilkDebtAvailable = uline.minus(debt)
+                const ilkDebtAvailable = charteredDebtCeiling.minus(debt)
                 return of({
                   id,
                   makerType,
@@ -93,15 +93,15 @@ export function createInstiVault$(
                     collateralizationDangerThreshold,
                     collateralizationWarningThreshold,
                   ),
-                  originationFeePercent: nib,
-                  activeCollRatio: peace,
+                  originationFeePercent: charteredFee,
+                  activeCollRatio: minActiveColRatio,
                   activeCollRatioPriceUSD: collateralPriceAtRatio({
-                    colRatio: peace,
+                    colRatio: minActiveColRatio,
                     lockedCollateral,
                     vaultDebt: debt,
                   }),
                   termEnd: moment().add(3, 'months').toDate(),
-                  currentFixedFee: new BigNumber(0.015),
+                  currentFixedFee: charteredFee,
                   nextFeeChange: '1.4% in 20.4m',
                 })
               },
