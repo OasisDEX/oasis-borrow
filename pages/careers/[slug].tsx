@@ -4,10 +4,10 @@ import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames, slugify } from 'features/careers/careers'
 import { GetServerSidePropsContext } from 'next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import dynamic from 'next/dynamic'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Text } from 'theme-ui'
 
 export default function CareerPage({ career }: { career: Career }) {

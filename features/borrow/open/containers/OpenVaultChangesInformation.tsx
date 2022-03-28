@@ -9,8 +9,8 @@ import {
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { OpenVaultState } from '../pipes/openVault'
 

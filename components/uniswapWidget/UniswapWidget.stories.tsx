@@ -1,10 +1,9 @@
 import detectEthereumProvider from '@metamask/detect-provider'
 import { WithChildren } from 'helpers/types'
 import React, { useEffect, useState } from 'react'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
-import { ExchangeButton } from '../ExchangeButton'
-import { UniswapWidget } from '../UniswapWidget'
+import { UniswapWidget } from './UniswapWidget'
 
 function StoryLayout({ children }: WithChildren) {
   return <Box sx={{ p: 5, bg: 'pink' }}>{children}</Box>
@@ -29,17 +28,6 @@ export const Widget = () => {
   return (
     <StoryLayout>
       <UniswapWidget web3Provider={provider} />
-    </StoryLayout>
-  )
-}
-
-export const Menu = () => {
-  const provider = useWeb3Provider()
-  return (
-    <StoryLayout>
-      <Flex sx={{ justifyContent: 'center' }}>
-        <ExchangeButton web3Provider={provider} />
-      </Flex>
     </StoryLayout>
   )
 }
