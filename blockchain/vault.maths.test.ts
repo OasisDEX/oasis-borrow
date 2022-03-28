@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 
-import { collateralPriceAtRatio } from './vault.maths'
 import { zero } from '../helpers/zero'
+import { collateralPriceAtRatio } from './vault.maths'
 
 describe('vault maths', () => {
   describe('collateralPriceAtRatioThreshold', () => {
