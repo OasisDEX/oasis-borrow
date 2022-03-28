@@ -4,7 +4,7 @@ import { HOUR, SECONDS_PER_YEAR } from '../components/constants'
 import { one, zero } from '../helpers/zero'
 
 export function buildPosition(
-  collateral: BigNumber,
+  lockedCollateral: BigNumber,
   currentPrice: BigNumber,
   nextPrice: BigNumber,
   debtScalingFactor: BigNumber,
@@ -15,8 +15,10 @@ export function buildPosition(
   collateralizationDangerThreshold: BigNumber,
   collateralizationWarningThreshold: BigNumber,
 ) {
-  const lockedCollateralUSD = collateral.times(currentPrice)
-  const lockedCollateralUSDAtNextPrice = nextPrice ? collateral.times(nextPrice) : currentPrice
+  const lockedCollateralUSD = lockedCollateral.times(currentPrice)
+  const lockedCollateralUSDAtNextPrice = nextPrice
+    ? lockedCollateral.times(nextPrice)
+    : currentPrice
 
   const debt = debtScalingFactor.times(normalizedDebt)
 
@@ -33,12 +35,12 @@ export function buildPosition(
   const backingCollateralUSD = backingCollateral.times(currentPrice)
   const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(nextPrice)
 
-  const freeCollateral = backingCollateral.gte(collateral)
+  const freeCollateral = backingCollateral.gte(lockedCollateral)
     ? zero
-    : collateral.minus(backingCollateral)
-  const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
+    : lockedCollateral.minus(backingCollateral)
+  const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(lockedCollateral)
     ? zero
-    : collateral.minus(backingCollateralAtNextPrice)
+    : lockedCollateral.minus(backingCollateralAtNextPrice)
 
   const freeCollateralUSD = freeCollateral.times(currentPrice)
   const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
@@ -59,7 +61,11 @@ export function buildPosition(
     ? maxAvailableDebtAtNextPrice.minus(debt)
     : zero
 
-  const liquidationPrice = collateral.eq(zero) ? zero : debt.times(liquidationRatio).div(collateral)
+  const liquidationPrice = collateralPriceAtRatio({
+    colRatio: liquidationRatio,
+    lockedCollateral,
+    vaultDebt: debt,
+  })
 
   const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
     ? availableDebt
@@ -114,4 +120,19 @@ export function buildPosition(
     atRiskLevelDangerAtNextPrice,
     underCollateralizedAtNextPrice,
   }
+}
+
+type CollateralPriceAtRatioThresholdArgs = {
+  colRatio: BigNumber
+  lockedCollateral: BigNumber
+  vaultDebt: BigNumber
+}
+
+// the collateral price at which the collateral ratio is reached
+export function collateralPriceAtRatio({
+  colRatio,
+  lockedCollateral,
+  vaultDebt,
+}: CollateralPriceAtRatioThresholdArgs): BigNumber {
+  return lockedCollateral.eq(zero) ? zero : vaultDebt.times(colRatio).div(lockedCollateral)
 }

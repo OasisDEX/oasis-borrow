@@ -9,7 +9,7 @@ import { VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { Context } from './network'
 import { OraclePriceData } from './prices'
-import { buildPosition } from './vault.maths'
+import { buildPosition, collateralPriceAtRatio } from './vault.maths'
 import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
@@ -56,7 +56,7 @@ export function createInstiVault$(
           ).pipe(
             switchMap(
               ([
-                { collateral, normalizedDebt },
+                { collateral: lockedCollateral, normalizedDebt },
                 unlockedCollateral,
                 { currentPrice, nextPrice },
                 {
@@ -67,7 +67,8 @@ export function createInstiVault$(
                   stabilityFee,
                 },
               ]) => {
-                const ilkDebtAvailable = uline.minus(normalizedDebt.times(debtScalingFactor))
+                const debt = normalizedDebt.times(debtScalingFactor)
+                const ilkDebtAvailable = uline.minus(debt)
                 return of({
                   id,
                   makerType,
@@ -76,12 +77,12 @@ export function createInstiVault$(
                   address: urnAddress,
                   owner,
                   controller,
-                  lockedCollateral: collateral,
+                  lockedCollateral,
                   normalizedDebt,
                   unlockedCollateral,
                   chainId: context.chainId,
                   ...buildPosition(
-                    collateral,
+                    lockedCollateral,
                     currentPrice,
                     nextPrice,
                     debtScalingFactor,
@@ -94,7 +95,11 @@ export function createInstiVault$(
                   ),
                   originationFeePercent: nib,
                   activeCollRatio: peace,
-                  activeCollRatioPriceUSD: peace,
+                  activeCollRatioPriceUSD: collateralPriceAtRatio({
+                    colRatio: peace,
+                    lockedCollateral,
+                    vaultDebt: debt,
+                  }),
                   termEnd: moment().add(3, 'months').toDate(),
                   currentFixedFee: new BigNumber(0.015),
                   nextFeeChange: '1.4% in 20.4m',
