@@ -23,22 +23,28 @@ const widgetTheme = {
   borderRadius: radii.mediumLarge,
 }
 
-const wrapperPath = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
+const cssPaths = (() => {
+  const main = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
+  const tokenSel = 'div > div:nth-of-type(1)'
 
-const cssPaths = {
-  // main screen
-  swapBtn: `${wrapperPath} > div:nth-of-type(2) > div > button`,
-  token1Btn: `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
-  token2Btn: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
-  input1: `${wrapperPath} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
-  input2: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
-  confirmBtn: `${wrapperPath} > div:nth-of-type(3) > div > div:nth-of-type(4) > button`,
+  return {
+    main: {
+      swapBtn: `${main} > div:nth-of-type(2) > div > button`,
+      token1Btn: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > button`,
+      token2Btn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
+      input1: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
+      input2: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
+      confirmBtn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(4) > button`,
+    }, 
+    // token select
+    tokenSel: {
+      // this is used by the widget to expand the hover effect through the scrollbar
+      hoverAppended: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
+      option: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
+    }
+  }
+})()
 
-  // token selection
-  // this is used by the widget to expand the hover effect through the scrollbar
-  hoverAppended: `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(1)`,
-  tokenOption: `div > div:nth-of-type(1) > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
-}
 
 export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   const [SwapWidget, setSwapWidget] = useState()
@@ -52,30 +58,30 @@ export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
     )
   }, [])
 
-  const { swapBtn, token1Btn, token2Btn, confirmBtn, hoverAppended, tokenOption } = cssPaths
+  const { main, tokenSel } = cssPaths
 
   return web3Provider && SwapWidget ? (
     <Box
       sx={{
-        [swapBtn]: {
+        [main.swapBtn]: {
           border: '3px solid',
           borderColor: 'border',
           ':hover': { borderColor: 'primary', bg: 'surface' },
         },
-        [token1Btn + '[color="interactive"], ' + token2Btn + '[color="interactive"]']: {
+        [main.token1Btn + '[color="interactive"], ' + main.token2Btn + '[color="interactive"]']: {
           border: '1px solid',
           borderColor: 'border',
           ':hover': { borderColor: 'primary', bg: 'surface' },
         },
-        [hoverAppended]: { display: 'none' },
-        [tokenOption]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px' },
+        [tokenSel.hoverAppended]: { display: 'none' },
+        [tokenSel.option]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px' },
       }}
       css={`
-        ${token1Btn} > div > div, ${token2Btn} > div > div {
+        ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {
           font-size: 18px !important;
         }
 
-        ${confirmBtn} {
+        ${main.confirmBtn} {
           border-radius: 32px !important;
         }
       `}
