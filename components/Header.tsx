@@ -1,16 +1,15 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
-import { LanguageSelect } from 'components/LanguageSelect'
 import { AppLink } from 'components/Links'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
-import { LINKS } from 'helpers/constants'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
+import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
@@ -20,7 +19,6 @@ import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { AssetsSelect } from './AssetsSelect'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
@@ -88,15 +86,19 @@ export function BackArrow() {
   )
 }
 
-function PositionsLink({ sx }: { sx?: SxStyleProp }) {
-  const { accountData$, context$ } = useAppContext()
+function VaultCount() {
+  const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
+
+  const count = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
+
+  return count && count > 0 ? <Box sx={{ display: 'inline', ml: 1 }}>{`(${count})`}</Box> : null
+}
+
+function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
+  const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const { pathname } = useRouter()
-  const { t } = useTranslation()
-
-  const numberOfVaults =
-    accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
   return (
     <AppLink
@@ -112,26 +114,21 @@ function PositionsLink({ sx }: { sx?: SxStyleProp }) {
       href={`/owner/${(context as ContextConnected)?.account}`}
       onClick={() => trackingEvents.yourVaults()}
     >
-      <Icon
-        name="home"
-        size="auto"
-        width="20"
-        sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
-      />
-      <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
-      {numberOfVaults
-        ? numberOfVaults > 0 && <Box sx={{ display: 'inline', ml: 1 }}>{`(${numberOfVaults})`}</Box>
-        : ''}
+      {children}
     </AppLink>
   )
 }
 
 function ButtonDropdown({
-  buttonContents,
+  ButtonContents,
   round,
   dropdownSx,
   children,
-}: { buttonContents: JSX.Element; round?: boolean; dropdownSx?: SxStyleProp } & WithChildren) {
+}: {
+  ButtonContents: React.ComponentType<{ active?: boolean }>
+  round?: boolean
+  dropdownSx?: SxStyleProp
+} & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
@@ -141,9 +138,15 @@ function ButtonDropdown({
       <Button
         variant={round ? 'menuButtonRound' : 'menuButton'}
         onClick={() => setIsOpen(!isOpen)}
-        sx={{ border: isOpen ? '1px solid' : null, borderColor: 'primary', p: 1 }}
+        sx={{
+          p: 1,
+          '&, :focus': {
+            outline: isOpen ? '1px solid' : null,
+            outlineColor: 'primary',
+          },
+        }}
       >
-        {buttonContents}
+        <ButtonContents active={isOpen} />
       </Button>
       <Box
         sx={{
@@ -175,7 +178,7 @@ function ButtonDropdown({
 function UserDesktopMenu() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
-
+  const { t } = useTranslation()
   const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const web3Provider =
@@ -202,10 +205,26 @@ function UserDesktopMenu() {
       }}
     >
       <Flex>
-        <PositionsLink sx={{ display: ['none', 'flex'] }} />
+        <PositionsLink sx={{ display: ['none', 'flex'] }}>
+          <Icon
+            name="home"
+            size="auto"
+            width="20"
+            sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
+          />
+          <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
+          <VaultCount />
+        </PositionsLink>
         {exchangeEnabled && web3Provider ? (
           <ButtonDropdown
-            buttonContents={<Icon name="exchange" size="auto" width="20" />}
+            ButtonContents={({ active }) => (
+              <Icon
+                name="exchange"
+                size="auto"
+                width="20"
+                color={active ? 'primary' : 'lavender'}
+              />
+            )}
             round={true}
           >
             <UniswapWidget web3Provider={web3Provider} />
@@ -213,9 +232,9 @@ function UserDesktopMenu() {
         ) : null}
         {!shouldHideSettings && (
           <ButtonDropdown
-            buttonContents={
-              <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
-            }
+            ButtonContents={({ active }) => (
+              <UserSettingsButtonContents {...{ context, accountData, web3Context, active }} />
+            )}
           >
             <UserSettings sx={{ p: 4, minWidth: '380px' }} />
           </ButtonDropdown>
@@ -232,7 +251,7 @@ function UserDesktopMenu() {
   )
 }
 
-function MobileBottomMenu() {
+function MobileSettings() {
   const [opened, setOpened] = useState(false)
   const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
@@ -309,6 +328,15 @@ function navLinkColor(isActive: boolean) {
   return isActive ? 'primary' : 'lavender'
 }
 
+const LINKS = {
+  'dai-wallet': `${getConfig().publicRuntimeConfig.apiHost}/daiwallet`,
+  learn: 'https://kb.oasis.app',
+  blog: 'https://blog.oasis.app',
+  multiply: `/multiply`,
+  borrow: `/borrow`,
+  earn: '/earn',
+}
+
 function ConnectedHeader() {
   const { pathname } = useRouter()
   const { t } = useTranslation()
@@ -383,7 +411,14 @@ function ConnectedHeader() {
           {exchangeEnabled && web3Provider ? (
             <Box sx={{ mr: 2 }}>
               <ButtonDropdown
-                buttonContents={<Icon name="exchange" size="auto" width="20" />}
+                ButtonContents={({ active }) => (
+                  <Icon
+                    name="exchange"
+                    size="auto"
+                    width="20"
+                    color={active ? 'primary' : 'lavender'}
+                  />
+                )}
                 round={true}
                 dropdownSx={{
                   position: 'fixed',
@@ -399,7 +434,7 @@ function ConnectedHeader() {
             </Box>
           ) : null}
           <MobileMenu />
-          <MobileBottomMenu />
+          <MobileSettings />
         </BasicHeader>
       </Box>
     </>
@@ -502,21 +537,38 @@ function LanguageDropdown({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-function MobileMenu() {
+function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChildren) {
+  return (
+    <Box
+      sx={{
+        ':hover': { bg: '#F6F6F6' },
+        borderRadius: 'medium',
+        p: 3,
+        textDecoration: 'none',
+        cursor: 'pointer',
+      }}
+    >
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', color: navLinkColor(isActive) }}>
+        {children}
+      </Text>
+    </Box>
+  )
+}
+
+export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
+  const { context$ } = useAppContext()
+  const [context] = useObservable(context$)
   const [isOpen, setIsOpen] = useState(false)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
+  const [showAssets, setShowAssets] = useState(false)
 
-  const MOBILE_MENU_SECTIONS = [
-    {
-      titleKey: 'nav.products',
-      links: [
-        { labelKey: 'nav.multiply', url: LINKS.multiply },
-        { labelKey: 'nav.borrow', url: LINKS.borrow },
-        ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
-      ],
-    },
+  const isConnected = !!(context as ContextConnected)?.account
+  const links = [
+    { labelKey: 'nav.multiply', url: LINKS.multiply },
+    { labelKey: 'nav.borrow', url: LINKS.borrow },
+    ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -546,65 +598,62 @@ function MobileMenu() {
           overflowY: 'auto',
           opacity: isOpen ? 1 : 0,
           pointerEvents: isOpen ? 'unset' : 'none',
-          p: 5,
+          p: 4,
         }}
       >
-        <Grid sx={{ rowGap: 4, mt: 3, mx: 'auto', maxWidth: 7 }}>
-          <PositionsLink />
-          {MOBILE_MENU_SECTIONS.map((section) => (
-            <Grid key={section.titleKey}>
-              {section.links.map((link) =>
-                link.url ? (
-                  <AppLink
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{
-                      textDecoration: 'none',
-                      color: navLinkColor(pathname.includes(link.url)),
-                    }}
-                    href={link.url}
-                    onClick={closeMenu}
-                  >
-                    {t(link.labelKey)}
-                  </AppLink>
-                ) : (
-                  <Text
-                    key={link.labelKey}
-                    variant="text.paragraph1"
-                    sx={{ fontWeight: 'semiBold' }}
-                  >
-                    {t(link.labelKey)}
-                  </Text>
-                ),
-              )}
-            </Grid>
+        <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'none' : 'grid' }}>
+          {isConnected && (
+            <PositionsLink sx={{ display: 'block', width: '100%' }}>
+              <MobileMenuLink isActive={pathname.includes('owner')}>
+                {t('my-positions')} <VaultCount />
+              </MobileMenuLink>
+            </PositionsLink>
+          )}
+          {links.map((link) => (
+            <AppLink key={link.labelKey} href={link.url} onClick={closeMenu}>
+              <MobileMenuLink isActive={pathname.includes(link.url)}>
+                {t(link.labelKey)}
+              </MobileMenuLink>
+            </AppLink>
           ))}
-          <Grid>
-            <Text variant="links.navHeader">{t('nav.assets')}</Text>
-            <AssetsSelect
-              options={LANDING_PILLS.map((asset) => ({
-                label: asset.label,
-                icon: asset.icon,
-                link: asset.link,
-              }))}
-              handleChange={closeMenu}
-            />
-          </Grid>
-          <Grid>
-            <Text variant="links.navHeader">{t('languages')}</Text>
-            <LanguageSelect />
-          </Grid>
+          <Box onClick={() => setShowAssets(true)}>
+            <MobileMenuLink isActive={false}>
+              <Flex sx={{ alignItems: 'center' }}>
+                {t('nav.assets')} <Icon name="chevron_right" sx={{ ml: 1 }} />
+              </Flex>
+            </MobileMenuLink>
+          </Box>
+        </Grid>
+        <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'grid' : 'none' }}>
+          <Box onClick={() => setShowAssets(false)}>
+            <MobileMenuLink isActive={false}>
+              <Flex sx={{ alignItems: 'center' }}>
+                <Icon name="chevron_left" sx={{ mr: 1 }} /> {t('nav.assets')}
+              </Flex>
+            </MobileMenuLink>
+          </Box>
+          {LANDING_PILLS.map((asset) => (
+            <AppLink key={asset.label} href={asset.link}>
+              <MobileMenuLink isActive={false}>
+                <Flex sx={{ alignItems: 'center' }}>
+                  <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1 }} />{' '}
+                  {asset.label}
+                </Flex>
+              </MobileMenuLink>
+            </AppLink>
+          ))}
         </Grid>
       </Box>
       <Button
         variant="menuButtonRound"
-        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : 'inherit' }}
+        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : undefined }}
       >
         <Icon
           name={isOpen ? 'close' : 'menu'}
           onClick={() => setIsOpen(!isOpen)}
           size="auto"
-          width="12px"
+          width="20px"
+          color="lavender"
         />
       </Button>
     </>

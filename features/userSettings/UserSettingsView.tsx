@@ -284,14 +284,16 @@ function WalletInfo() {
               readOnly
             />
           </Flex>
-          {accountData && (
-            <Flex>
-              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
-              <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
-                {accountData.daiBalance ? formatCryptoBalance(accountData.daiBalance) : '0.00'}
-              </Text>
-            </Flex>
-          )}
+          <Flex>
+            {accountData && accountData.daiBalance && (
+              <>
+                <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+                <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
+                  {formatCryptoBalance(accountData.daiBalance)}
+                </Text>
+              </>
+            )}
+          </Flex>
         </Grid>
       </Flex>
     </Grid>
@@ -361,7 +363,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function UserSettingsButtonContents({ context, accountData, web3Context }: any) {
+export function UserSettingsButtonContents({ context, accountData, web3Context, active }: any) {
   const { connectionKind } = web3Context
   const { userIcon } = getConnectionDetails(getWalletKind(connectionKind))
 
@@ -380,6 +382,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context }
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
+          color={active ? 'primary' : 'lavender'}
         />
       </Flex>
     </Flex>

@@ -1,6 +1,6 @@
 import { CommonVaultState } from 'helpers/types'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
 
