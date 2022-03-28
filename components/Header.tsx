@@ -11,7 +11,7 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useCallback, useState, Fragment } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
@@ -275,7 +275,11 @@ function MobileSettings() {
           zIndex: 3,
         }}
       >
-        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: vaultFormToggleTitle ? undefined: '100%' }}>
+        <Button
+          variant="menuButton"
+          onClick={() => setOpened(true)}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%' }}
+        >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
         {vaultFormToggleTitle && (
@@ -298,7 +302,7 @@ function MobileSettings() {
             p: 3,
             pt: 0,
             zIndex: 'modal',
-            boxShadow: 'userSettingsCardDropdown'
+            boxShadow: 'userSettingsCardDropdown',
           }}
           ref={componentRef}
         >
@@ -634,26 +638,34 @@ export function MobileMenu() {
             </MobileMenuLink>
           </Box>
           <Grid sx={{ rowGap: 0 }}>
-          {LANDING_PILLS.map((asset) => (
-            <AppLink key={asset.label} href={asset.link}>
-              <MobileMenuLink isActive={false}>
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1 }} />{' '}
-                  {asset.label}
-                </Flex>
-              </MobileMenuLink>
-            </AppLink>
-          ))}
+            {LANDING_PILLS.map((asset) => (
+              <AppLink key={asset.label} href={asset.link}>
+                <MobileMenuLink isActive={false}>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1 }} />{' '}
+                    {asset.label}
+                  </Flex>
+                </MobileMenuLink>
+              </AppLink>
+            ))}
           </Grid>
         </Grid>
-        <Box sx={{ color: 'lavender', ':hover': { color: 'primary' }, position: 'absolute', 
-          bottom: 5, left: '50%', transform: 'translateX(-50%)', cursor: 'pointer' }} onClick={() => setIsOpen(false)}>
+        <Box
+          sx={{
+            color: 'lavender',
+            ':hover': { color: 'primary' },
+            position: 'absolute',
+            bottom: 5,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            cursor: 'pointer',
+          }}
+          onClick={() => setIsOpen(false)}
+        >
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
-      <Button
-        variant="menuButtonRound"
-      >
+      <Button variant="menuButtonRound">
         <Icon
           name={'menu'}
           onClick={() => setIsOpen(true)}
