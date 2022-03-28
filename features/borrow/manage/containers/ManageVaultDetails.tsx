@@ -115,6 +115,7 @@ export function ManageVaultDetails(
 
   return (
     <Box>
+      <StopLossTriggeredBannerControl />
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}

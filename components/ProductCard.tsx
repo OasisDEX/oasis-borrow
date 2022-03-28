@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Spinner, Text } from 'theme-ui'
 
 import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
@@ -181,7 +182,7 @@ export function ProductCard({
               <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
             )}
             <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-              <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
+              <Image src={hover ? tokenGif : tokenImage} height="200px" width="200px" />
               <Heading
                 variant="header2"
                 as="h3"

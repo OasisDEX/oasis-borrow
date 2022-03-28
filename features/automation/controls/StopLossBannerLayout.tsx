@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Grid, Image, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Grid, Text } from 'theme-ui'
 
 import { AfterPillProps, VaultDetailsAfterPill } from '../../../components/vault/VaultDetails'
 import { WithArrow } from '../../../components/WithArrow'
@@ -101,9 +102,14 @@ export function StopLossBannerLayout({
         }}
       >
         <Flex sx={{ height: '100%' }}>
-          <Flex sx={{ justifyContent: 'center', alignItems: 'center', width: '40px' }}>
-            <Image src={staticFilesRuntimeUrl('/static/img/protection.svg')} />
-          </Flex>
+          <Box sx={{ width: '40px', height: '40px' }}>
+            <Image
+              src={staticFilesRuntimeUrl('/static/img/protection.svg')}
+              width="76px"
+              height="80px"
+              layout="responsive"
+            />
+          </Box>
           <Flex sx={{ flex: 1, flexDirection: 'column', justifyContent: 'center', ml: 2 }}>
             <StopLossBannerSectionCompact>
               <Text variant="header3" sx={{ fontWeight: 'body', mr: 2 }}>
@@ -151,7 +157,14 @@ export function StopLossBannerLayout({
     >
       <Grid columns={[1, '90px 1fr 1fr 1fr']} sx={{ height: '100%' }}>
         <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Image src={staticFilesRuntimeUrl('/static/img/protection.svg')} />
+          <Box sx={{ width: '76px', height: '80px' }}>
+            <Image
+              src={staticFilesRuntimeUrl('/static/img/protection.svg')}
+              width="76px"
+              height="80px"
+              layout="responsive"
+            />
+          </Box>
         </Flex>
         <StopLossBannerSection
           text={t('protection.dynamic-stop-loss-price')}

@@ -1,5 +1,6 @@
+import Image from 'next/image'
 import React from 'react'
-import { Box, Flex, Image } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 
@@ -16,14 +17,19 @@ export function FooterBackground() {
         zIndex: '-1',
       }}
     >
-      <Flex
+      <Box
         sx={{
           userSelect: 'none',
           pointerEvents: 'none',
         }}
       >
-        <Image src={staticFilesRuntimeUrl('/static/img/background/bottom_bg.png')} />
-      </Flex>
+        <Image
+          layout="responsive"
+          height="334px"
+          width="1995px"
+          src={staticFilesRuntimeUrl('/static/img/background/bottom_bg.png')}
+        />
+      </Box>
     </Box>
   )
 }

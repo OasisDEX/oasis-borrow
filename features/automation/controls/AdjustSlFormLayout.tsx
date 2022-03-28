@@ -4,8 +4,9 @@ import BigNumber from 'bignumber.js'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
+import { Divider, Flex, Text } from 'theme-ui'
 
 import { IlkData } from '../../../blockchain/ilks'
 import { Vault } from '../../../blockchain/vaults'
@@ -291,7 +292,14 @@ export function AdjustSlFormLayout({
         <>
           <Box>
             <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
+              <Box sx={{ width: '165px', height: '161px' }}>
+                <Image
+                  src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')}
+                  layout="responsive"
+                  height="161px"
+                  width="165px"
+                />
+              </Box>
             </Flex>
             <Divider variant="styles.hrVaultFormBottom" mb={4} />
             <ProtectionCompleteInformation

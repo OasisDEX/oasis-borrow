@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import React from 'react'
-import { Image } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
 import { ProtectionBanner } from '../common/ProtectionBanner'
@@ -30,10 +31,23 @@ export function GetProtectionBannerLayout({
         zIndex: 1,
       }}
       image={
-        <Image
-          src={staticFilesRuntimeUrl('/static/img/automation.svg')}
-          sx={{ position: 'absolute', right: 0, top: 0, opacity: [0.4, 1] }}
-        />
+        <Box
+          sx={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            opacity: [0.4, 1],
+            width: '352px',
+            height: '160px',
+          }}
+        >
+          <Image
+            src={staticFilesRuntimeUrl('/static/img/automation.svg')}
+            width="352px"
+            height="160px"
+            layout="responsive"
+          />
+        </Box>
       }
     />
   )

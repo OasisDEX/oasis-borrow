@@ -2,9 +2,10 @@ import { Web3Provider } from '@ethersproject/providers'
 import { getNetworkId } from '@oasisdex/web3-context'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ModalProps } from '../helpers/modalHook'
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
@@ -85,7 +86,14 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
       <ModalCloseIcon {...{ close }} />
       <Grid p={4}>
         <Flex sx={{ alignItems: 'center', flexDirection: 'column' }}>
-          <Image src={staticFilesRuntimeUrl('/static/img/switch_wallet.svg')} my="50px" />
+          <Box my="50px" sx={{ my: '50px', width: '272px', height: '98px' }}>
+            <Image
+              src={staticFilesRuntimeUrl('/static/img/switch_wallet.svg')}
+              layout="responsive"
+              width="272px"
+              height="98px"
+            />
+          </Box>
           <Heading as="h2" sx={{ textAlign: 'center', mb: 2, fontSize: 5 }}>
             {(type === 'injected' || type === 'userNetwork') && t('wallet-wrong-network')}
             {type === 'appNetwork' && t('app-wrong-network')}

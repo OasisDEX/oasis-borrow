@@ -10,10 +10,11 @@ import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHan
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
+import Image from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
@@ -37,7 +38,14 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Image src={staticFilesRuntimeUrl('/static/img/logo.svg')} />
+      <Box sx={{ width: '98px', height: '31px' }}>
+        <Image
+          src={staticFilesRuntimeUrl('/static/img/logo.svg')}
+          layout="responsive"
+          height="31px"
+          width="98px"
+        />
+      </Box>
     </AppLink>
   )
 }

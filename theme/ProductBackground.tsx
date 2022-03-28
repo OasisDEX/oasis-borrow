@@ -1,5 +1,6 @@
+import Image from 'next/image'
 import React from 'react'
-import { Box, Image } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 
@@ -21,7 +22,12 @@ export function ProductBackground() {
           pointerEvents: 'none',
         }}
       >
-        <Image src={staticFilesRuntimeUrl('/static/img/background/top_bg.png')} />
+        <Image
+          src={staticFilesRuntimeUrl('/static/img/background/top_bg.png')}
+          height="469"
+          width="1617px"
+          layout="responsive"
+        />
       </Box>
     </Box>
   )

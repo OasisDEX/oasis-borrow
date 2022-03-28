@@ -6,8 +6,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
+import Image from 'next/image'
 import React from 'react'
-import { Box, Card, Container, Flex, Grid, Image, Link, Text } from 'theme-ui'
+import { Box, Card, Container, Flex, Grid, Link, Text } from 'theme-ui'
 
 import { FooterBackground } from '../theme/FooterBackground'
 import { ChevronUpDown } from './ChevronUpDown'
@@ -148,7 +149,13 @@ export function TemporaryFooter() {
 function SocialWithLogo() {
   return (
     <Grid gap={3}>
-      <Image src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')} sx={{ height: '27px' }} />
+      <Box sx={{ height: '27px', width: '100%' }}>
+        <Image
+          src={staticFilesRuntimeUrl('/static/img/logo_footer.svg')}
+          height="27px"
+          width="100%"
+        />
+      </Box>
       <Flex sx={{ alignItems: 'center', a: { fontSize: '0px' }, my: 2 }}>
         <AppLink href={ROUTES.TWITTER}>
           <Icon name="twitter" size="auto" width="18px" height="16px" />

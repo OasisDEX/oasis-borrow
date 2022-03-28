@@ -7,8 +7,9 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Image from 'next/image'
 import React from 'react'
-import { Box, Grid, Heading, Image, Text } from 'theme-ui'
+import { Box, Grid, Heading, Text } from 'theme-ui'
 
 export default function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
@@ -77,7 +78,8 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
           >
             <Image
               src={staticFilesRuntimeUrl(`/static/img/team/${member.picFileName}`)}
-              sx={{ width: PORTRAIT_SIZE }}
+              width={PORTRAIT_SIZE}
+              height={PORTRAIT_SIZE}
             />
           </Box>
           <Box sx={{ pt: 3 }}>

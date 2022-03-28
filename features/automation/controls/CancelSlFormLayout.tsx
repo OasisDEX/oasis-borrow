@@ -5,8 +5,9 @@ import { MessageCard } from 'components/MessageCard'
 import { HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
+import Image from 'next/image'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
+import { Divider, Flex, Text } from 'theme-ui'
 
 import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
@@ -156,7 +157,14 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
         <>
           <Box>
             <Flex sx={{ justifyContent: 'center', mb: 4 }}>
-              <Image src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')} />
+              <Box sx={{ width: '240px', height: '160px' }}>
+                <Image
+                  src={staticFilesRuntimeUrl('/static/img/cancellation_complete.svg')}
+                  layout="responsive"
+                  height="160px"
+                  width="240px"
+                />
+              </Box>
             </Flex>
             <Divider variant="styles.hrVaultFormBottom" mb={4} />
             <CancelCompleteInformation
