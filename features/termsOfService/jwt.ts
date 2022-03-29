@@ -44,7 +44,7 @@ async function signTypedPayload(challenge: string, web3: Web3, account: string):
 
 function requestChallenge(address: string): Observable<string> {
   return ajax({
-    url: `${basePath}/api/auth/challenge`,
+    url: `/api/auth/challenge`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

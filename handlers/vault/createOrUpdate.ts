@@ -1,5 +1,6 @@
 import { VaultType } from '@prisma/client'
 import jwt from 'express-jwt'
+import { runMiddleware } from 'helpers/runMiddleware'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -13,24 +14,12 @@ const vaultSchema = z.object({
   chainId: z.number(),
 })
 
-function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result) => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
-
-      return resolve(result)
-    })
-  })
-}
-
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
   await runMiddleware(
     req,
     res,
-    jwt({ secret: process.env.CHALLENGE_JWT_SECRET!, algorithms: ['HS512'] }),
+    jwt({ secret: process.env.USER_JWT_SECRET!, algorithms: ['HS512'] }),
   )
   const user = getUserFromRequest(req)
 
