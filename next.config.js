@@ -30,6 +30,7 @@ const conf = withBundleAnalyzer(
         // !! WARN !!
         ignoreBuildErrors: isProduction,
       },
+      productionBrowserSourceMaps: true,
       cssModules: true,
       pageExtensions: ['mdx', 'tsx'],
       publicRuntimeConfig: {
@@ -65,10 +66,19 @@ const conf = withBundleAnalyzer(
 
         if (isProduction) {
         }
-        // config.optimization = {
-        //   minimize: true,
-        //   minimizer: [new TerserPlugin()],
-        // }
+
+        config.optimization = {
+          minimize: true,
+          minimizer: [
+            new TerserPlugin({
+              // TODO: Figure out how to disable mangling partially without breaking the aplication.
+              // To test if your changes break the app or no - go to /owner/<address> page for an account that has some vaults and see if they are displayed.
+              terserOptions: {
+                mangle: false,
+              },
+            }),
+          ],
+        }
         // Moment.js locales take up a lot of space, so it's good to remove unused ones. "en" is there by default and can not be removed
         // config.plugins.push(new MomentLocalesPlugin({ localesToKeep: ['es', 'pt'] }))
 
