@@ -1,6 +1,7 @@
 import * as Sentry from '@sentry/nextjs'
 import { NextPage } from 'next'
 import NextErrorComponent, { ErrorProps } from 'next/error'
+import React from 'react'
 
 interface AppErrorProps extends ErrorProps {
   err?: Error

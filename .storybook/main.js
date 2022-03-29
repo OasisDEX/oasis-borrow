@@ -6,7 +6,12 @@ module.exports = {
     '../features/**/*.stories.tsx',
     '../components/**/*.stories.tsx',
   ],
-  addons: ['@storybook/addon-links', '@storybook/addon-essentials', '@storybook/addon-postcss'],
+  addons: [
+    '@storybook/addon-links',
+    '@storybook/addon-essentials',
+    '@storybook/addon-postcss',
+    'storybook-addon-next-router',
+  ],
   // typescript: {
   //   reactDocgen: 'react-docgen-typescript',
   //   reactDocgenTypescriptOptions: {
