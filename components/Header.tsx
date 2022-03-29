@@ -11,7 +11,7 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 
@@ -176,7 +176,6 @@ function ButtonDropdown({
 }
 
 function UserDesktopMenu() {
-  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
   const { t } = useTranslation()
   const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
@@ -240,23 +239,18 @@ function UserDesktopMenu() {
           </ButtonDropdown>
         )}
       </Flex>
-      {vaultFormToggleTitle && (
-        <Box sx={{ display: ['block', 'none'] }}>
-          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
-            <Box>{vaultFormToggleTitle}</Box>
-          </Button>
-        </Box>
-      )}
     </Flex>
   )
 }
 
 function MobileSettings() {
+  const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const [opened, setOpened] = useState(false)
   const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
+  const componentRef = useOutsideElementClickHandler(() => setOpened(false))
 
   if (
     !context ||
@@ -281,9 +275,18 @@ function MobileSettings() {
           zIndex: 3,
         }}
       >
-        <Button variant="menuButton" onClick={() => setOpened(true)} sx={{ p: 1, width: '100%' }}>
+        <Button
+          variant="menuButton"
+          onClick={() => setOpened(true)}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%' }}
+        >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
+        {vaultFormToggleTitle && (
+          <Button variant="menuButton" sx={{ px: 3 }} onClick={() => setVaultFormOpened(true)}>
+            <Box>{vaultFormToggleTitle}</Box>
+          </Button>
+        )}
       </Flex>
       <MobileSidePanelPortal>
         <Box
@@ -299,14 +302,16 @@ function MobileSettings() {
             p: 3,
             pt: 0,
             zIndex: 'modal',
+            boxShadow: 'userSettingsCardDropdown',
           }}
+          ref={componentRef}
         >
           <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'flex-end',
-              py: 1,
+              pt: 2,
             }}
           >
             <ModalCloseIcon
@@ -350,7 +355,7 @@ function ConnectedHeader() {
   })()
 
   return (
-    <>
+    <React.Fragment>
       <Box sx={{ display: ['none', 'block'] }}>
         <BasicHeader
           sx={{
@@ -437,7 +442,7 @@ function ConnectedHeader() {
           <MobileSettings />
         </BasicHeader>
       </Box>
-    </>
+    </React.Fragment>
   )
 }
 
@@ -624,33 +629,46 @@ export function MobileMenu() {
             </MobileMenuLink>
           </Box>
         </Grid>
-        <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'grid' : 'none' }}>
-          <Box onClick={() => setShowAssets(false)}>
+        <Grid sx={{ rowGap: 4, mt: 3, display: showAssets ? 'grid' : 'none' }}>
+          <Box onClick={() => setShowAssets(false)} sx={{ justifySelf: 'flex-start' }}>
             <MobileMenuLink isActive={false}>
               <Flex sx={{ alignItems: 'center' }}>
                 <Icon name="chevron_left" sx={{ mr: 1 }} /> {t('nav.assets')}
               </Flex>
             </MobileMenuLink>
           </Box>
-          {LANDING_PILLS.map((asset) => (
-            <AppLink key={asset.label} href={asset.link}>
-              <MobileMenuLink isActive={false}>
-                <Flex sx={{ alignItems: 'center' }}>
-                  <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1 }} />{' '}
-                  {asset.label}
-                </Flex>
-              </MobileMenuLink>
-            </AppLink>
-          ))}
+          <Grid sx={{ rowGap: 0 }}>
+            {LANDING_PILLS.map((asset) => (
+              <AppLink key={asset.label} href={asset.link}>
+                <MobileMenuLink isActive={false}>
+                  <Flex sx={{ alignItems: 'center' }}>
+                    <Icon name={asset.icon} size="auto" width="27" sx={{ flexShrink: 0, mr: 1 }} />{' '}
+                    {asset.label}
+                  </Flex>
+                </MobileMenuLink>
+              </AppLink>
+            ))}
+          </Grid>
         </Grid>
+        <Box
+          sx={{
+            color: 'lavender',
+            ':hover': { color: 'primary' },
+            position: 'absolute',
+            bottom: 5,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            cursor: 'pointer',
+          }}
+          onClick={() => setIsOpen(false)}
+        >
+          <Icon name="mobile_menu_close" size="auto" width="50" />
+        </Box>
       </Box>
-      <Button
-        variant="menuButtonRound"
-        sx={{ zIndex: 'mobileMenu', boxShadow: isOpen ? 'none' : undefined }}
-      >
+      <Button variant="menuButtonRound">
         <Icon
-          name={isOpen ? 'close' : 'menu'}
-          onClick={() => setIsOpen(!isOpen)}
+          name={'menu'}
+          onClick={() => setIsOpen(true)}
           size="auto"
           width="20px"
           color="lavender"
