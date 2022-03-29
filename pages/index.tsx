@@ -11,7 +11,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function LandingPage() {
+function LandingPage() {
   return (
     <WithConnection>
       <HomepageView />
@@ -21,3 +21,5 @@ export default function LandingPage() {
 
 LandingPage.layout = LandingPageLayout
 LandingPage.theme = 'Landing'
+
+export default LandingPage

@@ -66,7 +66,7 @@ export function MultiplySurveyButtons() {
   )
 }
 
-export default function MultiplyPage() {
+function MultiplyPage() {
   return (
     <WithConnection>
       <MultiplyView />
@@ -77,3 +77,5 @@ export default function MultiplyPage() {
 
 MultiplyPage.layout = ProductPagesLayout
 MultiplyPage.theme = 'Landing'
+
+export default MultiplyPage
