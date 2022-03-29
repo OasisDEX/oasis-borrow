@@ -45,7 +45,6 @@ const cssPaths = (() => {
   }
 })()
 
-
 export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
   const [SwapWidget, setSwapWidget] = useState()
 
