@@ -30,6 +30,7 @@ interface MockInstiVaultProps {
   _charterNib$?: Observable<BigNumber>
   _charterPeace$?: Observable<BigNumber>
   _charterUline$?: Observable<BigNumber>
+  minActiveColRatio?: BigNumber
 }
 
 export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
@@ -56,6 +57,7 @@ export function mockVault$({
   debt,
   collateral,
   ilk,
+  minActiveColRatio,
 }: MockVaultProps & MockInstiVaultProps = {}): MockVaults {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
@@ -109,7 +111,7 @@ export function mockVault$({
   }
 
   function charterPeace$() {
-    return _charterPeace$ || of(new BigNumber(1))
+    return minActiveColRatio ? of(minActiveColRatio) : _charterPeace$ || of(new BigNumber(1))
   }
 
   function charterUline$() {

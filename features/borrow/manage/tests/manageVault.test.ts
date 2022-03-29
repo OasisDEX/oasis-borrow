@@ -931,5 +931,42 @@ describe('manageVault', () => {
       charterNib$.next(new BigNumber(5))
       expect(state().originationFeeUSD!.toString()).to.eq('250')
     })
+
+    it('blocks user progressing when they will go under min active col ratio at current price', () => {
+      // construct over-collateralised vault
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(16000),
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          priceInfo: {
+            collateralPrice: new BigNumber('1'),
+          },
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().errorMessages.length).equal(0)
+
+      state().updateDeposit!(zero)
+      state().toggleDepositAndGenerateOption!()
+      state().updateGenerate!(new BigNumber(1000))
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(true)
+      expect(state().errorMessages.length).equal(1)
+      expect(state().errorMessages[0]).equal('vaultWillBeTakenUnderMinActiveColRatio')
+      expect(state().canProgress).equal(false)
+    })
+
+    it('blocks user progressing when they will go under min active col ratio at next price')
+
+    it('allows users to decrease vault risk when below min active col ratio, and warns')
   })
 })

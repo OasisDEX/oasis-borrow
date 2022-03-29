@@ -200,6 +200,7 @@ export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
   originationFeeUSD?: BigNumber
+  vaultWillBeTakenUnderMinActiveColRatio?: boolean
 }
 
 function addTransitions(
@@ -385,23 +386,6 @@ export const defaultMutableManageVaultState: MutableManageVaultState = {
   selectedDaiAllowanceRadio: 'unlimited' as 'unlimited',
 }
 
-function applyChange<VS extends ManageStandardBorrowVaultState>(
-  state: VS,
-  change: ManageVaultChange,
-): VS {
-  const s1 = applyManageVaultInput(change, state)
-  const s2 = applyManageVaultForm(change, s1)
-  const s3 = applyManageVaultAllowance(change, s2)
-  const s4 = applyManageVaultTransition(change, s3)
-  const s5 = applyManageVaultTransaction(change, s4)
-  const s6 = applyManageVaultEnvironment(change, s5)
-  const s7 = applyManageVaultInjectedOverride(change, s6)
-  const s8 = applyManageVaultCalculations(s7)
-  const s9 = applyManageVaultStageCategorisation(s8)
-  const s10 = applyManageVaultConditions(s9)
-  return applyManageVaultSummary(s10)
-}
-
 export function createManageVault$<V extends Vault, VS extends ManageStandardBorrowVaultState>(
   context$: Observable<Context>,
   txHelpers$: Observable<TxHelpers>,
@@ -494,9 +478,13 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan<ManageVaultChange, VS>(applyChange, initialState),
+                    scan<ManageVaultChange, VS>(
+                      vaultViewStateProvider.transformVaultState,
+                      initialState,
+                    ),
                     map(validateErrors),
                     map(validateWarnings),
+                    map(vaultViewStateProvider.addErrorsAndWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
                     map(vaultViewStateProvider.addTxnCost),
                     map(
