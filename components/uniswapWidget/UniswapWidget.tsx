@@ -1,9 +1,10 @@
+import { useAppContext } from 'components/AppContextProvider'
 import { AppSpinner } from 'helpers/AppSpinner'
+import { useObservable } from 'helpers/observableHook'
 import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Flex } from 'theme-ui'
-import { provider } from 'web3-core'
 
 import tokenList from './tokenList.json'
 
@@ -45,8 +46,14 @@ const cssPaths = (() => {
   }
 })()
 
-export function UniswapWidget({ web3Provider }: { web3Provider?: provider }) {
+export function UniswapWidget() {
   const [SwapWidget, setSwapWidget] = useState()
+
+  const web3Provider = (() => {
+    const { web3ContextConnected$ } = useAppContext()
+    const [web3Context] = useObservable(web3ContextConnected$)
+    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
+  })()
 
   useEffect(() => {
     setSwapWidget(

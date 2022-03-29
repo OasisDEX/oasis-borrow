@@ -179,12 +179,7 @@ function UserDesktopMenu() {
   const { vaultFormToggleTitle, setVaultFormOpened } = useSharedUI()
   const exchangeEnabled = useFeatureToggle('Exchange')
   const { t } = useTranslation()
-  const { web3ContextConnected$, accountData$, context$, web3Context$ } = useAppContext()
-  const [web3ContextConnected] = useObservable(web3ContextConnected$)
-  const web3Provider =
-    web3ContextConnected?.status !== 'connectedReadonly'
-      ? web3ContextConnected?.web3.currentProvider
-      : null
+  const { accountData$, context$, web3Context$ } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
@@ -215,7 +210,7 @@ function UserDesktopMenu() {
           <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
           <VaultCount />
         </PositionsLink>
-        {exchangeEnabled && web3Provider ? (
+        {exchangeEnabled && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
               <Icon
@@ -227,9 +222,9 @@ function UserDesktopMenu() {
             )}
             round={true}
           >
-            <UniswapWidget web3Provider={web3Provider} />
+            <UniswapWidget />
           </ButtonDropdown>
-        ) : null}
+        )}
         {!shouldHideSettings && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
@@ -343,12 +338,6 @@ function ConnectedHeader() {
   const earnEnabled = useFeatureToggle('EarnProduct')
   const exchangeEnabled = useFeatureToggle('Exchange')
 
-  const web3Provider = (() => {
-    const { web3ContextConnected$ } = useAppContext()
-    const [web3Context] = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-  })()
-
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
@@ -408,7 +397,7 @@ function ConnectedHeader() {
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
           </Flex>
-          {exchangeEnabled && web3Provider ? (
+          {exchangeEnabled && (
             <Box sx={{ mr: 2 }}>
               <ButtonDropdown
                 ButtonContents={({ active }) => (
@@ -429,10 +418,10 @@ function ConnectedHeader() {
                   transform: 'translateX(-50%) translateY(-50%)',
                 }}
               >
-                <UniswapWidget web3Provider={web3Provider} />
+                <UniswapWidget />
               </ButtonDropdown>
             </Box>
-          ) : null}
+          )}
           <MobileMenu />
           <MobileSettings />
         </BasicHeader>
