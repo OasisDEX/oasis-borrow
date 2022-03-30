@@ -27,7 +27,7 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
   }
 }
 
-export default function OpenVault({ ilk }: { ilk: string }) {
+function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
@@ -41,3 +41,5 @@ export default function OpenVault({ ilk }: { ilk: string }) {
 }
 
 OpenVault.layout = AppLayout
+
+export default OpenVault

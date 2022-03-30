@@ -87,7 +87,6 @@ export async function getConnector(
         rpc: { [network]: rpcUrls[network] },
         bridge: 'https://bridge.walletconnect.org',
         qrcode: true,
-        pollingInterval,
       })
     case 'trezor':
       return new TrezorConnector({
