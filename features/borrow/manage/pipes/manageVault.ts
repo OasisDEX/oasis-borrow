@@ -22,7 +22,6 @@ import {
   VaultActionsLogicInterface,
 } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
-import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
@@ -38,43 +37,21 @@ import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import { createHistoryChange$ } from './manageHistory'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
 import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
-import {
-  applyManageVaultAllowance,
-  ManageVaultAllowanceChange,
-} from './viewStateTransforms/manageVaultAllowances'
-import {
-  applyManageVaultCalculations,
-  ManageVaultCalculations,
-} from './viewStateTransforms/manageVaultCalculations'
-import {
-  applyManageVaultConditions,
-  applyManageVaultStageCategorisation,
-  ManageVaultConditions,
-} from './viewStateTransforms/manageVaultConditions'
-import {
-  applyManageVaultEnvironment,
-  ManageVaultEnvironmentChange,
-} from './viewStateTransforms/manageVaultEnvironment'
-import { applyManageVaultForm, ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
-import { applyManageVaultInjectedOverride } from './viewStateTransforms/manageVaultInjectedOverride'
-import {
-  applyManageVaultInput,
-  ManageVaultInputChange,
-} from './viewStateTransforms/manageVaultInput'
-import {
-  applyManageVaultSummary,
-  ManageVaultSummary,
-} from './viewStateTransforms/manageVaultSummary'
+import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
+import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
+import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
+import { ManageVaultEnvironmentChange } from './viewStateTransforms/manageVaultEnvironment'
+import { ManageVaultFormChange } from './viewStateTransforms/manageVaultForm'
+import { ManageVaultInputChange } from './viewStateTransforms/manageVaultInput'
+import { ManageVaultSummary } from './viewStateTransforms/manageVaultSummary'
 import {
   applyEstimateGas,
-  applyManageVaultTransaction,
   createProxy,
   ManageVaultTransactionChange,
   setCollateralAllowance,
   setDaiAllowance,
 } from './viewStateTransforms/manageVaultTransactions'
 import {
-  applyManageVaultTransition,
   ManageVaultTransitionChange,
   progressManage,
 } from './viewStateTransforms/manageVaultTransitions'
@@ -180,7 +157,7 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
+export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
   ManageVaultEnvironment<V> &
@@ -196,13 +173,6 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
-
-export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
-  transactionFeeETH?: BigNumber
-  originationFeeUSD?: BigNumber
-  vaultWillBeTakenUnderMinActiveColRatio?: boolean
-  vaultWillBeTakenUnderMinActiveColRatioAtNextPrice?: boolean
-}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,

@@ -6,7 +6,6 @@ import { Vault } from 'blockchain/vaults'
 import { protoTxHelpers, TxHelpers } from 'components/AppContext'
 import {
   createManageVault$,
-  ManageInstiVaultState,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -20,7 +19,10 @@ import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { InstiVault } from '../../blockchain/instiVault'
 import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
-import { InstitutionalBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import {
+  InstitutionalBorrowManageVaultViewStateProvider,
+  ManageInstiVaultState,
+} from '../../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
 import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'

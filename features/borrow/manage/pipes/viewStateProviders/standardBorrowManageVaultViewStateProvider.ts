@@ -3,7 +3,6 @@ import { GasEstimationStatus } from 'helpers/form'
 
 import {
   defaultMutableManageVaultState,
-  ManageInstiVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from '../manageVault'
@@ -31,6 +30,7 @@ import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTr
 import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
 import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
+import { ManageInstiVaultState } from './institutionalBorrowManageVaultViewStateProvider'
 
 export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
   Vault,

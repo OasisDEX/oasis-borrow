@@ -13,7 +13,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {

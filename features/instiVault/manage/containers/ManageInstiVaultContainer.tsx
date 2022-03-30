@@ -14,8 +14,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/manageVault'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()

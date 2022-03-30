@@ -28,7 +28,6 @@ export type VaultErrorMessage =
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
-  | 'vaultWillBeTakenUnderMinActiveColRatioAtNextPrice'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean

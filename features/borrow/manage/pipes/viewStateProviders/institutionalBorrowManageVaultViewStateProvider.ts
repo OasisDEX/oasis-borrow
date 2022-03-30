@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
 
 import {
-  ManageInstiVaultState,
+  GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from '../manageVault'
@@ -24,17 +24,24 @@ import {
   applyManageVaultStageCategorisation,
 } from '../viewStateTransforms/manageVaultConditions'
 import { applyManageVaultSummary } from '../viewStateTransforms/manageVaultSummary'
-import { VaultErrorMessage } from '../../../../form/errorMessagesHandler'
+
+export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
+  transactionFeeETH?: BigNumber
+  originationFeeUSD?: BigNumber
+  vaultWillBeTakenUnderMinActiveColRatio?: boolean
+  vaultWillBeTakenUnderMinActiveColRatioAtNextPrice?: boolean
+  vaultIsCurrentlyUnderMinActiveColRatio?: boolean
+}
 
 function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): ManageInstiVaultState {
   const {
     inputAmountsEmpty,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
-    vault: { activeCollRatio },
+    vault: { activeCollRatio, collateralizationRatio },
   } = viewState
 
-  const vaultWillBeTakenUnderMinActiveColRatio =
+  const vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice =
     !inputAmountsEmpty &&
     afterCollateralizationRatio.lt(activeCollRatio) &&
     !afterCollateralizationRatio.isZero()
@@ -44,10 +51,14 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
     afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
+  const vaultIsCurrentlyUnderMinActiveColRatio = collateralizationRatio.lt(activeCollRatio)
+
   return {
     ...viewState,
-    vaultWillBeTakenUnderMinActiveColRatio,
-    vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
+    vaultWillBeTakenUnderMinActiveColRatio:
+      vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice ||
+      vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
+    vaultIsCurrentlyUnderMinActiveColRatio,
   }
 }
 
@@ -58,19 +69,19 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
   addErrorsAndWarnings(viewState: ManageInstiVaultState): ManageInstiVaultState {
     return {
       ...viewState,
+      warningMessages: [
+        ...viewState.warningMessages,
+        ...(viewState.vaultIsCurrentlyUnderMinActiveColRatio
+          ? ['vaultIsCurrentlyUnderMinActiveColRatio' as const]
+          : []),
+      ],
       errorMessages: [
         ...viewState.errorMessages,
         ...(viewState.vaultWillBeTakenUnderMinActiveColRatio
           ? ['vaultWillBeTakenUnderMinActiveColRatio' as const]
           : []),
-        ...(viewState.vaultWillBeTakenUnderMinActiveColRatioAtNextPrice
-          ? ['vaultWillBeTakenUnderMinActiveColRatioAtNextPrice' as const]
-          : []),
       ],
-      canProgress:
-        viewState.canProgress &&
-        !viewState.vaultWillBeTakenUnderMinActiveColRatio &&
-        !viewState.vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
+      canProgress: viewState.canProgress && !viewState.vaultWillBeTakenUnderMinActiveColRatio,
     }
   },
 

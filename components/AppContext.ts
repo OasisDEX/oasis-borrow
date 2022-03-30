@@ -84,7 +84,6 @@ import { createAutomationTriggersData } from 'features/automation/triggers/Autom
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
-  ManageInstiVaultState,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
@@ -144,7 +143,10 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import {
+  InstitutionalBorrowManageVaultViewStateProvider,
+  ManageInstiVaultState,
+} from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
 import {
   getTotalSupply,

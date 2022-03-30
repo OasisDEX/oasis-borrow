@@ -22,7 +22,7 @@ export interface MockVaultProps {
   ilk?: string
   collateral?: BigNumber
   debt?: BigNumber
-  priceInfo?: PriceInfo
+  priceInfo?: Partial<PriceInfo>
   id?: BigNumber
 }
 
@@ -61,11 +61,25 @@ export function mockVault$({
 }: MockVaultProps & MockInstiVaultProps = {}): MockVaults {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
+  const completePriceInfo: PriceInfo | undefined = priceInfo
+    ? {
+        currentCollateralPrice: new BigNumber('1'),
+        currentEthPrice: new BigNumber('1'),
+        nextCollateralPrice: new BigNumber('1'),
+        nextEthPrice: new BigNumber('1'),
+        isStaticCollateralPrice: false,
+        isStaticEthPrice: false,
+        collateralPricePercentageChange: new BigNumber(1),
+        ethPricePercentageChange: new BigNumber(1),
+        ...priceInfo,
+      }
+    : undefined
+
   function oraclePriceData$() {
-    return _oraclePriceData$ || priceInfo
+    return _oraclePriceData$ || completePriceInfo
       ? of({
-          currentPrice: priceInfo!.currentCollateralPrice,
-          nextPrice: priceInfo!.nextCollateralPrice,
+          currentPrice: completePriceInfo!.currentCollateralPrice,
+          nextPrice: completePriceInfo!.nextCollateralPrice,
           isStaticPrice: false,
         } as OraclePriceData)
       : mockPriceInfo$({ token }).pipe(
