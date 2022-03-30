@@ -41,9 +41,9 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
       case 'customSlippageOverridden':
         return t('guni-slippage-overridden')
       case 'vaultIsCurrentlyUnderMinActiveColRatio':
-        return t('vault-is-currently-under-min-active-col-ratio')
+        return translate('vault-is-currently-under-min-active-col-ratio')
       case 'vaultWillRemainUnderMinActiveColRatio':
-        return t('vault-will-remain-under-min-active-col-ratio')
+        return translate('vault-will-remain-under-min-active-col-ratio')
       default:
         throw new UnreachableCaseError(message)
     }
