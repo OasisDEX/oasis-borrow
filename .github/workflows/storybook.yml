@@ -1,6 +1,9 @@
 name: Deploy Storybook
 
-on: [push]
+on:
+  push:
+    branches:
+      - dev
 
 jobs:
   deploy-storybook:
