@@ -65,7 +65,13 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
     })
 }
 
-const offset = new Date().getTime() + 5 * 24 * 60 * 60 * 100 // 5 days
+const offset = 1 * 24 * 60 * 60 * 1000 // 1 day
+
+async function checkIfRisky(address: string) {
+  const trmData = await getTrmRisk(address)
+
+  return !!trmData.addressRiskIndicators.length
+}
 
 export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
   // TODO provide correct typing after Damians changes
@@ -75,8 +81,7 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
   try {
     // check risk and return it to ui without saving in db
     if (isGnosis) {
-      const trmData = await getTrmRisk(user.address)
-      const isRisky = !!trmData.addressRiskIndicators.length
+      const isRisky = await checkIfRisky(user.address)
 
       return res.status(200).json({ isRisky })
     }
@@ -88,10 +93,7 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
 
     // create record in db
     if (risk === null) {
-      const trmData = await getTrmRisk(user.address)
-      const isRisky = !!trmData.addressRiskIndicators.length
-
-      // await createRiskForAddress(prisma, user.address, isRisky)
+      const isRisky = await checkIfRisky(user.address)
       await createRiskForAddress(prisma, user.address, isRisky)
 
       return res.status(200).json({ isRisky })
@@ -106,13 +108,12 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // update
-    const trmData = await getTrmRisk(user.address)
-    const isRisky = !!trmData.addressRiskIndicators.length
-
+    const isRisky = await checkIfRisky(user.address)
     await updateRiskForAddress(prisma, user.address, isRisky)
 
     return res.status(200).json({ isRisky })
-  } catch (error: any) {
+  } catch (error) {
+    // @ts-ignore
     return res.status(200).json({ error: error.message || error.toString() })
   }
 }
