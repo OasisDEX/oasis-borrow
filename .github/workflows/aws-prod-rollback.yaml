@@ -17,7 +17,6 @@ jobs:
       ECR_REPO_NAME: oasis-borrow-prod
       SERVICE_NAME: oasis-borrow-prod
       CLUSTER_NAME: oasis-borrow-prod
-      COMMIT_HASH: ${{ github.event.inputs.commit_hash }}
 
     runs-on: ubuntu-latest
 
@@ -31,7 +30,7 @@ jobs:
 
       - name: Validate commit_hash
         run: |
-          VALID_HASH=$(env -i git log --max-count=10 --no-walk --tags --pretty='%h' --decorate=full | grep ${{ env.COMMIT_HASH }})
+          VALID_HASH=$(env -i git log --max-count=10 --no-walk --tags --pretty='%h' --decorate=full | grep ${{ github.event.inputs.commit_hash }})
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -44,23 +43,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Retrieve Docker Image Tagged :${{ env.COMMIT_HASH }}
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      - name: Tag Image as latest
         run: |
-          docker pull $ECR_REGISTRY/$ECR_REPO_NAME:${{ env.COMMIT_HASH }}
-
-      - name: Tag Image as ':latest'
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker image tag $ECR_REGISTRY/$ECR_REPO_NAME:${{ env.COMMIT_HASH }} $ECR_REGISTRY/$ECR_REPO_NAME:latest
-
-      - name: Push New ':latest' Tag To Repo
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          docker push $ECR_REGISTRY/$ECR_REPO_NAME:latest
+          MANIFEST=$(aws ecr batch-get-image --repository-name $ECR_REPO_NAME --image-ids imageTag=${{ github.event.inputs.commit_hash }} --query 'images[].imageManifest' --output text)
+          aws ecr put-image --repository-name $ECR_REPO_NAME --image-tag latest --image-manifest "$MANIFEST"
 
       - name: Update ECS service with Rollback Docker image
         id: service-update
