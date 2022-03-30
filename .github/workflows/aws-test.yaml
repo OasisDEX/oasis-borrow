@@ -65,9 +65,7 @@ jobs:
             NEXT_PUBLIC_SENTRY_ENV=development
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
         tags: |
-          $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG
-          $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG
-          $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG
-          $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.LATEST_TAG }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
