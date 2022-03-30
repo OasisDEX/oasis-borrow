@@ -39,7 +39,7 @@ const cssPaths = (() => {
       token2Btn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
       input1: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
       input2: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
-    }, 
+    },
     // token select
     tokenSel: {
       // hoverAppended is for expanding the hover effect through the scrollbar (we'll hide it)
@@ -47,7 +47,7 @@ const cssPaths = (() => {
       option: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
       search: `${tokenSel} input[inputmode=text]`,
       scrollbar: `${tokenSel} .scrollbar`,
-    }
+    },
   }
 })()
 
@@ -86,10 +86,25 @@ export function UniswapWidget() {
           ':hover': { borderColor: 'primary', bg: 'surface' },
         },
         [tokenSel.hoverAppended]: { display: 'none' },
-        [tokenSel.option]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px', '.subhead': { fontWeight: 'semiBold'} },
-        [tokenSel.search]: { borderColor: 'border', borderRadius: 'medium', ':hover': { bg: 'surface' }, 
-          ':focus': { borderColor: 'primary' },'::placeholder': { color: 'text.lavender'} },
-        [tokenSel.scrollbar]: { '::-webkit-scrollbar-thumb': { background: scrollbarBg('#A8A9B1'), backgroundClip: 'padding-box'}},
+        [tokenSel.option]: {
+          bg: 'transparent',
+          ':hover': { bg: 'border' },
+          borderRadius: '8px',
+          '.subhead': { fontWeight: 'semiBold' },
+        },
+        [tokenSel.search]: {
+          borderColor: 'border',
+          borderRadius: 'medium',
+          ':hover': { bg: 'surface' },
+          ':focus': { borderColor: 'primary' },
+          '::placeholder': { color: 'text.lavender' },
+        },
+        [tokenSel.scrollbar]: {
+          '::-webkit-scrollbar-thumb': {
+            background: scrollbarBg('#A8A9B1'),
+            backgroundClip: 'padding-box',
+          },
+        },
       }}
       css={`
         ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {

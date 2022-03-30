@@ -1,6 +1,5 @@
-import detectEthereumProvider from '@metamask/detect-provider'
 import { WithChildren } from 'helpers/types'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Box } from 'theme-ui'
 
 import { UniswapWidget } from './UniswapWidget'
