@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "next dev",
-    "start:prod": "next start",
+    "start:prod": "yarn migrate && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",

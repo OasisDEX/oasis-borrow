@@ -1,6 +1,4 @@
 import { VaultType } from '@prisma/client'
-import jwt from 'express-jwt'
-import { runMiddleware } from 'helpers/runMiddleware'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -16,11 +14,6 @@ const vaultSchema = z.object({
 
 export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
-  await runMiddleware(
-    req,
-    res,
-    jwt({ secret: process.env.USER_JWT_SECRET!, algorithms: ['HS512'] }),
-  )
   const user = getUserFromRequest(req)
 
   const vaultData = {

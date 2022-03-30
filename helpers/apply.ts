@@ -1,4 +1,11 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
+
+export function apply(fn: Function, handler: NextApiHandler) {
+  return async function (req: NextApiRequest, res: NextApiResponse) {
+    await runMiddleware(req, res, fn)
+    await handler(req, res)
+  }
+}
 
 export function runMiddleware(req: NextApiRequest, res: NextApiResponse, fn: Function) {
   return new Promise((resolve, reject) => {

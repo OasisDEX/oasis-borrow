@@ -1,5 +1,3 @@
-import jwt from 'express-jwt'
-import { runMiddleware } from 'helpers/runMiddleware'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -11,12 +9,6 @@ const tosSchema = z.object({
 })
 
 export async function sign(req: NextApiRequest, res: NextApiResponse) {
-  await runMiddleware(
-    req,
-    res,
-    jwt({ secret: process.env.USER_JWT_SECRET!, algorithms: ['HS512'] }),
-  )
-
   const { docVersion } = tosSchema.parse(req.body)
   const user = getUserFromRequest(req)
   const approvalData = {

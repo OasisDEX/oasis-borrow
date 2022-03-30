@@ -1,7 +1,5 @@
 import { TosApproval } from '@prisma/client'
-import jwt from 'express-jwt'
 import { selecTosForAddress } from 'handlers/tos/tos'
-import { runMiddleware } from 'helpers/runMiddleware'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
@@ -13,12 +11,6 @@ const paramsSchema = z.object({
 })
 
 export async function get(req: NextApiRequest, res: NextApiResponse) {
-  await runMiddleware(
-    req,
-    res,
-    jwt({ secret: process.env.USER_JWT_SECRET!, algorithms: ['HS512'] }),
-  )
-
   const user = getUserFromRequest(req)
   const params = paramsSchema.parse(req.query)
 
