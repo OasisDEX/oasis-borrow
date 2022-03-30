@@ -10,7 +10,7 @@ const configuredFeatures: Record<Features, boolean> = {
   AnotherTestFeature: true, // used in unit tests
   EarnProduct: false,
   Automation: false,
-  Exchange: false,
+  Exchange: true,
   // your feature here....
 }
 

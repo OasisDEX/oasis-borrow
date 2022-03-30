@@ -37,7 +37,8 @@ export function MultiplySurveyButtons() {
             <Global
               styles={() => ({
                 [typeformPopoverButton]: {
-                  bottom: '70px',
+                  bottom: '77px',
+                  right: '14px',
                 },
               })}
             />

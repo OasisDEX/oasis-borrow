@@ -912,10 +912,10 @@ const oasisBaseTheme = {
   zIndices: {
     menu: 3,
     footer: 2,
-    mobileMenu: 3,
     modal: 4,
     cookie: 5,
     modalOnMobilePanel: 5,
+    mobileMenu: 6,
   },
   grids: {
     vaultContainer: {
