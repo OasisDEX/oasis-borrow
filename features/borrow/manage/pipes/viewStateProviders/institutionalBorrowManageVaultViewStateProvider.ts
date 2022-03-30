@@ -26,10 +26,11 @@ import {
 import { applyManageVaultSummary } from '../viewStateTransforms/manageVaultSummary'
 import { VaultErrorMessage } from '../../../../form/errorMessagesHandler'
 
-function applyMinActiveColRatioCondition(viewState: ManageInstiVaultState): ManageInstiVaultState {
+function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): ManageInstiVaultState {
   const {
     inputAmountsEmpty,
     afterCollateralizationRatio,
+    afterCollateralizationRatioAtNextPrice,
     vault: { activeCollRatio },
   } = viewState
 
@@ -37,7 +38,17 @@ function applyMinActiveColRatioCondition(viewState: ManageInstiVaultState): Mana
     !inputAmountsEmpty &&
     afterCollateralizationRatio.lt(activeCollRatio) &&
     !afterCollateralizationRatio.isZero()
-  return { ...viewState, vaultWillBeTakenUnderMinActiveColRatio }
+
+  const vaultWillBeTakenUnderMinActiveColRatioAtNextPrice =
+    !inputAmountsEmpty &&
+    afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
+    !afterCollateralizationRatioAtNextPrice.isZero()
+
+  return {
+    ...viewState,
+    vaultWillBeTakenUnderMinActiveColRatio,
+    vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
+  }
 }
 
 export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
@@ -52,8 +63,14 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
         ...(viewState.vaultWillBeTakenUnderMinActiveColRatio
           ? ['vaultWillBeTakenUnderMinActiveColRatio' as const]
           : []),
+        ...(viewState.vaultWillBeTakenUnderMinActiveColRatioAtNextPrice
+          ? ['vaultWillBeTakenUnderMinActiveColRatioAtNextPrice' as const]
+          : []),
       ],
-      canProgress: viewState.canProgress && !viewState.vaultWillBeTakenUnderMinActiveColRatio,
+      canProgress:
+        viewState.canProgress &&
+        !viewState.vaultWillBeTakenUnderMinActiveColRatio &&
+        !viewState.vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
     }
   },
 
@@ -71,7 +88,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     const s8 = applyManageVaultCalculations(s7)
     const s9 = applyManageVaultStageCategorisation(s8)
     const s10 = applyManageVaultConditions(s9)
-    const s11 = applyMinActiveColRatioCondition(s10)
+    const s11 = applyMinActiveColRatioConditions(s10)
     return applyManageVaultSummary(s11)
   },
 

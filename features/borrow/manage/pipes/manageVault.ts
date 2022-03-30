@@ -201,6 +201,7 @@ export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & 
   transactionFeeETH?: BigNumber
   originationFeeUSD?: BigNumber
   vaultWillBeTakenUnderMinActiveColRatio?: boolean
+  vaultWillBeTakenUnderMinActiveColRatioAtNextPrice?: boolean
 }
 
 function addTransitions(
