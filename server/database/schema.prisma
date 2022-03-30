@@ -40,3 +40,12 @@ enum VaultType {
 
    @@map("vault_type")
 }
+
+model WalletRisk {
+  address     String
+  last_check  DateTime
+  is_risky    Boolean
+
+  @@unique([address], name: "wallet_risk_unique_index")
+  @@map("wallet_risk")
+}

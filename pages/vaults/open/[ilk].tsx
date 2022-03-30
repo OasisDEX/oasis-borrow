@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
+import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedBorrowIlks } from '../../../helpers/productCards'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
@@ -30,8 +31,10 @@ export default function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
-        <BackgroundLight />
-        <OpenVaultView ilk={ilk} />
+        <WithWalletAssociatedRisk>
+          <BackgroundLight />
+          <OpenVaultView ilk={ilk} />
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithWalletConnection>
   )

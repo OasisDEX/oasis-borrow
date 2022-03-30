@@ -4,6 +4,7 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, map, repeat, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
+import { checkIfGnosisSafe } from '../../helpers/checkIfGnosisSafe'
 import { jwtAuthGetToken, JWToken } from './jwt'
 import { checkAcceptanceLocalStorage$, saveAcceptanceLocalStorage$ } from './termAcceptanceLocal'
 
@@ -119,20 +120,7 @@ function verifyAcceptance$(
     )
   }
 
-  let isGnosisSafe = false
-
-  // check if current provider is Gnosis connected by WalletConnect or by dedicated web3-react-connector
-  if (connectionKind === 'walletConnect') {
-    // @ts-ignore
-    if (web3.currentProvider.wc) {
-      // @ts-ignore
-      isGnosisSafe = web3.currentProvider.wc?._peerMeta?.name.includes('Gnosis')
-    }
-  }
-
-  if (connectionKind === 'gnosisSafe') {
-    isGnosisSafe = true
-  }
+  const isGnosisSafe = checkIfGnosisSafe(connectionKind, web3)
 
   if (isGnosisSafe) {
     // temporary ToS flow for Gnosis until they implement off chain signatures

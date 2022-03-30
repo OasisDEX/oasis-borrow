@@ -112,6 +112,7 @@ import {
 import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
 import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
@@ -747,6 +748,8 @@ export function setupAppContext() {
     saveAcceptanceFromApi$,
   )
 
+  const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
+
   const vaultBanners$ = memoize(
     curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
@@ -789,6 +792,7 @@ export function setupAppContext() {
     vaultMultiplyHistory$,
     collateralPrices$,
     termsAcceptance$,
+    walletAssociatedRisk$,
     reclaimCollateral$,
     openMultiplyVault$,
     generalManageVault$,
