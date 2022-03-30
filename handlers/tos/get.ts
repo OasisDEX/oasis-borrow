@@ -1,8 +1,8 @@
 import { TosApproval } from '@prisma/client'
 import jwt from 'express-jwt'
+import { selecTosForAddress } from 'handlers/tos/tos'
 import { runMiddleware } from 'helpers/runMiddleware'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { selecTosForAddress } from 'server/database/tos'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 

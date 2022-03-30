@@ -1,6 +1,6 @@
-import { NextApiHandler } from 'next'
 import { get } from 'handlers/tos/get'
 import { sign } from 'handlers/tos/sign'
+import { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
