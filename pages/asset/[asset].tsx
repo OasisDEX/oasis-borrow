@@ -33,7 +33,7 @@ export async function getStaticProps(
   }
 }
 
-export default function AssetPage({ content }: { content: AssetPageContent }) {
+function AssetPage({ content }: { content: AssetPageContent }) {
   const { replace } = useRouter()
 
   if (!content) {
@@ -51,3 +51,5 @@ export default function AssetPage({ content }: { content: AssetPageContent }) {
 }
 
 AssetPage.layout = ProductPagesLayout
+
+export default AssetPage

@@ -11,7 +11,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function WonderwallPage() {
+function WonderwallPage() {
   const { t } = useTranslation()
 
   return (
@@ -49,3 +49,5 @@ export default function WonderwallPage() {
 }
 WonderwallPage.layout = LandingPageLayout
 WonderwallPage.theme = 'Landing'
+
+export default WonderwallPage
