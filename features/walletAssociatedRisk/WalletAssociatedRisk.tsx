@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { disconnect } from '../../components/connectWallet/ConnectWallet'

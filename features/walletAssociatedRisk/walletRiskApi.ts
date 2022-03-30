@@ -17,7 +17,7 @@ export function getWalletRisk$(token: string, isGnosis: boolean): Observable<Wal
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
+      authorization: `Bearer ${token}`,
     },
     body: {
       isGnosis,
