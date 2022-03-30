@@ -6,6 +6,7 @@ import {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from '../manageVault'
+import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
 import {
   applyManageVaultCalculations,
   defaultManageVaultCalculations,
@@ -15,22 +16,20 @@ import {
   applyManageVaultStageCategorisation,
   defaultManageVaultConditions,
 } from '../viewStateTransforms/manageVaultConditions'
+import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
+import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
 import {
   applyManageVaultSummary,
   defaultManageVaultSummary,
 } from '../viewStateTransforms/manageVaultSummary'
+import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
+import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
 import {
   BorrowManageVaultViewStateProviderInterface,
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
-import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
-import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
-import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
-import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
-import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
-import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
-import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
-import { ManageInstiVaultState } from './institutionalBorrowManageVaultViewStateProvider'
 
 export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
   Vault,

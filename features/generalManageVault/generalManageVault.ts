@@ -5,9 +5,9 @@ import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
 import { ManageStandardBorrowVaultState } from '../borrow/manage/pipes/manageVault'
+import { ManageInstiVaultState } from '../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
-import { ManageInstiVaultState } from '../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 
 type WithToggle<T> = T & { toggleVaultType: () => void }
 

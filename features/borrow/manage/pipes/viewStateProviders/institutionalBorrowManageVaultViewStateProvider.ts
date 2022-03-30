@@ -6,24 +6,24 @@ import {
   ManageStandardBorrowVaultState,
   ManageVaultChange,
 } from '../manageVault'
-import {
-  BorrowManageVaultViewStateProviderInterface,
-  CreateInitialVaultStateArgs,
-} from './borrowManageVaultViewStateProviderInterface'
-import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
-import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
-import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
 import { applyManageVaultAllowance } from '../viewStateTransforms/manageVaultAllowances'
-import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
-import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
-import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
-import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
 import { applyManageVaultCalculations } from '../viewStateTransforms/manageVaultCalculations'
 import {
   applyManageVaultConditions,
   applyManageVaultStageCategorisation,
 } from '../viewStateTransforms/manageVaultConditions'
+import { applyManageVaultEnvironment } from '../viewStateTransforms/manageVaultEnvironment'
+import { applyManageVaultForm } from '../viewStateTransforms/manageVaultForm'
+import { applyManageVaultInjectedOverride } from '../viewStateTransforms/manageVaultInjectedOverride'
+import { applyManageVaultInput } from '../viewStateTransforms/manageVaultInput'
 import { applyManageVaultSummary } from '../viewStateTransforms/manageVaultSummary'
+import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
+import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
+import {
+  BorrowManageVaultViewStateProviderInterface,
+  CreateInitialVaultStateArgs,
+} from './borrowManageVaultViewStateProviderInterface'
+import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
