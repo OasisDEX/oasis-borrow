@@ -1054,41 +1054,54 @@ describe('manageVault', () => {
       expect(state().warningMessages[0]).equal('vaultIsCurrentlyUnderMinActiveColRatio')
     })
 
-    it('allows users to decrease risk on undercollateralised position')
-
-    it.skip('allows users to decrease vault risk when below min active col ratio, and warns', () => {
+    it('allows users to decrease risk on under-collateralised (min active) position', () => {
       // construct under-collateralised vault (min active col ratio)
       const { instiVault$ } = mockVault$({
         debt: new BigNumber(10000),
-        minActiveColRatio: new BigNumber(1.5),
+        minActiveColRatio: new BigNumber(1.6),
         collateral: new BigNumber(14950),
+        priceInfo: {
+          currentCollateralPrice: new BigNumber('1'),
+          nextCollateralPrice: new BigNumber(1),
+        },
       })
 
       const state = getStateUnpacker(
         createManageInstiVault$({
           _instiVault$: instiVault$,
           priceInfo: {
-            collateralPrice: new BigNumber('1'),
+            collateralPrice: new BigNumber(1),
+            collateralChangePercentage: new BigNumber(0),
           },
           ilkData: {
-            liquidationRatio: new BigNumber(1.2),
+            liquidationRatio: new BigNumber(1),
           },
         }),
       )
 
-      expect(state().vaultWillBeTakenUnderMinActiveColRatioAtNextPrice).equal(false)
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().vaultWillRemainUnderMinActiveColRatio).equal(false)
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
       expect(state().errorMessages.length).equal(0)
+      expect(state().warningMessages.length).equal(1)
+      expect(state().warningMessages).includes('vaultIsCurrentlyUnderMinActiveColRatio')
 
       state().updateDeposit!(zero)
       state().toggleDepositAndGenerateOption!()
 
       // deposit more collateral
-      state().updateDeposit!(new BigNumber(400))
+      state().updateDeposit!(new BigNumber(100))
 
-      expect(state().vaultWillBeTakenUnderMinActiveColRatioAtNextPrice).equal(true)
-      expect(state().errorMessages.length).equal(1)
-      expect(state().errorMessages[0]).equal('vaultWillBeTakenUnderMinActiveColRatioAtNextPrice')
-      expect(state().canProgress).equal(false)
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().vaultWillRemainUnderMinActiveColRatio).equal(true)
+
+      expect(state().errorMessages.length).equal(0)
+
+      expect(state().warningMessages.length).equal(2)
+      expect(state().warningMessages).includes('vaultWillRemainUnderMinActiveColRatio')
+      expect(state().warningMessages).includes('vaultIsCurrentlyUnderMinActiveColRatio')
+      expect(state().canProgress).equal(true)
     })
   })
 })

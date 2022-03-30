@@ -8,6 +8,7 @@ export type VaultWarningMessage =
   | 'highSlippage'
   | 'customSlippageOverridden'
   | 'vaultIsCurrentlyUnderMinActiveColRatio'
+  | 'vaultWillRemainUnderMinActiveColRatio'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean

@@ -29,8 +29,18 @@ export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & 
   transactionFeeETH?: BigNumber
   originationFeeUSD?: BigNumber
   vaultWillBeTakenUnderMinActiveColRatio?: boolean
-  vaultWillBeTakenUnderMinActiveColRatioAtNextPrice?: boolean
   vaultIsCurrentlyUnderMinActiveColRatio?: boolean
+  vaultWillRemainUnderMinActiveColRatio?: boolean
+}
+
+function increasingRisk(viewState: ManageStandardBorrowVaultState): boolean {
+  return (
+    !viewState.inputAmountsEmpty &&
+    (viewState.afterCollateralizationRatioAtNextPrice.lt(
+      viewState.vault.collateralizationRatioAtNextPrice,
+    ) ||
+      viewState.afterCollateralizationRatio.lt(viewState.vault.collateralizationRatio))
+  )
 }
 
 function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): ManageInstiVaultState {
@@ -42,12 +52,12 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
   } = viewState
 
   const vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice =
-    !inputAmountsEmpty &&
+    increasingRisk(viewState) &&
     afterCollateralizationRatio.lt(activeCollRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeTakenUnderMinActiveColRatioAtNextPrice =
-    !inputAmountsEmpty &&
+    increasingRisk(viewState) &&
     afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
@@ -58,6 +68,21 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
     activeCollRatio,
   )
 
+  const vaultWillRemainUnderMinActiveColRatioAtCurrentPrice =
+    !increasingRisk(viewState) &&
+    afterCollateralizationRatio.lt(activeCollRatio) &&
+    !afterCollateralizationRatio.isZero()
+
+  const vaultWillRemainUnderMinActiveColRatioAtNextPrice =
+    !increasingRisk(viewState) &&
+    afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
+    !afterCollateralizationRatioAtNextPrice.isZero()
+
+  const vaultWillRemainUnderMinActiveColRatio =
+    !inputAmountsEmpty &&
+    (vaultWillRemainUnderMinActiveColRatioAtCurrentPrice ||
+      vaultWillRemainUnderMinActiveColRatioAtNextPrice)
+
   return {
     ...viewState,
     vaultWillBeTakenUnderMinActiveColRatio:
@@ -66,6 +91,7 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
     vaultIsCurrentlyUnderMinActiveColRatio:
       vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice ||
       vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice,
+    vaultWillRemainUnderMinActiveColRatio,
   }
 }
 
@@ -80,6 +106,9 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
         ...viewState.warningMessages,
         ...(viewState.vaultIsCurrentlyUnderMinActiveColRatio
           ? ['vaultIsCurrentlyUnderMinActiveColRatio' as const]
+          : []),
+        ...(viewState.vaultWillRemainUnderMinActiveColRatio
+          ? ['vaultWillRemainUnderMinActiveColRatio' as const]
           : []),
       ],
       errorMessages: [
