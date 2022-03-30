@@ -39,7 +39,6 @@ const cssPaths = (() => {
       token2Btn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > button`,
       input1: `${main} > div:nth-of-type(1) > div:nth-of-type(1) > div:nth-of-type(1) > div > input`,
       input2: `${main} > div:nth-of-type(3) > div > div:nth-of-type(2) > div:nth-of-type(1) > div > input`,
-      confirmBtn: `${main} > div:nth-of-type(3) > div > div:nth-of-type(4) > button`,
     }, 
     // token select
     tokenSel: {
@@ -97,7 +96,7 @@ export function UniswapWidget() {
           font-size: 18px !important;
         }
 
-        ${main.confirmBtn} {
+        button[color=accent] {
           border-radius: 32px !important;
         }
       `}
