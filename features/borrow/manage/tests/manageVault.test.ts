@@ -1017,9 +1017,6 @@ describe('manageVault', () => {
       const state = getStateUnpacker(
         createManageInstiVault$({
           _instiVault$: instiVault$,
-          priceInfo: {
-            collateralPrice: new BigNumber('1'),
-          },
           ilkData: {
             liquidationRatio: new BigNumber(1.2),
           },
@@ -1031,7 +1028,32 @@ describe('manageVault', () => {
       expect(state().warningMessages[0]).equal('vaultIsCurrentlyUnderMinActiveColRatio')
     })
 
-    it('warns users when position will be undercollaterlised at next price')
+    it('warns users when position will be undercollaterlised at next price', () => {
+      // construct over-collateralised vault (min active col ratio)
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(16000),
+        priceInfo: {
+          currentCollateralPrice: new BigNumber('1'),
+          nextCollateralPrice: new BigNumber(0.9),
+        },
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().warningMessages.length).equal(1)
+      expect(state().warningMessages[0]).equal('vaultIsCurrentlyUnderMinActiveColRatio')
+    })
+
     it('allows users to decrease risk on undercollateralised position')
 
     it.skip('allows users to decrease vault risk when below min active col ratio, and warns', () => {

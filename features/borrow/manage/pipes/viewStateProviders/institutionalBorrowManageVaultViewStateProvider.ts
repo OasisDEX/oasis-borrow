@@ -38,7 +38,7 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
     inputAmountsEmpty,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
-    vault: { activeCollRatio, collateralizationRatio },
+    vault: { activeCollRatio, collateralizationRatio, collateralizationRatioAtNextPrice },
   } = viewState
 
   const vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice =
@@ -51,14 +51,21 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
     afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
-  const vaultIsCurrentlyUnderMinActiveColRatio = collateralizationRatio.lt(activeCollRatio)
+  const vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice = collateralizationRatio.lt(
+    activeCollRatio,
+  )
+  const vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice = collateralizationRatioAtNextPrice.lt(
+    activeCollRatio,
+  )
 
   return {
     ...viewState,
     vaultWillBeTakenUnderMinActiveColRatio:
       vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice ||
       vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
-    vaultIsCurrentlyUnderMinActiveColRatio,
+    vaultIsCurrentlyUnderMinActiveColRatio:
+      vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice ||
+      vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice,
   }
 }
 
