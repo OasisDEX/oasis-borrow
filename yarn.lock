@@ -7986,10 +7986,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@uniswap/widgets@^0.0.25-beta":
-  version "0.0.25-beta"
-  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.25-beta.tgz#f586776b2e220ee0f8a471929cbd42f6c4733f56"
-  integrity sha512-b373KM6gkRz0xLGGwbst++4THqzqW6O9cmtREt8vNOJ6AimPNsC7BNdmnO7ymOrQaT+02c/7ZNmn+Wl9JrSYIA==
+"@uniswap/widgets@^0.0.26-beta":
+  version "0.0.26-beta"
+  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-0.0.26-beta.tgz#f4ea6258e536e92038ab17856a4d1df8f805a8d2"
+  integrity sha512-PCQDSBFF+HDEYySwZ2tutF5MFB10JmvBDlaQMLXTvyic4pYc5GuzXcue/wZIvir6f1xC2bAY0uOgYQLJThQAmA==
   dependencies:
     "@babel/runtime" "^7.17.0"
     "@ethersproject/abi" "^5.4.1"
@@ -8019,12 +8019,13 @@
     "@uniswap/v2-sdk" "^3.0.1"
     "@uniswap/v3-sdk" "^3.8.2"
     "@web3-react/core" "8.0.17-beta.0"
-    "@web3-react/eip1193" "8.0.12-beta.0"
+    "@web3-react/eip1193" "8.0.15-beta.0"
     "@web3-react/empty" "8.0.10-beta.0"
     "@web3-react/types" "8.0.10-beta.0"
     "@web3-react/url" "8.0.12-beta.0"
     ajv "^6.12.3"
     cids "^1.0.0"
+    ethers "^5.5.0"
     immer "^9.0.6"
     jotai "^1.3.7"
     jsbi "^3.1.4"
@@ -8445,10 +8446,10 @@
     tiny-invariant "^1.0.6"
     tiny-warning "^1.0.3"
 
-"@web3-react/eip1193@8.0.12-beta.0":
-  version "8.0.12-beta.0"
-  resolved "https://registry.yarnpkg.com/@web3-react/eip1193/-/eip1193-8.0.12-beta.0.tgz#07aae52dd1b10870b29889499d9854b7e81322ee"
-  integrity sha512-Euj/JL3S3V4BuBI9qe/DdcviQ3VK+PItcdmyn/cdieaejiRUfgGj7Nqa3uhvlD98zvzeoGKBX5mzU10gvx7PGQ==
+"@web3-react/eip1193@8.0.15-beta.0":
+  version "8.0.15-beta.0"
+  resolved "https://registry.yarnpkg.com/@web3-react/eip1193/-/eip1193-8.0.15-beta.0.tgz#38fa4fa1cf61231d043a77db8151bc01c075931f"
+  integrity sha512-Ch69TGwJgyGTXr/nepCSLhd9Ime1cCaPmz+1oBQMn109NzOCWn8wOFbFwNojyh+e80zWq2WiaIs2NqiZVzUJPA==
   dependencies:
     "@web3-react/types" "^8.0.10-beta.0"
 
