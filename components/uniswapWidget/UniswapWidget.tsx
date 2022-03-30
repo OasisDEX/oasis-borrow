@@ -24,6 +24,10 @@ const widgetTheme = {
   borderRadius: radii.mediumLarge,
 }
 
+function scrollbarBg(hexColor: string) {
+  return `radial-gradient( closest-corner at 0.25em 0.25em, ${hexColor} 0.25em, transparent 0.25em ), linear-gradient( to bottom, ${hexColor}00 0.25em, ${hexColor} 0.25em, ${hexColor} calc(100% - 0.25em), ${hexColor}00 calc(100% - 0.25em) ), radial-gradient( closest-corner at 0.25em calc(100% - 0.25em), ${hexColor} 0.25em, ${hexColor}00 0.25em )`
+}
+
 const cssPaths = (() => {
   const main = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
   const tokenSel = 'div > div:nth-of-type(1)'
@@ -39,9 +43,11 @@ const cssPaths = (() => {
     }, 
     // token select
     tokenSel: {
-      // this is used by the widget to expand the hover effect through the scrollbar
+      // hoverAppended is for expanding the hover effect through the scrollbar (we'll hide it)
       hoverAppended: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
       option: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
+      search: `${tokenSel} input[inputmode=text]`,
+      scrollbar: `${tokenSel} .scrollbar`,
     }
   }
 })()
@@ -69,6 +75,7 @@ export function UniswapWidget() {
   return web3Provider && SwapWidget ? (
     <Box
       sx={{
+        '.subhead': { fontWeight: 'medium' },
         [main.swapBtn]: {
           border: '3px solid',
           borderColor: 'border',
@@ -80,7 +87,10 @@ export function UniswapWidget() {
           ':hover': { borderColor: 'primary', bg: 'surface' },
         },
         [tokenSel.hoverAppended]: { display: 'none' },
-        [tokenSel.option]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px' },
+        [tokenSel.option]: { bg: 'transparent', ':hover': { bg: 'border' }, borderRadius: '8px', '.subhead': { fontWeight: 'semiBold'} },
+        [tokenSel.search]: { borderColor: 'border', borderRadius: 'medium', ':hover': { bg: 'surface' }, 
+          ':focus': { borderColor: 'primary' },'::placeholder': { color: 'text.lavender'} },
+        [tokenSel.scrollbar]: { '::-webkit-scrollbar-thumb': { background: scrollbarBg('#A8A9B1'), backgroundClip: 'padding-box'}},
       }}
       css={`
         ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {
