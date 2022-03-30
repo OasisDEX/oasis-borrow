@@ -12,7 +12,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function TermsPage() {
+function TermsPage() {
   const {
     i18n: { language },
   } = useTranslation()
@@ -34,3 +34,5 @@ TermsPage.layoutProps = {
   variant: 'termsContainer',
 }
 TermsPage.theme = 'Landing'
+
+export default TermsPage

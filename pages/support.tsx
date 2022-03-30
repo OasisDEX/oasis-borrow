@@ -162,8 +162,6 @@ function SupportPage() {
   )
 }
 
-export default SupportPage
-
 SupportPage.layout = MarketingLayout
 SupportPage.layoutProps = {
   variant: 'termsContainer',
@@ -172,3 +170,5 @@ SupportPage.layoutProps = {
 SupportPage.seoTags = (
   <PageSEOTags title="seo.support.title" description="seo.support.description" url="/support" />
 )
+
+export default SupportPage

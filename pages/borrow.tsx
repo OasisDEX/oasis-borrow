@@ -11,7 +11,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function BorrowPage() {
+function BorrowPage() {
   return (
     <WithConnection>
       <BorrowView />
@@ -21,3 +21,5 @@ export default function BorrowPage() {
 
 BorrowPage.layout = ProductPagesLayout
 BorrowPage.theme = 'Landing'
+
+export default BorrowPage
