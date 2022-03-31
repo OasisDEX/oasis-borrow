@@ -125,7 +125,7 @@ function ButtonDropdown({
   dropdownSx,
   children,
 }: {
-  ButtonContents: React.ComponentType<{ active?: boolean }>
+  ButtonContents: React.ComponentType<{ active?: boolean, sx?: SxStyleProp }>
   round?: boolean
   dropdownSx?: SxStyleProp
 } & WithChildren) {
@@ -144,6 +144,8 @@ function ButtonDropdown({
             outline: isOpen ? '1px solid' : null,
             outlineColor: 'primary',
           },
+          color: 'lavender',
+          ':hover': { color: 'primary' }
         }}
       >
         <ButtonContents active={isOpen} />
@@ -216,7 +218,7 @@ function UserDesktopMenu() {
                 name="exchange"
                 size="auto"
                 width="20"
-                color={active ? 'primary' : 'lavender'}
+                color={active ? 'primary' : 'inherit'}
               />
             )}
             round={true}
@@ -410,7 +412,7 @@ function ConnectedHeader() {
                     name="exchange"
                     size="auto"
                     width="20"
-                    color={active ? 'primary' : 'lavender'}
+                    color={active ? 'primary' : 'inherit'}
                   />
                 )}
                 round={true}

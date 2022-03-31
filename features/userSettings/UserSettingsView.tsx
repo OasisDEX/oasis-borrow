@@ -371,7 +371,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
         <Icon name={userIcon!} size="auto" width="42" />
-        <Text variant="address" sx={{ ml: 3 }}>
+        <Text variant="address" sx={{ ml: 3, color: 'primary' }}>
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
@@ -382,7 +382,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
-          color={active ? 'primary' : 'lavender'}
+          color={active ? 'primary' : 'inherit'}
         />
       </Flex>
     </Flex>

@@ -679,6 +679,10 @@ const oasisBaseTheme = {
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
+      ':hover': {
+        boxShadow: 'selectMenu',
+      },
+      transition: TRANSITIONS.global,
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
