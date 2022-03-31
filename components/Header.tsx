@@ -300,7 +300,7 @@ function MobileSettings() {
         <Button
           variant="menuButton"
           onClick={() => setOpened(true)}
-          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%' }}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'lavender' }}
         >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
@@ -324,7 +324,9 @@ function MobileSettings() {
             p: 3,
             pt: 0,
             zIndex: 'modal',
-            boxShadow: 'userSettingsCardDropdown',
+            boxShadow: 'bottomSheet',
+            borderTopLeftRadius: 'large',
+            borderTopRightRadius: 'large',
           }}
           ref={componentRef}
         >

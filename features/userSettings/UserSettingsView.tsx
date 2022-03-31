@@ -271,7 +271,7 @@ function WalletInfo() {
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }}
+              sx={{ color: 'link', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}
@@ -371,7 +371,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
         <Icon name={userIcon!} size="auto" width="42" />
-        <Text variant="address" sx={{ ml: 3, color: 'primary' }}>
+        <Text variant="address" sx={{ ml: 3, color: 'primary', fontSize: 2, fontWeight: [ 600, 500 ] }}>
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>

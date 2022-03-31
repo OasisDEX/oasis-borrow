@@ -134,7 +134,7 @@ const oasisBaseTheme = {
     },
     headerSettings: {
       fontFamily: 'body',
-      fontWeight: 'medium',
+      fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
@@ -241,6 +241,7 @@ const oasisBaseTheme = {
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
     userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    bottomSheet: '0px 4px 28px rgba(37, 39, 61, 0.3)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
