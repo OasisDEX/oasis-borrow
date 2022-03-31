@@ -8,6 +8,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 
 import { AssetView } from '../../features/asset/AssetView'
+import { WithWalletAssociatedRisk } from '../../features/walletAssociatedRisk/WalletAssociatedRisk'
 
 export const getStaticPaths: GetStaticPaths<{ asset: string }> = async () => {
   const paths = ASSETS_PAGES.map((content) => ({ params: { asset: content.slug } })) // these paths will be generated at built time
@@ -44,7 +45,9 @@ function AssetPage({ content }: { content: AssetPageContent }) {
   return (
     <WithConnection>
       <WithTermsOfService>
-        <AssetView content={content} />
+        <WithWalletAssociatedRisk>
+          <AssetView content={content} />
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>
   )

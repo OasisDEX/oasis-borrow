@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
+import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedMultiplyIlks } from '../../../helpers/productCards'
 import { MultiplySurveyButtons } from '../../multiply'
 
@@ -36,15 +37,17 @@ function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
-        <BackgroundLight />
-        {multiplyContainerMap[ilk] ? (
-          multiplyContainerMap[ilk](ilk)
-        ) : (
-          <>
-            <OpenMultiplyVaultView ilk={ilk} />
-            <MultiplySurveyButtons />
-          </>
-        )}
+        <WithWalletAssociatedRisk>
+          <BackgroundLight />
+          {multiplyContainerMap[ilk] ? (
+            multiplyContainerMap[ilk](ilk)
+          ) : (
+            <>
+              <OpenMultiplyVaultView ilk={ilk} />
+              <MultiplySurveyButtons />
+            </>
+          )}
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithWalletConnection>
   )
