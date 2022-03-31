@@ -1,4 +1,4 @@
-import { Web3Context } from '@oasisdex/web3-context'
+import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -14,6 +14,13 @@ export function createWalletAssociatedRisk$(
   return web3Context$.pipe(
     switchMap((web3Context) => {
       if (web3Context.status !== 'connected') {
+        return of(undefined)
+      }
+
+      const networkId = getNetworkId()
+
+      // verify risk only on mainnet
+      if (networkId !== 1) {
         return of(undefined)
       }
 
