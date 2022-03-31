@@ -1,3 +1,4 @@
+import { withSentry } from '@sentry/nextjs'
 import { getRisk } from 'handlers/risk/get'
 import { apply } from 'helpers/apply'
 import { NextApiHandler } from 'next'
@@ -13,4 +14,4 @@ const handler: NextApiHandler = async (req, res) => {
   }
 }
 
-export default apply(userJwt, handler)
+export default withSentry(apply(userJwt, handler))
