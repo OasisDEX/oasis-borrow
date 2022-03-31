@@ -50,15 +50,24 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       throw new SignatureAuthError('Challenge not correct')
     }
 
-    const infuraUrlBackend = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID_BACKEND}`
+    // const infuraUrlBackend = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID_BACKEND}`
+    const infuraUrlBackend = 'https://eth-goerli.alchemyapi.io/v2/***'
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
 
     let signer = challenge.address
 
-    if (await isArgentWallet(web3, challenge.address)) {
+    // TODO
+    /*
+    - handle Argent wallet, if fails continue other cases
+    - send network id, change "infuraUrlBackend" based on infura id
+    - save in db challenge and signature [new columns: message, signature, chainId??] chainId validated by only allowed networkID
+
+    */
+
+    if (false /*await isArgentWallet(web3, challenge.address)*/) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
-        throw new SignatureAuthError('Signature not correct')
+        throw new SignatureAuthError('Signature not correct') // handle argent on goerly TRY CATCH!
       }
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })

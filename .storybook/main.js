@@ -11,6 +11,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-postcss',
     'storybook-addon-next-router',
+    'storybook-i18next',
   ],
   // typescript: {
   //   reactDocgen: 'react-docgen-typescript',

@@ -20,7 +20,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => {
     },
   }
 }
-export default function CareersPage({ careers }: { careers: Career[] }) {
+function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
   const careersByArea = groupBy(careers, 'area')
 
@@ -136,3 +136,5 @@ CareersPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default CareersPage

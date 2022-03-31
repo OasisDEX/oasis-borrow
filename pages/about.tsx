@@ -10,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
-export default function AboutPage({ members }: { members: TeamMember[] }) {
+function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
 
   return (
@@ -52,6 +52,8 @@ AboutPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default AboutPage
 
 function PortraitsGrid({ members }: { members: TeamMember[] }) {
   const PORTRAIT_SIZE = '169px'

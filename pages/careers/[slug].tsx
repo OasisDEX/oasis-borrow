@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
-export default function CareerPage({ career }: { career: Career }) {
+function CareerPage({ career }: { career: Career }) {
   const { t } = useTranslation()
   const Markdown = dynamic(() => import(`features/careers/listings/${career.slug}.mdx`))
 
@@ -72,6 +72,8 @@ CareerPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default CareerPage
 
 export async function getStaticProps({ params, locale }: GetServerSidePropsContext) {
   const career = await getCareerByFileName(`${params!.slug}.mdx`)
