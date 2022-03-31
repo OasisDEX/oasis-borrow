@@ -25,10 +25,19 @@ export function jwtAuthSetupToken$(web3: Web3, account: string): Observable<JWTo
 
 async function requestJWT(web3: Web3, account: string): Promise<string> {
   const challenge = await requestChallenge(account).toPromise()
-
   console.log('Signing challenge: ', challenge)
 
-  const signature = await signTypedPayload(challenge, web3, account)
+  console.dir(web3, 'safe')
+  const w = web3
+  const mp = new Web3(w.givenProvider)
+  debugger
+
+  // const signature = await signTypedPayload(challenge, web3, account)
+  const signature = await mp.eth.personal.sign(
+    getDataToSignFromChallenge(challenge),
+    '0xd0612c759fC6C512B7C3abceB2366C4f4096451C',
+    '',
+  )
   const jwt = await requestSignin({ challenge, signature }).toPromise()
 
   localStorage.setItem(`token-b/${account}`, jwt)

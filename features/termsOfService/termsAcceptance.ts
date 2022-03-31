@@ -134,11 +134,11 @@ function verifyAcceptance$(
     isGnosisSafe = true
   }
 
-  if (isGnosisSafe) {
-    // temporary ToS flow for Gnosis until they implement off chain signatures
-    // saving and checking from Local storage and skipping JWT token set up
-    return checkAcceptanceGnosis(`${account}-gnosis`, version)
-  }
+  // if (isGnosisSafe) {
+  //   // temporary ToS flow for Gnosis until they implement off chain signatures
+  //   // saving and checking from Local storage and skipping JWT token set up
+  //   return checkAcceptanceGnosis(`${account}-gnosis`, version)
+  // }
 
   const token = jwtAuthGetToken(account)
 

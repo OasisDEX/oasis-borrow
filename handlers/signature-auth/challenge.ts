@@ -23,7 +23,6 @@ const inputSchema = z.object({
 
 export function makeChallenge(options: { challengeJWTSecret: string }): NextApiHandler {
   return (req: NextApiRequest, res: NextApiResponse) => {
-    console.log(req, res)
     const body = inputSchema.parse(req.body)
 
     const payload: ChallengeJWT = {

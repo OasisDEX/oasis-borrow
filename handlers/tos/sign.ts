@@ -11,6 +11,10 @@ const tosSchema = z.object({
 export async function sign(req: NextApiRequest, res: NextApiResponse) {
   const { docVersion } = tosSchema.parse(req.body)
   const user = getUserFromRequest(req)
+  console.log(
+    user,
+    '****************************************************************************************',
+  )
   const approvalData = {
     address: user.address,
     doc_version: docVersion,

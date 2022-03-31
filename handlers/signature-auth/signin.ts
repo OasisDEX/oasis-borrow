@@ -7,6 +7,16 @@ import * as z from 'zod'
 import { isArgentWallet, isValidSignature } from './argent'
 import { ChallengeJWT } from './challenge'
 
+const grbosisAbi = [
+  {
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'isOwner',
+    outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
 export interface signInOptions {
   challengeJWTSecret: string
   userJWTSecret: string
@@ -14,6 +24,7 @@ export interface signInOptions {
 
 export interface UserJwtPayload {
   address: string
+  signer: string
 }
 
 class SignatureAuthError {
@@ -43,6 +54,8 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
 
+    let signer = challenge.address
+
     if (await isArgentWallet(web3, challenge.address)) {
       if (!(await isValidSignature(web3, challenge.address, message, body.signature))) {
         throw new SignatureAuthError('Signature not correct')
@@ -51,11 +64,19 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })
 
       if (signedAddress.toLowerCase() !== challenge.address) {
-        throw new SignatureAuthError('Signature not correct')
+        const gnosisProxy = new web3.eth.Contract(grbosisAbi as any, challenge.address)
+        const isOwner = await gnosisProxy.methods.isOwner(signedAddress).call()
+
+        if (!isOwner) {
+          // res.status(401).send({ error: 'Unauthorized' })
+          throw new SignatureAuthError('Signature not correct')
+        }
+
+        signer = signedAddress
       }
     }
 
-    const userJwtPayload: UserJwtPayload = { address: challenge.address }
+    const userJwtPayload: UserJwtPayload = { address: challenge.address, signer }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
 
     res.status(200).json({ jwt: token })

@@ -1,7 +1,6 @@
 import { sign } from 'handlers/tos/sign'
-import { apply } from 'helpers/apply'
 import { NextApiHandler } from 'next'
-import { userJwt } from 'server/jwt'
+import { withJwt } from 'server/jwt'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
@@ -11,4 +10,4 @@ const handler: NextApiHandler = async (req, res) => {
       return res.status(405).end()
   }
 }
-export default apply(userJwt, handler)
+export default withJwt(handler)
