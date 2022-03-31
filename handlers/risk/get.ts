@@ -53,14 +53,13 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
       },
     ]),
   })
-    .catch((error) => {
-      throw error
-    })
-    .then((resp) => resp.json())
-    .then((data) => {
-      if (data[0].code === 403 || data[0].code === 500) {
-        throw Error(data[0].name)
+    .then((resp) => {
+      if (!resp.ok) {
+        throw Error(`Risk service status code ${resp.status}`)
       }
+      return resp.json()
+    })
+    .then((data) => {
       return data[0]
     })
 }
@@ -114,6 +113,6 @@ export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({ isRisky })
   } catch (error) {
     // @ts-ignore
-    return res.status(200).json({ error: error.message || error.toString() })
+    return res.status(500).json({ error: error.message || error.toString() })
   }
 }

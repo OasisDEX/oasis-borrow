@@ -14,7 +14,7 @@ export interface WalletRiskResponse {
 export function getWalletRisk$(token: string, isGnosis: boolean): Observable<WalletRiskResponse> {
   return ajax({
     url: `${basePath}/api/risk`,
-    method: 'GET',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
@@ -25,7 +25,7 @@ export function getWalletRisk$(token: string, isGnosis: boolean): Observable<Wal
   }).pipe(
     map(({ response }) => response as WalletRiskResponse),
     catchError((error) => {
-      return of({ error })
+      return of({ error: error.xhr.response.error })
     }),
   )
 }

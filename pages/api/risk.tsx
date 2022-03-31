@@ -6,7 +6,7 @@ import { userJwt } from 'server/jwt'
 // eslint-disable-next-line func-style
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
-    case 'GET':
+    case 'POST':
       return await getRisk(req, res)
     default:
       return res.status(405).end()

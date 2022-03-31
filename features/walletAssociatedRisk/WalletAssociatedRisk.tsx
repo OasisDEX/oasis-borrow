@@ -13,7 +13,6 @@ export function WithWalletAssociatedRisk({ children }: WithWalletAssociatedRiskP
   const [web3Context] = useObservable(web3Context$)
   const [walletAssociatedRisk] = useObservable(walletAssociatedRisk$)
   console.log('walletAssociatedRisk', walletAssociatedRisk)
-  console.log('error', walletAssociatedRisk?.error)
 
   useEffect(() => {
     if (walletAssociatedRisk?.error) {
