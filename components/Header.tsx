@@ -86,13 +86,13 @@ export function BackArrow() {
   )
 }
 
-function VaultCount() {
+function useVaultCount() {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
   const count = accountData?.numberOfVaults !== undefined ? accountData.numberOfVaults : undefined
 
-  return count && count > 0 ? <Box sx={{ display: 'inline', ml: 1 }}>{`(${count})`}</Box> : null
+  return count && count > 0 ? count : null
 }
 
 function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
@@ -104,7 +104,6 @@ function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
     <AppLink
       variant="links.navHeader"
       sx={{
-        mr: 4,
         color: navLinkColor(pathname.includes('owner')),
         display: 'flex',
         alignItems: 'center',
@@ -119,14 +118,36 @@ function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
   )
 }
 
+function PositionsButton({ sx }: { sx?: SxStyleProp }) {
+  const vaultCount = useVaultCount()
+
+  return <PositionsLink sx={{ position: 'relative', ...sx }}>
+    <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
+      <Icon
+        name="home"
+        size="auto"
+        width="20"
+      />
+    </Button>
+    {vaultCount && <Flex sx={{ position: 'absolute', top: '-1px', right: '-7px', 
+      width: '24px', height: '24px', bg: 'link', color: 'onPrimary', borderRadius: '50%',
+      justifyContent: 'center', alignItems: 'center', zIndex: 'menu'
+      }}>
+    {vaultCount}
+  </Flex>}
+  </PositionsLink>
+}
+
 function ButtonDropdown({
   ButtonContents,
   round,
+  sx,
   dropdownSx,
   children,
 }: {
   ButtonContents: React.ComponentType<{ active?: boolean, sx?: SxStyleProp }>
   round?: boolean
+  sx?: SxStyleProp
   dropdownSx?: SxStyleProp
 } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
@@ -134,7 +155,7 @@ function ButtonDropdown({
   const componentRef = useOutsideElementClickHandler(() => setIsOpen(false))
 
   return (
-    <Flex ref={componentRef} sx={{ position: 'relative', mr: 2, pr: 1 }}>
+    <Flex ref={componentRef} sx={{ position: 'relative', ...sx }}>
       <Button
         variant={round ? 'menuButtonRound' : 'menuButton'}
         onClick={() => setIsOpen(!isOpen)}
@@ -157,7 +178,6 @@ function ButtonDropdown({
           position: 'absolute',
           top: 'auto',
           left: 'auto',
-          right: 1,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',
@@ -184,6 +204,7 @@ function UserDesktopMenu() {
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
+  const vaultCount = useVaultCount()
 
   const shouldHideSettings =
     !context ||
@@ -201,16 +222,17 @@ function UserDesktopMenu() {
       }}
     >
       <Flex>
-        <PositionsLink sx={{ display: ['none', 'flex'] }}>
+        <PositionsLink sx={{ mr: 4, display: ['none', 'none', 'flex'] }}>
           <Icon
             name="home"
             size="auto"
             width="20"
             sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
           />
-          <Box sx={{ display: ['inline', 'none', 'inline'] }}>{t('my-positions')}</Box>
-          <VaultCount />
+          {t('my-positions')}{' '}
+          {vaultCount && `(${vaultCount})`}
         </PositionsLink>
+        <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none']}} />
         {exchangeEnabled && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
@@ -222,6 +244,7 @@ function UserDesktopMenu() {
               />
             )}
             round={true}
+            sx={{ mr: 3 }}
           >
             <UniswapWidget />
           </ButtonDropdown>
@@ -404,7 +427,8 @@ function ConnectedHeader() {
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
           </Flex>
-          <Flex>
+          <Flex sx={{ flexShrink: 0 }}>
+            <PositionsButton sx={{ mr: 2}} />
             {exchangeEnabled && (
               <ButtonDropdown
                 ButtonContents={({ active }) => (
@@ -416,6 +440,7 @@ function ConnectedHeader() {
                   />
                 )}
                 round={true}
+                sx={{ mr: 2 }}
                 dropdownSx={{
                   position: 'fixed',
                   top: '50%',
@@ -554,13 +579,10 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
 export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
-  const { context$ } = useAppContext()
-  const [context] = useObservable(context$)
   const [isOpen, setIsOpen] = useState(false)
   const earnProductEnabled = useFeatureToggle('EarnProduct')
   const [showAssets, setShowAssets] = useState(false)
 
-  const isConnected = !!(context as ContextConnected)?.account
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
@@ -598,13 +620,6 @@ export function MobileMenu() {
         }}
       >
         <Grid sx={{ rowGap: 0, mt: 3, display: showAssets ? 'none' : 'grid' }}>
-          {isConnected && (
-            <PositionsLink sx={{ display: 'block', width: '100%' }}>
-              <MobileMenuLink isActive={pathname.includes('owner')}>
-                {t('my-positions')} <VaultCount />
-              </MobileMenuLink>
-            </PositionsLink>
-          )}
           {links.map((link) => (
             <AppLink key={link.labelKey} href={link.url} onClick={closeMenu}>
               <MobileMenuLink isActive={pathname.includes(link.url)}>
