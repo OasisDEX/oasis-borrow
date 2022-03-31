@@ -122,21 +122,32 @@ function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
 function PositionsButton({ sx }: { sx?: SxStyleProp }) {
   const vaultCount = useVaultCount()
 
-  return <PositionsLink sx={{ position: 'relative', ...sx }}>
-    <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
-      <Icon
-        name="home"
-        size="auto"
-        width="20"
-      />
-    </Button>
-    {vaultCount && <Flex sx={{ position: 'absolute', top: '-1px', right: '-7px', 
-      width: '24px', height: '24px', bg: 'link', color: 'onPrimary', borderRadius: '50%',
-      justifyContent: 'center', alignItems: 'center', zIndex: 'menu'
-      }}>
-    {vaultCount}
-  </Flex>}
-  </PositionsLink>
+  return (
+    <PositionsLink sx={{ position: 'relative', ...sx }}>
+      <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
+        <Icon name="home" size="auto" width="20" />
+      </Button>
+      {vaultCount && (
+        <Flex
+          sx={{
+            position: 'absolute',
+            top: '-1px',
+            right: '-7px',
+            width: '24px',
+            height: '24px',
+            bg: 'link',
+            color: 'onPrimary',
+            borderRadius: '50%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 'menu',
+          }}
+        >
+          {vaultCount}
+        </Flex>
+      )}
+    </PositionsLink>
+  )
 }
 
 function ButtonDropdown({
@@ -146,7 +157,7 @@ function ButtonDropdown({
   dropdownSx,
   children,
 }: {
-  ButtonContents: React.ComponentType<{ active?: boolean, sx?: SxStyleProp }>
+  ButtonContents: React.ComponentType<{ active?: boolean; sx?: SxStyleProp }>
   round?: boolean
   sx?: SxStyleProp
   dropdownSx?: SxStyleProp
@@ -167,7 +178,7 @@ function ButtonDropdown({
             outlineColor: 'primary',
           },
           color: 'lavender',
-          ':hover': { color: 'primary' }
+          ':hover': { color: 'primary' },
         }}
       >
         <ButtonContents active={isOpen} />
@@ -231,19 +242,13 @@ function UserDesktopMenu() {
             width="20"
             sx={{ mr: [2, 0, 2], position: 'relative', top: '-1px', flexShrink: 0 }}
           />
-          {t('my-positions')}{' '}
-          {vaultCount && `(${vaultCount})`}
+          {t('my-positions')} {vaultCount && `(${vaultCount})`}
         </PositionsLink>
-        <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none']}} />
+        <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
         {exchangeEnabled && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
-              <Icon
-                name="exchange"
-                size="auto"
-                width="20"
-                color={active ? 'primary' : 'inherit'}
-              />
+              <Icon name="exchange" size="auto" width="20" color={active ? 'primary' : 'inherit'} />
             )}
             round={true}
             sx={{ mr: 3 }}
@@ -375,7 +380,7 @@ function ConnectedHeader() {
 
   return (
     <React.Fragment>
-      {!onMobile ? 
+      {!onMobile ? (
         <BasicHeader
           sx={{
             position: 'relative',
@@ -426,43 +431,45 @@ function ConnectedHeader() {
             <UserDesktopMenu />
           </>
         </BasicHeader>
-      : // Mobile header
-      <Box sx={{ mb: 5 }}>
-        <BasicHeader variant="appContainer">
-          <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Logo />
-          </Flex>
-          <Flex sx={{ flexShrink: 0 }}>
-            <PositionsButton sx={{ mr: 2}} />
-            {exchangeEnabled && (
-              <ButtonDropdown
-                ButtonContents={({ active }) => (
-                  <Icon
-                    name="exchange"
-                    size="auto"
-                    width="20"
-                    color={active ? 'primary' : 'inherit'}
-                  />
-                )}
-                round={true}
-                sx={{ mr: 2 }}
-                dropdownSx={{
-                  position: 'fixed',
-                  top: '50%',
-                  left: '50%',
-                  right: 'unset',
-                  bottom: 'unset',
-                  transform: 'translateX(-50%) translateY(-50%)',
-                }}
-              >
-                <UniswapWidget />
-              </ButtonDropdown>
-            )}
-            <MobileMenu />
-          </Flex>
-          <MobileSettings />
-        </BasicHeader>
-      </Box>}
+      ) : (
+        // Mobile header
+        <Box sx={{ mb: 5 }}>
+          <BasicHeader variant="appContainer">
+            <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Logo />
+            </Flex>
+            <Flex sx={{ flexShrink: 0 }}>
+              <PositionsButton sx={{ mr: 2 }} />
+              {exchangeEnabled && (
+                <ButtonDropdown
+                  ButtonContents={({ active }) => (
+                    <Icon
+                      name="exchange"
+                      size="auto"
+                      width="20"
+                      color={active ? 'primary' : 'inherit'}
+                    />
+                  )}
+                  round={true}
+                  sx={{ mr: 2 }}
+                  dropdownSx={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    right: 'unset',
+                    bottom: 'unset',
+                    transform: 'translateX(-50%) translateY(-50%)',
+                  }}
+                >
+                  <UniswapWidget />
+                </ButtonDropdown>
+              )}
+              <MobileMenu />
+            </Flex>
+            <MobileSettings />
+          </BasicHeader>
+        </Box>
+      )}
     </React.Fragment>
   )
 }
