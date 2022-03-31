@@ -1,10 +1,9 @@
+import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { theme } from 'theme'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import tokenList from './tokenList.json'
 
@@ -52,26 +51,18 @@ const cssPaths = (() => {
 })()
 
 export function UniswapWidget() {
-  const [SwapWidget, setSwapWidget] = useState()
-
-  const web3Provider = (() => {
-    const { web3ContextConnected$ } = useAppContext()
-    const [web3Context] = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-  })()
-
-  useEffect(() => {
-    setSwapWidget(
-      // @ts-ignore
-      dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
-        ssr: false,
-      }),
-    )
-  }, [])
+  const { web3ContextConnected$ } = useAppContext()
+  const [web3Context] = useObservable(web3ContextConnected$)
+  const web3Provider =
+    web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
   const { main, tokenSel } = cssPaths
 
-  return web3Provider && SwapWidget ? (
+  if (!web3Provider) {
+    return null
+  }
+
+  return (
     <Box
       sx={{
         '.subhead': { fontWeight: 'medium' },
@@ -116,8 +107,8 @@ export function UniswapWidget() {
         }
       `}
     >
-      {/* @ts-ignore */}
       <SwapWidget
+        /* @ts-ignore */
         provider={web3Provider}
         theme={widgetTheme}
         tokenList={tokenList.tokens}
@@ -125,9 +116,5 @@ export function UniswapWidget() {
         convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
       />
     </Box>
-  ) : (
-    <Flex sx={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-      <AppSpinner />
-    </Flex>
   )
 }
