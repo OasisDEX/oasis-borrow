@@ -404,8 +404,8 @@ function ConnectedHeader() {
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
           </Flex>
-          {exchangeEnabled && (
-            <Box sx={{ mr: 2 }}>
+          <Flex>
+            {exchangeEnabled && (
               <ButtonDropdown
                 ButtonContents={({ active }) => (
                   <Icon
@@ -427,9 +427,9 @@ function ConnectedHeader() {
               >
                 <UniswapWidget />
               </ButtonDropdown>
-            </Box>
-          )}
-          <MobileMenu />
+            )}
+            <MobileMenu />
+          </Flex>
           <MobileSettings />
         </BasicHeader>
       </Box>
