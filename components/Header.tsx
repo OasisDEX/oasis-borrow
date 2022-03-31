@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import React, { Fragment, useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
@@ -178,6 +179,7 @@ function ButtonDropdown({
           position: 'absolute',
           top: 'auto',
           left: 'auto',
+          right: 0,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',
@@ -367,10 +369,11 @@ function ConnectedHeader() {
   const { t } = useTranslation()
   const earnEnabled = useFeatureToggle('EarnProduct')
   const exchangeEnabled = useFeatureToggle('Exchange')
+  const onMobile = useOnMobile()
 
   return (
     <React.Fragment>
-      <Box sx={{ display: ['none', 'block'] }}>
+      {!onMobile ? 
         <BasicHeader
           sx={{
             position: 'relative',
@@ -421,8 +424,8 @@ function ConnectedHeader() {
             <UserDesktopMenu />
           </>
         </BasicHeader>
-      </Box>
-      <Box sx={{ display: ['block', 'none'], mb: 5 }}>
+      : // Mobile header
+      <Box sx={{ mb: 5 }}>
         <BasicHeader variant="appContainer">
           <Flex sx={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
             <Logo />
@@ -457,7 +460,7 @@ function ConnectedHeader() {
           </Flex>
           <MobileSettings />
         </BasicHeader>
-      </Box>
+      </Box>}
     </React.Fragment>
   )
 }
