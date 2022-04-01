@@ -114,17 +114,25 @@ function calculateAfterLockedCollateral({
  * If the shouldPaybackAll flag is true than we assume that the debt after
  * the transaction will be 0
  */
+type CalcAfterDebtArgs = {
+  shouldPaybackAll: boolean
+  generateAmount?: BigNumber
+  paybackAmount?: BigNumber
+  debt?: BigNumber
+  originationFeePercent: BigNumber
+}
 function calculateAfterDebt({
   shouldPaybackAll,
   generateAmount,
   paybackAmount,
   debt,
+  originationFeePercent,
 }: Pick<ManageStandardBorrowVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
-  Pick<Vault, 'debt'>) {
+  Pick<Vault, 'debt'> & { originationFeePercent: BigNumber }) {
   if (shouldPaybackAll) return zero
 
   const amount = generateAmount
-    ? debt.plus(generateAmount)
+    ? debt.plus(generateAmount.times(originationFeePercent.plus(one)))
     : paybackAmount
     ? debt.minus(paybackAmount)
     : debt
@@ -188,7 +196,12 @@ function calculateMaxWithdrawAmount({
 }: Pick<ManageStandardBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
+  const afterDebt = calculateAfterDebt({
+    shouldPaybackAll,
+    debt,
+    paybackAmount,
+    originationFeePercent: zero,
+  })
   const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
 
   const backingCollateral = calculateAfterBackingCollateral({
@@ -288,6 +301,7 @@ function calculateMaxGenerateAmount({
 
 export function applyManageVaultCalculations<VaultState extends ManageStandardBorrowVaultState>(
   state: VaultState,
+  originationFeePercent: BigNumber,
 ): VaultState {
   const {
     depositAmount,
@@ -313,7 +327,13 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
   })
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
   const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, generateAmount, paybackAmount })
+  const afterDebt = calculateAfterDebt({
+    shouldPaybackAll,
+    debt,
+    generateAmount,
+    paybackAmount,
+    originationFeePercent,
+  })
 
   const afterBackingCollateral = calculateAfterBackingCollateral({
     afterDebt,

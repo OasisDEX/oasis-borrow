@@ -150,7 +150,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     const s5 = applyManageVaultTransaction(change, s4)
     const s6 = applyManageVaultEnvironment(change, s5)
     const s7 = applyManageVaultInjectedOverride(change, s6)
-    const s8 = applyManageVaultCalculations(s7)
+    const s8 = applyManageVaultCalculations(s7, viewState.vault.originationFeePercent)
     const s9 = applyManageVaultStageCategorisation(s8)
     const s10 = applyManageVaultConditions(s9)
     const s11 = applyMinActiveColRatioConditions(s10)

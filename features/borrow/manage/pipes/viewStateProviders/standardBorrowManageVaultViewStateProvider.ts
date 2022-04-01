@@ -30,6 +30,7 @@ import {
   BorrowManageVaultViewStateProviderInterface,
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
+import { zero } from '../../../../../helpers/zero'
 
 export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
   Vault,
@@ -50,7 +51,7 @@ export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewSt
     const s5 = applyManageVaultTransaction(change, s4)
     const s6 = applyManageVaultEnvironment(change, s5)
     const s7 = applyManageVaultInjectedOverride(change, s6)
-    const s8 = applyManageVaultCalculations(s7)
+    const s8 = applyManageVaultCalculations(s7, zero)
     const s9 = applyManageVaultStageCategorisation(s8)
     const s10 = applyManageVaultConditions(s9)
     return applyManageVaultSummary(s10)
