@@ -2,7 +2,6 @@ import { getNetworkId, Web3Context } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
-import { checkIfGnosisSafe } from '../../helpers/checkIfGnosisSafe'
 import { jwtAuthGetToken } from '../termsOfService/jwt'
 import { TermsAcceptanceState } from '../termsOfService/termsAcceptance'
 import { getWalletRisk$, WalletRiskResponse } from './walletRiskApi'
@@ -30,12 +29,9 @@ export function createWalletAssociatedRisk$(
             return of(undefined)
           }
 
-          const { account, connectionKind, web3 } = web3Context
+          const jwtToken = jwtAuthGetToken(web3Context.account)
 
-          const isGnosisSafe = checkIfGnosisSafe(connectionKind, web3)
-          const jwtToken = jwtAuthGetToken(account)
-
-          return getWalletRisk$(jwtToken!, isGnosisSafe).pipe(map((riskData) => riskData))
+          return getWalletRisk$(jwtToken!).pipe(map((riskData) => riskData))
         }),
       )
     }),

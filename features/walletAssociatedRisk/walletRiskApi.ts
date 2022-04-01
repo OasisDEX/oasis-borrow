@@ -11,16 +11,13 @@ export interface WalletRiskResponse {
   error?: string
 }
 
-export function getWalletRisk$(token: string, isGnosis: boolean): Observable<WalletRiskResponse> {
+export function getWalletRisk$(token: string): Observable<WalletRiskResponse> {
   return ajax({
     url: `${basePath}/api/risk`,
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
-    },
-    body: {
-      isGnosis,
     },
   }).pipe(
     map(({ response }) => response as WalletRiskResponse),

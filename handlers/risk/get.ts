@@ -75,16 +75,8 @@ async function checkIfRisky(address: string) {
 export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
   // TODO provide correct typing after Damians changes
   const user = getUserFromRequest(req as any)
-  const { isGnosis } = req.body
 
   try {
-    // check risk and return it to ui without saving in db
-    if (isGnosis) {
-      const isRisky = await checkIfRisky(user.address)
-
-      return res.status(200).json({ isRisky })
-    }
-
     // check if record exists
     const risk = await selectRiskForAddress(prisma, {
       address: user.address,
