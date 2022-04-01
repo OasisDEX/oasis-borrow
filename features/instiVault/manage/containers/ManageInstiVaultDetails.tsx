@@ -19,6 +19,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
     vault: { token, lockedCollateral, lockedCollateralUSD },
     afterCollateralizationRatio,
+    afterActiveCollRatioPriceUSD,
     afterLockedCollateralUSD,
     inputAmountsEmpty,
     stage,
@@ -36,6 +37,9 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
         <VaultDetailsCard
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
+          valueAfter={
+            afterActiveCollRatioPriceUSD && `$${formatAmount(afterActiveCollRatioPriceUSD, 'USD')}`
+          }
           valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', {
             percentageRatio: formatDecimalAsPercent(activeCollRatio),
           })}

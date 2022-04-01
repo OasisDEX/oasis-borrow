@@ -25,6 +25,7 @@ import {
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
+import { collateralPriceAtRatio } from '../../../../../blockchain/vault.maths'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
@@ -32,6 +33,7 @@ export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & 
   vaultWillBeTakenUnderMinActiveColRatio?: boolean
   vaultIsCurrentlyUnderMinActiveColRatio?: boolean
   vaultWillRemainUnderMinActiveColRatio?: boolean
+  afterActiveCollRatioPriceUSD?: BigNumber
 }
 
 type RiskArgs = {
@@ -167,20 +169,27 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
 
     const transactionFeeETH = transactionFeeUsd?.div(viewState.priceInfo.currentEthPrice!)
 
+    const activeCollRatioPriceUSDAfter = collateralPriceAtRatio({
+      colRatio: viewState.vault.activeCollRatio,
+      lockedCollateral: viewState.afterLockedCollateral,
+      vaultDebt: viewState.afterDebt,
+    })
+
     return {
       ...viewState,
       originationFeeUSD,
       transactionFeeETH,
+      afterActiveCollRatioPriceUSD: activeCollRatioPriceUSDAfter,
     }
   },
 
   createInitialVaultState(args: CreateInitialVaultStateArgs<InstiVault>): ManageInstiVaultState {
-    const mananageStandardVaultViewState: ManageStandardBorrowVaultState = {
+    const manageStandardVaultViewState: ManageStandardBorrowVaultState = {
       ...StandardBorrowManageVaultViewStateProvider.createInitialVaultState(args),
       vault: args.vault,
     }
     return {
-      ...mananageStandardVaultViewState,
+      ...manageStandardVaultViewState,
       vault: args.vault,
       originationFeeUSD: undefined,
     }
