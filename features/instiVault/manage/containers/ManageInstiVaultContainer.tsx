@@ -87,6 +87,10 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
                     }
                   />
                   <VaultChangesInformationItem
+                    label={t('vault-changes.oasis-fee')}
+                    value={<Flex>$0.00</Flex>}
+                  />
+                  <VaultChangesInformationItem
                     label={'Estimated gas fee'}
                     value={getEstimatedGasFeeText(manageVault)}
                   />
