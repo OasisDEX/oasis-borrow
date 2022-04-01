@@ -161,9 +161,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     // for origination fee, assume if generate amount not set we are generating 0 DAI
     const generateAmount = viewState.generateAmount || zero
 
-    const originationFeeUSD = generateAmount.times(
-      viewState.vault.originationFeePercent.dividedBy(100),
-    )
+    const originationFeeUSD = generateAmount.times(viewState.vault.originationFeePercent)
 
     const transactionFeeUsd = originationFeeUSD?.plus(viewState.gasEstimationUsd!)
 
