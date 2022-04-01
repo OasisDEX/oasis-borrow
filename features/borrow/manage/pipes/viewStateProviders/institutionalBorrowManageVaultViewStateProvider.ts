@@ -24,6 +24,7 @@ import {
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
+import { zero } from '../../../../../helpers/zero'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
@@ -33,18 +34,34 @@ export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & 
   vaultWillRemainUnderMinActiveColRatio?: boolean
 }
 
-function increasingRisk(viewState: ManageStandardBorrowVaultState): boolean {
+type RiskArgs = {
+  inputAmountsEmpty: boolean
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  afterCollateralizationRatio: BigNumber
+  vault: {
+    collateralizationRatioAtNextPrice: BigNumber
+    collateralizationRatio: BigNumber
+  }
+}
+
+export function increasingRisk(args: RiskArgs): boolean {
+  function check(currentColRatio: BigNumber, newColRatio: BigNumber) {
+    return (newColRatio.lt(currentColRatio) && !newColRatio.eq(zero)) || currentColRatio.eq(zero)
+  }
+
   return (
-    !viewState.inputAmountsEmpty &&
-    (viewState.afterCollateralizationRatioAtNextPrice.lt(
-      viewState.vault.collateralizationRatioAtNextPrice,
+    !args.inputAmountsEmpty &&
+    (check(
+      args.vault.collateralizationRatioAtNextPrice,
+      args.afterCollateralizationRatioAtNextPrice,
     ) ||
-      viewState.afterCollateralizationRatio.lt(viewState.vault.collateralizationRatio))
+      check(args.vault.collateralizationRatio, args.afterCollateralizationRatio))
   )
 }
 
 function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): ManageInstiVaultState {
   const {
+    isEditingStage,
     inputAmountsEmpty,
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,
@@ -52,21 +69,21 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
   } = viewState
 
   const vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice =
+    !inputAmountsEmpty &&
     increasingRisk(viewState) &&
     afterCollateralizationRatio.lt(activeCollRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeTakenUnderMinActiveColRatioAtNextPrice =
+    !inputAmountsEmpty &&
     increasingRisk(viewState) &&
     afterCollateralizationRatioAtNextPrice.lt(activeCollRatio) &&
     !afterCollateralizationRatioAtNextPrice.isZero()
 
-  const vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice = collateralizationRatio.lt(
-    activeCollRatio,
-  )
-  const vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice = collateralizationRatioAtNextPrice.lt(
-    activeCollRatio,
-  )
+  const vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice =
+    collateralizationRatio.lt(activeCollRatio) && collateralizationRatio.gt(zero)
+  const vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice =
+    collateralizationRatioAtNextPrice.lt(activeCollRatio) && collateralizationRatio.gt(zero)
 
   const vaultWillRemainUnderMinActiveColRatioAtCurrentPrice =
     !increasingRisk(viewState) &&
@@ -86,12 +103,13 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
   return {
     ...viewState,
     vaultWillBeTakenUnderMinActiveColRatio:
-      vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice ||
-      vaultWillBeTakenUnderMinActiveColRatioAtNextPrice,
+      isEditingStage &&
+      (vaultWillBeTakenUnderMinActiveColRatioAtCurrentPrice ||
+        vaultWillBeTakenUnderMinActiveColRatioAtNextPrice),
     vaultIsCurrentlyUnderMinActiveColRatio:
       vaultIsCurrentlyUnderMinActiveColRatioAtCurrentPrice ||
       vaultIsCurrentlyUnderMinActiveColRatioAtNextPrice,
-    vaultWillRemainUnderMinActiveColRatio,
+    vaultWillRemainUnderMinActiveColRatio: isEditingStage && vaultWillRemainUnderMinActiveColRatio,
   }
 }
 
@@ -141,7 +159,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
 
   addTxnCost(viewState: ManageInstiVaultState): ManageInstiVaultState {
     // for origination fee, assume if generate amount not set we are generating 0 DAI
-    const generateAmount = viewState.generateAmount || new BigNumber(0)
+    const generateAmount = viewState.generateAmount || zero
 
     const originationFeeUSD = generateAmount.times(
       viewState.vault.originationFeePercent.dividedBy(100),
