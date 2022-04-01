@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
 
+import { zero } from '../../../../../helpers/zero'
 import {
   GenericManageBorrowVaultState,
   ManageStandardBorrowVaultState,
@@ -24,7 +25,6 @@ import {
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
-import { zero } from '../../../../../helpers/zero'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber

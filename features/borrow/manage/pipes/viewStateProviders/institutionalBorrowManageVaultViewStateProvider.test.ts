@@ -1,7 +1,8 @@
-import { increasingRisk } from './institutionalBorrowManageVaultViewStateProvider'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+
 import { zero } from '../../../../../helpers/zero'
+import { increasingRisk } from './institutionalBorrowManageVaultViewStateProvider'
 
 describe('InstitutionalBorrowManageVaultViewStateProvider', () => {
   describe('increasingRisk', () => {
