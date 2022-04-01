@@ -23,7 +23,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-export default function Vault({ id }: { id: string }) {
+function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
   const automationEnabled = useFeatureToggle('Automation')
@@ -63,3 +63,5 @@ export default function Vault({ id }: { id: string }) {
 }
 
 Vault.layout = AppLayout
+
+export default Vault

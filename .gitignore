@@ -27,3 +27,4 @@ public/sitemap.xml
 storybook-static
 storybook-static/*
 cache
+next-env.d.ts

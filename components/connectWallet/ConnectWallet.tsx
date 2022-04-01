@@ -56,7 +56,12 @@ export async function getConnector(
 ) {
   assert(rpcUrls[network], 'Unsupported chainId!')
 
-  if (connectorKind !== 'injected' && connectorKind !== 'network' && network !== 1) {
+  if (
+    connectorKind !== 'injected' &&
+    connectorKind !== 'network' &&
+    network !== 1 &&
+    connectorKind !== 'gnosisSafe' // only for debugging purposes since gnosis wallet on mainnet cost a lot
+  ) {
     options.switchNetworkModal('appNetwork')
     throw new Error(
       `Your wallet only supports Mainnet and current application network is ${network}. Please switch.`,
@@ -87,7 +92,6 @@ export async function getConnector(
         rpc: { [network]: rpcUrls[network] },
         bridge: 'https://bridge.walletconnect.org',
         qrcode: true,
-        pollingInterval,
       })
     case 'trezor':
       return new TrezorConnector({

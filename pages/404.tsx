@@ -11,7 +11,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function NotFoundPage() {
+function NotFoundPage() {
   const { t } = useTranslation()
 
   return (
@@ -27,3 +27,5 @@ export default function NotFoundPage() {
 }
 
 NotFoundPage.layout = MarketingLayout
+
+export default NotFoundPage

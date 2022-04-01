@@ -9,8 +9,10 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function ConnectPage() {
+function ConnectPage() {
   return <ConnectWallet />
 }
 
 ConnectPage.layout = ConnectPageLayout
+
+export default ConnectPage

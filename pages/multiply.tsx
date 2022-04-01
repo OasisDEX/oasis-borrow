@@ -37,7 +37,8 @@ export function MultiplySurveyButtons() {
             <Global
               styles={() => ({
                 [typeformPopoverButton]: {
-                  bottom: '70px',
+                  bottom: '77px',
+                  right: '14px',
                 },
               })}
             />
@@ -66,7 +67,7 @@ export function MultiplySurveyButtons() {
   )
 }
 
-export default function MultiplyPage() {
+function MultiplyPage() {
   return (
     <WithConnection>
       <MultiplyView />
@@ -77,3 +78,5 @@ export default function MultiplyPage() {
 
 MultiplyPage.layout = ProductPagesLayout
 MultiplyPage.theme = 'Landing'
+
+export default MultiplyPage
