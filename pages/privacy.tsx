@@ -12,7 +12,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function PrivacyPage() {
+function PrivacyPage() {
   const {
     i18n: { language },
   } = useTranslation()
@@ -33,3 +33,5 @@ PrivacyPage.layout = MarketingLayout
 PrivacyPage.layoutProps = {
   variant: 'termsContainer',
 }
+
+export default PrivacyPage

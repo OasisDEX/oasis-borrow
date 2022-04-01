@@ -13,7 +13,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function EarnPage() {
+function EarnPage() {
   const enabled = useFeatureToggle('EarnProduct')
 
   if (!enabled) {
@@ -30,3 +30,5 @@ export default function EarnPage() {
 
 EarnPage.layout = ProductPagesLayout
 EarnPage.theme = 'Landing'
+
+export default EarnPage

@@ -4,7 +4,6 @@ import { ModalProps } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import { curry } from 'ramda'
 import React, { useCallback, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
@@ -21,11 +20,12 @@ import {
   SxStyleProp,
   Text,
 } from 'theme-ui'
-import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { useAppContext } from './AppContextProvider'
 import { disconnect } from './connectWallet/ConnectWallet'
 import { AppLink } from './Links'
+import curry from 'ramda/src/curry'
 
 interface ModalCloseIconProps extends ModalProps<WithChildren> {
   sx?: SxStyleProp
@@ -232,10 +232,9 @@ export function ModalErrorMessage({ message }: { message: string }) {
 }
 
 export function MobileSidePanelPortal({ children }: WithChildren) {
-  const breakpoint = useBreakpointIndex()
-  const mobile = breakpoint === 0
+  const onMobile = useOnMobile()
 
-  return mobile ? ReactDOM.createPortal(children, document.body) : children
+  return onMobile ? ReactDOM.createPortal(children, document.body) : children
 }
 
 export function MobileSidePanelClose({
@@ -245,10 +244,9 @@ export function MobileSidePanelClose({
   opened: boolean
   onClose: () => void
 }) {
-  const breakpoint = useBreakpointIndex()
-  const mobile = breakpoint === 0
+  const onMobile = useOnMobile()
 
-  return mobile ? (
+  return onMobile ? (
     <Box>
       {opened && <ModalHTMLOverflow />}
       <Box

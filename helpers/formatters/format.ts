@@ -125,8 +125,8 @@ export function formatDateTime(time: Date, showMs?: boolean): string {
   return moment(time).format(showMs ? 'DD.MM HH:mm:ss' : 'DD.MM HH:mm')
 }
 
-export function formatAddress(address: string) {
-  return `${address.slice(0, 4)}...${address.slice(-5)}`
+export function formatAddress(address: string, first: number = 4, last: number = 5) {
+  return `${address.slice(0, first)}...${address.slice(-last)}`
 }
 
 export function formatBigNumber(amount: BigNumber, digits: number) {

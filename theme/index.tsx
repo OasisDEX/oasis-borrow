@@ -73,6 +73,7 @@ const oasisBaseTheme = {
     bull: '#1AAB9B',
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
+    sliderActiveFill: '#878BFC',
     actionInputHover: '#E5E7E8',
     selected: '#EDEDFF',
     fogBlue: '#D8D9FE',
@@ -132,6 +133,14 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
+    headerSettings: {
+      fontFamily: 'body',
+      fontWeight: 'medium',
+      lineHeight: 'heading',
+      fontSize: 4,
+      color: 'primary',
+      mb: 3,
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -165,7 +174,7 @@ const oasisBaseTheme = {
       color: 'text.subtitle',
     },
     caption: {
-      variant: 'paragraph4',
+      variant: 'text.paragraph4',
       fontWeight: 'heading',
       textTransform: 'uppercase',
       letterSpacing: '0.04em',
@@ -188,6 +197,11 @@ const oasisBaseTheme = {
         variant: 'text.paragraph1',
         color: 'text.focused',
       },
+    },
+    address: {
+      variant: 'paragraph3',
+      fontWeight: 'medium',
+      letterSpacing: '0.02em',
     },
   },
   borders: {
@@ -433,6 +447,32 @@ const oasisBaseTheme = {
         color: 'maritimeBlue',
       },
     },
+    vaultTab: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      bg: 'unset',
+      transition: 'background 0.2s ease-in',
+      fontWeight: 'semiBold',
+      color: 'primary',
+      px: 3,
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    vaultTabInactive: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      bg: 'unset',
+      transition: 'background 0.2s ease-in',
+      fontWeight: 'semiBold',
+      color: 'text.subtitle',
+      '&:hover': {
+        color: 'primary',
+      },
+      px: 3,
+      display: 'flex',
+      alignItems: 'center',
+    },
     outline: {
       variant: 'text.paragraph2',
       cursor: 'pointer',
@@ -669,12 +709,13 @@ const oasisBaseTheme = {
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
-      width: '46px',
-      height: '46px',
+      width: '50px',
+      height: '50px',
       padding: 0,
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      flexShrink: 0,
     },
     unStyled: {
       background: 'unset',
@@ -761,6 +802,12 @@ const oasisBaseTheme = {
       '&:focus-visible': {
         textDecoration: 'underline',
       },
+    },
+    settings: {
+      color: 'primaryEmphasis',
+      fontWeight: 'medium',
+      fontSize: 1,
+      textDecoration: 'none',
     },
   },
   icons,
@@ -892,10 +939,10 @@ const oasisBaseTheme = {
   zIndices: {
     menu: 3,
     footer: 2,
-    mobileMenu: 3,
     modal: 4,
     cookie: 5,
     modalOnMobilePanel: 5,
+    mobileMenu: 6,
   },
   grids: {
     vaultContainer: {

@@ -111,7 +111,6 @@ import {
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
-import { curry } from 'ramda'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -162,6 +161,7 @@ import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptan
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
+import curry from 'ramda/src/curry'
 
 export type TxData =
   | OpenData

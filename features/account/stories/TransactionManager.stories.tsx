@@ -13,7 +13,7 @@ import React from 'react'
 import { of } from 'rxjs'
 import Web3 from 'web3'
 
-import { AccountModal } from '../Account'
+// import { AccountModal } from '../Account'
 import { createTransactionManager } from '../transactionManager'
 
 interface MockContextProviderProps extends WithChildren {
@@ -284,7 +284,7 @@ storiesModal.add('Translations pending, recent and icons', () => {
           })),
         ]}
       >
-        <AccountModal close={() => {}} />
+        {/* <AccountModal close={() => {}} /> */}
       </MockContextProvider>
     </>
   )
@@ -303,7 +303,7 @@ storiesModal.add('Translations Failed', () => {
           }))
         }
       >
-        <AccountModal close={() => {}} />
+        {/* <AccountModal close={() => {}} /> */}
       </MockContextProvider>
     </>
   )

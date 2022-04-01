@@ -1,6 +1,6 @@
 import { Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { PriceInfo } from '../../../features/shared/priceInfo'

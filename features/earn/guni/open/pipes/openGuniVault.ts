@@ -30,7 +30,6 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { curry } from 'ramda'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
   distinctUntilChanged,
@@ -69,6 +68,7 @@ import {
   defaultGuniOpenMultiplyVaultConditions,
   GuniOpenMultiplyVaultConditions,
 } from './openGuniVaultConditions'
+import curry from 'ramda/src/curry'
 
 type InjectChange = { kind: 'injectStateOverride'; stateToOverride: Partial<OpenGuniVaultState> }
 

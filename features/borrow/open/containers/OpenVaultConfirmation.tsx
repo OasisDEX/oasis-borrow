@@ -1,6 +1,6 @@
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Divider } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
