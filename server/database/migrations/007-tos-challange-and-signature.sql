@@ -1,0 +1,4 @@
+ALTER TABLE tos_approval
+ADD COLUMN signature VARCHAR,
+ADD COLUMN message VARCHAR,
+ADD COLUMN chain_id INTEGER;

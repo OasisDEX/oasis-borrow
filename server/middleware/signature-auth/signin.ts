@@ -18,6 +18,7 @@ export interface UserJwtPayload {
   signature: string
   challenge: string
   signer: string
+  chainId: number
 }
 
 class SignatureAuthError {
@@ -70,12 +71,7 @@ export function makeSignIn(options: signInOptions): Handler {
     } else {
       const signedAddress = recoverPersonalSignature({ data: message, sig: body.signature })
       if (signedAddress.toLowerCase() !== challenge.address) {
-        let isOwner = false
-        try {
-          isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
-        } catch {
-          console.error('Signer is not gnosis safe owner')
-        }
+        const isOwner = await checkIfGnosisOwner(web3, challenge, signedAddress)
 
         if (!isOwner) {
           throw new SignatureAuthError('Signature not correct')
@@ -89,6 +85,7 @@ export function makeSignIn(options: signInOptions): Handler {
       address: challenge.address,
       signature: body.signature,
       challenge: body.challenge,
+      chainId: body.chainId,
       signer,
     }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
