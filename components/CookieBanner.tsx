@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { Fragment, MouseEventHandler, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
 
 import { COOKIE_NAMES, CookieName, manageCookie } from '../analytics/common'

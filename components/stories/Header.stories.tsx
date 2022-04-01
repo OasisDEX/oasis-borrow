@@ -1,10 +1,12 @@
 import { TxState } from '@oasisdex/transactions'
 import { Web3Context } from '@oasisdex/web3-context'
 import { storiesOf } from '@storybook/react'
+import BigNumber from 'bignumber.js'
 import { AppContext } from 'components/AppContext'
 import { TxData } from 'components/AppContext'
 import { appContext, isAppContextAvailable } from 'components/AppContextProvider'
 import { AppHeader } from 'components/Header'
+import { SLIPPAGE_DEFAULT, UserSettingsState } from 'features/userSettings/userSettings'
 import { ModalProvider } from 'helpers/modalHook'
 import { WithChildren } from 'helpers/types'
 import React from 'react'
@@ -12,15 +14,13 @@ import { of } from 'rxjs'
 import { Container, Heading } from 'theme-ui'
 import Web3 from 'web3'
 
-import { createTransactionManager } from './transactionManager'
+const stories = storiesOf('Header', module)
 
 interface MockContextProviderProps extends WithChildren {
   web3Context: Web3Context
   title: string
   transactions?: TxState<TxData>[]
 }
-
-const stories = storiesOf('Account in Header', module)
 
 const protoWeb3Context: Web3Context = {
   chainId: 42,
@@ -44,19 +44,26 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
   )
 }
 
-function MockContextProvider({
-  children,
-  title,
-  web3Context,
-  transactions = [],
-}: MockContextProviderProps) {
+const userSettings: UserSettingsState = {
+  stage: 'editing',
+  slippage: SLIPPAGE_DEFAULT,
+  slippageInput: SLIPPAGE_DEFAULT,
+  setSlippageInput: () => null,
+  reset: () => null,
+  canProgress: true,
+  errors: [],
+  warnings: [],
+}
+
+function MockContextProvider({ children, title, web3Context }: MockContextProviderProps) {
   const ctx = ({
     web3Context$: of(web3Context),
-    transactionManager$: createTransactionManager(of(transactions)),
     context$: of({
       etherscan: { url: 'etherscan' },
     }),
     readonlyAccount$: of(undefined),
+    userSetting$: of(userSettings),
+    accountData$: of({ daiBalance: new BigNumber(1000) }),
   } as any) as AppContext
 
   return (
@@ -118,7 +125,7 @@ stories.add('Connected MagicLink Kovan', () => {
   )
 })
 
-stories.add('Connected with pending transaction delayed', () => {
+stories.add('Connected Metamask Kovan', () => {
   const date = new Date()
   date.setSeconds(date.getSeconds() + 2)
 

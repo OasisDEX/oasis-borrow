@@ -4,7 +4,7 @@ import { CollateralPricesView } from 'features/collateralPrices/CollateralPrices
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
-export default function OraclesPage() {
+function OraclesPage() {
   return (
     <WithConnection>
       <CollateralPricesView />
@@ -22,3 +22,5 @@ OraclesPage.layout = MarketingLayout
 OraclesPage.layoutProps = {
   variant: 'landingContainer',
 }
+
+export default OraclesPage

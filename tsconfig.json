@@ -5,7 +5,11 @@
     "outDir": "build/dist",
     "module": "esnext",
     "target": "es2017",
-    "lib": ["dom", "es2018", "esnext"],
+    "lib": [
+      "dom",
+      "es2018",
+      "esnext"
+    ],
     "sourceMap": true,
     "allowJs": true,
     "moduleResolution": "node",
@@ -14,18 +18,25 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "paths": {
-      "src/*": ["src/*"],
-      "server/*": ["server/*"]
+      "src/*": [
+        "src/*"
+      ],
+      "server/*": [
+        "server/*"
+      ]
     },
     "noEmit": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "incremental": true
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
+    "**/*.tsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

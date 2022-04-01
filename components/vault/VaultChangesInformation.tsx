@@ -5,8 +5,8 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
 
 export function VaultChangesInformationItem({
   label,
