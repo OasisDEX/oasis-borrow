@@ -121,7 +121,7 @@ export function mockVault$({
   }
 
   function charterNib$() {
-    return _charterNib$ || of(new BigNumber(1))
+    return _charterNib$ || of(new BigNumber('0.01'))
   }
 
   function charterPeace$() {

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { InstiVault } from 'blockchain/instiVault'
 
+import { collateralPriceAtRatio } from '../../../../../blockchain/vault.maths'
 import { zero } from '../../../../../helpers/zero'
 import {
   GenericManageBorrowVaultState,
@@ -25,7 +26,6 @@ import {
   CreateInitialVaultStateArgs,
 } from './borrowManageVaultViewStateProviderInterface'
 import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
-import { collateralPriceAtRatio } from '../../../../../blockchain/vault.maths'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
@@ -171,7 +171,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
 
     const activeCollRatioPriceUSDAfter = collateralPriceAtRatio({
       colRatio: viewState.vault.activeCollRatio,
-      lockedCollateral: viewState.afterLockedCollateral,
+      collateral: viewState.afterLockedCollateral,
       vaultDebt: viewState.afterDebt,
     })
 

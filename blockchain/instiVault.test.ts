@@ -4,6 +4,7 @@ import { BehaviorSubject, of } from 'rxjs'
 
 import { mockVault$ } from '../helpers/mocks/vaults.mock'
 import { getStateUnpacker } from '../helpers/testHelpers'
+import { zero } from '../helpers/zero'
 
 describe('instiVault$', () => {
   it('pipes nib, peace', () => {
@@ -36,12 +37,13 @@ describe('instiVault$', () => {
 
   it('takes the debt ceiling/available ilk debt from the charter contract', () => {
     const debt = new BigNumber(100000000)
-    const collateral = new BigNumber(1e15) // big enough that we are limited by ilkDebtAvailable rather than debt against collateral
-    const chartedDebtCeiling = new BigNumber(900000000) // realistic number for debt ceiling (from goerli at least)
+    const collateral = new BigNumber(1e15) // big enough that we are limited by ilkDebtAvailable rather than collateral
+    const chartedDebtCeiling = new BigNumber(900000000) // realistic number for debt ceiling
 
     const { instiVault$ } = mockVault$({
       collateral,
       _charterUline$: of(chartedDebtCeiling),
+      _charterNib$: of(zero), // remove origination fee for this test,
       debt,
     })
 

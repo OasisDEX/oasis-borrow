@@ -6,6 +6,7 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { zero } from '../helpers/zero'
 import { cdpManagerOwner } from './calls/cdpManager'
 import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
@@ -172,7 +173,7 @@ export function createVault$(
                   normalizedDebt,
                   unlockedCollateral,
                   chainId: context.chainId,
-                  ...buildPosition(
+                  ...buildPosition({
                     collateral,
                     currentPrice,
                     nextPrice,
@@ -183,7 +184,9 @@ export function createVault$(
                     ilkDebtAvailable,
                     collateralizationDangerThreshold,
                     collateralizationWarningThreshold,
-                  ),
+                    minActiveColRatio: liquidationRatio, // user can reduce vault col ratio right down to liquidation ratio
+                    originationFee: zero,
+                  }),
                 })
               },
             ),

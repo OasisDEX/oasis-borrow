@@ -81,8 +81,8 @@ export function createInstiVault$(
                   normalizedDebt,
                   unlockedCollateral,
                   chainId: context.chainId,
-                  ...buildPosition(
-                    lockedCollateral,
+                  ...buildPosition({
+                    collateral: lockedCollateral,
                     currentPrice,
                     nextPrice,
                     debtScalingFactor,
@@ -92,12 +92,14 @@ export function createInstiVault$(
                     ilkDebtAvailable,
                     collateralizationDangerThreshold,
                     collateralizationWarningThreshold,
-                  ),
+                    minActiveColRatio,
+                    originationFee: charteredFee,
+                  }),
                   originationFeePercent: charteredFee,
                   activeCollRatio: minActiveColRatio,
                   activeCollRatioPriceUSD: collateralPriceAtRatio({
                     colRatio: minActiveColRatio,
-                    lockedCollateral,
+                    collateral: lockedCollateral,
                     vaultDebt: debt,
                   }),
                   termEnd: moment().add(3, 'months').toDate(),

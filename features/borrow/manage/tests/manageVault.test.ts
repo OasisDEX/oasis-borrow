@@ -907,7 +907,7 @@ describe('manageVault', () => {
     })
 
     it('should contain origination fee in USD in the view state', () => {
-      const charterNib$ = new BehaviorSubject<BigNumber>(new BigNumber(1))
+      const charterNib$ = new BehaviorSubject<BigNumber>(new BigNumber('0.01'))
       const depositAmount = new BigNumber('5')
       const generateAmount = new BigNumber('3000')
       const secondGenerateAmount = new BigNumber('5000')
@@ -928,7 +928,7 @@ describe('manageVault', () => {
       expect(state().originationFeeUSD!.toString()).to.eq('50')
 
       // changes when we have a new value from the observable
-      charterNib$.next(new BigNumber(5))
+      charterNib$.next(new BigNumber('0.05'))
       expect(state().originationFeeUSD!.toString()).to.eq('250')
     })
 

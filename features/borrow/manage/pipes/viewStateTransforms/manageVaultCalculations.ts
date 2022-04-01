@@ -114,13 +114,6 @@ function calculateAfterLockedCollateral({
  * If the shouldPaybackAll flag is true than we assume that the debt after
  * the transaction will be 0
  */
-type CalcAfterDebtArgs = {
-  shouldPaybackAll: boolean
-  generateAmount?: BigNumber
-  paybackAmount?: BigNumber
-  debt?: BigNumber
-  originationFeePercent: BigNumber
-}
 function calculateAfterDebt({
   shouldPaybackAll,
   generateAmount,
