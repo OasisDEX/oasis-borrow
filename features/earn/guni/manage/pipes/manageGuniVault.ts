@@ -6,9 +6,8 @@ import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
-import { createMultiplyHistoryChange$ } from 'features/multiply/manage/pipes/manageMultiplyHistory'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
-import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
@@ -193,7 +192,7 @@ export function createManageGuniVault$(
     gUniAmount: BigNumber,
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
-  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   slippageLimit$: Observable<UserSettingsState>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
@@ -279,7 +278,7 @@ export function createManageGuniVault$(
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
-                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
+                    createHistoryChange$(vaultHistory$, id),
                   )
 
                   const guniDataChange$ = environmentChanges$.pipe(
