@@ -31,6 +31,7 @@ interface MockInstiVaultProps {
   _charterPeace$?: Observable<BigNumber>
   _charterUline$?: Observable<BigNumber>
   minActiveColRatio?: BigNumber
+  originationFee?: BigNumber
 }
 
 export const DEFAULT_PROXY_ADDRESS = '0xProxyAddress'
@@ -58,10 +59,11 @@ export function mockVault$({
   collateral,
   ilk,
   minActiveColRatio,
+  originationFee,
 }: MockVaultProps & MockInstiVaultProps = {}): MockVaults {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
-  const completePriceInfo: PriceInfo | undefined = priceInfo
+  const defaultPriceInfo: PriceInfo | undefined = priceInfo
     ? {
         currentCollateralPrice: new BigNumber('1'),
         currentEthPrice: new BigNumber('1'),
@@ -76,10 +78,10 @@ export function mockVault$({
     : undefined
 
   function oraclePriceData$() {
-    return _oraclePriceData$ || completePriceInfo
+    return _oraclePriceData$ || defaultPriceInfo
       ? of({
-          currentPrice: completePriceInfo!.currentCollateralPrice,
-          nextPrice: completePriceInfo!.nextCollateralPrice,
+          currentPrice: defaultPriceInfo!.currentCollateralPrice,
+          nextPrice: defaultPriceInfo!.nextCollateralPrice,
           isStaticPrice: false,
         } as OraclePriceData)
       : mockPriceInfo$({ token }).pipe(
@@ -121,7 +123,7 @@ export function mockVault$({
   }
 
   function charterNib$() {
-    return _charterNib$ || of(new BigNumber('0.01'))
+    return originationFee ? of(originationFee) : _charterNib$ || of(new BigNumber('0.01'))
   }
 
   function charterPeace$() {

@@ -8,6 +8,7 @@ import { protoTxHelpers } from 'components/AppContext'
 import {
   mockManageInstiVault$ as createManageInstiVault$,
   mockManageVault$ as createManageVault$,
+  mockManageVault$,
 } from 'helpers/mocks/manageVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
 import {
@@ -962,8 +963,10 @@ describe('manageVault', () => {
       state().updateGenerate!(new BigNumber(1000))
 
       expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(true)
-      expect(state().errorMessages.length).equal(1)
-      expect(state().errorMessages[0]).equal('vaultWillBeTakenUnderMinActiveColRatio')
+
+      expect(state().errorMessages.length).equal(2)
+      expect(state().errorMessages[0]).equal('generateAmountExceedsDaiYieldFromTotalCollateral')
+      expect(state().errorMessages[1]).equal('vaultWillBeTakenUnderMinActiveColRatio')
       expect(state().canProgress).equal(false)
     })
 
@@ -998,8 +1001,11 @@ describe('manageVault', () => {
       state().updateGenerate!(new BigNumber(400))
 
       expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(true)
-      expect(state().errorMessages.length).equal(1)
-      expect(state().errorMessages[0]).equal('vaultWillBeTakenUnderMinActiveColRatio')
+      expect(state().errorMessages.length).equal(2)
+      expect(state().errorMessages[0]).equal(
+        'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice',
+      )
+      expect(state().errorMessages[1]).equal('vaultWillBeTakenUnderMinActiveColRatio')
       expect(state().canProgress).equal(false)
     })
 
@@ -1058,11 +1064,11 @@ describe('manageVault', () => {
       // construct under-collateralised vault (min active col ratio)
       const { instiVault$ } = mockVault$({
         debt: new BigNumber(10000),
-        minActiveColRatio: new BigNumber(1.6),
+        minActiveColRatio: new BigNumber('1.6'),
         collateral: new BigNumber(14950),
         priceInfo: {
           currentCollateralPrice: new BigNumber('1'),
-          nextCollateralPrice: new BigNumber(1),
+          nextCollateralPrice: new BigNumber('1'),
         },
       })
 
@@ -1103,5 +1109,57 @@ describe('manageVault', () => {
       expect(state().warningMessages).includes('vaultIsCurrentlyUnderMinActiveColRatio')
       expect(state().canProgress).equal(true)
     })
+  })
+
+  it('ignores current debt when considering dust limit on collateral', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        vault: {
+          collateral: new BigNumber('1500'),
+          debt: new BigNumber('900'),
+        },
+        ilkData: {
+          debtFloor: new BigNumber('800'),
+          liquidationRatio: new BigNumber(1.2),
+          currentCollateralPrice: new BigNumber('1'),
+        },
+        priceInfo: {
+          collateralPrice: new BigNumber('1'),
+        },
+      }),
+    )
+
+    state().toggleDepositAndGenerateOption!()
+    state().updateDeposit!(new BigNumber('200'))
+
+    expect(state().potentialGenerateAmountLessThanDebtFloor).eq(false)
+    expect(state().warningMessages.length).eq(0)
+  })
+
+  it('errors when the current collateral would not allow any debt to be drawn from the vault', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        vault: {
+          collateral: new BigNumber('1300'),
+          debt: new BigNumber('900'),
+        },
+        ilkData: {
+          debtFloor: new BigNumber('1500'),
+          liquidationRatio: new BigNumber('1.2'),
+          currentCollateralPrice: new BigNumber('1'),
+        },
+        priceInfo: {
+          collateralPrice: new BigNumber('1'),
+        },
+      }),
+    )
+
+    state().toggleDepositAndGenerateOption!()
+    state().updateDeposit!(new BigNumber('200'))
+    state().updateGenerate!(new BigNumber('700'))
+
+    expect(state().potentialGenerateAmountLessThanDebtFloor).eq(true)
+    expect(state().errorMessages.length).eq(1)
+    expect(state().errorMessages[0]).eq('depositCollateralOnVaultUnderDebtFloor')
   })
 })

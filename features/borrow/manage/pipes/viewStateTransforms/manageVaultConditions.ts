@@ -530,7 +530,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   })
 
   const potentialGenerateAmountLessThanDebtFloor =
-    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
+    !isNullish(depositAmount) && state.daiYieldFromTotalCollateralWithoutDebt.lt(debtFloor)
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
