@@ -15,15 +15,16 @@ import { zero } from '../../../helpers/zero'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
 interface StopLossSummaryInformationProps {
-  date: Date
+  date: string
   token: string
   tokenPrice: BigNumber
+  priceImpact: BigNumber
   isToCollateral: boolean
   paybackAmount: BigNumber
   withdrawAmount: BigNumber
   tokensSold: BigNumber
   collRatio: BigNumber
-  gasFee: BigNumber
+  totalFee: BigNumber
   slippage: BigNumber
 }
 
@@ -31,11 +32,12 @@ function StopLossSummaryInformation({
   date,
   token,
   tokenPrice,
+  priceImpact,
   isToCollateral,
   paybackAmount,
   withdrawAmount,
   tokensSold,
-  gasFee,
+  totalFee,
   collRatio,
   slippage,
 }: StopLossSummaryInformationProps) {
@@ -54,12 +56,11 @@ function StopLossSummaryInformation({
     ? `${formatAmount(withdrawAmount, token)} ${token}`
     : `${formatAmount(withdrawAmount.multipliedBy(tokenPrice), 'USD')} DAI`
 
-  const priceImpact = (
+  const impact = (
     <>
       {formatFiatBalance(tokenPrice)}
       <Text as="span" sx={{ color: 'lavender', ml: 1 }}>
-        {/* TODO mocked for now as we don't have necessary data to calculate it*/}(
-        {formatPercent(new BigNumber(0), { precision: 2 })})
+        ({formatPercent(priceImpact, { precision: 2 })})
       </Text>
     </>
   )
@@ -88,7 +89,7 @@ function StopLossSummaryInformation({
     </>
   )
 
-  const totalCost = `$${formatAmount(gasFee, 'USD')}`
+  const totalCost = `$${formatAmount(totalFee, 'USD')}`
 
   return (
     <VaultChangesInformationContainer title={t('protection.stop-loss-summary')}>
@@ -112,7 +113,7 @@ function StopLossSummaryInformation({
         label={`${t('vault-changes.price-impact', {
           token,
         })}`}
-        value={<Flex>{priceImpact}</Flex>}
+        value={<Flex>{impact}</Flex>}
       />
       <VaultChangesInformationItem
         label={`${t('vault-changes.slippage-limit', {
@@ -155,10 +156,11 @@ interface StopLossTriggeredFormLayoutProps {
   withdrawAmount: BigNumber
   tokensSold: BigNumber
   tokenPrice: BigNumber
-  date: Date
+  priceImpact: BigNumber
+  date: string
   collRatio: BigNumber
   isToCollateral: boolean
-  gasFee: BigNumber
+  totalFee: BigNumber
   slippage: BigNumber
 }
 
@@ -169,10 +171,11 @@ export function StopLossTriggeredFormLayout({
   withdrawAmount,
   tokensSold,
   tokenPrice,
+  priceImpact,
   date,
   collRatio,
   isToCollateral,
-  gasFee,
+  totalFee,
   slippage,
 }: StopLossTriggeredFormLayoutProps) {
   const { t } = useTranslation()
@@ -192,10 +195,11 @@ export function StopLossTriggeredFormLayout({
         date={date}
         isToCollateral={isToCollateral}
         tokenPrice={tokenPrice}
+        priceImpact={priceImpact}
         paybackAmount={paybackAmount}
         withdrawAmount={withdrawAmount}
         tokensSold={tokensSold}
-        gasFee={gasFee}
+        totalFee={totalFee}
         collRatio={collRatio}
         slippage={slippage}
       />

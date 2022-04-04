@@ -30,8 +30,7 @@ import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
-import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
-import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
+import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import {
   applyExchange,
   createExchangeChange$,
@@ -475,7 +474,7 @@ export function createManageMultiplyVault$(
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   slippageLimit$: Observable<UserSettingsState>,
-  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
@@ -563,7 +562,7 @@ export function createManageMultiplyVault$(
                     createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
-                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
+                    createHistoryChange$(vaultHistory$, id),
                     createStopLossDataChange$(automationTriggersData$, id),
                   )
 

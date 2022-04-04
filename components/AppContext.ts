@@ -109,8 +109,6 @@ import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
-import { createVaultHistory$ } from 'features/vaultHistory/vaultHistory'
-import { createVaultMultiplyHistory$ } from 'features/vaultHistory/vaultMultiplyHistory'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
@@ -160,6 +158,7 @@ import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckVaultType$, VaultIdToTypeMapping } from '../features/shared/checkVaultType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
+import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
@@ -482,9 +481,6 @@ export function setupAppContext() {
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
-  const vaultMultiplyHistory$ = memoize(
-    curry(createVaultMultiplyHistory$)(context$, onEveryBlock$, vault$),
-  )
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
@@ -663,7 +659,7 @@ export function setupAppContext() {
         exchangeQuote$,
         addGasEstimation$,
         userSettings$,
-        vaultMultiplyHistory$,
+        vaultHistory$,
         saveVaultUsingApi$,
         automationTriggersData$,
         id,
@@ -700,7 +696,7 @@ export function setupAppContext() {
         psmExchangeQuote$,
         addGasEstimation$,
         getProportions$,
-        vaultMultiplyHistory$,
+        vaultHistory$,
         userSettings$,
         id,
       ),
@@ -786,7 +782,6 @@ export function setupAppContext() {
     automationTriggersData$,
     accountData$,
     vaultHistory$,
-    vaultMultiplyHistory$,
     collateralPrices$,
     termsAcceptance$,
     reclaimCollateral$,
