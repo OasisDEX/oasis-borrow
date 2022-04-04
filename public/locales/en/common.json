@@ -1028,5 +1028,22 @@
   },
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
-  "help-shape-the-future-of-multiply": "Help shape the future of Multiply"
+  "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
+  "ref": {
+    "link": "Your referral link",
+    "explanation": "Get fees anytime someone clicks your link and uses Oasis. You and the person you refer both get 5% of all fees generated on Oasis... Forever",
+    "faq-link": "Read more in Oasis Referral F.A.Q",
+    "you-referred": "Accounts you referred",
+    "referred-you": "Account that referred you",
+    "modal": {
+      "you-have-been-ref": "You have been referred to Oasis by ",
+      "body-text": "Great! Now you and the account that referred you will share fees.",
+      "p1": "• You both receive 5% fee stake on Oasis",
+      "p2": "• It's completetly free to participate",
+      "p3": "• All fees paid in DAI",
+      "p4": "• Claim anytime",
+      "dont-earn": "Don't earn with fee sharing",
+      "accept": "Accept"
+    }
+  }
 }
