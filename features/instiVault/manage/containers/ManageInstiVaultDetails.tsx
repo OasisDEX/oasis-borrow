@@ -14,6 +14,7 @@ import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { MinActiveColRatioCard } from '../../../../components/vault/detailsCards/MinActiveColRatio'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
@@ -34,18 +35,11 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   return (
     <Box>
       <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCard
-          title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
-          value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
-          valueAfter={
-            afterPill.showAfterPill &&
-            afterActiveCollRatioPriceUSD &&
-            `$${formatAmount(afterActiveCollRatioPriceUSD, 'USD')}`
-          }
-          valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', {
-            percentageRatio: formatDecimalAsPercent(activeCollRatio),
-          })}
-          {...afterPill}
+        <MinActiveColRatioCard
+          activeCollRatioPriceUSD={activeCollRatioPriceUSD}
+          afterActiveCollRatioPriceUSD={afterActiveCollRatioPriceUSD}
+          activeCollRatio={activeCollRatio}
+          afterPill={afterPill}
         />
         <VaultDetailsCardCollateralizationRatio {...props} {...afterPill} />
         <VaultDetailsCardCurrentPrice {...props.priceInfo} />
