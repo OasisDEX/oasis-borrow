@@ -646,8 +646,6 @@ export function setupAppContext() {
         addGasEstimation$,
         vaultHistory$,
         proxyActionsAdapterResolver$,
-        // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
-        // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
         InstitutionalBorrowManageAdapter,
         automationTriggersData$,
         id,
