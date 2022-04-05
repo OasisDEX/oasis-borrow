@@ -118,6 +118,13 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             {guniVaultEvent ? 'USDC' : event.token}
           </MultiplyHistoryEventDetailsItem>
         )}
+        {event.kind === 'DECREASE_MULTIPLE' &&
+          'withdrawnCollateral' in event &&
+          event.withdrawnCollateral.gt(zero) && (
+            <MultiplyHistoryEventDetailsItem label={t('history.withdrawn')}>
+              {formatCryptoBalance(event.withdrawnCollateral)} {event.token}
+            </MultiplyHistoryEventDetailsItem>
+          )}
         {!(closeEvent && guniVaultEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
             {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}

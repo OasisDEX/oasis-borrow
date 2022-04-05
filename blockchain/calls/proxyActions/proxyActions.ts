@@ -222,6 +222,7 @@ export type MultiplyAdjustData = {
   userAddress: string
 
   depositCollateral: BigNumber
+  withdrawCollateral: BigNumber
   borrowedCollateral: BigNumber
 
   ilk: string
@@ -319,7 +320,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
       withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
-      withdrawCollateral: amountToWei(zero, data.token).toFixed(0),
+      withdrawCollateral: amountToWei(data.withdrawCollateral, data.token).toFixed(0),
       skipFL: false,
       methodName: '',
     } as any
@@ -330,6 +331,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       lender: fmm,
       exchange: defaultExchange.address,
     } as any
+
+    if (data.withdrawCollateral.gt(zero)) {
+      return contract<MultiplyProxyActions>(
+        dssMultiplyProxyActions,
+      ).methods.decreaseMultipleWithdrawCollateral(exchangeData, cdpData, serviceRegistry)
+    }
 
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(
       exchangeData,

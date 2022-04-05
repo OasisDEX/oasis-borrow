@@ -234,6 +234,7 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       token: 'ETH',
       userAddress: '0x',
       depositCollateral: new BigNumber(4),
+      withdrawCollateral: new BigNumber(0),
       borrowedCollateral: new BigNumber(1),
       requiredDebt: new BigNumber(4000),
       ilk: 'ETH-A',

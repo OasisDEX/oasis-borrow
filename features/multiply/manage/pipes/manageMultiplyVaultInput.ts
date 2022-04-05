@@ -286,6 +286,8 @@ export function applyManageVaultInput(
       requiredCollRatio: change.requiredCollRatio,
       depositAmount: state.depositAmount,
       depositAmountUSD: state.depositAmountUSD,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmountUSD,
     }
   }
 
@@ -438,6 +440,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: change.withdrawAmount,
       withdrawAmountUSD: change.withdrawAmount?.times(priceInfo.currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -448,6 +451,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmountUSD: change.withdrawAmountUSD,
       withdrawAmount: change.withdrawAmountUSD?.div(priceInfo.currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -459,6 +463,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       withdrawAmount: maxWithdrawAmount,
       withdrawAmountUSD: maxWithdrawAmountUSD,
+      showSliderController: false,
     }
   }
 

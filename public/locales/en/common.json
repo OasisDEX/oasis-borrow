@@ -193,6 +193,7 @@
     "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
     "deposited": "Deposited",
+    "withdrawn": "Withdrawn",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
     "exit-collateral": "Exit collateral",
     "exit-dai": "Exit Dai",

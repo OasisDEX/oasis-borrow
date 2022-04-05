@@ -351,11 +351,15 @@ export function applyManageVaultConditions(
     lockedCollateral.eq(zero) &&
     !(originalEditingStage === 'otherActions' && otherAction === 'depositCollateral')
 
+  const isDepositAction = otherAction === 'depositCollateral' || otherAction === 'depositDai'
+  const isWithdrawAction = otherAction === 'withdrawCollateral' || otherAction === 'withdrawDai'
+  const isDepositOrWithdrawAndMultiply =
+    (isDepositAction || isWithdrawAction) && !!requiredCollRatio?.gt(zero)
+
   const exchangeDataRequired =
     originalEditingStage === 'adjustPosition' ||
     (originalEditingStage === 'otherActions' &&
-      ((otherAction === 'closeVault' && !debt.isZero()) ||
-        (otherAction === 'depositCollateral' && !!requiredCollRatio?.gt(zero))))
+      ((otherAction === 'closeVault' && !debt.isZero()) || isDepositOrWithdrawAndMultiply))
 
   const shouldShowExchangeError = exchangeDataRequired && exchangeError
 

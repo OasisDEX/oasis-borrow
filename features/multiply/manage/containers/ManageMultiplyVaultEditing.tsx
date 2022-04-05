@@ -202,17 +202,18 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     requiredCollRatio,
     updateRequiredCollRatio,
     maxCollRatio,
+    minCollRatio,
     collapsed,
     multiply,
     hasToDepositCollateralOnEmptyVault,
-    depositAmount,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
-  const sliderMax = depositAmount?.gt(zero) ? maxCollRatio : MAX_COLL_RATIO
+  const sliderMax = maxCollRatio || MAX_COLL_RATIO
+  const sliderMin = minCollRatio || liquidationRatio
   const slider = new BigNumber(100).minus(
-    sliderValue.minus(liquidationRatio).div(sliderMax.minus(liquidationRatio)).times(100) || zero,
+    sliderValue.minus(sliderMin).div(sliderMax.minus(sliderMin)).times(100) || zero,
   )
 
   const sliderBackground =
@@ -263,7 +264,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
           }}
           disabled={hasToDepositCollateralOnEmptyVault}
           step={5}
-          min={liquidationRatio.times(100).toNumber()}
+          min={sliderMin.times(100).toNumber()}
           max={sliderMax.times(100).toNumber()}
           value={
             requiredCollRatio?.times(100).toNumber() || collateralizationRatio.times(100).toNumber()
@@ -493,7 +494,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
             }}
           >
             {showSliderController ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>Increase multiply with this transaction</Text>
+            <Text pr={1}>Adjust multiply with this transaction</Text>
           </Button>
 
           {showSliderController && (
@@ -508,29 +509,36 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
 }
 
 function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const {
+    showSliderController,
+    toggleSliderController,
+    withdrawAmount,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={2}>
       <WithdrawTokenInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Decrease multiply with this transaction</Text>
-        </Button>
+      {withdrawAmount?.gt(zero) && debt.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiply with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }

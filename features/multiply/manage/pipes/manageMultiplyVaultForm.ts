@@ -100,17 +100,34 @@ export function applyManageVaultForm(
   // }
 
   if (change.kind === 'toggleSliderController') {
+    const isDepositAction =
+      state.otherAction === 'depositCollateral' || state.otherAction === 'depositDai'
+    const isWithdrawAction =
+      state.otherAction === 'withdrawCollateral' || state.otherAction === 'withdrawDai'
+
+    const requiredCollRatioAtDeposit = state.depositAmount?.gt(0)
+      ? state.maxCollRatio
+      : MAX_COLL_RATIO
+
+    const requiredCollRatioAtWithdraw = state.withdrawAmount?.gt(0)
+      ? state.minCollRatio
+      : MAX_COLL_RATIO
+
+    const requiredCollRatio = isDepositAction
+      ? requiredCollRatioAtDeposit
+      : isWithdrawAction
+      ? requiredCollRatioAtWithdraw
+      : undefined
+
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
       showSliderController: !state.showSliderController,
       depositAmount: state.depositAmount,
       depositAmountUSD: state.depositAmountUSD,
-      requiredCollRatio: !state.showSliderController
-        ? !state.depositAmount?.gt(0)
-          ? MAX_COLL_RATIO
-          : state.maxCollRatio
-        : undefined,
+      withdrawAmount: state.withdrawAmount,
+      withdrawAmountUSD: state.withdrawAmountUSD,
+      requiredCollRatio: !state.showSliderController ? requiredCollRatio : undefined,
     }
   }
 
