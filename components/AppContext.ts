@@ -142,10 +142,10 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import {
-  InstitutionalBorrowManageVaultViewStateProvider,
+  InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
-} from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
-import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
+} from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -624,7 +624,7 @@ export function setupAppContext() {
         addGasEstimation$,
         vaultHistory$,
         proxyActionsAdapterResolver$,
-        StandardBorrowManageVaultViewStateProvider,
+        StandardBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),
@@ -648,7 +648,7 @@ export function setupAppContext() {
         proxyActionsAdapterResolver$,
         // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
         // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
-        InstitutionalBorrowManageVaultViewStateProvider,
+        InstitutionalBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),

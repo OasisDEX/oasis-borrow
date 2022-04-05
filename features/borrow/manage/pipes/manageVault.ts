@@ -34,8 +34,8 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
 import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
+import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
-import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
@@ -373,7 +373,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   }: {
     makerVaultType: MakerVaultType
   }) => Observable<ProxyActionsSmartContractAdapterInterface>,
-  vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
+  vaultViewStateProvider: BorrowManageAdapterInterface<V, VS>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<VS> {
@@ -421,7 +421,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     collateralAllowance,
                   )
 
-                  const initialState = vaultViewStateProvider.createInitialVaultState({
+                  const initialState = vaultViewStateProvider.createInitialViewState({
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -449,7 +449,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
 
                   return merge(change$, environmentChanges$).pipe(
                     scan<ManageVaultChange, VS>(
-                      vaultViewStateProvider.transformVaultState,
+                      vaultViewStateProvider.transformViewState,
                       initialState,
                     ),
                     map(validateErrors),

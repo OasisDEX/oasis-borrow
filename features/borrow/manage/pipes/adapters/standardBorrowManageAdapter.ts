@@ -28,11 +28,11 @@ import {
 import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
 import {
-  BorrowManageVaultViewStateProviderInterface,
+  BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,
-} from './borrowManageVaultViewStateProviderInterface'
+} from './borrowManageAdapterInterface'
 
-export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
+export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
   Vault,
   ManageStandardBorrowVaultState
 > = {
@@ -40,7 +40,7 @@ export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewSt
     return viewState
   },
 
-  transformVaultState(
+  transformViewState(
     viewState: ManageStandardBorrowVaultState,
     change: ManageVaultChange,
   ): ManageStandardBorrowVaultState {
@@ -61,7 +61,7 @@ export const StandardBorrowManageVaultViewStateProvider: BorrowManageVaultViewSt
     return viewState
   },
 
-  createInitialVaultState(args: CreateInitialVaultStateArgs<Vault>) {
+  createInitialViewState(args: CreateInitialVaultStateArgs<Vault>) {
     const {
       vault,
       priceInfo,

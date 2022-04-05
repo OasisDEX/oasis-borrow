@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 
 import { zero } from '../../../../../helpers/zero'
-import { increasingRisk } from './institutionalBorrowManageVaultViewStateProvider'
+import { increasingRisk } from './institutionalBorrowManageAdapter'
 
-describe('InstitutionalBorrowManageVaultViewStateProvider', () => {
+describe('InstitutionalBorrowManageAdapter', () => {
   describe('increasingRisk', () => {
     it('shows as risk not increasing when increasing collateralisation ratio', () => {
       const result = increasingRisk({

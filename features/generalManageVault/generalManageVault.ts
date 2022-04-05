@@ -4,8 +4,8 @@ import { Observable } from 'rxjs'
 import { filter, map, switchMap } from 'rxjs/operators'
 
 import { Vault } from '../../blockchain/vaults'
+import { ManageInstiVaultState } from '../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageStandardBorrowVaultState } from '../borrow/manage/pipes/manageVault'
-import { ManageInstiVaultState } from '../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 

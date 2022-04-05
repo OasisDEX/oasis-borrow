@@ -22,10 +22,10 @@ import { applyManageVaultSummary } from '../viewStateTransforms/manageVaultSumma
 import { applyManageVaultTransaction } from '../viewStateTransforms/manageVaultTransactions'
 import { applyManageVaultTransition } from '../viewStateTransforms/manageVaultTransitions'
 import {
-  BorrowManageVaultViewStateProviderInterface,
+  BorrowManageAdapterInterface,
   CreateInitialVaultStateArgs,
-} from './borrowManageVaultViewStateProviderInterface'
-import { StandardBorrowManageVaultViewStateProvider } from './standardBorrowManageVaultViewStateProvider'
+} from './borrowManageAdapterInterface'
+import { StandardBorrowManageAdapter } from './standardBorrowManageAdapter'
 
 export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
   transactionFeeETH?: BigNumber
@@ -115,7 +115,7 @@ function applyMinActiveColRatioConditions(viewState: ManageInstiVaultState): Man
   }
 }
 
-export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<
+export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
   InstiVault,
   ManageInstiVaultState
 > = {
@@ -141,7 +141,7 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     }
   },
 
-  transformVaultState(
+  transformViewState(
     viewState: ManageInstiVaultState,
     change: ManageVaultChange,
   ): ManageInstiVaultState {
@@ -187,9 +187,9 @@ export const InstitutionalBorrowManageVaultViewStateProvider: BorrowManageVaultV
     }
   },
 
-  createInitialVaultState(args: CreateInitialVaultStateArgs<InstiVault>): ManageInstiVaultState {
+  createInitialViewState(args: CreateInitialVaultStateArgs<InstiVault>): ManageInstiVaultState {
     const manageStandardVaultViewState: ManageStandardBorrowVaultState = {
-      ...StandardBorrowManageVaultViewStateProvider.createInitialVaultState(args),
+      ...StandardBorrowManageAdapter.createInitialViewState(args),
       vault: args.vault,
     }
     return {

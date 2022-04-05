@@ -14,7 +14,7 @@ import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
 import { MinActiveColRatioCard } from '../../../../components/vault/detailsCards/MinActiveColRatio'
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
