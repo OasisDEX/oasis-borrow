@@ -1,15 +1,11 @@
-import {
-  formatAmount,
-  formatDecimalAsPercent,
-  formatPercent,
-} from '../../../helpers/formatters/format'
-import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
-import React from 'react'
-import { useTranslation } from 'next-i18next'
 import BigNumber from 'bignumber.js'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
+
+import { formatAmount, formatDecimalAsPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
-import { VaultDetailsCardCollaterlizationRatioModal } from './VaultDetailsCardCollaterlizationRatio'
-import { Card, Grid, Heading, Text } from 'theme-ui'
+import { AfterPillProps, VaultDetailsCard, VaultDetailsCardModal } from '../VaultDetails'
 
 function MinActiveColRatioModal({ close }: ModalProps<{}>) {
   const { t } = useTranslation()

@@ -7,14 +7,14 @@ import {
   VaultDetailsCard,
 } from 'components/vault/VaultDetails'
 import { ManageVaultDetailsSummary } from 'features/borrow/manage/containers/ManageVaultDetails'
-import { formatAmount, formatDecimalAsPercent } from 'helpers/formatters/format'
+import { formatDecimalAsPercent } from 'helpers/formatters/format'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
-import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 import { MinActiveColRatioCard } from '../../../../components/vault/detailsCards/MinActiveColRatio'
+import { ManageInstiVaultState } from '../../../borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
 
 export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
   const {
