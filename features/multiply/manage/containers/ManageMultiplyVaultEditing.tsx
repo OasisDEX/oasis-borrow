@@ -494,7 +494,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
             }}
           >
             {showSliderController ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>Adjust multiply with this transaction</Text>
+            <Text pr={1}>Adjust multiple with this transaction</Text>
           </Button>
 
           {showSliderController && (
@@ -529,7 +529,7 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
             }}
           >
             {showSliderController ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>Adjust multiply with this transaction</Text>
+            <Text pr={1}>Adjust multiple with this transaction</Text>
           </Button>
 
           {showSliderController && (
