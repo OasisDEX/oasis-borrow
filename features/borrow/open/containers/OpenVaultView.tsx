@@ -1,12 +1,14 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyAdvantagesBox } from 'components/vault/VaultProxyAdvantages'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -36,7 +38,7 @@ function OpenVaultTitle({
   return (
     <Box>
       <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
           {isEditingStage
             ? t('vault-form.header.edit')
             : isProxyStage
@@ -52,7 +54,21 @@ function OpenVaultTitle({
         {isEditingStage
           ? t('vault-form.subtext.edit')
           : isProxyStage
-          ? t('vault-form.subtext.proxy')
+          ? 
+            <>
+              {t('vault-form.subtext.proxy')}
+              {' '}
+              <AppLink
+                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                  sx={{
+                    fontSize: 2,
+                    color: 'link',
+                    fontWeight: 'body',
+                  }}
+                >
+                  {t('vault-form.subtext.proxyLinkLabel')} →
+                </AppLink>
+            </>
           : isAllowanceStage
           ? t('vault-form.subtext.allowance')
           : stage === 'txInProgress'
@@ -74,6 +90,7 @@ function OpenVaultForm(props: OpenVaultState) {
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
+      {isProxyStage && <VaultProxyAdvantagesBox />}
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
