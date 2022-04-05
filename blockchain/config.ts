@@ -50,7 +50,7 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
-export const charterIlks = ['INST-ETH-A']
+export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
 export const cropJoinIlks = ['CRVV1ETHSTETH-A']
 
