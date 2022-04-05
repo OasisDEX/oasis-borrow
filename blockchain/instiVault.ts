@@ -21,6 +21,8 @@ export interface InstiVault extends Vault {
   nextFeeChange: string
 }
 
+type CharterStreamFactory = (args: { ilk: string; usr: string }) => Observable<BigNumber>
+
 export function createInstiVault$(
   vaultResolver$: (cdpId: BigNumber) => Observable<VaultResolve>,
   vatUrns$: CallObservable<typeof vatUrns>,
@@ -31,9 +33,9 @@ export function createInstiVault$(
   context$: Observable<Context>,
 
   charter: {
-    nib$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
-    peace$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
-    uline$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+    nib$: CharterStreamFactory
+    peace$: CharterStreamFactory
+    uline$: CharterStreamFactory
   },
 
   id: BigNumber,

@@ -3,6 +3,8 @@ import BigNumber from 'bignumber.js'
 import { HOUR, SECONDS_PER_YEAR } from '../components/constants'
 import { one, zero } from '../helpers/zero'
 
+const defaultDebtOffset = new BigNumber('1e-18')
+
 type BuildPositionArgs = {
   collateral: BigNumber
   currentPrice: BigNumber
@@ -42,7 +44,7 @@ export function buildPosition({
         .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
         .minus(debt)
         .dp(18, BigNumber.ROUND_DOWN)
-    : new BigNumber('1e-18')
+    : defaultDebtOffset
 
   const backingCollateral = debt.times(minActiveColRatio).div(currentPrice)
 

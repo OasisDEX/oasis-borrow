@@ -1,7 +1,9 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import {
+  EstimationError,
   getEstimatedGasFeeText,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
@@ -11,7 +13,7 @@ import { createManageVaultAnalytics$ } from 'features/borrow/manage/pipes/manage
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
@@ -28,6 +30,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
   } = manageVault
 
   const { t } = useTranslation()
+  const [showFees, setShowFees] = useState(false)
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -64,37 +67,49 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
         </Grid>
         <Box>
           <ManageVaultForm
-            hideMultiply={true}
+            hideMultiplyTab={true}
             txnCostDisplay={
               <>
                 <VaultChangesInformationItem
                   label={t('transaction-fee')}
                   value={
-                    <Flex>
-                      {transactionFeeETH
-                        ? `${formatAmount(transactionFeeETH, 'ETH')} ETH`
-                        : 'Pending...'}
+                    <Flex onClick={() => setShowFees((showFees) => !showFees)}>
+                      {transactionFeeETH && !transactionFeeETH.isNaN() ? (
+                        `${formatAmount(transactionFeeETH, 'ETH')} ETH`
+                      ) : (
+                        <EstimationError withBrackets={false} />
+                      )}
+                      <Icon
+                        name={`chevron_${showFees ? 'up' : 'down'}`}
+                        size="auto"
+                        width="12px"
+                        sx={{ ml: 2 }}
+                      />
                     </Flex>
                   }
                 />
-                <Box sx={{ marginLeft: 3 }}>
-                  <VaultChangesInformationItem
-                    label={t('manage-insti-vault.origination-fee')}
-                    value={
-                      <Flex>
-                        {originationFeeUSD ? `$${formatAmount(originationFeeUSD, 'USD')}` : '$ -- '}
-                      </Flex>
-                    }
-                  />
-                  <VaultChangesInformationItem
-                    label={t('vault-changes.oasis-fee')}
-                    value={<Flex>$0.00</Flex>}
-                  />
-                  <VaultChangesInformationItem
-                    label={'Estimated gas fee'}
-                    value={getEstimatedGasFeeText(manageVault)}
-                  />
-                </Box>
+                {showFees && (
+                  <Grid pl={3} gap={2}>
+                    <VaultChangesInformationItem
+                      label={t('manage-insti-vault.origination-fee')}
+                      value={
+                        <Flex>
+                          {originationFeeUSD
+                            ? `$${formatAmount(originationFeeUSD, 'USD')}`
+                            : '$ -- '}
+                        </Flex>
+                      }
+                    />
+                    <VaultChangesInformationItem
+                      label={t('vault-changes.oasis-fee')}
+                      value={<Flex>$0.00</Flex>}
+                    />
+                    <VaultChangesInformationItem
+                      label={'Estimated gas fee'}
+                      value={getEstimatedGasFeeText(manageVault)}
+                    />
+                  </Grid>
+                )}
               </>
             }
             {...manageVault}

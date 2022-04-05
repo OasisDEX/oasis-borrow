@@ -46,18 +46,24 @@ type RiskArgs = {
   }
 }
 
-export function increasingRisk(args: RiskArgs): boolean {
-  function check(currentColRatio: BigNumber, newColRatio: BigNumber) {
-    return (newColRatio.lt(currentColRatio) && !newColRatio.eq(zero)) || currentColRatio.eq(zero)
-  }
+function checkColRatioShiftIncreasesPositionRisk(
+  currentColRatio: BigNumber,
+  newColRatio: BigNumber,
+) {
+  return (newColRatio.lt(currentColRatio) && !newColRatio.eq(zero)) || currentColRatio.eq(zero)
+}
 
+export function increasingRisk(args: RiskArgs): boolean {
   return (
     !args.inputAmountsEmpty &&
-    (check(
+    (checkColRatioShiftIncreasesPositionRisk(
       args.vault.collateralizationRatioAtNextPrice,
       args.afterCollateralizationRatioAtNextPrice,
     ) ||
-      check(args.vault.collateralizationRatio, args.afterCollateralizationRatio))
+      checkColRatioShiftIncreasesPositionRisk(
+        args.vault.collateralizationRatio,
+        args.afterCollateralizationRatio,
+      ))
   )
 }
 
@@ -173,7 +179,7 @@ export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
 
     const transactionFeeETH = transactionFeeUsd?.div(viewState.priceInfo.currentEthPrice!)
 
-    const activeCollRatioPriceUSDAfter = collateralPriceAtRatio({
+    const afterActiveCollRatioPriceUSD = collateralPriceAtRatio({
       colRatio: viewState.vault.activeCollRatio,
       collateral: viewState.afterLockedCollateral,
       vaultDebt: viewState.afterDebt,
@@ -183,7 +189,7 @@ export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
       ...viewState,
       originationFeeUSD,
       transactionFeeETH,
-      afterActiveCollRatioPriceUSD: activeCollRatioPriceUSDAfter,
+      afterActiveCollRatioPriceUSD,
     }
   },
 
