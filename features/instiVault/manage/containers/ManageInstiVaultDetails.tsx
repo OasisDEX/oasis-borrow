@@ -38,7 +38,9 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           title={t('manage-insti-vault.card.min-active-coll-ratio-price')}
           value={`$${formatAmount(activeCollRatioPriceUSD, 'USD')}`}
           valueAfter={
-            afterActiveCollRatioPriceUSD && `$${formatAmount(afterActiveCollRatioPriceUSD, 'USD')}`
+            afterPill.showAfterPill &&
+            afterActiveCollRatioPriceUSD &&
+            `$${formatAmount(afterActiveCollRatioPriceUSD, 'USD')}`
           }
           valueBottom={t('manage-insti-vault.card.min-active-coll-ratio', {
             percentageRatio: formatDecimalAsPercent(activeCollRatio),
