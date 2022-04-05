@@ -63,25 +63,11 @@ export function mockVault$({
 }: MockVaultProps & MockInstiVaultProps = {}): MockVaults {
   const token = ilk ? ilk.split('-')[0] : 'WBTC'
 
-  const defaultPriceInfo: PriceInfo | undefined = priceInfo
-    ? {
-        currentCollateralPrice: new BigNumber('1'),
-        currentEthPrice: new BigNumber('1'),
-        nextCollateralPrice: new BigNumber('1'),
-        nextEthPrice: new BigNumber('1'),
-        isStaticCollateralPrice: false,
-        isStaticEthPrice: false,
-        collateralPricePercentageChange: new BigNumber(1),
-        ethPricePercentageChange: new BigNumber(1),
-        ...priceInfo,
-      }
-    : undefined
-
   function oraclePriceData$() {
-    return _oraclePriceData$ || defaultPriceInfo
+    return _oraclePriceData$ || priceInfo
       ? of({
-          currentPrice: defaultPriceInfo!.currentCollateralPrice,
-          nextPrice: defaultPriceInfo!.nextCollateralPrice,
+          currentPrice: priceInfo!.currentCollateralPrice,
+          nextPrice: priceInfo!.nextCollateralPrice,
           isStaticPrice: false,
         } as OraclePriceData)
       : mockPriceInfo$({ token }).pipe(
