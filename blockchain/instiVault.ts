@@ -104,7 +104,7 @@ export function createInstiVault$(
                   }),
                   termEnd: moment().add(3, 'months').toDate(),
                   currentFixedFee: charteredFee,
-                  nextFeeChange: '1.4% in 20.4m',
+                  nextFeeChange: '1.4% at $20.4m',
                 })
               },
             ),
