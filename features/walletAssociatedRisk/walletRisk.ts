@@ -16,13 +16,6 @@ export function createWalletAssociatedRisk$(
         return of(undefined)
       }
 
-      const networkId = getNetworkId()
-
-      // verify risk only on mainnet
-      if (networkId !== 1) {
-        return of(undefined)
-      }
-
       return termsAcceptance$.pipe(
         switchMap((termsAcceptance) => {
           if (termsAcceptance.stage !== 'acceptanceAccepted') {
@@ -30,8 +23,9 @@ export function createWalletAssociatedRisk$(
           }
 
           const jwtToken = jwtAuthGetToken(web3Context.account)
+          const chainId = getNetworkId()
 
-          return getWalletRisk$(jwtToken!).pipe(map((riskData) => riskData))
+          return getWalletRisk$(jwtToken!, chainId).pipe(map((riskData) => riskData))
         }),
       )
     }),

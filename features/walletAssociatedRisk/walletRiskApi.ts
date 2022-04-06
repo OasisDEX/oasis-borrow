@@ -11,7 +11,7 @@ export interface WalletRiskResponse {
   error?: string
 }
 
-export function getWalletRisk$(token: string): Observable<WalletRiskResponse> {
+export function getWalletRisk$(token: string, chainId: number): Observable<WalletRiskResponse> {
   return ajax({
     url: `${basePath}/api/risk`,
     method: 'POST',
@@ -19,6 +19,7 @@ export function getWalletRisk$(token: string): Observable<WalletRiskResponse> {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
     },
+    body: { chainId },
   }).pipe(
     map(({ response }) => response as WalletRiskResponse),
     catchError((error) => {

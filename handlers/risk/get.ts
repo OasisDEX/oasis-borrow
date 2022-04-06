@@ -6,6 +6,7 @@ import {
 } from 'server/database/risk'
 import { getUserFromRequest } from 'server/middleware/signature-auth/getUserFromRequest'
 import { prisma } from 'server/prisma'
+import * as z from 'zod'
 
 enum RiskType {
   OWNERSHIP = 'OWNERSHIP',
@@ -72,9 +73,18 @@ async function checkIfRisky(address: string) {
   return !!trmData.addressRiskIndicators.length
 }
 
+const inputSchema = z.object({
+  chainId: z.number(),
+})
+
 export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
   // TODO provide correct typing after Damians changes
   const user = getUserFromRequest(req as any)
+  const body = inputSchema.parse(req.body)
+
+  if (body.chainId !== 1) {
+    return res.status(200).json({ isRisky: false })
+  }
 
   try {
     // check if record exists
