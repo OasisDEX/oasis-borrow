@@ -134,7 +134,7 @@
     "theme-ui": "^0.3.1",
     "ts-essentials": "^7.0.1",
     "ts-node": "^10.7.0",
-    "typechain": "^4.0.3",
+    "typechain": "^8.0.0",
     "url-loader": "^4.1.0",
     "uuid": "^8.3.0",
     "web3": "1.5.3",
