@@ -12,7 +12,7 @@ import { VaultProxyAdvantagesBox } from 'components/vault/VaultProxyAdvantages'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
@@ -51,29 +51,31 @@ function OpenVaultTitle({
         </Text>
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {isEditingStage
-          ? t('vault-form.subtext.edit')
-          : isProxyStage
-          ? 
-            <>
-              {t('vault-form.subtext.proxy')}
-              {' '}
-              <AppLink
+        {isEditingStage ? (
+          t('vault-form.subtext.edit')
+        ) : isProxyStage ? (
+          <Trans
+            i18nKey="vault-form.subtext.proxy"
+            tOptions={{ interpolation: { escapeValue: false } }}
+            components={{
+              1: (
+                <AppLink
                   href="https://kb.oasis.app/help/what-is-a-proxy-contract"
                   sx={{
                     fontSize: 2,
-                    color: 'link',
                     fontWeight: 'body',
                   }}
-                >
-                  {t('vault-form.subtext.proxyLinkLabel')} →
-                </AppLink>
-            </>
-          : isAllowanceStage
-          ? t('vault-form.subtext.allowance')
-          : stage === 'txInProgress'
-          ? t('vault-form.subtext.confirm-in-progress')
-          : t('vault-form.subtext.review-manage')}
+                />
+              ),
+            }}
+          />
+        ) : isAllowanceStage ? (
+          t('vault-form.subtext.allowance')
+        ) : stage === 'txInProgress' ? (
+          t('vault-form.subtext.confirm-in-progress')
+        ) : (
+          t('vault-form.subtext.review-manage')
+        )}
       </Text>
     </Box>
   )
