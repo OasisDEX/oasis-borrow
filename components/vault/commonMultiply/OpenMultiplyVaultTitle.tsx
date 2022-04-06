@@ -1,5 +1,7 @@
+import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import { useTranslation } from 'next-i18next'
+import { WithArrow } from 'components/WithArrow'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
 
@@ -36,7 +38,9 @@ export function OpenMultiplyVaultTitle({
           {isEditingStage
             ? title
             : isProxyStage
-            ? t('vault-form.header.proxy')
+            ? stage === 'proxySuccess'
+              ? t('vault-form.header.proxy-success')
+              : t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
             : stage === 'txInProgress'
@@ -45,15 +49,32 @@ export function OpenMultiplyVaultTitle({
         </Text>
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {isEditingStage
-          ? subTitle
-          : isProxyStage
-          ? t('vault-form.subtext.proxy')
-          : isAllowanceStage
-          ? t('vault-form.subtext.allowance')
-          : stage === 'txInProgress'
-          ? t('vault-form.subtext.confirm-in-progress')
-          : t('vault-form.subtext.review-manage')}
+        {isEditingStage ? (
+          subTitle
+        ) : isProxyStage ? (
+          <Trans
+            i18nKey={
+              stage === 'proxySuccess'
+                ? 'vault-form.subtext.proxy-success'
+                : 'vault-form.subtext.proxy'
+            }
+            components={{
+              1: (
+                <AppLink
+                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                  sx={{ fontSize: 2 }}
+                />
+              ),
+              2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
+            }}
+          />
+        ) : isAllowanceStage ? (
+          t('vault-form.subtext.allowance')
+        ) : stage === 'txInProgress' ? (
+          t('vault-form.subtext.confirm-in-progress')
+        ) : (
+          t('vault-form.subtext.review-manage')
+        )}
       </Text>
     </Box>
   )

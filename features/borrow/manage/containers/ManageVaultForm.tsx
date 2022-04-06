@@ -3,7 +3,7 @@ import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useState } from 'react'
@@ -86,6 +86,7 @@ export function ManageVaultForm(
       ) : (
         <>
           <ManageVaultFormHeader {...props} />
+          {isProxyStage && <VaultProxyContentBox stage={stage} />}
           {isEditingStage && <ManageVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

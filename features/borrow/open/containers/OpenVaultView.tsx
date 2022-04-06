@@ -7,14 +7,14 @@ import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllo
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { VaultProxyAdvantagesBox } from 'components/vault/VaultAdvantages'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { WithArrow } from 'components/WithArrow'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Container, Grid, Image, Text } from 'theme-ui'
+import { Box, Container, Grid, Text } from 'theme-ui'
 
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
@@ -66,12 +66,10 @@ function OpenVaultTitle({
               1: (
                 <AppLink
                   href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                  sx={{
-                    fontSize: 2,
-                    fontWeight: 'body',
-                  }}
+                  sx={{ fontSize: 2 }}
                 />
               ),
+              2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
             }}
           />
         ) : isAllowanceStage ? (
@@ -92,20 +90,12 @@ function OpenVaultForm(props: OpenVaultState) {
   return (
     <VaultFormContainer toggleTitle="Open Vault">
       <OpenVaultTitle {...props} />
+      {isProxyStage && <VaultProxyContentBox stage={stage} />}
       {isEditingStage && <OpenVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
-      {isProxyStage &&
-        (stage === 'proxySuccess' ? (
-          <Image
-            src="/static/img/proxy_complete.gif"
-            sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}
-          />
-        ) : (
-          <VaultProxyAdvantagesBox />
-        ))}
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
