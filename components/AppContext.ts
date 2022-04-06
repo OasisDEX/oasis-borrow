@@ -112,9 +112,17 @@ import {
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
-import { cropperUrnProxy } from '../blockchain/calls/cropper'
+import { cropperCrops, cropperUrnProxy } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
@@ -396,6 +404,10 @@ export function setupAppContext() {
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
+
+  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
+
+  cropperCrops$({ ilk: 'CRVV1ETHSTETH-A', usr: 'address' }).pipe(tap(console.log)).subscribe()
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
