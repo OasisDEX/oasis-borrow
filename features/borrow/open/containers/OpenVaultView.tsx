@@ -8,13 +8,13 @@ import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADe
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { VaultProxyAdvantagesBox } from 'components/vault/VaultProxyAdvantages'
+import { VaultProxyAdvantagesBox } from 'components/vault/VaultAdvantages'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Box, Container, Grid, Text } from 'theme-ui'
+import { Box, Container, Grid, Image, Text } from 'theme-ui'
 
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
@@ -42,7 +42,9 @@ function OpenVaultTitle({
           {isEditingStage
             ? t('vault-form.header.edit')
             : isProxyStage
-            ? t('vault-form.header.proxy')
+            ? stage === 'proxySuccess'
+              ? t('vault-form.header.proxy-success')
+              : t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
             : stage === 'txInProgress'
@@ -55,8 +57,11 @@ function OpenVaultTitle({
           t('vault-form.subtext.edit')
         ) : isProxyStage ? (
           <Trans
-            i18nKey="vault-form.subtext.proxy"
-            tOptions={{ interpolation: { escapeValue: false } }}
+            i18nKey={
+              stage === 'proxySuccess'
+                ? 'vault-form.subtext.proxy-success'
+                : 'vault-form.subtext.proxy'
+            }
             components={{
               1: (
                 <AppLink
@@ -92,7 +97,15 @@ function OpenVaultForm(props: OpenVaultState) {
       {isOpenStage && <OpenVaultConfirmation {...props} />}
       <VaultErrors {...props} />
       <VaultWarnings {...props} />
-      {isProxyStage && <VaultProxyAdvantagesBox />}
+      {isProxyStage &&
+        (stage === 'proxySuccess' ? (
+          <Image
+            src="/static/img/proxy_complete.gif"
+            sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}
+          />
+        ) : (
+          <VaultProxyAdvantagesBox />
+        ))}
       {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
       <OpenVaultButton {...props} />
       {isProxyStage && <VaultProxyStatusCard {...props} />}
