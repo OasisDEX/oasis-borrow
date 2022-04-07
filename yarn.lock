@@ -6809,15 +6809,21 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.2.tgz#423c77877d0569db20e1fc80885ac4118314010e"
   integrity sha512-eZxlbI8GZscaGS7kkc/trHTT5xgrjH3/1n2JDwusC9iahPKWMRvRjJSAN5mCXviuTGQ/lHnhvv8Q1YTpnfz9gA==
 
-"@typechain/ethers-v5@^6.0.5":
-  version "6.0.5"
-  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-6.0.5.tgz#39bbf9baadd0e8d9efad9d16c60152b7cd9a467b"
-  integrity sha512-KJh+EWuxmX1a17fQWS1ba8DCYcqK7UpdbqMZZwyfiv9FQfn8ZQJX17anbkCMOSU8TV3EvRuJ/vFEKGzKnpkO8g==
+"@typechain/ethers-v5@^10.0.0":
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/ethers-v5/-/ethers-v5-10.0.0.tgz#1b6e292d2ed9afb0d2f7a4674cc199bb95bad714"
+  integrity sha512-Kot7fwAqnH96ZbI8xrRgj5Kpv9yCEdjo7mxRqrH7bYpEgijT5MmuOo8IVsdhOu7Uog4ONg7k/d5UdbAtTKUgsA==
+  dependencies:
+    lodash "^4.17.15"
+    ts-essentials "^7.0.1"
 
-"@typechain/web3-v1@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@typechain/web3-v1/-/web3-v1-2.0.0.tgz#71ce7265181c8cbb03b1f7212256a23b9b809472"
-  integrity sha512-gpl9Tk6Ha38GScuMf7O2BvX7nFvWakSlm4w1LxCZ8BEJgbjarrsBX2YdgrB2jHm2pBZCaBJUZGR5b9qywSJNdw==
+"@typechain/web3-v1@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@typechain/web3-v1/-/web3-v1-6.0.0.tgz#ba9d89228872abbc057ac9e19001747d5f18ff1b"
+  integrity sha512-iRaa9/WtL7M2emkHQnAM+730h+z1XuCivwSePqEQJ+sYTu4ItFAMEj6yFf7aQv2CGN9PPnCPCTICGRkyQVMpew==
+  dependencies:
+    lodash "^4.17.15"
+    ts-essentials "^7.0.1"
 
 "@typeform/embed-react@^1.13.0":
   version "1.13.0"
