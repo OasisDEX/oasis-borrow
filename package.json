@@ -65,7 +65,7 @@
     "@types/ramda": "^0.27.34",
     "@types/react-lottie": "^1.2.6",
     "@types/theme-ui": "^0.3.1",
-    "@uniswap/widgets": "^0.0.26-beta",
+    "@uniswap/widgets": "^1.0.0",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.1",
     "@web3-react/injected-connector": "npm:@oasisdex/injected-connector@^6.1.11",
