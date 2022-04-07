@@ -24,7 +24,7 @@ export function ListWithIcon({
   return (
     <Box>
       <Grid as="ul" gap={3} sx={{ m: 0, p: 0, listStyle: 'none', ...listStyle }}>
-        {items.map((advantage, k) => (
+        {items.map((item, k) => (
           <Text
             as="li"
             key={k}
@@ -36,7 +36,7 @@ export function ListWithIcon({
               size={iconSize}
               sx={{ position: 'absolute', top: 0, left: 0, ...iconStyle }}
             />
-            {advantage}
+            {item}
           </Text>
         ))}
       </Grid>

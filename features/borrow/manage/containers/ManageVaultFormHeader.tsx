@@ -110,7 +110,7 @@ export function ManageVaultFormHeader(
       {!isEditingStage && (
         <Box mt={isMultiplyTransitionStage ? 4 : 0}>
           <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
               {isProxyStage
                 ? stage === 'proxySuccess'
                   ? t('vault-form.header.proxy-success')

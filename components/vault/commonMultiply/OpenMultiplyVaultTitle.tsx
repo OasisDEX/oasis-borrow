@@ -34,7 +34,7 @@ export function OpenMultiplyVaultTitle({
   return (
     <Box>
       <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
           {isEditingStage
             ? title
             : isProxyStage
