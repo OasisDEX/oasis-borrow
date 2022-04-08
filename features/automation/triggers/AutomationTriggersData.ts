@@ -28,6 +28,7 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
 
 export interface TriggerRecord {
   triggerId: number
+  commandAddress: string
   executionParams: string // bytes triggerData from TriggerAdded event
 }
 

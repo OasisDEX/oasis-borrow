@@ -4942,6 +4942,13 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
+"@oasisdex/automation@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.1.tgz#89412b6546c7ccefc6603872c1f9ab2c2b04ed56"
+  integrity sha512-vqpkg4Zh5zir6HMVqzmlc6OZHwca6GzzxAeyOzD+fL4gSuFSH+RNhkDrayovcCOBjCJTtglpRRb5xaAglDQ5gQ==
+  dependencies:
+    ethers "^5.6.2"
+
 "@oasisdex/connectors@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@oasisdex/connectors/-/connectors-0.1.0.tgz#9e13dc6405633cc5c7760f8d55ffbabbfcdb0c3e"
@@ -14448,7 +14455,7 @@ ethers@4.0.0-beta.3:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@5.6.2:
+ethers@5.6.2, ethers@^5.6.2:
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.2.tgz#e75bac7f038c5e0fdde667dba62fc223924143a2"
   integrity sha512-EzGCbns24/Yluu7+ToWnMca3SXJ1Jk1BvWB7CCmVNxyOeM4LLvw2OLuIHhlkhQk1dtOcj9UMsdkxUh8RiG1dxQ==
