@@ -219,6 +219,7 @@ interface ManageVaultFunctions {
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
+  setDaiAllowanceAmountToDepositDaiAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   clear: () => void
 
@@ -413,6 +414,8 @@ function addTransitions(
         change({ kind: 'daiAllowance', daiAllowanceAmount }),
       setDaiAllowanceAmountUnlimited: () => change({ kind: 'daiAllowanceUnlimited' }),
       setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
+      setDaiAllowanceAmountToDepositDaiAmount: () =>
+        change({ kind: 'daiAllowanceAsDepositDaiAmount' }),
       resetDaiAllowanceAmount: () =>
         change({
           kind: 'daiAllowanceReset',

@@ -49,6 +49,7 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
     stage,
     vault: { token, debtOffset },
     depositAmount,
+    depositDaiAmount,
     daiAllowance,
     collateralAllowance,
     paybackAmount,
@@ -57,6 +58,7 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
 
   const isDepositZero = depositAmount ? depositAmount.eq(zero) : true
   const isPaybackZero = paybackAmount ? paybackAmount.eq(zero) : true
+  const isDepositDaiZero = depositDaiAmount ? depositDaiAmount.eq(zero) : true
 
   const depositAmountLessThanCollateralAllowance =
     collateralAllowance && depositAmount && collateralAllowance.gte(depositAmount)
@@ -64,10 +66,15 @@ export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultSt
   const paybackAmountLessThanDaiAllowance =
     daiAllowance && paybackAmount && daiAllowance.gte(paybackAmount.plus(debtOffset))
 
+  const depositDaiAmountLessThanDaiAllowance =
+    daiAllowance && depositDaiAmount && daiAllowance.gte(depositDaiAmount.plus(debtOffset))
+
   const hasCollateralAllowance =
     token === 'ETH' ? true : depositAmountLessThanCollateralAllowance || isDepositZero
 
-  const hasDaiAllowance = paybackAmountLessThanDaiAllowance || isPaybackZero
+  const hasDaiAllowance =
+    (paybackAmountLessThanDaiAllowance || isPaybackZero) &&
+    (depositDaiAmountLessThanDaiAllowance || isDepositDaiZero)
 
   let totalSteps = initialTotalSteps
 
@@ -522,6 +529,7 @@ export function applyManageVaultConditions(
 
   const insufficientDaiAllowance = insufficientDaiAllowanceValidator({
     paybackAmount,
+    depositDaiAmount,
     daiAllowance,
     debtOffset,
   })
