@@ -80,18 +80,18 @@ export function ReferralOverviewView({ context, address }: Props) {
   }, [])
 
   useEffect(() => {
-    const referral = localStorage.getItem(`referral/${connectedAccount}`)
-    if (referral) {
-      setStoredReferral(referral)
+    const localReferral = localStorage.getItem(`referral/${connectedAccount}`)
+    if (localReferral) {
+      setStoredReferral(localReferral)
     } else {
       // @ts-ignore
-      const ref: string = router.query.ref
-      if (ref) {
+      const linkReferral: string = router.query.ref
+      if (linkReferral) {
         // TODO add check for checksum and if it's in db ?
         // observable -> user -> check on load ref vs user
         // if user that referrs exists ? Is address on curve
-        localStorage.setItem(`referral/${connectedAccount}`, ref)
-        setStoredReferral(ref)
+        localStorage.setItem(`referral/${connectedAccount}`, linkReferral)
+        setStoredReferral(linkReferral)
       }
     }
   }, [])
