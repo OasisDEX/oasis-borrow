@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { Tooltip, useTooltip } from 'components/Tooltip'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { SxStyleProp } from 'theme-ui'
@@ -70,12 +71,18 @@ export function VaultIlkDetailsItem({
   )
 }
 
-export function VaultHeader(props: { header: string; id?: BigNumber; children: ReactNode }) {
-  const { id, header, children } = props
+export function VaultHeader(props: {
+  header: string
+  id?: BigNumber
+  token: string
+  priceInfo: PriceInfo
+  children: ReactNode
+}) {
+  const { id, header, token, priceInfo, children } = props
   const { t } = useTranslation()
 
   return (
-    <VaultHeaderContainer header={header}>
+    <VaultHeaderContainer header={header} token={token} priceInfo={priceInfo}>
       <VaultIlkDetailsItem
         label="VaultID"
         value={id ? id.toFixed(0) : 'T.B.D'}
