@@ -407,7 +407,9 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       depositDaiAmount: change.depositDaiAmount,
       showSliderController: true,
-      requiredCollRatio: state.ilkData.liquidationRatio,
+      requiredCollRatio: change.depositDaiAmount?.gt(zero)
+        ? state.vault.collateralizationRatio
+        : undefined,
     }
   }
 
