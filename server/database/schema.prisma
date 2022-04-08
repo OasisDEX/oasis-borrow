@@ -38,5 +38,31 @@ enum VaultType {
   borrow
   multiply
 
-   @@map("vault_type")
+  @@map("vault_type")
+}
+
+model User {
+  address                    String        @unique
+  proxy_address              String?
+  createdAt                  DateTime      @default(now())
+  user_that_referred_address String?
+  total_amount               String
+  user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
+  referred_users             User[]        @relation("UserToUser")
+  weekly_claims              WeeklyClaim[]
+}
+
+model WeeklyClaim {
+  id          Int      @id @default(autoincrement())
+  week_number Int      
+  userAddress String
+  proof       String[]
+  amount      String
+  claimed     Boolean
+  claimant User @relation(fields: [userAddress], references: [address])
+}
+
+model MerkleTree {
+  week_number Int    @unique
+  tree_root   String
 }

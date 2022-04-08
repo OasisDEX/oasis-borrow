@@ -1030,6 +1030,10 @@
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
   "ref": {
+    "total": "Total DAI fees earned",
+    "not-claimed": "DAI fees not claimed yet",
+    "claim":  "Claim DAI fees",
+    "top" : "Top earners",
     "link": "Your referral link",
     "explanation": "Get fees anytime someone clicks your link and uses Oasis. You and the person you refer both get 5% of all fees generated on Oasis... Forever",
     "faq-link": "Read more in Oasis Referral F.A.Q",
