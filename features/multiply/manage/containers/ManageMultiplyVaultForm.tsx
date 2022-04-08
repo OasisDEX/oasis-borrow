@@ -50,11 +50,17 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
         stage !== 'adjustPosition' &&
         (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
 
+  const mostRecentEvent = vaultHistory[0]
+
+  const isVaultClosed =
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled ? (
+      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
-          vaultHistory={vaultHistory}
+          closeEvent={mostRecentEvent}
           onClick={() => {
             setReopenPositionClicked(true)
             toggle && toggle('otherActions')

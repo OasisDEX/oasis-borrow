@@ -73,6 +73,7 @@ const oasisBaseTheme = {
     bull: '#1AAB9B',
     bear: '#F75524',
     sliderTrackFill: '#9DA3DA',
+    sliderActiveFill: '#878BFC',
     actionInputHover: '#E5E7E8',
     selected: '#EDEDFF',
     fogBlue: '#D8D9FE',
@@ -134,7 +135,7 @@ const oasisBaseTheme = {
     },
     headerSettings: {
       fontFamily: 'body',
-      fontWeight: 'medium',
+      fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
@@ -241,6 +242,7 @@ const oasisBaseTheme = {
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
     userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    bottomSheet: '0px 4px 28px rgba(37, 39, 61, 0.3)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -445,6 +447,32 @@ const oasisBaseTheme = {
       '&:hover': {
         color: 'maritimeBlue',
       },
+    },
+    vaultTab: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      bg: 'unset',
+      transition: 'background 0.2s ease-in',
+      fontWeight: 'semiBold',
+      color: 'primary',
+      px: 3,
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+    },
+    vaultTabInactive: {
+      variant: 'text.paragraph2',
+      cursor: 'pointer',
+      bg: 'unset',
+      transition: 'background 0.2s ease-in',
+      fontWeight: 'semiBold',
+      color: 'text.subtitle',
+      '&:hover': {
+        color: 'primary',
+      },
+      px: 3,
+      display: 'flex',
+      alignItems: 'center',
     },
     outline: {
       variant: 'text.paragraph2',
@@ -679,6 +707,10 @@ const oasisBaseTheme = {
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
+      ':hover': {
+        boxShadow: 'selectMenu',
+      },
+      transition: TRANSITIONS.global,
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
