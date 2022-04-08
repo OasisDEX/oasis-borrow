@@ -1,3 +1,4 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
@@ -67,9 +68,9 @@ export function createStopLossDataChange$(
 
   return automationEnabled
     ? automationTriggersData$(id).pipe(
-        map((triggerData) => ({
+        map((triggers) => ({
           kind: 'stopLossData',
-          stopLossData: extractStopLossData(triggerData),
+          stopLossData: extractStopLossData(triggers, getNetworkId()),
         })),
       )
     : []

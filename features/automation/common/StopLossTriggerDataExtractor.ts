@@ -18,14 +18,14 @@ export interface StopLossTriggerData {
   triggerId: number
 }
 
-export function extractStopLossData(data: TriggersData): StopLossTriggerData {
+export function extractStopLossData(data: TriggersData, network: number): StopLossTriggerData {
   if (data.triggers && data.triggers.length > 0) {
     // TODO: Johnnie, you shouldn't take the last one here, but rather the one that's sooner to be executed (with the highest stop loss level)
     const stopLossRecord = last(data.triggers)!
 
     const [, triggerType, stopLossLevel] = decodeTriggerData(
       stopLossRecord.commandAddress,
-      0 /** TODO: network **/,
+      network,
       stopLossRecord.executionParams,
     )
     return {
