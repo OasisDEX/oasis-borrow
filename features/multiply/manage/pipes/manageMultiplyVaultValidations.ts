@@ -17,6 +17,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     customDaiAllowanceAmountExceedsMaxUint256,
     customDaiAllowanceAmountLessThanPaybackAmount,
     depositAmountExceedsCollateralBalance,
+    depositDaiAmountExceedsDaiBalance,
     depositingAllEthBalance,
     generateAmountExceedsDebtCeiling,
     generateAmountMoreThanMaxFlashAmount,
@@ -36,6 +37,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     errorMessages.push(
       ...errorMessagesHandler({
         depositAmountExceedsCollateralBalance,
+        depositDaiAmountExceedsDaiBalance,
         withdrawAmountExceedsFreeCollateral,
         withdrawAmountExceedsFreeCollateralAtNextPrice,
         generateAmountExceedsDaiYieldFromTotalCollateral,

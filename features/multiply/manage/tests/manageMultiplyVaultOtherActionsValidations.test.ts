@@ -206,7 +206,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmount)
 
     state().progress!()
@@ -236,7 +236,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmountExceedsVaultDebt)
 
     expect(state().errorMessages).to.deep.equal(['paybackAmountExceedsVaultDebt'], '1')
@@ -263,7 +263,7 @@ describe('manageVaultOtherActionsValidations', () => {
     )
 
     legacyToggle(state())
-    state().setOtherAction!('depositDai')
+    state().setOtherAction!('paybackDai')
     state().updatePaybackAmount!(paybackAmount.plus(state().vault.debtOffset))
     expect(state().insufficientDaiAllowance).to.be.true
 

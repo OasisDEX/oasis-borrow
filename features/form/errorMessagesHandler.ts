@@ -1,5 +1,6 @@
 export type VaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
+  | 'depositDaiAmountExceedsDaiBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
@@ -49,6 +50,7 @@ interface ErrorMessagesHandler {
   customDaiAllowanceAmountExceedsMaxUint256?: boolean
   customDaiAllowanceAmountLessThanPaybackAmount?: boolean
   depositAmountExceedsCollateralBalance?: boolean
+  depositDaiAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsVaultDebt?: boolean
   withdrawCollateralOnVaultUnderDebtFloor?: boolean
@@ -80,6 +82,7 @@ export function errorMessagesHandler({
   customDaiAllowanceAmountExceedsMaxUint256,
   customDaiAllowanceAmountLessThanPaybackAmount,
   depositAmountExceedsCollateralBalance,
+  depositDaiAmountExceedsDaiBalance,
   paybackAmountExceedsDaiBalance,
   paybackAmountExceedsVaultDebt,
   withdrawCollateralOnVaultUnderDebtFloor,
@@ -93,6 +96,10 @@ export function errorMessagesHandler({
 
   if (depositAmountExceedsCollateralBalance) {
     errorMessages.push('depositAmountExceedsCollateralBalance')
+  }
+
+  if (depositDaiAmountExceedsDaiBalance) {
+    errorMessages.push('depositDaiAmountExceedsDaiBalance')
   }
 
   if (generateAmountLessThanDebtFloor) {

@@ -240,6 +240,7 @@ export function adjustPosition(
     proxyAddress,
     vault: { ilk, token, id },
     exchangeAction,
+    depositDaiAmount,
     debtDelta,
     depositAmount,
     withdrawAmount,
@@ -265,6 +266,7 @@ export function adjustPosition(
             sendWithGasEstimation(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
+              depositDai: depositDaiAmount || zero,
               withdrawCollateral: withdrawAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
               borrowedCollateral: collateralDelta?.abs() || zero,
@@ -627,6 +629,7 @@ export function applyEstimateGas(
       proxyAddress,
       generateAmount,
       depositAmount,
+      depositDaiAmount,
       withdrawAmount,
       paybackAmount,
       shouldPaybackAll,
@@ -660,6 +663,7 @@ export function applyEstimateGas(
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
+          depositDai: depositDaiAmount || zero,
           withdrawCollateral: withdrawAmount || zero,
           requiredDebt: daiAmount,
           borrowedCollateral: collateralAmount,

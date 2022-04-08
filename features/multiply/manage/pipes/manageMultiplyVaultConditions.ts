@@ -185,6 +185,7 @@ export interface ManageVaultConditions {
 
   depositingAllEthBalance: boolean
   depositAmountExceedsCollateralBalance: boolean
+  depositDaiAmountExceedsDaiBalance: boolean
   withdrawAmountExceedsFreeCollateral: boolean
   withdrawAmountExceedsFreeCollateralAtNextPrice: boolean
   generateAmountExceedsDaiYieldFromTotalCollateral: boolean
@@ -244,6 +245,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   depositingAllEthBalance: false,
   depositAmountExceedsCollateralBalance: false,
+  depositDaiAmountExceedsDaiBalance: false,
   withdrawAmountExceedsFreeCollateral: false,
   withdrawAmountExceedsFreeCollateralAtNextPrice: false,
   generateAmountExceedsDaiYieldFromTotalCollateral: false,
@@ -315,6 +317,7 @@ export function applyManageVaultConditions(
     sellAmount,
     paybackAmount,
     depositAmount,
+    depositDaiAmount,
     generateAmount,
     withdrawAmount,
     requiredCollRatio,
@@ -349,7 +352,10 @@ export function applyManageVaultConditions(
 
   const hasToDepositCollateralOnEmptyVault =
     lockedCollateral.eq(zero) &&
-    !(originalEditingStage === 'otherActions' && otherAction === 'depositCollateral')
+    !(
+      originalEditingStage === 'otherActions' &&
+      (otherAction === 'depositCollateral' || otherAction === 'depositDai')
+    )
 
   const isDepositAction = otherAction === 'depositCollateral' || otherAction === 'depositDai'
   const isWithdrawAction = otherAction === 'withdrawCollateral' || otherAction === 'withdrawDai'
@@ -426,6 +432,7 @@ export function applyManageVaultConditions(
   })
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
+  const depositDaiAmountExceedsDaiBalance = !!depositDaiAmount?.gt(daiBalance)
 
   const depositingAllEthBalance = depositingAllEthBalanceValidator({
     token,
@@ -558,6 +565,7 @@ export function applyManageVaultConditions(
       vaultWillBeUnderCollateralizedAtNextPrice ||
       debtWillBeLessThanDebtFloor ||
       depositAmountExceedsCollateralBalance ||
+      depositDaiAmountExceedsDaiBalance ||
       withdrawAmountExceedsFreeCollateral ||
       withdrawAmountExceedsFreeCollateralAtNextPrice ||
       depositingAllEthBalance ||
@@ -638,6 +646,7 @@ export function applyManageVaultConditions(
     depositingAllEthBalance,
     generateAmountExceedsDebtCeiling,
     depositAmountExceedsCollateralBalance,
+    depositDaiAmountExceedsDaiBalance,
     withdrawAmountExceedsFreeCollateral,
     withdrawAmountExceedsFreeCollateralAtNextPrice,
     generateAmountExceedsDaiYieldFromTotalCollateral,

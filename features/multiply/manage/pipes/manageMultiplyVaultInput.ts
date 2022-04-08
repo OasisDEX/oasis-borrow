@@ -9,6 +9,11 @@ interface DepositAmountChange {
   depositAmount?: BigNumber
 }
 
+interface DepositDaiAmountChange {
+  kind: 'depositDaiAmount'
+  depositDaiAmount?: BigNumber
+}
+
 interface DepositAmountUSDChange {
   kind: 'depositAmountUSD'
   depositAmountUSD?: BigNumber
@@ -16,6 +21,10 @@ interface DepositAmountUSDChange {
 
 interface DepositAmountMaxChange {
   kind: 'depositAmountMax'
+}
+
+interface DepositDaiAmountMaxChange {
+  kind: 'depositDaiAmountMax'
 }
 
 interface paybackAmountChange {
@@ -83,8 +92,10 @@ interface SellMaxChange {
 
 export type ManageVaultInputChange =
   | DepositAmountChange
+  | DepositDaiAmountChange
   | DepositAmountUSDChange
   | DepositAmountMaxChange
+  | DepositDaiAmountMaxChange
   | paybackAmountChange
   | PaybackAmountMaxChange
   | WithdrawAmountChange
@@ -288,6 +299,7 @@ export function applyManageVaultInput(
       depositAmountUSD: state.depositAmountUSD,
       withdrawAmount: state.withdrawAmount,
       withdrawAmountUSD: state.withdrawAmountUSD,
+      depositDaiAmount: state.depositDaiAmount,
     }
   }
 
@@ -389,6 +401,16 @@ export function applyManageVaultInput(
     }
   }
 
+  if (change.kind === 'depositDaiAmount') {
+    return {
+      ...state,
+      ...manageMultiplyInputsDefaults,
+      depositDaiAmount: change.depositDaiAmount,
+      showSliderController: true,
+      requiredCollRatio: state.ilkData.liquidationRatio,
+    }
+  }
+
   if (change.kind === 'depositAmountUSD') {
     const {
       priceInfo: { currentCollateralPrice },
@@ -412,6 +434,18 @@ export function applyManageVaultInput(
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
       showSliderController: false,
+    }
+  }
+
+  if (change.kind === 'depositDaiAmountMax') {
+    const { maxDepositDaiAmount } = state
+
+    return {
+      ...state,
+      ...manageMultiplyInputsDefaults,
+      depositDaiAmount: maxDepositDaiAmount,
+      showSliderController: true,
+      requiredCollRatio: state.ilkData.liquidationRatio,
     }
   }
 

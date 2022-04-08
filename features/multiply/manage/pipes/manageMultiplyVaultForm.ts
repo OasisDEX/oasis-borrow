@@ -41,6 +41,7 @@ export const manageMultiplyInputsDefaults: Partial<ManageMultiplyVaultState> = {
   sellAmountUSD: undefined,
   depositAmount: undefined,
   depositAmountUSD: undefined,
+  depositDaiAmount: undefined,
   paybackAmount: undefined,
   withdrawAmount: undefined,
   withdrawAmountUSD: undefined,
@@ -105,9 +106,10 @@ export function applyManageVaultForm(
     const isWithdrawAction =
       state.otherAction === 'withdrawCollateral' || state.otherAction === 'withdrawDai'
 
-    const requiredCollRatioAtDeposit = state.depositAmount?.gt(0)
-      ? state.maxCollRatio
-      : MAX_COLL_RATIO
+    const requiredCollRatioAtDeposit =
+      state.depositAmount?.gt(0) || state.depositDaiAmount?.gt(0)
+        ? state.maxCollRatio
+        : MAX_COLL_RATIO
 
     const requiredCollRatioAtWithdraw = state.withdrawAmount?.gt(0)
       ? state.minCollRatio
@@ -127,6 +129,7 @@ export function applyManageVaultForm(
       depositAmountUSD: state.depositAmountUSD,
       withdrawAmount: state.withdrawAmount,
       withdrawAmountUSD: state.withdrawAmountUSD,
+      depositDaiAmount: state.depositDaiAmount,
       requiredCollRatio: !state.showSliderController ? requiredCollRatio : undefined,
     }
   }

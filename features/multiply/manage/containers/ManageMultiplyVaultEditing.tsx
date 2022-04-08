@@ -168,6 +168,27 @@ function PaybackInput({
   )
 }
 
+function DepositDaiInput({
+  depositDaiAmount,
+  updateDepositDaiAmount,
+  updateDepositDaiAmountMax,
+  maxDepositDaiAmount,
+}: ManageMultiplyVaultState) {
+  return (
+    <VaultActionInput
+      action="Deposit"
+      amount={depositDaiAmount}
+      token="DAI"
+      showMax={true}
+      maxAmount={maxDepositDaiAmount}
+      maxAmountLabel={'Max'}
+      onSetMax={updateDepositDaiAmountMax}
+      onChange={handleNumericInput(updateDepositDaiAmount!)}
+      hasError={false}
+    />
+  )
+}
+
 function GenerateInput({
   generateAmount,
   updateGenerateAmount,
@@ -335,6 +356,7 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
 const OTHER_ACTIONS_OPTIONS: { value: OtherAction; label: string }[] = [
   { value: 'depositCollateral', label: 'Deposit Collateral' },
   { value: 'depositDai', label: 'Deposit Dai' },
+  { value: 'paybackDai', label: 'Payback Dai' },
   { value: 'withdrawCollateral', label: 'Withdraw Collateral' },
   { value: 'withdrawDai', label: 'Withdraw Dai' },
   { value: 'closeVault', label: 'Close Vault' },
@@ -543,30 +565,40 @@ function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
   )
 }
 
-function DepositDAIAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
-
+function PaybackDAIAction(props: ManageMultiplyVaultState) {
   return (
     <Grid gap={2}>
       <PaybackInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Increase multiply with this transaction</Text>
-        </Button>
+    </Grid>
+  )
+}
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+function DepositDAIAction(props: ManageMultiplyVaultState) {
+  const { showSliderController, toggleSliderController, depositDaiAmount } = props
+
+  return (
+    <Grid gap={2}>
+      <DepositDaiInput {...props} />
+      {depositDaiAmount?.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiply with this transaction</Text>
+          </Button>
+
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }
@@ -611,6 +643,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
       {otherAction === 'closeVault' && !debt.isZero() && <CloseVaultAction {...props} />}
       {otherAction === 'depositCollateral' && <DepositCollateralAction {...props} />}
       {otherAction === 'withdrawCollateral' && <WithdrawCollateralAction {...props} />}
+      {otherAction === 'paybackDai' && <PaybackDAIAction {...props} />}
       {otherAction === 'depositDai' && <DepositDAIAction {...props} />}
       {otherAction === 'withdrawDai' && <WithdrawDAIAction {...props} />}
     </Grid>

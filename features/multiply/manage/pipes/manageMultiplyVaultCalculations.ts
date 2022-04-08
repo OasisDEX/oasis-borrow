@@ -35,6 +35,7 @@ export interface ManageVaultCalculations {
 
   maxDepositAmount: BigNumber
   maxDepositAmountUSD: BigNumber
+  maxDepositDaiAmount: BigNumber
 
   maxPaybackAmount: BigNumber
 
@@ -112,6 +113,7 @@ export const defaultManageMultiplyVaultCalculations: ManageVaultCalculations = {
   maxSellAmountUSD: zero,
 
   maxDepositAmount: zero,
+  maxDepositDaiAmount: zero,
   maxDepositAmountUSD: zero,
 
   maxPaybackAmount: zero,
@@ -490,6 +492,7 @@ export function applyManageVaultCalculations(
     swap,
     slippage,
     depositAmount = zero,
+    depositDaiAmount = zero,
     paybackAmount = zero,
     generateAmount = zero,
     withdrawAmount = zero,
@@ -528,6 +531,7 @@ export function applyManageVaultCalculations(
   //   zero)
 
   const maxDepositAmount = collateralBalance
+  const maxDepositDaiAmount = daiBalance
   const maxDepositAmountUSD = collateralBalance.times(currentCollateralPrice)
 
   const shouldPaybackAll = determineShouldPaybackAll({
@@ -566,6 +570,7 @@ export function applyManageVaultCalculations(
   const maxInputAmounts = {
     maxDepositAmount,
     maxDepositAmountUSD,
+    maxDepositDaiAmount,
 
     maxWithdrawAmountAtCurrentPrice,
     maxWithdrawAmountAtNextPrice,
@@ -599,7 +604,7 @@ export function applyManageVaultCalculations(
     debt,
     lockedCollateral,
     requiredCollRatio,
-    depositAmount,
+    depositAmount: depositDaiAmount.gt(0) ? depositDaiAmount.div(marketPrice) : depositAmount,
     paybackAmount,
     generateAmount,
     withdrawAmount,
@@ -608,7 +613,7 @@ export function applyManageVaultCalculations(
   })
 
   const oneInchAmount = borrowedDaiAmount.gt(zero)
-    ? borrowedDaiAmount.times(one.minus(OAZO_FEE))
+    ? borrowedDaiAmount.plus(depositDaiAmount).times(one.minus(OAZO_FEE))
     : collateralDeltaNonClose.times(-1)
 
   const closeToDaiParams = getCloseToDaiParams(
@@ -649,6 +654,8 @@ export function applyManageVaultCalculations(
       ? // negated to indicate that we are performing sell action
         closeToDaiParams.fromTokenAmount.negated()
       : closeToCollateralParams.fromTokenAmount.negated()
+    : otherAction === 'depositDai' && depositDaiAmount.gt(zero)
+    ? collateralDeltaNonClose.plus(depositDaiAmount.div(marketPrice))
     : collateralDeltaNonClose
 
   const oazoFee = isCloseAction
@@ -811,9 +818,10 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    lockedCollateral: showSliderController
-      ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
-      : lockedCollateral.plus(collateralDelta),
+    lockedCollateral:
+      showSliderController && depositAmount.gt(zero)
+        ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
+        : lockedCollateral.plus(collateralDelta),
     price: currentCollateralPrice,
   })
 
@@ -822,9 +830,10 @@ export function applyManageVaultCalculations(
     debtOffset,
     ilkDebtAvailable,
     liquidationRatio,
-    lockedCollateral: showSliderController
-      ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
-      : lockedCollateral.plus(collateralDelta),
+    lockedCollateral:
+      showSliderController && depositAmount.gt(zero)
+        ? collateralDelta.plus(depositAmount).plus(lockedCollateral)
+        : lockedCollateral.plus(collateralDelta),
     price: nextCollateralPrice,
   })
 
@@ -849,8 +858,16 @@ export function applyManageVaultCalculations(
 
   const totalGasSpentUSD = vaultHistory.reduce(getCumulativeFeesUSD, zero)
 
-  const collRatioAfterDeposit = roundRatioToBeDivisibleByFive(
+  const collRatioAfterDepositCollateral = roundRatioToBeDivisibleByFive(
     lockedCollateral.plus(depositAmount).times(currentCollateralPrice).div(debt),
+    BigNumber.ROUND_DOWN,
+  )
+
+  const collRatioAfterDepositDai = roundRatioToBeDivisibleByFive(
+    lockedCollateral
+      .plus(depositDaiAmount.div(marketPrice))
+      .times(currentCollateralPrice)
+      .div(debt),
     BigNumber.ROUND_DOWN,
   )
 
@@ -861,7 +878,18 @@ export function applyManageVaultCalculations(
         currentCollateralPrice,
         marketPriceMaxSlippage,
         liquidationRatio,
-        debt.gt(0) ? collRatioAfterDeposit : zero,
+        debt.gt(0) ? collRatioAfterDepositCollateral : zero,
+      )
+    : depositDaiAmount.gt(zero)
+    ? getMaxPossibleCollRatioOrMax(
+        debt.gt(0) ? debtFloor.plus(debt) : debtFloor,
+        debt.gt(0)
+          ? depositDaiAmount.div(marketPrice)
+          : depositDaiAmount.div(marketPrice).plus(lockedCollateral),
+        currentCollateralPrice,
+        marketPriceMaxSlippage,
+        liquidationRatio,
+        debt.gt(0) ? collRatioAfterDepositDai : zero,
       )
     : MAX_COLL_RATIO
 
