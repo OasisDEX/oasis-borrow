@@ -17,7 +17,6 @@ export interface UserJwtPayload {
   address: string
   signature: string
   challenge: string
-  signer: string
   chainId: number
 }
 
@@ -56,7 +55,6 @@ export function makeSignIn(options: signInOptions): Handler {
     const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
     const message = recreateSignedMessage(challenge)
     let isArgentWallet = false
-    let signer = ''
 
     try {
       isArgentWallet = await checkIfArgentWallet(web3, challenge.address)
@@ -76,8 +74,6 @@ export function makeSignIn(options: signInOptions): Handler {
         if (!isOwner) {
           throw new SignatureAuthError('Signature not correct')
         }
-
-        signer = signedAddress
       }
     }
 
@@ -86,7 +82,6 @@ export function makeSignIn(options: signInOptions): Handler {
       signature: body.signature,
       challenge: body.challenge,
       chainId: body.chainId,
-      signer,
     }
     const token = jwt.sign(userJwtPayload, options.userJWTSecret, { algorithm: 'HS512' })
 
