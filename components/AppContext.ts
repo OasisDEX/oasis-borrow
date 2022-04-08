@@ -122,13 +122,19 @@ import {
   tap,
 } from 'rxjs/operators'
 
-import { cropperCrops, cropperUrnProxy } from '../blockchain/calls/cropper'
+import {
+  cropperBonusTokenAddress,
+  cropperCrops,
+  cropperUrnProxy,
+} from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenDecimals,
+  tokenSymbol,
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
@@ -170,6 +176,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { ClaimTxnState, createBonusPipe$ } from '../features/bonus/bonusPipe'
 
 export type TxData =
   | OpenData
@@ -404,10 +411,17 @@ export function setupAppContext() {
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
+  // cropperUrnProxy$.pipe(tap(console.log))
 
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
+  const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
-  cropperCrops$({ ilk: 'CRVV1ETHSTETH-A', usr: 'address' }).pipe(tap(console.log)).subscribe()
+  // tpy
+  // bonus claim = ({ilk: string, usr: address}) => Observable<
+
+  cropperCrops$({ ilk: 'CRVV1ETHSTETH-A', usr: '0x689c9E19e0e5801Bb862BE09E4433a64E62d3292' })
+    .pipe(tap(console.log))
+    .subscribe()
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
@@ -435,6 +449,9 @@ export function setupAppContext() {
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
+
+  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
 
   const charterCdps$ = memoize(
     curry(createGetRegistryCdps$)(
@@ -464,6 +481,15 @@ export function setupAppContext() {
     cdpRegistryOwns$,
     cdpManagerOwner$,
     proxyOwner$,
+  )
+
+  const bonus$ = curry(createBonusPipe$)(
+    urnResolver$,
+    cropperCrops$,
+    cropperBonusTokenAddress$,
+    tokenDecimals$,
+    tokenSymbol$,
+    () => of(ClaimTxnState.PENDING),
   )
 
   const vault$ = memoize(
@@ -808,6 +834,7 @@ export function setupAppContext() {
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
+    bonus$,
   }
 }
 

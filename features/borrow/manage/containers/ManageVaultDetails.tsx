@@ -20,6 +20,7 @@ import { GetProtectionBannerControl } from '../../../automation/controls/GetProt
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
+import { BonusContainer } from '../../../bonus/BonusContainer'
 
 export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
@@ -159,6 +160,7 @@ export function ManageVaultDetails(
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
+      <BonusContainer cdpId={props.vault.id} />
     </Box>
   )
 }

@@ -1,9 +1,7 @@
 import { DssCropper } from '../../types/web3-v1-contracts/dss-cropper'
 import { CallDef } from './callsHelpers'
-import { DssCropJoin } from '../../types/web3-v1-contracts/dss-crop-join'
-import { McdGemJoin } from '../../types/web3-v1-contracts/mcd-gem-join'
-import { contractDesc } from '../config'
 import * as mcdCropJoinAbi from '../abi/dss-crop-join.json'
+import BigNumber from 'bignumber.js'
 
 export const cropperUrnProxy: CallDef<string, string> = {
   call: (_, { contract, dssCropper }) => {
@@ -12,16 +10,27 @@ export const cropperUrnProxy: CallDef<string, string> = {
   prepareArgs: (usr) => [usr],
 }
 
-export const cropperCrops: CallDef<{ ilk: string; usr: string }, string> = {
-  call: ({ ilk }, { contract, joins }) => {
+// returns the bonuses allocated to the usr
+export const cropperCrops: CallDef<{ ilk: string; usr: string }, BigNumber> = {
+  call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
-    const cd = contractDesc(mcdCropJoinAbi, join)
-    debugger
-    const thing = contract<DssCropJoin>(cd)
-    return thing.methods.crops
+    const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
+    return contract.methods.stake
+    // todo: switch to this real method to call
+    // return contract.methods.crops
   },
   prepareArgs: ({ usr }) => [usr],
+  postprocess: (result: any) => {
+    return new BigNumber(result) // bonus decimals
+  },
 }
 
-// @ts-ignore
-cropperCrops.prepareArgs.anthony = true
+// returns bonus token address for the cropjoin ilk
+export const cropperBonusTokenAddress: CallDef<{ ilk: string }, string> = {
+  call: ({ ilk }, { web3, joins }) => {
+    const join = joins[ilk]
+    const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
+    return contract.methods.bonus
+  },
+  prepareArgs: () => [],
+}
