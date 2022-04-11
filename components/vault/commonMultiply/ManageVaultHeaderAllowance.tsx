@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
