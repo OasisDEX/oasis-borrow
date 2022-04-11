@@ -75,7 +75,7 @@ export function VaultChangesInformationArrow() {
   return <Icon name="arrow_right_light" size="auto" width="10px" height="7px" sx={{ mx: 2 }} />
 }
 
-function EstimationError({ withBrackets }: { withBrackets: boolean }) {
+export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
   return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }

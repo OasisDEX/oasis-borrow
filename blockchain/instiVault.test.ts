@@ -1,13 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
-import { BehaviorSubject, Observable, of } from 'rxjs'
+import { BehaviorSubject, of } from 'rxjs'
 
 import { mockVault$ } from '../helpers/mocks/vaults.mock'
 import { getStateUnpacker } from '../helpers/testHelpers'
-import { createInstiVault$ } from './instiVault'
+import { zero } from '../helpers/zero'
 
 describe('instiVault$', () => {
-  it('pipes nib, peace, and uline', () => {
+  it('pipes nib, peace', () => {
     function createStream(
       startValue: number,
     ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
@@ -19,13 +19,11 @@ describe('instiVault$', () => {
     const [charterPeace$, createCharterPeace$] = createStream(5)
     const [charterUline$, createCharterUline$] = createStream(10)
 
-    const instiVault$ = createInstiVault$(
-      () => mockVault$(),
-      createCharterNib$,
-      createCharterPeace$,
-      createCharterUline$,
-      new BigNumber(1),
-    )
+    const { instiVault$ } = mockVault$({
+      _charterNib$: createCharterNib$(),
+      _charterPeace$: createCharterPeace$(),
+      _charterUline$: createCharterUline$(),
+    })
 
     const state = getStateUnpacker(instiVault$)
 
@@ -35,56 +33,21 @@ describe('instiVault$', () => {
 
     expect(state().originationFeePercent.toString()).to.eq('2')
     expect(state().activeCollRatio.toString()).to.eq('6')
-    expect(state().debtCeiling.toString()).to.eq('11')
   })
 
-  it('constructs nib, peace, uline with vault ilk and controller', () => {
-    type CharterPipeArgs =
-      | {
-          ilk: string
-          usr: string | undefined
-        }
-      | undefined
+  it('takes the debt ceiling/available ilk debt from the charter contract', () => {
+    const debt = new BigNumber(100000000)
+    const collateral = new BigNumber(1e15) // big enough that we are limited by ilkDebtAvailable rather than collateral
+    const chartedDebtCeiling = new BigNumber(900000000) // realistic number for debt ceiling
 
-    const uncalledCharterPipeArgs: CharterPipeArgs = {
-      ilk: 'no',
-      usr: 'no',
-    }
+    const { instiVault$ } = mockVault$({
+      collateral,
+      _charterUline$: of(chartedDebtCeiling),
+      _charterNib$: of(zero), // remove origination fee for this test,
+      debt,
+    })
 
-    let createCharterNib$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    function createCharterNib$Fake(args: CharterPipeArgs): Observable<BigNumber> {
-      createCharterNib$FakeCalledWith = args
-      return of(new BigNumber(1))
-    }
-
-    let createCharterPeace$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    function createCharterPeace$Fake(args: CharterPipeArgs): Observable<BigNumber> {
-      createCharterPeace$FakeCalledWith = args
-      return of(new BigNumber(2))
-    }
-
-    let createCharterUline$FakeCalledWith: CharterPipeArgs = uncalledCharterPipeArgs
-    function createCharterUline$Fake(args: CharterPipeArgs): Observable<BigNumber> {
-      createCharterUline$FakeCalledWith = args
-      return of(new BigNumber(3))
-    }
-
-    const instiVault$ = createInstiVault$(
-      () => mockVault$(),
-      createCharterNib$Fake,
-      createCharterPeace$Fake,
-      createCharterUline$Fake,
-      new BigNumber(1),
-    )
-    const instiVault = getStateUnpacker(instiVault$)()
-
-    expect(createCharterNib$FakeCalledWith.ilk).to.eq(instiVault.ilk)
-    expect(createCharterNib$FakeCalledWith.usr).to.eq(instiVault.controller)
-
-    expect(createCharterPeace$FakeCalledWith.ilk).to.eq(instiVault.ilk)
-    expect(createCharterPeace$FakeCalledWith.usr).to.eq(instiVault.controller)
-
-    expect(createCharterUline$FakeCalledWith.ilk).to.eq(instiVault.ilk)
-    expect(createCharterUline$FakeCalledWith.usr).to.eq(instiVault.controller)
+    const state = getStateUnpacker(instiVault$)
+    expect(state().daiYieldFromLockedCollateral.toString()).to.eq('800000000')
   })
 })

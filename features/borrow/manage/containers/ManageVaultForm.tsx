@@ -50,7 +50,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
 }
 
 export function ManageVaultForm(
-  props: ManageStandardBorrowVaultState & { hideMultiply?: boolean; extraInfo?: ReactNode },
+  props: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean; txnCostDisplay?: ReactNode },
 ) {
   const {
     isEditingStage,

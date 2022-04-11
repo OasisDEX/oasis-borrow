@@ -22,7 +22,9 @@ export type CreateInitialVaultStateArgs<V extends Vault> = {
   injectStateOverride: (stateToOverride: Partial<MutableManageVaultState>) => void
 }
 
-export interface BorrowManageVaultViewStateProviderInterface<V extends Vault, ViewState> {
-  createInitialVaultState(args: CreateInitialVaultStateArgs<V>): ViewState
-  applyChange(viewState: ViewState, change: ManageVaultChange): ViewState
+export interface BorrowManageAdapterInterface<V extends Vault, ViewState> {
+  createInitialViewState(args: CreateInitialVaultStateArgs<V>): ViewState
+  transformViewState(viewState: ViewState, change: ManageVaultChange): ViewState
+  addTxnCost(viewState: ViewState): ViewState
+  addErrorsAndWarnings(viewState: ViewState): ViewState
 }
