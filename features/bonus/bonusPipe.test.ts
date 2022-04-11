@@ -13,15 +13,17 @@ describe.only('bonusPipe', () => {
         () => of(new BigNumber('34845377488320063721')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
-        () => of('CASH'),
+        () => of('CSH'),
+        () => of('token name'),
         () => of(),
         new BigNumber(123),
       )
 
       const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonuses[0]?.symbol).eq('CASH')
-      expect(state().bonuses[0]?.amount.toFixed(0)).eq('35')
+      expect(state().bonus?.symbol).eq('CSH')
+      expect(state().bonus?.name).eq('token name')
+      expect(state().bonus?.amountToClaim.toFixed(0)).eq('35')
       expect(state().claimAll).to.exist
     })
 
@@ -32,13 +34,14 @@ describe.only('bonusPipe', () => {
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CASH'),
+        () => of('token name'),
         () => of(),
         new BigNumber(123),
       )
 
       const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonuses.length).eq(0)
+      expect(state().bonus?.amountToClaim.toString()).eq('0')
       expect(state().claimAll).to.be.undefined
     })
   })
@@ -52,6 +55,7 @@ describe.only('bonusPipe', () => {
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CASH'),
+        () => of('token name'),
         (ilk, cdpId) => {
           ilkPassedToClaimCropFunction = ilk
           cdpIdPassedToCropFunction = cdpId
@@ -82,6 +86,7 @@ describe.only('bonusPipe', () => {
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CASH'),
+        () => of('token name'),
         () => sendCropMock$,
         new BigNumber(123),
       )
@@ -94,7 +99,7 @@ describe.only('bonusPipe', () => {
       cropsMock$.next(zero)
       sendCropMock$.next(ClaimTxnState.SUCCEEDED)
 
-      expect(state().bonuses.length).eq(0)
+      expect(state().bonus?.amountToClaim.toString()).eq('0')
       expect(state().claimAll).to.be.undefined
       expect(state().claimTxnState).eq(ClaimTxnState.SUCCEEDED)
     })

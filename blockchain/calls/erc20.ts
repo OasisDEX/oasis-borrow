@@ -74,3 +74,9 @@ export const tokenSymbol: CallDef<string, string> = {
     contract<Erc20WithDecimals>({ abi: erc20AbiWithDecimals, address }).methods.symbol,
   prepareArgs: () => [],
 }
+
+export const tokenName: CallDef<string, string> = {
+  call: (address, { tokens, contract }) =>
+    contract<Erc20WithDecimals>({ abi: erc20AbiWithDecimals, address }).methods.name,
+  prepareArgs: () => [],
+}
