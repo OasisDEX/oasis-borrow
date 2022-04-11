@@ -8,6 +8,7 @@ import {
 import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsAdapterType,
@@ -242,5 +243,12 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
         amountToWei(data.withdrawAmount, data.token).toFixed(0),
         amountToWei(data.paybackAmount, 'DAI').toFixed(0),
       )
+  },
+
+  claimRewards(
+    _context: ContextConnected,
+    _data: ClaimRewardData,
+  ): NonPayableTransactionObject<void> {
+    throw 'standard vaults do not support claiming rewards/bonuses'
   },
 }

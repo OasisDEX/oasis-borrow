@@ -10,6 +10,7 @@ import {
 import { ContextConnected } from '../../../network'
 import { amountToWei, amountToWeiRoundDown } from '../../../utils'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsAdapterType,
@@ -232,4 +233,9 @@ export abstract class ManagerlessProxyActionsContractAdapter<
         amountToWei(data.paybackAmount, 'DAI').toFixed(0),
       )
   }
+
+  abstract claimRewards(
+    context: ContextConnected,
+    data: ClaimRewardData,
+  ): NonPayableTransactionObject<void>
 }
