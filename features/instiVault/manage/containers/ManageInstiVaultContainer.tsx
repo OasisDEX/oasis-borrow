@@ -18,6 +18,7 @@ import { Box, Flex, Grid } from 'theme-ui'
 
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
+import { ChevronUpDown } from '../../../../components/ChevronUpDown'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
@@ -79,12 +80,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
                       ) : (
                         <EstimationError withBrackets={false} />
                       )}
-                      <Icon
-                        name={`chevron_${showFees ? 'up' : 'down'}`}
-                        size="auto"
-                        width="12px"
-                        sx={{ ml: 2 }}
-                      />
+                      <ChevronUpDown isUp={showFees} size="auto" width="12px" sx={{ ml: 2 }} />
                     </Flex>
                   }
                 />
