@@ -1038,5 +1038,13 @@
   },
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
-  "help-shape-the-future-of-multiply": "Help shape the future of Multiply"
+  "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} position rewards",
+    "text1": "For this position you are currently earning {{ bonusTokenName }} rewards. Press the button to claim {{ bonusAmount }}. More information about these rewards",
+    "text2": "here",
+    "claim-button": {
+      "claim-rewards": "Claim Rewards"
+    }
+  }
 }

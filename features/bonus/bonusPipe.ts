@@ -10,7 +10,7 @@ export enum ClaimTxnState {
   SUCCEEDED = 'SUCCEEDED',
 }
 
-type Bonus = { amountToClaim: BigNumber; symbol: string; name: string }
+type Bonus = { amountToClaim: BigNumber; symbol: string; name: string; moreInfoLink: string }
 
 type BonusViewModel = {
   bonus?: Bonus // if undefined this CDP does not support rewards
@@ -51,6 +51,7 @@ export function createBonusPipe$(
                 amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
                 symbol: bonusTokenSymbol,
                 name: tokenName,
+                moreInfoLink: 'https://example.com',
               }
             }),
           )
