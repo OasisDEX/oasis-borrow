@@ -142,7 +142,7 @@ export function mockManageMultiplyVault$({
             _ilkData$: ilkData$(),
             priceInfo,
             ...vault,
-          })
+          }).vault$
         }),
       )
     )

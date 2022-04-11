@@ -350,12 +350,19 @@
       "origination-fee": "Institutional Vault Origination Fee"
     },
     "card": {
-      "min-active-coll-ratio-price": "Minimum active Coll ratio Price",
-      "min-active-coll-ratio": "{{percentageRatio}} minimum active coll ratio",
       "current-fixed-fee": "Current Fixed Fee",
       "next-fee-change": "Next fee change",
       "term-end": "Term End",
-      "days-remaining": "{{days}} days remaining"
+      "days-remaining": "{{days}} days remaining",
+      "min-active-coll-ratio": {
+        "ratio": "{{percentageRatio}} minimum active coll ratio",
+        "price": "Minimum active Coll ratio Price",
+        "modal": {
+          "para1": "Your collateralization ratio is calculated by: value of your collateral / Dai debt. The minimum active col. ratio is the ratio under which no further debt can be generated, nor collateral withdrawn. This is separate from the liquidation ratio.",
+          "para2": "If a vault is under the min. active col. ratio, collateral can be deposit and debt paid back.",
+          "para3": "The min. active col. ratio price displayed is the price of the collateral at this ratio."
+        }
+      }
     }
   },
   "manage-multiply-vault": {
@@ -679,7 +686,8 @@
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
-    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price"
+    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
+    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -687,7 +695,9 @@
     "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
-    "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update"
+    "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
+    "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
+    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio."
   },
   "vault-changes": {
     "order-information": "Order information",

@@ -1,52 +1,118 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, switchMap } from 'rxjs/operators'
+import { shareReplay, switchMap } from 'rxjs/operators'
 
+import { CallObservable } from './calls/observe'
+import { vatGem, vatUrns } from './calls/vat'
+import { VaultResolve } from './calls/vaultResolver'
+import { IlkData } from './ilks'
+import { Context } from './network'
+import { OraclePriceData } from './prices'
+import { buildPosition, collateralPriceAtRatio } from './vault.maths'
 import { Vault } from './vaults'
 
 export interface InstiVault extends Vault {
   originationFeePercent: BigNumber
   activeCollRatio: BigNumber
   activeCollRatioPriceUSD: BigNumber
-  debtCeiling: BigNumber
   termEnd: Date
-  fixedFee: BigNumber
-  nextFixedFee: BigNumber
-  instiIlkName: string
+  currentFixedFee: BigNumber
+  nextFeeChange: string
 }
 
+type CharterStreamFactory = (args: { ilk: string; usr: string }) => Observable<BigNumber>
+
 export function createInstiVault$(
-  vault$: (id: BigNumber) => Observable<Vault>,
-  charterNib$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
-  charterPeace$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
-  charterUline$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  vaultResolver$: (cdpId: BigNumber) => Observable<VaultResolve>,
+  vatUrns$: CallObservable<typeof vatUrns>,
+  vatGem$: CallObservable<typeof vatGem>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
+  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  ilkToToken$: (ilk: string) => Observable<string>,
+  context$: Observable<Context>,
+
+  charter: {
+    nib$: CharterStreamFactory
+    peace$: CharterStreamFactory
+    uline$: CharterStreamFactory
+  },
+
   id: BigNumber,
 ): Observable<InstiVault> {
-  return vault$(id).pipe(
-    switchMap((vault) =>
-      of(vault).pipe(
-        map((vault) => [vault.ilk, vault.controller] as const),
-        filter((params): params is [string, string] => params[1] !== undefined),
-        switchMap(([ilk, usr]) =>
-          combineLatest(
-            charterNib$({ ilk, usr }),
-            charterPeace$({ ilk, usr }),
-            charterUline$({ ilk, usr }),
+  return vaultResolver$(id).pipe(
+    switchMap(({ urnAddress, ilk, owner, type: makerType, controller }) =>
+      combineLatest(
+        ilkToToken$(ilk),
+        context$,
+        charter.nib$({ ilk, usr: owner }),
+        charter.peace$({ ilk, usr: owner }),
+        charter.uline$({ ilk, usr: owner }),
+      ).pipe(
+        switchMap(([token, context, charteredFee, minActiveColRatio, charteredDebtCeiling]) => {
+          return combineLatest(
+            vatUrns$({ ilk, urnAddress }),
+            vatGem$({ ilk, urnAddress }),
+            oraclePriceData$(token),
+            ilkData$(ilk),
           ).pipe(
-            map(([nib, peace, uline]) => ({
-              // todo: insti-vault put real values here
-              ...vault,
-              originationFeePercent: nib,
-              activeCollRatio: peace,
-              activeCollRatioPriceUSD: peace,
-              debtCeiling: uline,
-              termEnd: new Date('2022-03-02'),
-              fixedFee: new BigNumber(0.2),
-              nextFixedFee: new BigNumber(0.3),
-              instiIlkName: 'INST-NEXO-ETH',
-            })),
-          ),
-        ),
+            switchMap(
+              ([
+                { collateral: lockedCollateral, normalizedDebt },
+                unlockedCollateral,
+                { currentPrice, nextPrice },
+                {
+                  debtScalingFactor,
+                  liquidationRatio,
+                  collateralizationDangerThreshold,
+                  collateralizationWarningThreshold,
+                  stabilityFee,
+                },
+              ]) => {
+                const debt = normalizedDebt.times(debtScalingFactor)
+                const ilkDebtAvailable = charteredDebtCeiling.minus(debt)
+                return of({
+                  id,
+                  makerType,
+                  ilk,
+                  token,
+                  address: urnAddress,
+                  owner,
+                  controller,
+                  lockedCollateral,
+                  normalizedDebt,
+                  unlockedCollateral,
+                  chainId: context.chainId,
+                  ...buildPosition({
+                    collateral: lockedCollateral,
+                    currentPrice,
+                    nextPrice,
+                    debtScalingFactor,
+                    normalizedDebt,
+                    stabilityFee,
+                    liquidationRatio,
+                    ilkDebtAvailable,
+                    collateralizationDangerThreshold,
+                    collateralizationWarningThreshold,
+                    minActiveColRatio,
+                    originationFee: charteredFee,
+                  }),
+                  originationFeePercent: charteredFee,
+                  activeCollRatio: minActiveColRatio,
+                  activeCollRatioPriceUSD: collateralPriceAtRatio({
+                    colRatio: minActiveColRatio,
+                    collateral: lockedCollateral,
+                    vaultDebt: debt,
+                  }),
+                  termEnd: moment().add(3, 'months').toDate(),
+                  currentFixedFee: charteredFee,
+                  nextFeeChange: '1.4% at $20.4m',
+                })
+              },
+            ),
+          )
+        }),
+        shareReplay(1),
       ),
     ),
   )

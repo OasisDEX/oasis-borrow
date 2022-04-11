@@ -22,7 +22,6 @@ import {
   VaultActionsLogicInterface,
 } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
-import { InstiVault } from '../../../../blockchain/instiVault'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
@@ -35,8 +34,8 @@ import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
 import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
+import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
 import { validateErrors, validateWarnings } from './manageVaultValidations'
-import { BorrowManageVaultViewStateProviderInterface } from './viewStateProviders/borrowManageVaultViewStateProviderInterface'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
@@ -157,7 +156,7 @@ interface ManageVaultTxInfo {
   safeConfirmations: number
 }
 
-type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
+export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   ManageVaultCalculations &
   ManageVaultConditions &
   ManageVaultEnvironment<V> &
@@ -173,10 +172,6 @@ type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultState &
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
-
-export type ManageInstiVaultState = GenericManageBorrowVaultState<InstiVault> & {
-  originationFeeUSD?: BigNumber
-}
 
 function addTransitions(
   txHelpers$: Observable<TxHelpers>,
@@ -378,7 +373,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
   }: {
     makerVaultType: MakerVaultType
   }) => Observable<ProxyActionsSmartContractAdapterInterface>,
-  vaultViewStateProvider: BorrowManageVaultViewStateProviderInterface<V, VS>,
+  vaultViewStateProvider: BorrowManageAdapterInterface<V, VS>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<VS> {
@@ -426,7 +421,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     collateralAllowance,
                   )
 
-                  const initialState = vaultViewStateProvider.createInitialVaultState({
+                  const initialState = vaultViewStateProvider.createInitialViewState({
                     vault,
                     priceInfo,
                     balanceInfo,
@@ -453,10 +448,15 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
                   return merge(change$, environmentChanges$).pipe(
-                    scan(vaultViewStateProvider.applyChange, initialState),
+                    scan<ManageVaultChange, VS>(
+                      vaultViewStateProvider.transformViewState,
+                      initialState,
+                    ),
                     map(validateErrors),
                     map(validateWarnings),
+                    map(vaultViewStateProvider.addErrorsAndWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                    map(vaultViewStateProvider.addTxnCost),
                     map(
                       curry(addTransitions)(
                         txHelpers$,
