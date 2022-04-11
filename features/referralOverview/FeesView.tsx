@@ -28,6 +28,7 @@ interface Props {
 export function FeesView({ claims, user, topEarners }: Props) {
   const { t } = useTranslation()
   const [processing, setProcessing] = useState(false)
+  
   const claimFees = async (
     weeks: ethers.BigNumberish[],
     amounts: ethers.BigNumberish[],
@@ -37,12 +38,13 @@ export function FeesView({ claims, user, topEarners }: Props) {
     // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
-    // @ts-ignore
-    const merkleRedeemerContract: MerkleRedeemer = new ethers.Contract(
+ 
+    const merkleRedeemerContract = new ethers.Contract(
       goerliAddresses.MERKLE_REDEEMER,
       merkleRedeemer,
       signer,
-    )
+    ) as MerkleRedeemer;
+
     let tx
     try {
       tx = await merkleRedeemerContract.claimMultiple(weeks, amounts, proofs)
