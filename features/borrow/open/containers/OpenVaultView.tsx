@@ -1,18 +1,20 @@
 import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppLink } from 'components/Links'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
-import { WithArrow } from 'components/WithArrow'
+import {
+  VaultProxyContentBox,
+  VaultProxyStatusCard,
+  VaultProxySubtitle,
+} from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Box, Container, Grid, Text } from 'theme-ui'
 
@@ -56,22 +58,7 @@ function OpenVaultTitle({
         {isEditingStage ? (
           t('vault-form.subtext.edit')
         ) : isProxyStage ? (
-          <Trans
-            i18nKey={
-              stage === 'proxySuccess'
-                ? 'vault-form.subtext.proxy-success'
-                : 'vault-form.subtext.proxy'
-            }
-            components={{
-              1: (
-                <AppLink
-                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                  sx={{ fontSize: 2 }}
-                />
-              ),
-              2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
-            }}
-          />
+          <VaultProxySubtitle stage={stage} />
         ) : isAllowanceStage ? (
           t('vault-form.subtext.allowance')
         ) : stage === 'txInProgress' ? (

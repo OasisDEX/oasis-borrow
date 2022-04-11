@@ -1,11 +1,10 @@
-import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import { WithArrow } from 'components/WithArrow'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Text } from 'theme-ui'
 
 import { OpenMultiplyVaultStage } from '../../../features/multiply/open/pipes/openMultiplyVault'
+import { VaultProxySubtitle } from '../VaultProxy'
 
 export interface OpenMultiplyVaultTitleProps {
   isEditingStage: boolean
@@ -52,22 +51,7 @@ export function OpenMultiplyVaultTitle({
         {isEditingStage ? (
           subTitle
         ) : isProxyStage ? (
-          <Trans
-            i18nKey={
-              stage === 'proxySuccess'
-                ? 'vault-form.subtext.proxy-success'
-                : 'vault-form.subtext.proxy'
-            }
-            components={{
-              1: (
-                <AppLink
-                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                  sx={{ fontSize: 2 }}
-                />
-              ),
-              2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
-            }}
-          />
+          <VaultProxySubtitle stage={stage} />
         ) : isAllowanceStage ? (
           t('vault-form.subtext.allowance')
         ) : stage === 'txInProgress' ? (

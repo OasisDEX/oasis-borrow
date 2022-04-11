@@ -1,11 +1,11 @@
-import { AppLink } from 'components/Links'
-import { WithArrow } from 'components/WithArrow'
-import { Trans, useTranslation } from 'next-i18next'
+
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Text } from 'theme-ui'
 
 import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
 import { WithVaultFormStepIndicator } from '../VaultForm'
+import { VaultProxySubtitle } from '../VaultProxy'
 
 export function ManageVaultHeaderAllowance({
   isProxyStage,
@@ -37,22 +37,7 @@ export function ManageVaultHeaderAllowance({
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
         {isProxyStage ? (
-          <Trans
-            i18nKey={
-              stage === 'proxySuccess'
-                ? 'vault-form.subtext.proxy-success'
-                : 'vault-form.subtext.proxy'
-            }
-            components={{
-              1: (
-                <AppLink
-                  href="https://kb.oasis.app/help/what-is-a-proxy-contract"
-                  sx={{ fontSize: 2 }}
-                />
-              ),
-              2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
-            }}
-          />
+          <VaultProxySubtitle stage={stage} />
         ) : isCollateralAllowanceStage ? (
           t('vault-form.subtext.allowance', { token: token.toUpperCase() })
         ) : isDaiAllowanceStage ? (
