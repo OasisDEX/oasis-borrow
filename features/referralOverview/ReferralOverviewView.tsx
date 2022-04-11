@@ -64,7 +64,7 @@ export function ReferralOverviewView({ context, address }: Props) {
       const referrals = await axios.get<User[]>(`${basePath}/api/user/referrals/${address}`)
       const user = await axios.get<User>(`${basePath}/api/user/${address}`)
       const claims = await axios.get<WeeklyClaim[]>(`${basePath}/api/user/claims/${address}`)
-      const topEarners = await axios.get<User[]>(`${basePath}/api/top`)
+      const topEarners = await axios.get<User[]>(`${basePath}/api/user/top`)
       setReferrals(referrals.data)
       setUser(user.data)
       setTopEarners(topEarners.data)
