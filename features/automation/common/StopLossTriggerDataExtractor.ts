@@ -1,20 +1,16 @@
+import {
+  CommandContractType,
+  decodeTriggerData,
+  encodeTriggerDataByType,
+} from '@oasisdex/automation'
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
-import { ethers } from 'ethers'
 import { last } from 'lodash'
 
 import { TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggerType } from './enums/TriggersTypes'
-
-function decodeTriggerData(rawBytes: string) {
-  const values = ethers.utils.defaultAbiCoder.decode(['uint256', 'uint16', 'uint256'], rawBytes)
-  return {
-    cdpId: new BigNumber(values[0].toString()),
-    triggerType: new BigNumber(values[1].toString()).toNumber(),
-    stopLossLevel: new BigNumber(values[2].toString()).dividedBy(100),
-  }
-}
 
 export interface StopLossTriggerData {
   isStopLossEnabled: boolean
@@ -28,12 +24,17 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
     // TODO: Johnnie, you shouldn't take the last one here, but rather the one that's sooner to be executed (with the highest stop loss level)
     const stopLossRecord = last(data.triggers)!
 
-    const { stopLossLevel, triggerType } = decodeTriggerData(stopLossRecord.executionParams)
+    const [, triggerType, stopLossLevel] = decodeTriggerData(
+      stopLossRecord.commandAddress,
+      getNetworkId(),
+      stopLossRecord.executionParams,
+    )
     return {
-      isStopLossEnabled: true,
-      stopLossLevel,
-      isToCollateral: triggerType === TriggerType.StopLossToCollateral,
       triggerId: stopLossRecord.triggerId,
+      isStopLossEnabled: true,
+      stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
+      isToCollateral:
+        new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
     }
   }
 
@@ -43,25 +44,22 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
   } as StopLossTriggerData
 }
 
-function buildTriggerData(id: BigNumber, triggerType: BigNumber, slLevel: BigNumber): string {
-  return ethers.utils.defaultAbiCoder.encode(
-    ['uint256', 'uint16', 'uint256'],
-    [id.toNumber(), triggerType.toNumber(), Math.round(slLevel.toNumber())],
-  )
-}
-
 export function prepareTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
 ): AutomationBaseTriggerData {
-  const triggerTypeVaue = new BigNumber(
+  const triggerType = new BigNumber(
     isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
   )
   return {
     cdpId: vaultData.id,
-    triggerType: triggerTypeVaue,
+    triggerType,
     proxyAddress: vaultData.owner,
-    triggerData: buildTriggerData(vaultData.id, triggerTypeVaue, stopLossLevel),
+    triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
+      vaultData.id.toString(),
+      triggerType.toString(),
+      stopLossLevel.toString(),
+    ]),
   }
 }

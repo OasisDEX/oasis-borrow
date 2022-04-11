@@ -28,6 +28,7 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
 
 export interface TriggerRecord {
   triggerId: number
+  commandAddress: string
   executionParams: string // bytes triggerData from TriggerAdded event
 }
 
@@ -45,11 +46,8 @@ export function createAutomationTriggersData(
   return onEveryBlock$.pipe(
     withLatestFrom(context$, vauit$(id)),
     mergeMap(([, , vault]) => {
-      const networkConfig = networksById[(vault as Vault).chainId]
-      return loadTriggerDataFromCache(
-        (vault as Vault).id.toNumber() as number,
-        networkConfig.cacheApi,
-      )
+      const networkConfig = networksById[vault.chainId]
+      return loadTriggerDataFromCache(vault.id.toNumber(), networkConfig.cacheApi)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
@@ -66,9 +64,9 @@ export function createStopLossDataChange$(
 
   return automationEnabled
     ? automationTriggersData$(id).pipe(
-        map((triggerData) => ({
+        map((triggers) => ({
           kind: 'stopLossData',
-          stopLossData: extractStopLossData(triggerData),
+          stopLossData: extractStopLossData(triggers),
         })),
       )
     : []
