@@ -57,15 +57,14 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
             <>
               <Text as="span" sx={{ color: 'text.subtitle' }}>
                 {t('manage-insti-vault.card.next-fee-change')}
-                {' (mock value) '}
-              </Text>
+              </Text>{' '}
               {nextFeeChange}
             </>
           }
           {...afterPill}
         />
         <VaultDetailsCard
-          title={t('manage-insti-vault.card.term-end') + ' (mock values)'}
+          title={t('manage-insti-vault.card.term-end')}
           value={moment(termEnd).format('Do MMMM YYYY')}
           valueBottom={t('manage-insti-vault.card.days-remaining', {
             days: moment(termEnd).diff(moment(), 'days'),
