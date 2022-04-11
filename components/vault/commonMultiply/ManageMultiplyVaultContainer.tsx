@@ -63,7 +63,7 @@ export function ManageMultiplyVaultContainer({
         <Header
           header={t('vault.header', { ilk, id })}
           id={id}
-          ilkData={ilkData} 
+          ilkData={ilkData}
           token={manageVault.vault.token}
           priceInfo={manageVault.priceInfo}
         />

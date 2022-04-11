@@ -45,14 +45,20 @@ function VaultHeaderDetails({
           pl: 0,
           '::before': {
             content: 'none',
-          }
-        }
+          },
+        },
       }}
     >
-      <Text as="span" sx={{ color: 'text.subtitle' }}>{label}</Text>
-      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold' }}>{value}</Text>
+      <Text as="span" sx={{ color: 'text.subtitle' }}>
+        {label}
+      </Text>
+      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold' }}>
+        {value}
+      </Text>
       {sub && subColor && (
-        <Text as="span" sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold', color: subColor }}>{sub}</Text>
+        <Text as="span" sx={{ ml: 1, fontSize: 2, fontWeight: 'semiBold', color: subColor }}>
+          {sub}
+        </Text>
       )}
     </Box>
   )
@@ -83,18 +89,20 @@ export function VaultHeaderContainer({
   return (
     <Grid mt={4}>
       {vaultRedesignedEnabled ? (
-        <Flex sx={{
-          flexDirection: ['column', 'column', 'column', 'row'],
-          justifyContent: 'space-between',
-          alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-end'],
-          mb: 4,
-        }}>
+        <Flex
+          sx={{
+            flexDirection: ['column', 'column', 'column', 'row'],
+            justifyContent: 'space-between',
+            alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-end'],
+            mb: 4,
+          }}
+        >
           <Heading
             as="h1"
             variant="heading1"
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '28px'
+              fontSize: '28px',
             }}
           >
             <Icon
@@ -104,10 +112,12 @@ export function VaultHeaderContainer({
             />
             {header}
           </Heading>
-          <Flex sx={{
-            mt: ['24px', '24px', '24px', 0],
-            flexDirection: ['column', 'row'],
-          }}>
+          <Flex
+            sx={{
+              mt: ['24px', '24px', '24px', 0],
+              flexDirection: ['column', 'row'],
+            }}
+          >
             <VaultHeaderDetails
               label={t('manage-vault.current-price', { token })}
               value={`$${currentPrice}`}
