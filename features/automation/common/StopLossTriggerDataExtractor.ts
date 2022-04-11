@@ -32,7 +32,7 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
     return {
       triggerId: stopLossRecord.triggerId,
       isStopLossEnabled: true,
-      stopLossLevel: new BigNumber(stopLossLevel.toString()),
+      stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
       isToCollateral:
         new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
     }
