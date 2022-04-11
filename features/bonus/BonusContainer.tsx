@@ -34,9 +34,9 @@ export function BonusContainer(props: BonusContainerProps) {
                 bonusViewModel.bonus.amountToClaim.toString() + bonusViewModel.bonus.symbol,
             })}{' '}
             <a href={bonusViewModel.bonus.moreInfoLink} target="_blank">
-              {t('claim-rewards.text2')}
+              {t('claim-rewards.link-text')}
             </a>
-            .
+            {t('claim-rewards.text2')}
           </Text>
           <Button
             disabled={!bonusViewModel.claimAll}

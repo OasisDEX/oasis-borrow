@@ -1042,7 +1042,8 @@
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
     "text1": "For this position you are currently earning {{ bonusTokenName }} rewards. Press the button to claim {{ bonusAmount }}. More information about these rewards",
-    "text2": "here",
+    "link-text": "here",
+    "text2": ".",
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
