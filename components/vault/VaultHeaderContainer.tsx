@@ -10,7 +10,7 @@ import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { getPriceChangeColor } from './VaultDetails'
 
-function VaultHeaderPrice({
+function VaultHeaderDetails({
   label,
   value,
   sub,
@@ -26,10 +26,11 @@ function VaultHeaderPrice({
       sx={{
         position: 'relative',
         fontSize: 3,
-        ml: 3,
-        pl: 3,
+        mt: [2, 0],
+        ml: [0, 3],
+        pl: [0, 3],
         '::before': {
-          content: '""',
+          content: ['none', '""'],
           position: 'absolute',
           top: 0,
           bottom: 0,
@@ -82,14 +83,18 @@ export function VaultHeaderContainer({
   return (
     <Grid mt={4}>
       {vaultRedesignedEnabled ? (
-        <>
+        <Flex sx={{
+          flexDirection: ['column', 'column', 'column', 'row'],
+          justifyContent: 'space-between',
+          alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-end'],
+          mb: 4,
+        }}>
           <Heading
             as="h1"
             variant="heading1"
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '28px',
-              pb: 2,
+              fontSize: '28px'
             }}
           >
             <Icon
@@ -99,19 +104,22 @@ export function VaultHeaderContainer({
             />
             {header}
           </Heading>
-          <Flex>
-            <VaultHeaderPrice
+          <Flex sx={{
+            mt: ['24px', '24px', '24px', 0],
+            flexDirection: ['column', 'row'],
+          }}>
+            <VaultHeaderDetails
               label={t('manage-vault.current-price', { token })}
               value={`$${currentPrice}`}
             />
-            <VaultHeaderPrice
+            <VaultHeaderDetails
               label={t('manage-vault.next-price', { token })}
               value={`$${nextPrice}`}
               sub={priceChange}
               subColor={priceChangeColor}
             />
           </Flex>
-        </>
+        </Flex>
       ) : (
         <Heading
           as="h1"

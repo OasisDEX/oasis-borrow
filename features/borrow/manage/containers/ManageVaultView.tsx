@@ -22,9 +22,10 @@ export function ManageVaultContainer({
 }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
-    vault: { id, ilk },
+    vault: { id, ilk, token },
     clear,
     ilkData,
+    priceInfo,
   } = manageVault
   const { t } = useTranslation()
   const automationEnabled = useFeatureToggle('Automation')
@@ -49,8 +50,8 @@ export function ManageVaultContainer({
           header={t('vault.header', { ilk, id })}
           id={id}
           ilkData={ilkData}
-          token={manageVault.vault.token}
-          priceInfo={manageVault.priceInfo}
+          token={token}
+          priceInfo={priceInfo}
         />
       )}
       <Grid variant="vaultContainer">
