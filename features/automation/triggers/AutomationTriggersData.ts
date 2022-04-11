@@ -1,4 +1,3 @@
-import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context } from 'blockchain/network'
@@ -47,11 +46,8 @@ export function createAutomationTriggersData(
   return onEveryBlock$.pipe(
     withLatestFrom(context$, vauit$(id)),
     mergeMap(([, , vault]) => {
-      const networkConfig = networksById[(vault as Vault).chainId]
-      return loadTriggerDataFromCache(
-        (vault as Vault).id.toNumber() as number,
-        networkConfig.cacheApi,
-      )
+      const networkConfig = networksById[vault.chainId]
+      return loadTriggerDataFromCache(vault.id.toNumber(), networkConfig.cacheApi)
     }),
     distinctUntilChanged((s1, s2) => {
       return JSON.stringify(s1) === JSON.stringify(s2)
@@ -70,7 +66,7 @@ export function createStopLossDataChange$(
     ? automationTriggersData$(id).pipe(
         map((triggers) => ({
           kind: 'stopLossData',
-          stopLossData: extractStopLossData(triggers, getNetworkId()),
+          stopLossData: extractStopLossData(triggers),
         })),
       )
     : []

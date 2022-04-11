@@ -3,6 +3,7 @@ import {
   decodeTriggerData,
   encodeTriggerDataByType,
 } from '@oasisdex/automation'
+import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
@@ -18,22 +19,22 @@ export interface StopLossTriggerData {
   triggerId: number
 }
 
-export function extractStopLossData(data: TriggersData, network: number): StopLossTriggerData {
+export function extractStopLossData(data: TriggersData): StopLossTriggerData {
   if (data.triggers && data.triggers.length > 0) {
     // TODO: Johnnie, you shouldn't take the last one here, but rather the one that's sooner to be executed (with the highest stop loss level)
     const stopLossRecord = last(data.triggers)!
 
     const [, triggerType, stopLossLevel] = decodeTriggerData(
       stopLossRecord.commandAddress,
-      network,
+      getNetworkId(),
       stopLossRecord.executionParams,
     )
     return {
+      triggerId: stopLossRecord.triggerId,
       isStopLossEnabled: true,
       stopLossLevel: new BigNumber(stopLossLevel.toString()),
       isToCollateral:
         new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
-      triggerId: stopLossRecord.triggerId,
     }
   }
 
@@ -48,16 +49,16 @@ export function prepareTriggerData(
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
 ): AutomationBaseTriggerData {
-  const triggerTypeVaue = new BigNumber(
+  const triggerType = new BigNumber(
     isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
   )
   return {
     cdpId: vaultData.id,
-    triggerType: triggerTypeVaue,
+    triggerType,
     proxyAddress: vaultData.owner,
     triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
       vaultData.id.toString(),
-      triggerTypeVaue.toString(),
+      triggerType.toString(),
       stopLossLevel.toString(),
     ]),
   }
