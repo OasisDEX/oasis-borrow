@@ -139,7 +139,6 @@ const oasisBaseTheme = {
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
-      mb: 3,
     },
     paragraph1: {
       fontFamily: 'body',

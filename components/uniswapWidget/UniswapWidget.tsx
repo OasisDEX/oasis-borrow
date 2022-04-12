@@ -6,7 +6,7 @@ import { useOnboarding } from 'helpers/useOnboarding'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Button, Image, Text } from 'theme-ui'
+import { Box, Button, Flex, Image, Text } from 'theme-ui'
 
 import tokenList from './tokenList.json'
 
@@ -201,7 +201,7 @@ export function UniswapWidget() {
       `}
     >
       {!isOnboarded &&
-        <Box sx={{
+        <Flex sx={{
           position: 'absolute',
           top: 0,
           left: 0,
@@ -210,12 +210,19 @@ export function UniswapWidget() {
           bg: 'surface',
           zIndex: 'menu',
           borderRadius: 'mediumLarge',
+          py: 4,
+          px: 3,
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center'
         }}>
-          <Text>{t('exchange.onboarding.title')}</Text>
-          <Text>{t('exchange.onboarding.body')}</Text>
+          <Box sx={{ textAlign: 'center', px: 3 }}>
+            <Text variant="headerSettings" sx={{ mb: 2 }}>{t('exchange.onboarding.title')}</Text>
+            <Text variant="paragraph3">{t('exchange.onboarding.body')}</Text>
+          </Box>
           <OnboardingGraphic />
-          <Button onClick={() => setAsOnboarded()}>{t('exchange.onboarding.button')}</Button>
-        </Box>
+          <Button sx={{ width: '100%' }} onClick={() => setAsOnboarded()}>{t('exchange.onboarding.button')}</Button>
+        </Flex>
       }
       <SwapWidget
         /* @ts-ignore */
