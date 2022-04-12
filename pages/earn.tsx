@@ -26,10 +26,12 @@ function EarnPage() {
 
   const view = enabled ? <EarnView /> : null
 
-  return <WithConnection>
-    {view}
-    <Survey for="earn" />
-  </WithConnection>
+  return (
+    <WithConnection>
+      {view}
+      <Survey for="earn" />
+    </WithConnection>
+  )
 }
 
 EarnPage.layout = ProductPagesLayout

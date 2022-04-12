@@ -6,15 +6,12 @@ import { useBreakpointIndex } from 'theme/useBreakpointIndex'
 
 const typeformPopoverButton = '.tf-v1-popover .tf-v1-popover-button'
 
-type SurveyConfig = { id: string, title: string, color: string }
+type SurveyConfig = { id: string; title: string; color: string }
 
-export function SurveyButtons({ id, title, color }: SurveyConfig ) {
+export function SurveyButtons({ id, title, color }: SurveyConfig) {
   const breakpoint = useBreakpointIndex()
 
-  const [wasClosed, setWasOpenedAndClosed] = useLocalStorage(
-    `survey-${id}-was-closed`,
-    false,
-  )
+  const [wasClosed, setWasOpenedAndClosed] = useLocalStorage(`survey-${id}-was-closed`, false)
 
   return (
     <>
