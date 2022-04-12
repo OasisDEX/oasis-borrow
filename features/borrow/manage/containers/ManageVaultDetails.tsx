@@ -3,6 +3,7 @@ import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { SetupBanner } from 'components/vault/SetupBanner'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -159,6 +160,16 @@ export function ManageVaultDetails(
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
+      <Box sx={{ mt: 3 }}>
+        <SetupBanner
+          header="Set up Stop Loss"
+          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor."
+          button="Setup Stop Loss"
+          backgroundImage="/static/img/logo.svg"
+          backgroundColor="#FFEAEA"
+          backgroundColorEnd="#FFF5EA"
+        />
+      </Box>
     </Box>
   )
 }
