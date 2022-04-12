@@ -5,7 +5,7 @@ import { getStateUnpacker } from '../../helpers/testHelpers'
 import { expect } from 'chai'
 import { zero } from '../../helpers/zero'
 
-describe.only('bonusPipe', () => {
+describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
     it('pipes the decimals and symbol correctly', () => {
       const bonusPipe = createBonusPipe$(
