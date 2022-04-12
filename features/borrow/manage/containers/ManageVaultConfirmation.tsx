@@ -1,13 +1,15 @@
 import { Divider } from '@theme-ui/components'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultChangesInformation } from './ManageVaultChangesInformation'
 
-export function ManageVaultConfirmation(props: ManageStandardBorrowVaultState) {
+export function ManageVaultConfirmation(
+  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
+) {
   const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
   useEffect(() => {
     if (props.stage !== 'manageSuccess') {

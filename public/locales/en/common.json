@@ -99,6 +99,11 @@
   "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
   "creating-vault": "Creating Vault",
+  "proxy-advantages": [
+    "Just one proxy needed per account",
+    "Enables your wallet to interact with the Maker protocol",
+    "More gas efficient"
+  ],
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
@@ -352,12 +357,19 @@
       "origination-fee": "Institutional Vault Origination Fee"
     },
     "card": {
-      "min-active-coll-ratio-price": "Minimum active Coll ratio Price",
-      "min-active-coll-ratio": "{{percentageRatio}} minimum active coll ratio",
       "current-fixed-fee": "Current Fixed Fee",
       "next-fee-change": "Next fee change",
       "term-end": "Term End",
-      "days-remaining": "{{days}} days remaining"
+      "days-remaining": "{{days}} days remaining",
+      "min-active-coll-ratio": {
+        "ratio": "{{percentageRatio}} minimum active coll ratio",
+        "price": "Minimum active Coll ratio Price",
+        "modal": {
+          "para1": "Your collateralization ratio is calculated by: value of your collateral / Dai debt. The minimum active col. ratio is the ratio under which no further debt can be generated, nor collateral withdrawn. This is separate from the liquidation ratio.",
+          "para2": "If a vault is under the min. active col. ratio, collateral can be deposit and debt paid back.",
+          "para3": "The min. active col. ratio price displayed is the price of the collateral at this ratio."
+        }
+      }
     }
   },
   "manage-multiply-vault": {
@@ -681,7 +693,8 @@
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
-    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price"
+    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
+    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -689,7 +702,9 @@
     "vault-will-be-at-risk-level-danger": "With this action your vault will be at a collateralization ratio very close to the minimum required",
     "vault-will-be-at-risk-level-danger-at-next-price": "With this action your vault will be at a collateralization ratio very close to the minimum required at the next price update",
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
-    "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update"
+    "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
+    "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
+    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio."
   },
   "vault-changes": {
     "order-information": "Order information",
@@ -790,7 +805,8 @@
     "header": {
       "edit": "Configure your Vault",
       "editWithToken": "Configure your {{token}} Vault",
-      "proxy": "Create your smart Proxy ",
+      "proxy": "Create your smart Proxy",
+      "proxy-success": "Smart Proxy successfully created",
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
@@ -807,7 +823,8 @@
       "edit": "Simulate your vault by configuring the amount of collateral to deposit, and DAI to generate.",
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
-      "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once.",
+      "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once. Read more in the <1><2>Knowledge Base</2></1>",
+      "proxy-success": "Your smart Proxy has been successfully set up. Read more in the <1>Knowledge Base →</1>",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",

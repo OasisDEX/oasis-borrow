@@ -40,6 +40,10 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return t('user-settings.slippage-limit.warnings.high-slippage')
       case 'customSlippageOverridden':
         return t('guni-slippage-overridden')
+      case 'vaultIsCurrentlyUnderMinActiveColRatio':
+        return translate('vault-is-currently-under-min-active-col-ratio')
+      case 'vaultWillRemainUnderMinActiveColRatio':
+        return translate('vault-will-remain-under-min-active-col-ratio')
       default:
         throw new UnreachableCaseError(message)
     }
