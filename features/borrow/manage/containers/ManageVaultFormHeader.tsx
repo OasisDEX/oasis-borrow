@@ -1,6 +1,8 @@
 import { trackingEvents } from 'analytics/analytics'
+import { AppLink } from 'components/Links'
 import { WithVaultFormStepIndicator } from 'components/vault/VaultForm'
-import { useTranslation } from 'next-i18next'
+import { WithArrow } from 'components/WithArrow'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
@@ -17,8 +19,8 @@ function ManageVaultEditingController({
   vault: { token },
   setMainAction,
   mainAction,
-  hideMultiply,
-}: ManageStandardBorrowVaultState & { hideMultiply?: boolean }) {
+  hideMultiplyTab,
+}: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean }) {
   const { t } = useTranslation()
   const isDaiEditing = stage === 'daiEditing'
   const isCollateralEditing = stage === 'collateralEditing'
@@ -47,14 +49,14 @@ function ManageVaultEditingController({
 
   return (
     <Grid gap={4}>
-      <Grid columns={hideMultiply ? 2 : 3} variant="vaultEditingControllerContainer">
+      <Grid columns={hideMultiplyTab ? 2 : 3} variant="vaultEditingControllerContainer">
         <Button onClick={() => handleToggle('collateralEditing')} variant={collateralVariant}>
           {t('system.collateral')}
         </Button>
         <Button onClick={() => handleToggle('daiEditing')} variant={daiVariant}>
           {t('system.dai')}
         </Button>
-        {!hideMultiply && (
+        {!hideMultiplyTab && (
           <Button
             onClick={() => handleToggle('multiplyTransitionEditing')}
             variant={multiplyVariant}
@@ -87,7 +89,7 @@ function ManageVaultEditingController({
 }
 
 export function ManageVaultFormHeader(
-  props: ManageStandardBorrowVaultState & { hideMultiply?: boolean },
+  props: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean },
 ) {
   const { t } = useTranslation()
   const {
@@ -108,9 +110,11 @@ export function ManageVaultFormHeader(
       {!isEditingStage && (
         <Box mt={isMultiplyTransitionStage ? 4 : 0}>
           <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+            <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
               {isProxyStage
-                ? t('vault-form.header.proxy')
+                ? stage === 'proxySuccess'
+                  ? t('vault-form.header.proxy-success')
+                  : t('vault-form.header.proxy')
                 : isCollateralAllowanceStage
                 ? t('vault-form.header.allowance', { token: props.vault.token.toUpperCase() })
                 : isDaiAllowanceStage
@@ -127,19 +131,38 @@ export function ManageVaultFormHeader(
             </Text>
           </WithVaultFormStepIndicator>
           <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-            {isProxyStage
-              ? t('vault-form.subtext.proxy')
-              : isCollateralAllowanceStage
-              ? t('vault-form.subtext.allowance', { token: props.vault.token.toUpperCase() })
-              : isDaiAllowanceStage
-              ? t('vault-form.subtext.daiAllowance')
-              : isManageStage
-              ? stage === 'manageInProgress'
-                ? t('vault-form.subtext.modified')
-                : ''
-              : stage === 'multiplyTransitionEditing'
-              ? ''
-              : t('vault-form.subtext.confirm')}
+            {isProxyStage ? (
+              <Trans
+                i18nKey={
+                  stage === 'proxySuccess'
+                    ? 'vault-form.subtext.proxy-success'
+                    : 'vault-form.subtext.proxy'
+                }
+                components={{
+                  1: (
+                    <AppLink
+                      href="https://kb.oasis.app/help/what-is-a-proxy-contract"
+                      sx={{ fontSize: 2 }}
+                    />
+                  ),
+                  2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
+                }}
+              />
+            ) : isCollateralAllowanceStage ? (
+              t('vault-form.subtext.allowance', { token: props.vault.token.toUpperCase() })
+            ) : isDaiAllowanceStage ? (
+              t('vault-form.subtext.daiAllowance')
+            ) : isManageStage ? (
+              stage === 'manageInProgress' ? (
+                t('vault-form.subtext.modified')
+              ) : (
+                ''
+              )
+            ) : stage === 'multiplyTransitionEditing' ? (
+              ''
+            ) : (
+              t('vault-form.subtext.confirm')
+            )}
           </Text>
         </Box>
       )}
