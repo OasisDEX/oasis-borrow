@@ -32,12 +32,12 @@ function getAddAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).addTrigger(
-    data.cdpId,
-    data.triggerType,
+  return contract<AutomationBot>(automationBot).interface.encodeFunctionData('addTrigger', [
+    data.cdpId.toString(),
+    data.triggerType.toString(),
     data.replacedTriggerId,
     data.triggerData,
-  )
+  ])
 }
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
@@ -46,7 +46,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
   },
   prepareArgs: (data, context) => [
     context.automationBot.address,
-    getAddAutomationTriggerCallData(data, context).encodeABI(),
+    getAddAutomationTriggerCallData(data, context),
   ],
 }
 // TODO ŁW refactor use template method pattern and getAddAutomationTriggerCallData
