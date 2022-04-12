@@ -51,7 +51,7 @@ function VaultHeadlineDetails({
       <Text as="span" sx={{ color: 'text.subtitle' }}>
         {label}
       </Text>
-      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold' }}>
+      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary' }}>
         {value}
       </Text>
       {sub && subColor && (
@@ -97,6 +97,7 @@ export function VaultHeadline({
         sx={{
           fontWeight: 'semiBold',
           fontSize: '28px',
+          color: 'primary',
         }}
       >
         <Icon name={iconCircle} size="32px" sx={{ verticalAlign: 'text-bottom', mr: 2 }} />
