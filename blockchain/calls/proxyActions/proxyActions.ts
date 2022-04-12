@@ -141,7 +141,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(guniProxyActions).methods.openMultiplyGuniVault(
+  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData('openMultiplyGuniVault', [
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
@@ -171,6 +171,7 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
       lender: fmm,
       exchange: exchange.address,
     } as any,
+  ]
   )
 }
 
@@ -180,7 +181,7 @@ export const openGuniMultiplyVault: TransactionDef<OpenGuniMultiplyData> = {
   },
   prepareArgs: (data, context) => {
     const { guniProxyActions } = context
-    return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context).encodeABI()]
+    return [guniProxyActions.address, getOpenGuniMultiplyCallData(data, context)]
   },
 }
 
@@ -512,7 +513,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(guniProxyActions).methods.closeGuniVaultExitDai(
+  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData( 'closeGuniVaultExitDai' , [
     {
       fromTokenAddress: tokens[token0Symbol].address,
       toTokenAddress: tokens[token1Symbol].address,
@@ -542,7 +543,7 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
       lender: fmm,
       exchange: exchange.address,
     } as any,
-  )
+  ])
 }
 
 export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
@@ -552,6 +553,6 @@ export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
   prepareArgs: (data, context) => {
     const { guniProxyActions } = context
 
-    return [guniProxyActions.address, getGuniCloseVaultData(data, context).encodeABI()]
+    return [guniProxyActions.address, getGuniCloseVaultData(data, context)]
   },
 }

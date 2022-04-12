@@ -55,11 +55,11 @@ function getRemoveAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).removeTrigger(
-    data.cdpId,
+  return contract<AutomationBot>(automationBot).interface.encodeFunctionData('removeTrigger', [
+    data.cdpId.toString(),
     data.triggerId,
     data.removeAllowance,
-  )
+  ])
 }
 
 export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {
@@ -68,6 +68,6 @@ export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTrigg
   },
   prepareArgs: (data, context) => [
     context.automationBot.address,
-    getRemoveAutomationTriggerCallData(data, context).encodeABI(),
+    getRemoveAutomationTriggerCallData(data, context),
   ],
 }
