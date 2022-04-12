@@ -235,6 +235,7 @@ const mockTxMetaDefinitions: Pick<TxState<TxData>, 'meta'>[] = [
       userAddress: '0x',
       depositCollateral: new BigNumber(4),
       depositDai: new BigNumber(0),
+      withdrawDai: new BigNumber(0),
       withdrawCollateral: new BigNumber(0),
       borrowedCollateral: new BigNumber(1),
       requiredDebt: new BigNumber(4000),

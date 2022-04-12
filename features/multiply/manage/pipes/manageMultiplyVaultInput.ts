@@ -300,6 +300,7 @@ export function applyManageVaultInput(
       withdrawAmount: state.withdrawAmount,
       withdrawAmountUSD: state.withdrawAmountUSD,
       depositDaiAmount: state.depositDaiAmount,
+      generateAmount: state.generateAmount,
     }
   }
 
@@ -511,6 +512,7 @@ export function applyManageVaultInput(
       ...state,
       ...manageMultiplyInputsDefaults,
       generateAmount: change.generateAmount,
+      showSliderController: false,
     }
   }
 
@@ -520,6 +522,7 @@ export function applyManageVaultInput(
       ...state,
       ...manageMultiplyInputsDefaults,
       generateAmount: maxGenerateAmount,
+      showSliderController: false,
     }
   }
 

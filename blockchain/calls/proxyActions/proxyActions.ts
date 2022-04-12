@@ -224,6 +224,7 @@ export type MultiplyAdjustData = {
   depositCollateral: BigNumber
   depositDai: BigNumber
   withdrawCollateral: BigNumber
+  withdrawDai: BigNumber
   borrowedCollateral: BigNumber
 
   ilk: string
@@ -325,7 +326,7 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       borrowCollateral: amountToWei(data.borrowedCollateral, data.token).toFixed(0),
       requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
       depositCollateral: amountToWei(data.depositCollateral, data.token).toFixed(0),
-      withdrawDai: amountToWei(zero, 'DAI').toFixed(0),
+      withdrawDai: amountToWei(data.withdrawDai, 'DAI').toFixed(0),
       depositDai: amountToWei(zero, 'DAI').toFixed(0),
       withdrawCollateral: amountToWei(data.withdrawCollateral, data.token).toFixed(0),
       skipFL: false,
@@ -343,6 +344,12 @@ function getMultiplyAdjustCallData(data: MultiplyAdjustData, context: ContextCon
       return contract<MultiplyProxyActions>(
         dssMultiplyProxyActions,
       ).methods.decreaseMultipleWithdrawCollateral(exchangeData, cdpData, serviceRegistry)
+    }
+
+    if (data.withdrawDai.gt(zero)) {
+      return contract<MultiplyProxyActions>(
+        dssMultiplyProxyActions,
+      ).methods.decreaseMultipleWithdrawDai(exchangeData, cdpData, serviceRegistry)
     }
 
     return contract<MultiplyProxyActions>(dssMultiplyProxyActions).methods.decreaseMultiple(

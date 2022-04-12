@@ -1,3 +1,4 @@
+import { zero } from '../../../../helpers/zero'
 import {
   CloseVaultTo,
   MainAction,
@@ -107,13 +108,14 @@ export function applyManageVaultForm(
       state.otherAction === 'withdrawCollateral' || state.otherAction === 'withdrawDai'
 
     const requiredCollRatioAtDeposit =
-      state.depositAmount?.gt(0) || state.depositDaiAmount?.gt(0)
+      state.depositAmount?.gt(zero) || state.depositDaiAmount?.gt(zero)
         ? state.maxCollRatio
         : MAX_COLL_RATIO
 
-    const requiredCollRatioAtWithdraw = state.withdrawAmount?.gt(0)
-      ? state.minCollRatio
-      : MAX_COLL_RATIO
+    const requiredCollRatioAtWithdraw =
+      state.withdrawAmount?.gt(zero) || state.generateAmount?.gt(zero)
+        ? state.vault.collateralizationRatio
+        : MAX_COLL_RATIO
 
     const requiredCollRatio = isDepositAction
       ? requiredCollRatioAtDeposit
@@ -130,6 +132,7 @@ export function applyManageVaultForm(
       withdrawAmount: state.withdrawAmount,
       withdrawAmountUSD: state.withdrawAmountUSD,
       depositDaiAmount: state.depositDaiAmount,
+      generateAmount: state.generateAmount,
       requiredCollRatio: !state.showSliderController ? requiredCollRatio : undefined,
     }
   }

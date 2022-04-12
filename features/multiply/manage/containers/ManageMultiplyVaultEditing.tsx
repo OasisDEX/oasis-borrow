@@ -604,29 +604,36 @@ function DepositDAIAction(props: ManageMultiplyVaultState) {
 }
 
 function WithdrawDAIAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const {
+    showSliderController,
+    toggleSliderController,
+    generateAmount,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={2}>
       <GenerateInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Decrease multiply with this transaction</Text>
-        </Button>
+      {generateAmount?.gt(zero) && debt.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiple with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }
