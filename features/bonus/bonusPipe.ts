@@ -1,6 +1,15 @@
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import BigNumber from 'bignumber.js'
-import { distinctUntilChanged, map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  map,
+  mapTo,
+  share,
+  startWith,
+  switchMap,
+  take,
+  tap,
+} from 'rxjs/operators'
 import { TxStatus } from '@oasisdex/transactions'
 import { zero } from '../../helpers/zero'
 import { ContextConnected } from '../../blockchain/network'
@@ -113,6 +122,7 @@ export function createBonusPipe$(
     switchMap(([, { ilk }]) => {
       return sendCrop$(ilk, cdpId)
     }),
+    share(),
     startWith(undefined),
   )
 
