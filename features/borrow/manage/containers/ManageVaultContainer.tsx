@@ -63,7 +63,7 @@ export function ManageVaultContainer({
         <Box>
           <ManageVaultForm
             {...manageVault}
-            extraInfo={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
+            txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
           />
         </Box>
       </Grid>

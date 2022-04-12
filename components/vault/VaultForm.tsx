@@ -54,7 +54,7 @@ export function WithVaultFormStepIndicator({
   totalSteps: number
 } & WithChildren) {
   return (
-    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+    <Flex sx={{ alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
       <Box sx={{ flex: 1 }}>{children}</Box>
       <Box
         sx={{

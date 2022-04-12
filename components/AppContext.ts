@@ -84,7 +84,6 @@ import { createAutomationTriggersData } from 'features/automation/triggers/Autom
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
-  ManageInstiVaultState,
   ManageStandardBorrowVaultState,
 } from 'features/borrow/manage/pipes/manageVault'
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
@@ -142,8 +141,11 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { InstitutionalBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/institutionalBorrowManageVaultViewStateProvider'
-import { StandardBorrowManageVaultViewStateProvider } from '../features/borrow/manage/pipes/viewStateProviders/standardBorrowManageVaultViewStateProvider'
+import {
+  InstitutionalBorrowManageAdapter,
+  ManageInstiVaultState,
+} from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
+import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -155,7 +157,7 @@ import {
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
-import { createCheckVaultType$, VaultIdToTypeMapping } from '../features/shared/checkVaultType'
+import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
@@ -404,6 +406,12 @@ export function setupAppContext() {
 
   const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
+  const charter = {
+    nib$: (args: { ilk: string; usr: string }) => charterNib$(args),
+    peace$: (args: { ilk: string; usr: string }) => charterPeace$(args),
+    uline$: (args: { ilk: string; usr: string }) => charterUline$(args),
+  }
+
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
   )
@@ -470,14 +478,16 @@ export function setupAppContext() {
   )
 
   const instiVault$ = memoize(
-    // todo: insti-vault switch back to smart contract vaules when contract is deployed
-    curry(createInstiVault$)(vault$, charterNib$, charterPeace$, charterUline$),
-    // curry(createInstiVault$)(
-    //   vault$,
-    //   () => of(new BigNumber(0.1)),
-    //   () => of(new BigNumber(0.22)),
-    //   () => of(new BigNumber(3)),
-    // ),
+    curry(createInstiVault$)(
+      urnResolver$,
+      vatUrns$,
+      vatGem$,
+      ilkData$,
+      oraclePriceData$,
+      ilkToToken$,
+      context$,
+      charter,
+    ),
   )
 
   const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
@@ -614,7 +624,7 @@ export function setupAppContext() {
         addGasEstimation$,
         vaultHistory$,
         proxyActionsAdapterResolver$,
-        StandardBorrowManageVaultViewStateProvider,
+        StandardBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),
@@ -636,9 +646,7 @@ export function setupAppContext() {
         addGasEstimation$,
         vaultHistory$,
         proxyActionsAdapterResolver$,
-        // comment out above and uncomment below to test insti vault flows + UI against standard borrow vault
-        // withdrawPaybackDepositGenerateLogicFactory(StandardDssProxyActionsContractWrapper),
-        InstitutionalBorrowManageVaultViewStateProvider,
+        InstitutionalBorrowManageAdapter,
         automationTriggersData$,
         id,
       ),
@@ -703,13 +711,9 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
-  // const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = { 27609: VaultType.Insti }
-  const HARDCODED_VAULT_TYPES: VaultIdToTypeMapping = {}
-
-  const checkVault$: (id: BigNumber) => Observable<VaultType> = curry(createCheckVaultType$)(
-    curry(checkVaultTypeUsingApi$)(context$),
-    HARDCODED_VAULT_TYPES,
-  )
+  const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
+    createCheckOasisCDPType$,
+  )(curry(checkVaultTypeUsingApi$)(context$), cdpManagerIlks$, charterIlks)
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
@@ -717,7 +721,7 @@ export function setupAppContext() {
       manageMultiplyVault$,
       manageGuniVault$,
       manageVault$,
-      checkVault$,
+      checkOasisCDPType$,
       vault$,
     ),
     bigNumberTostring,

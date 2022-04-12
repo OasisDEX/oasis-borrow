@@ -1,13 +1,12 @@
 import { VaultType } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { HOUR, SECONDS_PER_YEAR } from 'components/constants'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
-import { one, zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { zero } from '../helpers/zero'
 import { cdpManagerOwner } from './calls/cdpManager'
 import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
 import { CallObservable } from './calls/observe'
@@ -15,6 +14,7 @@ import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { OraclePriceData } from './prices'
+import { buildPosition } from './vault.maths'
 
 BigNumber.config({
   POW_PRECISION: 100,
@@ -161,86 +161,6 @@ export function createVault$(
                   ilkDebtAvailable,
                 },
               ]) => {
-                const collateralUSD = collateral.times(currentPrice)
-                const collateralUSDAtNextPrice = nextPrice
-                  ? collateral.times(nextPrice)
-                  : currentPrice
-
-                const debt = debtScalingFactor.times(normalizedDebt)
-
-                const debtOffset = !debt.isZero()
-                  ? debt
-                      .times(one.plus(stabilityFee.div(SECONDS_PER_YEAR)).pow(HOUR * 5))
-                      .minus(debt)
-                      .dp(18, BigNumber.ROUND_DOWN)
-                  : new BigNumber('1e-18')
-
-                const backingCollateral = debt.times(liquidationRatio).div(currentPrice)
-
-                const backingCollateralAtNextPrice = debt.times(liquidationRatio).div(nextPrice)
-                const backingCollateralUSD = backingCollateral.times(currentPrice)
-                const backingCollateralUSDAtNextPrice = backingCollateralAtNextPrice.times(
-                  nextPrice,
-                )
-
-                const freeCollateral = backingCollateral.gte(collateral)
-                  ? zero
-                  : collateral.minus(backingCollateral)
-                const freeCollateralAtNextPrice = backingCollateralAtNextPrice.gte(collateral)
-                  ? zero
-                  : collateral.minus(backingCollateralAtNextPrice)
-
-                const freeCollateralUSD = freeCollateral.times(currentPrice)
-                const freeCollateralUSDAtNextPrice = freeCollateralAtNextPrice.times(nextPrice)
-
-                const collateralizationRatio = debt.isZero() ? zero : collateralUSD.div(debt)
-                const collateralizationRatioAtNextPrice = debt.isZero()
-                  ? zero
-                  : collateralUSDAtNextPrice.div(debt)
-
-                const maxAvailableDebt = collateralUSD.div(liquidationRatio)
-                const maxAvailableDebtAtNextPrice = collateralUSDAtNextPrice.div(liquidationRatio)
-
-                const availableDebt = debt.lt(collateralUSD.div(liquidationRatio))
-                  ? maxAvailableDebt.minus(debt)
-                  : zero
-
-                const availableDebtAtNextPrice = debt.lt(maxAvailableDebtAtNextPrice)
-                  ? maxAvailableDebtAtNextPrice.minus(debt)
-                  : zero
-
-                const liquidationPrice = collateral.eq(zero)
-                  ? zero
-                  : debt.times(liquidationRatio).div(collateral)
-
-                const daiYieldFromLockedCollateral = availableDebt.lt(ilkDebtAvailable)
-                  ? availableDebt
-                  : ilkDebtAvailable.gt(zero)
-                  ? ilkDebtAvailable
-                  : zero
-                const atRiskLevelWarning =
-                  collateralizationRatio.gte(collateralizationDangerThreshold) &&
-                  collateralizationRatio.lt(collateralizationWarningThreshold)
-
-                const atRiskLevelDanger =
-                  collateralizationRatio.gte(liquidationRatio) &&
-                  collateralizationRatio.lt(collateralizationDangerThreshold)
-
-                const underCollateralized =
-                  !collateralizationRatio.isZero() && collateralizationRatio.lt(liquidationRatio)
-
-                const atRiskLevelWarningAtNextPrice =
-                  collateralizationRatioAtNextPrice.gte(collateralizationDangerThreshold) &&
-                  collateralizationRatioAtNextPrice.lt(collateralizationWarningThreshold)
-
-                const atRiskLevelDangerAtNextPrice =
-                  collateralizationRatioAtNextPrice.gte(liquidationRatio) &&
-                  collateralizationRatioAtNextPrice.lt(collateralizationDangerThreshold)
-
-                const underCollateralizedAtNextPrice =
-                  !collateralizationRatioAtNextPrice.isZero() &&
-                  collateralizationRatioAtNextPrice.lt(liquidationRatio)
-
                 return of({
                   id,
                   makerType,
@@ -250,34 +170,23 @@ export function createVault$(
                   owner,
                   controller,
                   lockedCollateral: collateral,
-                  lockedCollateralUSD: collateralUSD,
-                  backingCollateral,
-                  backingCollateralUSD,
-                  freeCollateral,
-                  freeCollateralUSD,
-                  lockedCollateralUSDAtNextPrice: collateralUSDAtNextPrice,
-                  backingCollateralAtNextPrice,
-                  backingCollateralUSDAtNextPrice,
-                  freeCollateralAtNextPrice,
-                  freeCollateralUSDAtNextPrice,
                   normalizedDebt,
-                  debt,
-                  debtOffset,
-                  availableDebt,
-                  availableDebtAtNextPrice,
                   unlockedCollateral,
-                  collateralizationRatio,
-                  collateralizationRatioAtNextPrice,
-                  liquidationPrice,
-                  daiYieldFromLockedCollateral,
-
-                  atRiskLevelWarning,
-                  atRiskLevelDanger,
-                  underCollateralized,
-                  atRiskLevelWarningAtNextPrice,
-                  atRiskLevelDangerAtNextPrice,
-                  underCollateralizedAtNextPrice,
                   chainId: context.chainId,
+                  ...buildPosition({
+                    collateral,
+                    currentPrice,
+                    nextPrice,
+                    debtScalingFactor,
+                    normalizedDebt,
+                    stabilityFee,
+                    liquidationRatio,
+                    ilkDebtAvailable,
+                    collateralizationDangerThreshold,
+                    collateralizationWarningThreshold,
+                    minActiveColRatio: liquidationRatio, // user can reduce vault col ratio right down to liquidation ratio
+                    originationFee: zero,
+                  }),
                 })
               },
             ),

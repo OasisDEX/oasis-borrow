@@ -8,6 +8,7 @@ import { protoTxHelpers } from 'components/AppContext'
 import {
   mockManageInstiVault$ as createManageInstiVault$,
   mockManageVault$ as createManageVault$,
+  mockManageVault$,
 } from 'helpers/mocks/manageVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
 import {
@@ -20,8 +21,6 @@ import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { BehaviorSubject, of, Subject } from 'rxjs'
 import { map } from 'rxjs/internal/operators'
-
-import { createInstiVault$ } from '../../../../blockchain/instiVault'
 
 type GlobalMock = NodeJS.Global & { window: { location: { reload: () => void } } }
 ;(global as GlobalMock).window = {
@@ -900,44 +899,23 @@ describe('manageVault', () => {
       genericManageVaultTests(createManageInstiVault$)
     })
 
-    it('should initialise origination fee USD with undefined', () => {
-      const charterNib$ = () => of(new BigNumber(1))
-      const charterPeace$ = () => of(new BigNumber(2))
-      const charterUline$ = () => of(new BigNumber(3))
-      const instiVault$ = createInstiVault$(
-        () => mockVault$(),
-        charterNib$,
-        charterPeace$,
-        charterUline$,
-        new BigNumber(1),
-      )
+    it('should initialise origination fee USD with zero', () => {
+      const { instiVault$ } = mockVault$()
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
-      expect(state().originationFeeUSD).to.eq(undefined)
+      expect(state().originationFeeUSD).to.eql(zero)
     })
 
     it('should contain origination fee in USD in the view state', () => {
-      function createStream(
-        startValue: number,
-      ): [BehaviorSubject<BigNumber>, () => BehaviorSubject<BigNumber>] {
-        const bs = new BehaviorSubject<BigNumber>(new BigNumber(startValue))
-        return [bs, () => bs]
-      }
-
-      const [charterNib$, charterNibCtor] = createStream(1)
-
+      const charterNib$ = new BehaviorSubject<BigNumber>(new BigNumber('0.01'))
       const depositAmount = new BigNumber('5')
       const generateAmount = new BigNumber('3000')
       const secondGenerateAmount = new BigNumber('5000')
 
-      const instiVault$ = createInstiVault$(
-        () => mockVault$(),
-        charterNibCtor,
-        () => of(new BigNumber(2)),
-        () => of(new BigNumber(3)),
-        new BigNumber(1),
-      )
+      const { instiVault$ } = mockVault$({
+        _charterNib$: charterNib$,
+      })
 
       const state = getStateUnpacker(createManageInstiVault$({ _instiVault$: instiVault$ }))
 
@@ -951,8 +929,237 @@ describe('manageVault', () => {
       expect(state().originationFeeUSD!.toString()).to.eq('50')
 
       // changes when we have a new value from the observable
-      charterNib$.next(new BigNumber(5))
+      charterNib$.next(new BigNumber('0.05'))
       expect(state().originationFeeUSD!.toString()).to.eq('250')
     })
+
+    it('blocks user progressing when they will go under min active col ratio at current price', () => {
+      // construct over-collateralised vault
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(16000),
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          priceInfo: {
+            collateralPrice: new BigNumber('1'),
+          },
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().errorMessages.length).equal(0)
+
+      state().updateDeposit!(zero)
+      state().toggleDepositAndGenerateOption!()
+
+      // generate enough to take them under min active col ratio at current price
+      state().updateGenerate!(new BigNumber(1000))
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(true)
+
+      expect(state().errorMessages.length).equal(2)
+      expect(state().errorMessages[0]).equal('generateAmountExceedsDaiYieldFromTotalCollateral')
+      expect(state().errorMessages[1]).equal('vaultWillBeTakenUnderMinActiveColRatio')
+      expect(state().canProgress).equal(false)
+    })
+
+    it('blocks user progressing when they will go under min active col ratio at next price', () => {
+      // construct over-collateralised vault
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(16000),
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          priceInfo: {
+            collateralPrice: new BigNumber('1'),
+            collateralChangePercentage: new BigNumber(-0.1),
+          },
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().errorMessages.length).equal(0)
+
+      state().updateDeposit!(zero)
+      state().toggleDepositAndGenerateOption!()
+
+      // generate enough to take them under min active col ratio at next price
+      state().updateGenerate!(new BigNumber(400))
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(true)
+      expect(state().errorMessages.length).equal(2)
+      expect(state().errorMessages[0]).equal(
+        'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice',
+      )
+      expect(state().errorMessages[1]).equal('vaultWillBeTakenUnderMinActiveColRatio')
+      expect(state().canProgress).equal(false)
+    })
+
+    it('warns users when position is currently undercollateralised', () => {
+      // construct under-collateralised vault (min active col ratio)
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(14950),
+        priceInfo: {
+          currentCollateralPrice: new BigNumber('1'),
+        },
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().warningMessages.length).equal(1)
+      expect(state().warningMessages[0]).equal('vaultIsCurrentlyUnderMinActiveColRatio')
+    })
+
+    it('warns users when position will be undercollaterlised at next price', () => {
+      // construct over-collateralised vault (min active col ratio)
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber(1.5),
+        collateral: new BigNumber(16000),
+        priceInfo: {
+          currentCollateralPrice: new BigNumber('1'),
+          nextCollateralPrice: new BigNumber(0.9),
+        },
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          ilkData: {
+            liquidationRatio: new BigNumber(1.2),
+          },
+        }),
+      )
+
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().warningMessages.length).equal(1)
+      expect(state().warningMessages[0]).equal('vaultIsCurrentlyUnderMinActiveColRatio')
+    })
+
+    it('allows users to decrease risk on under-collateralised (min active) position', () => {
+      // construct under-collateralised vault (min active col ratio)
+      const { instiVault$ } = mockVault$({
+        debt: new BigNumber(10000),
+        minActiveColRatio: new BigNumber('1.6'),
+        collateral: new BigNumber(14950),
+        priceInfo: {
+          currentCollateralPrice: new BigNumber('1'),
+          nextCollateralPrice: new BigNumber('1'),
+        },
+      })
+
+      const state = getStateUnpacker(
+        createManageInstiVault$({
+          _instiVault$: instiVault$,
+          priceInfo: {
+            collateralPrice: new BigNumber(1),
+            collateralChangePercentage: new BigNumber(0),
+          },
+          ilkData: {
+            liquidationRatio: new BigNumber(1),
+          },
+        }),
+      )
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().vaultWillRemainUnderMinActiveColRatio).equal(false)
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().errorMessages.length).equal(0)
+      expect(state().warningMessages.length).equal(1)
+      expect(state().warningMessages).includes('vaultIsCurrentlyUnderMinActiveColRatio')
+
+      state().updateDeposit!(zero)
+      state().toggleDepositAndGenerateOption!()
+
+      // deposit more collateral
+      state().updateDeposit!(new BigNumber(100))
+
+      expect(state().vaultWillBeTakenUnderMinActiveColRatio).equal(false)
+      expect(state().vaultIsCurrentlyUnderMinActiveColRatio).equal(true)
+      expect(state().vaultWillRemainUnderMinActiveColRatio).equal(true)
+
+      expect(state().errorMessages.length).equal(0)
+
+      expect(state().warningMessages.length).equal(2)
+      expect(state().warningMessages).includes('vaultWillRemainUnderMinActiveColRatio')
+      expect(state().warningMessages).includes('vaultIsCurrentlyUnderMinActiveColRatio')
+      expect(state().canProgress).equal(true)
+    })
+  })
+
+  it('ignores current debt when considering dust limit on collateral', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        vault: {
+          collateral: new BigNumber('1500'),
+          debt: new BigNumber('900'),
+        },
+        ilkData: {
+          debtFloor: new BigNumber('800'),
+          liquidationRatio: new BigNumber(1.2),
+          currentCollateralPrice: new BigNumber('1'),
+        },
+        priceInfo: {
+          collateralPrice: new BigNumber('1'),
+        },
+      }),
+    )
+
+    state().toggleDepositAndGenerateOption!()
+    state().updateDeposit!(new BigNumber('200'))
+
+    expect(state().potentialGenerateAmountLessThanDebtFloor).eq(false)
+    expect(state().warningMessages.length).eq(0)
+  })
+
+  it('errors when the current collateral would not allow any debt to be drawn from the vault', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        vault: {
+          collateral: new BigNumber('1300'),
+          debt: new BigNumber('900'),
+        },
+        ilkData: {
+          debtFloor: new BigNumber('1500'),
+          liquidationRatio: new BigNumber('1.2'),
+          currentCollateralPrice: new BigNumber('1'),
+        },
+        priceInfo: {
+          collateralPrice: new BigNumber('1'),
+        },
+      }),
+    )
+
+    state().toggleDepositAndGenerateOption!()
+    state().updateDeposit!(new BigNumber('200'))
+    state().updateGenerate!(new BigNumber('700'))
+
+    expect(state().potentialGenerateAmountLessThanDebtFloor).eq(true)
+    expect(state().errorMessages.length).eq(1)
+    expect(state().errorMessages[0]).eq('depositCollateralOnVaultUnderDebtFloor')
   })
 })

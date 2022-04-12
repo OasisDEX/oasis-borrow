@@ -3,7 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
-import { groupBy } from 'lodash'
+import { groupBy, orderBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -48,7 +48,7 @@ function CareersPage({ careers }: { careers: Career[] }) {
                 />
               </Flex>
               <Grid>
-                {careers.map((career) => (
+                {orderBy(careers, ['order']).map((career) => (
                   <AppLink
                     key={career.slug}
                     href={`/careers/${career.slug}`}

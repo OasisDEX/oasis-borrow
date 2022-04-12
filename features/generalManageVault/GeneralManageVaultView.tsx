@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultView'
+import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import React from 'react'
 import { Container } from 'theme-ui'
 
