@@ -180,7 +180,8 @@ async function liquidateCDP(
 ): Promise<void> {
   const cat: McdCat = new ethers.Contract(MCD_CAT, mcdCatAbi, provider).connect(signer) as any
   // Start liquidation
-  await (await cat['bite(bytes32,address)'](ILK, cdp.urn)).wait()
+  await (await cat.bite(ILK, cdp.urn)).wait()
+
 
   const flipper: McdFlip = new ethers.Contract(MCD_FLIP_ETH_A, flipAbi, provider).connect(
     signer,
