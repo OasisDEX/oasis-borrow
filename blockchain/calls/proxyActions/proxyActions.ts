@@ -141,37 +141,39 @@ function getOpenGuniMultiplyCallData(data: OpenGuniMultiplyData, context: Contex
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData('openMultiplyGuniVault', [
-    {
-      fromTokenAddress: tokens[token0Symbol].address,
-      toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
-      minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
-      exchangeAddress: data.exchangeAddress,
-      _exchangeCalldata: data.exchangeData,
-    } as any, //TODO: figure out why Typechain is generating arguments as arrays
-    {
-      gemJoin: joins[data.ilk],
-      fundsReceiver: data.userAddress,
-      cdpId: '0',
-      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      token0Amount: amountToWei(data.depositCollateral, token0Symbol).toFixed(0),
-      methodName: '',
-    } as any,
-    {
-      jug: mcdJug.address,
-      guni: tokens[data.token].address,
-      resolver: guniResolver,
-      router: guniRouter,
-      otherToken: tokens[token1Symbol].address,
-      manager: dssCdpManager.address,
-      guniProxyActions: guniProxyActions.address,
-      lender: fmm,
-      exchange: exchange.address,
-    } as any,
-  ]
+  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData(
+    'openMultiplyGuniVault',
+    [
+      {
+        fromTokenAddress: tokens[token0Symbol].address,
+        toTokenAddress: tokens[token1Symbol].address,
+        fromTokenAmount: amountToWei(data.fromTokenAmount, token0Symbol).toFixed(0),
+        toTokenAmount: amountToWei(data.toTokenAmount, token1Symbol).toFixed(0),
+        minToTokenAmount: amountToWei(data.minToTokenAmount, token1Symbol).toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any, //TODO: figure out why Typechain is generating arguments as arrays
+      {
+        gemJoin: joins[data.ilk],
+        fundsReceiver: data.userAddress,
+        cdpId: '0',
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        token0Amount: amountToWei(data.depositCollateral, token0Symbol).toFixed(0),
+        methodName: '',
+      } as any,
+      {
+        jug: mcdJug.address,
+        guni: tokens[data.token].address,
+        resolver: guniResolver,
+        router: guniRouter,
+        otherToken: tokens[token1Symbol].address,
+        manager: dssCdpManager.address,
+        guniProxyActions: guniProxyActions.address,
+        lender: fmm,
+        exchange: exchange.address,
+      } as any,
+    ],
   )
 }
 
@@ -513,37 +515,40 @@ function getGuniCloseVaultData(data: CloseGuniMultiplyData, context: ContextConn
     throw new Error('Invalid token')
   }
 
-  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData( 'closeGuniVaultExitDai' , [
-    {
-      fromTokenAddress: tokens[token0Symbol].address,
-      toTokenAddress: tokens[token1Symbol].address,
-      fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
-      toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
-      minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
-      exchangeAddress: data.exchangeAddress,
-      _exchangeCalldata: data.exchangeData,
-    } as any,
-    {
-      gemJoin: joins[data.ilk],
-      fundsReceiver: data.userAddress,
-      cdpId: data.cdpId,
-      ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
-      requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
-      token0Amount: '0',
-      methodName: '',
-    } as any,
-    {
-      jug: mcdJug.address,
-      guni: tokens[data.token].address,
-      resolver: guniResolver,
-      router: guniRouter,
-      otherToken: tokens[token1Symbol].address,
-      manager: dssCdpManager.address,
-      guniProxyActions: guniProxyActions.address,
-      lender: fmm,
-      exchange: exchange.address,
-    } as any,
-  ])
+  return contract<DssGuniProxyActions>(guniProxyActions).interface.encodeFunctionData(
+    'closeGuniVaultExitDai',
+    [
+      {
+        fromTokenAddress: tokens[token0Symbol].address,
+        toTokenAddress: tokens[token1Symbol].address,
+        fromTokenAmount: amountToWei(data.fromTokenAmount, token1Symbol).toFixed(0),
+        toTokenAmount: amountToWei(data.toTokenAmount, token0Symbol).toFixed(0),
+        minToTokenAmount: amountToWei(data.minToTokenAmount, token0Symbol).toFixed(0),
+        exchangeAddress: data.exchangeAddress,
+        _exchangeCalldata: data.exchangeData,
+      } as any,
+      {
+        gemJoin: joins[data.ilk],
+        fundsReceiver: data.userAddress,
+        cdpId: data.cdpId,
+        ilk: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        requiredDebt: amountToWei(data.requiredDebt, 'DAI').toFixed(0),
+        token0Amount: '0',
+        methodName: '',
+      } as any,
+      {
+        jug: mcdJug.address,
+        guni: tokens[data.token].address,
+        resolver: guniResolver,
+        router: guniRouter,
+        otherToken: tokens[token1Symbol].address,
+        manager: dssCdpManager.address,
+        guniProxyActions: guniProxyActions.address,
+        lender: fmm,
+        exchange: exchange.address,
+      } as any,
+    ],
+  )
 }
 
 export const closeGuniVaultCall: TransactionDef<CloseGuniMultiplyData> = {
