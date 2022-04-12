@@ -1,9 +1,10 @@
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { useObservable } from 'helpers/observableHook'
+import { useOnboarding } from 'helpers/useOnboarding'
 import React from 'react'
 import { theme } from 'theme'
-import { Box } from 'theme-ui'
+import { Box, Button } from 'theme-ui'
 
 import tokenList from './tokenList.json'
 
@@ -53,6 +54,8 @@ const cssPaths = (() => {
 export function UniswapWidget() {
   const { web3ContextConnected$ } = useAppContext()
   const [web3Context] = useObservable(web3ContextConnected$)
+  const [isOnboarded, setAsOnboarded] = useOnboarding('Exchange')
+
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
@@ -65,6 +68,7 @@ export function UniswapWidget() {
   return (
     <Box
       sx={{
+        position: 'relative',
         '.subhead': { fontWeight: 'medium' },
         [main.swapBtn]: {
           border: '3px solid',
@@ -107,6 +111,19 @@ export function UniswapWidget() {
         }
       `}
     >
+      {!isOnboarded &&
+        <Box sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          bg: 'surface',
+          zIndex: 'menu',
+        }}>
+          <Button onClick={() => setAsOnboarded()}>Got it</Button>
+        </Box>
+      }
       <SwapWidget
         /* @ts-ignore */
         provider={web3Provider}
