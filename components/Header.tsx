@@ -190,14 +190,14 @@ function ButtonDropdown({
           ':hover': { color: 'primary' },
         }}
       >
-        {showNewBeacon && 
-          <Icon 
-            name="new_beacon" 
+        {showNewBeacon && (
+          <Icon
+            name="new_beacon"
             sx={{ position: 'absolute', top: '-3px', right: '-3px' }}
-            size="auto" 
-            width={22} 
+            size="auto"
+            width={22}
           />
-        }
+        )}
         <ButtonContents active={isOpen} />
       </Button>
       <Box
