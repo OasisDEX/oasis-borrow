@@ -142,6 +142,7 @@ import {
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
+  ClaimRewardData,
 } from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { spotIlk } from '../blockchain/calls/spot'
@@ -179,7 +180,9 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { ClaimTxnState, createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { ClaimTxnState, createBonusPipe$, createSendCrop$ } from '../features/bonus/bonusPipe'
+import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
+import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 
 export type TxData =
   | OpenData
@@ -197,6 +200,7 @@ export type TxData =
   | AutomationBotAddTriggerData
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
+  | ClaimRewardData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -485,14 +489,34 @@ export function setupAppContext() {
     proxyOwner$,
   )
 
-  const bonus$ = curry(createBonusPipe$)(
-    urnResolver$,
-    cropperCrops$,
-    cropperBonusTokenAddress$,
-    tokenDecimals$,
-    tokenSymbol$,
-    tokenName$,
-    () => of(ClaimTxnState.PENDING),
+  const sendCrop$ = memoize(
+    (ilk: string, cdpId: BigNumber) =>
+      createSendCrop$(
+        connectedContext$,
+        txHelpers$,
+        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
+        proxyAddress$,
+        ilk,
+        cdpId,
+      ),
+    (ilk, cdpId) => {
+      return ilk + bigNumberTostring(cdpId)
+    },
+  )
+
+  const bonus$ = memoize(
+    (cdpId: BigNumber) =>
+      createBonusPipe$(
+        urnResolver$,
+        cropperCrops$,
+        cropperBonusTokenAddress$,
+        tokenDecimals$,
+        tokenSymbol$,
+        tokenName$,
+        sendCrop$,
+        cdpId,
+      ),
+    bigNumberTostring,
   )
 
   const vault$ = memoize(

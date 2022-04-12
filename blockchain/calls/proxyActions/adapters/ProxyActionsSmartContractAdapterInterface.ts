@@ -40,7 +40,7 @@ export type OpenData = {
 export type ClaimRewardData = {
   kind: TxMetaKind.claimReward
   gemJoinAddress: string
-  cdpId: string
+  cdpId: BigNumber
   proxyAddress: string
 }
 

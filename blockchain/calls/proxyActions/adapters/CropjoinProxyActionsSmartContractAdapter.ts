@@ -26,7 +26,7 @@ export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActions
     const { gemJoinAddress, cdpId } = data
     return contract<DssProxyActionsCropjoin>(dssProxyActionsCropjoin).methods.crop(
       gemJoinAddress,
-      cdpId,
+      cdpId.toString(),
     )
   }
 }

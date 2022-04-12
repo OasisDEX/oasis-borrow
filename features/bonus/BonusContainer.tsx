@@ -1,13 +1,28 @@
 import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../../components/AppContextProvider'
 import BigNumber from 'bignumber.js'
-import { Button, Card, Heading, Box } from 'theme-ui'
+import { Box, Button, Card, Heading, Text } from 'theme-ui'
 import React from 'react'
-import { Text } from 'theme-ui'
 import { useTranslation } from 'next-i18next'
+import { BonusViewModel, ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {
   cdpId: BigNumber
+}
+
+function mapToBtnText(bonusViewModel: BonusViewModel): string {
+  switch (bonusViewModel.claimTxnState) {
+    case undefined:
+      return 'claim-rewards.claim-button.claim-rewards'
+    case ClaimTxnState.PENDING:
+      return 'Pending'
+    case ClaimTxnState.SUCCEEDED:
+      return 'Success'
+    case ClaimTxnState.FAILED:
+      return 'Failure'
+    default:
+      return 'claim-rewards.claim-button.claim-rewards'
+  }
 }
 
 export function BonusContainer(props: BonusContainerProps) {
@@ -44,7 +59,7 @@ export function BonusContainer(props: BonusContainerProps) {
             mt={3}
             onClick={bonusViewModel.claimAll}
           >
-            {t('claim-rewards.claim-button.claim-rewards')}
+            {t(mapToBtnText(bonusViewModel))}
           </Button>
         </Box>
       </Card>

@@ -1,8 +1,12 @@
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import BigNumber from 'bignumber.js'
-import { map, startWith, switchMap } from 'rxjs/operators'
-import { TxState, TxStatus } from '@oasisdex/transactions'
+import { distinctUntilChanged, map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { TxStatus } from '@oasisdex/transactions'
 import { zero } from '../../helpers/zero'
+import { ContextConnected } from '../../blockchain/network'
+import { TxHelpers } from '../../components/AppContext'
+import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { TxMetaKind } from '../../blockchain/calls/txMeta'
 
 export enum ClaimTxnState {
   PENDING = 'PENDING',
@@ -12,7 +16,7 @@ export enum ClaimTxnState {
 
 type Bonus = { amountToClaim: BigNumber; symbol: string; name: string; moreInfoLink: string }
 
-type BonusViewModel = {
+export type BonusViewModel = {
   bonus?: Bonus // if undefined this CDP does not support rewards
   claimAll?: () => void
   claimTxnState?: ClaimTxnState
@@ -20,6 +24,46 @@ type BonusViewModel = {
 
 type ClaimCropData = {
   kind: 'ClaimCrop'
+}
+
+export function createSendCrop$(
+  context$: Observable<ContextConnected>,
+  txHelpers$: Observable<TxHelpers>,
+  vaultActions: VaultActionsLogicInterface,
+  proxyAddress$: (address: string) => Observable<string | undefined>,
+  ilk: string,
+  cdpId: BigNumber,
+): Observable<ClaimTxnState> {
+  const thing = combineLatest(txHelpers$, context$).pipe(
+    switchMap(([{ sendWithGasEstimation }, context]) => {
+      return proxyAddress$(context.account).pipe(
+        switchMap((proxyAddress) => {
+          return sendWithGasEstimation(vaultActions.claimReward, {
+            kind: TxMetaKind.claimReward,
+            proxyAddress: proxyAddress!,
+            gemJoinAddress: context.joins[ilk],
+            cdpId,
+          })
+        }),
+      )
+    }),
+  )
+  return thing.pipe(
+    map((txnState) => {
+      switch (txnState.status) {
+        case TxStatus.CancelledByTheUser:
+        case TxStatus.Failure:
+        case TxStatus.Error:
+          return ClaimTxnState.FAILED
+        case TxStatus.Propagating:
+        case TxStatus.WaitingForConfirmation:
+        case TxStatus.WaitingForApproval:
+          return ClaimTxnState.PENDING
+        case TxStatus.Success:
+          return ClaimTxnState.SUCCEEDED
+      }
+    }),
+  )
 }
 
 export function createBonusPipe$(
@@ -32,7 +76,7 @@ export function createBonusPipe$(
   sendCrop$: (ilk: string, cdpId: BigNumber) => Observable<ClaimTxnState>,
   cdpId: BigNumber,
 ): Observable<BonusViewModel> {
-  const vault$ = vaultResolver$(cdpId)
+  const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
   const bonus$: Observable<Bonus | undefined> = vault$.pipe(
     switchMap(({ ilk, urnAddress }) => {
