@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { RAY, SECONDS_PER_YEAR } from 'components/constants'
 import Web3 from 'web3'
 
-import { McdJug } from '../../types/web3-v1-contracts/mcd-jug'
+import { McdJug } from '../../types/web3-v1-contracts'
 import { CallDef } from './callsHelpers'
 
 export interface JugIlk {

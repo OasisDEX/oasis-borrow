@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-import { DssProxyActions } from '../../../../types/web3-v1-contracts/dss-proxy-actions'
+import { DssProxyActions } from '../../../../types/web3-v1-contracts'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,

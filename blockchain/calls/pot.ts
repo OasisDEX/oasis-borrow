@@ -4,7 +4,7 @@ import { SECONDS_PER_YEAR } from 'components/constants'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { McdPot } from '../../types/web3-v1-contracts/mcd-pot'
+import { McdPot } from '../../types/web3-v1-contracts'
 import { amountFromRay } from '../utils'
 import { CallDef } from './callsHelpers'
 

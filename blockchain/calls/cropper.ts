@@ -1,4 +1,4 @@
-import { DssCropper } from '../../types/web3-v1-contracts/dss-cropper'
+import { DssCropper } from '../../types/web3-v1-contracts'
 import { CallDef } from './callsHelpers'
 
 export const cropperUrnProxy: CallDef<string, string> = {

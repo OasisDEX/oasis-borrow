@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { DssCdpManager } from 'types/web3-v1-contracts/dss-cdp-manager'
+import { DssCdpManager } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
 import { CallDef } from './callsHelpers'

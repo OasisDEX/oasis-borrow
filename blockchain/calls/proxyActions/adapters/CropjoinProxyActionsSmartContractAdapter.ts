@@ -1,6 +1,6 @@
 import { ContractDesc } from '@oasisdex/web3-context'
 
-import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
+import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts'
 import { ContextConnected } from '../../../network'
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
 import { ProxyActionsAdapterType } from './ProxyActionsSmartContractAdapterInterface'

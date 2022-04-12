@@ -1,8 +1,7 @@
 import { ContractDesc } from '@oasisdex/web3-context'
+import { DssProxyActionsCharter, DssProxyActionsCropjoin } from 'types/web3-v1-contracts'
 import Web3 from 'web3'
 
-import { DssProxyActionsCharter } from '../../../../types/web3-v1-contracts/dss-proxy-actions-charter'
-import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
 import {
   NonPayableTransactionObject,
   PayableTransactionObject,

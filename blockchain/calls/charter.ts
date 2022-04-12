@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { RAD, RAY, WAD } from 'components/constants'
 import Web3 from 'web3'
 
-import { DssCharter } from '../../types/web3-v1-contracts/dss-charter'
+import { DssCharter } from '../../types/web3-v1-contracts'
 import { CallDef } from './callsHelpers'
 
 export const charterNib: CallDef<{ ilk: string; usr: string }, BigNumber> = {

@@ -1,6 +1,6 @@
 import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
-import { Erc20 } from 'types/web3-v1-contracts/erc20'
+import { Erc20 } from 'types/web3-v1-contracts'
 
 import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'

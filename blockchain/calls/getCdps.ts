@@ -1,4 +1,4 @@
-import { GetCdps } from 'types/web3-v1-contracts/get-cdps'
+import { GetCdps } from 'types/web3-v1-contracts'
 
 import { CallDef } from '../../blockchain/calls/callsHelpers'
 
