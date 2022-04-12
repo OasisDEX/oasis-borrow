@@ -25,7 +25,7 @@ export const getUnderlyingBalances: CallDef<
 > = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).methods.getUnderlyingBalances
+    return contract<GuniToken>(guniToken).interface.encodeFunctionData('getUnderlyingBalances')
   },
   prepareArgs: () => [],
   postprocess: ({ 0: amount0, 1: amount1 }: any, { token }) => {
@@ -43,7 +43,7 @@ export const getUnderlyingBalances: CallDef<
 export const getTotalSupply: CallDef<{ token: string }, BigNumber> = {
   call: ({ token }, { contract, tokens }) => {
     const guniToken = tokens[token]
-    return contract<GuniToken>(guniToken).methods.totalSupply
+    return contract<GuniToken>(guniToken).interface.encodeFunctionData('totalSupply')
   },
   prepareArgs: () => [],
   postprocess: (total: any, { token }) => {

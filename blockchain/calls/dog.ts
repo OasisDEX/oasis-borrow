@@ -12,7 +12,7 @@ export interface DogIlk {
 }
 
 export const dogIlk: CallDef<string, DogIlk> = {
-  call: (_, { contract, mcdDog }) => contract<McdDog>(mcdDog).methods.ilks,
+  call: (_, { contract, mcdDog }) => contract<McdDog>(mcdDog).ilks,
   prepareArgs: (collateralTypeName) => [Web3.utils.utf8ToHex(collateralTypeName)],
   postprocess: ({ clip, chop }: any) => ({
     liquidatorAddress: clip,

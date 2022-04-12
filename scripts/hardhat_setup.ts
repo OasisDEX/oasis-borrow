@@ -185,7 +185,7 @@ async function liquidateCDP(
   const flipper: McdFlip = new ethers.Contract(MCD_FLIP_ETH_A, flipAbi, provider).connect(
     signer,
   ) as any
-  const bidId = (await flipper['kicks()']()).toNumber()
+  const bidId = (await flipper['kicks']()).toNumber()
   const bid = await flipper['bids(uint256)'](bidId)
 
   // We will open a CDP to get DAI to pay for collateral
