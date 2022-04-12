@@ -90,6 +90,7 @@ export function GeneralManageLayout({
       <VaultBannersView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
+        heading={t('vault.header', { ilk: vault.ilk, id: vault.id })}
         headline={
           <VaultHeadline
             header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
