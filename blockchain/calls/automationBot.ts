@@ -32,7 +32,7 @@ function getAddAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.addTrigger(
+  return contract<AutomationBot>(automationBot).addTrigger(
     data.cdpId,
     data.triggerType,
     data.replacedTriggerId,
@@ -42,7 +42,7 @@ function getAddAutomationTriggerCallData(
 
 export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress))['execute(address,bytes)']
   },
   prepareArgs: (data, context) => [
     context.automationBot.address,
@@ -55,7 +55,7 @@ function getRemoveAutomationTriggerCallData(
   context: ContextConnected,
 ) {
   const { contract, automationBot } = context
-  return contract<AutomationBot>(automationBot).methods.removeTrigger(
+  return contract<AutomationBot>(automationBot).removeTrigger(
     data.cdpId,
     data.triggerId,
     data.removeAllowance,
@@ -64,7 +64,7 @@ function getRemoveAutomationTriggerCallData(
 
 export const removeAutomationBotTrigger: TransactionDef<AutomationBotRemoveTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
-    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress))['execute(address,bytes)']
   },
   prepareArgs: (data, context) => [
     context.automationBot.address,

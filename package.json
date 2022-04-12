@@ -36,6 +36,8 @@
     "release": "release-it"
   },
   "dependencies": {
+    "@ethereum-waffle/compiler": "^3.4.4",
+    "@ethersproject/abi": "^5.6.0",
     "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
     "@makerdao/dai-ui-icons": "^0.0.59",
     "@makerdao/dai-ui-icons-branding": "^0.0.66",
@@ -55,6 +57,7 @@
     "@storybook/storybook-deployer": "^2.8.10",
     "@theme-ui/style-guide": "^0.3.5",
     "@typechain/ethers-v5": "^10.0.0",
+    "@typechain/hardhat": "^6.0.0",
     "@typechain/web3-v1": "^6.0.0",
     "@typeform/embed-react": "^1.13.0",
     "@types/crypto-js": "^4.0.2",
@@ -142,7 +145,7 @@
     "zod": "^1.5.0"
   },
   "devDependencies": {
-    "@ethersproject/providers": "5.6.2",
+    "@ethersproject/providers": "^5.6.2",
     "@metamask/detect-provider": "^1.2.0",
     "@storybook/addon-essentials": "^6.4.19",
     "@storybook/addon-links": "^6.4.19",
@@ -203,7 +206,7 @@
     "eslint-plugin-storybook": "^0.5.7",
     "eslint-plugin-unused-imports": "^2.0.0",
     "ethereum-types": "^3.3.3",
-    "ethers": "5.6.2",
+    "ethers": "^5.6.2",
     "execa": "^1.0.0",
     "express": "^4.17.1",
     "hardhat": "^2.1.2",
