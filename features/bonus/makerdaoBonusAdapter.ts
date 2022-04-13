@@ -3,12 +3,12 @@ import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap, take } from 'rxjs/operators'
 
+import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
-import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (cdpId: BigNumber) => Observable<{ urnAddress: string; ilk: string }>,

@@ -1,4 +1,3 @@
-import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
 import { BehaviorSubject, Observable, of } from 'rxjs'
@@ -30,7 +29,7 @@ describe('bonusPipe', () => {
 
   describe('claiming the rewards', () => {
     it('calls claim interface and updates state when claiming', () => {
-      const claimAllStub = sinon.stub().returns(of(TxStatus.Propagating))
+      const claimAllStub = sinon.stub().returns(of(ClaimTxnState.PENDING))
       function bonusAdapterStub() {
         return {
           bonus$: of({
@@ -137,6 +136,27 @@ describe('bonusPipe', () => {
       state().claimAll!()
 
       expect(claimAllStub).to.have.been.calledOnce
+    })
+
+    it('allows user to claim again after a failed transaction', () => {
+      const claimAllStub = sinon.stub().returns(of(ClaimTxnState.FAILED))
+      const bonusPipe = createBonusPipe$(
+        () => ({
+          bonus$: of({
+            amountToClaim: new BigNumber(30),
+            symbol: 'CSH',
+            name: 'token name',
+            moreInfoLink: 'https://example.com',
+          }),
+          claimAll: claimAllStub,
+        }),
+        new BigNumber(123),
+      )
+      const state = getStateUnpacker(bonusPipe)
+
+      state().claimAll!()
+
+      expect(state().claimAll).to.not.be.undefined
     })
   })
 })

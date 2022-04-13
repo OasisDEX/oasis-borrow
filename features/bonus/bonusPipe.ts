@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { map, share, startWith, switchMap, tap } from 'rxjs/operators'
+import { combineLatest, Observable, Subject } from 'rxjs'
+import { map, share, startWith, switchMap } from 'rxjs/operators'
 
 import { zero } from '../../helpers/zero'
 
@@ -39,7 +39,7 @@ export function createBonusPipe$(
   )
 
   const claimTxnInProgress$ = claimTnxState$.pipe(
-    map((claimTxnState) => claimTxnState !== undefined),
+    map((claimTxnState) => claimTxnState === ClaimTxnState.PENDING),
   )
 
   function claimAllFun() {
