@@ -1,9 +1,10 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
-import { SetupBanner } from 'components/vault/SetupBanner'
+import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -11,6 +12,8 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { VaultViewMode } from 'components/VaultTabSwitch'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -109,10 +112,12 @@ export function ManageVaultDetails(
     stopLossTriggered,
   } = props
 
+  const { uiChanges } = useAppContext()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <Box>
@@ -160,16 +165,25 @@ export function ManageVaultDetails(
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
-      <Box sx={{ mt: 3 }}>
-        <SetupBanner
-          header="Set up Stop Loss"
-          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor."
-          button="Setup Stop Loss"
-          backgroundImage="/static/img/logo.svg"
-          backgroundColor="#FFEAEA"
-          backgroundColorEnd="#FFF5EA"
-        />
-      </Box>
+      {/* TODO: this is just an example, it should be removed or replaced with actual proper banner when basic buy would go live */}
+      {automationBasicBuyAndSellEnabled && (
+        <Box sx={{ mt: 3 }}>
+          <SetupBanner
+            header="Set up Stop Loss"
+            content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor."
+            button="Setup Stop Loss"
+            backgroundImage="/static/img/setup-banner/stop-loss.svg"
+            backgroundColor={setupBannerGradientPresets.stopLoss[0]}
+            backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
+            handleClick={() => {
+              uiChanges.publish(TAB_CHANGE_SUBJECT, {
+                type: 'change-tab',
+                currentMode: VaultViewMode.Protection,
+              })
+            }}
+          />
+        </Box>
+      )}
     </Box>
   )
 }
