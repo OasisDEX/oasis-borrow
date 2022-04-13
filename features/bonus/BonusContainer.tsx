@@ -5,14 +5,14 @@ import { Box, Button, Card, Heading, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { useObservable } from '../../helpers/observableHook'
-import { BonusViewModel, ClaimTxnState } from './bonusPipe'
+import { Bonus, ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {
   cdpId: BigNumber
 }
 
-function mapToBtnText(bonusViewModel: BonusViewModel): string {
-  switch (bonusViewModel.claimTxnState) {
+function mapToBtnText(claimTxnState?: ClaimTxnState): string {
+  switch (claimTxnState) {
     case undefined:
       return 'claim-rewards.claim-button.claim-rewards'
     case ClaimTxnState.PENDING:
@@ -20,10 +20,40 @@ function mapToBtnText(bonusViewModel: BonusViewModel): string {
     case ClaimTxnState.SUCCEEDED:
       return 'Success'
     case ClaimTxnState.FAILED:
-      return 'Failed'
+      return 'Failed - click to try again'
     default:
-      throw new Error(`unrecognised transaction state ${bonusViewModel.claimTxnState}`)
+      throw new Error(`unrecognised transaction state ${claimTxnState}`)
   }
+}
+
+function getUnclaimedBonusText(t: (key: string, args?: any) => string, bonus: Bonus) {
+  return (
+    <Text
+      mt={3}
+      sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
+    >
+      {t('claim-rewards.text1', {
+        bonusTokenName: bonus.name,
+        bonusAmount: bonus.amountToClaim.toFixed(0) + bonus.symbol,
+      })}{' '}
+      <a href={bonus.moreInfoLink} target="_blank">
+        {t('claim-rewards.link-text')}
+      </a>
+      {t('claim-rewards.text2')}
+    </Text>
+  )
+}
+
+function claimedBonusText(t: (key: string, args?: any) => string, bonus: Bonus) {
+  return (
+    <Text
+      mt={3}
+      sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
+    >
+      You have claimed {bonus.amountToClaim.toFixed(0) + bonus.symbol}. It may take a few minutes
+      for your position to update.
+    </Text>
+  )
 }
 
 export function BonusContainer(props: BonusContainerProps) {
@@ -31,6 +61,7 @@ export function BonusContainer(props: BonusContainerProps) {
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
   if (bonusViewModel && bonusViewModel.bonus) {
+    const { bonus, claimAll, claimTxnState } = bonusViewModel
     return (
       <Card sx={{ borderRadius: 'large', border: 'lightMuted', mt: 3, padding: 3 }}>
         <Box sx={{ margin: 2 }}>
@@ -38,33 +69,17 @@ export function BonusContainer(props: BonusContainerProps) {
             variant="header4"
             sx={{ fontSize: '18px', lineHeight: '28px', fontWeight: '600', color: '#25273D' }}
           >
-            {t('claim-rewards.title', { bonusTokenName: bonusViewModel.bonus.name })}
+            {t('claim-rewards.title', { bonusTokenName: bonus.name })}
           </Heading>
-          <Text
-            mt={3}
-            sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
-          >
-            {t('claim-rewards.text1', {
-              bonusTokenName: bonusViewModel.bonus.name,
-              bonusAmount:
-                bonusViewModel.bonus.amountToClaim.toString() + bonusViewModel.bonus.symbol,
-            })}{' '}
-            <a href={bonusViewModel.bonus.moreInfoLink} target="_blank">
-              {t('claim-rewards.link-text')}
-            </a>
-            {t('claim-rewards.text2')}
-          </Text>
-          <Button
-            disabled={!bonusViewModel.claimAll}
-            variant="secondary"
-            mt={3}
-            onClick={bonusViewModel.claimAll}
-          >
-            {t(mapToBtnText(bonusViewModel))}
+          {claimTxnState !== ClaimTxnState.SUCCEEDED
+            ? getUnclaimedBonusText(t, bonus)
+            : claimedBonusText(t, bonus)}
+          <Button disabled={!claimAll} variant="secondary" mt={3} onClick={claimAll}>
+            {t(mapToBtnText(claimTxnState))}
           </Button>
         </Box>
       </Card>
     )
   }
-  return <>hello</>
+  return <>Bonus not supported</>
 }
