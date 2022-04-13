@@ -11,7 +11,8 @@ type SurveyConfig = { id: string; title: string; color: string }
 export function SurveyButtons({ id, title, color }: SurveyConfig) {
   const breakpoint = useBreakpointIndex()
 
-  const [wasClosed, setWasOpenedAndClosed] = useLocalStorage(`survey-${id}-was-closed`, false)
+  const [closedSurveys, setClosedSurveys] = useLocalStorage('closed-surveys', [])
+  const wasClosed = closedSurveys.includes(id)
 
   return (
     <>
@@ -32,7 +33,7 @@ export function SurveyButtons({ id, title, color }: SurveyConfig) {
             id={id}
             buttonColor={color}
             shareGaInstance={true}
-            onClose={() => setWasOpenedAndClosed(true)}
+            onClose={() => setClosedSurveys([...closedSurveys, id])}
           />
         </>
       )}
@@ -42,7 +43,7 @@ export function SurveyButtons({ id, title, color }: SurveyConfig) {
           buttonText={title}
           buttonColor={color}
           shareGaInstance={true}
-          onClose={() => setWasOpenedAndClosed(true)}
+          onClose={() => setClosedSurveys([...closedSurveys, id])}
         >
           {title}
         </Sidetab>
