@@ -37,6 +37,7 @@
     "func-style": ["error", "declaration"],
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/no-useless-constructor": "error",
+    "@typescript-eslint/no-unnecessary-condition": "warn",
     "accessor-pairs": "error",
     "constructor-super": "error",
     "eqeqeq": [
