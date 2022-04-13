@@ -1,7 +1,7 @@
 import { createOrUpdate } from 'handlers/vault/createOrUpdate'
 import { apply } from 'helpers/apply'
 import { NextApiHandler } from 'next'
-import { userJwt } from 'server/jwt'
+import { userJwt } from 'helpers/useJwt'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
