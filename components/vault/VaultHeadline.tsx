@@ -85,9 +85,9 @@ export function VaultHeadline({
   return (
     <Flex
       sx={{
-        flexDirection: ['column', 'column', 'column', 'row'],
+        flexDirection: ['column', null, null, 'row'],
         justifyContent: 'space-between',
-        alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-end'],
+        alignItems: ['flex-start', null, null, 'flex-end'],
         mb: 4,
       }}
     >
@@ -105,7 +105,7 @@ export function VaultHeadline({
       </Heading>
       <Flex
         sx={{
-          mt: ['24px', '24px', '24px', 0],
+          mt: ['24px', null, null, 0],
           flexDirection: ['column', 'row'],
         }}
       >
