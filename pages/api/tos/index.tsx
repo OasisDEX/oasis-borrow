@@ -1,7 +1,7 @@
 import { sign } from 'handlers/tos/sign'
 import { apply } from 'helpers/apply'
-import { NextApiHandler } from 'next'
 import { userJwt } from 'helpers/useJwt'
+import { NextApiHandler } from 'next'
 
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
