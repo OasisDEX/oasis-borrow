@@ -111,7 +111,7 @@ describe('makerdaoBonusAdapter', () => {
       testCases.forEach(({ txStatus, claimTxStatus }) => {
         const txHelpersMock = {
           ...protoTxHelpers,
-          sendWithGasEstimation: sinon.stub().returns(of(txStatus)),
+          sendWithGasEstimation: sinon.stub().returns(of({ status: txStatus })),
         }
 
         const makerdaoBonusAdapter = createMakerdaoBonusAdapter(

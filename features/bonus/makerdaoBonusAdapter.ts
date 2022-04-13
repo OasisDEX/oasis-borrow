@@ -1,4 +1,4 @@
-import { TxStatus } from '@oasisdex/transactions'
+import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap, take } from 'rxjs/operators'
@@ -8,6 +8,7 @@ import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
+import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (cdpId: BigNumber) => Observable<{ urnAddress: string; ilk: string }>,
@@ -63,8 +64,8 @@ export function createMakerdaoBonusAdapter(
             })
           }),
           map(
-            (txnState: TxStatus): ClaimTxnState => {
-              switch (txnState) {
+            (txnState: TxState<ClaimRewardData>): ClaimTxnState => {
+              switch (txnState.status) {
                 case TxStatus.CancelledByTheUser:
                 case TxStatus.Failure:
                 case TxStatus.Error:

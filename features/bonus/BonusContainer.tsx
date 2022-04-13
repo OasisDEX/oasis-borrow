@@ -20,7 +20,7 @@ function mapToBtnText(bonusViewModel: BonusViewModel): string {
     case ClaimTxnState.SUCCEEDED:
       return 'Success'
     case ClaimTxnState.FAILED:
-      return ''
+      return 'Failed'
     default:
       throw new Error(`unrecognised transaction state ${bonusViewModel.claimTxnState}`)
   }

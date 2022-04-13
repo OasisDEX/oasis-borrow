@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { map, share, startWith, switchMap } from 'rxjs/operators'
+import { map, share, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { zero } from '../../helpers/zero'
 
@@ -28,12 +28,11 @@ export function createBonusPipe$(
   cdpId: BigNumber,
 ): Observable<BonusViewModel> {
   const { bonus$, claimAll } = bonusAdapter(cdpId)
-
   const claimClick$ = new Subject<void>()
 
   const claimTnxState$: Observable<ClaimTxnState | undefined> = claimClick$.pipe(
     switchMap(() => {
-      return claimAll ? claimAll() : of(undefined)
+      return claimAll()
     }),
     share(),
     startWith(undefined),
