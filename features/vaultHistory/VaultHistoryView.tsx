@@ -231,6 +231,7 @@ function VaultHistoryItem({
   const [opened, setOpened] = useState(false)
   const translation = getHistoryEventTranslation(t, item)
   const date = moment(item.timestamp)
+  console.log(item)
 
   const isMultiplyEvent =
     item.kind === 'OPEN_MULTIPLY_VAULT' ||
@@ -242,54 +243,57 @@ function VaultHistoryItem({
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
-    <Card
+    <Box
       sx={{
-        borderRadius: 'mediumLarge',
-        border: 'lightMuted',
-        boxShadow: 'vaultHistoryItem',
-        fontSize: 2,
-        display: 'grid',
-        p: [2, 3],
-        minWidth: ['100%', '400px', '475px'],
+        borderBottom: '1px solid',
+        borderBottomColor: 'border',
+        '&:last-child': {
+          borderBottom: 'none',
+        },
       }}
     >
-      <Box sx={{ p: [1, 2], cursor: 'pointer' }} onClick={() => setOpened(!opened)}>
+      <Flex
+        sx={{
+          px: 2,
+          py: 3,
+          justifyContent: 'space-between',
+          alignItems: ['flex-start', null, null, 'center'],
+          width: '100%',
+          cursor: 'pointer',
+        }}
+        onClick={() => setOpened(!opened)}
+      >
         <Flex
           sx={{
             justifyContent: 'space-between',
-            alignItems: ['flex-start', null, null, 'center'],
-            width: '100%',
+            flex: 1,
+            gap: 1,
+            flexDirection: ['column', null, null, 'row'],
+            mr: 2,
+            fontSize: 2,
           }}
         >
-          <Flex
-            sx={{
-              justifyContent: 'space-between',
-              flex: 1,
-              gap: [1, 3],
-              flexDirection: ['column', null, null, 'row'],
-            }}
+          <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
+            {interpolate(translation, {
+              0: ({ children }) => <Text as="span">{children}</Text>,
+            })}
+          </Text>
+          <Text
+            as="time"
+            sx={{ color: 'text.subtitle', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}
           >
-            <Text sx={{ fontWeight: 'semiBold' }}>
-              {interpolate(translation, {
-                0: ({ children }) => <Text as="span">{children}</Text>,
-              })}
-            </Text>
-            <Text
-              sx={{ color: 'text.subtitle', whiteSpace: 'nowrap', mr: 2, fontWeight: 'medium' }}
-            >
-              {date.format('MMM DD, YYYY, h:mma')}
-            </Text>
-          </Flex>
-          <Icon
-            name={`chevron_${opened ? 'up' : 'down'}`}
-            size="auto"
-            width="12px"
-            height="7px"
-            color="text.subtitle"
-            sx={{ position: 'relative', top: ['5px', null, null, '0px'] }}
-          />
+            {date.format('MMM DD, YYYY, h:mma')}
+          </Text>
         </Flex>
-      </Box>
+        <Icon
+          name={`chevron_${opened ? 'up' : 'down'}`}
+          size="auto"
+          width="12px"
+          height="7px"
+          color="text.subtitle"
+          sx={{ position: 'relative', top: [2, null, null, '1px'] }}
+        />
+      </Flex>
       {opened && (
         <Box p={[1, 2]}>
           {isMultiplyEvent && <MultiplyHistoryEventDetails {...item} />}
@@ -312,7 +316,7 @@ function VaultHistoryItem({
           </Flex>
         </Box>
       )}
-    </Card>
+    </Box>
   )
 }
 
@@ -324,20 +328,23 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const spitedEvents = flatten(vaultHistory.map(splitEvents))
 
   return (
-    <Box>
-      <Heading variant="header3" sx={{ mb: [4, 3] }}>
+    <Card
+      sx={{
+        p: 4,
+        border: 'lightMuted',
+      }}
+    >
+      <Heading variant="headerSettings" sx={{ mb: 3 }}>
         {t('vault-history')}
       </Heading>
-      <Grid gap={2}>
-        {spitedEvents.map((item) => (
-          <VaultHistoryItem
-            item={item}
-            etherscan={context?.etherscan}
-            ethtx={context?.ethtx}
-            key={`${item.id}${`-${item.splitId}` || ''}`}
-          />
-        ))}
-      </Grid>
-    </Box>
+      {spitedEvents.map((item) => (
+        <VaultHistoryItem
+          item={item}
+          etherscan={context?.etherscan}
+          ethtx={context?.ethtx}
+          key={`${item.id}${`-${item.splitId}` || ''}`}
+        />
+      ))}
+    </Card>
   )
 }
