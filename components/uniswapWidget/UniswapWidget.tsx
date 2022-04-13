@@ -1,9 +1,10 @@
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Button, Flex, Image, Text } from 'theme-ui'
@@ -363,11 +364,16 @@ export function UniswapWidget() {
             alignItems: 'center',
           }}
         >
-          <Box sx={{ textAlign: 'center', px: 3 }}>
+          <Box sx={{ textAlign: 'center', px: 2 }}>
             <Text variant="headerSettings" sx={{ mb: 2 }}>
               {t('exchange.onboarding.title')}
             </Text>
-            <Text variant="paragraph3">{t('exchange.onboarding.body')}</Text>
+            <Text variant="paragraph3">
+              <Trans
+                i18nKey="exchange.onboarding.body"
+                components={[<AppLink href={t('exchange.onboarding.faq-url')} />]}
+              />
+            </Text>
           </Box>
           <OnboardingGraphic />
           <Button sx={{ width: '100%' }} onClick={() => setAsOnboarded()}>
