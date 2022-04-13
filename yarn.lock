@@ -7885,10 +7885,10 @@
     "@uniswap/v3-core" "1.0.0"
     "@uniswap/v3-periphery" "^1.0.1"
 
-"@uniswap/widgets@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-1.0.0.tgz#3a3d1fe5d391299152d5fc50296367d114b2d056"
-  integrity sha512-jr4+KC/4G6qnrjvIvi4Bcox1SAUH/2Jz7S38FlfbotGpavVBBeTApGiHWGUJwRtjisSfi89JcpmqdQeovCPtGQ==
+"@uniswap/widgets@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@uniswap/widgets/-/widgets-1.0.6.tgz#8df4a2d1865e68b1effa5066f166cf6d7917bc0a"
+  integrity sha512-y/2VNHoK4uUV4oHw5WZMTUljKvLM67GXsiqXsFM69KQcQM58IR23hJ8B0YvMdNSdT1qHqEqwCTIcXU0RK8t9Lw==
   dependencies:
     "@babel/runtime" "^7.17.0"
     "@fontsource/ibm-plex-mono" "^4.5.1"

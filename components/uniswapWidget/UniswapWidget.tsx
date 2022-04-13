@@ -29,7 +29,7 @@ function scrollbarBg(hexColor: string) {
 
 const cssPaths = (() => {
   const main = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
-  const tokenSel = 'div > div:nth-of-type(1)'
+  const tokenSelAndSettings = 'div > div:nth-of-type(1)'
 
   return {
     main: {
@@ -42,10 +42,13 @@ const cssPaths = (() => {
     // token select
     tokenSel: {
       // hoverAppended is for expanding the hover effect through the scrollbar (we'll hide it)
-      hoverAppended: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
-      option: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
-      search: `${tokenSel} input[inputmode=text]`,
-      scrollbar: `${tokenSel} .scrollbar`,
+      hoverAppended: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
+      option: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
+      search: `${tokenSelAndSettings} input[inputmode=text]`,
+      scrollbar: `${tokenSelAndSettings} .scrollbar`,
+    },
+    settings: {
+      tooltip: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1).caption`,
     },
   }
 })()
@@ -56,7 +59,7 @@ export function UniswapWidget() {
   const web3Provider =
     web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
-  const { main, tokenSel } = cssPaths
+  const { main, tokenSel, settings } = cssPaths
 
   if (!web3Provider) {
     return null
@@ -95,6 +98,9 @@ export function UniswapWidget() {
             background: scrollbarBg('#A8A9B1'),
             backgroundClip: 'padding-box',
           },
+        },
+        [settings.tooltip]: {
+          display: 'block',
         },
       }}
       css={`
