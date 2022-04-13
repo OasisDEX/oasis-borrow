@@ -1,15 +1,16 @@
-import { ClaimTxnState } from './bonusPipe'
-import { of } from 'rxjs'
-import BigNumber from 'bignumber.js'
-import { getStateUnpacker } from '../../helpers/testHelpers'
-import { expect } from 'chai'
-import { createMakerdaoBonusAdapter } from './makerdaoBonusAdapter'
-import { mockContextConnected } from '../../helpers/mocks/context.mock'
-import { protoTxHelpers } from '../../components/AppContext'
-import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
-import sinon from 'sinon'
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
+import { of } from 'rxjs'
+import sinon from 'sinon'
+
+import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
+import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { protoTxHelpers } from '../../components/AppContext'
+import { mockContextConnected } from '../../helpers/mocks/context.mock'
+import { getStateUnpacker } from '../../helpers/testHelpers'
+import { ClaimTxnState } from './bonusPipe'
+import { createMakerdaoBonusAdapter } from './makerdaoBonusAdapter'
 
 describe('makerdaoBonusAdapter', () => {
   describe('retrieving bonuses', () => {

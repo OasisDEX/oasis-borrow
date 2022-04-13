@@ -1,12 +1,13 @@
-import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
-import { map, switchMap, take, tap } from 'rxjs/operators'
-import { combineLatest, Observable } from 'rxjs'
+import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { combineLatest, Observable } from 'rxjs'
+import { map, switchMap, take } from 'rxjs/operators'
+
+import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
-import { TxMetaKind } from '../../blockchain/calls/txMeta'
-import { TxStatus } from '@oasisdex/transactions'
-import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (cdpId: BigNumber) => Observable<{ urnAddress: string; ilk: string }>,
@@ -49,7 +50,7 @@ export function createMakerdaoBonusAdapter(
     }),
   )
 
-  const claimAll = (): Observable<ClaimTxnState> => {
+  function claimAll(): Observable<ClaimTxnState> {
     return combineLatest(txHelpers$, context$, vault$).pipe(
       switchMap(([{ sendWithGasEstimation }, context, { ilk }]) => {
         return proxyAddress$(context.account).pipe(

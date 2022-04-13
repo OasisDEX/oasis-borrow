@@ -1,6 +1,7 @@
-import { combineLatest, Observable, of, Subject } from 'rxjs'
 import BigNumber from 'bignumber.js'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { map, share, startWith, switchMap } from 'rxjs/operators'
+
 import { zero } from '../../helpers/zero'
 
 export enum ClaimTxnState {
@@ -15,10 +16,6 @@ export type BonusViewModel = {
   bonus?: Bonus // if undefined this CDP does not support rewards
   claimAll?: () => void
   claimTxnState?: ClaimTxnState
-}
-
-type ClaimCropData = {
-  kind: 'ClaimCrop'
 }
 
 export type BonusAdapter = {

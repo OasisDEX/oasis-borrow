@@ -111,15 +111,7 @@ import {
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import {
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  shareReplay,
-  switchMap,
-  tap,
-} from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   cropperBonusTokenAddress,
@@ -138,13 +130,15 @@ import {
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
 import { observe } from '../blockchain/calls/observe'
+import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
-  ClaimRewardData,
 } from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
+import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
@@ -157,6 +151,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { createMakerdaoBonusAdapter } from '../features/bonus/makerdaoBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
@@ -180,10 +176,6 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { createBonusPipe$ } from '../features/bonus/bonusPipe'
-import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
-import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
-import { createMakerdaoBonusAdapter } from '../features/bonus/makerdaoBonusAdapter'
 
 export type TxData =
   | OpenData

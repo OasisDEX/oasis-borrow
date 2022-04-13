@@ -249,6 +249,6 @@ export const StandardDssProxyActionsContractAdapter: ProxyActionsSmartContractAd
     _context: ContextConnected,
     _data: ClaimRewardData,
   ): NonPayableTransactionObject<void> {
-    throw 'standard vaults do not support claiming rewards/bonuses'
+    throw new Error('standard vaults do not support claiming rewards/bonuses')
   },
 }

@@ -1,13 +1,13 @@
 import { ContractDesc } from '@oasisdex/web3-context'
 
 import { DssProxyActionsCropjoin } from '../../../../types/web3-v1-contracts/dss-proxy-actions-cropjoin'
+import { NonPayableTransactionObject } from '../../../../types/web3-v1-contracts/types'
 import { ContextConnected } from '../../../network'
 import { ManagerlessProxyActionsContractAdapter } from './ManagerlessProxyActionsAdapter'
 import {
   ClaimRewardData,
   ProxyActionsAdapterType,
 } from './ProxyActionsSmartContractAdapterInterface'
-import { NonPayableTransactionObject } from '../../../../types/web3-v1-contracts/types'
 
 export class CropjoinProxyActionsContractAdapter extends ManagerlessProxyActionsContractAdapter<
   DssProxyActionsCropjoin

@@ -1,11 +1,11 @@
-import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
-import { BehaviorSubject, Observable, of } from 'rxjs'
-import BigNumber from 'bignumber.js'
-import { getStateUnpacker } from '../../helpers/testHelpers'
-import { expect } from 'chai'
-import { zero } from '../../helpers/zero'
-import sinon from 'sinon'
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
+import { BehaviorSubject, Observable, of } from 'rxjs'
+import sinon from 'sinon'
+
+import { getStateUnpacker } from '../../helpers/testHelpers'
+import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
@@ -14,7 +14,7 @@ describe('bonusPipe', () => {
         () => ({
           bonus$: of(undefined),
           claimAll: () => {
-            throw 'unimplemented'
+            throw new Error('unimplemented')
           },
         }),
         new BigNumber(123),
@@ -31,15 +31,17 @@ describe('bonusPipe', () => {
   describe('claiming the rewards', () => {
     it('calls claim interface and updates state when claiming', () => {
       const claimAllStub = sinon.stub().returns(of(TxStatus.Propagating))
-      const bonusAdapterStub = () => ({
-        bonus$: of({
-          amountToClaim: new BigNumber(30),
-          symbol: 'CSH',
-          name: 'token name',
-          moreInfoLink: 'https://example.com',
-        }),
-        claimAll: claimAllStub,
-      })
+      function bonusAdapterStub() {
+        return {
+          bonus$: of({
+            amountToClaim: new BigNumber(30),
+            symbol: 'CSH',
+            name: 'token name',
+            moreInfoLink: 'https://example.com',
+          }),
+          claimAll: claimAllStub,
+        }
+      }
       const bonusAdapterSpy = sinon.spy(bonusAdapterStub)
       const bonusPipe = createBonusPipe$(bonusAdapterSpy, new BigNumber(123))
       const state = getStateUnpacker(bonusPipe)
@@ -96,7 +98,7 @@ describe('bonusPipe', () => {
         () => ({
           bonus$: bonusMock$,
           claimAll: () => {
-            throw 'not implemented'
+            throw new Error('not implemented')
           },
         }),
         new BigNumber(123),

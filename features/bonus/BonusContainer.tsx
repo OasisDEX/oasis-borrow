@@ -1,9 +1,10 @@
-import { useObservable } from '../../helpers/observableHook'
-import { useAppContext } from '../../components/AppContextProvider'
 import BigNumber from 'bignumber.js'
-import { Box, Button, Card, Heading, Text } from 'theme-ui'
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Box, Button, Card, Heading, Text } from 'theme-ui'
+
+import { useAppContext } from '../../components/AppContextProvider'
+import { useObservable } from '../../helpers/observableHook'
 import { BonusViewModel, ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {
@@ -21,7 +22,7 @@ function mapToBtnText(bonusViewModel: BonusViewModel): string {
     case ClaimTxnState.FAILED:
       return ''
     default:
-      throw `unrecognised transaction state ${bonusViewModel.claimTxnState}`
+      throw new Error(`unrecognised transaction state ${bonusViewModel.claimTxnState}`)
   }
 }
 
