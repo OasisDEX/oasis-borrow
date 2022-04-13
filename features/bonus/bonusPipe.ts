@@ -23,7 +23,7 @@ type ClaimCropData = {
 
 export type BonusAdapter = {
   bonus$: Observable<Bonus | undefined>
-  claimAll: (() => Observable<ClaimTxnState>) | undefined
+  claimAll: () => Observable<ClaimTxnState>
 }
 
 export function createBonusPipe$(

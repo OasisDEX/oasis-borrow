@@ -180,9 +180,10 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { ClaimTxnState, createBonusPipe$, createSendCrop$ } from '../features/bonus/bonusPipe'
+import { createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
+import { createMakerdaoBonusAdapter } from '../features/bonus/makerdaoBonusAdapter'
 
 export type TxData =
   | OpenData
@@ -489,33 +490,26 @@ export function setupAppContext() {
     proxyOwner$,
   )
 
-  const sendCrop$ = memoize(
-    (ilk: string, cdpId: BigNumber) =>
-      createSendCrop$(
-        connectedContext$,
-        txHelpers$,
-        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
-        proxyAddress$,
-        ilk,
-        cdpId,
-      ),
-    (ilk, cdpId) => {
-      return ilk + bigNumberTostring(cdpId)
-    },
-  )
-
-  const bonus$ = memoize(
+  const bonusAdapter = memoize(
     (cdpId: BigNumber) =>
-      createBonusPipe$(
+      createMakerdaoBonusAdapter(
         urnResolver$,
         cropperCrops$,
         cropperBonusTokenAddress$,
         tokenDecimals$,
         tokenSymbol$,
         tokenName$,
-        sendCrop$,
+        connectedContext$,
+        txHelpers$,
+        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
+        proxyAddress$,
         cdpId,
       ),
+    bigNumberTostring,
+  )
+
+  const bonus$ = memoize(
+    (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
     bigNumberTostring,
   )
 

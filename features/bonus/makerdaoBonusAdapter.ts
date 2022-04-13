@@ -1,12 +1,12 @@
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
-import { map, switchMap, take } from 'rxjs/operators'
+import { map, switchMap, take, tap } from 'rxjs/operators'
 import { combineLatest, Observable } from 'rxjs'
 import BigNumber from 'bignumber.js'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
 import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { TxStatus } from '@oasisdex/transactions'
-import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogicInterface'
+import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (cdpId: BigNumber) => Observable<{ urnAddress: string; ilk: string }>,
@@ -61,20 +61,23 @@ export function createMakerdaoBonusAdapter(
               cdpId,
             })
           }),
-          map((txnState) => {
-            switch (txnState.status) {
-              case TxStatus.CancelledByTheUser:
-              case TxStatus.Failure:
-              case TxStatus.Error:
-                return ClaimTxnState.FAILED
-              case TxStatus.Propagating:
-              case TxStatus.WaitingForConfirmation:
-              case TxStatus.WaitingForApproval:
-                return ClaimTxnState.PENDING
-              case TxStatus.Success:
-                return ClaimTxnState.SUCCEEDED
-            }
-          }),
+          map(
+            (txnState: TxStatus): ClaimTxnState => {
+              switch (txnState) {
+                case TxStatus.CancelledByTheUser:
+                case TxStatus.Failure:
+                case TxStatus.Error:
+                  return ClaimTxnState.FAILED
+                case TxStatus.Propagating:
+                case TxStatus.WaitingForConfirmation:
+                case TxStatus.WaitingForApproval:
+                case undefined:
+                  return ClaimTxnState.PENDING
+                case TxStatus.Success:
+                  return ClaimTxnState.SUCCEEDED
+              }
+            },
+          ),
         )
       }),
     )
