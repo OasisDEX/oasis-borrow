@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
@@ -16,9 +15,9 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
+import { ChevronUpDown } from '../../../../components/ChevronUpDown'
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
-import { ChevronUpDown } from '../../../../components/ChevronUpDown'
 
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
