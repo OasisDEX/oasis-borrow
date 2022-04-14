@@ -117,13 +117,6 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
               {formatCryptoBalance(event.depositCollateral)} {event.token}
             </MultiplyHistoryEventDetailsItem>
           )}
-        {event.kind === 'INCREASE_MULTIPLE' &&
-          'depositDai' in event &&
-          event.depositDai.gt(zero) && (
-            <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
-              {formatCryptoBalance(event.depositDai)} DAI
-            </MultiplyHistoryEventDetailsItem>
-          )}
         {(event.kind === 'DECREASE_MULTIPLE' || closeEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
             {'sold' in event && formatCryptoBalance(event.sold)}{' '}
@@ -135,14 +128,6 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
           event.withdrawnCollateral.gt(zero) && (
             <MultiplyHistoryEventDetailsItem label={t('history.withdrawn')}>
               {formatCryptoBalance(event.withdrawnCollateral)} {event.token}
-            </MultiplyHistoryEventDetailsItem>
-          )}
-        {event.kind === 'DECREASE_MULTIPLE' &&
-          'withdrawnDai' in event &&
-          event.withdrawnDai.gt(zero) &&
-          event.withdrawnCollateral.isZero() && (
-            <MultiplyHistoryEventDetailsItem label={t('history.withdrawn')}>
-              {formatCryptoBalance(event.withdrawnDai)} DAI
             </MultiplyHistoryEventDetailsItem>
           )}
         {!(closeEvent && guniVaultEvent) && (
