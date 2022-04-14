@@ -60,6 +60,7 @@ export function BonusContainer(props: BonusContainerProps) {
   const { bonus$ } = useAppContext()
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
+  // console.log(bonusViewModel)
   if (bonusViewModel && bonusViewModel.bonus) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
     return (

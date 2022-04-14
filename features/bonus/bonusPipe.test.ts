@@ -12,9 +12,7 @@ describe('bonusPipe', () => {
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: of(undefined),
-          claimAll: () => {
-            throw new Error('unimplemented')
-          },
+          claimAll$: of(undefined),
         }),
         new BigNumber(123),
       )
@@ -38,7 +36,7 @@ describe('bonusPipe', () => {
             name: 'token name',
             moreInfoLink: 'https://example.com',
           }),
-          claimAll: claimAllStub,
+          claimAll$: of(claimAllStub),
         }
       }
       const bonusAdapterSpy = sinon.spy(bonusAdapterStub)
@@ -64,7 +62,7 @@ describe('bonusPipe', () => {
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: bonusMock$,
-          claimAll: claimAllStub,
+          claimAll$: of(claimAllStub),
         }),
         new BigNumber(123),
       )
@@ -96,9 +94,7 @@ describe('bonusPipe', () => {
       const bonusPipe = createBonusPipe$(
         () => ({
           bonus$: bonusMock$,
-          claimAll: () => {
-            throw new Error('not implemented')
-          },
+          claimAll$: of(undefined),
         }),
         new BigNumber(123),
       )
@@ -127,7 +123,7 @@ describe('bonusPipe', () => {
             name: 'token name',
             moreInfoLink: 'https://example.com',
           }),
-          claimAll: claimAllStub,
+          claimAll$: of(claimAllStub),
         }),
         new BigNumber(123),
       )
@@ -148,7 +144,7 @@ describe('bonusPipe', () => {
             name: 'token name',
             moreInfoLink: 'https://example.com',
           }),
-          claimAll: claimAllStub,
+          claimAll$: of(claimAllStub),
         }),
         new BigNumber(123),
       )
@@ -157,6 +153,24 @@ describe('bonusPipe', () => {
       state().claimAll!()
 
       expect(state().claimAll).to.not.be.undefined
+    })
+
+    it('does not allow user to claim without a claim function', () => {
+      const bonusPipe = createBonusPipe$(
+        () => ({
+          bonus$: of({
+            amountToClaim: new BigNumber(30),
+            symbol: 'CSH',
+            name: 'token name',
+            moreInfoLink: 'https://example.com',
+          }),
+          claimAll$: of(undefined),
+        }),
+        new BigNumber(123),
+      )
+      const state = getStateUnpacker(bonusPipe)
+
+      expect(state().claimAll).to.be.undefined
     })
   })
 })

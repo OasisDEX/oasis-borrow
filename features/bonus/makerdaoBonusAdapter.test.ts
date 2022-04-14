@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { of } from 'rxjs'
+import { NEVER, of } from 'rxjs'
 import sinon from 'sinon'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
@@ -11,12 +11,14 @@ import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerdaoBonusAdapter } from './makerdaoBonusAdapter'
+import { mockWeb3Context$ } from '../../helpers/mocks/web3Context.mock'
+import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver'
 
 describe('makerdaoBonusAdapter', () => {
   describe('retrieving bonuses', () => {
     it('pipes the decimals and symbol correctly', () => {
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
-        () => of({ urnAddress: '0xUrnAddress', ilk: 'ILKYILK-A' }),
+        () => createMockVaultResolver$(),
         () => of(new BigNumber('34845377488320063721')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
@@ -30,23 +32,24 @@ describe('makerdaoBonusAdapter', () => {
       )
 
       const bonusStreamState = getStateUnpacker(makerdaoBonusAdapter.bonus$)
+      const claimFuncStreamState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)
 
       expect(bonusStreamState()?.symbol).eq('CSH')
       expect(bonusStreamState()?.name).eq('token name')
       expect(bonusStreamState()?.amountToClaim.toFixed(0)).eq('35')
-      expect(makerdaoBonusAdapter.claimAll).to.exist
+      expect(claimFuncStreamState).to.exist
     })
 
     it('returns undefined if the CDP does not support bonuses')
   })
 
   describe('claiming bonuses', () => {
-    it('passes correct args to proxy actions call', () => {
+    it('passes correct args to proxy actions call when calling stream', () => {
       const txHelpersMock = { ...protoTxHelpers, sendWithGasEstimation: sinon.spy() }
 
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
-        () => of({ urnAddress: '0xUrnAddress', ilk: 'ETH-A' }),
+        () => createMockVaultResolver$(),
         () => of(new BigNumber('34845377488320063721')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
@@ -59,7 +62,8 @@ describe('makerdaoBonusAdapter', () => {
         new BigNumber(123),
       )
 
-      getStateUnpacker(makerdaoBonusAdapter.claimAll!())
+      const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+      getStateUnpacker(claimAllCbState!())
 
       expect(txHelpersMock.sendWithGasEstimation).to.have.been.calledWith(
         sinon.match(mockVaultActions.claimReward),
@@ -115,7 +119,7 @@ describe('makerdaoBonusAdapter', () => {
         }
 
         const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
-          () => of({ urnAddress: '0xUrnAddress', ilk: 'ETH-A' }),
+          () => createMockVaultResolver$(),
           () => of(new BigNumber('34845377488320063721')),
           () => of('0xTokenAddress'),
           () => of(new BigNumber(18)),
@@ -128,13 +132,54 @@ describe('makerdaoBonusAdapter', () => {
           new BigNumber(123),
         )
 
-        const claimRewardState = getStateUnpacker(makerdaoBonusAdapter.claimAll())
+        const claimRewardFunc$ = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+        const claimRewardState = getStateUnpacker(claimRewardFunc$!())
 
         expect(
           claimRewardState(),
           `TxStatus ${txStatus} should map to ClaimTxnState ${claimTxStatus}`,
         ).to.equal(claimTxStatus)
       })
+    })
+
+    it('does not provide claim function if there is no wallet connected', () => {
+      const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
+      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+        () => createMockVaultResolver$(),
+        () => of(new BigNumber('34845377488320063721')),
+        () => of('0xTokenAddress'),
+        () => of(new BigNumber(18)),
+        () => of('CSH'),
+        () => of('token name'),
+        of(mockContextConnected),
+        NEVER, // no txHelpers
+        mockVaultActions,
+        () => of('0xProxyAddress'),
+        new BigNumber(123),
+      )
+
+      const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+      expect(claimAllCbState).to.be.undefined
+    })
+
+    it('does not provide claim function if the connected wallet is not the same as the vault controller', () => {
+      const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
+      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+        () => createMockVaultResolver$({ controller: '0xDifferentAddress' }),
+        () => of(new BigNumber('34845377488320063721')),
+        () => of('0xTokenAddress'),
+        () => of(new BigNumber(18)),
+        () => of('CSH'),
+        () => of('token name'),
+        of(mockContextConnected),
+        of(protoTxHelpers),
+        mockVaultActions,
+        () => of('0xProxyAddress'),
+        new BigNumber(123),
+      )
+
+      const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
+      expect(claimAllCbState).to.be.undefined
     })
   })
 })

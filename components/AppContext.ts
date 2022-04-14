@@ -111,7 +111,15 @@ import {
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+  tap,
+} from 'rxjs/operators'
 
 import {
   cropperBonusTokenAddress,
@@ -346,7 +354,7 @@ export function setupAppContext() {
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$)
-
+  web3Context$.pipe(tap((v) => console.log(`web3Context$`, v)))
   const connectedContext$ = createContextConnected$(context$)
 
   combineLatest(account$, connectedContext$)

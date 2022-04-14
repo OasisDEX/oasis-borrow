@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable, Subject } from 'rxjs'
-import { map, share, startWith, switchMap } from 'rxjs/operators'
+import { combineLatest, Observable, of, Subject } from 'rxjs'
+import { filter, map, share, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { zero } from '../../helpers/zero'
 
@@ -20,19 +20,23 @@ export type BonusViewModel = {
 
 export type BonusAdapter = {
   bonus$: Observable<Bonus | undefined>
-  claimAll: () => Observable<ClaimTxnState>
+  claimAll$: Observable<(() => Observable<ClaimTxnState>) | undefined>
 }
 
 export function createBonusPipe$(
   bonusAdapter: (cdpId: BigNumber) => BonusAdapter,
   cdpId: BigNumber,
 ): Observable<BonusViewModel> {
-  const { bonus$, claimAll } = bonusAdapter(cdpId)
+  const { bonus$, claimAll$ } = bonusAdapter(cdpId)
   const claimClick$ = new Subject<void>()
 
-  const claimTnxState$: Observable<ClaimTxnState | undefined> = claimClick$.pipe(
-    switchMap(() => {
-      return claimAll()
+  const claimTnxState$: Observable<ClaimTxnState | undefined> = combineLatest(
+    claimClick$,
+    claimAll$,
+  ).pipe(
+    map(([_, claimAll]) => claimAll),
+    switchMap((claimAll) => {
+      return claimAll ? claimAll() : of(undefined)
     }),
     share(),
     startWith(undefined),
@@ -47,11 +51,14 @@ export function createBonusPipe$(
   }
 
   const claimAllFun$: Observable<(() => void) | undefined> = combineLatest(
-    bonus$,
-    claimTxnInProgress$,
+    bonus$.pipe(tap(() => console.log('bonus$'))),
+    claimTxnInProgress$.pipe(tap(() => console.log('claimTxnInProgress$'))),
+    claimAll$.pipe(tap(() => console.log('claimAll$'))),
   ).pipe(
-    map(([bonus, claimTxnInProgress]) =>
-      bonus && bonus.amountToClaim.gt(zero) && !claimTxnInProgress ? claimAllFun : undefined,
+    map(([bonus, claimTxnInProgress, claimAll]) =>
+      bonus && bonus.amountToClaim.gt(zero) && !claimTxnInProgress && !!claimAll
+        ? claimAllFun
+        : undefined,
     ),
   )
 

@@ -1,7 +1,7 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { combineLatest, Observable } from 'rxjs'
-import { map, switchMap, take } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { filter, map, mapTo, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
@@ -11,7 +11,9 @@ import { TxHelpers } from '../../components/AppContext'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 export function createMakerdaoBonusAdapter(
-  vaultResolver$: (cdpId: BigNumber) => Observable<{ urnAddress: string; ilk: string }>,
+  vaultResolver$: (
+    cdpId: BigNumber,
+  ) => Observable<{ urnAddress: string; ilk: string; controller: string }>,
   cropperCrops$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
   cropperBonusTokenAddress$: (args: { ilk: string }) => Observable<string>,
   tokenDecimals$: (address: string) => Observable<BigNumber>,
@@ -30,22 +32,21 @@ export function createMakerdaoBonusAdapter(
       return combineLatest(
         cropperCrops$({ ilk, usr: urnAddress }),
         cropperBonusTokenAddress$({ ilk }),
+      )
+    }),
+    switchMap(([bonusValue, bonusAddress]) => {
+      return combineLatest(
+        tokenDecimals$(bonusAddress),
+        tokenSymbol$(bonusAddress),
+        tokenName$(bonusAddress),
       ).pipe(
-        switchMap(([bonusValue, bonusAddress]) => {
-          return combineLatest(
-            tokenDecimals$(bonusAddress),
-            tokenSymbol$(bonusAddress),
-            tokenName$(bonusAddress),
-          ).pipe(
-            map(([bonusDecimals, bonusTokenSymbol, tokenName]) => {
-              return {
-                amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
-                symbol: bonusTokenSymbol,
-                name: tokenName,
-                moreInfoLink: 'https://example.com',
-              }
-            }),
-          )
+        map(([bonusDecimals, bonusTokenSymbol, tokenName]) => {
+          return {
+            amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
+            symbol: bonusTokenSymbol,
+            name: tokenName,
+            moreInfoLink: 'https://example.com',
+          }
         }),
       )
     }),
@@ -85,8 +86,19 @@ export function createMakerdaoBonusAdapter(
     )
   }
 
+  const context$$ = context$.pipe(startWith(undefined))
+
+  const claimAll$: Observable<(() => Observable<ClaimTxnState>) | undefined> = combineLatest(
+    context$.pipe(startWith(undefined)),
+    vault$,
+  ).pipe(
+    map(([context, vault]) => {
+      return context && context.account === vault.controller ? claimAll : undefined
+    }),
+  )
+
   return {
     bonus$,
-    claimAll,
+    claimAll$,
   }
 }
