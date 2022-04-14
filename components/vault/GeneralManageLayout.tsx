@@ -24,6 +24,7 @@ import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
 import { ProtectionControl } from './ProtectionControl'
+import { VaultHeadline } from './VaultHeadline'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
@@ -36,7 +37,7 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const { ilkData, vault, account } = generalManageVault.state
+  const { ilkData, vault, account, priceInfo } = generalManageVault.state
   const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
@@ -90,6 +91,13 @@ export function GeneralManageLayout({
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
         heading={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+        headline={
+          <VaultHeadline
+            header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+            token={vault.token}
+            priceInfo={priceInfo}
+          />
+        }
         headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />

@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { Survey } from 'features/survey'
 import React from 'react'
 import { Container } from 'theme-ui'
 
@@ -9,7 +10,6 @@ import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { MultiplySurveyButtons } from '../../pages/multiply'
 import { GuniVaultHeader } from '../earn/guni/common/GuniVaultHeader'
 import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/GuniManageMultiplyVaultDetails'
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
@@ -78,6 +78,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               return (
                 <Container variant="vaultPageContainer">
                   <ManageVaultContainer manageVault={generalManageVault.state} />
+                  <Survey for="borrow" />
                 </Container>
               )
             case VaultType.Insti:
@@ -108,7 +109,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       history={VaultHistoryView}
                     />
                   )}
-                  <MultiplySurveyButtons />
+                  <Survey for="multiply" />
                 </Container>
               )
           }

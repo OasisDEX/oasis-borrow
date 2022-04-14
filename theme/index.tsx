@@ -139,7 +139,6 @@ const oasisBaseTheme = {
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
-      mb: 3,
     },
     paragraph1: {
       fontFamily: 'body',
@@ -511,6 +510,26 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       px: 4,
       py: 2,
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:disabled': {
+        pointerEvents: 'none',
+        opacity: 0.5,
+      },
+    },
+    tertiary: {
+      variant: 'text.paragraph3',
+      px: '24px',
+      py: 2,
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      cursor: 'pointer',
+      bg: 'backgroundAlt',
+      color: 'primary',
+      borderRadius: 'round',
+      whiteSpace: 'nowrap',
       '&:focus': {
         outline: 'none',
       },

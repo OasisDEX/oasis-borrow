@@ -22,11 +22,12 @@ import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 export function ManageInstiVaultContainer({ manageVault }: { manageVault: ManageInstiVaultState }) {
   const { manageVault$, context$ } = useAppContext()
   const {
-    vault: { id, originationFeePercent, ilk },
+    vault: { id, originationFeePercent, ilk, token },
     clear,
     ilkData,
     transactionFeeETH,
     originationFeeUSD,
+    priceInfo,
   } = manageVault
 
   const { t } = useTranslation()
@@ -47,7 +48,13 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      <DefaultVaultHeader header={t('vault.insti-header', { ilk, id })} ilkData={ilkData} id={id}>
+      <DefaultVaultHeader
+        header={t('vault.insti-header', { ilk, id })}
+        ilkData={ilkData}
+        id={id}
+        token={token}
+        priceInfo={priceInfo}
+      >
         <VaultIlkDetailsItem
           label={t('manage-insti-vault.origination-fee')}
           value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}

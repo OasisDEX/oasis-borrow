@@ -297,8 +297,8 @@ const goerli: NetworkConfig = {
   dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   guniResolver: '0x',
   guniRouter: '0x',
-  automationBot: contractDesc(automationBot, '0x6A6561831dA6905DCDD6260b10Dcc26809A4c34d'),
-  serviceRegistry: '0x6b0AE25Bd9E233562De19c557f0fcb42D19a7AA4',
+  automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
   // Currently this is not supported on Goerli - no deployed contract
   defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
   lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),

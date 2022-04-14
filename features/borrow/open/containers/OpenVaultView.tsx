@@ -11,6 +11,7 @@ import {
   VaultProxyStatusCard,
   VaultProxySubtitle,
 } from 'components/vault/VaultProxy'
+import { Survey } from 'features/survey'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -148,6 +149,7 @@ export function OpenVaultView({ ilk }: { ilk: string }) {
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenVaultContainer {...openVault} />
+            <Survey for="borrow" />
           </Container>
         )}
       </WithLoadingIndicator>
