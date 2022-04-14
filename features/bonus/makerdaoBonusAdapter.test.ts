@@ -151,7 +151,7 @@ describe('makerdaoBonusAdapter', () => {
         () => of(new BigNumber(18)),
         () => of('CSH'),
         () => of('token name'),
-        of(mockContextConnected),
+        NEVER,
         NEVER, // no txHelpers
         mockVaultActions,
         () => of('0xProxyAddress'),
