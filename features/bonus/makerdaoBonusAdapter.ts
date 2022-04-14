@@ -28,27 +28,31 @@ export function createMakerdaoBonusAdapter(
   const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
   const bonus$: Observable<Bonus | undefined> = vault$.pipe(
+    // getCropInfo
+    //
     switchMap(({ ilk, urnAddress }) => {
       return combineLatest(
         cropperCrops$({ ilk, usr: urnAddress }),
         cropperBonusTokenAddress$({ ilk }),
       )
     }),
+    // get token info
     switchMap(([bonusValue, bonusAddress]) => {
       return combineLatest(
         tokenDecimals$(bonusAddress),
         tokenSymbol$(bonusAddress),
         tokenName$(bonusAddress),
-      ).pipe(
-        map(([bonusDecimals, bonusTokenSymbol, tokenName]) => {
-          return {
-            amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
-            symbol: bonusTokenSymbol,
-            name: tokenName,
-            moreInfoLink: 'https://example.com',
-          }
-        }),
+        of(bonusValue),
       )
+    }),
+    // get token info
+    map(([bonusDecimals, bonusTokenSymbol, tokenName, bonusValue]) => {
+      return {
+        amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
+        symbol: bonusTokenSymbol,
+        name: tokenName,
+        moreInfoLink: 'https://example.com',
+      }
     }),
   )
 
@@ -86,10 +90,8 @@ export function createMakerdaoBonusAdapter(
     )
   }
 
-  const context$$ = context$.pipe(startWith(undefined))
-
   const claimAll$: Observable<(() => Observable<ClaimTxnState>) | undefined> = combineLatest(
-    context$.pipe(startWith(undefined)),
+    context$.pipe(startWith<ContextConnected | undefined>(undefined)),
     vault$,
   ).pipe(
     map(([context, vault]) => {
