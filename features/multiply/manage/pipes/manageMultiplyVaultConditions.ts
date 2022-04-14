@@ -558,6 +558,7 @@ export function applyManageVaultConditions(
 
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
+    otherAction !== 'closeVault' &&
     afterCollRatioBelowStopLossRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
@@ -629,7 +630,8 @@ export function applyManageVaultConditions(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+  const stopLossTriggered =
+    !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
   return {
     ...state,

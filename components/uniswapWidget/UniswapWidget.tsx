@@ -1,10 +1,9 @@
+import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
-import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
-import dynamic from 'next/dynamic'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { theme } from 'theme'
-import { Box, Flex } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import tokenList from './tokenList.json'
 
@@ -30,7 +29,7 @@ function scrollbarBg(hexColor: string) {
 
 const cssPaths = (() => {
   const main = 'div > div:nth-of-type(2) > div:nth-of-type(2)'
-  const tokenSel = 'div > div:nth-of-type(1)'
+  const tokenSelAndSettings = 'div > div:nth-of-type(1)'
 
   return {
     main: {
@@ -43,35 +42,30 @@ const cssPaths = (() => {
     // token select
     tokenSel: {
       // hoverAppended is for expanding the hover effect through the scrollbar (we'll hide it)
-      hoverAppended: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
-      option: `${tokenSel} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
-      search: `${tokenSel} input[inputmode=text]`,
-      scrollbar: `${tokenSel} .scrollbar`,
+      hoverAppended: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1)`,
+      option: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(2) > div > div > button`,
+      search: `${tokenSelAndSettings} input[inputmode=text]`,
+      scrollbar: `${tokenSelAndSettings} .scrollbar`,
+    },
+    settings: {
+      tooltip: `${tokenSelAndSettings} > div > div:nth-of-type(3) > div:nth-of-type(1).caption`,
     },
   }
 })()
 
 export function UniswapWidget() {
-  const [SwapWidget, setSwapWidget] = useState()
+  const { web3ContextConnected$ } = useAppContext()
+  const [web3Context] = useObservable(web3ContextConnected$)
+  const web3Provider =
+    web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
 
-  const web3Provider = (() => {
-    const { web3ContextConnected$ } = useAppContext()
-    const [web3Context] = useObservable(web3ContextConnected$)
-    return web3Context?.status !== 'connectedReadonly' ? web3Context?.web3.currentProvider : null
-  })()
+  const { main, tokenSel, settings } = cssPaths
 
-  useEffect(() => {
-    setSwapWidget(
-      // @ts-ignore
-      dynamic(() => import('@uniswap/widgets').then((module) => module.SwapWidget), {
-        ssr: false,
-      }),
-    )
-  }, [])
+  if (!web3Provider) {
+    return null
+  }
 
-  const { main, tokenSel } = cssPaths
-
-  return web3Provider && SwapWidget ? (
+  return (
     <Box
       sx={{
         '.subhead': { fontWeight: 'medium' },
@@ -105,6 +99,9 @@ export function UniswapWidget() {
             backgroundClip: 'padding-box',
           },
         },
+        [settings.tooltip]: {
+          display: 'block',
+        },
       }}
       css={`
         ${main.token1Btn} > div > div, ${main.token2Btn} > div > div {
@@ -116,8 +113,8 @@ export function UniswapWidget() {
         }
       `}
     >
-      {/* @ts-ignore */}
       <SwapWidget
+        /* @ts-ignore */
         provider={web3Provider}
         theme={widgetTheme}
         tokenList={tokenList.tokens}
@@ -125,9 +122,5 @@ export function UniswapWidget() {
         convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
       />
     </Box>
-  ) : (
-    <Flex sx={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-      <AppSpinner />
-    </Flex>
   )
 }

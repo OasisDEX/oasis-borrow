@@ -23,6 +23,10 @@ import { interpolate } from '../../helpers/interpolate'
 import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 
 function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
+  if ('triggerId' in event) {
+    return `${t(`history.${event.kind}`)} ${t(`triggers.${event.eventType}`)}`
+  }
+
   return t(`history.${event.kind.toLowerCase()}`, {
     transferTo: 'transferTo' in event && formatAddress(event.transferTo),
     transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),

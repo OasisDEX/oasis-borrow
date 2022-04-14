@@ -11,6 +11,15 @@ import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 import { legacyToggle } from './legacyToggle'
 
 describe('manageVaultOtherActionsValidations', () => {
+  before(() => {
+    // TODO: remove after mainnet deployment
+    window.location.search = ['?network=goerli'] as any
+  })
+
+  after(() => {
+    window.location.search = [] as any
+  })
+
   it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
     const depositAmountExceeds = new BigNumber('2')
     const depositAmountAll = new BigNumber('1')

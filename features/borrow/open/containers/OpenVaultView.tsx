@@ -6,7 +6,11 @@ import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllo
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import {
+  VaultProxyContentBox,
+  VaultProxyStatusCard,
+  VaultProxySubtitle,
+} from 'components/vault/VaultProxy'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -36,11 +40,13 @@ function OpenVaultTitle({
   return (
     <Box>
       <WithVaultFormStepIndicator {...{ totalSteps, currentStep }}>
-        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', mb: 1 }}>
+        <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
           {isEditingStage
             ? t('vault-form.header.edit')
             : isProxyStage
-            ? t('vault-form.header.proxy')
+            ? stage === 'proxySuccess'
+              ? t('vault-form.header.proxy-success')
+              : t('vault-form.header.proxy')
             : isAllowanceStage
             ? t('vault-form.header.allowance', { token: token.toUpperCase() })
             : stage === 'txInProgress'
@@ -49,15 +55,17 @@ function OpenVaultTitle({
         </Text>
       </WithVaultFormStepIndicator>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
-        {isEditingStage
-          ? t('vault-form.subtext.edit')
-          : isProxyStage
-          ? t('vault-form.subtext.proxy')
-          : isAllowanceStage
-          ? t('vault-form.subtext.allowance')
-          : stage === 'txInProgress'
-          ? t('vault-form.subtext.confirm-in-progress')
-          : t('vault-form.subtext.review-manage')}
+        {isEditingStage ? (
+          t('vault-form.subtext.edit')
+        ) : isProxyStage ? (
+          <VaultProxySubtitle stage={stage} />
+        ) : isAllowanceStage ? (
+          t('vault-form.subtext.allowance')
+        ) : stage === 'txInProgress' ? (
+          t('vault-form.subtext.confirm-in-progress')
+        ) : (
+          t('vault-form.subtext.review-manage')
+        )}
       </Text>
     </Box>
   )
@@ -69,6 +77,7 @@ function OpenVaultForm(props: OpenVaultState) {
   return (
     <VaultFormContainer toggleTitle="Open Vault">
       <OpenVaultTitle {...props} />
+      {isProxyStage && <VaultProxyContentBox stage={stage} />}
       {isEditingStage && <OpenVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenVaultConfirmation {...props} />}

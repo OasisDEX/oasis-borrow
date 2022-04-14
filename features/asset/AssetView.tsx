@@ -36,7 +36,8 @@ function TabContent(props: {
   const filteredCards = props.ilks
     .map((ilk) => props.productCardsData.find((card) => card.ilk === ilk))
     .filter(
-      (cardData: ProductCardData | undefined): cardData is ProductCardData => cardData !== null,
+      (cardData: ProductCardData | undefined): cardData is ProductCardData =>
+        cardData !== null && cardData !== undefined,
     )
 
   return (

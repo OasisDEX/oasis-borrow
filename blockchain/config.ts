@@ -50,7 +50,7 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
-export const charterIlks = ['INST-ETH-A']
+export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
 export const cropJoinIlks = ['CRVV1ETHSTETH-A']
 
@@ -264,7 +264,9 @@ const goerli: NetworkConfig = {
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
+    // Todo: move to goerli network config when available at changelog.makerdao.com
     'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
+    'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
   getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
   mcdOsms: getOsms(goerliAddresses, supportedIlks),
@@ -283,7 +285,7 @@ const goerli: NetworkConfig = {
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(
     dssProxyActionsCharter,
-    goerliAddresses.PROXY_ACTIONS_CHARTER,
+    '0xfFb896D7BEf704DF73abc9A2EBf295CE236c5919',
   ),
   cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
   dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
@@ -295,8 +297,8 @@ const goerli: NetworkConfig = {
   dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   guniResolver: '0x',
   guniRouter: '0x',
-  automationBot: contractDesc(automationBot, '0x6A6561831dA6905DCDD6260b10Dcc26809A4c34d'),
-  serviceRegistry: '0x6b0AE25Bd9E233562De19c557f0fcb42D19a7AA4',
+  automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
   // Currently this is not supported on Goerli - no deployed contract
   defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
   lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
