@@ -190,7 +190,7 @@ export function VaultTabSwitch({
               pb: 2,
             }}
           >
-            {heading}a
+            {heading}
           </Heading>
         </Flex>
       )}
