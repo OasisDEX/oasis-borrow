@@ -584,7 +584,9 @@ export function applyManageVaultConditions(
   })
 
   const potentialGenerateAmountLessThanDebtFloor =
-    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
+    !isNullish(depositAmount) &&
+    maxGenerateAmountAtCurrentPrice.lt(debtFloor) &&
+    !debt.gt(debtFloor)
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
