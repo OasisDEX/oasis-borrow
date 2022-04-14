@@ -4942,10 +4942,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.2.tgz#52e7201a79f0e1ec35d62b868f273ab46403c602"
-  integrity sha512-nreZ00l9+lGyNunLZiCwd2ibVHFY+6IUD8E/qjZOq7wQM8720wtSDzrpGX1a0JIpuMHIvfNahXuVmyc8RF9WRQ==
+"@oasisdex/automation@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.5.tgz#6d483155455598cf77a98885002c9a8242f7f15c"
+  integrity sha512-dz0RAzYTUg1XKJUz+S3oxb2fl+M3LN2AmX5t3qGAVS3Q0M+dvtCL4cRzw4yqPeOJIORtASi0v/iPGeUjtNIH1Q==
   dependencies:
     ethers "^5.6.2"
 
