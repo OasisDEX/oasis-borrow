@@ -101,6 +101,7 @@ type VaultTabSwitchOptionAutomationBasicBuyAndSell = {
 export function VaultTabSwitch({
   defaultMode,
   heading,
+  headline,
   headerControl,
   overViewControl,
   historyControl,
@@ -111,6 +112,7 @@ export function VaultTabSwitch({
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
   heading: JSX.Element
+  headline: JSX.Element
   headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
@@ -176,18 +178,22 @@ export function VaultTabSwitch({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
-        <Heading
-          as="h1"
-          variant="heading1"
-          sx={{
-            fontWeight: 'semiBold',
-            pb: 2,
-          }}
-        >
-          {heading}
-        </Heading>
-      </Flex>
+      {automationBasicBuyAndSellEnabled ? (
+        <Box sx={{ zIndex: 0 }}>{headline}</Box>
+      ) : (
+        <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
+          <Heading
+            as="h1"
+            variant="heading1"
+            sx={{
+              fontWeight: 'semiBold',
+              pb: 2,
+            }}
+          >
+            {heading}
+          </Heading>
+        </Flex>
+      )}
       <Box sx={{ display: ['block', 'none'] }}>
         <ReactSelect<VaultTabSwitchOption>
           options={options}

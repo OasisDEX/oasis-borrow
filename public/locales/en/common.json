@@ -338,6 +338,8 @@
     "stability-fee": "Stability Fee",
     "title": "Manage Vault",
     "action": "Manage Vault",
+    "current-price": "Current {{token}} Price",
+    "next-price": "Next {{token}} Price",
     "card": {
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
       "collateralization-ratio-header2": "Current Collateralization ratio:",
