@@ -135,6 +135,14 @@
   "error-message": "It looks like we lost a connection to some data. Hit reload below to reload your page. If this error persists, please get in touch at support@oasis.app",
   "error-button-reload": "Reload page",
   "error-button": "More info",
+  "exchange": {
+    "onboarding": {
+      "title": "Say Hello to Oasis Swap",
+      "body": "Quickly and securely swap tokens directly on Oasis. Visit <0>Oasis Swap FAQ's to read more →</0>",
+      "faq-url": "https://kb.oasis.app/help/how-to-swap-your-cryptocurrency-using-the-uniswap-widget",
+      "button": "Got it"
+    }
+  },
   "create-ds-proxy-description-pending": "Creating proxy",
   "create-ds-proxy-description-recent": "Created proxy",
   "create-ds-proxy-description-recent-failed": "Failed to create proxy",

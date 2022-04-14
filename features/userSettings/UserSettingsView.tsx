@@ -307,9 +307,11 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <Box sx={sx}>
-      <Text variant="headerSettings">{t('wallet')}</Text>
+      <Text variant="headerSettings" sx={{ mb: 3 }}>
+        {t('wallet')}
+      </Text>
       <WalletInfo />
-      <Text variant="headerSettings" sx={{ mt: 4 }}>
+      <Text variant="headerSettings" sx={{ mt: 4, mb: 3 }}>
         {t('user-settings.slippage-limit.preset-title')}
       </Text>
       <SlippageSettingsForm />
