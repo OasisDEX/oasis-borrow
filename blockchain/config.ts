@@ -136,8 +136,8 @@ const protoMain = {
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
-  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
-  serviceRegistry: '0x', // TODO: add address
+  automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
+  serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
