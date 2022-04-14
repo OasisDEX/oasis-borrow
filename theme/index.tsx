@@ -519,6 +519,26 @@ const oasisBaseTheme = {
         opacity: 0.5,
       },
     },
+    tertiary: {
+      variant: 'text.paragraph3',
+      px: '24px',
+      py: 2,
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      cursor: 'pointer',
+      bg: 'backgroundAlt',
+      color: 'primary',
+      borderRadius: 'round',
+      whiteSpace: 'nowrap',
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:disabled': {
+        pointerEvents: 'none',
+        opacity: 0.5,
+      },
+    },
     square: {
       variant: 'text.paragraph2',
       bg: 'white',
