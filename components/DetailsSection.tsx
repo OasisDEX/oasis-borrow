@@ -1,15 +1,16 @@
 import React from 'react'
-import { Card, Flex } from 'theme-ui'
+import { Button, Card, Flex } from 'theme-ui'
 
 import { VaultTabTag } from './vault/VaultTabTag'
 
 interface IDetailsSectionProps {
   title?: string
   badge?: boolean
+  buttons?: Array<any>
   content: string | JSX.Element
 }
 
-export function DetailsSection({ title, badge, content }: IDetailsSectionProps) {
+export function DetailsSection({ title, badge, buttons, content }: IDetailsSectionProps) {
   return (
     <Card
       sx={{
@@ -20,7 +21,8 @@ export function DetailsSection({ title, badge, content }: IDetailsSectionProps) 
       {title && (
         <Flex
           sx={{
-            px: "24px",
+            justifyContent: 'space-between',
+            px: '24px',
             py: 3,
             borderBottom: 'lightMuted',
           }}
@@ -36,6 +38,30 @@ export function DetailsSection({ title, badge, content }: IDetailsSectionProps) 
           >
             {title}
             {badge !== undefined && <VaultTabTag isEnabled={badge} />}
+          </Flex>
+          <Flex>
+            {buttons?.map((button, i) => (
+              <Button
+                key={i}
+                onClick={button.action}
+                variant="action"
+                sx={{
+                  px: '24px',
+                  py: 2,
+                  fontFamily: 'body',
+                  fontSize: 1,
+                  fontWeight: 'semiBold',
+                  lineHeight: '18px',
+                  color: 'primary',
+                  backgroundColor: 'background',
+                  border: 'lightMuted',
+                  borderRadius: 'rounder',
+                  cursor: 'pointer',
+                }}
+              >
+                {button.label}
+              </Button>
+            ))}
           </Flex>
         </Flex>
       )}

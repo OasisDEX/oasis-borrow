@@ -61,6 +61,14 @@ export function ManageVaultContainer({
             title="Title"
             badge={true}
             content="Lorem ipsum"
+            buttons={[
+              {
+                label: 'Button',
+                action: () => {
+                  alert('test')
+                },
+              },
+            ]}
           />
           <ManageVaultDetails
             {...manageVault}

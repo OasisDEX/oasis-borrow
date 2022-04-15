@@ -217,6 +217,7 @@ const oasisBaseTheme = {
     mediumLarge: 12,
     large: 16,
     roundish: 20,
+    rounder: 24,
     round: 32,
     circle: 50,
   },
@@ -747,6 +748,9 @@ const oasisBaseTheme = {
       color: 'inherit',
       cursor: 'pointer',
       fontFamily: 'body',
+    },
+    action: {
+      border: 'lightMuted',
     },
   },
   links: {
