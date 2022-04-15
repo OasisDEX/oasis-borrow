@@ -75,10 +75,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
       {manageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
         <Container variant="announcement">
           <GenericAnnouncement
-            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec velit at dolor scelerisque fermentum non sit amet justo. Nullam gravida nisl nec eros cursus."
-            discordLink="https://discord.gg/oasisapp"
-            link="#"
-            linkText="Additional link"
+            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
+            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
+            linkText="Visit Maker Forum for details"
             disableClosing={true}
           />
         </Container>

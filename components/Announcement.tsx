@@ -94,7 +94,7 @@ export function Announcement({ children, sx }: WithChildren & SxProps) {
 
 interface GenericAnnouncementProps {
   text: string
-  discordLink: string
+  discordLink?: string
   link?: string
   linkText?: string
   disableClosing?: boolean
@@ -138,16 +138,18 @@ export function GenericAnnouncement({
               },
             }}
           >
-            <AppLink href={discordLink}>
-              <WithArrow>Visit Discord</WithArrow>
-            </AppLink>
+            {discordLink && (
+              <AppLink href={discordLink}>
+                <WithArrow>Visit Discord</WithArrow>
+              </AppLink>
+              )}
+            {discordLink && link && linkText && (
+              <Separator />
+            )}
             {link && linkText && (
-              <>
-                <Separator />
-                <AppLink href={link}>
-                  <WithArrow>{linkText}</WithArrow>
-                </AppLink>
-              </>
+              <AppLink href={link}>
+                <WithArrow>{linkText}</WithArrow>
+              </AppLink>
             )}
           </Flex>
         </Box>
