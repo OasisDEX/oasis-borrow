@@ -142,10 +142,8 @@ export function GenericAnnouncement({
               <AppLink href={discordLink}>
                 <WithArrow>Visit Discord</WithArrow>
               </AppLink>
-              )}
-            {discordLink && link && linkText && (
-              <Separator />
             )}
+            {discordLink && link && linkText && <Separator />}
             {link && linkText && (
               <AppLink href={link}>
                 <WithArrow>{linkText}</WithArrow>
