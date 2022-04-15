@@ -4,52 +4,20 @@ import { amountFromWei } from 'blockchain/utils'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
-import {
-  formatAddress,
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatCryptoBalance, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { flatten } from 'lodash'
 import moment from 'moment'
-import { TFunction, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { interpolate } from '../../helpers/interpolate'
 import { splitEvents, VaultHistoryEvent } from './vaultHistory'
-
-function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
-  if ('triggerId' in event) {
-    return `${t(`history.${event.kind}`)} ${t(`triggers.${event.eventType}`)}`
-  }
-
-  return t(`history.${event.kind.toLowerCase()}`, {
-    transferTo: 'transferTo' in event && formatAddress(event.transferTo),
-    transferFrom: 'transferFrom' in event && formatAddress(event.transferFrom),
-    collateralAmount:
-      'collateralAmount' in event && event.collateralAmount
-        ? formatCryptoBalance(event.collateralAmount.abs())
-        : 0,
-    daiAmount: 'daiAmount' in event ? formatCryptoBalance(event.daiAmount.abs()) : 0,
-    remainingCollateral:
-      'remainingCollateral' in event && event.remainingCollateral
-        ? formatCryptoBalance(event.remainingCollateral)
-        : 0,
-    collateralTaken:
-      'collateralTaken' in event && event.collateralTaken
-        ? formatCryptoBalance(event.collateralTaken)
-        : 0,
-    coveredDebt:
-      'coveredDebt' in event && event.coveredDebt ? formatCryptoBalance(event.coveredDebt) : 0,
-    cdpId: 'cdpId' in event ? event.cdpId : undefined,
-    auctionId: 'auctionId' in event ? event.auctionId : undefined,
-    token: event.token,
-  })
-}
+import { getHistoryEventTranslation, VaultHistoryEntry } from './VaultHistoryEntry'
 
 function MultiplyHistoryEventDetailsItem({ label, children }: { label: string } & WithChildren) {
   return (
@@ -321,23 +289,50 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const [context] = useObservable(context$)
   const { t } = useTranslation()
 
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const spitedEvents = flatten(vaultHistory.map(splitEvents))
 
   return (
-    <Box>
-      <Heading variant="header3" sx={{ mb: [4, 3] }}>
-        {t('vault-history')}
-      </Heading>
-      <Grid gap={2}>
-        {spitedEvents.map((item) => (
-          <VaultHistoryItem
-            item={item}
-            etherscan={context?.etherscan}
-            ethtx={context?.ethtx}
-            key={`${item.id}${`-${item.splitId}` || ''}`}
-          />
-        ))}
-      </Grid>
-    </Box>
+    <>
+      {/* TODO: remove VaultHistoryItem, MultiplyHistoryEventDetails and MultiplyHistoryEventDetailsItem components when this flag is no longer needed */}
+      {!automationBasicBuyAndSellEnabled ? (
+        <Box>
+          <Heading variant="header3" sx={{ mb: [4, 3] }}>
+            {t('vault-history')}
+          </Heading>
+          <Grid gap={2}>
+            {spitedEvents.map((item) => (
+              <VaultHistoryItem
+                item={item}
+                etherscan={context?.etherscan}
+                ethtx={context?.ethtx}
+                key={`${item.id}${`-${item.splitId}` || ''}`}
+              />
+            ))}
+          </Grid>
+        </Box>
+      ) : (
+        <Card
+          sx={{
+            p: 4,
+            border: 'lightMuted',
+          }}
+        >
+          <Heading variant="headerSettings" sx={{ mb: 3 }}>
+            {t('vault-history')}
+          </Heading>
+          <Box as="ul" sx={{ p: 0 }}>
+            {spitedEvents.map((item) => (
+              <VaultHistoryEntry
+                item={item}
+                etherscan={context?.etherscan}
+                ethtx={context?.ethtx}
+                key={`${item.id}${`-${item.splitId}` || ''}`}
+              />
+            ))}
+          </Box>
+        </Card>
+      )}
+    </>
   )
 }
