@@ -25,8 +25,14 @@ function Separator() {
   )
 }
 
-function Closeable({ children, onClose }: { onClose?: () => void } & WithChildren) {
-  return (
+function Closeable({
+  children,
+  onClose,
+  ommit = false,
+}: { onClose?: () => void; ommit?: boolean } & WithChildren) {
+  return ommit ? (
+    children
+  ) : (
     <Box sx={{ position: 'relative' }}>
       {children}
       <IconButton
@@ -91,6 +97,7 @@ interface GenericAnnouncementProps {
   discordLink: string
   link?: string
   linkText?: string
+  disableClosing?: boolean
 }
 
 export function GenericAnnouncement({
@@ -98,6 +105,7 @@ export function GenericAnnouncement({
   discordLink,
   link,
   linkText,
+  disableClosing = false,
 }: GenericAnnouncementProps) {
   const [shouldRender, setShouldRender] = useState(true)
 
@@ -107,12 +115,13 @@ export function GenericAnnouncement({
 
   return shouldRender ? (
     <Closeable
+      ommit={disableClosing}
       onClose={() => {
         setShouldRender(false)
         sessionStorage.setItem('isAnnouncementHidden', 'true')
       }}
     >
-      <Announcement sx={{ mb: 3, textAlign: 'left' }}>
+      <Announcement sx={{ my: 3, textAlign: 'left' }}>
         <Box>
           <Box sx={{ mb: 2 }}>
             <Text

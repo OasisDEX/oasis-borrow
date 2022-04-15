@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { GenericAnnouncement } from 'components/Announcement'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { Survey } from 'features/survey'
 import React from 'react'
@@ -71,6 +72,17 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
+      {manageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
+        <Container variant="announcement">
+          <GenericAnnouncement
+            text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec velit at dolor scelerisque fermentum non sit amet justo. Nullam gravida nisl nec eros cursus."
+            discordLink="https://discord.gg/oasisapp"
+            link="#"
+            linkText="Additional link"
+            disableClosing={true}
+          />
+        </Container>
+      )}
       <WithLoadingIndicator value={[manageVault]} customLoader={<VaultContainerSpinner />}>
         {([generalManageVault]) => {
           switch (generalManageVault.type) {
