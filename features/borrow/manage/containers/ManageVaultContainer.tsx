@@ -1,5 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
+import { DetailsSection } from 'components/DetailsSection'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
@@ -56,6 +57,11 @@ export function ManageVaultContainer({
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
+          <DetailsSection
+            title="Title"
+            badge={true}
+            content="Lorem ipsum"
+          />
           <ManageVaultDetails
             {...manageVault}
             onBannerButtonClickHandler={() => {

@@ -2,7 +2,7 @@ import { Box } from '@theme-ui/components'
 import React from 'react'
 
 interface VaultTabTagProps {
-  isEnabled?: boolean
+  isEnabled: boolean
 }
 
 export function VaultTabTag({ isEnabled }: VaultTabTagProps) {
@@ -16,8 +16,8 @@ export function VaultTabTag({ isEnabled }: VaultTabTagProps) {
         color: 'white',
         fontSize: 1,
         fontWeight: 'semiBold',
-        px: '6px',
-        ml: 1,
+        px: 2,
+        ml: 2,
       }}
     >
       {isEnabled ? 'ON' : 'OFF'}
