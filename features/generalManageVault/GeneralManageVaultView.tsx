@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { GenericAnnouncement } from 'components/Announcement'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { Survey } from 'features/survey'
 import React from 'react'
@@ -71,6 +72,16 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
+      {manageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
+        <Container variant="announcement">
+          <GenericAnnouncement
+            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
+            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
+            linkText="Visit Maker Forum for details"
+            disableClosing={true}
+          />
+        </Container>
+      )}
       <WithLoadingIndicator value={[manageVault]} customLoader={<VaultContainerSpinner />}>
         {([generalManageVault]) => {
           switch (generalManageVault.type) {
