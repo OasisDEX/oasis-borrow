@@ -1,5 +1,5 @@
 import React from 'react'
-import { Card, Flex } from 'theme-ui'
+import { Box, Card, Flex } from 'theme-ui'
 
 import { ExpandableButton, IButtonWithAction, IButtonWithActions } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
@@ -9,9 +9,10 @@ interface IDetailsSectionProps {
   badge?: boolean
   buttons?: (IButtonWithAction | IButtonWithActions)[]
   content: string | JSX.Element
+  footer?: string | JSX.Element
 }
 
-export function DetailsSection({ title, badge, buttons, content }: IDetailsSectionProps) {
+export function DetailsSection({ title, badge, buttons, content, footer }: IDetailsSectionProps) {
   return (
     <Card
       sx={{
@@ -53,7 +54,17 @@ export function DetailsSection({ title, badge, buttons, content }: IDetailsSecti
           </Flex>
         </Flex>
       )}
-      {content}
+      <Box sx={{ p: '24px' }}>{content}</Box>
+      {footer && (
+        <Box
+          sx={{
+            p: '24px',
+            borderTop: 'lightMuted',
+          }}
+        >
+          {footer}
+        </Box>
+      )}
     </Card>
   )
 }

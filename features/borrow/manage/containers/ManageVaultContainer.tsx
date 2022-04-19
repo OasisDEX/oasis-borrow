@@ -61,6 +61,7 @@ export function ManageVaultContainer({
             title="Title"
             badge={true}
             content="Lorem ipsum"
+            footer="Lorem"
             buttons={[
               {
                 label: 'Button',
