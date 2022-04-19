@@ -1,3 +1,5 @@
+import '@uniswap/widgets/fonts.css'
+
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -25,6 +27,7 @@ const widgetTheme = {
   error: colors.error,
   tokenColorExtraction: false,
   borderRadius: radii.mediumLarge,
+  fontFamily: 'Inter',
 }
 
 function scrollbarBg(hexColor: string) {
@@ -76,16 +79,16 @@ const OnboardingGraphic = () => (
           cy="54"
           r="46"
           fill="url(#paint0_radial_4557_35793)"
-          fill-opacity="0.2"
-          shape-rendering="crispEdges"
+          fillOpacity="0.2"
+          shapeRendering="crispEdges"
         />
         <circle
           cx="54"
           cy="54"
           r="45.5"
           stroke="url(#paint1_radial_4557_35793)"
-          stroke-opacity="0.2"
-          shape-rendering="crispEdges"
+          strokeOpacity="0.2"
+          shapeRendering="crispEdges"
         />
       </g>
       <g filter="url(#filter1_d_4557_35793)">
@@ -93,9 +96,9 @@ const OnboardingGraphic = () => (
       </g>
       <g filter="url(#filter2_d_4557_35793)">
         <circle cx="232" cy="54" r="46" fill="url(#paint3_linear_4557_35793)" />
-        <circle cx="232" cy="54" r="45.5" stroke="#FF007A" stroke-opacity="0.1" />
+        <circle cx="232" cy="54" r="45.5" stroke="#FF007A" strokeOpacity="0.1" />
       </g>
-      <g clip-path="url(#clip0_4557_35793)">
+      <g clipPath="url(#clip0_4557_35793)">
         <path
           d="M222.924 36.0031C222.394 35.9206 222.371 35.9115 222.621 35.8734C223.099 35.8 224.227 35.8997 225.004 36.0847C226.818 36.5163 228.47 37.6216 230.233 39.5838L230.701 40.1052L231.371 39.9973C234.194 39.5439 237.064 39.9039 239.466 41.0138C240.127 41.3194 241.168 41.9269 241.299 42.0828C241.34 42.1327 241.417 42.4528 241.468 42.7946C241.647 43.977 241.557 44.8838 241.195 45.5602C240.999 45.9283 240.988 46.0453 241.12 46.3609C241.226 46.6129 241.52 46.7988 241.812 46.7979C242.409 46.7979 243.052 45.8322 243.349 44.4902L243.467 43.9571L243.701 44.2227C244.986 45.6781 245.995 47.6629 246.168 49.0766L246.213 49.4447L245.998 49.1101C245.626 48.5343 245.252 48.1417 244.774 47.8252C243.912 47.2549 243.001 47.0609 240.588 46.9339C238.408 46.8188 237.174 46.6329 235.951 46.2339C233.87 45.5557 232.82 44.6516 230.348 41.4073C229.25 39.9665 228.571 39.1695 227.896 38.5275C226.362 37.0685 224.854 36.3041 222.924 36.0049L222.924 36.0031Z"
           fill="#FF007A"
@@ -125,21 +128,21 @@ const OnboardingGraphic = () => (
           fill="#FF007A"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M207.064 25.9174C212.963 33.077 222.058 44.2246 222.509 44.8484C222.882 45.3634 222.741 45.8268 222.103 46.1904C221.748 46.3926 221.018 46.5966 220.652 46.5966C220.239 46.5966 219.773 46.3971 219.434 46.0752C219.194 45.8476 218.226 44.4032 215.993 40.9367C214.283 38.2845 212.852 36.0847 212.813 36.0475C212.753 35.9907 213.755 37.8081 215.818 41.4998C217.761 44.9753 218.416 46.204 218.416 46.3681C218.416 46.7027 218.325 46.8777 217.913 47.3383C217.226 48.1054 216.918 48.9668 216.697 50.7495C216.449 52.748 215.75 54.1598 213.812 56.5763C212.677 57.9908 212.492 58.2501 212.206 58.8204C211.845 59.5386 211.746 59.9403 211.706 60.847C211.664 61.8055 211.746 62.4248 212.039 63.3415C212.296 64.144 212.563 64.6735 213.247 65.7335C213.837 66.6475 214.177 67.3275 214.177 67.5932C214.177 67.8045 214.217 67.8054 215.132 67.5987C217.322 67.1045 219.099 66.2349 220.099 65.1695C220.718 64.5103 220.864 64.1458 220.868 63.2417C220.871 62.6505 220.851 62.5263 220.69 62.1863C220.43 61.6332 219.957 61.1725 218.913 60.4589C217.546 59.5241 216.961 58.7715 216.8 57.736C216.667 56.8864 216.82 56.287 217.578 54.702C218.361 53.0608 218.555 52.3608 218.686 50.7069C218.771 49.6378 218.888 49.2162 219.195 48.878C219.515 48.5253 219.804 48.4056 220.596 48.2977C221.888 48.1208 222.712 47.7872 223.388 47.1633C223.975 46.6229 224.22 46.1015 224.258 45.3172L224.287 44.7224L223.959 44.3397C222.771 42.9551 206.269 24.8293 206.195 24.8293C206.18 24.8293 206.571 25.3189 207.064 25.9174ZM214.843 61.9315C215.111 61.4564 214.969 60.8452 214.519 60.546C214.095 60.264 213.436 60.3964 213.436 60.7645C213.436 60.8769 213.497 60.9586 213.638 61.0302C213.873 61.1517 213.89 61.2877 213.705 61.5661C213.517 61.8481 213.533 62.0956 213.747 62.2643C214.095 62.5354 214.585 62.3867 214.843 61.9315Z"
           fill="#FF007A"
         />
         <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
+          fillRule="evenodd"
+          clipRule="evenodd"
           d="M225.102 48.6078C224.495 48.7946 223.906 49.4374 223.723 50.1112C223.611 50.5228 223.674 51.2437 223.841 51.4667C224.111 51.8267 224.372 51.921 225.077 51.9165C226.459 51.9065 227.66 51.3144 227.799 50.5736C227.913 49.9661 227.387 49.1246 226.659 48.7556C226.285 48.5652 225.487 48.489 225.102 48.6078ZM226.717 49.8709C226.93 49.568 226.836 49.2407 226.474 49.0194C225.784 48.5978 224.741 48.9469 224.741 49.5988C224.741 49.9235 225.285 50.2771 225.784 50.2771C226.115 50.2771 226.57 50.0794 226.717 49.8709Z"
           fill="#FF007A"
         />
       </g>
       <path
-        fill-rule="evenodd"
-        clip-rule="evenodd"
+        fillRule="evenodd"
+        clipRule="evenodd"
         d="M151.456 48.3137C152.237 47.5327 152.237 46.2663 151.456 45.4853C150.675 44.7042 149.408 44.7042 148.627 45.4853L142.97 51.1421L137.314 45.4853C136.533 44.7042 135.266 44.7042 134.485 45.4853C133.704 46.2663 133.704 47.5327 134.485 48.3137L140.142 53.9706L134.485 59.6274C133.704 60.4085 133.704 61.6748 134.485 62.4558C135.266 63.2369 136.533 63.2369 137.314 62.4558L142.97 56.799L148.627 62.4558C149.408 63.2369 150.675 63.2369 151.456 62.4558C152.237 61.6748 152.237 60.4085 151.456 59.6274L145.799 53.9706L151.456 48.3137Z"
         fill="#CACACA"
       />
@@ -151,9 +154,9 @@ const OnboardingGraphic = () => (
           width="108"
           height="108"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -179,9 +182,9 @@ const OnboardingGraphic = () => (
           width="108"
           height="108"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -207,9 +210,9 @@ const OnboardingGraphic = () => (
           width="108"
           height="108"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -236,9 +239,9 @@ const OnboardingGraphic = () => (
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(18.2222 28.4444) rotate(40.8335) scale(91.1959 281.012)"
         >
-          <stop stop-color="#FFCCEB" />
-          <stop offset="0.473958" stop-color="#BFC6FF" />
-          <stop offset="1" stop-color="#96E4D2" />
+          <stop stopColor="#FFCCEB" />
+          <stop offset="0.473958" stopColor="#BFC6FF" />
+          <stop offset="1" stopColor="#96E4D2" />
         </radialGradient>
         <radialGradient
           id="paint1_radial_4557_35793"
@@ -248,9 +251,9 @@ const OnboardingGraphic = () => (
           gradientUnits="userSpaceOnUse"
           gradientTransform="translate(18.2222 28.4444) rotate(40.8335) scale(91.1959 281.012)"
         >
-          <stop stop-color="#FFCCEB" />
-          <stop offset="0.473958" stop-color="#BFC6FF" />
-          <stop offset="1" stop-color="#96E4D2" />
+          <stop stopColor="#FFCCEB" />
+          <stop offset="0.473958" stopColor="#BFC6FF" />
+          <stop offset="1" stopColor="#96E4D2" />
         </radialGradient>
         <linearGradient
           id="paint2_linear_4557_35793"
@@ -260,8 +263,8 @@ const OnboardingGraphic = () => (
           y2="118.969"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FDEEF3" />
-          <stop offset="1" stop-color="#FFE6F5" />
+          <stop stopColor="#FDEEF3" />
+          <stop offset="1" stopColor="#FFE6F5" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_4557_35793"
@@ -271,8 +274,8 @@ const OnboardingGraphic = () => (
           y2="118.969"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#FDEEF3" />
-          <stop offset="1" stop-color="#FFE6F5" />
+          <stop stopColor="#FDEEF3" />
+          <stop offset="1" stopColor="#FFE6F5" />
         </linearGradient>
         <clipPath id="clip0_4557_35793">
           <rect
