@@ -52,6 +52,7 @@ const oasisBaseTheme = {
     mutedAlt: '#656F75',
     error: '#FDEDE8',
     onError: '#F75524',
+    dimError: 'rgba(247, 85, 36, 0.1)',
     success: '#E7FCFA',
     dimSuccess: 'rgba(26, 171, 155, 0.1)',
     onSuccess: '#1AAB9B',
@@ -201,6 +202,13 @@ const oasisBaseTheme = {
       variant: 'paragraph3',
       fontWeight: 'medium',
       letterSpacing: '0.02em',
+    },
+    label: {
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      fontSize: 1,
+      color: 'text.subtitle',
     },
   },
   borders: {

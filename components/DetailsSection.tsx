@@ -54,7 +54,14 @@ export function DetailsSection({ title, badge, buttons, content, footer }: IDeta
           </Flex>
         </Flex>
       )}
-      <Box sx={{ p: '24px' }}>{content}</Box>
+      <Box
+        sx={{
+          px: [3, null, '24px'],
+          py: '24px',
+        }}
+      >
+        {content}
+      </Box>
       {footer && (
         <Box
           sx={{

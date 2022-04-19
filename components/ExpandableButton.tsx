@@ -62,10 +62,11 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
             boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
             opacity: expanded ? 1 : 0,
             transform: expanded ? 'translateY(0)' : 'translateY(-5px)',
+            pointerEvents: expanded ? 'auto' : 'none',
             transition: 'opacity 150ms, transform 150ms',
           }}
         >
-          {button.actions.map((item) => (
+          {button.actions.map((item, k) => (
             <Text
               as="li"
               onClick={() => {
@@ -84,6 +85,7 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
                 },
                 cursor: 'pointer',
               }}
+              key={k}
             >
               {item.label}
             </Text>

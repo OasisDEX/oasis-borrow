@@ -1,6 +1,10 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCard,
+  DetailsSectionContentCardWrapper,
+} from 'components/DetailsSectionContentCard'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
@@ -60,8 +64,6 @@ export function ManageVaultContainer({
           <DetailsSection
             title="Title"
             badge={true}
-            content="Lorem ipsum"
-            footer="Lorem"
             buttons={[
               {
                 label: 'Button',
@@ -93,6 +95,37 @@ export function ManageVaultContainer({
                 ],
               },
             ]}
+            content={
+              <DetailsSectionContentCardWrapper>
+                <DetailsSectionContentCard
+                  title="Liquidation Price"
+                  value="$1,320.2000"
+                  footnote="22.34% below current price"
+                  modal="Lorem ipsum modal"
+                />
+                <DetailsSectionContentCard
+                  title="Collateral Ratio"
+                  footnote="219.10% on next price"
+                />
+                <DetailsSectionContentCard
+                  title="Collateral Locked"
+                  value="$420,000.20"
+                  unit="DAI"
+                  change={{ value: '$420,103.90 After', variant: 'positive' }}
+                  footnote="300.30 ETH"
+                  modal="Lorem ipsum modal"
+                />
+                <DetailsSectionContentCard
+                  title="Collateral Locked"
+                  value="$420,000.20"
+                  unit="DAI"
+                  change={{ value: '$1,200 After', variant: 'negative' }}
+                  footnote="300.30 ETH"
+                  modal={<p>Lorem ipsum modal</p>}
+                />
+              </DetailsSectionContentCardWrapper>
+            }
+            footer="Lorem"
           />
           <ManageVaultDetails
             {...manageVault}
