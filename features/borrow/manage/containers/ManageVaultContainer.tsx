@@ -65,8 +65,31 @@ export function ManageVaultContainer({
               {
                 label: 'Button',
                 action: () => {
-                  alert('test')
+                  alert('Button')
                 },
+              },
+              {
+                label: 'Expandable',
+                actions: [
+                  {
+                    label: 'First item',
+                    action: () => {
+                      alert('First item')
+                    },
+                  },
+                  {
+                    label: 'Second item with a little bit longer text',
+                    action: () => {
+                      alert('Second item')
+                    },
+                  },
+                  {
+                    label: 'Third item',
+                    action: () => {
+                      alert('Third item')
+                    },
+                  },
+                ],
               },
             ]}
           />

@@ -1,12 +1,13 @@
 import React from 'react'
-import { Button, Card, Flex } from 'theme-ui'
+import { Card, Flex } from 'theme-ui'
 
+import { ExpandableButton, IButtonWithAction, IButtonWithActions } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 
 interface IDetailsSectionProps {
   title?: string
   badge?: boolean
-  buttons?: Array<any>
+  buttons?: (IButtonWithAction | IButtonWithActions)[]
   content: string | JSX.Element
 }
 
@@ -21,9 +22,11 @@ export function DetailsSection({ title, badge, buttons, content }: IDetailsSecti
       {title && (
         <Flex
           sx={{
+            flexDirection: ['column', null, 'row'],
             justifyContent: 'space-between',
-            px: '24px',
-            py: 3,
+            px: [3, null, '24px'],
+            pt: 3,
+            pb: ['24px', null, 3],
             borderBottom: 'lightMuted',
           }}
         >
@@ -39,28 +42,13 @@ export function DetailsSection({ title, badge, buttons, content }: IDetailsSecti
             {title}
             {badge !== undefined && <VaultTabTag isEnabled={badge} />}
           </Flex>
-          <Flex>
+          <Flex
+            sx={{
+              mt: [2, 0],
+            }}
+          >
             {buttons?.map((button, i) => (
-              <Button
-                key={i}
-                onClick={button.action}
-                variant="action"
-                sx={{
-                  px: '24px',
-                  py: 2,
-                  fontFamily: 'body',
-                  fontSize: 1,
-                  fontWeight: 'semiBold',
-                  lineHeight: '18px',
-                  color: 'primary',
-                  backgroundColor: 'background',
-                  border: 'lightMuted',
-                  borderRadius: 'rounder',
-                  cursor: 'pointer',
-                }}
-              >
-                {button.label}
-              </Button>
+              <ExpandableButton button={button} key={i} />
             ))}
           </Flex>
         </Flex>

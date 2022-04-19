@@ -750,7 +750,25 @@ const oasisBaseTheme = {
       fontFamily: 'body',
     },
     action: {
+      px: '24px',
+      py: 2,
+      fontFamily: 'body',
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '18px',
+      color: 'primary',
+      backgroundColor: 'background',
       border: 'lightMuted',
+      borderRadius: 'rounder',
+      cursor: 'pointer',
+      transition: 'border-color 150ms',
+      '&:hover': {
+        borderColor: 'primary',
+      },
+    },
+    actionActive: {
+      variant: 'buttons.action',
+      borderColor: 'primary',
     },
   },
   links: {
