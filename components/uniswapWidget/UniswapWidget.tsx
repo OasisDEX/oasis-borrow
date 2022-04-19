@@ -27,6 +27,7 @@ const widgetTheme = {
   error: colors.error,
   tokenColorExtraction: false,
   borderRadius: radii.mediumLarge,
+  fontFamily: 'Inter',
 }
 
 function scrollbarBg(hexColor: string) {
@@ -389,16 +390,14 @@ export function UniswapWidget() {
           </Button>
         </Flex>
       )}
-      <div className="Uniswap">
-        <SwapWidget
-          /* @ts-ignore */
-          provider={web3Provider}
-          theme={widgetTheme}
-          tokenList={tokenList.tokens}
-          convenienceFee={20}
-          convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
-        />
-      </div>
+      <SwapWidget
+        /* @ts-ignore */
+        provider={web3Provider}
+        theme={widgetTheme}
+        tokenList={tokenList.tokens}
+        convenienceFee={20}
+        convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
+      />
     </Box>
   )
 }
