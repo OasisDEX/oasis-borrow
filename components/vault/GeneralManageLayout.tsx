@@ -18,6 +18,7 @@ import { TriggersData } from '../../features/automation/triggers/AutomationTrigg
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
+import { VaultType } from '../../features/generalManageVault/vaultType'
 import { useUIChanges } from '../../helpers/uiChangesHook'
 import { GenericAnnouncement } from '../Announcement'
 import { useAppContext } from '../AppContextProvider'
@@ -85,6 +86,8 @@ export function GeneralManageLayout({
   }, [isStopLossEnabled])
 
   const protectionEnabled = !!generalManageVault.state.stopLossData?.isStopLossEnabled
+  const vaultHeadingKey =
+    generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
@@ -101,7 +104,7 @@ export function GeneralManageLayout({
       <VaultBannersView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
-        heading={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+        heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
         headline={
           <VaultHeadline
             header={t('vault.header', { ilk: vault.ilk, id: vault.id })}

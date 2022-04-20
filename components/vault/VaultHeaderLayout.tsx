@@ -12,6 +12,7 @@ export interface VaultHeaderLayoutProps {
   debtFloor: BigNumber
   liquidationPenalty?: BigNumber
   liquidationRatio?: BigNumber
+  originationFeePercent?: BigNumber
 }
 
 export function VaultHeaderLayout({
@@ -20,6 +21,7 @@ export function VaultHeaderLayout({
   debtFloor,
   liquidationPenalty,
   liquidationRatio,
+  originationFeePercent,
 }: VaultHeaderLayoutProps) {
   const { t } = useTranslation()
   return (
@@ -82,6 +84,19 @@ export function VaultHeaderLayout({
             },
           }}
         />
+        {originationFeePercent && (
+          <VaultIlkDetailsItem
+            label={t('manage-insti-vault.origination-fee')}
+            value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
+            tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
+            styles={{
+              tooltip: {
+                left: ['-80px', 'auto'],
+                right: ['auto', '-32px'],
+              },
+            }}
+          />
+        )}
       </Box>
     </Grid>
   )
