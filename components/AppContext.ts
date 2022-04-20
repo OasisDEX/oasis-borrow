@@ -201,7 +201,7 @@ export type AddGasEstimationFunction = <S extends HasGasEstimation>(
 
 export type TxHelpers$ = Observable<TxHelpers>
 
-function createTxHelpers$(
+export function createTxHelpers$(
   context$: Observable<ContextConnected>,
   send: SendFunction<TxData>,
   gasPrice$: Observable<GasPriceParams>,
