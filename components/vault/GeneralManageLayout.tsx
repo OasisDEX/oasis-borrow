@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Grid } from 'theme-ui'
+import { Container, Grid } from 'theme-ui'
 
 import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
 import {
@@ -19,6 +19,7 @@ import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { useUIChanges } from '../../helpers/uiChangesHook'
+import { GenericAnnouncement } from '../Announcement'
 import { useAppContext } from '../AppContextProvider'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
@@ -87,6 +88,16 @@ export function GeneralManageLayout({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
+      {generalManageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
+        <Container variant="announcement">
+          <GenericAnnouncement
+            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
+            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
+            linkText="Visit Maker Forum for details"
+            disableClosing={true}
+          />
+        </Container>
+      )}
       <VaultBannersView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
