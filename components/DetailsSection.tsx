@@ -45,7 +45,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: IDeta
           </Flex>
           <Flex
             sx={{
-              mt: [2, 0],
+              mt: [2, null, 0],
             }}
           >
             {buttons?.map((button, i) => (

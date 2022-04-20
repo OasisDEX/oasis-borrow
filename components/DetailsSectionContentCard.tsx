@@ -3,7 +3,9 @@ import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import { AppLink } from './Links'
 import { VaultDetailsCardModal } from './vault/VaultDetails'
+import { WithArrow } from './WithArrow'
 
 type ChangeVariantType = 'positive' | 'negative'
 
@@ -12,15 +14,19 @@ interface IDetailsSectionContentCardChangePillProps {
   variant: ChangeVariantType
 }
 
+interface IDetailsSectionContentCardLinkProps {
+  label: string
+  url?: string
+  action?: () => void
+}
+
 interface IContentCardProps {
   title: string
   value?: string
   unit?: string
   change?: IDetailsSectionContentCardChangePillProps
   footnote?: string
-  link?: {
-    label: string
-  } & ({ url: string } | { action: () => void }) 
+  link?: IDetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
 }
 
@@ -51,6 +57,31 @@ function DetailsSectionContentCardChangePill({
   )
 }
 
+function DetailsSectionContentCardLink({
+  label,
+  url,
+  action,
+}: IDetailsSectionContentCardLinkProps) {
+  return (
+    <>
+      {url && (
+        <AppLink href={url} sx={{ mt: 2 }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+            {label}
+          </WithArrow>
+        </AppLink>
+      )}
+      {action && (
+        <Text as="span" sx={{ mt: 2, cursor: 'pointer' }} onClick={action}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+            {label}
+          </WithArrow>
+        </Text>
+      )}
+    </>
+  )
+}
+
 function DetailsSectionContentCardModal({
   close,
   children,
@@ -76,6 +107,7 @@ export function DetailsSectionContentCard({
   unit,
   change,
   footnote,
+  link,
   modal,
 }: IContentCardProps) {
   const openModal = useModal()
@@ -145,6 +177,7 @@ export function DetailsSectionContentCard({
           {footnote}
         </Text>
       )}
+      {link?.label && (link?.url || link?.action) && <DetailsSectionContentCardLink {...link} />}
     </Flex>
   )
 }

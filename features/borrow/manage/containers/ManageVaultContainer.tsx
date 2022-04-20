@@ -114,6 +114,12 @@ export function ManageVaultContainer({
                   change={{ value: '$420,103.90 After', variant: 'positive' }}
                   footnote="300.30 ETH"
                   modal="Lorem ipsum modal"
+                  link={{
+                    label: 'Open alert',
+                    action: () => {
+                      alert('Card action')
+                    },
+                  }}
                 />
                 <DetailsSectionContentCard
                   title="Collateral Locked"
@@ -122,6 +128,7 @@ export function ManageVaultContainer({
                   change={{ value: '$1,200 After', variant: 'negative' }}
                   footnote="300.30 ETH"
                   modal={<p>Lorem ipsum modal</p>}
+                  link={{ label: 'Link', url: '/' }}
                 />
               </DetailsSectionContentCardWrapper>
             }
