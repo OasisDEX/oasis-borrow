@@ -49,11 +49,13 @@ export function getMockContextConnected({
   const networkConfig = networksById[networkId]
   const web3 = new Web3()
   setupProvider && web3.setProvider(new Web3.providers.HttpProvider(networkConfig.infuraUrl))
+
   return {
     contract: <T>(c: ContractDesc) => contract(web3, c) as T,
     web3ProviderGetPastLogs: {} as Web3,
     ...networkConfig,
     ...mockWeb3ContextConnected,
+    web3,
     chainId: parseInt(networkId),
   }
 }

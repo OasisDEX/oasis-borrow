@@ -37,12 +37,14 @@ export interface MockWeb3ContextProps {
   status: 'notConnected' | 'connectedReadonly' | 'connected'
   account?: string
   networkId?: string
+  setupProvider?: boolean
 }
 
 export function mockWeb3Context$({
   status,
   account,
   networkId = kovanNetworkId,
+  setupProvider,
 }: MockWeb3ContextProps): Observable<Web3Context> {
   return of(
     status === 'notConnected'
@@ -50,7 +52,7 @@ export function mockWeb3Context$({
       : status === 'connectedReadonly'
       ? mockWeb3ContextConnectedReadonly
       : {
-          ...getMockContextConnected({ networkId }),
+          ...getMockContextConnected({ networkId, setupProvider }),
           ...(account && { account }),
         },
   )

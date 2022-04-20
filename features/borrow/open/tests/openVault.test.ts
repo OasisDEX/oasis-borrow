@@ -9,26 +9,31 @@ import { createTxHelpers$, protoTxHelpers, TxData, TxHelpers$ } from 'components
 import { mockContextConnected$ } from 'helpers/mocks/context.mock'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
+import { mockVaultActionsLogic, openCallSpy } from 'helpers/mocks/vaultActionsLogic.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 import sinon from 'sinon'
+import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 
 import * as dsProxyRegistry from '../../../../blockchain/abi/ds-proxy-registry.json'
+import * as dsProxy from '../../../../blockchain/abi/ds-proxy.json'
 import * as erc20Abi from '../../../../blockchain/abi/erc20.json'
 import { default as mainnetAddresses } from '../../../../blockchain/addresses/mainnet.json'
 import * as erc20 from '../../../../blockchain/calls/erc20'
 import * as proxy from '../../../../blockchain/calls/proxy'
+import * as vaultActionsLogic from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 describe('openVault', () => {
-  beforeEach(() => {})
-  afterEach(function () {
-    sinon.restore()
-  })
+  const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+  const mockProxy = '0xf7203265834862bA831bc14e8999C2D1dBa7A645'
+
+  beforeEach(function () {})
+
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
       const vaultId = parseVaultIdFromReceiptLogs(newCDPTxReceipt)
@@ -159,17 +164,12 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
     })
 
-    it.only('should call the expected contract address when creating a proxy', () => {
-      // Called when creating proxyAddress$ in app context to get a list of proxies
-      // Perhaps this can be a standalone test inside of blockchain/calls
-      // const createProxyCallStub = sinon.stub(proxy.proxyAddress, 'call')
-
-      const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-
+    it('should call the expected contract address when creating a proxy', () => {
       const _mockConnectedContext$ = mockContextConnected$({
         account: mockAccount,
         status: 'connected',
         networkId: '1',
+        setupProvider: true,
       })
 
       const _proxyAddress$ = new Subject<string>()
@@ -201,6 +201,8 @@ describe('openVault', () => {
       expect(createDsProxyCallSpy.getCalls()[0].args[1].dsProxyRegistry).to.deep.equal(
         contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
       )
+
+      createDsProxyCallSpy.restore()
     })
 
     it('should create proxy and progress for non ETH ilk', () => {
@@ -287,17 +289,15 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
     })
 
-    it.only('should call the expected contract when setting allowance', () => {
+    it('should call the expected contract when setting allowance', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
-
-      const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-      const mockProxy = '0xf7203265834862bA831bc14e8999C2D1dBa7A645'
 
       const _mockConnectedContext$ = mockContextConnected$({
         account: mockAccount,
         status: 'connected',
         networkId: '1',
+        setupProvider: true,
       })
 
       const _proxyAddress$ = new Subject<string>()
@@ -484,7 +484,59 @@ describe('openVault', () => {
     })
 
     it('should call the expected contract when opening a vault', () => {
-      expect(false).to.equal(true)
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+      const mockProxy = '0xf7203265834862bA831bc14e8999C2D1dBa7A645'
+
+      const _mockConnectedContext$ = mockContextConnected$({
+        account: mockAccount,
+        status: 'connected',
+        networkId: '1',
+        setupProvider: true,
+      })
+
+      const _proxyAddress$ = new Subject<string>()
+
+      const mockGasPrice$ = of({
+        maxFeePerGas: new BigNumber('1'),
+        maxPriorityFeePerGas: new BigNumber('1'),
+      })
+      const [send] = createSend<TxData>(of(mockAccount), of(1), _mockConnectedContext$)
+      const txHelpers$: TxHelpers$ = createTxHelpers$(_mockConnectedContext$, send, mockGasPrice$)
+
+      const vaultActionsLogicStub = sinon
+        .stub(vaultActionsLogic, 'vaultActionsLogic')
+        .callsFake(mockVaultActionsLogic)
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _context$: _mockConnectedContext$,
+          _txHelpers$: txHelpers$,
+          account: mockAccount,
+          proxyAddress: mockProxy,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      _proxyAddress$.next()
+
+      state().updateDeposit!(depositAmount)
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+
+      expect(openCallSpy.getCalls()[0].args[0].proxyAddress).to.equal(mockProxy)
+
+      expect(openCallSpy.returnValues[0]).to.deep.equal(
+        openCallSpy.getCalls()[0].args[1].contract<DsProxy>(contractDesc(dsProxy, mockProxy))
+          .methods['execute(address,bytes)'],
+      )
+
+      vaultActionsLogicStub.restore()
     })
 
     it('should open vault successfully and progress to editing', () => {

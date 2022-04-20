@@ -1,6 +1,8 @@
+import { ContractDesc } from '@oasisdex/web3-context'
+
 import { zero } from '../../../helpers/zero'
 import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
-import dsProxy from '../../abi/ds-proxy.json'
+import * as dsProxy from '../../abi/ds-proxy.json'
 import { contractDesc } from '../../config'
 import { ContextConnected } from '../../network'
 import { amountToWei } from '../../utils'
@@ -115,7 +117,7 @@ export function getWithdrawAndPaybackCallData(
   throw new Error('Could not make correct proxyActions call')
 }
 
-function getDepositAndGenerateCallData(
+export function getDepositAndGenerateCallData(
   data: DepositAndGenerateData,
   context: ContextConnected,
   proxyActionsContractAdapter: ProxyActionsSmartContractAdapterInterface,
@@ -141,7 +143,7 @@ function getDepositAndGenerateCallData(
   return proxyActionsContractAdapter.draw(context, data)
 }
 
-function getOpenCallData(
+export function getOpenCallData(
   data: OpenData,
   context: ContextConnected,
   proxyActionAdapter: ProxyActionsSmartContractAdapterInterface,
