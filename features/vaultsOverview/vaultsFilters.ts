@@ -44,7 +44,11 @@ function applyFilter(state: VaultsFilterState, change: Changes): VaultsFilterSta
   }
 }
 
-function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction): Vault[] {
+function sortVaults(
+  vaults: VaultWithSLData,
+  sortBy: VaultSortBy,
+  direction: Direction,
+): VaultWithSLData {
   const filter = `${sortBy}_${direction}`
   switch (filter) {
     case 'collateral_ASC':
@@ -80,7 +84,7 @@ function sortVaults(vaults: Vault[], sortBy: VaultSortBy, direction: Direction):
   }
 }
 
-function filterByTag(vaults: Vault[], tag: CoinTag | undefined) {
+function filterByTag(vaults: VaultWithSLData, tag: CoinTag | undefined) {
   if (tag === undefined) {
     return vaults
   }
@@ -91,7 +95,7 @@ function filterByTag(vaults: Vault[], tag: CoinTag | undefined) {
   })
 }
 
-function search(vaults: Vault[], search: string) {
+function search(vaults: VaultWithSLData, search: string) {
   return vaults.filter((vault) => {
     const tokenMeta = getToken(vault.token)
 
@@ -103,12 +107,15 @@ function search(vaults: Vault[], search: string) {
   })
 }
 
+export type VaultWithSLData = (Vault & StopLossTriggerData)[]
+
 export interface VaultsWithFilters {
-  data: (Vault & StopLossTriggerData)[]
+  data: VaultWithSLData
   filters: VaultsFilterState
-  isLoading: boolean
 }
-export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<VaultsWithFilters> {
+export function vaultsWithFilter$(
+  vaults$: Observable<VaultWithSLData>,
+): Observable<VaultsWithFilters> {
   const change$ = new Subject<Changes>()
   function change(ch: Changes) {
     change$.next(ch)
@@ -130,8 +137,7 @@ export function vaultsWithFilter$(vaults$: Observable<Vault[]>): Observable<Vaul
         map((vaults) => sortVaults(vaults, filters.sortBy, filters.direction)),
         map((vaults) => filterByTag(vaults, filters.tagFilter)),
         map((vaults) => search(vaults, filters.search)),
-        map((vaults) => ({ filters, data: vaults, isLoading: false })),
-        startWith({ filters, data: [], isLoading: true }),
+        map((vaults) => ({ filters, data: vaults })),
       ),
     ),
   )
