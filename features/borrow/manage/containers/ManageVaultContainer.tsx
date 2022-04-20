@@ -5,6 +5,10 @@ import {
   DetailsSectionContentCard,
   DetailsSectionContentCardWrapper,
 } from 'components/DetailsSectionContentCard'
+import {
+  DetailsSectionFooterItem,
+  DetailsSectionFooterItemWrapper,
+} from 'components/DetailsSectionFooterItem'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
@@ -132,7 +136,14 @@ export function ManageVaultContainer({
                 />
               </DetailsSectionContentCardWrapper>
             }
-            footer="Lorem"
+            footer={
+              <DetailsSectionFooterItemWrapper>
+                <DetailsSectionFooterItem title="Vault DAI Debt" value="103,203.20 DAI" />
+                <DetailsSectionFooterItem title="Available to Withdraw" value="44.00 ETH" />
+                <DetailsSectionFooterItem title="Available to Generate" value="440.40 ETH" />
+                <DetailsSectionFooterItem title="Days Open" value="1130" />
+              </DetailsSectionFooterItemWrapper>
+            }
           />
           <ManageVaultDetails
             {...manageVault}

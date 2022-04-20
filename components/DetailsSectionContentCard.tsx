@@ -141,18 +141,19 @@ export function DetailsSectionContentCard({
         {title}
         {modal && (
           <Icon
+            color={isHighlighted ? 'primary' : 'text.subtitle'}
             name="question_o"
             size="auto"
-            width="12px"
-            height="12px"
-            sx={{ position: 'relative', top: '2px', ml: 1, pointerEvents: 'auto' }}
+            width="14px"
+            height="14px"
+            sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 150ms' }}
           />
         )}
       </Heading>
       <Text
         as="p"
         variant="header2"
-        sx={{ cursor: modal ? 'pointer' : 'auto' }}
+        sx={{ lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >
         {value || '-'}

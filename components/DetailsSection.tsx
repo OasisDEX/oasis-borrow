@@ -65,7 +65,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: IDeta
       {footer && (
         <Box
           sx={{
-            p: '24px',
+            p: [3, null, '24px'],
             borderTop: 'lightMuted',
           }}
         >
