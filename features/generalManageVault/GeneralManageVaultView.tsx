@@ -40,7 +40,7 @@ export function GeneralManageVaultViewAutomation({
       )
     case VaultType.Insti:
       return (
-        <Container variant="vaultPageContainer">
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
           <ManageInstiVaultContainer manageVault={generalManageVault.state} />
         </Container>
       )

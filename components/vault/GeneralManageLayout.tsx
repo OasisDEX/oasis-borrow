@@ -40,7 +40,8 @@ export function GeneralManageLayout({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
+  const showProtectionTab =
+    ALLOWED_MULTIPLY_TOKENS.includes(vault.token) && generalManageVault.type !== VaultType.Insti
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
