@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps, useModal } from 'helpers/modalHook'
-import React, { ReactNode } from 'react'
-import { Box, Grid, Heading, Text } from 'theme-ui'
+import React, { ReactNode, useState } from 'react'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { VaultDetailsCardModal } from './vault/VaultDetails'
 
@@ -20,8 +20,7 @@ interface IContentCardProps {
   footnote?: string
   link?: {
     label: string
-    url: string
-  }
+  } & ({ url: string } | { action: () => void }) 
   modal?: string | JSX.Element
 }
 
@@ -34,8 +33,6 @@ function DetailsSectionContentCardChangePill({
       as="p"
       variant="label"
       sx={{
-        display: 'inline-block',
-        mt: 2,
         px: 3,
         py: 1,
         ...(variant === 'positive' && {
@@ -82,27 +79,33 @@ export function DetailsSectionContentCard({
   modal,
 }: IContentCardProps) {
   const openModal = useModal()
+  const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {
     if (modal) openModal(DetailsSectionContentCardModal, { children: modal })
   }
+  const hightlightableItemEvents = {
+    onMouseEnter: () => setIsHighlighted(true),
+    onMouseLeave: () => setIsHighlighted(false),
+    onClick: modalHandler,
+  }
 
   return (
-    <Box
-      onClick={modalHandler}
+    <Flex
       sx={{
+        flexDirection: 'column',
+        alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: 'surface',
+        backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'surface',
         transition: 'background-color 150ms',
-        cursor: modal ? 'pointer' : 'auto',
-        ...(modal && {
-          '&:hover': {
-            backgroundColor: 'secondaryAlt',
-          },
-        }),
       }}
     >
-      <Heading as="h3" variant="label">
+      <Heading
+        as="h3"
+        variant="label"
+        sx={{ cursor: modal ? 'pointer' : 'auto' }}
+        {...hightlightableItemEvents}
+      >
         {title}
         {modal && (
           <Icon
@@ -110,11 +113,16 @@ export function DetailsSectionContentCard({
             size="auto"
             width="12px"
             height="12px"
-            sx={{ position: 'relative', top: '2px', ml: 1 }}
+            sx={{ position: 'relative', top: '2px', ml: 1, pointerEvents: 'auto' }}
           />
         )}
       </Heading>
-      <Text as="p" variant="header2">
+      <Text
+        as="p"
+        variant="header2"
+        sx={{ cursor: modal ? 'pointer' : 'auto' }}
+        {...hightlightableItemEvents}
+      >
         {value || '-'}
         {unit && (
           <Text as="small" sx={{ ml: 1, fontSize: 5 }}>
@@ -122,12 +130,21 @@ export function DetailsSectionContentCard({
           </Text>
         )}
       </Text>
-      {change && <DetailsSectionContentCardChangePill {...change} />}
+      {change && (
+        <Box sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }} {...hightlightableItemEvents}>
+          <DetailsSectionContentCardChangePill {...change} />
+        </Box>
+      )}
       {footnote && (
-        <Text as="p" variant="label" sx={{ mt: 2 }}>
+        <Text
+          as="p"
+          variant="label"
+          sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          {...hightlightableItemEvents}
+        >
           {footnote}
         </Text>
       )}
-    </Box>
+    </Flex>
   )
 }

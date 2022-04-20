@@ -14,11 +14,11 @@ export interface IButtonWithActions {
 }
 
 export function ExpandableButton({ button }: { button: IButtonWithAction | IButtonWithActions }) {
-  const [expanded, setExpanded] = useState(false)
-  const componentRef = useOutsideElementClickHandler(() => setExpanded(false))
+  const [isExpanded, setIsExpanded] = useState(false)
+  const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
   const clickHandler = (): void => {
     if ('action' in button) button.action()
-    else if ('actions' in button) setExpanded(!expanded)
+    else if ('actions' in button) setIsExpanded(!isExpanded)
   }
 
   return (
@@ -32,11 +32,11 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
         },
       }}
     >
-      <Button variant={!expanded ? 'action' : 'actionActive'} onClick={clickHandler}>
+      <Button variant={!isExpanded ? 'action' : 'actionActive'} onClick={clickHandler}>
         {button.label}
         {'actions' in button && (
           <Icon
-            name={`chevron_${expanded ? 'up' : 'down'}`}
+            name={`chevron_${isExpanded ? 'up' : 'down'}`}
             size="auto"
             width="12px"
             height="7px"
@@ -60,9 +60,9 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
             backgroundColor: 'surface',
             borderRadius: 'medium',
             boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
-            opacity: expanded ? 1 : 0,
-            transform: expanded ? 'translateY(0)' : 'translateY(-5px)',
-            pointerEvents: expanded ? 'auto' : 'none',
+            opacity: isExpanded ? 1 : 0,
+            transform: isExpanded ? 'translateY(0)' : 'translateY(-5px)',
+            pointerEvents: isExpanded ? 'auto' : 'none',
             transition: 'opacity 150ms, transform 150ms',
           }}
         >
@@ -70,7 +70,7 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
             <Text
               as="li"
               onClick={() => {
-                setExpanded(false)
+                setIsExpanded(false)
                 item.action()
               }}
               sx={{
