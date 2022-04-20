@@ -4,7 +4,7 @@ import {
   getOpenCallData,
   getWithdrawAndPaybackCallData,
 } from 'blockchain/calls/proxyActions/vaultActionsLogic'
-import sinon from 'sinon'
+import { SinonStatic } from 'sinon'
 
 import * as dsProxy from '../../blockchain/abi/ds-proxy.json'
 import { TransactionDef } from '../../blockchain/calls/callsHelpers'
@@ -32,8 +32,6 @@ const open = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
 }
-
-export const openCallSpy = sinon.spy(open, 'call')
 
 export function mockVaultActionsLogic(
   proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
@@ -86,5 +84,18 @@ export function mockVaultActionsLogic(
       options: ({ token, depositAmount }) =>
         token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
     },
+  }
+}
+
+export function mockVaultActionsLogicWithSpies(sinon: SinonStatic) {
+  const spies = {
+    open: {
+      call: sinon.spy(open, 'call'),
+    },
+  }
+
+  return {
+    mockVaultActionsLogic,
+    spies,
   }
 }

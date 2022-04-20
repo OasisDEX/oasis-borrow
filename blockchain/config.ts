@@ -106,6 +106,7 @@ const tokensMainnet = {
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
 } as Dictionary<ContractDesc>
+
 const protoMain = {
   id: '1',
   name: 'main',

@@ -1,5 +1,3 @@
-import { ContractDesc } from '@oasisdex/web3-context'
-
 import { zero } from '../../../helpers/zero'
 import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
 import * as dsProxy from '../../abi/ds-proxy.json'

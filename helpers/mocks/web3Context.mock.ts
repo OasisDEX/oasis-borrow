@@ -5,6 +5,7 @@ import {
 } from '@oasisdex/web3-context'
 import { Observable, of } from 'rxjs'
 import Web3 from 'web3'
+
 import { getMockContextConnected } from './context.mock'
 
 const mockWeb3ContextNotConnected: Web3Context = {
@@ -23,6 +24,11 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   connectLedger: () => null,
 }
 const kovanNetworkId = '42'
+
+export const validMockAddresses = {
+  account: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+  proxy: '0xf7203265834862bA831bc14e8999C2D1dBa7A645',
+}
 
 export const mockWeb3ContextConnected: Web3ContextConnected = {
   status: 'connected',

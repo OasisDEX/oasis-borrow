@@ -17,7 +17,7 @@ describe('ilkData$', () => {
     expect(state()).to.not.be.undefined
   })
 
-  it('should account for accrued debt', () => {
+  it('should account for accrued debt', (done) => {
     const state = mockIlkData()
 
     expect(state().ilkDebt).to.deep.equal(defaultIlkDebt)
@@ -27,5 +27,6 @@ describe('ilkData$', () => {
     debtScalingFactor$.next(RANDOM_DEBT_SCALING_FACTOR)
     expect(state().ilkDebt.gt(defaultIlkDebt)).to.be.true
     expect(state().ilkDebtAvailable.lt(expectedIlkDebtAvailable)).to.be.true
+    done()
   })
 })

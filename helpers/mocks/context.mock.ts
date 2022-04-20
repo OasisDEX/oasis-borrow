@@ -9,6 +9,7 @@ import {
 } from 'blockchain/network'
 import Web3 from 'web3'
 
+import { MockProvider } from './provider.mock'
 import {
   mockWeb3Context$,
   mockWeb3ContextConnected,
@@ -44,11 +45,12 @@ export function getMockContextConnected({
   setupProvider,
 }: {
   networkId: string
-  setupProvider?: boolean
+  setupProvider?: any
 }): ContextConnected {
   const networkConfig = networksById[networkId]
   const web3 = new Web3()
-  setupProvider && web3.setProvider(new Web3.providers.HttpProvider(networkConfig.infuraUrl))
+
+  setupProvider && web3.setProvider(new MockProvider())
 
   return {
     contract: <T>(c: ContractDesc) => contract(web3, c) as T,
