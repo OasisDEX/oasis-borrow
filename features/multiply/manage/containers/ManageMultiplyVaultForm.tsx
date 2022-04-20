@@ -13,7 +13,6 @@ import {
 } from '../../../../components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
 import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 import { ManageMultiplyVaultBorrowTransition } from './ManageMultiplyVaultBorrowTransition'
@@ -42,7 +41,6 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   } = props
 
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
@@ -58,7 +56,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => {

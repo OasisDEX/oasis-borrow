@@ -7,7 +7,6 @@ import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 
@@ -60,16 +59,12 @@ export function createStopLossDataChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
-  const automationEnabled = useFeatureToggle('Automation')
-
-  return automationEnabled
-    ? automationTriggersData$(id).pipe(
-        map((triggers) => ({
-          kind: 'stopLossData',
-          stopLossData: extractStopLossData(triggers),
-        })),
-      )
-    : []
+  return automationTriggersData$(id).pipe(
+    map((triggers) => ({
+      kind: 'stopLossData',
+      stopLossData: extractStopLossData(triggers),
+    })),
+  )
 }
 
 export interface StopLossChange {

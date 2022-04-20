@@ -13,7 +13,6 @@ import { ManageVaultCollateralAllowance } from '../../../../components/vault/com
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
@@ -67,7 +66,6 @@ export function ManageVaultForm(
     stopLossTriggered,
     vaultHistory,
   } = props
-  const automationEnabled = useFeatureToggle('Automation')
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
   const mostRecentEvent = vaultHistory[0]
@@ -78,7 +76,7 @@ export function ManageVaultForm(
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => setReopenPositionClicked(true)}

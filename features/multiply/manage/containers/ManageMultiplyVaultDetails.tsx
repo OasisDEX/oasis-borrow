@@ -17,7 +17,6 @@ import { Box, Grid } from 'theme-ui'
 
 import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
 import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
@@ -106,23 +105,18 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
 
   return (
     <Box>
-      {automationEnabled && (
-        <>
-          {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          <GetProtectionBannerControl vaultId={id} />
-          <StopLossBannerControl
-            vaultId={id}
-            liquidationPrice={liquidationPrice}
-            liquidationRatio={liquidationRatio}
-            afterLiquidationPrice={afterLiquidationPrice}
-            showAfterPill={showAfterPill}
-          />
-        </>
-      )}
+      {stopLossTriggered && <StopLossTriggeredBannerControl />}
+      <GetProtectionBannerControl vaultId={id} />
+      <StopLossBannerControl
+        vaultId={id}
+        liquidationPrice={liquidationPrice}
+        liquidationRatio={liquidationRatio}
+        afterLiquidationPrice={afterLiquidationPrice}
+        showAfterPill={showAfterPill}
+      />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           {...{

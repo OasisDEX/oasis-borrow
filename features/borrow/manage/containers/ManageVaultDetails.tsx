@@ -116,24 +116,19 @@ export function ManageVaultDetails(
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <Box>
-      {automationEnabled && (
-        <>
-          {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          <GetProtectionBannerControl vaultId={id} />
-          <StopLossBannerControl
-            vaultId={id}
-            liquidationPrice={liquidationPrice}
-            liquidationRatio={liquidationRatio}
-            afterLiquidationPrice={afterLiquidationPrice}
-            showAfterPill={showAfterPill}
-          />
-        </>
-      )}
+      {stopLossTriggered && <StopLossTriggeredBannerControl />}
+      <GetProtectionBannerControl vaultId={id} />
+      <StopLossBannerControl
+        vaultId={id}
+        liquidationPrice={liquidationPrice}
+        liquidationRatio={liquidationRatio}
+        afterLiquidationPrice={afterLiquidationPrice}
+        showAfterPill={showAfterPill}
+      />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           liquidationPrice={liquidationPrice}

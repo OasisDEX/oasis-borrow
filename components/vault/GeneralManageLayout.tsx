@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
-import { Grid } from 'theme-ui'
+import { Container, Grid } from 'theme-ui'
 
 import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
 import {
@@ -17,8 +17,9 @@ import { REMOVE_FORM_CHANGE } from '../../features/automation/common/UITypes/Rem
 import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
+import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
 import { useUIChanges } from '../../helpers/uiChangesHook'
+import { GenericAnnouncement } from '../Announcement'
 import { useAppContext } from '../AppContextProvider'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
@@ -88,6 +89,16 @@ export function GeneralManageLayout({
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vault.id} />
+      {generalManageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
+        <Container variant="announcement">
+          <GenericAnnouncement
+            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
+            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
+            linkText="Visit Maker Forum for details"
+            disableClosing={true}
+          />
+        </Container>
+      )}
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
         heading={t('vault.header', { ilk: vault.ilk, id: vault.id })}
@@ -99,9 +110,7 @@ export function GeneralManageLayout({
           />
         }
         headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
-        overViewControl={
-          <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
-        }
+        overViewControl={<GeneralManageVaultView generalManageVault={generalManageVault} />}
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
         showProtectionTab={showProtectionTab}
