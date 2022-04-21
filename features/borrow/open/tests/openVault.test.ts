@@ -30,7 +30,7 @@ import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 describe('openVault', () => {
-  beforeEach(function () {})
+  beforeEach(() => {})
 
   describe('parseVaultIdFromReceiptLogs', () => {
     it('should return vaultId', () => {
