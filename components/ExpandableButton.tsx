@@ -36,14 +36,6 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
       <Button variant={!isExpanded ? 'action' : 'actionActive'} onClick={clickHandler}>
         {button.label}
         {'actions' in button && (
-          // <Icon
-          //   name={`chevron_${isExpanded ? 'up' : 'down'}`}
-          //   size="auto"
-          //   width="12px"
-          //   height="7px"
-          //   color="text.subtitle"
-          //   sx={{ ml: 2 }}
-          // />
           <ExpandableArrow size={10} direction={isExpanded ? 'up' : 'down'} sx={{ ml: 2 }} />
         )}
       </Button>
