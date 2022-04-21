@@ -769,7 +769,7 @@ const oasisBaseTheme = {
       border: 'lightMuted',
       borderRadius: 'rounder',
       cursor: 'pointer',
-      transition: 'border-color 150ms',
+      transition: 'border-color 200ms',
       '&:hover': {
         borderColor: 'primary',
       },

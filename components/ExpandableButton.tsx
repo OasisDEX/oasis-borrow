@@ -1,7 +1,8 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import React, { useState } from 'react'
 import { Box, Button, Text } from 'theme-ui'
+
+import { ExpandableArrow } from './dumb/ExpandableArrow'
 
 export interface IButtonWithAction {
   label: string
@@ -35,14 +36,15 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
       <Button variant={!isExpanded ? 'action' : 'actionActive'} onClick={clickHandler}>
         {button.label}
         {'actions' in button && (
-          <Icon
-            name={`chevron_${isExpanded ? 'up' : 'down'}`}
-            size="auto"
-            width="12px"
-            height="7px"
-            color="text.subtitle"
-            sx={{ ml: 2 }}
-          />
+          // <Icon
+          //   name={`chevron_${isExpanded ? 'up' : 'down'}`}
+          //   size="auto"
+          //   width="12px"
+          //   height="7px"
+          //   color="text.subtitle"
+          //   sx={{ ml: 2 }}
+          // />
+          <ExpandableArrow size={10} direction={isExpanded ? 'up' : 'down'} sx={{ ml: 2 }} />
         )}
       </Button>
       {'actions' in button && (
@@ -63,7 +65,7 @@ export function ExpandableButton({ button }: { button: IButtonWithAction | IButt
             opacity: isExpanded ? 1 : 0,
             transform: isExpanded ? 'translateY(0)' : 'translateY(-5px)',
             pointerEvents: isExpanded ? 'auto' : 'none',
-            transition: 'opacity 150ms, transform 150ms',
+            transition: 'opacity 200ms, transform 200ms',
           }}
         >
           {button.actions.map((item, k) => (

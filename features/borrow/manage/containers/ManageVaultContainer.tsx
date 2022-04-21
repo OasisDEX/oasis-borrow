@@ -66,34 +66,28 @@ export function ManageVaultContainer({
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <DetailsSection
-            title="Title"
+            title="Overview"
             badge={true}
             buttons={[
               {
-                label: 'Button',
+                label: 'Close Vault',
                 action: () => {
-                  alert('Button')
+                  alert('Clicked "Close Vault" button!')
                 },
               },
               {
-                label: 'Expandable',
+                label: 'Edit Position',
                 actions: [
                   {
-                    label: 'First item',
+                    label: 'Edit DAI',
                     action: () => {
-                      alert('First item')
+                      alert('Clicked "Edit DAI" option!')
                     },
                   },
                   {
-                    label: 'Second item with a little bit longer text',
+                    label: 'Edit Collateral',
                     action: () => {
-                      alert('Second item')
-                    },
-                  },
-                  {
-                    label: 'Third item',
-                    action: () => {
-                      alert('Third item')
+                      alert('Clicked "Edit Collateral" option!')
                     },
                   },
                 ],
@@ -105,34 +99,31 @@ export function ManageVaultContainer({
                   title="Liquidation Price"
                   value="$1,320.2000"
                   footnote="22.34% below current price"
-                  modal="Lorem ipsum modal"
+                  modal="Content in modal, please fill me somewhere later..."
                 />
                 <DetailsSectionContentCard
                   title="Collateral Ratio"
+                  value="220.40%"
                   footnote="219.10% on next price"
+                  modal="Content in modal, please fill me somewhere later..."
                 />
                 <DetailsSectionContentCard
                   title="Collateral Locked"
-                  value="$420,000.20"
+                  value="420,000.20"
                   unit="DAI"
-                  change={{ value: '$420,103.90 After', variant: 'positive' }}
+                  change={{ value: '424,602.40 DAI after', variant: 'positive' }}
                   footnote="300.30 ETH"
-                  modal="Lorem ipsum modal"
+                  modal="Content in modal, please fill me somewhere later..."
+                />
+                <DetailsSectionContentCard
+                  title="Title"
                   link={{
-                    label: 'Open alert',
+                    label: 'Enable now',
                     action: () => {
-                      alert('Card action')
+                      alert('Clicked "Enable now" link!')
                     },
                   }}
-                />
-                <DetailsSectionContentCard
-                  title="Collateral Locked"
-                  value="$420,000.20"
-                  unit="DAI"
-                  change={{ value: '$1,200 After', variant: 'negative' }}
-                  footnote="300.30 ETH"
-                  modal={<p>Lorem ipsum modal</p>}
-                  link={{ label: 'Link', url: '/' }}
+                  modal="Content in modal, please fill me somewhere later..."
                 />
               </DetailsSectionContentCardWrapper>
             }

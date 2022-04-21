@@ -129,7 +129,7 @@ export function DetailsSectionContentCard({
         p: '12px',
         borderRadius: 'medium',
         backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'surface',
-        transition: 'background-color 150ms',
+        transition: 'background-color 200ms',
       }}
     >
       <Heading
@@ -146,7 +146,7 @@ export function DetailsSectionContentCard({
             size="auto"
             width="14px"
             height="14px"
-            sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 150ms' }}
+            sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
           />
         )}
       </Heading>
