@@ -16,6 +16,7 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
+import { ListDefinition } from '../../components/ListDefinition'
 import { interpolate } from '../../helpers/interpolate'
 import { VaultHistoryEvent } from './vaultHistory'
 
@@ -97,7 +98,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
   const guniVaultEvent = event.token.includes('GUNI')
 
   return (
-    <Box as="ul" sx={{ m: 0, p: 0 }}>
+    <ListDefinition>
       {event.kind === 'OPEN_MULTIPLY_VAULT' && (
         <>
           <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
@@ -220,7 +221,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
             )
           : '-'}
       </VaultHistoryEntryDetailsItem>
-    </Box>
+    </ListDefinition>
   )
 }
 

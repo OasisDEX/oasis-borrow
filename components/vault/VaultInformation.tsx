@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Flex, Heading, Text } from 'theme-ui'
+import { Card, Flex, Heading, Text } from 'theme-ui'
 
 import { AppLink } from '../Links'
+import { ListDefinition } from '../ListDefinition'
 import { WithArrow } from '../WithArrow'
 
 interface VaultInformationItemProps {
@@ -14,6 +15,7 @@ interface VaultInformationItemProps {
 function VaultInformationItem({ text, value }: VaultInformationItemProps) {
   return (
     <Flex
+      as="li"
       sx={{
         justifyContent: 'space-between',
         py: 3,
@@ -48,11 +50,12 @@ export function VaultInformation({ items }: VaultInformationProps) {
       <Heading variant="headerSettings" sx={{ mb: 3 }}>
         {t('vault-information')}
       </Heading>
-      <Box>
+      <ListDefinition>
         {items.map((item) => (
           <VaultInformationItem key={item.text} text={item.text} value={item.value} />
         ))}
-      </Box>
+      </ListDefinition>
+
       <AppLink href="https://kb.oasis.app/help">
         <WithArrow sx={{ color: 'link', fontSize: 1, mt: 3 }}>{t('learn-more-at-oasis')}</WithArrow>
       </AppLink>
