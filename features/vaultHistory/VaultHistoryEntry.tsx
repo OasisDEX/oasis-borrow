@@ -16,7 +16,7 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
-import { ListDefinition } from '../../components/ListDefinition'
+import { DefinitionList, DefinitionListItem } from '../../components/DefinitionList'
 import { interpolate } from '../../helpers/interpolate'
 import { VaultHistoryEvent } from './vaultHistory'
 
@@ -51,22 +51,7 @@ export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEven
 
 function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & WithChildren) {
   return (
-    <Flex
-      as="li"
-      sx={{
-        justifyContent: 'space-between',
-        pl: 3,
-        pr: 2,
-        py: 3,
-        fontSize: 1,
-        fontWeight: 'semiBold',
-        borderBottom: '1px solid',
-        borderBottomColor: 'border',
-        '&:last-child': {
-          borderBottom: 'none',
-        },
-      }}
-    >
+    <DefinitionListItem sx={{ display: 'flex', justifyContent: 'space-between', pl: 3, pr: 2 }}>
       <Text
         as="span"
         sx={{
@@ -85,7 +70,7 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
       >
         {children}
       </Text>
-    </Flex>
+    </DefinitionListItem>
   )
 }
 
@@ -98,7 +83,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
   const guniVaultEvent = event.token.includes('GUNI')
 
   return (
-    <ListDefinition>
+    <DefinitionList>
       {event.kind === 'OPEN_MULTIPLY_VAULT' && (
         <>
           <VaultHistoryEntryDetailsItem label={t('history.deposited')}>
@@ -221,7 +206,7 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
             )
           : '-'}
       </VaultHistoryEntryDetailsItem>
-    </ListDefinition>
+    </DefinitionList>
   )
 }
 
@@ -249,25 +234,14 @@ export function VaultHistoryEntry({
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
   return (
-    <Box
-      as="li"
-      sx={{
-        position: 'relative',
-        listStyle: 'none',
-        borderBottom: '1px solid',
-        borderBottomColor: 'border',
-        '&:last-child': {
-          borderBottom: 'none',
-        },
-      }}
-    >
+    <DefinitionListItem sx={{ fontSize: 2, position: 'relative' }}>
       <Flex
         sx={{
           flexDirection: ['column', null, null, 'row'],
           justifyContent: 'space-between',
           alignItems: ['flex-start', null, null, 'center'],
           width: '100%',
-          py: 3,
+          pb: opened ? 3 : 0,
           pl: 2,
           pr: 4,
           fontSize: 2,
@@ -329,6 +303,6 @@ export function VaultHistoryEntry({
           </Flex>
         </Box>
       )}
-    </Box>
+    </DefinitionListItem>
   )
 }
