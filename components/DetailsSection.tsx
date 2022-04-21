@@ -1,18 +1,18 @@
 import React from 'react'
 import { Box, Card, Flex } from 'theme-ui'
 
-import { ExpandableButton, IButtonWithAction, IButtonWithActions } from './ExpandableButton'
+import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
 
-interface IDetailsSectionProps {
+interface DetailsSectionProps {
   title?: string
   badge?: boolean
-  buttons?: (IButtonWithAction | IButtonWithActions)[]
+  buttons?: (ButtonWithAction | ButtonWithActions)[]
   content: string | JSX.Element
   footer?: string | JSX.Element
 }
 
-export function DetailsSection({ title, badge, buttons, content, footer }: IDetailsSectionProps) {
+export function DetailsSection({ title, badge, buttons, content, footer }: DetailsSectionProps) {
   return (
     <Card
       sx={{

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Flex, Heading, Text } from 'theme-ui'
 
-interface IDetailsSectionFooterItemProps {
+interface DetailsSectionFooterItemProps {
   title: string
   value: string
 }
@@ -23,7 +23,7 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
   )
 }
 
-export function DetailsSectionFooterItem({ title, value }: IDetailsSectionFooterItemProps) {
+export function DetailsSectionFooterItem({ title, value }: DetailsSectionFooterItemProps) {
   return (
     <Flex
       as="li"

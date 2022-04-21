@@ -4,17 +4,17 @@ import { Box, Button, Text } from 'theme-ui'
 
 import { ExpandableArrow } from './dumb/ExpandableArrow'
 
-export interface IButtonWithAction {
+export interface ButtonWithAction {
   label: string
   action: () => void
 }
 
-export interface IButtonWithActions {
+export interface ButtonWithActions {
   label: string
-  actions: IButtonWithAction[]
+  actions: ButtonWithAction[]
 }
 
-export function ExpandableButton({ button }: { button: IButtonWithAction | IButtonWithActions }) {
+export function ExpandableButton({ button }: { button: ButtonWithAction | ButtonWithActions }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
   const clickHandler = (): void => {

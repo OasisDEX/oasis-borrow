@@ -9,31 +9,31 @@ import { WithArrow } from './WithArrow'
 
 type ChangeVariantType = 'positive' | 'negative'
 
-interface IDetailsSectionContentCardChangePillProps {
+interface DetailsSectionContentCardChangePillProps {
   value: string
   variant: ChangeVariantType
 }
 
-interface IDetailsSectionContentCardLinkProps {
+interface DetailsSectionContentCardLinkProps {
   label: string
   url?: string
   action?: () => void
 }
 
-interface IContentCardProps {
+interface ContentCardProps {
   title: string
   value?: string
   unit?: string
-  change?: IDetailsSectionContentCardChangePillProps
+  change?: DetailsSectionContentCardChangePillProps
   footnote?: string
-  link?: IDetailsSectionContentCardLinkProps
+  link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
 }
 
 function DetailsSectionContentCardChangePill({
   value,
   variant,
-}: IDetailsSectionContentCardChangePillProps) {
+}: DetailsSectionContentCardChangePillProps) {
   return (
     <Text
       as="p"
@@ -57,11 +57,7 @@ function DetailsSectionContentCardChangePill({
   )
 }
 
-function DetailsSectionContentCardLink({
-  label,
-  url,
-  action,
-}: IDetailsSectionContentCardLinkProps) {
+function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionContentCardLinkProps) {
   return (
     <>
       {url && (
@@ -109,7 +105,7 @@ export function DetailsSectionContentCard({
   footnote,
   link,
   modal,
-}: IContentCardProps) {
+}: ContentCardProps) {
   const openModal = useModal()
   const [isHighlighted, setIsHighlighted] = useState(false)
   const modalHandler = () => {

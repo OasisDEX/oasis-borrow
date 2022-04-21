@@ -3,13 +3,13 @@ import { Box, SxProps } from 'theme-ui'
 
 type ArrowDirectionType = 'up' | 'down'
 
-export interface IExpandableArrowProps {
+export interface ExpandableArrowProps {
   size?: number
   direction: ArrowDirectionType
   sx?: SxProps
 }
 
-export function ExpandableArrow({ size = 10, direction, sx }: IExpandableArrowProps) {
+export function ExpandableArrow({ size = 10, direction, sx }: ExpandableArrowProps) {
   return (
     <Box
       as="span"
