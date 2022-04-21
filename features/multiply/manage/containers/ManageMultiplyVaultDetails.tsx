@@ -24,7 +24,7 @@ import { StopLossTriggeredBannerControl } from '../../../automation/controls/Sto
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({
-  vault: { debt, token, lockedCollateral },
+  vault: { debt, token, lockedCollateral, ...props },
   afterDebt,
   afterPillColors,
   showAfterPill,
@@ -33,6 +33,8 @@ function DefaultManageMultiplyVaultDetailsSummary({
   afterLockedCollateral,
 }: ManageMultiplyVaultState & AfterPillProps) {
   const { t } = useTranslation()
+
+  console.log(props)
 
   return (
     <VaultDetailsSummaryContainer>
