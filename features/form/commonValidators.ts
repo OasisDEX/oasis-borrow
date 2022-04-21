@@ -404,7 +404,7 @@ export function afterCollRatioBelowStopLossRatioValidator({
   stopLossRatio: BigNumber
 }) {
   return (
-    afterCollateralizationRatio.lt(stopLossRatio) ||
-    afterCollateralizationRatioAtNextPrice.lt(stopLossRatio)
+    afterCollateralizationRatio.lte(stopLossRatio) ||
+    afterCollateralizationRatioAtNextPrice.lte(stopLossRatio)
   )
 }
