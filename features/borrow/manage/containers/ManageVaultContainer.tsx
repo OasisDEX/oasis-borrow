@@ -1,14 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
-import { DetailsSection } from 'components/DetailsSection'
-import {
-  DetailsSectionContentCard,
-  DetailsSectionContentCardWrapper,
-} from 'components/DetailsSectionContentCard'
-import {
-  DetailsSectionFooterItem,
-  DetailsSectionFooterItemWrapper,
-} from 'components/DetailsSectionFooterItem'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
@@ -65,77 +56,6 @@ export function ManageVaultContainer({
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
-          <DetailsSection
-            title="Overview"
-            badge={true}
-            buttons={[
-              {
-                label: 'Close Vault',
-                action: () => {
-                  alert('Clicked "Close Vault" button!')
-                },
-              },
-              {
-                label: 'Edit Position',
-                actions: [
-                  {
-                    label: 'Edit DAI',
-                    action: () => {
-                      alert('Clicked "Edit DAI" option!')
-                    },
-                  },
-                  {
-                    label: 'Edit Collateral',
-                    action: () => {
-                      alert('Clicked "Edit Collateral" option!')
-                    },
-                  },
-                ],
-              },
-            ]}
-            content={
-              <DetailsSectionContentCardWrapper>
-                <DetailsSectionContentCard
-                  title="Liquidation Price"
-                  value="$1,320.2000"
-                  footnote="22.34% below current price"
-                  modal="Content in modal, please fill me somewhere later..."
-                />
-                <DetailsSectionContentCard
-                  title="Collateral Ratio"
-                  value="220.40%"
-                  footnote="219.10% on next price"
-                  modal="Content in modal, please fill me somewhere later..."
-                />
-                <DetailsSectionContentCard
-                  title="Collateral Locked"
-                  value="420,000.20"
-                  unit="DAI"
-                  change={{ value: '424,602.40 DAI after', variant: 'positive' }}
-                  footnote="300.30 ETH"
-                  modal="Content in modal, please fill me somewhere later..."
-                />
-                <DetailsSectionContentCard
-                  title="Title"
-                  link={{
-                    label: 'Enable now',
-                    action: () => {
-                      alert('Clicked "Enable now" link!')
-                    },
-                  }}
-                  modal="Content in modal, please fill me somewhere later..."
-                />
-              </DetailsSectionContentCardWrapper>
-            }
-            footer={
-              <DetailsSectionFooterItemWrapper>
-                <DetailsSectionFooterItem title="Vault DAI Debt" value="103,203.20 DAI" />
-                <DetailsSectionFooterItem title="Available to Withdraw" value="44.00 ETH" />
-                <DetailsSectionFooterItem title="Available to Generate" value="440.40 ETH" />
-                <DetailsSectionFooterItem title="Days Open" value="1130" />
-              </DetailsSectionFooterItemWrapper>
-            }
-          />
           <ManageVaultDetails
             {...manageVault}
             onBannerButtonClickHandler={() => {
