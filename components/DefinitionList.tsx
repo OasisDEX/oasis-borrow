@@ -17,11 +17,10 @@ export function DefinitionList({ children, sx, as = 'ul' }: ListDefinitionProps)
 
 interface VaultListItemProps {
   children: ReactNode
-  onClick?: () => void
   sx?: SxStyleProp
 }
 
-export function DefinitionListItem({ children, sx, onClick }: VaultListItemProps) {
+export function DefinitionListItem({ children, sx }: VaultListItemProps) {
   return (
     <Box
       as="li"
@@ -37,7 +36,6 @@ export function DefinitionListItem({ children, sx, onClick }: VaultListItemProps
         },
         ...sx,
       }}
-      onClick={onClick}
     >
       {children}
     </Box>
