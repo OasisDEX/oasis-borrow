@@ -9,6 +9,7 @@ export const LOAN_FEE = new BigNumber(0.0)
 export const SLIPPAGE = new BigNumber(0.005)
 export const GUNI_MAX_SLIPPAGE = new BigNumber(0.001)
 export const GUNI_SLIPPAGE = new BigNumber(0)
+export const STOP_LOSS_MARGIN = new BigNumber(0.02)
 
 function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
   switch (event.kind) {
