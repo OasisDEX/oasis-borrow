@@ -100,7 +100,7 @@ export function TabSwitcher(props: {
 
   const selectTab = useCallback(
     (event: MouseEvent<HTMLButtonElement>) =>
-      setSelectedTab((event.currentTarget.value as unknown) as string),
+      setSelectedTab(event.currentTarget.value as unknown as string),
     [],
   )
 

@@ -175,9 +175,9 @@ export const InstitutionalBorrowManageAdapter: BorrowManageAdapterInterface<
 
     const originationFeeUSD = generateAmount.times(viewState.vault.originationFeePercent)
 
-    const transactionFeeUsd = originationFeeUSD?.plus(viewState.gasEstimationUsd!)
+    const transactionFeeUsd = originationFeeUSD.plus(viewState.gasEstimationUsd!)
 
-    const transactionFeeETH = transactionFeeUsd?.div(viewState.priceInfo.currentEthPrice!)
+    const transactionFeeETH = transactionFeeUsd.div(viewState.priceInfo.currentEthPrice!)
 
     const afterActiveCollRatioPriceUSD = collateralPriceAtRatio({
       colRatio: viewState.vault.activeCollRatio,

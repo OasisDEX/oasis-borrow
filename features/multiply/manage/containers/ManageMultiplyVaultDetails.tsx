@@ -73,8 +73,8 @@ function DefaultManageMultiplyVaultDetailsSummary({
       />
       <VaultDetailsSummaryItem
         label={t('system.multiple')}
-        value={<>{multiply?.toFixed(2)}x</>}
-        valueAfter={showAfterPill && <>{afterMultiply?.toFixed(2)}x</>}
+        value={<>{multiply.toFixed(2)}x</>}
+        valueAfter={showAfterPill && <>{afterMultiply.toFixed(2)}x</>}
         afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>

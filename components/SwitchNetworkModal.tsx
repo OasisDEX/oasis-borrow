@@ -46,7 +46,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
     }
 
     if (account.connector) {
-      account.connector?.on('Web3ReactUpdate', handleChainChange)
+      account.connector.on('Web3ReactUpdate', handleChainChange)
     }
 
     return () => {

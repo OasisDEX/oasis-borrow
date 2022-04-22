@@ -407,7 +407,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
     return null
   }
 
-  const connectedAccount = context?.status === 'connected' ? context.account : undefined
+  const connectedAccount = context.status === 'connected' ? context.account : undefined
 
   const headerTranslationKey = getHeaderTranslationKey(
     connectedAccount,

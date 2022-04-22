@@ -393,15 +393,14 @@ export function applyManageVaultConditions(
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
-    {
+  const vaultWillBeAtRiskLevelWarningAtNextPrice =
+    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    },
-  )
+    })
 
   const vaultWillBeUnderCollateralized =
     afterDebt.gt(zero) &&
@@ -434,15 +433,18 @@ export function applyManageVaultConditions(
     maxWithdrawAmountAtCurrentPrice,
   })
 
-  const withdrawAmountExceedsFreeCollateralAtNextPrice = withdrawAmountExceedsFreeCollateralAtNextPriceValidator(
-    { withdrawAmount, withdrawAmountExceedsFreeCollateral, maxWithdrawAmountAtNextPrice },
-  )
+  const withdrawAmountExceedsFreeCollateralAtNextPrice =
+    withdrawAmountExceedsFreeCollateralAtNextPriceValidator({
+      withdrawAmount,
+      withdrawAmountExceedsFreeCollateral,
+      maxWithdrawAmountAtNextPrice,
+    })
 
   // generate amount used for calc, can be from input for Other Actions or from afterDebt for Adjust Position
   const generateAmountCalc = afterDebt.gt(debt) ? afterDebt.minus(debt) : zero
   const paybackAmountCalc = afterDebt.lt(debt) ? debt.minus(afterDebt) : zero
 
-  const generateAmountExceedsDebtCeiling = !!generateAmountCalc?.gt(ilkDebtAvailable)
+  const generateAmountExceedsDebtCeiling = !!generateAmountCalc.gt(ilkDebtAvailable)
 
   const generateAmountExceedsDaiYieldFromTotalCollateral =
     !generateAmountExceedsDebtCeiling && !!generateAmountCalc.gt(maxGenerateAmountAtCurrentPrice)
@@ -457,7 +459,7 @@ export function applyManageVaultConditions(
     !(debt.plus(generateAmountCalc).isZero() || debt.plus(generateAmountCalc).gte(debtFloor))
 
   const generateAmountMoreThanMaxFlashAmount = debtDelta
-    ? debtDelta?.gt(FLASH_MINT_LIMIT_PER_TX)
+    ? debtDelta.gt(FLASH_MINT_LIMIT_PER_TX)
     : false
 
   const paybackAmountExceedsDaiBalance = paybackAmountExceedsDaiBalanceValidator({
@@ -485,21 +487,31 @@ export function applyManageVaultConditions(
     daiAllowanceAmount,
   })
 
-  const customCollateralAllowanceAmountExceedsMaxUint256 = customCollateralAllowanceAmountExceedsMaxUint256Validator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount },
-  )
+  const customCollateralAllowanceAmountExceedsMaxUint256 =
+    customCollateralAllowanceAmountExceedsMaxUint256Validator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+    })
 
-  const customCollateralAllowanceAmountLessThanDepositAmount = customCollateralAllowanceAmountLessThanDepositAmountValidator(
-    { selectedCollateralAllowanceRadio, collateralAllowanceAmount, depositAmount },
-  )
+  const customCollateralAllowanceAmountLessThanDepositAmount =
+    customCollateralAllowanceAmountLessThanDepositAmountValidator({
+      selectedCollateralAllowanceRadio,
+      collateralAllowanceAmount,
+      depositAmount,
+    })
 
-  const customDaiAllowanceAmountExceedsMaxUint256 = customDaiAllowanceAmountExceedsMaxUint256Validator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount },
-  )
+  const customDaiAllowanceAmountExceedsMaxUint256 =
+    customDaiAllowanceAmountExceedsMaxUint256Validator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+    })
 
-  const customDaiAllowanceAmountLessThanPaybackAmount = customDaiAllowanceAmountLessThanPaybackAmountValidator(
-    { selectedDaiAllowanceRadio, daiAllowanceAmount, paybackAmount },
-  )
+  const customDaiAllowanceAmountLessThanPaybackAmount =
+    customDaiAllowanceAmountLessThanPaybackAmountValidator({
+      selectedDaiAllowanceRadio,
+      daiAllowanceAmount,
+      paybackAmount,
+    })
 
   const insufficientCollateralAllowance = insufficientCollateralAllowanceValidator({
     token,
@@ -515,18 +527,20 @@ export function applyManageVaultConditions(
     debtOffset,
   })
 
-  const isLoadingStage = ([
-    'proxyInProgress',
-    'proxyWaitingForApproval',
-    'collateralAllowanceWaitingForApproval',
-    'collateralAllowanceInProgress',
-    'daiAllowanceWaitingForApproval',
-    'daiAllowanceInProgress',
-    'manageInProgress',
-    'manageWaitingForApproval',
-    'borrowTransitionInProgress',
-    'borrowTransitionSuccess',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const isLoadingStage = (
+    [
+      'proxyInProgress',
+      'proxyWaitingForApproval',
+      'collateralAllowanceWaitingForApproval',
+      'collateralAllowanceInProgress',
+      'daiAllowanceWaitingForApproval',
+      'daiAllowanceInProgress',
+      'manageInProgress',
+      'manageWaitingForApproval',
+      'borrowTransitionInProgress',
+      'borrowTransitionSuccess',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
@@ -596,19 +610,21 @@ export function applyManageVaultConditions(
     isExchangeLoading
   )
 
-  const canRegress = ([
-    'proxyWaitingForConfirmation',
-    'proxyFailure',
-    'collateralAllowanceWaitingForConfirmation',
-    'collateralAllowanceFailure',
-    'daiAllowanceWaitingForConfirmation',
-    'daiAllowanceFailure',
-    'manageWaitingForConfirmation',
-    'manageFailure',
-    'borrowTransitionEditing',
-    'borrowTransitionWaitingForConfirmation',
-    'borrowTransitionFailure',
-  ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  const canRegress = (
+    [
+      'proxyWaitingForConfirmation',
+      'proxyFailure',
+      'collateralAllowanceWaitingForConfirmation',
+      'collateralAllowanceFailure',
+      'daiAllowanceWaitingForConfirmation',
+      'daiAllowanceFailure',
+      'manageWaitingForConfirmation',
+      'manageFailure',
+      'borrowTransitionEditing',
+      'borrowTransitionWaitingForConfirmation',
+      'borrowTransitionFailure',
+    ] as ManageMultiplyVaultStage[]
+  ).some((s) => s === stage)
 
   const stopLossTriggered =
     !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'

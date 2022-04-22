@@ -438,52 +438,50 @@ export function createOpenGuniVault$(
                                   amountOMax: token0Amount,
                                   amount1Max: token1Amount,
                                 }).pipe(
-                                  map(
-                                    ({ amount0, amount1, mintAmount }): GuniTxDataChange => {
-                                      const requiredDebt = flAmount?.plus(oazoFee) || zero
+                                  map(({ amount0, amount1, mintAmount }): GuniTxDataChange => {
+                                    const requiredDebt = flAmount?.plus(oazoFee) || zero
 
-                                      const afterNetValueUSD = mintAmount
-                                        .times(priceInfo.currentCollateralPrice)
-                                        .minus(requiredDebt)
+                                    const afterNetValueUSD = mintAmount
+                                      .times(priceInfo.currentCollateralPrice)
+                                      .minus(requiredDebt)
 
-                                      const multiple = mintAmount
-                                        .times(priceInfo.currentCollateralPrice)
-                                        .div(
-                                          mintAmount
-                                            .times(priceInfo.currentCollateralPrice)
-                                            .minus(requiredDebt),
-                                        )
+                                    const multiple = mintAmount
+                                      .times(priceInfo.currentCollateralPrice)
+                                      .div(
+                                        mintAmount
+                                          .times(priceInfo.currentCollateralPrice)
+                                          .minus(requiredDebt),
+                                      )
 
-                                      return {
-                                        kind: 'guniTxData',
-                                        swap,
-                                        flAmount,
-                                        leveragedAmount,
-                                        token0Amount,
-                                        token1Amount,
-                                        amount0,
-                                        amount1,
-                                        fromTokenAmount: amountWithFee,
-                                        toTokenAmount: swap.collateralAmount,
-                                        minToTokenAmount: swap.collateralAmount.times(
-                                          one.minus(state.slippage),
-                                        ),
-                                        buyingCollateralUSD: amount1,
-                                        totalCollateral: mintAmount,
-                                        afterCollateralAmount: mintAmount,
-                                        afterOutstandingDebt: requiredDebt,
-                                        requiredDebt,
-                                        oazoFee,
-                                        totalFees: oazoFee,
-                                        gettingCollateral: mintAmount,
-                                        gettingCollateralUSD: mintAmount.times(
-                                          priceInfo.currentCollateralPrice,
-                                        ),
-                                        afterNetValueUSD,
-                                        multiply: multiple,
-                                      }
-                                    },
-                                  ),
+                                    return {
+                                      kind: 'guniTxData',
+                                      swap,
+                                      flAmount,
+                                      leveragedAmount,
+                                      token0Amount,
+                                      token1Amount,
+                                      amount0,
+                                      amount1,
+                                      fromTokenAmount: amountWithFee,
+                                      toTokenAmount: swap.collateralAmount,
+                                      minToTokenAmount: swap.collateralAmount.times(
+                                        one.minus(state.slippage),
+                                      ),
+                                      buyingCollateralUSD: amount1,
+                                      totalCollateral: mintAmount,
+                                      afterCollateralAmount: mintAmount,
+                                      afterOutstandingDebt: requiredDebt,
+                                      requiredDebt,
+                                      oazoFee,
+                                      totalFees: oazoFee,
+                                      gettingCollateral: mintAmount,
+                                      gettingCollateralUSD: mintAmount.times(
+                                        priceInfo.currentCollateralPrice,
+                                      ),
+                                      afterNetValueUSD,
+                                      multiply: multiple,
+                                    }
+                                  }),
                                 )
                               }),
                             )
@@ -494,7 +492,7 @@ export function createOpenGuniVault$(
 
                     function applyGuniDataChanges<
                       S extends TokensLpBalanceState & GuniCalculations,
-                      Ch extends GuniTxDataChange
+                      Ch extends GuniTxDataChange,
                     >(state: S, change: Ch): S {
                       if (change.kind === 'guniTxData') {
                         const { kind: _, ...data } = change

@@ -19,7 +19,7 @@ export function amountFromRad(amount: BigNumber): BigNumber {
 export function funcSigTopic(v: string): string {
   // TODO remove when following issue will be fixed
   // https://github.com/ChainSafe/web3.js/pull/3587
-  return padEnd(((ethAbi as unknown) as AbiCoder).encodeFunctionSignature(v), 66, '0')
+  return padEnd((ethAbi as unknown as AbiCoder).encodeFunctionSignature(v), 66, '0')
 }
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {

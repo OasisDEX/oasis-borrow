@@ -32,57 +32,58 @@ export function openMultiplyVaultStory({
   exchangeQuote,
 }: OpenMultiplyVaultStory) {
   return ({
-    depositAmount,
-    ...otherState
-  }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) => () => {
-    const obs$ = mockOpenMultiplyVault({
-      _ilks$,
-      balanceInfo,
-      priceInfo,
-      ilkData,
-      proxyAddress,
-      allowance,
-      ilks,
-      ilk,
-      exchangeQuote,
-    })
+      depositAmount,
+      ...otherState
+    }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) =>
+    () => {
+      const obs$ = mockOpenMultiplyVault({
+        _ilks$,
+        balanceInfo,
+        priceInfo,
+        ilkData,
+        proxyAddress,
+        allowance,
+        ilks,
+        ilk,
+        exchangeQuote,
+      })
 
-    useEffect(() => {
-      const subscription = obs$
-        .pipe(first())
-        .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
-          const newState = {
-            ...otherState,
-            ...(depositAmount && {
-              depositAmount,
-              depositAmountUSD: depositAmount.times(currentCollateralPrice),
-            }),
-          }
-          injectStateOverride(newState || {})
-        })
-      return subscription.unsubscribe()
-    }, [])
+      useEffect(() => {
+        const subscription = obs$
+          .pipe(first())
+          .subscribe(({ injectStateOverride, priceInfo: { currentCollateralPrice } }) => {
+            const newState = {
+              ...otherState,
+              ...(depositAmount && {
+                depositAmount,
+                depositAmountUSD: depositAmount.times(currentCollateralPrice),
+              }),
+            }
+            injectStateOverride(newState || {})
+          })
+        return subscription.unsubscribe()
+      }, [])
 
-    const openMultiplyVault$ = () => obs$
-    const ctx = ({
-      openMultiplyVault$,
-      accountData$: of(EMPTY),
-    } as any) as AppContext
+      const openMultiplyVault$ = () => obs$
+      const ctx = {
+        openMultiplyVault$,
+        accountData$: of(EMPTY),
+      } as any as AppContext
 
-    return (
-      <appContext.Provider value={ctx as any}>
-        <SharedUIContext.Provider
-          value={{
-            vaultFormOpened: true,
-            setVaultFormOpened: () => null,
-            setVaultFormToggleTitle: () => null,
-          }}
-        >
-          <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
-        </SharedUIContext.Provider>
-      </appContext.Provider>
-    )
-  }
+      return (
+        <appContext.Provider value={ctx as any}>
+          <SharedUIContext.Provider
+            value={{
+              vaultFormOpened: true,
+              setVaultFormOpened: () => null,
+              setVaultFormToggleTitle: () => null,
+            }}
+          >
+            <OpenMultiplyVaultStoryContainer ilk={'WBTC-A'} title={title} />
+          </SharedUIContext.Provider>
+        </appContext.Provider>
+      )
+    }
 }
 
 const OpenMultiplyVaultStoryContainer = ({ title, ilk }: { title?: string; ilk: string }) => {

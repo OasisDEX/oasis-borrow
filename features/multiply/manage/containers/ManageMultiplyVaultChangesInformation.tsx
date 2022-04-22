@@ -111,9 +111,9 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
         label={'Multiply'}
         value={
           <Flex>
-            {multiply?.toFixed(2)}x
+            {multiply.toFixed(2)}x
             <VaultChangesInformationArrow />
-            {isCloseAction ? 'n/a' : `${afterMultiply?.toFixed(2)}x`}
+            {isCloseAction ? 'n/a' : `${afterMultiply.toFixed(2)}x`}
           </Flex>
         }
       />

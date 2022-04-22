@@ -230,35 +230,33 @@ export function transactionToX<X, Y extends TxMeta>(
           txState.status !== TxStatus.Success
         )
       }),
-      flatMap(
-        (txState: TxState<Y>): Observable<X> => {
-          switch (txState.status) {
-            case TxStatus.CancelledByTheUser:
-            case TxStatus.Failure:
-            case TxStatus.Error:
-              const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
+      flatMap((txState: TxState<Y>): Observable<X> => {
+        switch (txState.status) {
+          case TxStatus.CancelledByTheUser:
+          case TxStatus.Failure:
+          case TxStatus.Error:
+            const modal = document.getElementById(MODAL_CONTAINER_TREZOR_METAMASK_EIP1559)
 
-              if (
-                (txState as ErrorTxState).error?.message?.includes('params specify an EIP-1559') &&
-                modal
-              ) {
-                modal.style.display = 'block'
-                document.documentElement.style.overflow = 'hidden'
-              }
+            if (
+              (txState as ErrorTxState).error?.message?.includes('params specify an EIP-1559') &&
+              modal
+            ) {
+              modal.style.display = 'block'
+              document.documentElement.style.overflow = 'hidden'
+            }
 
-              return isFunction(fiascoX) ? fiascoX(txState) : of(fiascoX)
-            case TxStatus.Propagating:
-            case TxStatus.WaitingForConfirmation:
-              return isFunction(waitingForConfirmationX)
-                ? waitingForConfirmationX(txState)
-                : of(waitingForConfirmationX)
-            case TxStatus.Success:
-              return successHandler ? successHandler(txState) : of()
-            default:
-              return of()
-          }
-        },
-      ),
+            return isFunction(fiascoX) ? fiascoX(txState) : of(fiascoX)
+          case TxStatus.Propagating:
+          case TxStatus.WaitingForConfirmation:
+            return isFunction(waitingForConfirmationX)
+              ? waitingForConfirmationX(txState)
+              : of(waitingForConfirmationX)
+          case TxStatus.Success:
+            return successHandler ? successHandler(txState) : of()
+          default:
+            return of()
+        }
+      }),
       startWith(startWithX),
     )
 }

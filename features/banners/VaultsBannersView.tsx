@@ -309,7 +309,7 @@ export function VaultNextPriceUpdateCounter({
   const { theme } = useTheme()
 
   useEffect(() => {
-    const nextUpdateTimestamp = nextPriceUpdateDate?.getTime()
+    const nextUpdateTimestamp = nextPriceUpdateDate.getTime()
     const nextUpdateInSeconds = nextUpdateTimestamp ? nextUpdateTimestamp / 1000 : 0
     const now = moment().unix()
     const left = nextUpdateInSeconds - now
@@ -326,7 +326,7 @@ export function VaultNextPriceUpdateCounter({
       size={56}
       strokeWidth={3}
       colors={[
-        [theme.colors?.counter.primary, 0],
+        [theme.colors.counter.primary, 0],
         [theme.colors.counter.secondary, 0],
       ]}
       trailColor={theme.colors.counter.surface}

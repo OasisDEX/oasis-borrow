@@ -61,7 +61,7 @@ function InternalLink({
   ...rest
 }: AppLinkProps) {
   // useRouter cannot be used with storybook. The router is undefined.
-  const network = useRouter()?.query.network
+  const network = useRouter().query.network
   const readOnlyHref = href
   const readOnlyAs = as
 

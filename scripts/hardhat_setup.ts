@@ -87,7 +87,7 @@ async function getLastCDP(
   ) as any
   const { ids, urns, ilks } = await getCdps.getCdpsAsc(CDP_MANAGER, proxyAddress)
   const cdp: CDP | undefined = _.last(
-    _.map((_.zip(ids, urns, ilks) as any) as [BigNumber, string, string][], (cdp) => ({
+    _.map(_.zip(ids, urns, ilks) as any as [BigNumber, string, string][], (cdp) => ({
       id: cdp[0].toNumber(),
       urn: cdp[1],
       ilk: cdp[2],
