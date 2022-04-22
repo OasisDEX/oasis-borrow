@@ -1,5 +1,5 @@
 import { VaultType } from '@prisma/client'
-import express from 'express'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -12,7 +12,7 @@ const vaultSchema = z.object({
   chainId: z.number(),
 })
 
-export async function createOrUpdate(req: express.Request, res: express.Response) {
+export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) {
   const params = vaultSchema.parse(req.body)
   const user = getUserFromRequest(req)
 
@@ -39,8 +39,8 @@ export async function createOrUpdate(req: express.Request, res: express.Response
       update: vaultData,
       create: vaultData,
     })
-    return res.sendStatus(200)
+    return res.status(200).send('OK')
   } else {
-    return res.sendStatus(401)
+    return res.status(401).send('Unauthorized')
   }
 }

@@ -1,4 +1,4 @@
-import express from 'express'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -8,7 +8,7 @@ const tosSchema = z.object({
   docVersion: z.string(),
 })
 
-export async function sign(req: express.Request, res: express.Response) {
+export async function sign(req: NextApiRequest, res: NextApiResponse) {
   const { docVersion } = tosSchema.parse(req.body)
   const user = getUserFromRequest(req)
   const approvalData = {

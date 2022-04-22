@@ -1,6 +1,6 @@
 import { recoverPersonalSignature } from 'eth-sig-util'
-import { Handler } from 'express'
 import jwt from 'jsonwebtoken'
+import { NextApiHandler } from 'next'
 import Web3 from 'web3'
 import * as z from 'zod'
 
@@ -25,7 +25,7 @@ const inputSchema = z.object({
   signature: z.string(),
 })
 
-export function makeSignIn(options: signInOptions): Handler {
+export function makeSignIn(options: signInOptions): NextApiHandler {
   return async (req, res) => {
     const body = inputSchema.parse(req.body)
 

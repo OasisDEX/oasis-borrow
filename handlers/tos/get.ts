@@ -1,6 +1,6 @@
 import { TosApproval } from '@prisma/client'
-import express from 'express'
-import { selecTosForAddress } from 'server/database/tos'
+import { selecTosForAddress } from 'handlers/tos/tos'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
 
@@ -10,16 +10,16 @@ const paramsSchema = z.object({
   version: z.string(),
 })
 
-export async function get(req: express.Request, res: express.Response) {
+export async function get(req: NextApiRequest, res: NextApiResponse) {
   const user = getUserFromRequest(req)
-  const params = paramsSchema.parse(req.params)
+  const params = paramsSchema.parse(req.query)
 
   const tos = await selecTosForAddress(prisma, {
     address: user.address,
   })
 
   if (tos === undefined) {
-    return res.sendStatus(404)
+    return res.status(404).send('Not Found')
   } else {
     const acceptances = serializeTos(tos)
 
