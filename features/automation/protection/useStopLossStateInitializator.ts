@@ -5,15 +5,15 @@ import { InstiVault } from '../../../blockchain/instiVault'
 import { Vault } from '../../../blockchain/vaults'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { useUIChanges } from '../../../helpers/uiChangesHook'
-import { getInitialVaultCollRatio, getStartingSlRatio } from '../common/helpers'
-import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE } from '../common/UITypes/AddFormChange'
+import { getInitialVaultCollRatio, getStartingSlRatio } from './common/helpers'
+import { extractStopLossData } from './common/StopLossTriggerDataExtractor'
+import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
-} from '../common/UITypes/ProtectionFormModeChange'
-import { REMOVE_FORM_CHANGE } from '../common/UITypes/RemoveFormChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
+} from './common/UITypes/ProtectionFormModeChange'
+import { REMOVE_FORM_CHANGE } from './common/UITypes/RemoveFormChange'
+import { TriggersData } from './triggers/AutomationTriggersData'
 
 export function useStopLossStateInitializator(
   ilkData: IlkData,
