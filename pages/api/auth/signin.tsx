@@ -8,6 +8,7 @@ const handler: NextApiHandler = async (req, res) => {
       return await makeSignIn({
         challengeJWTSecret: config.challengeJWTSecret,
         userJWTSecret: config.userJWTSecret,
+        rpcNode: config.rpcNode,
       })(req, res)
     default:
       return res.status(405).end()

@@ -45,8 +45,11 @@ export function contractDesc(abi: Abi[], address: string): ContractDesc {
   return { abi, address }
 }
 
-const infuraProjectId =
-  process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
+const rpcNode = process.env.RPC_NODE || getConfig()?.publicRuntimeConfig?.rpcNode || ''
+const rpcNodeKovan =
+  process.env.RPC_NODE_KOVAN || getConfig()?.publicRuntimeConfig?.rpcNodeKovan || ''
+const rpcNodeGoerli =
+  process.env.RPC_NODE_GOERLI || getConfig()?.publicRuntimeConfig?.rpcNodeGoerli || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 
@@ -110,8 +113,7 @@ const protoMain = {
   id: '1',
   name: 'main',
   label: 'Mainnet',
-  infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
-  infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
+  infuraUrl: rpcNode,
   safeConfirmations: 10,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
   collaterals: getCollaterals(mainnetAddresses, supportedIlks),
@@ -181,8 +183,7 @@ const kovan: NetworkConfig = {
   id: '42',
   name: 'kovan',
   label: 'Kovan',
-  infuraUrl: `https://kovan.infura.io/v3/${infuraProjectId}`,
-  infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
+  infuraUrl: rpcNodeKovan,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
   collaterals: getCollaterals(kovanAddresses, supportedIlks),
@@ -251,8 +252,7 @@ const goerli: NetworkConfig = {
   id: '5',
   name: 'goerli',
   label: 'goerli',
-  infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
-  infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
+  infuraUrl: rpcNodeGoerli,
   safeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
   collaterals: getCollaterals(goerliAddresses, supportedIlks),
@@ -327,7 +327,6 @@ const hardhat: NetworkConfig = {
   name: 'hardhat',
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
-  infuraUrlWS: `ws://localhost:8545`,
   cacheApi: 'http://localhost:3001/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,

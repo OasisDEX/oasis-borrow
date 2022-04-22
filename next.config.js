@@ -46,6 +46,9 @@ const conf = withBundleAnalyzer(
         useTermsOfService: process.env.USE_TERMS_OF_SERVICE === '1',
         showBuildInfo: process.env.SHOW_BUILD_INFO === '1',
         infuraProjectId: process.env.INFURA_PROJECT_ID,
+        rpcNode: process.env.RPC_NODE,
+        rpcNodeKovan: process.env.RPC_NODE_KOVAN,
+        rpcNodeGoerli: process.env.RPC_NODE_GOERLI,
         etherscanAPIKey: process.env.ETHERSCAN_API_KEY,
         sentryRelease: process.env.SENTRY_RELEASE,
         exchangeAddress:

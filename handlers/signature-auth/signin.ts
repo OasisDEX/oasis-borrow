@@ -10,6 +10,7 @@ import { ChallengeJWT } from './challenge'
 export interface signInOptions {
   challengeJWTSecret: string
   userJWTSecret: string
+  rpcNode: string
 }
 
 export interface UserJwtPayload {
@@ -39,8 +40,7 @@ export function makeSignIn(options: signInOptions): NextApiHandler {
       throw new SignatureAuthError('Challenge not correct')
     }
 
-    const infuraUrlBackend = `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_ID_BACKEND}`
-    const web3 = new Web3(new Web3.providers.HttpProvider(infuraUrlBackend))
+    const web3 = new Web3(new Web3.providers.HttpProvider(options.rpcNode))
     const message = recreateSignedMessage(challenge)
 
     if (await isArgentWallet(web3, challenge.address)) {
