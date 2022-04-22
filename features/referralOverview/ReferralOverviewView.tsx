@@ -1,14 +1,10 @@
-import { User, WeeklyClaim } from '@prisma/client'
-import axios from 'axios'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { NewReferralModal } from 'components/NewReferralModal'
-import { ethers } from 'ethers'
 import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Flex, Grid, Text } from 'theme-ui'
@@ -16,68 +12,49 @@ import { Button, Flex, Grid, Text } from 'theme-ui'
 import { useModal } from '../../helpers/modalHook'
 import { FeesView } from './FeesView'
 import { ReferralsView } from './ReferralsView'
-const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
+import { UserReferralState } from './user'
 
 interface Props {
   context: Context
   address: string
+  userReferral: UserReferralState
 }
 
 export function ReferralsSummary({ address }: { address: string }) {
-  const { context$ } = useAppContext()
+  const { context$, userReferral$ } = useAppContext()
 
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [context, contextError] = useObservable(context$)
+  const [userReferral, userReferralError] = useObservable(userReferral$)
 
   return (
-    <WithErrorHandler error={[contextError]}>
-      <WithLoadingIndicator value={[context]}>
-        {([context]) => <ReferralOverviewView context={context} address={checksumAddress} />}
+    <WithErrorHandler error={[contextError, userReferralError]}>
+      <WithLoadingIndicator value={[context, userReferral]}>
+        {([context, userReferral]) => (
+          <ReferralOverviewView
+            context={context}
+            address={checksumAddress}
+            userReferral={userReferral}
+          />
+        )}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
 }
 
-export function ReferralOverviewView({ context, address }: Props) {
+export function ReferralOverviewView({ context, address, userReferral }: Props) {
   const openModal = useModal()
 
   const connectedAccount = context?.status === 'connected' ? context.account : undefined
 
-  const [user, setUser] = useState<User>()
-  const [referrals, setReferrals] = useState<User[]>()
-  const [claims, setClaims] = useState<{
-    weeks: ethers.BigNumber[]
-    amounts: ethers.BigNumber[]
-    proofs: string[][]
-  }>()
   const router = useRouter()
-  const [topEarners, setTopEarners] = useState<User[]>()
+
   const [storedReferral, setStoredReferral] = useState<string>()
 
   // 1. Owner viewing - is not referred - but already a user (TOS)
   // 2. Owner viewing - is referred - already a user (TOS)
   // 3.
   const isOwnerViewing = !!connectedAccount && address === connectedAccount
-
-  useEffect(() => {
-    const getData = async () => {
-      const referrals = await axios.get<User[]>(`${basePath}/api/user/referrals/${address}`)
-      const user = await axios.get<User>(`${basePath}/api/user/${address}`)
-      const claims = await axios.get<WeeklyClaim[]>(`${basePath}/api/user/claims/${address}`)
-      const topEarners = await axios.get<User[]>(`${basePath}/api/user/top`)
-      setReferrals(referrals.data)
-      setUser(user.data)
-      setTopEarners(topEarners.data)
-      const postprocessedClaims = {
-        weeks: claims.data.map((item) => ethers.BigNumber.from(item.week_number)),
-        amounts: claims.data.map((item) => ethers.utils.parseEther(item.amount)),
-        proofs: claims.data.map((item) => item.proof),
-      }
-
-      setClaims(postprocessedClaims)
-    }
-    void getData()
-  }, [])
 
   useEffect(() => {
     const localReferral = localStorage.getItem(`referral/${connectedAccount}`)
@@ -118,7 +95,8 @@ export function ReferralOverviewView({ context, address }: Props) {
             {/* {t('ref.claim')} */} Fake button
           </Button>
         )}
-        {isOwnerViewing && (
+        {userReferral.state === 'newUser' && "user is not in the db"}
+        {isOwnerViewing && userReferral.state !== 'newUser' && (
           <>
             <Text
               sx={{
@@ -141,17 +119,9 @@ export function ReferralOverviewView({ context, address }: Props) {
                 margin: '0 auto',
               }}
             >
-              {referrals && user && (
-                <ReferralsView
-                  context={context}
-                  address={address}
-                  referrals={referrals}
-                  user={user}
-                />
-              )}
-              {claims && user && topEarners && (
-                <FeesView context={context} claims={claims} user={user} topEarners={topEarners} />
-              )}
+              <ReferralsView context={context} address={address} userReferral={userReferral} />
+
+              <FeesView context={context} userReferral={userReferral} />
             </Grid>
           </>
         )}

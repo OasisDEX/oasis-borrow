@@ -1,55 +1,56 @@
-import { User } from '@prisma/client'
+import axios from 'axios'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { ethers } from 'ethers'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Button, Card, Divider, Flex, Text } from 'theme-ui'
+import { Spinner } from 'theme-ui'
 import { MerkleRedeemer } from 'types/ethers-contracts/'
 
 import { default as goerliAddresses } from '../../blockchain/addresses/goerli.json'
 import { fadeInAnimation } from '../../theme/animations'
+import { UserReferralState } from './user'
 
 const merkleRedeemer = require('../../blockchain/abi/merkle-redeemer.json')
 
 interface Props {
   context: Context
-
-  claims: {
-    weeks: ethers.BigNumber[]
-    amounts: ethers.BigNumber[]
-    proofs: string[][]
-  }
-  user: User
-  topEarners: User[]
+  userReferral: UserReferralState
 }
 
-// TODO divide Overview into two separate files FeesView and ReferralsView
-export function FeesView({ claims, user, topEarners }: Props) {
+export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
   const [processing, setProcessing] = useState(false)
-  
+
   const claimFees = async (
     weeks: ethers.BigNumberish[],
     amounts: ethers.BigNumberish[],
     proofs: ethers.utils.BytesLike[][],
   ): Promise<string | undefined> => {
+
     setProcessing(true)
     // @ts-ignore
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     const signer = provider.getSigner()
- 
+
     const merkleRedeemerContract = new ethers.Contract(
       goerliAddresses.MERKLE_REDEEMER,
       merkleRedeemer,
       signer,
-    ) as MerkleRedeemer;
+    ) as MerkleRedeemer
 
     let tx
     try {
       tx = await merkleRedeemerContract.claimMultiple(weeks, amounts, proofs)
+      console.log(tx)
       if (tx) {
         await tx.wait(1)
+        
+        await axios.post('/api/user/claims/update', {
+          user_address: userReferral.user?.address,
+          week_number: weeks.map((v) => Number(v)),
+        })
         return tx.hash
       }
       setProcessing(false)
@@ -105,7 +106,9 @@ export function FeesView({ claims, user, topEarners }: Props) {
               }}
               variant="strong"
             >
-              {`${user?.total_amount} DAI`}
+              {`${ethers.utils.formatEther(
+                ethers.BigNumber.from(userReferral.user?.total_amount),
+              )} DAI`}
             </Text>
           </Box>
           <Box sx={{}}>
@@ -130,27 +133,47 @@ export function FeesView({ claims, user, topEarners }: Props) {
                   }}
                   variant="strong"
                 >
-                  {claims &&
+                  {userReferral.claims &&
                     `${ethers.utils.formatEther(
-                      claims.amounts.reduce((p, c) => p.add(c), ethers.BigNumber.from('0')),
+                      userReferral.claims.amounts.reduce(
+                        (p, c) => p.add(c),
+                        ethers.BigNumber.from('0'),
+                      ),
                     )} DAI`}
                 </Text>
               </Box>
               <Flex sx={{ alignItems: 'center' }}>
                 <Button
                   variant="secondary"
-                  disabled={claims?.amounts.length ===0}
-                  sx={{
-                    textAlign: 'center',
-                    px: '12px',
-                    verticalAlign: 'baseline',
-                    fontSize: 'inherit',
-                  }}
+                  disabled={userReferral.claims?.amounts.length === 0 || processing}
                   onClick={() =>
-                    claims ? claimFees(claims.weeks, claims.amounts, claims.proofs) : null
+                    userReferral.claims
+                      ? claimFees(
+                          userReferral.claims.weeks,
+                          userReferral.claims.amounts,
+                          userReferral.claims.proofs,
+                        )
+                      : null
                   }
                 >
-                  {!processing ? t('ref.claim') : 'Claiming DAI fees'}
+                  {processing ? (
+                    <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                      <Text sx={{ position: 'relative' }} pl={2}>
+                        <Spinner
+                          size={25}
+                          color="main"
+                          sx={{
+                            position: 'absolute',
+                            left: 0,
+                            top: '50%',
+                            transform: 'translate(-105%, -50%)',
+                          }}
+                        />
+                        {'Claiming DAI fees'}
+                      </Text>
+                    </Flex>
+                  ) : null}
+                  {!processing ? t('ref.claim') : null}
                 </Button>
               </Flex>
             </Flex>
@@ -167,7 +190,7 @@ export function FeesView({ claims, user, topEarners }: Props) {
             >
               {t('ref.top')}
             </Text>
-            {topEarners?.map((item, index) => (
+            {userReferral.topEarners?.map((item, index) => (
               <Box key={index}>
                 <Flex sx={{ pt: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
                   <Box sx={{ flex: '1 1 auto' }}>
@@ -179,12 +202,12 @@ export function FeesView({ claims, user, topEarners }: Props) {
                       }}
                       variant="subtitle"
                     >
-                      {item.address}{' '}
+                      {item}{' '}
                     </Text>
                   </Box>
                   <Box>
                     <AppLink
-                      href={`https://etherscan.com/account/${item.address}`}
+                      href={`https://etherscan.com/account/${item}`}
                       sx={{ fontSize: 2 }}
                       variant="inText"
                     >

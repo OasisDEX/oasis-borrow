@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { User } from '@prisma/client'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { useTranslation } from 'next-i18next'
@@ -7,17 +6,15 @@ import React, { useRef, useState } from 'react'
 import { Box, Card, Divider, Flex, Text, Textarea } from 'theme-ui'
 
 import { fadeInAnimation } from '../../theme/animations'
+import { UserReferralState } from './user'
 
 interface Props {
   context: Context
   address: string
-
-  user: User
-  referrals: User[]
+  userReferral: UserReferralState
 }
 
-// TODO divide Overview into two separate files FeesView and ReferralsView
-export function ReferralsView({ address, user, referrals }: Props) {
+export function ReferralsView({ address, userReferral }: Props) {
   const { t } = useTranslation()
 
   const clipboardContentRef = useRef<HTMLTextAreaElement>(null)
@@ -133,8 +130,8 @@ export function ReferralsView({ address, user, referrals }: Props) {
             >
               {t('ref.you-referred')}
             </Text>
-            {referrals &&
-              referrals.map((item, index) => (
+            {userReferral.referrals &&
+              userReferral.referrals.map((item, index) => (
                 <Box key={index}>
                   <Flex sx={{ pt: '12px', flexWrap: 'wrap', alignItems: 'center' }} key={index}>
                     <Box sx={{ flex: '1 1 auto' }}>
@@ -146,7 +143,7 @@ export function ReferralsView({ address, user, referrals }: Props) {
                         }}
                         variant="subtitle"
                       >
-                        {item.address}{' '}
+                        {item}{' '}
                       </Text>
                     </Box>
                     <Box>
@@ -162,7 +159,7 @@ export function ReferralsView({ address, user, referrals }: Props) {
                   </Flex>
                 </Box>
               ))}
-            {referrals && referrals.length === 0 && (
+            {userReferral.referrals && userReferral.referrals.length === 0 && (
               <Box>
                 <Flex sx={{ pt: '12px', flexWrap: 'wrap' }}>
                   <Box sx={{ flex: '1 1 auto' }}>
@@ -212,8 +209,8 @@ export function ReferralsView({ address, user, referrals }: Props) {
                   }}
                   variant="subtitle"
                 >
-                  {user?.user_that_referred_address && user?.user_that_referred_address?.toString()}{' '}
-                  {!user?.user_that_referred_address && `You were not referred`}
+                  {userReferral.user?.user_that_referred_address && userReferral.user?.user_that_referred_address.toString()}{' '}
+                  {!userReferral.user?.user_that_referred_address && `You were not referred`}
                 </Text>
               </Box>
               <Box>
