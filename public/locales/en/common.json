@@ -644,7 +644,23 @@
     "overview": "Overview",
     "protection": "Protection",
     "history": "History",
-    "vault-info": "Vault Info"
+    "vault-info": "Vault Info",
+    "actions": {
+      "common": {
+        "close-vault": "Close Vault",
+        "edit-position": "Edit Position"
+      },
+      "borrow": {
+        "edit-dai": "Edit DAI",
+        "edit-collateral": "Edit Collateral",
+        "switch-to-multiply": "Switch to Multiply"
+      }
+    },
+    "cards": {
+      "liquidation-price": {
+        "footnote": "{{amount}} {{level}} current price"
+      }
+    }
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -1061,5 +1077,7 @@
     }
   },
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
-  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in "
+  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
+  "below": "below",
+  "above": "above"
 }

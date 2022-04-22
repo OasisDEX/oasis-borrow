@@ -1,5 +1,8 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
+import { DetailsSection } from 'components/DetailsSection'
+import { DetailsSectionContentCardWrapper, getChangeColor } from 'components/DetailsSectionContentCard'
+import { ContentCardLiquidationPrice } from 'components/vault/contentCards/ContentCardLiquidationPrice'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
@@ -112,9 +115,11 @@ export function ManageVaultDetails(
     stopLossTriggered,
   } = props
 
+  const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
+  const changeColor = getChangeColor(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
@@ -134,6 +139,43 @@ export function ManageVaultDetails(
           />
         </>
       )}
+      <DetailsSection
+        title={t('system.overview')}
+        buttons={[
+          {
+            label: t('system.actions.common.edit-position'),
+            actions: [
+              {
+                label: t('system.actions.borrow.edit-dai'),
+                action: () => {
+                  alert('dai')
+                },
+              },
+              {
+                label: t('system.actions.borrow.edit-collateral'),
+                action: () => {
+                  alert('collateral')
+                },
+              },
+              {
+                label: t('system.actions.borrow.switch-to-multiply'),
+                action: () => {
+                  alert('switch-to-multiply')
+                },
+              },
+            ],
+          },
+        ]}
+        content={
+          <DetailsSectionContentCardWrapper>
+            <ContentCardLiquidationPrice
+              liquidationPrice={liquidationPrice}
+              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+              changeColor={changeColor}
+            />
+          </DetailsSectionContentCardWrapper>
+        }
+      />
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice
           liquidationPrice={liquidationPrice}

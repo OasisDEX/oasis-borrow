@@ -4,10 +4,10 @@ import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
-import { VaultDetailsCardModal } from './vault/VaultDetails'
+import { CollRatioColor, VaultDetailsCardModal } from './vault/VaultDetails'
 import { WithArrow } from './WithArrow'
 
-type ChangeVariantType = 'positive' | 'negative'
+export type ChangeVariantType = 'positive' | 'negative'
 
 interface DetailsSectionContentCardChangePillProps {
   value: string
@@ -28,6 +28,10 @@ interface ContentCardProps {
   footnote?: string
   link?: DetailsSectionContentCardLinkProps
   modal?: string | JSX.Element
+}
+
+export function getChangeColor(collRatioColor: CollRatioColor): ChangeVariantType {
+  return (collRatioColor === 'primary' || collRatioColor === 'onSuccess') ? 'positive' : 'negative'
 }
 
 function DetailsSectionContentCardChangePill({
