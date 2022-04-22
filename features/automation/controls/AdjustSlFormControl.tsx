@@ -94,6 +94,7 @@ export function AdjustSlFormControl({
   const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  console.log('uiState', uiState)
 
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
