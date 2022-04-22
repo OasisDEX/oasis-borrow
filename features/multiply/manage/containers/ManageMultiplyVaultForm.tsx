@@ -2,7 +2,7 @@ import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import React, { useState } from 'react'
 
@@ -50,11 +50,17 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
         stage !== 'adjustPosition' &&
         (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
 
+  const mostRecentEvent = vaultHistory[0]
+
+  const isVaultClosed =
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled ? (
+      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
-          vaultHistory={vaultHistory}
+          closeEvent={mostRecentEvent}
           onClick={() => {
             setReopenPositionClicked(true)
             toggle && toggle('otherActions')
@@ -63,6 +69,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       ) : (
         <>
           <ManageMultiplyVaultFormHeader {...props} />
+          {isProxyStage && <VaultProxyContentBox stage={stage} />}
           {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

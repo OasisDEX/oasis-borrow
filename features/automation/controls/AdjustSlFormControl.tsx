@@ -185,6 +185,13 @@ export function AdjustSlFormControl({
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
 
+      if (uiState.collateralActive === undefined) {
+        uiChanges.publish(ADD_FORM_CHANGE, {
+          type: 'close-type',
+          toCollateral: false,
+        })
+      }
+
       uiChanges.publish(ADD_FORM_CHANGE, {
         type: 'stop-loss',
         stopLoss: slCollRatio,

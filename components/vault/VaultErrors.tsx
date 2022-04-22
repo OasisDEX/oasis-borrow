@@ -126,7 +126,8 @@ export function VaultErrors({
         return translate('invalid-slippage')
       case 'afterCollRatioBelowStopLossRatio':
         return translate('after-coll-ratio-below-stop-loss-ratio')
-
+      case 'vaultWillBeTakenUnderMinActiveColRatio':
+        return translate('vault-will-be-taken-under-min-active-col-ratio')
       default:
         throw new UnreachableCaseError(message)
     }

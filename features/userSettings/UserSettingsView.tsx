@@ -271,7 +271,7 @@ function WalletInfo() {
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'link', fontSize: 1, cursor: 'pointer' }}
+              sx={{ color: 'link', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}
@@ -307,9 +307,11 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <Box sx={sx}>
-      <Text variant="headerSettings">{t('wallet')}</Text>
+      <Text variant="headerSettings" sx={{ mb: 3 }}>
+        {t('wallet')}
+      </Text>
       <WalletInfo />
-      <Text variant="headerSettings" sx={{ mt: 4 }}>
+      <Text variant="headerSettings" sx={{ mt: 4, mb: 3 }}>
         {t('user-settings.slippage-limit.preset-title')}
       </Text>
       <SlippageSettingsForm />
@@ -371,7 +373,10 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
     <Flex sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
       <Flex sx={{ alignItems: 'center' }}>
         <Icon name={userIcon!} size="auto" width="42" />
-        <Text variant="address" sx={{ ml: 3 }}>
+        <Text
+          variant="address"
+          sx={{ ml: 3, color: 'primary', fontSize: 2, fontWeight: [600, 500] }}
+        >
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
       </Flex>
@@ -382,7 +387,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
-          color={active ? 'primary' : 'lavender'}
+          color={active ? 'primary' : 'inherit'}
         />
       </Flex>
     </Flex>

@@ -1,3 +1,4 @@
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -11,13 +12,16 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function BorrowPage() {
+function BorrowPage() {
   return (
     <WithConnection>
       <BorrowView />
+      <Survey for="borrow" />
     </WithConnection>
   )
 }
 
 BorrowPage.layout = ProductPagesLayout
 BorrowPage.theme = 'Landing'
+
+export default BorrowPage

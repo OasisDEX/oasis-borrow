@@ -43,7 +43,7 @@ function Summary({ address }: { address: string }) {
   )
 }
 
-export default function VaultsSummary({ address }: { address: string }) {
+function VaultsSummary({ address }: { address: string }) {
   return address ? (
     <WithConnection>
       <WithTermsOfService>
@@ -55,3 +55,5 @@ export default function VaultsSummary({ address }: { address: string }) {
 }
 
 VaultsSummary.layout = AppLayout
+
+export default VaultsSummary

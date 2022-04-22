@@ -530,7 +530,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   })
 
   const potentialGenerateAmountLessThanDebtFloor =
-    !isNullish(depositAmount) && maxGenerateAmountAtCurrentPrice.lt(debtFloor)
+    !isNullish(depositAmount) && state.daiYieldFromTotalCollateralWithoutDebt.lt(debtFloor)
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
@@ -558,7 +558,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     'multiplyTransitionFailure',
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered = !!vaultHistory.length && vaultHistory[0].kind === 'STOPLOSS-TRIGGERED'
+  const stopLossTriggered =
+    !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
   return {
     ...state,

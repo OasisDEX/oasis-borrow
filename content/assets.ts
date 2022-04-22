@@ -10,7 +10,13 @@ export const ASSETS_PAGES = [
     descriptionKey: 'assets.eth.description',
     link: 'assets.eth.link',
     multiplyIlks: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
-    borrowIlks: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B', 'CRVV1ETHSTETH-A'],
+    borrowIlks: [
+      'ETH-C',
+      'ETH-A',
+      'WSTETH-A',
+      'ETH-B',
+      // 'CRVV1ETHSTETH-A' temporarily disabled
+    ],
   },
   {
     slug: 'btc',

@@ -3,7 +3,7 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
-import { groupBy } from 'lodash'
+import { groupBy, orderBy } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -20,7 +20,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => {
     },
   }
 }
-export default function CareersPage({ careers }: { careers: Career[] }) {
+function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
   const careersByArea = groupBy(careers, 'area')
 
@@ -48,7 +48,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                 />
               </Flex>
               <Grid>
-                {careers.map((career) => (
+                {orderBy(careers, ['order']).map((career) => (
                   <AppLink
                     key={career.slug}
                     href={`/careers/${career.slug}`}
@@ -136,3 +136,5 @@ CareersPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default CareersPage

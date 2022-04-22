@@ -1,3 +1,4 @@
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -13,7 +14,7 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function EarnPage() {
+function EarnPage() {
   const enabled = useFeatureToggle('EarnProduct')
 
   if (!enabled) {
@@ -25,8 +26,15 @@ export default function EarnPage() {
 
   const view = enabled ? <EarnView /> : null
 
-  return <WithConnection>{view}</WithConnection>
+  return (
+    <WithConnection>
+      {view}
+      <Survey for="earn" />
+    </WithConnection>
+  )
 }
 
 EarnPage.layout = ProductPagesLayout
 EarnPage.theme = 'Landing'
+
+export default EarnPage
