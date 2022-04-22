@@ -57,7 +57,7 @@ export function createContext$(
       const networkData = networksById[web3Context.chainId]
       const web3ProviderGetPastLogs =
         web3Context.connectionKind === 'magicLink'
-          ? new Web3(networkData.infuraUrl)
+          ? new Web3(networkData.rpcUrl)
           : web3Context.web3
 
       return {

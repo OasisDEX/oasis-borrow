@@ -20,7 +20,7 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
     return async function (chainIdPromise: Promise<number | string>) {
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
-        provider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+        provider = new JsonRpcBatchProvider(networksById[chainId].rpcUrl, chainId)
       }
       return provider
     }

@@ -318,7 +318,7 @@ function initializeUIChanges() {
 }
 
 export function setupAppContext() {
-  const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
+  const chainIdToRpcUrl = mapValues(networksById, (network) => network.rpcUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
     chainIdToRpcUrl,

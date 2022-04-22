@@ -44,10 +44,7 @@ interface AutoConnectLocalStorage {
   magicLinkEmail?: string
 }
 
-const rpcUrls: { [chainId: number]: string } = mapValues(
-  networksById,
-  (network) => network.infuraUrl,
-)
+const rpcUrls: { [chainId: number]: string } = mapValues(networksById, (network) => network.rpcUrl)
 
 export async function getConnector(
   connectorKind: ConnectionKind,
@@ -111,7 +108,7 @@ export async function getConnector(
       })
     case 'network':
       return new NetworkConnector({
-        urls: { [network]: networksById[network].infuraUrl },
+        urls: { [network]: networksById[network].rpcUrl },
         defaultChainId: network,
       })
     case 'portis':
