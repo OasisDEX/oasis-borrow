@@ -205,7 +205,7 @@
     "eslint-plugin-simple-import-sort": "^5.0.2",
     "eslint-plugin-sonarjs": "^0.5.0",
     "eslint-plugin-storybook": "^0.5.7",
-    "eslint-plugin-unused-imports": "^2.0.0",
+    "eslint-plugin-unused-imports": "^0.1.2",
     "ethereum-types": "^3.3.3",
     "ethers": "^5.6.2",
     "execa": "^1.0.0",
