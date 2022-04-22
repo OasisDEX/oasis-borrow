@@ -2,7 +2,7 @@ import { IlkDataChange } from 'blockchain/ilks'
 import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 
-import { StopLossChange } from '../../../../automation/triggers/AutomationTriggersData'
+import { StopLossChange } from '../../../../automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../../vaultHistory/vaultHistory'
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'

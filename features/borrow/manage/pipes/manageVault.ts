@@ -24,11 +24,11 @@ import {
 import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
-import { StopLossTriggerData } from '../../../automation/common/StopLossTriggerDataExtractor'
+import { StopLossTriggerData } from '../../../automation/protection/common/StopLossTriggerDataExtractor'
 import {
   createStopLossDataChange$,
   TriggersData,
-} from '../../../automation/triggers/AutomationTriggersData'
+} from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'

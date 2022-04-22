@@ -9,9 +9,13 @@ import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../components/vault/VaultChangesInformation'
-import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
-import { zero } from '../../../helpers/zero'
+} from '../../../../components/vault/VaultChangesInformation'
+import {
+  formatAmount,
+  formatFiatBalance,
+  formatPercent,
+} from '../../../../helpers/formatters/format'
+import { zero } from '../../../../helpers/zero'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
 interface StopLossSummaryInformationProps {

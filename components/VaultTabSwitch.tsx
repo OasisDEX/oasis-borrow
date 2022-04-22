@@ -1,5 +1,8 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+} from 'features/automation/protection/common/UITypes/TabChange'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'

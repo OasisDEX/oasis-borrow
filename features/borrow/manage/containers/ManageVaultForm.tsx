@@ -14,7 +14,7 @@ import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMult
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
+import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'

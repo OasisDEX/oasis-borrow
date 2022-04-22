@@ -1,13 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import React from 'react'
 
-import { useAppContext } from '../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../components/VaultTabSwitch'
-import { calculatePriceImpact } from '../../shared/priceImpact'
+import { useAppContext } from '../../../../components/AppContextProvider'
+import { VaultViewMode } from '../../../../components/VaultTabSwitch'
+import { calculatePriceImpact } from '../../../shared/priceImpact'
 import {
   CloseVaultExitCollateralMultipleEvent,
   CloseVaultExitDaiMultipleEvent,
-} from '../../vaultHistory/vaultHistoryEvents'
+} from '../../../vaultHistory/vaultHistoryEvents'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { StopLossTriggeredFormLayout } from './StopLossTriggeredFormLayout'
 

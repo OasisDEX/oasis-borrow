@@ -3,7 +3,7 @@ import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
 
-import { StopLossChange } from '../../../automation/triggers/AutomationTriggersData'
+import { StopLossChange } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'

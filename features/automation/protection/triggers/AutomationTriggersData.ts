@@ -7,7 +7,7 @@ import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 

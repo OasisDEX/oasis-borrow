@@ -6,15 +6,15 @@ import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
 import {
   getInitialVaultCollRatio,
   getStartingSlRatio,
-} from '../../features/automation/common/helpers'
-import { extractStopLossData } from '../../features/automation/common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE } from '../../features/automation/common/UITypes/AddFormChange'
+} from '../../features/automation/protection/common/helpers'
+import { extractStopLossData } from '../../features/automation/protection/common/StopLossTriggerDataExtractor'
+import { ADD_FORM_CHANGE } from '../../features/automation/protection/common/UITypes/AddFormChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
-} from '../../features/automation/common/UITypes/ProtectionFormModeChange'
-import { REMOVE_FORM_CHANGE } from '../../features/automation/common/UITypes/RemoveFormChange'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+} from '../../features/automation/protection/common/UITypes/ProtectionFormModeChange'
+import { REMOVE_FORM_CHANGE } from '../../features/automation/protection/common/UITypes/RemoveFormChange'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'

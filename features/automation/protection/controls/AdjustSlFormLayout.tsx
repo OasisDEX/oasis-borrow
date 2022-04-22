@@ -7,20 +7,24 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
 
-import { IlkData } from '../../../blockchain/ilks'
-import { Vault } from '../../../blockchain/vaults'
-import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
-import { AppLink } from '../../../components/Links'
+import { IlkData } from '../../../../blockchain/ilks'
+import { Vault } from '../../../../blockchain/vaults'
+import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
+import { TxStatusSection } from '../../../../components/dumb/TxStatusSection'
+import { AppLink } from '../../../../components/Links'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
-import { formatAmount, formatFiatBalance, formatPercent } from '../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { one } from '../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../theme/animations'
+} from '../../../../components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
+import {
+  formatAmount,
+  formatFiatBalance,
+  formatPercent,
+} from '../../../../helpers/formatters/format'
+import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { one } from '../../../../helpers/zero'
+import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 

@@ -8,17 +8,17 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
 
-import { RetryableLoadingButtonProps } from '../../../components/dumb/RetryableLoadingButton'
-import { TxStatusSection } from '../../../components/dumb/TxStatusSection'
-import { AppLink } from '../../../components/Links'
+import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
+import { TxStatusSection } from '../../../../components/dumb/TxStatusSection'
+import { AppLink } from '../../../../components/Links'
 import {
   getEstimatedGasFeeText,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from '../../../components/vault/VaultChangesWithADelayCard'
-import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { OpenVaultAnimation } from '../../../theme/animations'
+} from '../../../../components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
+import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 import { progressStatuses } from '../common/consts/txStatues'

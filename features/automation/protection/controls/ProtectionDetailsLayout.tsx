@@ -6,8 +6,8 @@ import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-import { calculatePricePercentageChange } from '../../../blockchain/prices'
-import { getAfterPillColors } from '../../../components/vault/VaultDetails'
+import { calculatePricePercentageChange } from '../../../../blockchain/prices'
+import { getAfterPillColors } from '../../../../components/vault/VaultDetails'
 
 export interface ProtectionDetailsLayoutProps {
   slRatio: BigNumber

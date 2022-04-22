@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { FormHeader } from '../../../../components/dumb/FormHeader'
+import { FormHeader } from '../../../../../components/dumb/FormHeader'
 
 interface CommonSection {
   header: ReactNode

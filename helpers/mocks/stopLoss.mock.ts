@@ -1,4 +1,4 @@
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 
 // mock with 300% stop loss level
 export const mockedStopLossTrigger: TriggersData = {

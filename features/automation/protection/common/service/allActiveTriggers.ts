@@ -1,4 +1,4 @@
-import { TriggerRecord } from 'features/automation/triggers/AutomationTriggersData'
+import { TriggerRecord } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
 

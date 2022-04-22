@@ -15,7 +15,7 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockedMultiplyEvents } from '../multiply/calculations.test'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
