@@ -60,7 +60,7 @@ function connect(web3Context$: Observable<Web3Context>, email: string) {
             new MagicLinkConnector({
               apiKey: getMagicLinkKey(networkId),
               chainId: networkId,
-              network: networksById[networkId].name as any as NetworkName,
+              network: (networksById[networkId].name as any) as NetworkName,
               email,
             }),
             'magicLink',

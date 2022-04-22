@@ -22,8 +22,8 @@ export function interpolate(
     <>
       {matches.map((match, idx) => {
         const Comp =
-          match.groups?.comp && Components[match.groups.comp]
-            ? Components[match.groups.comp]
+          match.groups?.comp && Components[match.groups?.comp]
+            ? Components[match.groups?.comp]
             : 'span'
         return (
           <React.Fragment key={idx}>

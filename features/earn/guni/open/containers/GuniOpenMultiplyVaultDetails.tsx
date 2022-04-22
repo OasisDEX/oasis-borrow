@@ -69,7 +69,7 @@ function GuniOpenMultiplyVaultDetailsSummary({
             {(0.0).toFixed(2)}x {t('system.exposure')}
           </>
         }
-        valueAfter={showAfterPill && <>{multiply.toFixed(2)}x</>}
+        valueAfter={showAfterPill && <>{multiply?.toFixed(2)}x</>}
         afterPillColors={afterPillColors}
       />
     </VaultDetailsSummaryContainer>

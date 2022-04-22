@@ -66,7 +66,7 @@ export function ProtectionFormControl({
                 : t('protection.edit-vault-protection')
             }
           >
-            {currentForm.currentMode === AutomationFromKind.CANCEL ? (
+            {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
               <CancelSlFormControl
                 vault={vault}
                 ilkData={ilkData}

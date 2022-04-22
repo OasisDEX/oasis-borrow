@@ -220,24 +220,25 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice =
-    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
+  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
+    {
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    })
+    },
+  )
 
   const vaultWillBeUnderCollateralized =
-    afterOutstandingDebt.gt(zero) &&
+    afterOutstandingDebt?.gt(zero) &&
     afterCollateralizationRatio.lt(liquidationRatio) &&
     !afterCollateralizationRatio.isZero()
 
   const vaultWillBeUnderCollateralizedAtNextPrice =
     !vaultWillBeUnderCollateralized &&
     !!(
-      afterOutstandingDebt.gt(zero) &&
+      afterOutstandingDebt?.gt(zero) &&
       afterCollateralizationRatioAtNextPrice.lt(liquidationRatio) &&
       !afterCollateralizationRatioAtNextPrice.isZero()
     )
@@ -250,31 +251,29 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
-  const generateAmountExceedsDaiYieldFromDepositingCollateral = !!afterOutstandingDebt.gt(
+  const generateAmountExceedsDaiYieldFromDepositingCollateral = !!afterOutstandingDebt?.gt(
     daiYieldFromDepositingCollateral,
   )
 
   const generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice =
     !generateAmountExceedsDaiYieldFromDepositingCollateral &&
-    !!afterOutstandingDebt.gt(daiYieldFromDepositingCollateralAtNextPrice)
+    !!afterOutstandingDebt?.gt(daiYieldFromDepositingCollateralAtNextPrice)
 
-  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt.gt(ilkDebtAvailable)
+  const generateAmountExceedsDebtCeiling = !!afterOutstandingDebt?.gt(ilkDebtAvailable)
 
   const generateAmountLessThanDebtFloor =
     afterOutstandingDebt && !afterOutstandingDebt.isZero() && afterOutstandingDebt.lt(debtFloor)
 
   const generateAmountMoreThanMaxFlashAmount = afterOutstandingDebt.gt(FLASH_MINT_LIMIT_PER_TX)
 
-  const isLoadingStage = (
-    [
-      'proxyInProgress',
-      'proxyWaitingForApproval',
-      'allowanceInProgress',
-      'allowanceWaitingForApproval',
-      'txInProgress',
-      'txWaitingForApproval',
-    ] as OpenMultiplyVaultStage[]
-  ).some((s) => s === stage)
+  const isLoadingStage = ([
+    'proxyInProgress',
+    'proxyWaitingForApproval',
+    'allowanceInProgress',
+    'allowanceWaitingForApproval',
+    'txInProgress',
+    'txWaitingForApproval',
+  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -286,12 +285,13 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     allowanceAmount,
   })
 
-  const customAllowanceAmountLessThanDepositAmount =
-    customAllowanceAmountLessThanDepositAmountValidator({
+  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
+    {
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    })
+    },
+  )
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -324,16 +324,14 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
       isExchangeLoading
     ) || stage === 'txSuccess'
 
-  const canRegress = (
-    [
-      'proxyWaitingForConfirmation',
-      'proxyFailure',
-      'allowanceWaitingForConfirmation',
-      'allowanceFailure',
-      'txWaitingForConfirmation',
-      'txFailure',
-    ] as OpenMultiplyVaultStage[]
-  ).some((s) => s === stage)
+  const canRegress = ([
+    'proxyWaitingForConfirmation',
+    'proxyFailure',
+    'allowanceWaitingForConfirmation',
+    'allowanceFailure',
+    'txWaitingForConfirmation',
+    'txFailure',
+  ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,

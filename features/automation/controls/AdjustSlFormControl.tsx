@@ -69,8 +69,9 @@ export function AdjustSlFormControl({
   toggleForms,
   tx,
 }: AdjustSlFormControlProps) {
-  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } =
-    extractStopLossData(triggerData)
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
+    triggerData,
+  )
   const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
@@ -246,8 +247,8 @@ export function AdjustSlFormControl({
     isEditing,
     disabled:
       !isOwner ||
-      (!isEditing && uiState.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState.txDetails),
+      (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
+      (!isEditing && !uiState?.txDetails),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -260,7 +261,7 @@ export function AdjustSlFormControl({
     .div(dynamicStopLossPrice)
 
   const txProgressing =
-    !!uiState.txDetails?.txStatus && progressStatuses.includes(uiState.txDetails.txStatus)
+    !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
   const etherscan = ctx.etherscan.url
@@ -270,10 +271,10 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: uiState.txDetails?.txStatus,
+    txState: uiState?.txDetails?.txStatus,
     txProgressing,
-    txCost: uiState.txDetails?.txCost,
-    txHash: uiState.txDetails?.txHash,
+    txCost: uiState?.txDetails?.txCost,
+    txHash: uiState?.txDetails?.txHash,
     gasEstimation,
     accountIsController,
     stopLossLevel,

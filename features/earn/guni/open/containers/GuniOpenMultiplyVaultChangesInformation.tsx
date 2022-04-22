@@ -74,7 +74,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
           <Flex>
             {zeroBalance}x
             <VaultChangesInformationArrow />
-            {multiply.toFixed(2)}x
+            {multiply?.toFixed(2)}x
           </Flex>
         }
       />

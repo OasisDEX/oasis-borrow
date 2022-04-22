@@ -60,7 +60,7 @@ export type VaultHistoryEvent = VaultEvent & {
 export function fetchWithOperationId(url: string, options?: RequestInit) {
   const operationNameRegex = /query (?<operationName>[a-zA-Z0-9]+)\(/gm
 
-  const body = typeof options?.body === 'string' ? options.body : ''
+  const body = typeof options?.body === 'string' ? options?.body : ''
   const parsedBody: { query: string } = JSON.parse(body)
   const result = operationNameRegex.exec(parsedBody.query)
   const operationName = result ? result.groups?.operationName : undefined

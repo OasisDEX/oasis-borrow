@@ -17,9 +17,8 @@ import {
 } from './ProxyActionsSmartContractAdapterInterface'
 
 export abstract class ManagerlessProxyActionsContractAdapter<
-  DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCropjoin,
-> implements ProxyActionsSmartContractAdapterInterface
-{
+  DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCropjoin
+> implements ProxyActionsSmartContractAdapterInterface {
   abstract AdapterType: ProxyActionsAdapterType
 
   resolveContractAddress(context: ContextConnected): string {

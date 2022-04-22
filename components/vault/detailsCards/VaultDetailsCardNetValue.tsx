@@ -34,7 +34,7 @@ export function VaultDetailsNetValueModal({
   close,
 }: ModalProps<NetValueProps>) {
   const { t } = useTranslation()
-  const collateralTags = vault ? (getToken(vault.token).tags as String[]) : []
+  const collateralTags = vault ? (getToken(vault?.token).tags as String[]) : []
   const isCollateralLpToken = vault ? collateralTags.includes('lp-token') : false
   const renderCollateralValue = !isCollateralLpToken
 

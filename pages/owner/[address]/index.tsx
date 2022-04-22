@@ -16,7 +16,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
       ...(await serverSideTranslations(ctx.locale!, ['common'])),
-      address: ctx.query.address || null,
+      address: ctx.query?.address || null,
     },
   }
 }

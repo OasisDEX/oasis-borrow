@@ -32,8 +32,13 @@ const defaultParams: PipelineInput = {
 }
 
 function createState$(overrides?: Partial<PipelineInput>): Observable<TermsAcceptanceState> {
-  const { web3Context$, version, jwtAuthSetupToken$, checkAcceptance$, saveAcceptance$ } =
-    defaultParams
+  const {
+    web3Context$,
+    version,
+    jwtAuthSetupToken$,
+    checkAcceptance$,
+    saveAcceptance$,
+  } = defaultParams
 
   if (!overrides) {
     return createTermsAcceptance$(

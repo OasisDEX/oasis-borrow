@@ -122,8 +122,8 @@ describe('manageVaultCalculations', () => {
         }),
       )
 
-      expect(state().daiYieldFromTotalCollateral.toString()).eq('1')
-      expect(state().daiYieldFromTotalCollateralAtNextPrice.toString()).eq('101')
+      expect(state().daiYieldFromTotalCollateral?.toString()).eq('1')
+      expect(state().daiYieldFromTotalCollateralAtNextPrice?.toString()).eq('101')
     },
   )
 })

@@ -127,7 +127,7 @@ function MockContextProvider({
   children,
   title,
 }: MockContextProviderProps) {
-  const ctx = {
+  const ctx = ({
     accountData$: of({ numberofVaults: 2, daiBalance: new BigNumber(10) }),
     web3Context$: web3Context ? of(web3Context) : of(protoWeb3Context),
     transactionManager$: createTransactionManager(of(transactions)),
@@ -136,7 +136,7 @@ function MockContextProvider({
     }),
     dismissTransaction: () => null,
     readonlyAccount$: of(undefined),
-  } as any as AppContext
+  } as any) as AppContext
   return (
     <appContext.Provider value={ctx as any}>
       <ModalProvider>

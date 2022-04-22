@@ -216,14 +216,15 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     collateralizationWarningThreshold,
   })
 
-  const vaultWillBeAtRiskLevelWarningAtNextPrice =
-    vaultWillBeAtRiskLevelWarningAtNextPriceValidator({
+  const vaultWillBeAtRiskLevelWarningAtNextPrice = vaultWillBeAtRiskLevelWarningAtNextPriceValidator(
+    {
       vaultWillBeAtRiskLevelWarning,
       inputAmountsEmpty,
       afterCollateralizationRatioAtNextPrice,
       collateralizationDangerThreshold,
       collateralizationWarningThreshold,
-    })
+    },
+  )
 
   const vaultWillBeUnderCollateralized = !!(
     generateAmount?.gt(zero) &&
@@ -266,16 +267,14 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
   const potentialGenerateAmountLessThanDebtFloor =
     !isNullish(depositAmount) && daiYieldFromDepositingCollateral.lt(debtFloor)
 
-  const isLoadingStage = (
-    [
-      'proxyInProgress',
-      'proxyWaitingForApproval',
-      'allowanceInProgress',
-      'allowanceWaitingForApproval',
-      'txInProgress',
-      'txWaitingForApproval',
-    ] as OpenVaultStage[]
-  ).some((s) => s === stage)
+  const isLoadingStage = ([
+    'proxyInProgress',
+    'proxyWaitingForApproval',
+    'allowanceInProgress',
+    'allowanceWaitingForApproval',
+    'txInProgress',
+    'txWaitingForApproval',
+  ] as OpenVaultStage[]).some((s) => s === stage)
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -287,12 +286,13 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowanceAmount,
   })
 
-  const customAllowanceAmountLessThanDepositAmount =
-    customAllowanceAmountLessThanDepositAmountValidator({
+  const customAllowanceAmountLessThanDepositAmount = customAllowanceAmountLessThanDepositAmountValidator(
+    {
       selectedAllowanceRadio,
       allowanceAmount,
       depositAmount,
-    })
+    },
+  )
 
   const ledgerWalletContractDataDisabled = ledgerWalletContractDataDisabledValidator({ txError })
 
@@ -315,16 +315,14 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
       customAllowanceAmountLessThanDepositAmount
     ) || stage === 'txSuccess'
 
-  const canRegress = (
-    [
-      'proxyWaitingForConfirmation',
-      'proxyFailure',
-      'allowanceWaitingForConfirmation',
-      'allowanceFailure',
-      'txWaitingForConfirmation',
-      'txFailure',
-    ] as OpenVaultStage[]
-  ).some((s) => s === stage)
+  const canRegress = ([
+    'proxyWaitingForConfirmation',
+    'proxyFailure',
+    'allowanceWaitingForConfirmation',
+    'allowanceFailure',
+    'txWaitingForConfirmation',
+    'txFailure',
+  ] as OpenVaultStage[]).some((s) => s === stage)
 
   return {
     ...state,

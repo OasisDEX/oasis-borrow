@@ -66,10 +66,9 @@ export function CancelSlFormControl({
 
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
-  const txData = useMemo(
-    () => prepareRemoveTriggerData(vault, triggerId, removeAllowance),
-    [triggerId],
-  )
+  const txData = useMemo(() => prepareRemoveTriggerData(vault, triggerId, removeAllowance), [
+    triggerId,
+  ])
 
   const gasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
@@ -142,11 +141,11 @@ export function CancelSlFormControl({
     liquidationPrice: vault.liquidationPrice,
     tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
-    txState: lastUIState.txDetails?.txStatus,
-    txHash: lastUIState.txDetails?.txHash,
+    txState: lastUIState?.txDetails?.txStatus,
+    txHash: lastUIState?.txDetails?.txHash,
     gasEstimation: gasEstimationData as HasGasEstimation,
     accountIsController,
-    actualCancelTxCost: lastUIState.txDetails?.totalCost,
+    actualCancelTxCost: lastUIState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
   }

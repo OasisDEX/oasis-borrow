@@ -64,9 +64,10 @@ export function createOpenMultiplyVaultAnalytics$(
     })),
   )
 
-  const allowanceTypeChanges: Observable<
-    Pick<MutableOpenMultiplyVaultState, 'selectedAllowanceRadio'>
-  > = openVaultState$.pipe(
+  const allowanceTypeChanges: Observable<Pick<
+    MutableOpenMultiplyVaultState,
+    'selectedAllowanceRadio'
+  >> = openVaultState$.pipe(
     map((state) => state.selectedAllowanceRadio),
     distinctUntilChanged(isEqual),
   )
@@ -106,20 +107,19 @@ export function createOpenMultiplyVaultAnalytics$(
     distinctUntilChanged(isEqual),
   )
 
-  const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> =
-    openVaultState$.pipe(
-      filter((state) => state.stage === 'txInProgress'),
-      map(({ ilk, depositAmount, openTxHash, multiply }) => ({
-        kind: 'openMultiplyVaultConfirmTransaction',
-        value: {
-          ilk: ilk,
-          collateralAmount: depositAmount,
-          multiply: multiply?.toFixed(3),
-          txHash: openTxHash,
-        },
-      })),
-      distinctUntilChanged(isEqual),
-    )
+  const openMultiplyVaultConfirmTransaction: Observable<OpenMultiplyVaultConfirmTransaction> = openVaultState$.pipe(
+    filter((state) => state.stage === 'txInProgress'),
+    map(({ ilk, depositAmount, openTxHash, multiply }) => ({
+      kind: 'openMultiplyVaultConfirmTransaction',
+      value: {
+        ilk: ilk,
+        collateralAmount: depositAmount,
+        multiply: multiply?.toFixed(3),
+        txHash: openTxHash,
+      },
+    })),
+    distinctUntilChanged(isEqual),
+  )
 
   return combineLatest(context$, firstCDPChange).pipe(
     switchMap(([context, firstCDP]) =>

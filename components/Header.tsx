@@ -111,7 +111,7 @@ function PositionsLink({ sx, children }: { sx?: SxStyleProp } & WithChildren) {
         whiteSpace: 'nowrap',
         ...sx,
       }}
-      href={`/owner/${(context as ContextConnected).account}`}
+      href={`/owner/${(context as ContextConnected)?.account}`}
       onClick={() => trackingEvents.yourVaults()}
     >
       {children}
