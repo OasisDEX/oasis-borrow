@@ -3,12 +3,12 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex } from 'theme-ui'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
+import { useAppContext } from '../../../../../components/AppContextProvider'
 import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
-} from '../../../../components/dumb/RetryableLoadingButton'
-import { VaultViewMode } from '../../../../components/VaultTabSwitch'
+} from '../../../../../components/dumb/RetryableLoadingButton'
+import { VaultViewMode } from '../../../../../components/VaultTabSwitch'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,

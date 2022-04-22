@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { useSessionStorage } from '../../../helpers/useSessionStorage'
+import { useSessionStorage } from '../../../../helpers/useSessionStorage'
 import { StopLossTriggeredBannerLayout } from './StopLossTriggeredBannerLayout'
 
 export function StopLossTriggeredBannerControl() {

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Button, Flex, Heading, SxStyleProp, Text } from 'theme-ui'
 
-import { Banner } from '../../../components/Banner'
+import { Banner } from '../../../../components/Banner'
 
 interface ProtectionBannerProps {
   handleClose: () => void

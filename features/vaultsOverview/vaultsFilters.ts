@@ -5,7 +5,7 @@ import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
 
-import { StopLossTriggerData } from '../automation/common/StopLossTriggerDataExtractor'
+import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 export type VaultSortBy =
   | 'collateral'
   | 'debt'

@@ -2,7 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { progressStatuses } from '../../features/automation/common/consts/txStatues'
+import { progressStatuses } from '../../features/automation/protection/common/consts/txStatues'
 import { TxStatusCardProgress, TxStatusCardSuccess } from '../vault/TxStatusCard'
 
 export interface TxStatusSectionProps {

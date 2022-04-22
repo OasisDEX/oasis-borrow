@@ -3,11 +3,11 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Box, Button, Card, Flex, Grid, Image, Text } from 'theme-ui'
 
-import { AfterPillProps, VaultDetailsAfterPill } from '../../../components/vault/VaultDetails'
-import { WithArrow } from '../../../components/WithArrow'
-import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
-import { WithChildren } from '../../../helpers/types'
+import { AfterPillProps, VaultDetailsAfterPill } from '../../../../components/vault/VaultDetails'
+import { WithArrow } from '../../../../components/WithArrow'
+import { formatAmount, formatPercent } from '../../../../helpers/formatters/format'
+import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { WithChildren } from '../../../../helpers/types'
 
 interface StopLossBannerSectionProps {
   text: ReactNode

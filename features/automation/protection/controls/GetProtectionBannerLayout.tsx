@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image } from 'theme-ui'
 
-import { staticFilesRuntimeUrl } from '../../../helpers/staticPaths'
+import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { ProtectionBanner } from '../common/ProtectionBanner'
 
 interface GetProtectionBannerLayoutProps {

@@ -13,16 +13,16 @@ import {
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { VaultViewMode } from 'components/VaultTabSwitch'
-import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
-import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
-import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
+import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
