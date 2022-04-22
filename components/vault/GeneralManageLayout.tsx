@@ -4,7 +4,7 @@ import { Grid } from 'theme-ui'
 
 import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
 import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'

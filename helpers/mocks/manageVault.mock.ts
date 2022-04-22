@@ -18,7 +18,7 @@ import { switchMap } from 'rxjs/operators'
 import { CharteredDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/CharteredDssProxyActionsContractAdapter'
 import { StandardDssProxyActionsContractAdapter } from '../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
 import { InstiVault } from '../../blockchain/instiVault'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
