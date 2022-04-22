@@ -15,6 +15,7 @@ export enum VaultViewMode {
   Overview,
   Protection,
   History,
+  VaultInfo,
 }
 
 interface VaultTabButtonProps {
@@ -106,6 +107,7 @@ export function VaultTabSwitch({
   overViewControl,
   historyControl,
   protectionControl,
+  vaultInfo,
   showProtectionTab,
   protectionEnabled,
 }: {
@@ -116,6 +118,7 @@ export function VaultTabSwitch({
   headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
+  vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
 }): JSX.Element {
@@ -211,6 +214,7 @@ export function VaultTabSwitch({
               borderBottom: '3px solid',
               borderColor: 'rgba(37, 39, 61, 0.1)',
               width: '100%',
+              mb: 4,
             }}
           >
             <VaultTabButton
@@ -228,6 +232,12 @@ export function VaultTabSwitch({
                 <VaultTabTag isEnabled={protectionEnabled} />
               </VaultTabButton>
             )}
+            <VaultTabButton
+              onClick={() => setMode(VaultViewMode.VaultInfo)}
+              variant={getVariant(mode, VaultViewMode.VaultInfo)}
+            >
+              {t('system.vault-info')}
+            </VaultTabButton>
             <VaultTabButton
               onClick={() => setMode(VaultViewMode.History)}
               variant={getVariant(mode, VaultViewMode.History)}
@@ -277,7 +287,9 @@ export function VaultTabSwitch({
           ? overViewControl
           : mode === VaultViewMode.Protection
           ? protectionControl
-          : historyControl}
+          : mode === VaultViewMode.History
+          ? historyControl
+          : vaultInfo}
       </Box>
     </Grid>
   )

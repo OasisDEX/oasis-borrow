@@ -19,12 +19,14 @@ import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { useUIChanges } from '../../helpers/uiChangesHook'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { useAppContext } from '../AppContextProvider'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultHeadline } from './VaultHeadline'
+import { VaultInformationControl } from './VaultInformationControl'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
@@ -41,6 +43,7 @@ export function GeneralManageLayout({
   const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   const initialVaultCollRatio = getInitialVaultCollRatio({
     liquidationRatio: generalManageVault.state.ilkData.liquidationRatio,
@@ -98,12 +101,20 @@ export function GeneralManageLayout({
             priceInfo={priceInfo}
           />
         }
-        headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
+        // TODO this prop to be removed when automationBasicBuyAndSellEnabled wont be needed anymore
+        headerControl={
+          !automationBasicBuyAndSellEnabled ? (
+            <DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />
+          ) : (
+            <></>
+          )
+        }
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
+        vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={protectionEnabled}
       />
