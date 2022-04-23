@@ -22,7 +22,16 @@ function getStrokeDashArrays(values: BigNumber[]) {
 
 export function PieChart({ items }: { items: PieChartItem[] }) {
   const dashArrays = getStrokeDashArrays(items.map(i => i.value))
-  return <svg>
-    {items.map(({ color }, index) => <circle cx="150" cy="150" r="100" strokeDasharray={dashArrays[index]} stroke={color}></circle>)}
+  return <svg width="300" height="300">
+    {items.map(({ color }, index) => <circle 
+      cx="150" 
+      cy="150" 
+      r="100" 
+      strokeDasharray={dashArrays[index]} 
+      stroke={color}
+      fill="none"
+      strokeWidth="50"
+      >
+    </circle>)}
   </svg>
 }
