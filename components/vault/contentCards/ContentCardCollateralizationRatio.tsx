@@ -1,0 +1,93 @@
+import BigNumber from 'bignumber.js'
+import {
+  ChangeVariantType,
+  ContentCardProps,
+  DetailsSectionContentCard,
+} from 'components/DetailsSectionContentCard'
+import { formatPercent } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
+import { Card, Grid, Heading, Text } from 'theme-ui'
+
+interface ContentCardLiquidationPriceModalProps {
+  collateralizationRatioFormatted: string
+  collateralizationRatioAtNextPriceFormated: string
+}
+interface ContentCardCollateralizationRatioProps {
+  collateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
+  afterCollateralizationRatio?: BigNumber
+  changeVariant?: ChangeVariantType
+}
+
+function ContentCardLiquidationPriceModal({
+  collateralizationRatioFormatted,
+  collateralizationRatioAtNextPriceFormated,
+}: ContentCardLiquidationPriceModalProps) {
+  const { t } = useTranslation()
+
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('system.collateralization-ratio')}</Heading>
+      <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
+        {t('manage-vault.card.collateralization-ratio-calculated')}
+      </Text>
+      <Heading variant="header3" sx={{ mb: 1 }}>{t('manage-vault.card.collateralization-ratio-header2')}</Heading>
+      <Card variant="vaultDetailsCardModal">{collateralizationRatioFormatted}</Card>
+      <Text variant="subheader" sx={{ fontSize: 2, mt: 1, mb: 2 }}>
+        {t('manage-vault.card.collateralization-ratio-description')}
+      </Text>
+      <Heading variant="header3" sx={{ mb: 1 }}>
+        {t('manage-vault.card.collateralization-ratio-next-price')}
+      </Heading>
+      <Card variant="vaultDetailsCardModal">{collateralizationRatioAtNextPriceFormated}</Card>
+    </Grid>
+  )
+}
+
+export function ContentCardCollateralizationRatio({
+  collateralizationRatio,
+  collateralizationRatioAtNextPrice,
+  afterCollateralizationRatio,
+  changeVariant,
+}: ContentCardCollateralizationRatioProps) {
+  const { t } = useTranslation()
+  const formatted = {
+    collateralizationRatio: formatPercent(collateralizationRatio.times(100), {
+      precision: 2,
+      roundMode: BigNumber.ROUND_DOWN,
+    }),
+    collateralizationRatioAtNextPrice: formatPercent(collateralizationRatioAtNextPrice.times(100), {
+      precision: 2,
+      roundMode: BigNumber.ROUND_DOWN,
+    }),
+    afterCollateralizationRatio:
+      afterCollateralizationRatio &&
+      formatPercent(afterCollateralizationRatio.times(100), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
+      }),
+  }
+
+  const contentCardModalSettings: ContentCardLiquidationPriceModalProps = {
+    collateralizationRatioFormatted: formatted.collateralizationRatio,
+    collateralizationRatioAtNextPriceFormated: formatted.collateralizationRatioAtNextPrice,
+  }
+
+  const contentCardSettings: ContentCardProps = {
+    title: t('system.collateralization-ratio'),
+    value: formatted.collateralizationRatio,
+    footnote: t('system.cards.collateralization-ratio.footnote', {
+      amount: formatted.collateralizationRatioAtNextPrice,
+    }),
+    modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
+  }
+
+  if (afterCollateralizationRatio && changeVariant) {
+    contentCardSettings.change = {
+      value: `${formatted.afterCollateralizationRatio} ${t('system.cards.common.after')}`,
+      variant: changeVariant,
+    }
+  }
+
+  return <DetailsSectionContentCard {...contentCardSettings} />
+}

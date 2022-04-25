@@ -20,7 +20,7 @@ interface ContentCardLiquidationPriceModalProps {
   liquidationPriceFormatted: string
   liquidationRatio: BigNumber
   liquidationPriceCurrentPriceDifference?: BigNumber
-  liquidationPriceCurrentPriceDifferenceFormatted?: string
+  liquidationPriceCurrentPriceDifferenceLevel?: string
   vaultId?: BigNumber
   isStopLossEnabled?: boolean
 }
@@ -38,7 +38,7 @@ function ContentCardLiquidationPriceModal({
   liquidationPriceFormatted,
   liquidationRatio,
   liquidationPriceCurrentPriceDifference,
-  liquidationPriceCurrentPriceDifferenceFormatted,
+  liquidationPriceCurrentPriceDifferenceLevel,
   vaultId,
   isStopLossEnabled,
 }: ContentCardLiquidationPriceModalProps) {
@@ -58,13 +58,15 @@ function ContentCardLiquidationPriceModal({
       </Card>
       {liquidationPriceCurrentPriceDifference && (
         <Text as="p" variant="subheader" sx={{ fontSize: 2, mt: 1 }}>
-          {liquidationPriceCurrentPriceDifferenceFormatted}
+          {t('system.cards.liquidation-price.modal.price-relation', {
+            level: liquidationPriceCurrentPriceDifferenceLevel,
+          })}
         </Text>
       )}
       {automationEnabled && isStopLossEnabled && vaultId && (
         <>
           <Heading variant="header3" sx={{ mt: 3 }}>{`${t('system.vault-protection')}`}</Heading>
-          <Text as="p" variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+          <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
             {t('protection.modal-description')}
           </Text>
           <StopLossBannerControl
@@ -96,14 +98,16 @@ export function ContentCardLiquidationPrice({
     liquidationPrice: `$${formatAmount(liquidationPrice, 'USD')}`,
     liquidationPriceCurrentPriceDifference:
       liquidationPriceCurrentPriceDifference &&
-      t('system.cards.liquidation-price.footnote', {
-        amount: formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
-          precision: 2,
-          roundMode: BigNumber.ROUND_DOWN,
-        }),
-        level: liquidationPriceCurrentPriceDifference.lt(zero) ? t('above') : t('below'),
+      formatPercent(liquidationPriceCurrentPriceDifference.times(100).absoluteValue(), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
       }),
-    afterLiquidationPrice: `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`,
+    liquidationPriceCurrentPriceDifferenceLevel:
+      liquidationPriceCurrentPriceDifference && liquidationPriceCurrentPriceDifference.lt(zero)
+        ? t('above')
+        : t('below'),
+    afterLiquidationPrice:
+      afterLiquidationPrice && `$${formatAmount(afterLiquidationPrice || zero, 'USD')}`,
   }
 
   const contentCardModalSettings: ContentCardLiquidationPriceModalProps = {
@@ -111,8 +115,8 @@ export function ContentCardLiquidationPrice({
     liquidationPriceFormatted: formatted.liquidationPrice,
     liquidationRatio,
     liquidationPriceCurrentPriceDifference,
-    liquidationPriceCurrentPriceDifferenceFormatted:
-      formatted.liquidationPriceCurrentPriceDifference,
+    liquidationPriceCurrentPriceDifferenceLevel:
+      formatted.liquidationPriceCurrentPriceDifferenceLevel,
     vaultId,
   }
 
@@ -132,12 +136,15 @@ export function ContentCardLiquidationPrice({
 
   if (afterLiquidationPrice && changeVariant) {
     contentCardSettings.change = {
-      value: formatted.afterLiquidationPrice,
+      value: `${formatted.afterLiquidationPrice} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
   }
   if (liquidationPriceCurrentPriceDifference)
-    contentCardSettings.footnote = formatted.liquidationPriceCurrentPriceDifference
+    contentCardSettings.footnote = t('system.cards.liquidation-price.footnote', {
+      amount: formatted.liquidationPriceCurrentPriceDifference,
+      level: formatted.liquidationPriceCurrentPriceDifferenceLevel,
+    })
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

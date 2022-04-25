@@ -10,7 +10,7 @@ import { WithArrow } from './WithArrow'
 export type ChangeVariantType = 'positive' | 'negative'
 
 interface DetailsSectionContentCardChangePillProps {
-  value: string
+  value?: string
   variant: ChangeVariantType
 }
 
