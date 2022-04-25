@@ -1,3 +1,6 @@
+import { ContractDesc } from '@oasisdex/web3-context'
+import { SinonStatic } from 'sinon'
+
 import { zero } from '../../../helpers/zero'
 import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
 import * as dsProxy from '../../abi/ds-proxy.json'
@@ -18,16 +21,21 @@ export interface VaultActionsLogicInterface {
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
 }
 
+const open = {
+  call: function openCall(
+    { proxyAddress }: { proxyAddress: string },
+    { contract }: { contract: <T>(desc: ContractDesc) => T },
+  ) {
+    return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
+  },
+}
+
 export function vaultActionsLogic(
   proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
 ): VaultActionsLogicInterface {
   return {
     open: {
-      call: ({ proxyAddress }, { contract }) => {
-        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
-          'execute(address,bytes)'
-        ]
-      },
+      ...open,
       prepareArgs: (data, context) => {
         return [
           proxyActionsSmartContractWrapper.resolveContractAddress(context),
@@ -155,4 +163,17 @@ export function getOpenCallData(
     return proxyActionAdapter.openLockGemAndDraw(context, data)
   }
   return proxyActionAdapter.open(context, data)
+}
+
+export function mockVaultActionsLogicWithSpies(sinon: SinonStatic) {
+  const spies = {
+    open: {
+      call: sinon.spy(open, 'call'),
+    },
+  }
+
+  return {
+    mockVaultActionsLogic: vaultActionsLogic,
+    spies,
+  }
 }

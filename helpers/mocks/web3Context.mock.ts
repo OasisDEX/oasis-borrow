@@ -18,7 +18,7 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   status: 'connectedReadonly',
   connectionKind: 'injected',
   web3: new Web3(),
-  chainId: 1,
+  chainId: '1',
   deactivate: () => null,
   connect: () => null,
   connectLedger: () => null,

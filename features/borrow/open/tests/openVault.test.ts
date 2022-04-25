@@ -9,7 +9,7 @@ import { createTxHelpers$, protoTxHelpers, TxData, TxHelpers$ } from 'components
 import { mockContextConnected$ } from 'helpers/mocks/context.mock'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
-import { mockVaultActionsLogicWithSpies } from 'helpers/mocks/vaultActionsLogic.mock'
+// import { mockVaultActionsLogicWithSpies } from 'helpers/mocks/vaultActionsLogic.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { validMockAddresses } from 'helpers/mocks/web3Context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -26,6 +26,7 @@ import { default as mainnetAddresses } from '../../../../blockchain/addresses/ma
 import * as erc20 from '../../../../blockchain/calls/erc20'
 import * as proxy from '../../../../blockchain/calls/proxy'
 import * as vaultActionsLogic from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { mockVaultActionsLogicWithSpies } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
