@@ -5,13 +5,15 @@ import {
   DetailsSectionContentCardWrapper,
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
-import { ContentCardCollateralizationRatio } from 'components/vault/contentCards/ContentCardCollateralizationRatio'
-import { ContentCardCollateralLocked } from 'components/vault/contentCards/ContentCardCollateralLocked'
-import { ContentCardLiquidationPrice } from 'components/vault/contentCards/ContentCardLiquidationPrice'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { BorrowFooterItems } from 'components/vault/detailsSection/BorrowFooterItems'
+import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
+import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
+import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import {
   AfterPillProps,
@@ -110,6 +112,9 @@ export function ManageVaultDetails(
 ) {
   const {
     vault: {
+      daiYieldFromLockedCollateral,
+      debt,
+      freeCollateral,
       id,
       token,
       liquidationPrice,
@@ -203,6 +208,16 @@ export function ManageVaultDetails(
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
+        }
+        footer={
+          <DetailsSectionFooterItemWrapper>
+            <BorrowFooterItems
+              token={token}
+              debt={debt}
+              freeCollateral={freeCollateral}
+              daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+            />
+          </DetailsSectionFooterItemWrapper>
         }
       />
       <Grid variant="vaultDetailsCardsContainer">
