@@ -1,32 +1,22 @@
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Container, Grid } from 'theme-ui'
 
 import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
-import {
-  getInitialVaultCollRatio,
-  getStartingSlRatio,
-} from '../../features/automation/common/helpers'
-import { extractStopLossData } from '../../features/automation/common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE } from '../../features/automation/common/UITypes/AddFormChange'
-import {
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-} from '../../features/automation/common/UITypes/ProtectionFormModeChange'
-import { REMOVE_FORM_CHANGE } from '../../features/automation/common/UITypes/RemoveFormChange'
-import { TriggersData } from '../../features/automation/triggers/AutomationTriggersData'
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
+import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from '../../features/generalManageVault/vaultType'
-import { useUIChanges } from '../../helpers/uiChangesHook'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { GenericAnnouncement } from '../Announcement'
-import { useAppContext } from '../AppContextProvider'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultHeadline } from './VaultHeadline'
+import { VaultInformationControl } from './VaultInformationControl'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
@@ -38,55 +28,11 @@ export function GeneralManageLayout({
   autoTriggersData,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
   const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const showProtectionTab =
-    ALLOWED_MULTIPLY_TOKENS.includes(vault.token) && generalManageVault.type !== VaultType.Insti
-  const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: generalManageVault.state.ilkData.liquidationRatio,
-    collateralizationRatio: generalManageVault.state.vault.collateralizationRatio,
-  })
-
-  const startingSlRatio = getStartingSlRatio({
-    stopLossLevel,
-    isStopLossEnabled,
-    initialVaultCollRatio,
-  })
-
-  useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'close-type',
-      toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-    uiChanges.publish(REMOVE_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
-    })
-  }, [currentForm])
-
-  useEffect(() => {
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'close-type',
-      toCollateral: isToCollateral,
-    })
-    uiChanges.publish(ADD_FORM_CHANGE, {
-      type: 'stop-loss',
-      stopLoss: startingSlRatio.multipliedBy(100),
-    })
-  }, [isStopLossEnabled])
-
-  const protectionEnabled = !!generalManageVault.state.stopLossData?.isStopLossEnabled
   const vaultHeadingKey =
     generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
 
@@ -113,14 +59,22 @@ export function GeneralManageLayout({
             priceInfo={priceInfo}
           />
         }
-        headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
+        // TODO this prop to be removed when automationBasicBuyAndSellEnabled wont be needed anymore
+        headerControl={
+          !automationBasicBuyAndSellEnabled ? (
+            <DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />
+          ) : (
+            <></>
+          )
+        }
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
         protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
+        vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
-        protectionEnabled={protectionEnabled}
+        protectionEnabled={isStopLossEnabled}
       />
     </Grid>
   )

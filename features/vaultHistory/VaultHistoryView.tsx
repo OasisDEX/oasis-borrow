@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 
+import { DefinitionList } from '../../components/DefinitionList'
 import { interpolate } from '../../helpers/interpolate'
 import { splitEvents, VaultHistoryEvent } from './vaultHistory'
 import { getHistoryEventTranslation, VaultHistoryEntry } from './VaultHistoryEntry'
@@ -321,7 +322,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
           <Heading variant="headerSettings" sx={{ mb: 3 }}>
             {t('vault-history')}
           </Heading>
-          <Box as="ul" sx={{ p: 0 }}>
+          <DefinitionList>
             {spitedEvents.map((item) => (
               <VaultHistoryEntry
                 item={item}
@@ -330,7 +331,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
                 key={`${item.id}${`-${item.splitId}` || ''}`}
               />
             ))}
-          </Box>
+          </DefinitionList>
         </Card>
       )}
     </>
