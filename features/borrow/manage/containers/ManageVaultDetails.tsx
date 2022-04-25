@@ -128,6 +128,9 @@ export function ManageVaultDetails(
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
     collateralizationRatioAtNextPrice,
+    afterDebt,
+    afterFreeCollateral,
+    daiYieldFromTotalCollateral,
     inputAmountsEmpty,
     stage,
     stopLossTriggered,
@@ -215,7 +218,11 @@ export function ManageVaultDetails(
               token={token}
               debt={debt}
               freeCollateral={freeCollateral}
+              afterDebt={afterDebt}
+              afterFreeCollateral={afterFreeCollateral}
               daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+              daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+              changeVariant={changeVariant}
             />
           </DetailsSectionFooterItemWrapper>
         }

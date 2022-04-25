@@ -9,7 +9,7 @@ import { WithArrow } from './WithArrow'
 
 export type ChangeVariantType = 'positive' | 'negative'
 
-interface DetailsSectionContentCardChangePillProps {
+export interface DetailsSectionContentCardChangePillProps {
   value?: string
   variant: ChangeVariantType
 }
@@ -34,7 +34,7 @@ export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantT
   return collRatioColor === 'primary' || collRatioColor === 'onSuccess' ? 'positive' : 'negative'
 }
 
-function DetailsSectionContentCardChangePill({
+export function DetailsSectionContentCardChangePill({
   value,
   variant,
 }: DetailsSectionContentCardChangePillProps) {
