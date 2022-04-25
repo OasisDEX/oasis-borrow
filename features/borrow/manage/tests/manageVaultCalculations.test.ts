@@ -6,8 +6,11 @@ import {
   debtScalingFactor$,
   DEFAULT_DEBT_SCALING_FACTOR,
 } from 'helpers/mocks/ilks.mock'
-import { mockManageVault } from 'helpers/mocks/manageVault.mock'
+import { mockManageInstiVault$, mockManageVault } from 'helpers/mocks/manageVault.mock'
 import { one } from 'helpers/zero'
+
+import { mockVault$ } from '../../../../helpers/mocks/vaults.mock'
+import { getStateUnpacker } from '../../../../helpers/testHelpers'
 
 describe('manageVaultCalculations', () => {
   afterEach(() => {
@@ -95,4 +98,32 @@ describe('manageVaultCalculations', () => {
     )
     expect(state().vault.debtOffset.gt(originalDebtOffset)).to.be.true
   })
+
+  it(
+    'should calculate daiYieldFromTotalCollateral and daiYieldFromTotalCollateralAtNextPrice ' +
+      'from origination fee and min active col ratio',
+    () => {
+      const state = getStateUnpacker(
+        mockManageInstiVault$({
+          _instiVault$: mockVault$({
+            collateral: new BigNumber('151.5'),
+            debt: new BigNumber('99.99'),
+            minActiveColRatio: new BigNumber('1.5'),
+            originationFee: new BigNumber('0.01'),
+            priceInfo: {
+              currentCollateralPrice: new BigNumber('1'),
+              nextCollateralPrice: new BigNumber('2'),
+            },
+          }).instiVault$,
+          priceInfo: {
+            collateralPrice: new BigNumber('1'),
+            collateralChangePercentage: new BigNumber('1'),
+          },
+        }),
+      )
+
+      expect(state().daiYieldFromTotalCollateral?.toString()).eq('1')
+      expect(state().daiYieldFromTotalCollateralAtNextPrice?.toString()).eq('101')
+    },
+  )
 })

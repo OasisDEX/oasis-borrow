@@ -66,17 +66,6 @@ interface WithdrawPaybackEvent extends HistoryEventBase {
   gasFee?: BigNumber
 }
 
-interface StopLossTriggeredEvent extends HistoryEventBase {
-  kind: 'STOPLOSS-TRIGGERED'
-  daiAmount: BigNumber
-  rate: BigNumber
-  collateralAmount: BigNumber
-  oraclePrice: BigNumber
-  slippage: BigNumber
-  gasFee: BigNumber
-  triggerType: BigNumber
-}
-
 interface AuctionStartedEvent extends HistoryEventBase {
   kind: 'AUCTION_STARTED'
   collateralAmount: BigNumber
@@ -173,6 +162,7 @@ export interface MultiplyBaseEvent {
   totalFee: BigNumber
   gasFee: BigNumber // in wei
   rate: BigNumber
+  token: string
 }
 interface OpenMultiplyEvent extends MultiplyBaseEvent {
   kind: 'OPEN_MULTIPLY_VAULT'
@@ -202,7 +192,7 @@ interface DecreaseMultipleEvent extends MultiplyBaseEvent {
   sold: BigNumber
 }
 
-interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_DAI'
   sold: BigNumber
   exitDai: BigNumber
@@ -214,11 +204,29 @@ interface CloseGuniVaultExitDaiMultipleEvent extends MultiplyBaseEvent {
   exitDai: BigNumber
 }
 
-interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
+export interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent {
   kind: 'CLOSE_VAULT_TO_COLLATERAL'
   sold: BigNumber
   exitCollateral: BigNumber
   exitDai: BigNumber
+}
+
+interface StopLossBaseEvent {
+  id: string
+  triggerId: string
+  kind: 'stoploss'
+  hash: string
+  timestamp: string
+}
+
+interface StopLossExecutedEvent extends StopLossBaseEvent {
+  eventType: 'executed'
+}
+interface StopLossAddedEvent extends StopLossBaseEvent {
+  eventType: 'added'
+}
+interface StopLossRemovedEvent extends StopLossBaseEvent {
+  eventType: 'removed'
 }
 
 export type MultiplyEvent =
@@ -229,7 +237,8 @@ export type MultiplyEvent =
   | CloseVaultExitDaiMultipleEvent
   | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
-  | StopLossTriggeredEvent
+
+type AutomationEvent = StopLossExecutedEvent | StopLossAddedEvent | StopLossRemovedEvent
 
 export interface ReturnedEvent {
   kind: string
@@ -245,6 +254,18 @@ export interface ReturnedEvent {
   txId: string
   blockId: string
   rate: string
+}
+
+export interface ReturnedAutomationEvent {
+  id: string
+  triggerId: string
+  cdpId: string | null
+  hash: string
+  number: string
+  timestamp: string
+  eventType: string
+  commandAddress: string | null
+  kind: string
 }
 
 export type VaultEvent =
@@ -264,6 +285,6 @@ export type VaultEvent =
   | MoveSrcEvent
   | MoveDestEvent
   | MultiplyEvent
-  | StopLossTriggeredEvent
+  | AutomationEvent
 
 export type EventType = VaultEvent['kind']

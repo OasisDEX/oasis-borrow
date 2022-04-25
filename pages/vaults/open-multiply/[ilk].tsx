@@ -2,6 +2,7 @@ import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
+import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -10,7 +11,6 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedMultiplyIlks } from '../../../helpers/productCards'
-import { MultiplySurveyButtons } from '../../multiply'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
   const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
@@ -44,7 +44,7 @@ function OpenVault({ ilk }: { ilk: string }) {
           ) : (
             <>
               <OpenMultiplyVaultView ilk={ilk} />
-              <MultiplySurveyButtons />
+              <Survey for="multiply" />
             </>
           )}
         </WithWalletAssociatedRisk>

@@ -37,6 +37,7 @@ export interface ManageVaultCalculations {
   afterCollateralBalance: BigNumber
   shouldPaybackAll: boolean
   liquidationPriceCurrentPriceDifference: BigNumber | undefined
+  daiYieldFromTotalCollateralWithoutDebt: BigNumber
 }
 
 export const defaultManageVaultCalculations: ManageVaultCalculations = {
@@ -66,6 +67,7 @@ export const defaultManageVaultCalculations: ManageVaultCalculations = {
   daiYieldFromTotalCollateralAtNextPrice: zero,
   shouldPaybackAll: false,
   liquidationPriceCurrentPriceDifference: undefined,
+  daiYieldFromTotalCollateralWithoutDebt: zero,
 }
 
 /*
@@ -119,12 +121,13 @@ function calculateAfterDebt({
   generateAmount,
   paybackAmount,
   debt,
+  originationFeePercent,
 }: Pick<ManageStandardBorrowVaultState, 'shouldPaybackAll' | 'generateAmount' | 'paybackAmount'> &
-  Pick<Vault, 'debt'>) {
+  Pick<Vault, 'debt'> & { originationFeePercent: BigNumber }) {
   if (shouldPaybackAll) return zero
 
   const amount = generateAmount
-    ? debt.plus(generateAmount)
+    ? debt.plus(generateAmount.times(originationFeePercent.plus(one)))
     : paybackAmount
     ? debt.minus(paybackAmount)
     : debt
@@ -188,7 +191,12 @@ function calculateMaxWithdrawAmount({
 }: Pick<ManageStandardBorrowVaultState, 'paybackAmount' | 'shouldPaybackAll'> &
   Pick<Vault, 'lockedCollateral' | 'debt' | 'debtOffset'> &
   Pick<IlkData, 'liquidationRatio'> & { price: BigNumber }) {
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, paybackAmount })
+  const afterDebt = calculateAfterDebt({
+    shouldPaybackAll,
+    debt,
+    paybackAmount,
+    originationFeePercent: zero,
+  })
   const afterDebtWithOffset = afterDebt.gt(zero) ? afterDebt.plus(debtOffset) : afterDebt
 
   const backingCollateral = calculateAfterBackingCollateral({
@@ -205,12 +213,16 @@ function calculateMaxWithdrawAmount({
 
 function calculateAfterIlkDebtAvailable({
   ilkDebtAvailable,
-  paybackAmount,
-  generateAmount,
+  paybackAmount = zero,
+  generateAmount = zero,
+  originationFee,
 }: Pick<IlkData, 'ilkDebtAvailable'> &
-  Pick<ManageStandardBorrowVaultState, 'generateAmount' | 'paybackAmount'>) {
+  Pick<ManageStandardBorrowVaultState, 'generateAmount' | 'paybackAmount'> & {
+    originationFee: BigNumber
+  }) {
+  const generateAmountWithOriginationFee = generateAmount.div(originationFee.plus(one))
   if (ilkDebtAvailable.gt(zero)) {
-    const amount = ilkDebtAvailable.plus(paybackAmount || zero).minus(generateAmount || zero)
+    const amount = ilkDebtAvailable.plus(paybackAmount).minus(generateAmountWithOriginationFee)
     return amount.gte(zero) ? amount : zero
   }
   return zero
@@ -222,19 +234,26 @@ function calculateAfterIlkDebtAvailable({
  */
 function calculateDaiYieldFromCollateral({
   debt,
-  liquidationRatio,
+  minColRatio,
   generateAmount,
   paybackAmount,
   price,
   collateral,
   ilkDebtAvailable,
+  originationFee,
 }: Pick<ManageStandardBorrowVaultState, 'generateAmount' | 'paybackAmount'> &
   Pick<Vault, 'debt'> &
-  Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
+  Pick<IlkData, 'ilkDebtAvailable'> & {
     price: BigNumber
     collateral: BigNumber
+    minColRatio: BigNumber
+    originationFee: BigNumber
   }) {
-  const daiYield = collateral.times(price).div(liquidationRatio).minus(debt)
+  const daiYield = collateral
+    .times(price)
+    .div(minColRatio)
+    .minus(debt)
+    .div(originationFee.plus(one))
 
   if (!daiYield.gt(zero)) return zero
 
@@ -243,6 +262,7 @@ function calculateDaiYieldFromCollateral({
       generateAmount,
       paybackAmount,
       ilkDebtAvailable,
+      originationFee,
     })
   }
 
@@ -263,13 +283,16 @@ function calculateMaxGenerateAmount({
   debt,
   debtOffset,
   lockedCollateral,
-  liquidationRatio,
+  minColRatio,
   price,
   ilkDebtAvailable,
+  originationFee,
 }: Pick<ManageStandardBorrowVaultState, 'depositAmount' | 'generateAmount'> &
   Pick<Vault, 'debtOffset' | 'debt' | 'lockedCollateral'> &
-  Pick<IlkData, 'liquidationRatio' | 'ilkDebtAvailable'> & {
+  Pick<IlkData, 'ilkDebtAvailable'> & {
     price: BigNumber
+    originationFee: BigNumber
+    minColRatio: BigNumber
   }) {
   const afterLockedCollateral = calculateAfterLockedCollateral({
     lockedCollateral,
@@ -280,14 +303,17 @@ function calculateMaxGenerateAmount({
     ilkDebtAvailable,
     collateral: afterLockedCollateral,
     price,
-    liquidationRatio,
+    minColRatio,
     debt: debt.plus(debtOffset),
     generateAmount,
+    originationFee,
   })
 }
 
 export function applyManageVaultCalculations<VaultState extends ManageStandardBorrowVaultState>(
   state: VaultState,
+  originationFee: BigNumber,
+  minActiveColRatio: BigNumber,
 ): VaultState {
   const {
     depositAmount,
@@ -313,7 +339,13 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
   })
   const afterLockedCollateralUSD = afterLockedCollateral.times(currentCollateralPrice)
   const afterLockedCollateralUSDAtNextPrice = afterLockedCollateral.times(nextCollateralPrice)
-  const afterDebt = calculateAfterDebt({ shouldPaybackAll, debt, generateAmount, paybackAmount })
+  const afterDebt = calculateAfterDebt({
+    shouldPaybackAll,
+    debt,
+    generateAmount,
+    paybackAmount,
+    originationFeePercent: originationFee,
+  })
 
   const afterBackingCollateral = calculateAfterBackingCollateral({
     afterDebt,
@@ -370,20 +402,33 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
     ilkDebtAvailable,
     collateral: afterLockedCollateral,
     price: currentCollateralPrice,
-    liquidationRatio,
+    minColRatio: minActiveColRatio,
     debt: afterDebt,
     generateAmount,
     paybackAmount,
+    originationFee,
   })
 
   const daiYieldFromTotalCollateralAtNextPrice = calculateDaiYieldFromCollateral({
     ilkDebtAvailable,
     collateral: afterLockedCollateral,
     price: nextCollateralPrice,
-    liquidationRatio,
+    minColRatio: liquidationRatio,
     debt: afterDebt,
     generateAmount,
     paybackAmount,
+    originationFee,
+  })
+
+  const daiYieldFromTotalCollateralWithoutDebt = calculateDaiYieldFromCollateral({
+    ilkDebtAvailable,
+    collateral: afterLockedCollateral,
+    price: nextCollateralPrice,
+    minColRatio: liquidationRatio,
+    debt: zero,
+    generateAmount,
+    paybackAmount,
+    originationFee,
   })
 
   const maxGenerateAmountAtCurrentPrice = calculateMaxGenerateAmount({
@@ -391,9 +436,10 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
     debt,
     debtOffset,
     ilkDebtAvailable,
-    liquidationRatio,
+    minColRatio: minActiveColRatio,
     lockedCollateral,
     price: currentCollateralPrice,
+    originationFee,
   })
 
   const maxGenerateAmountAtNextPrice = calculateMaxGenerateAmount({
@@ -401,9 +447,10 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
     debt,
     debtOffset,
     ilkDebtAvailable,
-    liquidationRatio,
+    minColRatio: minActiveColRatio,
     lockedCollateral,
     price: nextCollateralPrice,
+    originationFee,
   })
 
   const maxGenerateAmount = BigNumber.minimum(
@@ -469,6 +516,7 @@ export function applyManageVaultCalculations<VaultState extends ManageStandardBo
     maxPaybackAmount,
     daiYieldFromTotalCollateral,
     daiYieldFromTotalCollateralAtNextPrice,
+    daiYieldFromTotalCollateralWithoutDebt,
     shouldPaybackAll,
     liquidationPriceCurrentPriceDifference,
   }

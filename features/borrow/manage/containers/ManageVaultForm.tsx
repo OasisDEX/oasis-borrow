@@ -3,7 +3,7 @@ import { TextWithCheckmark } from 'components/TextWithCheckmark'
 import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { ManageVaultFormHeader } from 'features/borrow/manage/containers/ManageVaultFormHeader'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useState } from 'react'
@@ -14,7 +14,7 @@ import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMult
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
+import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { ManageVaultButton } from './ManageVaultButton'
 import { ManageVaultConfirmation, ManageVaultConfirmationStatus } from './ManageVaultConfirmation'
@@ -50,7 +50,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
 }
 
 export function ManageVaultForm(
-  props: ManageStandardBorrowVaultState & { hideMultiply?: boolean; extraInfo?: ReactNode },
+  props: ManageStandardBorrowVaultState & { hideMultiplyTab?: boolean; txnCostDisplay?: ReactNode },
 ) {
   const {
     isEditingStage,
@@ -70,16 +70,23 @@ export function ManageVaultForm(
   const automationEnabled = useFeatureToggle('Automation')
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
+  const mostRecentEvent = vaultHistory[0]
+
+  const isVaultClosed =
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled ? (
+      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
-          vaultHistory={vaultHistory}
+          closeEvent={mostRecentEvent}
           onClick={() => setReopenPositionClicked(true)}
         />
       ) : (
         <>
           <ManageVaultFormHeader {...props} />
+          {isProxyStage && <VaultProxyContentBox stage={stage} />}
           {isEditingStage && <ManageVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
