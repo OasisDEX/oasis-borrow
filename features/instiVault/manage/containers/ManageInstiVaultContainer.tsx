@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 
@@ -32,6 +33,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
+  const automationEnabled = useFeatureToggle('Automation')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -48,29 +50,31 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      <DefaultVaultHeader
-        header={t('vault.insti-header', { ilk, id })}
-        ilkData={ilkData}
-        id={id}
-        token={token}
-        priceInfo={priceInfo}
-      >
-        <VaultIlkDetailsItem
-          label={t('manage-insti-vault.origination-fee')}
-          value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
-          tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
-          styles={{
-            tooltip: {
-              left: ['-80px', 'auto'],
-              right: ['auto', '-32px'],
-            },
-          }}
-        />
-      </DefaultVaultHeader>
+      {!automationEnabled && (
+        <DefaultVaultHeader
+          header={t('vault.insti-header', { ilk, id })}
+          ilkData={ilkData}
+          id={id}
+          token={token}
+          priceInfo={priceInfo}
+        >
+          <VaultIlkDetailsItem
+            label={t('manage-insti-vault.origination-fee')}
+            value={`${formatPercent(originationFeePercent.times(100), { precision: 2 })}`}
+            tooltipContent={t('manage-insti-vault.tooltip.origination-fee')}
+            styles={{
+              tooltip: {
+                left: ['-80px', 'auto'],
+                right: ['auto', '-32px'],
+              },
+            }}
+          />
+        </DefaultVaultHeader>
+      )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageInstiVaultDetails {...manageVault} />
-          <VaultHistoryView vaultHistory={manageVault.vaultHistory} />
+          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm

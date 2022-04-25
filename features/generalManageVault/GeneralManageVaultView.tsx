@@ -28,11 +28,20 @@ interface GeneralManageVaultViewProps {
 export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
-  switch (generalManageVault.type) {
+  const vaultType = generalManageVault.type
+
+  switch (vaultType) {
     case VaultType.Borrow:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
           <ManageVaultContainer manageVault={generalManageVault.state} />
+          <Survey for="borrow" />
+        </Container>
+      )
+    case VaultType.Insti:
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          <ManageInstiVaultContainer manageVault={generalManageVault.state} />
         </Container>
       )
     case VaultType.Multiply:
@@ -56,11 +65,12 @@ export function GeneralManageVaultViewAutomation({
               history={VaultHistoryView}
             />
           )}
+          <Survey for="multiply" />
         </Container>
       )
     default:
       throw new Error(
-        `could not render GeneralManageVaultViewAutomation for vault type ${generalManageVault.type}`,
+        `could not render GeneralManageVaultViewAutomation for vault type ${vaultType}`,
       )
   }
 }

@@ -1,11 +1,12 @@
 import { IlkData } from 'blockchain/ilks'
 import React from 'react'
 
+import { InstiVault } from '../../blockchain/instiVault'
 import { Vault } from '../../blockchain/vaults'
 import { VaultHeaderLayout } from './VaultHeaderLayout'
 
 export interface DefaultVaultHeaderControlProps {
-  vault: Vault
+  vault: Vault | InstiVault
   ilkData: IlkData
 }
 
@@ -16,6 +17,8 @@ export function DefaultVaultHeaderControl({ ilkData, vault }: DefaultVaultHeader
     liquidationPenalty: ilkData.liquidationPenalty,
     liquidationRatio: ilkData.liquidationRatio,
     stabilityFee: ilkData.stabilityFee,
+    originationFeePercent:
+      'originationFeePercent' in vault ? vault.originationFeePercent : undefined,
   }
 
   const guniHeaderProps = {
