@@ -30,7 +30,7 @@ import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
 interface AdjustSlFormInformationProps {
   tokenPrice: BigNumber
-  stopLossLevel: BigNumber
+  afterStopLossRatio: BigNumber
   vault: Vault
   ilkData: IlkData
   token: string
@@ -40,7 +40,7 @@ interface AdjustSlFormInformationProps {
 }
 
 function ProtectionCompleteInformation({
-  stopLossLevel,
+  afterStopLossRatio,
   vault,
   ilkData,
   token,
@@ -52,7 +52,7 @@ function ProtectionCompleteInformation({
 
   const dynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
-    .times(stopLossLevel)
+    .times(afterStopLossRatio.div(100))
 
   const maxToken = vault.lockedCollateral
     .times(dynamicStopLossPrice)
@@ -69,7 +69,7 @@ function ProtectionCompleteInformation({
         label={`${t('protection.stop-loss-coll-ratio')}`}
         value={
           <Flex>
-            {formatPercent(stopLossLevel.times(100), {
+            {formatPercent(afterStopLossRatio, {
               precision: 2,
               roundMode: BigNumber.ROUND_DOWN,
             })}
@@ -198,7 +198,6 @@ export interface AdjustSlFormLayoutProps {
   txState?: TxStatus
   txHash?: string
   txCost?: BigNumber
-  stopLossLevel: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
   tokenPrice: BigNumber
@@ -222,7 +221,6 @@ export function AdjustSlFormLayout({
   closePickerConfig,
   accountIsController,
   addTriggerConfig,
-  stopLossLevel,
   tokenPrice,
   ethPrice,
   vault,
@@ -301,7 +299,7 @@ export function AdjustSlFormLayout({
             <ProtectionCompleteInformation
               token={token}
               txState={txState}
-              stopLossLevel={stopLossLevel}
+              afterStopLossRatio={selectedSLValue}
               tokenPrice={tokenPrice}
               vault={vault}
               ilkData={ilkData}

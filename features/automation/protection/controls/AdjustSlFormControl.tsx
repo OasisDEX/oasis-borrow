@@ -284,7 +284,6 @@ export function AdjustSlFormControl({
     txHash: uiState?.txDetails?.txHash,
     gasEstimation,
     accountIsController,
-    stopLossLevel,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice,
