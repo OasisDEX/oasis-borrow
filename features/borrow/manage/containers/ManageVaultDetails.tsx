@@ -1,7 +1,10 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentCardWrapper, getChangeColor } from 'components/DetailsSectionContentCard'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
 import { ContentCardLiquidationPrice } from 'components/vault/contentCards/ContentCardLiquidationPrice'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
@@ -119,7 +122,7 @@ export function ManageVaultDetails(
   const { uiChanges } = useAppContext()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const changeColor = getChangeColor(afterCollRatioColor)
+  const changeVariant = getChangeVariant(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
@@ -171,7 +174,7 @@ export function ManageVaultDetails(
             <ContentCardLiquidationPrice
               liquidationPrice={liquidationPrice}
               liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              changeColor={changeColor}
+              {...(showAfterPill && { change: { changeVariant, afterLiquidationPrice } })}
             />
           </DetailsSectionContentCardWrapper>
         }

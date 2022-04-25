@@ -20,7 +20,7 @@ interface DetailsSectionContentCardLinkProps {
   action?: () => void
 }
 
-interface ContentCardProps {
+export interface ContentCardProps {
   title: string
   value?: string
   unit?: string
@@ -30,8 +30,8 @@ interface ContentCardProps {
   modal?: string | JSX.Element
 }
 
-export function getChangeColor(collRatioColor: CollRatioColor): ChangeVariantType {
-  return (collRatioColor === 'primary' || collRatioColor === 'onSuccess') ? 'positive' : 'negative'
+export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
+  return collRatioColor === 'primary' || collRatioColor === 'onSuccess' ? 'positive' : 'negative'
 }
 
 function DetailsSectionContentCardChangePill({
