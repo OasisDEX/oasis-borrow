@@ -9,12 +9,15 @@ import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
+import { RAY } from '../../components/constants'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (
     cdpId: BigNumber,
   ) => Observable<{ urnAddress: string; ilk: string; controller: string }>,
   cropperCrops$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  cropperStake$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
+  cropperShare$: (args: { ilk: string }) => Observable<BigNumber>,
   cropperBonusTokenAddress$: (args: { ilk: string }) => Observable<string>,
   tokenDecimals$: (address: string) => Observable<BigNumber>,
   tokenSymbol$: (address: string) => Observable<string>,
@@ -29,12 +32,15 @@ export function createMakerdaoBonusAdapter(
 
   const bonus$: Observable<Bonus | undefined> = vault$.pipe(
     // getCropInfo
-    //
     switchMap(({ ilk, urnAddress }) => {
       return combineLatest(
-        cropperCrops$({ ilk, usr: urnAddress }),
+        cropperStake$({ ilk, usr: urnAddress }),
+        cropperShare$({ ilk }),
         cropperBonusTokenAddress$({ ilk }),
       )
+    }),
+    map(([stake, share, bonusAddress]) => {
+      return [stake.times(share).div(RAY), bonusAddress] as const
     }),
     // get token info
     switchMap(([bonusValue, bonusAddress]) => {

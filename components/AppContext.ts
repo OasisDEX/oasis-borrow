@@ -124,6 +124,8 @@ import {
 import {
   cropperBonusTokenAddress,
   cropperCrops,
+  cropperShare,
+  cropperStake,
   cropperUrnProxy,
 } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
@@ -421,6 +423,9 @@ export function setupAppContext() {
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
 
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
+  const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
+  const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
+
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
@@ -495,6 +500,8 @@ export function setupAppContext() {
       createMakerdaoBonusAdapter(
         urnResolver$,
         cropperCrops$,
+        cropperStake$,
+        cropperShare$,
         cropperBonusTokenAddress$,
         tokenDecimals$,
         tokenSymbol$,
