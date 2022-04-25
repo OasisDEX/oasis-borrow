@@ -135,6 +135,10 @@ Some of the values that are used you can check in the `.env` file.
   feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
   `1` (enabled).
 
+- `USE_TRM_API` - For development purposes, this feature can be disabled. You can disable this
+  feature if you'd like to remove that functionality at all. The values are either `0` (disabled) or
+  `1` (enabled).
+
 - `SHOW_BUILD_INFO` - The value will determine whether an information about the build is diplayed in
   the footer. Currently we display only the build time and commit from which it is built. This
   targets deployments to staging environments so that the tam can see which version the UI reflects.
