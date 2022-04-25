@@ -48,16 +48,16 @@ function ContentCardLiquidationPriceModal({
   return (
     <Grid gap={2}>
       <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
-      <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
+      <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
         {!automationEnabled
           ? t('manage-multiply-vault.card.liquidation-price-description')
           : t('manage-multiply-vault.card.liquidation-price-description-AUTO')}
       </Text>
-      <Card as="p" variant="vaultDetailsCardModal">
+      <Card as="p" variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {liquidationPriceFormatted}
       </Card>
       {liquidationPriceCurrentPriceDifference && (
-        <Text as="p" variant="subheader" sx={{ fontSize: 2, mt: 1 }}>
+        <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
           {t('system.cards.liquidation-price.modal.price-relation', {
             level: liquidationPriceCurrentPriceDifferenceLevel,
           })}
@@ -134,12 +134,11 @@ export function ContentCardLiquidationPrice({
     modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
   }
 
-  if (afterLiquidationPrice && changeVariant) {
+  if (afterLiquidationPrice && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterLiquidationPrice} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
-  }
   if (liquidationPriceCurrentPriceDifference)
     contentCardSettings.footnote = t('system.cards.liquidation-price.footnote', {
       amount: formatted.liquidationPriceCurrentPriceDifference,

@@ -31,15 +31,19 @@ function ContentCardLiquidationPriceModal({
       <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
         {t('manage-vault.card.collateralization-ratio-calculated')}
       </Text>
-      <Heading variant="header3" sx={{ mb: 1 }}>{t('manage-vault.card.collateralization-ratio-header2')}</Heading>
-      <Card variant="vaultDetailsCardModal">{collateralizationRatioFormatted}</Card>
-      <Text variant="subheader" sx={{ fontSize: 2, mt: 1, mb: 2 }}>
+      <Heading variant="header3">{t('manage-vault.card.collateralization-ratio-header2')}</Heading>
+      <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
+        {collateralizationRatioFormatted}
+      </Card>
+      <Text variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
         {t('manage-vault.card.collateralization-ratio-description')}
       </Text>
-      <Heading variant="header3" sx={{ mb: 1 }}>
+      <Heading variant="header3">
         {t('manage-vault.card.collateralization-ratio-next-price')}
       </Heading>
-      <Card variant="vaultDetailsCardModal">{collateralizationRatioAtNextPriceFormated}</Card>
+      <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
+        {collateralizationRatioAtNextPriceFormated}
+      </Card>
     </Grid>
   )
 }
@@ -51,6 +55,7 @@ export function ContentCardCollateralizationRatio({
   changeVariant,
 }: ContentCardCollateralizationRatioProps) {
   const { t } = useTranslation()
+
   const formatted = {
     collateralizationRatio: formatPercent(collateralizationRatio.times(100), {
       precision: 2,
@@ -82,12 +87,11 @@ export function ContentCardCollateralizationRatio({
     modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
   }
 
-  if (afterCollateralizationRatio && changeVariant) {
+  if (afterCollateralizationRatio && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterCollateralizationRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
-  }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

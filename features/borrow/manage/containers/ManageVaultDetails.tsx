@@ -6,6 +6,7 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { ContentCardCollateralizationRatio } from 'components/vault/contentCards/ContentCardCollateralizationRatio'
+import { ContentCardCollateralLocked } from 'components/vault/contentCards/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'components/vault/contentCards/ContentCardLiquidationPrice'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
@@ -192,6 +193,13 @@ export function ManageVaultDetails(
               collateralizationRatio={collateralizationRatio}
               collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
               afterCollateralizationRatio={afterCollateralizationRatio}
+              changeVariant={changeVariant}
+            />
+            <ContentCardCollateralLocked
+              token={token}
+              lockedCollateralUSD={lockedCollateralUSD}
+              lockedCollateral={lockedCollateral}
+              afterLockedCollateralUSD={afterLockedCollateralUSD}
               changeVariant={changeVariant}
             />
           </DetailsSectionContentCardWrapper>
