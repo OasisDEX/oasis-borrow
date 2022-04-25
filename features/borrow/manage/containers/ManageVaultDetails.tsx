@@ -160,104 +160,109 @@ export function ManageVaultDetails(
           />
         </>
       )}
-      <DetailsSection
-        title={t('system.overview')}
-        buttons={[
-          {
-            label: t('system.actions.common.edit-position'),
-            actions: [
-              {
-                label: t('system.actions.borrow.edit-dai'),
-                action: () => {
-                  alert('dai')
-                },
-              },
-              {
-                label: t('system.actions.borrow.edit-collateral'),
-                action: () => {
-                  alert('collateral')
-                },
-              },
-              {
-                label: t('system.actions.borrow.switch-to-multiply'),
-                action: () => {
-                  alert('switch-to-multiply')
-                },
-              },
-            ],
-          },
-        ]}
-        content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
+      {!automationBasicBuyAndSellEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardLiquidationPrice
               liquidationPrice={liquidationPrice}
               liquidationRatio={liquidationRatio}
               liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
               afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
               vaultId={id}
             />
-            <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-              afterCollateralizationRatio={afterCollateralizationRatio}
-              changeVariant={changeVariant}
+            <VaultDetailsCardCollateralizationRatio
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+              {...props}
             />
-            <ContentCardCollateralLocked
-              token={token}
-              lockedCollateralUSD={lockedCollateralUSD}
-              lockedCollateral={lockedCollateral}
-              afterLockedCollateralUSD={afterLockedCollateralUSD}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionContentCardWrapper>
-        }
-        footer={
-          <DetailsSectionFooterItemWrapper>
-            <BorrowFooterItems
-              token={token}
-              debt={debt}
-              freeCollateral={freeCollateral}
-              afterDebt={afterDebt}
-              afterFreeCollateral={afterFreeCollateral}
-              daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
-              daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionFooterItemWrapper>
-        }
-      />
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardLiquidationPrice
-          liquidationPrice={liquidationPrice}
-          liquidationRatio={liquidationRatio}
-          liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-          afterLiquidationPrice={afterLiquidationPrice}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-          vaultId={id}
-        />
-        <VaultDetailsCardCollateralizationRatio
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-          {...props}
-        />
 
-        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
-        <VaultDetailsCardCollateralLocked
-          depositAmountUSD={lockedCollateralUSD}
-          afterDepositAmountUSD={afterLockedCollateralUSD}
-          depositAmount={lockedCollateral}
-          token={token}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
+            <VaultDetailsCardCurrentPrice {...props.priceInfo} />
+            <VaultDetailsCardCollateralLocked
+              depositAmountUSD={lockedCollateralUSD}
+              afterDepositAmountUSD={afterLockedCollateralUSD}
+              depositAmount={lockedCollateral}
+              token={token}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+            />
+          </Grid>
+          <ManageVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      ) : (
+        <DetailsSection
+          title={t('system.overview')}
+          buttons={[
+            {
+              label: t('system.actions.common.edit-position'),
+              actions: [
+                {
+                  label: t('system.actions.borrow.edit-dai'),
+                  action: () => {
+                    alert('dai')
+                  },
+                },
+                {
+                  label: t('system.actions.borrow.edit-collateral'),
+                  action: () => {
+                    alert('collateral')
+                  },
+                },
+                {
+                  label: t('system.actions.borrow.switch-to-multiply'),
+                  action: () => {
+                    alert('switch-to-multiply')
+                  },
+                },
+              ],
+            },
+          ]}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardCollateralizationRatio
+                collateralizationRatio={collateralizationRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                afterCollateralizationRatio={afterCollateralizationRatio}
+                changeVariant={changeVariant}
+              />
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
+          }
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <BorrowFooterItems
+                token={token}
+                debt={debt}
+                freeCollateral={freeCollateral}
+                afterDebt={afterDebt}
+                afterFreeCollateral={afterFreeCollateral}
+                daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+                daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
         />
-      </Grid>
-      <ManageVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-      />
+      )}
       {/* TODO: this is just an example, it should be removed or replaced with actual proper banner when basic buy would go live */}
       {automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
