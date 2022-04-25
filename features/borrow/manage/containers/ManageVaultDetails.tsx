@@ -122,8 +122,8 @@ export function ManageVaultDetails(
   const { uiChanges } = useAppContext()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const changeVariant = getChangeVariant(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
@@ -173,8 +173,11 @@ export function ManageVaultDetails(
           <DetailsSectionContentCardWrapper>
             <ContentCardLiquidationPrice
               liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
               liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              {...(showAfterPill && { change: { changeVariant, afterLiquidationPrice } })}
+              afterLiquidationPrice={afterLiquidationPrice}
+              changeVariant={changeVariant}
+              vaultId={id}
             />
           </DetailsSectionContentCardWrapper>
         }
