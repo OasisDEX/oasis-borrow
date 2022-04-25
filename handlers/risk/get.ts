@@ -4,9 +4,10 @@ import {
   selectRiskForAddress,
   updateRiskForAddress,
 } from 'server/database/risk'
-import { getUserFromRequest } from 'server/middleware/signature-auth/getUserFromRequest'
 import { prisma } from 'server/prisma'
 import * as z from 'zod'
+
+import { getUserFromRequest } from '../signature-auth/getUserFromRequest'
 
 enum RiskType {
   OWNERSHIP = 'OWNERSHIP',
@@ -65,7 +66,8 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
     })
 }
 
-const offset = 1 * 24 * 60 * 60 * 1000 // 1 day
+// TODO TO BE UPDATED BEFORE MERGE TO DEV
+const offset = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 async function checkIfRisky(address: string) {
   const trmData = await getTrmRisk(address)
@@ -78,8 +80,7 @@ const inputSchema = z.object({
 })
 
 export async function getRisk(req: NextApiRequest, res: NextApiResponse) {
-  // TODO provide correct typing after Damians changes
-  const user = getUserFromRequest(req as any)
+  const user = getUserFromRequest(req)
   const body = inputSchema.parse(req.body)
 
   if (body.chainId !== 1) {
