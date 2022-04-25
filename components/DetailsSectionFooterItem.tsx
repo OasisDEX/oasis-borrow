@@ -36,12 +36,13 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
       sx={{
         alignItems: 'flex-start',
         flexDirection: 'column',
-        justifyContent: 'space-between',
+        justifyContent: change ? 'flex-start' : 'space-between',
         flexBasis: ['100%', null, null, '25%'],
         p: 3,
         '&:nth-child(-n+3)': {
           flexGrow: 1,
         },
+        wordWrap: 'break-word',
       }}
     >
       <Heading as="h3" variant="label" sx={{ mb: 1 }}>
@@ -51,7 +52,7 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
         {value}
       </Text>
       {change && (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ maxWidth: '100%', mt: 2 }}>
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}

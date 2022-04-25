@@ -130,6 +130,7 @@ export function DetailsSectionContentCard({
         borderRadius: 'medium',
         backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'surface',
         transition: 'background-color 200ms',
+        wordWrap: 'break-word',
       }}
     >
       <Heading
@@ -153,7 +154,7 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header2"
-        sx={{ lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
+        sx={{ maxWidth: '100%', lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >
         {value || '-'}
@@ -164,7 +165,7 @@ export function DetailsSectionContentCard({
         )}
       </Text>
       {change && (
-        <Box sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }} {...hightlightableItemEvents}>
+        <Box sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }} {...hightlightableItemEvents}>
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}
@@ -172,7 +173,7 @@ export function DetailsSectionContentCard({
         <Text
           as="p"
           variant="label"
-          sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
           {...hightlightableItemEvents}
         >
           {footnote}
