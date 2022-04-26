@@ -61,26 +61,26 @@ import {
   AddFormChange,
   AddFormChangeAction,
   formChangeReducer,
-} from 'features/automation/common/UITypes/AddFormChange'
+} from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
   ProtectionModeChangeAction,
   protectionModeChangeReducer,
-} from 'features/automation/common/UITypes/ProtectionFormModeChange'
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import {
   REMOVE_FORM_CHANGE,
   RemoveFormChange,
   RemoveFormChangeAction,
   removeFormReducer,
-} from 'features/automation/common/UITypes/RemoveFormChange'
+} from 'features/automation/protection/common/UITypes/RemoveFormChange'
 import {
   TAB_CHANGE_SUBJECT,
   TabChange,
   TabChangeAction,
   tabChangeReducer,
-} from 'features/automation/common/UITypes/TabChange'
-import { createAutomationTriggersData } from 'features/automation/triggers/AutomationTriggersData'
+} from 'features/automation/protection/common/UITypes/TabChange'
+import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,

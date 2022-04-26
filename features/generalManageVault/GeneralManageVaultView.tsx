@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { GenericAnnouncement } from 'components/Announcement'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { Survey } from 'features/survey'
 import React from 'react'
@@ -27,11 +28,20 @@ interface GeneralManageVaultViewProps {
 export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
-  switch (generalManageVault.type) {
+  const vaultType = generalManageVault.type
+
+  switch (vaultType) {
     case VaultType.Borrow:
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
           <ManageVaultContainer manageVault={generalManageVault.state} />
+          <Survey for="borrow" />
+        </Container>
+      )
+    case VaultType.Insti:
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          <ManageInstiVaultContainer manageVault={generalManageVault.state} />
         </Container>
       )
     case VaultType.Multiply:
@@ -55,11 +65,12 @@ export function GeneralManageVaultViewAutomation({
               history={VaultHistoryView}
             />
           )}
+          <Survey for="multiply" />
         </Container>
       )
     default:
       throw new Error(
-        `could not render GeneralManageVaultViewAutomation for vault type ${generalManageVault.type}`,
+        `could not render GeneralManageVaultViewAutomation for vault type ${vaultType}`,
       )
   }
 }
@@ -71,6 +82,16 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
+      {manageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
+        <Container variant="announcement">
+          <GenericAnnouncement
+            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
+            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
+            linkText="Visit Maker Forum for details"
+            disableClosing={true}
+          />
+        </Container>
+      )}
       <WithLoadingIndicator value={[manageVault]} customLoader={<VaultContainerSpinner />}>
         {([generalManageVault]) => {
           switch (generalManageVault.type) {

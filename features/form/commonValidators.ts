@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
+import { STOP_LOSS_MARGIN } from '../../helpers/multiply/calculations'
 import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
@@ -405,6 +406,6 @@ export function afterCollRatioBelowStopLossRatioValidator({
 }) {
   return (
     afterCollateralizationRatio.lt(stopLossRatio) ||
-    afterCollateralizationRatioAtNextPrice.lt(stopLossRatio)
+    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
   )
 }

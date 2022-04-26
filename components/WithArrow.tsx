@@ -1,7 +1,11 @@
 import React from 'react'
 import { Box, SxStyleProp, Text } from 'theme-ui'
 
-export function WithArrow({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
+export function WithArrow({
+  children,
+  gap = 2,
+  sx,
+}: React.PropsWithChildren<{ gap?: string | number; sx?: SxStyleProp }>) {
   return (
     <Text
       variant="paragraph3"
@@ -19,7 +23,7 @@ export function WithArrow({ children, sx }: React.PropsWithChildren<{ sx?: SxSty
         ...sx,
       }}
     >
-      <Box sx={{ display: 'inline', mr: 2 }}>{children}</Box>
+      <Box sx={{ display: 'inline', mr: gap }}>{children}</Box>
       <Box className="arrow" sx={{ display: 'inline', position: 'absolute' }}>
         →
       </Box>
