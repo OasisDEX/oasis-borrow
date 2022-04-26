@@ -626,6 +626,8 @@
     "liquidation-fee": "Liquidation Fee",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
+    "buying-power": "Buying Power",
+    "net-value-pnl": "Net Value & P&L",
     "dust-limit": "Dust Limit",
     "min-coll-ratio": "Min Coll. Ratio",
     "minimum-coll-ratio": "Minimum collateral ratio",
