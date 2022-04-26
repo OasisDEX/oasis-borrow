@@ -499,7 +499,6 @@ export function setupAppContext() {
     (cdpId: BigNumber) =>
       createMakerdaoBonusAdapter(
         urnResolver$,
-        cropperCrops$,
         cropperStake$,
         cropperShare$,
         cropperBonusTokenAddress$,

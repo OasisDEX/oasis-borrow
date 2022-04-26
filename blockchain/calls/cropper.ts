@@ -20,7 +20,7 @@ export const cropperCrops: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   },
   prepareArgs: ({ usr }) => [usr],
   postprocess: (result: any) => {
-    return new BigNumber(result) // bonus decimals
+    return new BigNumber(result) // crops per user  [bonus decimals]
   },
 }
 
@@ -36,13 +36,16 @@ export const cropperStake: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   },
 }
 
-export const cropperShare: CallDef<{ ilk: string }, string> = {
+export const cropperShare: CallDef<{ ilk: string }, BigNumber> = {
   call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
     const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
     return contract.methods.share
   },
   prepareArgs: () => [],
+  postprocess: (result: any) => {
+    return new BigNumber(result) // crops per gem    [bonus decimals * ray / wad]
+  },
 }
 
 // returns bonus token address for the cropjoin ilk

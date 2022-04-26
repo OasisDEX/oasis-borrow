@@ -11,11 +11,30 @@ import { TxHelpers } from '../../components/AppContext'
 import { RAY } from '../../components/constants'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
+// calculateUnclaimedBonusAmount is a first-pass implementation to get the unclaimed bonus amount.
+// The value could not be up to date, and the real value will be higher.
+// The exact calculation would be something of this sort:
+
+// unclaimedInCurve = pool.earned(address(cropJoin));
+// potentialCrop    = unclaimedInCurve + bonus.balanceOf(address(cropJoin)) - cropJoin.stock();
+// potentialShare   = add(cropJoin.share(), rdiv(potentialCrop, cropJoin.total()));
+// potentialCurr    = rmul(cropJoin.stake(from), potentialShare);
+// potentialBonus   = potentialCurr - cropJoin.crops(from);
+
+// (not tested at all, so don't use it without verifying first)
+
+function calculateUnclaimedBonusAmount(
+  stake: BigNumber,
+  share: BigNumber,
+  bonusDecimals: BigNumber,
+): BigNumber {
+  return stake.times(share).div(RAY).div(new BigNumber(10).pow(bonusDecimals))
+}
+
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (
     cdpId: BigNumber,
   ) => Observable<{ urnAddress: string; ilk: string; controller: string }>,
-  cropperCrops$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
   cropperStake$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
   cropperShare$: (args: { ilk: string }) => Observable<BigNumber>,
   cropperBonusTokenAddress$: (args: { ilk: string }) => Observable<string>,
@@ -31,7 +50,7 @@ export function createMakerdaoBonusAdapter(
   const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
   const bonus$: Observable<Bonus | undefined> = vault$.pipe(
-    // read from crops
+    // read how much bonus the user has in maker
     switchMap(({ ilk, urnAddress }) => {
       return combineLatest(
         cropperStake$({ ilk, usr: urnAddress }),
@@ -39,23 +58,20 @@ export function createMakerdaoBonusAdapter(
         cropperBonusTokenAddress$({ ilk }),
       )
     }),
-    // calculate bonus amount
-    map(([stake, share, bonusAddress]) => {
-      return [stake.times(share).div(RAY), bonusAddress] as const
-    }),
-    // get token info
-    switchMap(([bonusValue, bonusAddress]) => {
+    // get bonus token info
+    switchMap(([stake, share, bonusAddress]) => {
       return combineLatest(
         tokenDecimals$(bonusAddress),
         tokenSymbol$(bonusAddress),
         tokenName$(bonusAddress),
-        of(bonusValue),
+        of(stake),
+        of(share),
       )
     }),
-    // get token info
-    map(([bonusDecimals, bonusTokenSymbol, tokenName, bonusValue]) => {
+    // all together now
+    map(([bonusDecimals, bonusTokenSymbol, tokenName, stake, share]) => {
       return {
-        amountToClaim: bonusValue.div(new BigNumber(10).pow(bonusDecimals)),
+        amountToClaim: calculateUnclaimedBonusAmount(stake, share, bonusDecimals),
         symbol: bonusTokenSymbol,
         name: tokenName,
         moreInfoLink: 'https://example.com',
