@@ -75,7 +75,7 @@ export function ContentCardCollateralLocked({
 
   if (afterLockedCollateralUSD && changeVariant)
     contentCardSettings.change = {
-      value: formatted.afterLockedCollateralUSD,
+      value: `${formatted.afterLockedCollateralUSD} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
   if (lockedCollateral) contentCardSettings.footnote = formatted.lockedCollateral

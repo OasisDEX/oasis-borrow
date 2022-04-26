@@ -50,20 +50,20 @@ export function BorrowFooterItems({
       <DetailsSectionFooterItem
         title={t('system.vault-dai-debt')}
         value={formatted.debt}
-        {...(changeVariant && { change: { value: formatted.afterDebt, variant: changeVariant } })}
+        {...(changeVariant && { change: { value: `${formatted.afterDebt} ${t('system.cards.common.after')}`, variant: changeVariant } })}
       />
       <DetailsSectionFooterItem
         title={t('system.available-to-withdraw')}
         value={formatted.freeCollateral}
         {...(changeVariant && {
-          change: { value: formatted.afterFreeCollateral, variant: changeVariant },
+          change: { value: `${formatted.afterFreeCollateral} ${t('system.cards.common.after')}`, variant: changeVariant },
         })}
       />
       <DetailsSectionFooterItem
         title={t('system.available-to-generate')}
         value={formatted.daiYieldFromLockedCollateral}
         {...(changeVariant && {
-          change: { value: formatted.daiYieldFromTotalCollateral, variant: changeVariant },
+          change: { value: `${formatted.daiYieldFromTotalCollateral} ${t('system.cards.common.after')}`, variant: changeVariant },
         })}
       />
     </>
