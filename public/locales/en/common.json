@@ -819,6 +819,11 @@
     },
     "debt-ceiling-rise": {
       "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
+    },
+    "setup-stop-loss": {
+      "header": "Get vault protection",
+      "content": "Set up a stop loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "button": "Setup Stop Loss"
     }
   },
   "view": "View",
