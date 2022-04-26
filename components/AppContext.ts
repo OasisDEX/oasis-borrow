@@ -162,7 +162,7 @@ import {
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import { createBonusPipe$ } from '../features/bonus/bonusPipe'
-import { createMakerdaoBonusAdapter } from '../features/bonus/makerdaoBonusAdapter'
+import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
@@ -497,7 +497,7 @@ export function setupAppContext() {
 
   const bonusAdapter = memoize(
     (cdpId: BigNumber) =>
-      createMakerdaoBonusAdapter(
+      createMakerProtocolBonusAdapter(
         urnResolver$,
         cropperStake$,
         cropperShare$,

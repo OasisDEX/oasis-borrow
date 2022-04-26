@@ -11,12 +11,12 @@ import { protoTxHelpers } from '../../components/AppContext'
 import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
-import { createMakerdaoBonusAdapter } from './makerdaoBonusAdapter'
+import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
 
-describe('makerdaoBonusAdapter', () => {
+describe('makerProtocolBonusAdapter', () => {
   describe('retrieving bonuses', () => {
     it('pipes the decimals and symbol correctly', () => {
-      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
         () => createMockVaultResolver$(),
         () => of(new BigNumber('34845377488320063721')),
         () => of(new BigNumber('1543374474293051714930707056')),
@@ -48,7 +48,7 @@ describe('makerdaoBonusAdapter', () => {
       const txHelpersMock = { ...protoTxHelpers, sendWithGasEstimation: sinon.spy() }
 
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
         () => createMockVaultResolver$(),
         () => of(new BigNumber('34845377488320063721')),
         () => of(new BigNumber('1543374474293051714930707056')),
@@ -119,7 +119,7 @@ describe('makerdaoBonusAdapter', () => {
           sendWithGasEstimation: sinon.stub().returns(of({ status: txStatus })),
         }
 
-        const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+        const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
           () => createMockVaultResolver$(),
           () => of(new BigNumber('34845377488320063721')),
           () => of(new BigNumber('1543374474293051714930707056')),
@@ -146,7 +146,7 @@ describe('makerdaoBonusAdapter', () => {
 
     it('does not provide claim function if there is no wallet connected', () => {
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
         () => createMockVaultResolver$(),
         () => of(new BigNumber('34845377488320063721')),
         () => of(new BigNumber('1543374474293051714930707056')),
@@ -167,7 +167,7 @@ describe('makerdaoBonusAdapter', () => {
 
     it('does not provide claim function if the connected wallet is not the same as the vault controller', () => {
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
+      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
         () => createMockVaultResolver$({ controller: '0xDifferentAddress' }),
         () => of(new BigNumber('34845377488320063721')),
         () => of(new BigNumber('1543374474293051714930707056')),

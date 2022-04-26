@@ -31,7 +31,7 @@ function calculateUnclaimedBonusAmount(
   return stake.times(share).div(RAY).div(new BigNumber(10).pow(bonusDecimals))
 }
 
-export function createMakerdaoBonusAdapter(
+export function createMakerProtocolBonusAdapter(
   vaultResolver$: (
     cdpId: BigNumber,
   ) => Observable<{ urnAddress: string; ilk: string; controller: string }>,
