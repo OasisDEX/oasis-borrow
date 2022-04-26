@@ -10,10 +10,12 @@ export type PieChartItem = {
   value: BigNumber
 } & SliceBackground
 
-type Slice = {
+type SliceDimensions = {
   length: number,
   angle: number,
-} & SliceBackground
+}
+
+type Slice = SliceDimensions & SliceBackground
 
 function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   const values = items.map(i => i.value)
@@ -39,6 +41,19 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: n
   const viewSize = size + strokeWidth
   const circleLength = Math.PI * radius * 2
   const slices = getSlices(items, circleLength)
+
+  const renderSlice = (length: number, angle: number, stroke: string)  => <circle 
+    cx="50%" 
+    cy="50%" 
+    r={radius}
+    strokeDasharray={`${length} ${circleLength}`} 
+    stroke={stroke}
+    strokeWidth={strokeWidth}
+    fill="none"
+    style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
+    >
+  </circle>
+
   return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
     <defs>
       <linearGradient id="pieChart-white-gradient">
@@ -46,30 +61,9 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: n
         <stop offset="100%" style={{stopColor: 'rgb(255, 255, 255, 0)'}} />
       </linearGradient>
     </defs>
-    {slices.map(({ length, angle, color }) => <>
-      <circle 
-        cx="50%" 
-        cy="50%" 
-        r={radius}
-        strokeDasharray={`${length} ${circleLength}`} 
-        stroke={color}
-        strokeWidth={strokeWidth}
-        fill="none"
-        style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
-        >
-      </circle>
-      <circle 
-        cx="50%" 
-        cy="50%" 
-        r={radius}
-        strokeDasharray={`${length} ${circleLength}`} 
-        stroke="url(#pieChart-white-gradient)"
-        strokeWidth={strokeWidth}
-        fill="none"
-        style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
-        >
-      </circle>
-    </>
-    )}
+    {slices.map(({ length, angle, color }) => [
+      renderSlice(length, angle, color),
+      renderSlice(length, angle, 'url(#pieChart-white-gradient)')
+    ])}
   </svg>
 }
