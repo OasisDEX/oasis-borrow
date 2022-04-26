@@ -1,16 +1,19 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 
-export type PieChartItem = {
-  value: BigNumber,
+type SliceBackground = {
   color: string,
+  svgBgId?: string,
 }
+
+export type PieChartItem = {
+  value: BigNumber
+} & SliceBackground
 
 type Slice = {
   length: number,
   angle: number,
-  color: string,
-}
+} & SliceBackground
 
 function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   const values = items.map(i => i.value)
@@ -22,7 +25,8 @@ function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
     slices.push({
       length: circleLength * ratio,
       angle,
-      color: items[i].color
+      color: items[i].color,
+      svgBgId: items[i].svgBgId,
     })
     angle += 360 * ratio
   }
@@ -36,16 +40,36 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: n
   const circleLength = Math.PI * radius * 2
   const slices = getSlices(items, circleLength)
   return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
-    {slices.map(({ length, angle, color }) => <circle 
-      cx="50%" 
-      cy="50%" 
-      r={radius}
-      strokeDasharray={`${length} ${circleLength}`} 
-      stroke={color}
-      strokeWidth={strokeWidth}
-      fill="none"
-      style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
-      >
-    </circle>)}
+    <defs>
+      <linearGradient id="pieChart-white-gradient">
+        <stop offset="0%" style={{stopColor: 'rgb(255, 255, 255, 0.4)'}} />
+        <stop offset="100%" style={{stopColor: 'rgb(255, 255, 255, 0)'}} />
+      </linearGradient>
+    </defs>
+    {slices.map(({ length, angle, color }) => <>
+      <circle 
+        cx="50%" 
+        cy="50%" 
+        r={radius}
+        strokeDasharray={`${length} ${circleLength}`} 
+        stroke={color}
+        strokeWidth={strokeWidth}
+        fill="none"
+        style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
+        >
+      </circle>
+      <circle 
+        cx="50%" 
+        cy="50%" 
+        r={radius}
+        strokeDasharray={`${length} ${circleLength}`} 
+        stroke="url(#pieChart-white-gradient)"
+        strokeWidth={strokeWidth}
+        fill="none"
+        style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
+        >
+      </circle>
+    </>
+    )}
   </svg>
 }
