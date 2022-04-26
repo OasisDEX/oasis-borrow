@@ -539,6 +539,10 @@ const oasisBaseTheme = {
       color: 'primary',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
+      transition: 'background-color 200ms',
+      '&:hover': {
+        bg: 'actionInputHover',
+      },
       '&:focus': {
         outline: 'none',
       },
