@@ -8,6 +8,7 @@ import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardEarn } from 'components/ProductCardEarn'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
+import { ProductCardsFilter } from 'components/ProductCardsFilter'
 import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { TabSwitcher } from 'components/TabSwitcher'
@@ -18,7 +19,16 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { landingPageCardsData, ProductCardData } from 'helpers/productCards'
+import {
+  borrowPageCardsData,
+  earnPageCardsData,
+  landingPageCardsData,
+  multiplyPageCardsData,
+  pageCardsDataByProduct,
+  ProductCardData,
+  productCardsConfig,
+  ProductLandingPagesFiltersKeys,
+} from 'helpers/productCards'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
@@ -416,9 +426,15 @@ function TabContent(props: {
 }) {
   const ProductCard = props.renderProductCard
 
-  const landingCards = landingPageCardsData({
+  const productCardsData = {
+    borrow: borrowPageCardsData,
+    multiply: multiplyPageCardsData,
+    earn: earnPageCardsData,
+  }
+
+  const filteredCards = productCardsData[props.type]({
     productCardsData: props.productCardsData,
-    product: props.type,
+    cardsFilter: 'ETH',
   })
 
   return (
@@ -427,7 +443,7 @@ function TabContent(props: {
       sx={{ flexDirection: 'column', mt: 5, alignItems: 'center', width: '100%' }}
     >
       <ProductCardsWrapper>
-        {landingCards.map((cardData) => (
+        {filteredCards.map((cardData) => (
           <ProductCard cardData={cardData} key={cardData.ilk} />
         ))}
       </ProductCardsWrapper>
@@ -483,7 +499,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
               />
             ),
             tabHeaderPara: (
-              <TabHeaderParagraph>
+              <TabHeaderParagraph key="multiply">
                 {t('landing.tabs.multiply.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
                   {t('landing.tabs.multiply.tabParaLinkContent')}
@@ -501,7 +517,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
               />
             ),
             tabHeaderPara: (
-              <TabHeaderParagraph>
+              <TabHeaderParagraph key="borrow">
                 <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
                 <AppLink href="/borrow" variant="inText">
                   {t('landing.tabs.borrow.tabParaLinkContent')}
@@ -521,7 +537,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
                     />
                   ),
                   tabHeaderPara: (
-                    <TabHeaderParagraph>
+                    <TabHeaderParagraph key="earn">
                       {t('landing.tabs.earn.tabParaContent')}{' '}
                       <AppLink href="/multiply" variant="inText">
                         {t('landing.tabs.earn.tabParaLinkContent')}

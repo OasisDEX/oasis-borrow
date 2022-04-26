@@ -28,7 +28,7 @@ function Summary({ address }: { address: string }) {
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
   const [context, contextError] = useObservable(context$)
-
+  console.log('productCardsDataValue', productCardsDataValue)
   return (
     <WithErrorHandler error={[vaultsOverviewError, contextError, productCardsDataError]}>
       <WithLoadingIndicator value={[vaultsOverview, context, productCardsDataValue]}>

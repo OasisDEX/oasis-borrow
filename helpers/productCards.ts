@@ -279,6 +279,20 @@ export function landingPageCardsData({
   )
 }
 
+export function pageCardsDataByProduct({
+  productCardsData,
+  product = 'multiply',
+}: {
+  productCardsData: ProductCardData[]
+  product?: 'multiply' | 'borrow' | 'earn'
+}) {
+  return productCardsData.filter((ilk) =>
+    productCardsConfig[product].cardsFilters.map((cardFilter) =>
+      ilk.token.includes(cardFilter.name),
+    ),
+  )
+}
+
 function sortCards(
   productCardsData: ProductCardData[],
   sortingConfig: ProductPageType['ordering'],
