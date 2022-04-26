@@ -1,7 +1,5 @@
 // Original at https://github.com/rsksmart/mock-web3-provider/blob/main/src/index.ts
 
-// import { personalSign, decrypt } from 'eth-sig-util'
-
 type ProviderSetup = {
   address: string
   privateKey: string
@@ -55,7 +53,7 @@ export class MockProvider implements IMockProvider {
     else this.rejectEnable!('User rejected')
   }
 
-  request({ method /*params */ }: any): Promise<any> {
+  request({ method }: any): Promise<any> {
     this.log(`request[${method}]`)
 
     switch (method) {
@@ -78,32 +76,14 @@ export class MockProvider implements IMockProvider {
         return Promise.resolve(this.chainId)
 
       case 'personal_sign': {
-        // const privKey = Buffer.from(this.setup.privateKey, 'hex')
-
-        // const signed: string = personalSign(privKey, { data: params[0] })
-
-        // this.log('signed', signed)
-
-        // return Promise.resolve(signed)
         return Promise.resolve()
       }
 
       case 'eth_sendTransaction': {
         return Promise.resolve()
-        // return Promise.reject(new Error('This service can not send transactions.'))
       }
 
       case 'eth_decrypt': {
-        // this.log('eth_decrypt', { method, params })
-
-        // const stripped = params[0].substring(2)
-        // const buff = Buffer.from(stripped, 'hex')
-        // const data = JSON.parse(buff.toString('utf8'))
-
-        // const decrypted: string = decrypt(data, this.setup.privateKey)
-
-        // return Promise.resolve(decrypted)
-
         return Promise.resolve()
       }
 
