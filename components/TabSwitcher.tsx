@@ -8,6 +8,7 @@ import { slideInAnimation } from '../theme/animations'
 export type TabSwitcherTab = {
   tabLabel: string
   tabContent: ReactNode
+  tabHeaderPara?: ReactNode // Positioned above tabs
 }
 
 const WideTabSelector = (props: {
@@ -98,11 +99,11 @@ export function TabSwitcher(props: {
 }) {
   const [selectedTab, setSelectedTab] = useState('0')
 
-  const selectTab = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) =>
-      setSelectedTab((event.currentTarget.value as unknown) as string),
-    [],
-  )
+  // TODO: Does this function need to be wrapped with useCallback?
+  const selectTab = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+    const nextTab = (event.currentTarget.value as unknown) as string
+    setSelectedTab(nextTab)
+  }, [])
 
   const isEmpty = !props.tabs.length
   const isOneTab = props.tabs.length === 1
@@ -114,6 +115,9 @@ export function TabSwitcher(props: {
         alignItems: 'center',
       }}
     >
+      {props.tabs
+        .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
+        .map(({ tabHeaderPara }) => tabHeaderPara)}
       {!isOneTab && (
         <>
           <NarrowTabSelector

@@ -5,7 +5,12 @@ import { Context } from 'blockchain/network'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
+import { ProductCardBorrow } from 'components/ProductCardBorrow'
+import { ProductCardEarn } from 'components/ProductCardEarn'
+import { ProductCardMultiply } from 'components/ProductCardMultiply'
+import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
+import { TabSwitcher } from 'components/TabSwitcher'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
 import {
   formatAddress,
@@ -13,11 +18,15 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { landingPageCardsData, ProductCardData } from 'helpers/productCards'
+import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 import { Dictionary } from 'ts-essentials'
 
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
@@ -329,6 +338,7 @@ interface Props {
   vaultsOverview: VaultsOverview
   context: Context
   address: string
+  productCardsData: ProductCardData[]
 }
 
 function getHeaderTranslationKey(
@@ -399,7 +409,140 @@ function VaultsOverwiewPerType({
   )
 }
 
-export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
+function TabContent(props: {
+  type: 'borrow' | 'multiply' | 'earn'
+  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
+  productCardsData: ProductCardData[]
+}) {
+  const ProductCard = props.renderProductCard
+
+  const landingCards = landingPageCardsData({
+    productCardsData: props.productCardsData,
+    product: props.type,
+  })
+
+  return (
+    <Flex
+      key={props.type}
+      sx={{ flexDirection: 'column', mt: 5, alignItems: 'center', width: '100%' }}
+    >
+      <ProductCardsWrapper>
+        {landingCards.map((cardData) => (
+          <ProductCard cardData={cardData} key={cardData.ilk} />
+        ))}
+      </ProductCardsWrapper>
+    </Flex>
+  )
+}
+
+function TabHeaderParagraph({ children }: WithChildren) {
+  return (
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+      <Box
+        sx={{
+          ...slideInAnimation,
+        }}
+      >
+        <Text
+          variant="paragraph2"
+          sx={{
+            mt: 2,
+            color: 'lavender',
+            maxWidth: 617,
+            textAlign: 'center',
+            mb: 4,
+            ...fadeInAnimation,
+          }}
+        >
+          {children}
+        </Text>
+      </Box>
+    </Flex>
+  )
+}
+
+function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardData[] }) {
+  const { t } = useTranslation()
+
+  const isEarnEnabled = useFeatureToggle('EarnProduct')
+
+  return (
+    <>
+      <Heading variant="header2" mt={6} sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
+        <Trans i18nKey="vaults-overview.headers.vault-suggestions" components={[<br />]} />
+      </Heading>
+      <TabSwitcher
+        tabs={[
+          {
+            tabLabel: t('landing.tabs.multiply.tabLabel'),
+            tabContent: (
+              <TabContent
+                type="multiply"
+                renderProductCard={ProductCardMultiply}
+                productCardsData={productCardsData}
+              />
+            ),
+            tabHeaderPara: (
+              <TabHeaderParagraph>
+                {t('landing.tabs.multiply.tabParaContent')}{' '}
+                <AppLink href="/multiply" variant="inText">
+                  {t('landing.tabs.multiply.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+          },
+          {
+            tabLabel: t('landing.tabs.borrow.tabLabel'),
+            tabContent: (
+              <TabContent
+                type="borrow"
+                renderProductCard={ProductCardBorrow}
+                productCardsData={productCardsData}
+              />
+            ),
+            tabHeaderPara: (
+              <TabHeaderParagraph>
+                <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                <AppLink href="/borrow" variant="inText">
+                  {t('landing.tabs.borrow.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+          },
+          ...(isEarnEnabled
+            ? [
+                {
+                  tabLabel: t('landing.tabs.earn.tabLabel'),
+                  tabContent: (
+                    <TabContent
+                      type="earn"
+                      renderProductCard={ProductCardEarn}
+                      productCardsData={productCardsData}
+                    />
+                  ),
+                  tabHeaderPara: (
+                    <TabHeaderParagraph>
+                      {t('landing.tabs.earn.tabParaContent')}{' '}
+                      <AppLink href="/multiply" variant="inText">
+                        {t('landing.tabs.earn.tabParaLinkContent')}
+                      </AppLink>
+                    </TabHeaderParagraph>
+                  ),
+                },
+              ]
+            : []),
+        ]}
+        narrowTabsSx={{
+          display: ['block', 'none'],
+          width: '100%',
+        }}
+        wideTabsSx={{ display: ['none', 'block'] }}
+      />
+    </>
+  )
+}
+
+export function VaultsOverviewView({ vaultsOverview, context, address, productCardsData }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -504,6 +647,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
           </Grid>
         </>
       )}
+      {isOwnerViewing && <VaultSuggestions productCardsData={productCardsData} />}
     </Grid>
   )
 }
