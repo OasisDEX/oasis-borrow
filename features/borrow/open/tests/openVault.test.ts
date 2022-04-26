@@ -29,6 +29,24 @@ import { mockVaultActionsLogicWithSpies } from '../../../../blockchain/calls/pro
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
+function prepareTxHelpers$() {
+  const _mockConnectedContext$ = mockContextConnected$({
+    account: validMockAddresses.account,
+    status: 'connected',
+    networkId: 1,
+    setupProvider: true,
+  })
+
+  const mockGasPrice$ = of({
+    maxFeePerGas: new BigNumber('1'),
+    maxPriorityFeePerGas: new BigNumber('1'),
+  })
+  const [send] = createSend<TxData>(of(validMockAddresses.account), of(1), _mockConnectedContext$)
+  const txHelpers$: TxHelpers$ = createTxHelpers$(_mockConnectedContext$, send, mockGasPrice$)
+
+  return { txHelpers$, _mockConnectedContext$ }
+}
+
 describe('openVault', () => {
   beforeEach(() => {})
 
@@ -163,25 +181,9 @@ describe('openVault', () => {
     })
 
     it('should call the expected contract address when creating a proxy', () => {
-      const _mockConnectedContext$ = mockContextConnected$({
-        account: validMockAddresses.account,
-        status: 'connected',
-        networkId: 1,
-        setupProvider: true,
-      })
-
       const _proxyAddress$ = new Subject<string>()
 
-      const mockGasPrice$ = of({
-        maxFeePerGas: new BigNumber('1'),
-        maxPriorityFeePerGas: new BigNumber('1'),
-      })
-      const [send] = createSend<TxData>(
-        of(validMockAddresses.account),
-        of(1),
-        _mockConnectedContext$,
-      )
-      const txHelpers$: TxHelpers$ = createTxHelpers$(_mockConnectedContext$, send, mockGasPrice$)
+      const { txHelpers$, _mockConnectedContext$ } = prepareTxHelpers$()
 
       // Called when creating proxy during vault stage transition to build a proxy if none
       const dsProxyCallSpy = sinon.spy(proxy.createDsProxy, 'call')
@@ -301,25 +303,8 @@ describe('openVault', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
-      const _mockConnectedContext$ = mockContextConnected$({
-        account: validMockAddresses.account,
-        status: 'connected',
-        networkId: 1,
-        setupProvider: true,
-      })
-
       const _proxyAddress$ = new Subject<string>()
-
-      const mockGasPrice$ = of({
-        maxFeePerGas: new BigNumber('1'),
-        maxPriorityFeePerGas: new BigNumber('1'),
-      })
-      const [send] = createSend<TxData>(
-        of(validMockAddresses.account),
-        of(1),
-        _mockConnectedContext$,
-      )
-      const txHelpers$: TxHelpers$ = createTxHelpers$(_mockConnectedContext$, send, mockGasPrice$)
+      const { txHelpers$, _mockConnectedContext$ } = prepareTxHelpers$()
 
       const state = getStateUnpacker(
         mockOpenVault$({
@@ -505,25 +490,8 @@ describe('openVault', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
-      const _mockConnectedContext$ = mockContextConnected$({
-        account: validMockAddresses.account,
-        status: 'connected',
-        networkId: 1,
-        setupProvider: true,
-      })
-
       const _proxyAddress$ = new Subject<string>()
-
-      const mockGasPrice$ = of({
-        maxFeePerGas: new BigNumber('1'),
-        maxPriorityFeePerGas: new BigNumber('1'),
-      })
-      const [send] = createSend<TxData>(
-        of(validMockAddresses.account),
-        of(1),
-        _mockConnectedContext$,
-      )
-      const txHelpers$: TxHelpers$ = createTxHelpers$(_mockConnectedContext$, send, mockGasPrice$)
+      const { txHelpers$, _mockConnectedContext$ } = prepareTxHelpers$()
 
       const { mockVaultActionsLogic, spies } = mockVaultActionsLogicWithSpies(sinon)
 
