@@ -60,8 +60,8 @@ export function BonusContainer(props: BonusContainerProps) {
   const { bonus$ } = useAppContext()
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
-  // console.log(bonusViewModel)
-  if (bonusViewModel && bonusViewModel.bonus) {
+
+  if (bonusViewModel) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
     return (
       <Card sx={{ borderRadius: 'large', border: 'lightMuted', mt: 3, padding: 3 }}>
@@ -82,5 +82,5 @@ export function BonusContainer(props: BonusContainerProps) {
       </Card>
     )
   }
-  return <>Bonus not supported</>
+  return null
 }

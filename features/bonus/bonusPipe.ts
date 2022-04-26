@@ -13,13 +13,13 @@ export enum ClaimTxnState {
 export type Bonus = { amountToClaim: BigNumber; symbol: string; name: string; moreInfoLink: string }
 
 export type BonusViewModel = {
-  bonus?: Bonus // if undefined this CDP does not support rewards
+  bonus: Bonus
   claimAll?: () => void
   claimTxnState?: ClaimTxnState
 }
 
 export type BonusAdapter = {
-  bonus$: Observable<Bonus | undefined>
+  bonus$: Observable<Bonus>
   claimAll$: Observable<(() => Observable<ClaimTxnState>) | undefined>
 }
 
@@ -51,9 +51,9 @@ export function createBonusPipe$(
   }
 
   const claimAllFun$: Observable<(() => void) | undefined> = combineLatest(
-    bonus$.pipe(tap(() => console.log('bonus$'))),
-    claimTxnInProgress$.pipe(tap(() => console.log('claimTxnInProgress$'))),
-    claimAll$.pipe(tap(() => console.log('claimAll$'))),
+    bonus$,
+    claimTxnInProgress$,
+    claimAll$,
   ).pipe(
     map(([bonus, claimTxnInProgress, claimAll]) =>
       bonus && bonus.amountToClaim.gt(zero) && !claimTxnInProgress && !!claimAll

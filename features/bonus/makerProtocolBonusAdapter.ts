@@ -49,7 +49,7 @@ export function createMakerProtocolBonusAdapter(
 ): BonusAdapter {
   const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
-  const bonus$: Observable<Bonus | undefined> = vault$.pipe(
+  const bonus$: Observable<Bonus> = vault$.pipe(
     // read how much bonus the user has in maker
     switchMap(({ ilk, urnAddress }) => {
       return combineLatest(

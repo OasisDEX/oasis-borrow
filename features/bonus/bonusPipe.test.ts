@@ -8,10 +8,15 @@ import { ClaimTxnState, createBonusPipe$ } from './bonusPipe'
 
 describe('bonusPipe', () => {
   describe('showing the blockchain state', () => {
-    it('does not provide bonus values or a claimAll function if there are no bonuses to claim', () => {
+    it('does not provide claimAll function if there are no bonuses to claim', () => {
       const bonusPipe = createBonusPipe$(
         () => ({
-          bonus$: of(undefined),
+          bonus$: of({
+            amountToClaim: new BigNumber(0),
+            symbol: 'CSH',
+            name: 'token name',
+            moreInfoLink: 'https://example.com',
+          }),
           claimAll$: of(undefined),
         }),
         new BigNumber(123),
@@ -19,7 +24,7 @@ describe('bonusPipe', () => {
 
       const state = getStateUnpacker(bonusPipe)
 
-      expect(state().bonus).to.be.undefined
+      expect(state().bonus).to.not.be.undefined
       expect(state().claimAll).to.be.undefined
       expect(state().claimTxnState).to.be.undefined
     })
