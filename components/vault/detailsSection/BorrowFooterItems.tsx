@@ -3,6 +3,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 
 interface BorrowFooterItemsProps {
@@ -33,9 +34,15 @@ export function BorrowFooterItems({
     debt: `${formatAmount(debt, 'DAI')} DAI`,
     freeCollateral: `${formatAmount(freeCollateral, symbol)} ${symbol}`,
     afterDebt: `${formatAmount(afterDebt, 'DAI')} DAI`,
-    afterFreeCollateral: `${formatAmount(afterFreeCollateral, symbol)} ${symbol}`,
+    afterFreeCollateral: `${formatAmount(
+      !afterFreeCollateral.isNegative() ? afterFreeCollateral : zero,
+      symbol,
+    )} ${symbol}`,
     daiYieldFromLockedCollateral: `${formatAmount(daiYieldFromLockedCollateral, 'DAI')} DAI`,
-    daiYieldFromTotalCollateral: `${formatAmount(daiYieldFromTotalCollateral, 'DAI')} DAI`,
+    daiYieldFromTotalCollateral: `${formatAmount(
+      !daiYieldFromTotalCollateral.isNegative() ? daiYieldFromTotalCollateral : zero,
+      'DAI',
+    )} DAI`,
   }
 
   return (

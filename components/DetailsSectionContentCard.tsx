@@ -165,7 +165,10 @@ export function DetailsSectionContentCard({
         )}
       </Text>
       {change && (
-        <Box sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }} {...hightlightableItemEvents}>
+        <Box
+          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          {...hightlightableItemEvents}
+        >
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}

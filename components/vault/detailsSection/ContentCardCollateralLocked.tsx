@@ -70,7 +70,6 @@ export function ContentCardCollateralLocked({
   const contentCardSettings: ContentCardProps = {
     title: t('system.collateral-locked'),
     value: formatted.lockedCollateralUSD,
-    footnote: formatted.lockedCollateral,
     modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
   }
 
@@ -79,6 +78,7 @@ export function ContentCardCollateralLocked({
       value: formatted.afterLockedCollateralUSD,
       variant: changeVariant,
     }
+  if (lockedCollateral) contentCardSettings.footnote = formatted.lockedCollateral
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

@@ -10,11 +10,11 @@ import { Card, Grid, Heading, Text } from 'theme-ui'
 
 interface ContentCardLiquidationPriceModalProps {
   collateralizationRatioFormatted: string
-  collateralizationRatioAtNextPriceFormated: string
+  collateralizationRatioAtNextPriceFormated?: string
 }
 interface ContentCardCollateralizationRatioProps {
   collateralizationRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  collateralizationRatioAtNextPrice?: BigNumber
   afterCollateralizationRatio?: BigNumber
   changeVariant?: ChangeVariantType
 }
@@ -35,15 +35,19 @@ function ContentCardLiquidationPriceModal({
       <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {collateralizationRatioFormatted}
       </Card>
-      <Text variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
+      <Text variant="subheader" sx={{ fontSize: 2 }}>
         {t('manage-vault.card.collateralization-ratio-description')}
       </Text>
-      <Heading variant="header3">
-        {t('manage-vault.card.collateralization-ratio-next-price')}
-      </Heading>
-      <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
-        {collateralizationRatioAtNextPriceFormated}
-      </Card>
+      {collateralizationRatioAtNextPriceFormated && (
+        <>
+          <Heading variant="header3" sx={{ mt: 2 }}>
+            {t('manage-vault.card.collateralization-ratio-next-price')}
+          </Heading>
+          <Card variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
+            {collateralizationRatioAtNextPriceFormated}
+          </Card>
+        </>
+      )}
     </Grid>
   )
 }
@@ -61,10 +65,12 @@ export function ContentCardCollateralizationRatio({
       precision: 2,
       roundMode: BigNumber.ROUND_DOWN,
     }),
-    collateralizationRatioAtNextPrice: formatPercent(collateralizationRatioAtNextPrice.times(100), {
-      precision: 2,
-      roundMode: BigNumber.ROUND_DOWN,
-    }),
+    collateralizationRatioAtNextPrice:
+      collateralizationRatioAtNextPrice &&
+      formatPercent(collateralizationRatioAtNextPrice.times(100), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
+      }),
     afterCollateralizationRatio:
       afterCollateralizationRatio &&
       formatPercent(afterCollateralizationRatio.times(100), {
@@ -75,15 +81,15 @@ export function ContentCardCollateralizationRatio({
 
   const contentCardModalSettings: ContentCardLiquidationPriceModalProps = {
     collateralizationRatioFormatted: formatted.collateralizationRatio,
-    collateralizationRatioAtNextPriceFormated: formatted.collateralizationRatioAtNextPrice,
   }
+
+  if (collateralizationRatioAtNextPrice)
+    contentCardModalSettings.collateralizationRatioAtNextPriceFormated =
+      formatted.collateralizationRatioAtNextPrice
 
   const contentCardSettings: ContentCardProps = {
     title: t('system.collateralization-ratio'),
     value: formatted.collateralizationRatio,
-    footnote: t('system.cards.collateralization-ratio.footnote', {
-      amount: formatted.collateralizationRatioAtNextPrice,
-    }),
     modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
   }
 
@@ -92,6 +98,10 @@ export function ContentCardCollateralizationRatio({
       value: `${formatted.afterCollateralizationRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
+  if (collateralizationRatioAtNextPrice)
+    contentCardSettings.footnote = t('system.cards.collateralization-ratio.footnote', {
+      amount: formatted.collateralizationRatioAtNextPrice,
+    })
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
