@@ -75,6 +75,9 @@ export function createMakerProtocolBonusAdapter(
         symbol: bonusTokenSymbol,
         name: tokenName,
         moreInfoLink: 'https://example.com',
+        get readableAmount() {
+          return this.amountToClaim.toFixed(0) + this.symbol
+        },
       }
     }),
   )

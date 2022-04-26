@@ -38,6 +38,7 @@ describe('makerProtocolBonusAdapter', () => {
       expect(bonusStreamState()?.name).eq('token name')
       expect(bonusStreamState()?.amountToClaim.toFixed(0)).eq('54')
       expect(claimFuncStreamState).to.exist
+      expect(bonusStreamState()?.readableAmount).to.eq('54CSH')
     })
 
     it('returns undefined if the CDP does not support bonuses')

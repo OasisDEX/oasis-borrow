@@ -5,55 +5,10 @@ import { Box, Button, Card, Heading, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { useObservable } from '../../helpers/observableHook'
-import { Bonus, ClaimTxnState } from './bonusPipe'
+import { ClaimTxnState } from './bonusPipe'
 
 type BonusContainerProps = {
   cdpId: BigNumber
-}
-
-function mapToBtnText(claimTxnState?: ClaimTxnState): string {
-  switch (claimTxnState) {
-    case undefined:
-      return 'claim-rewards.claim-button.claim-rewards'
-    case ClaimTxnState.PENDING:
-      return 'Pending'
-    case ClaimTxnState.SUCCEEDED:
-      return 'Success'
-    case ClaimTxnState.FAILED:
-      return 'Failed - click to try again'
-    default:
-      throw new Error(`unrecognised transaction state ${claimTxnState}`)
-  }
-}
-
-function getUnclaimedBonusText(t: (key: string, args?: any) => string, bonus: Bonus) {
-  return (
-    <Text
-      mt={3}
-      sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
-    >
-      {t('claim-rewards.text1', {
-        bonusTokenName: bonus.name,
-        bonusAmount: bonus.amountToClaim.toFixed(0) + bonus.symbol,
-      })}{' '}
-      <a href={bonus.moreInfoLink} target="_blank">
-        {t('claim-rewards.link-text')}
-      </a>
-      {t('claim-rewards.text2')}
-    </Text>
-  )
-}
-
-function claimedBonusText(t: (key: string, args?: any) => string, bonus: Bonus) {
-  return (
-    <Text
-      mt={3}
-      sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
-    >
-      You have claimed {bonus.amountToClaim.toFixed(0) + bonus.symbol}. It may take a few minutes
-      for your position to update.
-    </Text>
-  )
 }
 
 export function BonusContainer(props: BonusContainerProps) {
@@ -63,6 +18,11 @@ export function BonusContainer(props: BonusContainerProps) {
 
   if (bonusViewModel) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
+    const bonusInstructionSnippet = bonus.amountToClaim.eq(0)
+      ? 'claim-rewards.instructions.nothing-to-claim'
+      : claimTxnState === ClaimTxnState.SUCCEEDED
+      ? 'claim-rewards.instructions.claim-succeeded'
+      : 'claim-rewards.instructions.tokens-to-claim'
     return (
       <Card sx={{ borderRadius: 'large', border: 'lightMuted', mt: 3, padding: 3 }}>
         <Box sx={{ margin: 2 }}>
@@ -72,11 +32,21 @@ export function BonusContainer(props: BonusContainerProps) {
           >
             {t('claim-rewards.title', { bonusTokenName: bonus.name })}
           </Heading>
-          {claimTxnState !== ClaimTxnState.SUCCEEDED
-            ? getUnclaimedBonusText(t, bonus)
-            : claimedBonusText(t, bonus)}
+          <Text
+            mt={3}
+            sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
+          >
+            {t('claim-rewards.for-this-position', {
+              bonusTokenName: bonus.name,
+            })}{' '}
+            {t(bonusInstructionSnippet, bonus)} {t('claim-rewards.more-info.text1')}{' '}
+            <a href={bonus.moreInfoLink} target="_blank">
+              {t('claim-rewards.more-info.link-text')}
+            </a>
+            {t('claim-rewards.more-info.text2')}
+          </Text>
           <Button disabled={!claimAll} variant="secondary" mt={3} onClick={claimAll}>
-            {t(mapToBtnText(claimTxnState))}
+            {t('claim-rewards.claim-button.claim-rewards')}
           </Button>
         </Box>
       </Card>

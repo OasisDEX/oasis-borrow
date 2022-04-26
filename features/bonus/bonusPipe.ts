@@ -10,7 +10,13 @@ export enum ClaimTxnState {
   SUCCEEDED = 'SUCCEEDED',
 }
 
-export type Bonus = { amountToClaim: BigNumber; symbol: string; name: string; moreInfoLink: string }
+export type Bonus = {
+  amountToClaim: BigNumber
+  symbol: string
+  name: string
+  moreInfoLink: string
+  readableAmount: string
+}
 
 export type BonusViewModel = {
   bonus: Bonus
