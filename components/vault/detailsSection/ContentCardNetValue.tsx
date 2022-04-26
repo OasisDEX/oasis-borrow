@@ -267,7 +267,6 @@ export function ContentCardNetValue({
   const contentCardSettings: ContentCardProps = {
     title: t('system.net-value-pnl'),
     value: formatted.netValueUSD,
-    footnote: `${t('manage-multiply-vault.card.unrealised-pnl')} ${formatted.currentPnL}`,
     modal: <ContentCardNetValueModal {...contentCardModalSettings} />,
   }
 
@@ -276,6 +275,11 @@ export function ContentCardNetValue({
       value: `${formatted.afterNetValueUSD} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
+  if (currentPnL) {
+    contentCardSettings.footnote = `${t('manage-multiply-vault.card.unrealised-pnl')} ${
+      formatted.currentPnL
+    }`
+  }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
