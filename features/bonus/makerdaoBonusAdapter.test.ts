@@ -6,13 +6,12 @@ import sinon from 'sinon'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
 import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver'
 import { protoTxHelpers } from '../../components/AppContext'
 import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerdaoBonusAdapter } from './makerdaoBonusAdapter'
-import { mockWeb3Context$ } from '../../helpers/mocks/web3Context.mock'
-import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver'
 
 describe('makerdaoBonusAdapter', () => {
   describe('retrieving bonuses', () => {

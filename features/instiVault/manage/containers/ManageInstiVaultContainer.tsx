@@ -15,8 +15,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ChevronUpDown } from '../../../../components/ChevronUpDown'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
 

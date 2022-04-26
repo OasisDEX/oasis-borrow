@@ -1,15 +1,15 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { filter, map, mapTo, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { map, startWith, switchMap, take } from 'rxjs/operators'
 
 import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
-import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 import { RAY } from '../../components/constants'
+import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 export function createMakerdaoBonusAdapter(
   vaultResolver$: (
