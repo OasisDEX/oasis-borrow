@@ -16,6 +16,7 @@ describe('bonusPipe', () => {
             symbol: 'CSH',
             name: 'token name',
             moreInfoLink: 'https://example.com',
+            readableAmount: '0CSH',
           }),
           claimAll$: of(undefined),
         }),
@@ -40,6 +41,7 @@ describe('bonusPipe', () => {
             symbol: 'CSH',
             name: 'token name',
             moreInfoLink: 'https://example.com',
+            readableAmount: '0CSH',
           }),
           claimAll$: of(claimAllStub),
         }
@@ -61,6 +63,7 @@ describe('bonusPipe', () => {
         symbol: 'CSH',
         name: 'token name',
         moreInfoLink: 'https://example.com',
+        readableAmount: '0CSH',
       })
       const claimTxnState$mock = new BehaviorSubject<ClaimTxnState>(ClaimTxnState.PENDING)
       const claimAllStub = sinon.stub<[], Observable<ClaimTxnState>>().returns(claimTxnState$mock)
@@ -81,6 +84,7 @@ describe('bonusPipe', () => {
         symbol: 'CSH',
         name: 'token name',
         moreInfoLink: 'https://example.com',
+        readableAmount: '0CSH',
       })
       claimTxnState$mock.next(ClaimTxnState.SUCCEEDED)
 
@@ -95,6 +99,7 @@ describe('bonusPipe', () => {
         symbol: 'CSH',
         name: 'token name',
         moreInfoLink: 'https://example.com',
+        readableAmount: '0CSH',
       })
       const bonusPipe = createBonusPipe$(
         () => ({
@@ -113,6 +118,7 @@ describe('bonusPipe', () => {
         symbol: 'CSH',
         name: 'token name',
         moreInfoLink: 'https://example.com',
+        readableAmount: '0CSH',
       })
 
       expect(state().bonus?.amountToClaim.toString()).eq('40')
@@ -127,6 +133,7 @@ describe('bonusPipe', () => {
             symbol: 'CSH',
             name: 'token name',
             moreInfoLink: 'https://example.com',
+            readableAmount: '0CSH',
           }),
           claimAll$: of(claimAllStub),
         }),
@@ -148,6 +155,7 @@ describe('bonusPipe', () => {
             symbol: 'CSH',
             name: 'token name',
             moreInfoLink: 'https://example.com',
+            readableAmount: '0CSH',
           }),
           claimAll$: of(claimAllStub),
         }),
@@ -168,6 +176,7 @@ describe('bonusPipe', () => {
             symbol: 'CSH',
             name: 'token name',
             moreInfoLink: 'https://example.com',
+            readableAmount: '0CSH',
           }),
           claimAll$: of(undefined),
         }),
