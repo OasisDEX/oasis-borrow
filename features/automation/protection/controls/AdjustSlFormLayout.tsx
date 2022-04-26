@@ -242,7 +242,14 @@ export function AdjustSlFormLayout({
         translations={{
           editing: {
             header: t('protection.set-downside-protection'),
-            description: t('protection.set-downside-protection-desc'),
+            description: (
+              <>
+                {t('protection.set-downside-protection-desc')}{' '}
+                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </>
+            ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -254,7 +261,14 @@ export function AdjustSlFormLayout({
                 ? 'protection.downside-protection-complete'
                 : 'protection.downside-protection-updated',
             ),
-            description: t('protection.downside-protection-complete-desc'),
+            description: (
+              <>
+                {t('protection.downside-protection-complete-desc')}{' '}
+                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </>
+            ),
           },
         }}
       />
