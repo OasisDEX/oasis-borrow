@@ -18,12 +18,12 @@ export const mockWeb3ContextConnectedReadonly: Web3ContextConnectedReadonly = {
   status: 'connectedReadonly',
   connectionKind: 'injected',
   web3: new Web3(),
-  chainId: '1',
+  chainId: 1,
   deactivate: () => null,
   connect: () => null,
   connectLedger: () => null,
 }
-const kovanNetworkId = '42'
+const kovanNetworkId = 42
 
 export const validMockAddresses = {
   account: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
@@ -34,7 +34,7 @@ export const mockWeb3ContextConnected: Web3ContextConnected = {
   status: 'connected',
   connectionKind: 'injected',
   web3: new Web3(),
-  chainId: parseInt(kovanNetworkId),
+  chainId: kovanNetworkId,
   deactivate: () => null,
   account: '0xUserAddress',
 }
@@ -42,7 +42,7 @@ export const mockWeb3ContextConnected: Web3ContextConnected = {
 export interface MockWeb3ContextProps {
   status: 'notConnected' | 'connectedReadonly' | 'connected'
   account?: string
-  networkId?: string
+  networkId?: number
   setupProvider?: boolean
 }
 

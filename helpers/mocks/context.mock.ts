@@ -44,7 +44,7 @@ export function getMockContextConnected({
   networkId,
   setupProvider,
 }: {
-  networkId: string
+  networkId: number
   setupProvider?: any
 }): ContextConnected {
   const networkConfig = networksById[networkId]
@@ -58,6 +58,6 @@ export function getMockContextConnected({
     ...networkConfig,
     ...mockWeb3ContextConnected,
     web3,
-    chainId: parseInt(networkId),
+    chainId: networkId,
   }
 }

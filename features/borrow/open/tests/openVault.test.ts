@@ -9,7 +9,6 @@ import { createTxHelpers$, protoTxHelpers, TxData, TxHelpers$ } from 'components
 import { mockContextConnected$ } from 'helpers/mocks/context.mock'
 import { mockOpenVault$ } from 'helpers/mocks/openVault.mock'
 import { mockTxState } from 'helpers/mocks/txHelpers.mock'
-// import { mockVaultActionsLogicWithSpies } from 'helpers/mocks/vaultActionsLogic.mock'
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { validMockAddresses } from 'helpers/mocks/web3Context.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
@@ -167,7 +166,7 @@ describe('openVault', () => {
       const _mockConnectedContext$ = mockContextConnected$({
         account: validMockAddresses.account,
         status: 'connected',
-        networkId: '1',
+        networkId: 1,
         setupProvider: true,
       })
 
@@ -305,7 +304,7 @@ describe('openVault', () => {
       const _mockConnectedContext$ = mockContextConnected$({
         account: validMockAddresses.account,
         status: 'connected',
-        networkId: '1',
+        networkId: 1,
         setupProvider: true,
       })
 
@@ -509,7 +508,7 @@ describe('openVault', () => {
       const _mockConnectedContext$ = mockContextConnected$({
         account: validMockAddresses.account,
         status: 'connected',
-        networkId: '1',
+        networkId: 1,
         setupProvider: true,
       })
 
