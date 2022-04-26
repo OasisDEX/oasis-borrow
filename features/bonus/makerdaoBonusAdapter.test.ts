@@ -18,7 +18,9 @@ describe('makerdaoBonusAdapter', () => {
     it('pipes the decimals and symbol correctly', () => {
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
         () => createMockVaultResolver$(),
+        () => of(new BigNumber('0')),
         () => of(new BigNumber('34845377488320063721')),
+        () => of(new BigNumber('1543374474293051714930707056')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CSH'),
@@ -35,7 +37,7 @@ describe('makerdaoBonusAdapter', () => {
 
       expect(bonusStreamState()?.symbol).eq('CSH')
       expect(bonusStreamState()?.name).eq('token name')
-      expect(bonusStreamState()?.amountToClaim.toFixed(0)).eq('35')
+      expect(bonusStreamState()?.amountToClaim.toFixed(0)).eq('54')
       expect(claimFuncStreamState).to.exist
     })
 
@@ -49,7 +51,9 @@ describe('makerdaoBonusAdapter', () => {
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
         () => createMockVaultResolver$(),
+        () => of(new BigNumber('0')),
         () => of(new BigNumber('34845377488320063721')),
+        () => of(new BigNumber('1543374474293051714930707056')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CSH'),
@@ -119,7 +123,9 @@ describe('makerdaoBonusAdapter', () => {
 
         const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
           () => createMockVaultResolver$(),
+          () => of(new BigNumber('0')),
           () => of(new BigNumber('34845377488320063721')),
+          () => of(new BigNumber('1543374474293051714930707056')),
           () => of('0xTokenAddress'),
           () => of(new BigNumber(18)),
           () => of('CSH'),
@@ -145,7 +151,9 @@ describe('makerdaoBonusAdapter', () => {
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
         () => createMockVaultResolver$(),
+        () => of(new BigNumber('0')),
         () => of(new BigNumber('34845377488320063721')),
+        () => of(new BigNumber('1543374474293051714930707056')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CSH'),
@@ -165,7 +173,9 @@ describe('makerdaoBonusAdapter', () => {
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
       const makerdaoBonusAdapter = createMakerdaoBonusAdapter(
         () => createMockVaultResolver$({ controller: '0xDifferentAddress' }),
+        () => of(new BigNumber('0')),
         () => of(new BigNumber('34845377488320063721')),
+        () => of(new BigNumber('1543374474293051714930707056')),
         () => of('0xTokenAddress'),
         () => of(new BigNumber(18)),
         () => of('CSH'),

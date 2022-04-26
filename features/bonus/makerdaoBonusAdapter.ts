@@ -31,7 +31,7 @@ export function createMakerdaoBonusAdapter(
   const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
   const bonus$: Observable<Bonus | undefined> = vault$.pipe(
-    // getCropInfo
+    // read from crops
     switchMap(({ ilk, urnAddress }) => {
       return combineLatest(
         cropperStake$({ ilk, usr: urnAddress }),
@@ -39,6 +39,7 @@ export function createMakerdaoBonusAdapter(
         cropperBonusTokenAddress$({ ilk }),
       )
     }),
+    // calculate bonus amount
     map(([stake, share, bonusAddress]) => {
       return [stake.times(share).div(RAY), bonusAddress] as const
     }),
