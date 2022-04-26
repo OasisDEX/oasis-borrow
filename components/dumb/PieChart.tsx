@@ -6,33 +6,45 @@ export type PieChartItem = {
   color: string,
 }
 
-function getStrokeDashArrays(values: BigNumber[], radius: number) {
-  const circleLength = Math.PI * (radius * 2)
-  const totalValue = BigNumber.sum.apply(null, values) 
+type Slice = {
+  length: number,
+  angle: number,
+  color: string,
+}
 
-  const dashArrays = []
-  let spaceLeft = circleLength
-  for (var c = 0; c < values.length; c++) {
-    dashArrays.push(`${spaceLeft} ${circleLength}`)
-    spaceLeft -= values[c].dividedBy(totalValue).toNumber() * circleLength
+function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
+  const values = items.map(i => i.value)
+  const totalValue = BigNumber.sum.apply(null, values) 
+  const slices = []
+  let angle = 0
+  for (var i = 0; i < items.length; i++) {
+    const ratio = values[i].dividedBy(totalValue).toNumber()
+    slices.push({
+      length: circleLength * ratio,
+      angle,
+      color: items[i].color
+    })
+    angle += 360 * ratio
   }
-  return dashArrays
+  return slices
 }
 
 export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: number }) {
   const strokeWidth = 34
   const radius = size / 2
   const viewSize = size + strokeWidth
-  const dashArrays = getStrokeDashArrays(items.map(i => i.value), radius)
+  const circleLength = Math.PI * radius * 2
+  const slices = getSlices(items, circleLength)
   return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
-    {items.map(({ color }, index) => <circle 
+    {slices.map(({ length, angle, color }) => <circle 
       cx="50%" 
       cy="50%" 
       r={radius}
-      strokeDasharray={dashArrays[index]} 
+      strokeDasharray={`${length} ${circleLength}`} 
       stroke={color}
-      fill="none"
       strokeWidth={strokeWidth}
+      fill="none"
+      style={{ transformOrigin: 'center', transform: `rotate(${angle}deg)`}}
       >
     </circle>)}
   </svg>
