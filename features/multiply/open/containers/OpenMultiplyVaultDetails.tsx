@@ -1,5 +1,6 @@
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -27,7 +28,6 @@ import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/d
 import { ContentCardBuyingPower } from '../../../../components/vault/detailsSection/ContentCardBuyingPower'
 import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
-import { MultiplyFooterItems } from '../../../../components/vault/detailsSection/MultiplyFooterItems'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 
@@ -174,31 +174,6 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   ) : (
     <DetailsSection
       title={t('system.overview')}
-      buttons={[
-        {
-          label: t('system.actions.common.edit-position'),
-          actions: [
-            {
-              label: t('system.actions.borrow.edit-dai'),
-              action: () => {
-                alert('dai')
-              },
-            },
-            {
-              label: t('system.actions.borrow.edit-collateral'),
-              action: () => {
-                alert('collateral')
-              },
-            },
-            {
-              label: t('system.actions.borrow.switch-to-multiply'),
-              action: () => {
-                alert('switch-to-multiply')
-              },
-            },
-          ],
-        },
-      ]}
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardLiquidationPrice
@@ -209,7 +184,6 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
           />
           <ContentCardBuyingPower
             token={token}
-            buyingPower={buyingPower}
             buyingPowerUSD={buyingPowerUSD}
             afterBuyingPowerUSD={afterBuyingPowerUSD}
             changeVariant={changeVariant}
@@ -225,11 +199,14 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
       }
       footer={
         <DetailsSectionFooterItemWrapper>
-          <MultiplyFooterItems
+          <ContentFooterItemsMultiply
             token={token}
+            debt={zero}
+            lockedCollateral={zero}
+            multiply={zero}
             afterDebt={afterOutstandingDebt}
             afterLockedCollateral={totalExposure}
-            afterMultiple={multiply}
+            afterMultiply={multiply}
             changeVariant={changeVariant}
           />
         </DetailsSectionFooterItemWrapper>

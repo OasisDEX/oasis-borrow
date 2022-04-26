@@ -1,5 +1,6 @@
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -26,7 +27,6 @@ import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/d
 import { ContentCardBuyingPower } from '../../../../components/vault/detailsSection/ContentCardBuyingPower'
 import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
-import { MultiplyFooterItems } from '../../../../components/vault/detailsSection/MultiplyFooterItems'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
@@ -190,31 +190,31 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       ) : (
         <DetailsSection
           title={t('system.overview')}
-          buttons={[
-            {
-              label: t('system.actions.common.edit-position'),
-              actions: [
-                {
-                  label: t('system.actions.borrow.edit-dai'),
-                  action: () => {
-                    alert('dai')
-                  },
-                },
-                {
-                  label: t('system.actions.borrow.edit-collateral'),
-                  action: () => {
-                    alert('collateral')
-                  },
-                },
-                {
-                  label: t('system.actions.borrow.switch-to-multiply'),
-                  action: () => {
-                    alert('switch-to-multiply')
-                  },
-                },
-              ],
-            },
-          ]}
+          // buttons={[
+          //   {
+          //     label: t('system.actions.common.edit-position'),
+          //     actions: [
+          //       {
+          //         label: t('system.actions.borrow.edit-dai'),
+          //         action: () => {
+          //           alert('dai')
+          //         },
+          //       },
+          //       {
+          //         label: t('system.actions.borrow.edit-collateral'),
+          //         action: () => {
+          //           alert('collateral')
+          //         },
+          //       },
+          //       {
+          //         label: t('system.actions.borrow.switch-to-multiply'),
+          //         action: () => {
+          //           alert('switch-to-multiply')
+          //         },
+          //       },
+          //     ],
+          //   },
+          // ]}
           content={
             <DetailsSectionContentCardWrapper>
               <ContentCardLiquidationPrice
@@ -249,14 +249,14 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }
           footer={
             <DetailsSectionFooterItemWrapper>
-              <MultiplyFooterItems
+              <ContentFooterItemsMultiply
                 token={token}
                 debt={debt}
-                afterDebt={afterDebt}
                 lockedCollateral={lockedCollateral}
+                multiply={multiply}
+                afterDebt={afterDebt}
                 afterLockedCollateral={afterLockedCollateral}
-                multiple={multiply}
-                afterMultiple={afterMultiply}
+                afterMultiply={afterMultiply}
                 changeVariant={changeVariant}
               />
             </DetailsSectionFooterItemWrapper>

@@ -13,7 +13,7 @@ import { zero } from '../../../helpers/zero'
 
 interface ContentCardBuyingPowerProps {
   token: string
-  buyingPower: BigNumber
+  buyingPower?: BigNumber
   buyingPowerUSD: BigNumber
   afterBuyingPowerUSD: BigNumber
   changeVariant?: ChangeVariantType
@@ -42,7 +42,7 @@ export function ContentCardBuyingPower({
   const { t } = useTranslation()
 
   const formatted = {
-    buyingPower: `${formatAmount(buyingPower, token)} ${token}`,
+    buyingPower: buyingPower && `${formatAmount(buyingPower, token)} ${token}`,
     buyingPowerUSD: `$${formatAmount(buyingPowerUSD, 'USD')}`,
     afterBuyingPowerUSD:
       afterBuyingPowerUSD && `$${formatAmount(afterBuyingPowerUSD || zero, 'USD')}`,
@@ -51,7 +51,6 @@ export function ContentCardBuyingPower({
   const contentCardSettings: ContentCardProps = {
     title: t('system.buying-power'),
     value: formatted.buyingPowerUSD,
-    footnote: formatted.buyingPower,
     modal: <ContentCardBuyingPowerModal />,
   }
 
@@ -60,6 +59,7 @@ export function ContentCardBuyingPower({
       value: `${formatted.afterBuyingPowerUSD} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
+  if (buyingPower) contentCardSettings.footnote = formatted.buyingPower
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

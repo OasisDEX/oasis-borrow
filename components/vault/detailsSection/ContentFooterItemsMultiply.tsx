@@ -60,10 +60,10 @@ export function ContentFooterItemsMultiply({
       />
       <DetailsSectionFooterItem
         title={t('system.multiple')}
-        value={`\u00d7${formatted.multiply} ${t('system.exposure')}`}
+        value={`${formatted.multiply}x ${t('system.exposure')}`}
         {...(changeVariant && {
           change: {
-            value: `\u00d7${formatted.afterMultiply} ${t('system.cards.common.after')}`,
+            value: `${formatted.afterMultiply}x ${t('system.cards.common.after')}`,
             variant: changeVariant,
           },
         })}
