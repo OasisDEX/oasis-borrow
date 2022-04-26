@@ -6,8 +6,7 @@ export type PieChartItem = {
   color: string,
 }
 
-function getStrokeDashArrays(values: BigNumber[]) {
-  const radius = 100
+function getStrokeDashArrays(values: BigNumber[], radius: number) {
   const circleLength = Math.PI * (radius * 2)
   const totalValue = BigNumber.sum.apply(null, values) 
 
@@ -20,17 +19,20 @@ function getStrokeDashArrays(values: BigNumber[]) {
   return dashArrays
 }
 
-export function PieChart({ items }: { items: PieChartItem[] }) {
-  const dashArrays = getStrokeDashArrays(items.map(i => i.value))
-  return <svg width="300" height="300">
+export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: number }) {
+  const strokeWidth = 34
+  const radius = size / 2
+  const viewSize = size + strokeWidth
+  const dashArrays = getStrokeDashArrays(items.map(i => i.value), radius)
+  return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
     {items.map(({ color }, index) => <circle 
-      cx="150" 
-      cy="150" 
-      r="100" 
+      cx="50%" 
+      cy="50%" 
+      r={radius}
       strokeDasharray={dashArrays[index]} 
       stroke={color}
       fill="none"
-      strokeWidth="50"
+      strokeWidth={strokeWidth}
       >
     </circle>)}
   </svg>
