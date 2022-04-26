@@ -1,6 +1,10 @@
 import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentCardWrapper, getChangeVariant } from 'components/DetailsSectionContentCard'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
@@ -9,6 +13,7 @@ import {
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -82,7 +87,7 @@ function GuniManageMultiplyVaultDetailsSummary({
 export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const {
-    vault: { debt, token, lockedCollateral },
+    vault: { debt, token, lockedCollateral, lockedCollateralUSD },
     inputAmountsEmpty,
     stage,
     netValueUSD,
@@ -91,6 +96,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
     totalGasSpentUSD,
     vault,
     priceInfo,
+    marketPrice,
     multiply,
     afterDebt,
     afterLockedCollateral,
@@ -99,33 +105,52 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const oraclePrice = priceInfo.currentCollateralPrice
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <Box>
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardNetValue
-          {...{
-            netValueUSD,
-            afterNetValueUSD,
-            afterPillColors,
-            showAfterPill,
-            currentPnL,
-            totalGasSpentUSD,
-            vault,
-            priceInfo,
-          }}
-        />
-      </Grid>
-      <GuniManageMultiplyVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-      />
-      <DetailsSection
+      {!automationBasicBuyAndSellEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardNetValue
+              {...{
+                netValueUSD,
+                afterNetValueUSD,
+                afterPillColors,
+                showAfterPill,
+                currentPnL,
+                totalGasSpentUSD,
+                vault,
+                priceInfo,
+              }}
+            />
+          </Grid>
+          <GuniManageMultiplyVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      ) : (
+        <DetailsSection
           title={t('system.overview')}
           content={
             <DetailsSectionContentCardWrapper>
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                marketPrice={marketPrice}
+                netValueUSD={netValueUSD}
+                afterNetValueUSD={afterNetValueUSD}
+                totalGasSpentUSD={totalGasSpentUSD}
+                currentPnL={currentPnL}
+                lockedCollateral={lockedCollateral}
+                lockedCollateralUSD={lockedCollateralUSD}
+                debt={debt}
+                changeVariant={changeVariant}
+              />
             </DetailsSectionContentCardWrapper>
           }
           footer={
@@ -143,6 +168,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
             </DetailsSectionFooterItemWrapper>
           }
         />
+      )}
     </Box>
   )
 }
