@@ -56,14 +56,14 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: n
 
   return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
     <defs>
-      <linearGradient id="pieChart-white-gradient">
+      <linearGradient id="pieChart-fallback-gradient">
         <stop offset="0%" style={{stopColor: 'rgb(255, 255, 255, 0.4)'}} />
         <stop offset="100%" style={{stopColor: 'rgb(255, 255, 255, 0)'}} />
       </linearGradient>
     </defs>
-    {slices.map(({ length, angle, color }) => [
+    {slices.map(({ length, angle, color, svgBgId }) => svgBgId ? renderSlice(length, angle, svgBgId) : [
       renderSlice(length, angle, color),
-      renderSlice(length, angle, 'url(#pieChart-white-gradient)')
+      renderSlice(length, angle, 'url(#pieChart-fallback-gradient)')
     ])}
   </svg>
 }
