@@ -3,11 +3,11 @@
   "version": "3.15.0",
   "license": "Apache-2.0",
   "engines": {
-    "node": "16.x"
+    "node": ">=14.x <=16.x"
   },
   "scripts": {
-    "start": "CHOKIDAR_USEPOLLING=true TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=6000 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
-    "start:prod": "yarn migrate && TS_NODE_PROJECT=tsconfig.dev.json node -r ts-node/register --max-old-space-size=3049 -r tsconfig-paths/register -r dotenv-flow/config ./server/server.ts",
+    "start": "next dev",
+    "start:prod": "yarn migrate && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
@@ -108,7 +108,6 @@
     "nextjs-sitemap-generator": "^1.3.1",
     "node-cache": "^5.1.2",
     "node-polyfill-webpack-plugin": "^1.1.4",
-    "nodemailer": "^6.4.14",
     "nyc": "^15.1.0",
     "object-assign": "4.1.1",
     "pg": "^8.2.1",
@@ -182,6 +181,7 @@
     "@types/react-text-mask": "^5.4.0",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
+    "@types/supertest": "^2.0.9",
     "@types/theme-ui": "^0.3.1",
     "@types/uuid": "^7.0.3",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
