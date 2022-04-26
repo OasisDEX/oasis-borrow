@@ -56,9 +56,7 @@ export function createContext$(
       // couldn't get information from them about what block range they allow
       const networkData = networksById[web3Context.chainId]
       const web3ProviderGetPastLogs =
-        web3Context.connectionKind === 'magicLink'
-          ? new Web3(networkData.rpcUrl)
-          : web3Context.web3
+        web3Context.connectionKind === 'magicLink' ? new Web3(networkData.rpcUrl) : web3Context.web3
 
       return {
         ...networkData,
