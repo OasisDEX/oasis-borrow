@@ -123,7 +123,6 @@ import {
 
 import {
   cropperBonusTokenAddress,
-  cropperCrops,
   cropperShare,
   cropperStake,
   cropperUrnProxy,
@@ -422,7 +421,6 @@ export function setupAppContext() {
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
 
-  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
   const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
   const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
 

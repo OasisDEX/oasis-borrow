@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { map, share, startWith, switchMap, tap } from 'rxjs/operators'
+import { map, share, startWith, switchMap } from 'rxjs/operators'
 
 import { zero } from '../../helpers/zero'
 
