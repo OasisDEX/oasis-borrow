@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { getToken } from 'blockchain/tokensMetadata'
 import {
   ChangeVariantType,
   ContentCardProps,
@@ -54,11 +53,10 @@ export function ContentCardCollateralLocked({
   changeVariant,
 }: ContentCardCollateralLockedProps) {
   const { t } = useTranslation()
-  const { symbol } = getToken(token)
 
   const formatted = {
     lockedCollateralUSD: `$${formatAmount(lockedCollateralUSD || zero, 'USD')}`,
-    lockedCollateral: `${formatAmount(lockedCollateral || zero, symbol)} ${symbol}`,
+    lockedCollateral: `${formatAmount(lockedCollateral || zero, token)} ${token}`,
     afterLockedCollateralUSD: `$${formatAmount(afterLockedCollateralUSD || zero, 'USD')}`,
   }
 

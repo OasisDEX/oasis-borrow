@@ -36,7 +36,6 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
       sx={{
         alignItems: 'flex-start',
         flexDirection: 'column',
-        justifyContent: change ? 'flex-start' : 'space-between',
         flexBasis: ['100%', null, null, '25%'],
         p: 3,
         '&:nth-child(-n+3)': {

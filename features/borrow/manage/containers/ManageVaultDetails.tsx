@@ -9,10 +9,10 @@ import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
-import { BorrowFooterItems } from 'components/vault/detailsSection/BorrowFooterItems'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -245,7 +245,7 @@ export function ManageVaultDetails(
           }
           footer={
             <DetailsSectionFooterItemWrapper>
-              <BorrowFooterItems
+              <ContentFooterItemsBorrow
                 token={token}
                 debt={debt}
                 freeCollateral={freeCollateral}

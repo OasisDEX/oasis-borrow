@@ -1,3 +1,7 @@
+import { DetailsSection } from 'components/DetailsSection'
+import { DetailsSectionContentCardWrapper, getChangeVariant } from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -76,7 +80,9 @@ function GuniManageMultiplyVaultDetailsSummary({
 }
 
 export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
+  const { t } = useTranslation()
   const {
+    vault: { debt, token, lockedCollateral },
     inputAmountsEmpty,
     stage,
     netValueUSD,
@@ -85,10 +91,15 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
     totalGasSpentUSD,
     vault,
     priceInfo,
+    multiply,
+    afterDebt,
+    afterLockedCollateral,
+    afterMultiply,
   } = props
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
 
   return (
     <Box>
@@ -111,6 +122,27 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
         afterPillColors={afterPillColors}
         showAfterPill={showAfterPill}
       />
+      <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+            </DetailsSectionContentCardWrapper>
+          }
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsMultiply
+                token={token}
+                debt={debt}
+                lockedCollateral={lockedCollateral}
+                multiply={multiply}
+                afterDebt={afterDebt}
+                afterLockedCollateral={afterLockedCollateral}
+                afterMultiply={afterMultiply}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
+        />
     </Box>
   )
 }
