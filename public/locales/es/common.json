@@ -694,7 +694,7 @@
       "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecte su cartera y abra un Vault",
       "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera",
-      "vault-suggestions": "{{address}}, haz más en Oasis"
+      "vault-suggestions": "{{address}}, hacer más en Oasis.app"
     },
     "number-of-vaults": "Número de Vaults",
     "subheader-no-vaults": "Abra un Vault de Maker, deposite su colateral, y tome prestado Dai o compre más colateral con su préstamo.",

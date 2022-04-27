@@ -537,7 +537,7 @@
       "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
       "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
-      "vault-suggestions": "{{address}}, 在 Oasis 上做更多事情"
+      "vault-suggestions": "{{address}}, 在 Oasis.app 上做更多事情"
     },
     "number-of-vaults": "金库数量",
     "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",

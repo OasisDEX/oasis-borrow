@@ -540,7 +540,7 @@
       "connected-viewer-withVaults": "Visão geral de Cofres Maker de {{address}}",
       "notConnected-noVaults": "{{address}} atualmente não possui Cofres Maker.<0/> Conecte sua carteira e abre um cofre.",
       "notConnected-withVaults": "Visão geral de Cofres Maker de {{address}}.<0/> Conecte sua carteira.",
-      "vault-suggestions": "{{address}}, faça mais no Oasis"
+      "vault-suggestions": "{{address}}, faça mais no Oasis.app"
     },
     "number-of-vaults": "Número de Cofres",
     "subheader-no-vaults": "Abra um Cofre Maker, deposite seu colateral e gere Dai.",
