@@ -69,15 +69,17 @@ export function VaultProxyContentBox({
       ) : (
         <>
           <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
-          <Box>
-            <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>
-              {t('creating-proxy-contract')}
-            </Text>
-            <VaultChangesInformationItem
-              label={t('transaction-fee')}
-              value={getEstimatedGasFeeText(gasData)}
-            />
-          </Box>
+          {stage !== 'proxyInProgress' && (
+            <Box>
+              <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>
+                {t('creating-proxy-contract')}
+              </Text>
+              <VaultChangesInformationItem
+                label={t('transaction-fee')}
+                value={getEstimatedGasFeeText(gasData)}
+              />
+            </Box>
+          )}
         </>
       )}
     </>
