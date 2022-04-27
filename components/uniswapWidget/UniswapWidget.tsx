@@ -1,4 +1,4 @@
-import '@uniswap/widgets/fonts.css'
+import '@uniswap/widgets/dist/fonts.css'
 
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
