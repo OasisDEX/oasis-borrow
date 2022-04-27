@@ -3,7 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
-import { TAB_CHANGE_SUBJECT } from 'features/automation/common/UITypes/TabChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -22,9 +22,10 @@ export function ManageVaultContainer({
 }) {
   const { manageVault$, context$, uiChanges } = useAppContext()
   const {
-    vault: { id, ilk },
+    vault: { id, ilk, token },
     clear,
     ilkData,
+    priceInfo,
   } = manageVault
   const { t } = useTranslation()
   const automationEnabled = useFeatureToggle('Automation')
@@ -45,7 +46,13 @@ export function ManageVaultContainer({
   return (
     <>
       {!automationEnabled && (
-        <DefaultVaultHeader header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+        <DefaultVaultHeader
+          header={t('vault.header', { ilk, id })}
+          id={id}
+          ilkData={ilkData}
+          token={token}
+          priceInfo={priceInfo}
+        />
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>

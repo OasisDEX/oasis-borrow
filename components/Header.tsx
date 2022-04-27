@@ -6,6 +6,7 @@ import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
@@ -155,12 +156,16 @@ function ButtonDropdown({
   round,
   sx,
   dropdownSx,
+  showNewBeacon,
+  onOpen,
   children,
 }: {
   ButtonContents: React.ComponentType<{ active?: boolean; sx?: SxStyleProp }>
   round?: boolean
   sx?: SxStyleProp
   dropdownSx?: SxStyleProp
+  showNewBeacon?: boolean
+  onOpen?: () => void
 } & WithChildren) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -170,8 +175,12 @@ function ButtonDropdown({
     <Flex ref={componentRef} sx={{ position: 'relative', ...sx }}>
       <Button
         variant={round ? 'menuButtonRound' : 'menuButton'}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen)
+          onOpen && onOpen()
+        }}
         sx={{
+          position: 'relative',
           p: 1,
           '&, :focus': {
             outline: isOpen ? '1px solid' : null,
@@ -181,6 +190,14 @@ function ButtonDropdown({
           ':hover': { color: 'primary' },
         }}
       >
+        {showNewBeacon && (
+          <Icon
+            name="new_beacon"
+            sx={{ position: 'absolute', top: '-3px', right: '-3px' }}
+            size="auto"
+            width={22}
+          />
+        )}
         <ButtonContents active={isOpen} />
       </Button>
       <Box
@@ -218,6 +235,8 @@ function UserDesktopMenu() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const vaultCount = useVaultCount()
+  const [exchangeOnboarded] = useOnboarding('Exchange')
+  const [exchangeOpened, setExchangeOpened] = useState(false)
 
   const shouldHideSettings =
     !context ||
@@ -251,6 +270,8 @@ function UserDesktopMenu() {
               <Icon name="exchange" size="auto" width="20" color={active ? 'primary' : 'inherit'} />
             )}
             round={true}
+            showNewBeacon={!exchangeOnboarded && !exchangeOpened}
+            onOpen={() => setExchangeOpened(true)}
             sx={{ mr: 3 }}
           >
             <UniswapWidget />

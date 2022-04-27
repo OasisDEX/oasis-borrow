@@ -8,10 +8,10 @@ import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged, switchMap } from 'rxjs/operators'
 
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { extractStopLossData } from '../automation/common/StopLossTriggerDataExtractor'
-import { TriggersData } from '../automation/triggers/AutomationTriggersData'
+import { extractStopLossData } from '../automation/protection/common/StopLossTriggerDataExtractor'
+import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
-import { vaultsWithFilter$, VaultsWithFilters } from './vaultsFilters'
+import { vaultsWithFilter$, VaultsWithFilters, VaultWithSLData } from './vaultsFilters'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface VaultsOverview {
@@ -45,17 +45,19 @@ export function createVaultsOverview$(
     }),
   )
 
+  const borrowVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
+    map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
+    // TODO casting won't be necessary when Automation feature flag will be removed
+  ) as unknown) as Observable<VaultWithSLData>
+
+  const multiplyVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
+    map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
+    // TODO casting won't be necessary when Automation feature flag will be removed
+  ) as unknown) as Observable<VaultWithSLData>
+
   return combineLatest(
-    vaultsWithFilter$(
-      (automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
-        map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
-      ),
-    ),
-    vaultsWithFilter$(
-      (automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
-        map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
-      ),
-    ),
+    vaultsWithFilter$(borrowVaults),
+    vaultsWithFilter$(multiplyVaults),
     vaultsAddress$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
