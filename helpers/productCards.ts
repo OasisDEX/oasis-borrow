@@ -61,6 +61,7 @@ export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
   icon: ProductLandingPagesFiltersIcons
 }
+export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 type Ilk =
   | 'WBTC-B'
@@ -145,7 +146,7 @@ export const productCardsConfig: {
   multiply: ProductPageType
   earn: ProductPageType
   landing: {
-    featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
+    featuredCards: Record<ProductTypes, Array<Ilk>>
   }
   descriptionCustomKeys: Record<Ilk, string>
 } = {
@@ -276,7 +277,7 @@ export function landingPageCardsData({
   product = 'multiply',
 }: {
   productCardsData: ProductCardData[]
-  product?: 'multiply' | 'borrow' | 'earn'
+  product?: ProductTypes
 }) {
   return productCardsData.filter((ilk) =>
     productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
@@ -288,7 +289,7 @@ export function pageCardsDataByProduct({
   product = 'multiply',
 }: {
   productCardsData: ProductCardData[]
-  product?: 'multiply' | 'borrow' | 'earn'
+  product?: ProductTypes
 }) {
   return productCardsData.filter((ilk) =>
     productCardsConfig[product].cardsFilters.map((cardFilter) =>

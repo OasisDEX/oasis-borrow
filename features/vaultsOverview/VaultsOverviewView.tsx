@@ -26,6 +26,7 @@ import {
   multiplyPageCardsData,
   ProductCardData,
   ProductLandingPagesFiltersKeys,
+  ProductTypes,
 } from 'helpers/productCards'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -418,8 +419,6 @@ function VaultsOverwiewPerType({
     </Grid>
   )
 }
-
-type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
 function filterCards(props: {
   productCardsData: ProductCardData[]

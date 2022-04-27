@@ -15,14 +15,14 @@ import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
+import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
   paraText: JSX.Element
-  type: 'borrow' | 'multiply' | 'earn'
+  type: ProductTypes
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   productCardsData: ProductCardData[]
 }) {
