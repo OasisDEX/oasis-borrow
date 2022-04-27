@@ -1,8 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { DetailsSection } from 'components/DetailsSection'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardDynamicStopPrice } from 'components/vault/detailsCards/VaultDetailsCardDynamicStopPrice'
 import { VaultDetailsCardMaxTokenOnStopLossTrigger } from 'components/vault/detailsCards/VaultDetailsCardMaxTokenOnStopLossTrigger'
 import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards/VaultDetailsCardStopLossCollRatio'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
@@ -40,6 +43,7 @@ export function ProtectionDetailsLayout({
   isCollateralActive,
   isEditing,
 }: ProtectionDetailsLayoutProps) {
+  const { t } = useTranslation()
   const afterPillColors = getAfterPillColors('onSuccess')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
@@ -90,6 +94,11 @@ export function ProtectionDetailsLayout({
           tokenPrice={currentOraclePrice}
         />
       </Grid>
+      <DetailsSection
+        title={t('system.protection')}
+        badge={isStopLossEnabled}
+        content={<DetailsSectionContentCardWrapper>Lorem ipsum</DetailsSectionContentCardWrapper>}
+      />
     </Box>
   )
 }
