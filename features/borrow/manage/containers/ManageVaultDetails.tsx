@@ -193,31 +193,6 @@ export function ManageVaultDetails(
       ) : (
         <DetailsSection
           title={t('system.overview')}
-          // buttons={[
-          //   {
-          //     label: t('system.actions.common.edit-position'),
-          //     actions: [
-          //       {
-          //         label: t('system.actions.borrow.edit-dai'),
-          //         action: () => {
-          //           alert('dai')
-          //         },
-          //       },
-          //       {
-          //         label: t('system.actions.borrow.edit-collateral'),
-          //         action: () => {
-          //           alert('collateral')
-          //         },
-          //       },
-          //       {
-          //         label: t('system.actions.borrow.switch-to-multiply'),
-          //         action: () => {
-          //           alert('switch-to-multiply')
-          //         },
-          //       },
-          //     ],
-          //   },
-          // ]}
           content={
             <DetailsSectionContentCardWrapper>
               <ContentCardLiquidationPrice
