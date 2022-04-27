@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { TokenBalances } from 'blockchain/tokens'
 import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -19,6 +20,8 @@ export interface ProductCardData {
   ilk: Ilk
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
+  userTokenBalance?: BigNumber
+  debtFloor: BigNumber
   currentCollateralPrice: BigNumber
   bannerIcon: string
   bannerGif: string
@@ -390,6 +393,27 @@ export function borrowPageCardsData({
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
+export function cardFiltersFromBalances(
+  tokenBalances: TokenBalances | undefined,
+): Array<ProductLandingPagesFiltersKeys | undefined> {
+  return (Object.entries(tokenBalances || {})
+    .filter(([_, { balance }]) => balance.isGreaterThan(0))
+    .map(([token]) => token) as unknown) as Array<ProductLandingPagesFiltersKeys | undefined>
+}
+
+export function addUserBalancesToProductCardsData(
+  productCardsData: ProductCardData[],
+  tokenBalances: TokenBalances | undefined,
+) {
+  if (!tokenBalances) return productCardsData
+  return productCardsData.map((product) => ({
+    ...product,
+    ...(tokenBalances[product.token]
+      ? { userTokenBalance: tokenBalances[product.token].balance }
+      : {}),
+  }))
+}
+
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
@@ -399,6 +423,7 @@ export function createProductCardsData$(
       combineLatest(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
+
           return priceInfo$(ilk.token).pipe(
             switchMap((priceInfo) => {
               return of({
@@ -406,6 +431,7 @@ export function createProductCardsData$(
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
                 stabilityFee: ilk.stabilityFee,
+                debtFloor: ilk.debtFloor,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
                 bannerIcon: tokenMeta.bannerIcon,
                 bannerGif: tokenMeta.bannerGif,

@@ -7,11 +7,28 @@ import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-function bannerValues(maxMultiple: BigNumber, currentCollateralPrice: BigNumber) {
+function bannerValues(props: {
+  maxMultiple: BigNumber
+  currentCollateralPrice: BigNumber
+  userTokenBalance?: BigNumber
+  debtFloor: BigNumber
+}) {
+  const { maxMultiple, currentCollateralPrice, userTokenBalance, debtFloor } = props
   const dollarWorthInputColllateral = new BigNumber(150000)
   const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
 
-  const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
+  let roundedTokenAmount = new BigNumber(0)
+
+  const userBalanceAboveLimit = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+
+  if (userTokenBalance && userBalanceAboveLimit) {
+    roundedTokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
+  } else if (userTokenBalance) {
+    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+  } else {
+    roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
+  }
+
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
 
   return {
@@ -23,13 +40,18 @@ function bannerValues(maxMultiple: BigNumber, currentCollateralPrice: BigNumber)
 export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
-
+  console.log('cardData', cardData)
   const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2'
   const maxMultiple = !isGuniToken
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
-  const { tokenAmount, exposure } = bannerValues(maxMultiple, cardData.currentCollateralPrice)
+  const { tokenAmount, exposure } = bannerValues({
+    maxMultiple,
+    currentCollateralPrice: cardData.currentCollateralPrice,
+    userTokenBalance: cardData.userTokenBalance,
+    debtFloor: cardData.debtFloor,
+  })
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 

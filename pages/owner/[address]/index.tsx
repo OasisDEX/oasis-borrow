@@ -1,3 +1,4 @@
+import { TokenBalances } from 'blockchain/tokens'
 import { useAppContext } from 'components/AppContextProvider'
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
@@ -9,7 +10,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -23,12 +24,33 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
-  const { vaultsOverview$, context$, productCardsData$ } = useAppContext()
+  const [tokenBalances, setBalances] = useState<TokenBalances | undefined>(undefined)
+  const {
+    vaultsOverview$,
+    context$,
+    productCardsData$,
+    connectedContext$,
+    accountBalances$,
+    ilkData$,
+  } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
+
+  const [connectedContext] = useObservable(connectedContext$)
+  const [ilkData] = useObservable(ilkData$('ETH-A'))
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
   const [context, contextError] = useObservable(context$)
-  console.log('productCardsDataValue', productCardsDataValue)
+  console.log("ilkData['ETH-A']", ilkData)
+  console.log('context', context)
+  useEffect(() => {
+    if (!connectedContext?.account) return
+
+    const subscription = accountBalances$(connectedContext?.account).subscribe((v: TokenBalances) =>
+      setBalances(v),
+    )
+    return () => subscription.unsubscribe()
+  }, [connectedContext?.account])
+
   return (
     <WithErrorHandler error={[vaultsOverviewError, contextError, productCardsDataError]}>
       <WithLoadingIndicator value={[vaultsOverview, context, productCardsDataValue]}>
@@ -38,6 +60,7 @@ function Summary({ address }: { address: string }) {
             context={context}
             address={checksumAddress}
             productCardsData={productCardsDataValue}
+            tokenBalances={tokenBalances}
           />
         )}
       </WithLoadingIndicator>

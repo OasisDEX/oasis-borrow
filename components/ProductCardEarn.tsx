@@ -56,7 +56,8 @@ interface ProductCardEarnProps {
 
 export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const { t } = useTranslation()
-
+  const defaultDaiValue = new BigNumber(100000)
+  console.log('EARN', cardData)
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
 
@@ -65,6 +66,18 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
 
   const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
   const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
+
+  const { userTokenBalance, debtFloor, currentCollateralPrice } = cardData
+  const hasBalance = userTokenBalance
+  const isBalanceAboveFloor = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+
+  let tokenAmount = defaultDaiValue
+  console.log('cardata.token', cardData.token)
+  if (hasBalance && isBalanceAboveFloor) {
+    tokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
+  } else if (hasBalance) {
+    tokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+  }
 
   return (
     <ProductCard
@@ -77,11 +90,11 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: '100,000',
+          value: tokenAmount.toFormat(0),
           token: 'DAI',
         }),
         description: t(`product-card-banner.guni`, {
-          value: formatCryptoBalance(maxMultiple.times(100000)),
+          value: formatCryptoBalance(maxMultiple.times(tokenAmount)),
           token: cardData.token,
         }),
       }}

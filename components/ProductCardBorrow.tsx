@@ -8,11 +8,43 @@ import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
+function bannerValues(props: {
+  liquidationRatio: BigNumber
+  currentCollateralPrice: BigNumber
+  userTokenBalance?: BigNumber
+  debtFloor: BigNumber
+}) {
+  const { liquidationRatio, currentCollateralPrice, userTokenBalance, debtFloor } = props
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
 
   const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
+  const userBalanceAboveLimit = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+
+  if (userTokenBalance) {
+    let roundedTokenAmount = new BigNumber(0)
+
+    if (userBalanceAboveLimit) {
+      roundedTokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
+
+      return {
+        maxBorrow: formatCryptoBalance(
+          roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+        ),
+        tokenAmount: formatCryptoBalance(roundedTokenAmount),
+      }
+    }
+    if (!userBalanceAboveLimit) {
+      roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+    }
+
+    return {
+      maxBorrow: formatCryptoBalance(
+        roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+      ),
+      tokenAmount: formatCryptoBalance(roundedTokenAmount),
+    }
+  }
 
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
@@ -52,10 +84,12 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const { maxBorrow, tokenAmount } = bannerValues(
-    cardData.liquidationRatio,
-    cardData.currentCollateralPrice,
-  )
+  const { maxBorrow, tokenAmount } = bannerValues({
+    liquidationRatio: cardData.liquidationRatio,
+    currentCollateralPrice: cardData.currentCollateralPrice,
+    userTokenBalance: cardData.userTokenBalance,
+    debtFloor: cardData.debtFloor,
+  })
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
 

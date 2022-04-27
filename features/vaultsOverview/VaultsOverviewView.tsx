@@ -2,13 +2,13 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { TokenBalances } from 'blockchain/tokens'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardEarn } from 'components/ProductCardEarn'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
-import { ProductCardsFilter } from 'components/ProductCardsFilter'
 import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { TabSwitcher } from 'components/TabSwitcher'
@@ -20,7 +20,9 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import {
+  addUserBalancesToProductCardsData,
   borrowPageCardsData,
+  cardFiltersFromBalances,
   earnPageCardsData,
   landingPageCardsData,
   multiplyPageCardsData,
@@ -33,8 +35,9 @@ import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
+import _ from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 import { Dictionary } from 'ts-essentials'
@@ -349,6 +352,7 @@ interface Props {
   context: Context
   address: string
   productCardsData: ProductCardData[]
+  tokenBalances: TokenBalances | undefined
 }
 
 function getHeaderTranslationKey(
@@ -423,19 +427,51 @@ function TabContent(props: {
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   productCardsData: ProductCardData[]
+  tokenBalances: TokenBalances | undefined
 }) {
   const ProductCard = props.renderProductCard
 
-  const productCardsData = {
+  const productCardsDataByVaultType = {
     borrow: borrowPageCardsData,
     multiply: multiplyPageCardsData,
     earn: earnPageCardsData,
   }
 
-  const filteredCards = productCardsData[props.type]({
-    productCardsData: props.productCardsData,
-    cardsFilter: 'ETH',
-  })
+  const filterCardsDataByProduct = productCardsDataByVaultType[props.type]
+    ? productCardsDataByVaultType[props.type]
+    : productCardsDataByVaultType['multiply']
+
+  const cardFilters = cardFiltersFromBalances(props.tokenBalances)
+  const productCardsData = addUserBalancesToProductCardsData(
+    props.productCardsData,
+    props.tokenBalances,
+  )
+
+  let filteredCards: ProductCardData[] = []
+
+  if (cardFilters.length > 0) {
+    filteredCards = _.uniqBy(
+      cardFilters.reduce((cards, filter) => {
+        if (filter) {
+          return cards.concat(
+            filterCardsDataByProduct({
+              productCardsData: productCardsData,
+              cardsFilter: filter,
+            }),
+          )
+        }
+        return cards
+      }, [] as ProductCardData[]),
+      'ilk',
+    )
+  }
+
+  if (cardFilters.length === 0) {
+    filteredCards = landingPageCardsData({
+      productCardsData: props.productCardsData,
+      product: props.type,
+    })
+  }
 
   return (
     <Flex
@@ -477,7 +513,13 @@ function TabHeaderParagraph({ children }: WithChildren) {
   )
 }
 
-function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardData[] }) {
+function VaultSuggestions({
+  productCardsData,
+  tokenBalances,
+}: {
+  productCardsData: ProductCardData[]
+  tokenBalances: TokenBalances | undefined
+}) {
   const { t } = useTranslation()
 
   const isEarnEnabled = useFeatureToggle('EarnProduct')
@@ -496,6 +538,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
                 type="multiply"
                 renderProductCard={ProductCardMultiply}
                 productCardsData={productCardsData}
+                tokenBalances={tokenBalances}
               />
             ),
             tabHeaderPara: (
@@ -514,6 +557,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
                 type="borrow"
                 renderProductCard={ProductCardBorrow}
                 productCardsData={productCardsData}
+                tokenBalances={tokenBalances}
               />
             ),
             tabHeaderPara: (
@@ -534,6 +578,7 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
                       type="earn"
                       renderProductCard={ProductCardEarn}
                       productCardsData={productCardsData}
+                      tokenBalances={tokenBalances}
                     />
                   ),
                   tabHeaderPara: (
@@ -558,7 +603,13 @@ function VaultSuggestions({ productCardsData }: { productCardsData: ProductCardD
   )
 }
 
-export function VaultsOverviewView({ vaultsOverview, context, address, productCardsData }: Props) {
+export function VaultsOverviewView({
+  vaultsOverview,
+  context,
+  address,
+  productCardsData,
+  tokenBalances,
+}: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -663,7 +714,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address, productCa
           </Grid>
         </>
       )}
-      {isOwnerViewing && <VaultSuggestions productCardsData={productCardsData} />}
+      {isOwnerViewing && (
+        <VaultSuggestions productCardsData={productCardsData} tokenBalances={tokenBalances} />
+      )}
     </Grid>
   )
 }
