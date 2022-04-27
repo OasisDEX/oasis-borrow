@@ -7,29 +7,37 @@ import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-function bannerValues(props: {
-  maxMultiple: BigNumber
-  currentCollateralPrice: BigNumber
-  balance?: BigNumber
-  debtFloor: BigNumber
-}) {
-  const { maxMultiple, currentCollateralPrice, balance, debtFloor } = props
-  const dollarWorthInputColllateral = new BigNumber(150000)
-  const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
+function calculatePersonalisedValues(
+  productCardData: ProductCardData,
+  roundedMaxMultiple: BigNumber,
+) {
+  const { currentCollateralPrice, balance, debtFloor } = productCardData
+  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
 
   let roundedTokenAmount = new BigNumber(0)
-
-  const userBalanceAboveLimit = balance?.gt(debtFloor.div(currentCollateralPrice))
-
-  if (balance && userBalanceAboveLimit) {
-    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
-  } else if (balance) {
+  if (balanceAboveDebtFloor) {
+    roundedTokenAmount = new BigNumber(balance!.toFixed(0, 3))
+  }
+  if (!balanceAboveDebtFloor) {
     roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
-  } else {
-    roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
   }
 
+  return {
+    tokenAmount: roundedTokenAmount,
+    exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
+  }
+}
+
+function bannerValues(props: ProductCardData & { maxMultiple: BigNumber }) {
+  const { maxMultiple, currentCollateralPrice, balance } = props
+  const dollarWorthInputColllateral = new BigNumber(150000)
+  const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
+  const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
+
+  if (balance) {
+    return calculatePersonalisedValues(props, roundedMaxMultiple)
+  }
 
   return {
     tokenAmount: roundedTokenAmount,
@@ -46,12 +54,14 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
-  const { tokenAmount, exposure } = bannerValues({
-    maxMultiple,
-    currentCollateralPrice: cardData.currentCollateralPrice,
-    balance: cardData.balance,
-    debtFloor: cardData.debtFloor,
-  })
+  // const { tokenAmount, exposure } = bannerValues({
+  //   maxMultiple,
+  //   currentCollateralPrice: cardData.currentCollateralPrice,
+  //   balance: cardData.balance,
+  //   debtFloor: cardData.debtFloor,
+  // })
+
+  const { tokenAmount, exposure } = bannerValues({ ...cardData, maxMultiple })
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 

@@ -68,14 +68,14 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
 
   const { balance, debtFloor, currentCollateralPrice } = cardData
-  const hasBalance = balance
+
   const isBalanceAboveFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
 
   let tokenAmount = defaultDaiValue
-  console.log('cardata.token', cardData.token)
-  if (hasBalance && isBalanceAboveFloor) {
+
+  if (balance && isBalanceAboveFloor) {
     tokenAmount = new BigNumber(balance.toFixed(0, 3))
-  } else if (hasBalance) {
+  } else if (balance) {
     tokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
   }
 

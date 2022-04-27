@@ -8,35 +8,17 @@ import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
 import { ProductCard } from './ProductCard'
 
-function bannerValues(props: {
-  liquidationRatio: BigNumber
-  currentCollateralPrice: BigNumber
-  balance?: BigNumber
-  debtFloor: BigNumber
-}) {
-  const { liquidationRatio, currentCollateralPrice, balance, debtFloor } = props
-  const maxBorrowDisplayAmount = new BigNumber(250000)
-  const minBorrowDisplayAmount = new BigNumber(150000)
+function calculatePersonalisedValues(
+  productCardData: ProductCardData,
+  singleTokenMaxBorrow: BigNumber,
+) {
+  const { currentCollateralPrice, balance, debtFloor } = productCardData
 
-  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
-  const userBalanceAboveLimit = balance?.gt(debtFloor.div(currentCollateralPrice))
+  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
 
-  if (balance) {
-    let roundedTokenAmount = new BigNumber(0)
-
-    if (userBalanceAboveLimit) {
-      roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
-
-      return {
-        maxBorrow: formatCryptoBalance(
-          roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
-        ),
-        tokenAmount: formatCryptoBalance(roundedTokenAmount),
-      }
-    }
-    if (!userBalanceAboveLimit) {
-      roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
-    }
+  let roundedTokenAmount = new BigNumber(0)
+  if (balanceAboveDebtFloor) {
+    roundedTokenAmount = new BigNumber(balance!.toFixed(0, 3))
 
     return {
       maxBorrow: formatCryptoBalance(
@@ -45,6 +27,21 @@ function bannerValues(props: {
       tokenAmount: formatCryptoBalance(roundedTokenAmount),
     }
   }
+  if (!balanceAboveDebtFloor) {
+    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+  }
+
+  return {
+    maxBorrow: formatCryptoBalance(
+      roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+    ),
+    tokenAmount: formatCryptoBalance(roundedTokenAmount),
+  }
+}
+
+function calculateBannerValues(singleTokenMaxBorrow: BigNumber) {
+  const maxBorrowDisplayAmount = new BigNumber(250000)
+  const minBorrowDisplayAmount = new BigNumber(150000)
 
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
@@ -80,16 +77,23 @@ function bannerValues(props: {
   }
 }
 
+function bannerValues(props: ProductCardData) {
+  const { liquidationRatio, currentCollateralPrice, balance } = props
+
+  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
+
+  if (balance) {
+    return calculatePersonalisedValues(props, singleTokenMaxBorrow)
+  }
+
+  return calculateBannerValues(singleTokenMaxBorrow)
+}
+
 export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const { maxBorrow, tokenAmount } = bannerValues({
-    liquidationRatio: cardData.liquidationRatio,
-    currentCollateralPrice: cardData.currentCollateralPrice,
-    balance: cardData.balance,
-    debtFloor: cardData.debtFloor,
-  })
+  const { maxBorrow, tokenAmount } = bannerValues(cardData)
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
 
