@@ -11,6 +11,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
 import { zero } from '../../../helpers/zero'
