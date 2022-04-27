@@ -775,7 +775,6 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$,
-    ilkData$,
     openVault$,
     manageVault$,
     manageInstiVault$,

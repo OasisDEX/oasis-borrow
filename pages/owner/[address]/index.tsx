@@ -36,13 +36,13 @@ function Summary({ address }: { address: string }) {
       error={[vaultsOverviewError, contextError, productCardsDataError, accountDataError]}
     >
       <WithLoadingIndicator value={[vaultsOverview, context, productCardsDataValue]}>
-        {([vaultsOverview, context, productCardsDataValue]) => (
+        {([_vaultsOverview, _context, _productCardsDataValue]) => (
           <VaultsOverviewView
-            vaultsOverview={vaultsOverview}
-            context={context}
+            vaultsOverview={_vaultsOverview}
+            context={_context}
             address={checksumAddress}
             ensName={accountData?.ensName}
-            productCardsData={productCardsDataValue}
+            productCardsData={_productCardsDataValue}
           />
         )}
       </WithLoadingIndicator>

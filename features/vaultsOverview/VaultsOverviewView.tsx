@@ -32,7 +32,7 @@ import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
-import _ from 'lodash'
+import uniqBy from 'lodash/uniqBy'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -435,7 +435,7 @@ function filterCards(props: {
     ? productCardsDataByVaultType[props.type]
     : productCardsDataByVaultType['multiply']
 
-  return _.uniqBy(
+  return uniqBy(
     props.cardFilters.reduce((cards, filter) => {
       if (filter) {
         return cards.concat(
