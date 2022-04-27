@@ -347,7 +347,7 @@ interface Props {
   vaultsOverview: VaultsOverview
   context: Context
   address: string
-  ensName: string | undefined
+  ensName: string | null | undefined
   productCardsData: ProductCardData[]
 }
 
