@@ -25,6 +25,7 @@ import {
   landingPageCardsData,
   multiplyPageCardsData,
   ProductCardData,
+  ProductLandingPagesFiltersKeys,
 } from 'helpers/productCards'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -346,6 +347,7 @@ interface Props {
   vaultsOverview: VaultsOverview
   context: Context
   address: string
+  ensName: string | undefined
   productCardsData: ProductCardData[]
 }
 
@@ -417,14 +419,13 @@ function VaultsOverwiewPerType({
   )
 }
 
-function TabContent(props: {
-  type: 'borrow' | 'multiply' | 'earn'
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  productCardsData: ProductCardData[]
-}) {
-  const { productCardsData } = props
-  const ProductCard = props.renderProductCard
+type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
+function filterCards(props: {
+  productCardsData: ProductCardData[]
+  cardFilters: ProductLandingPagesFiltersKeys[]
+  type: ProductTypes
+}) {
   const productCardsDataByVaultType = {
     borrow: borrowPageCardsData,
     multiply: multiplyPageCardsData,
@@ -435,33 +436,46 @@ function TabContent(props: {
     ? productCardsDataByVaultType[props.type]
     : productCardsDataByVaultType['multiply']
 
-  const cardFilters = cardFiltersFromBalances(productCardsData)
+  return _.uniqBy(
+    props.cardFilters.reduce((cards, filter) => {
+      if (filter) {
+        return cards.concat(
+          filterCardsDataByProduct({
+            productCardsData: props.productCardsData,
+            cardsFilter: filter,
+          }),
+        )
+      }
+      return cards
+    }, [] as ProductCardData[]),
+    'ilk',
+  )
+}
 
-  let filteredCards: ProductCardData[] = []
+function fallbackToFeaturedCards(props: {
+  productCardsData: ProductCardData[]
+  type: ProductTypes
+}) {
+  return landingPageCardsData({
+    productCardsData: props.productCardsData,
+    product: props.type,
+  })
+}
 
-  if (cardFilters.length > 0) {
-    filteredCards = _.uniqBy(
-      cardFilters.reduce((cards, filter) => {
-        if (filter) {
-          return cards.concat(
-            filterCardsDataByProduct({
-              productCardsData: productCardsData,
-              cardsFilter: filter,
-            }),
-          )
-        }
-        return cards
-      }, [] as ProductCardData[]),
-      'ilk',
-    )
-  }
+function TabContent(props: {
+  type: ProductTypes
+  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
+  productCardsData: ProductCardData[]
+}) {
+  const { productCardsData } = props
+  const ProductCard = props.renderProductCard
 
-  if (cardFilters.length === 0) {
-    filteredCards = landingPageCardsData({
-      productCardsData: props.productCardsData,
-      product: props.type,
-    })
-  }
+  const balancedDerivedCardFilters = cardFiltersFromBalances(productCardsData)
+
+  const hasFilters = balancedDerivedCardFilters.length > 0
+  const filteredCards = hasFilters
+    ? filterCards({ productCardsData, cardFilters: balancedDerivedCardFilters, type: props.type })
+    : fallbackToFeaturedCards({ productCardsData, type: props.type })
 
   return (
     <Flex
@@ -503,15 +517,19 @@ function TabHeaderParagraph({ children }: WithChildren) {
   )
 }
 
-function VaultSuggestions(props: { productCardsData: ProductCardData[] }) {
+function VaultSuggestions(props: { productCardsData: ProductCardData[]; address: string }) {
   const { t } = useTranslation()
-  const { productCardsData } = props
+  const { productCardsData, address } = props
   const isEarnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <>
       <Heading variant="header2" mt={6} sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
-        <Trans i18nKey="vaults-overview.headers.vault-suggestions" components={[<br />]} />
+        <Trans
+          i18nKey="vaults-overview.headers.vault-suggestions"
+          values={{ address: formatAddress(address) }}
+          components={[<br />]}
+        />
       </Heading>
       <TabSwitcher
         tabs={[
@@ -584,7 +602,13 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[] }) {
   )
 }
 
-export function VaultsOverviewView({ vaultsOverview, context, address, productCardsData }: Props) {
+export function VaultsOverviewView({
+  vaultsOverview,
+  context,
+  address,
+  ensName,
+  productCardsData,
+}: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -689,7 +713,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address, productCa
           </Grid>
         </>
       )}
-      {isOwnerViewing && <VaultSuggestions productCardsData={productCardsData} />}
+      {isOwnerViewing && (
+        <VaultSuggestions productCardsData={productCardsData} address={ensName || address} />
+      )}
     </Grid>
   )
 }
