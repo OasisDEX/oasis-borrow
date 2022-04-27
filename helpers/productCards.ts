@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { TokenBalances } from 'blockchain/tokens'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -20,7 +21,8 @@ export interface ProductCardData {
   ilk: Ilk
   liquidationRatio: BigNumber
   stabilityFee: BigNumber
-  userTokenBalance?: BigNumber
+  balance?: BigNumber
+  balanceInUsd?: BigNumber
   debtFloor: BigNumber
   currentCollateralPrice: BigNumber
   bannerIcon: string
@@ -394,24 +396,46 @@ export function borrowPageCardsData({
 }
 
 export function cardFiltersFromBalances(
-  tokenBalances: TokenBalances | undefined,
-): Array<ProductLandingPagesFiltersKeys | undefined> {
-  return (Object.entries(tokenBalances || {})
-    .filter(([_, { balance }]) => balance.isGreaterThan(0))
-    .map(([token]) => token) as unknown) as Array<ProductLandingPagesFiltersKeys | undefined>
+  productCardsData: ProductCardData[],
+): Array<ProductLandingPagesFiltersKeys> {
+  return productCardsData
+    .filter((cardData) => cardData.balance && cardData.balance.isGreaterThan(0))
+    .map((d) => (d.token as unknown) as ProductLandingPagesFiltersKeys)
 }
 
-export function addUserBalancesToProductCardsData(
-  productCardsData: ProductCardData[],
-  tokenBalances: TokenBalances | undefined,
-) {
-  if (!tokenBalances) return productCardsData
-  return productCardsData.map((product) => ({
-    ...product,
-    ...(tokenBalances[product.token]
-      ? { userTokenBalance: tokenBalances[product.token].balance }
-      : {}),
-  }))
+export function createProductCardsWithBalance$(
+  ilksWithBalance$: Observable<IlkWithBalance[]>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+): Observable<ProductCardData[]> {
+  return ilksWithBalance$.pipe(
+    switchMap((ilkDataList) =>
+      combineLatest(
+        ...ilkDataList.map((ilk) => {
+          const tokenMeta = getToken(ilk.token)
+
+          return priceInfo$(ilk.token).pipe(
+            switchMap((priceInfo) => {
+              return of({
+                token: ilk.token,
+                balance: ilk.balance,
+                balanceInUsd: ilk.balancePriceInUsd,
+                ilk: ilk.ilk as Ilk,
+                liquidationRatio: ilk.liquidationRatio,
+                stabilityFee: ilk.stabilityFee,
+                debtFloor: ilk.debtFloor,
+                currentCollateralPrice: priceInfo.currentCollateralPrice,
+                bannerIcon: tokenMeta.bannerIcon,
+                bannerGif: tokenMeta.bannerGif,
+                background: tokenMeta.background,
+                name: tokenMeta.name,
+                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+              })
+            }),
+          )
+        }),
+      ),
+    ),
+  )
 }
 
 export function createProductCardsData$(

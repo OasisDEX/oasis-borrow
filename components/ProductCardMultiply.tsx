@@ -10,20 +10,20 @@ import { ProductCard } from './ProductCard'
 function bannerValues(props: {
   maxMultiple: BigNumber
   currentCollateralPrice: BigNumber
-  userTokenBalance?: BigNumber
+  balance?: BigNumber
   debtFloor: BigNumber
 }) {
-  const { maxMultiple, currentCollateralPrice, userTokenBalance, debtFloor } = props
+  const { maxMultiple, currentCollateralPrice, balance, debtFloor } = props
   const dollarWorthInputColllateral = new BigNumber(150000)
   const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
 
   let roundedTokenAmount = new BigNumber(0)
 
-  const userBalanceAboveLimit = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+  const userBalanceAboveLimit = balance?.gt(debtFloor.div(currentCollateralPrice))
 
-  if (userTokenBalance && userBalanceAboveLimit) {
-    roundedTokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
-  } else if (userTokenBalance) {
+  if (balance && userBalanceAboveLimit) {
+    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
+  } else if (balance) {
     roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
   } else {
     roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
@@ -40,7 +40,7 @@ function bannerValues(props: {
 export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
-  console.log('cardData', cardData)
+
   const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2'
   const maxMultiple = !isGuniToken
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
@@ -49,7 +49,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { tokenAmount, exposure } = bannerValues({
     maxMultiple,
     currentCollateralPrice: cardData.currentCollateralPrice,
-    userTokenBalance: cardData.userTokenBalance,
+    balance: cardData.balance,
     debtFloor: cardData.debtFloor,
   })
 

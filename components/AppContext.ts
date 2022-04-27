@@ -92,7 +92,7 @@ import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
-import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
+import { createIlkDataListWithBalances$, IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
@@ -162,7 +162,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { createProductCardsData$ } from '../helpers/productCards'
+import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -730,6 +730,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
@@ -798,6 +799,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,

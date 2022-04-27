@@ -24,32 +24,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
-  const [tokenBalances, setBalances] = useState<TokenBalances | undefined>(undefined)
-  const {
-    vaultsOverview$,
-    context$,
-    productCardsData$,
-    connectedContext$,
-    accountBalances$,
-    ilkData$,
-  } = useAppContext()
+  const { vaultsOverview$, context$, productCardsWithBalance$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
 
-  const [connectedContext] = useObservable(connectedContext$)
-  const [ilkData] = useObservable(ilkData$('ETH-A'))
-  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
+  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsWithBalance$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
   const [context, contextError] = useObservable(context$)
-  console.log("ilkData['ETH-A']", ilkData)
-  console.log('context', context)
-  useEffect(() => {
-    if (!connectedContext?.account) return
-
-    const subscription = accountBalances$(connectedContext?.account).subscribe((v: TokenBalances) =>
-      setBalances(v),
-    )
-    return () => subscription.unsubscribe()
-  }, [connectedContext?.account])
 
   return (
     <WithErrorHandler error={[vaultsOverviewError, contextError, productCardsDataError]}>
@@ -60,7 +40,6 @@ function Summary({ address }: { address: string }) {
             context={context}
             address={checksumAddress}
             productCardsData={productCardsDataValue}
-            tokenBalances={tokenBalances}
           />
         )}
       </WithLoadingIndicator>

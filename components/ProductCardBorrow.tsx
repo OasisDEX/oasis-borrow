@@ -11,21 +11,21 @@ import { ProductCard } from './ProductCard'
 function bannerValues(props: {
   liquidationRatio: BigNumber
   currentCollateralPrice: BigNumber
-  userTokenBalance?: BigNumber
+  balance?: BigNumber
   debtFloor: BigNumber
 }) {
-  const { liquidationRatio, currentCollateralPrice, userTokenBalance, debtFloor } = props
+  const { liquidationRatio, currentCollateralPrice, balance, debtFloor } = props
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
 
   const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
-  const userBalanceAboveLimit = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+  const userBalanceAboveLimit = balance?.gt(debtFloor.div(currentCollateralPrice))
 
-  if (userTokenBalance) {
+  if (balance) {
     let roundedTokenAmount = new BigNumber(0)
 
     if (userBalanceAboveLimit) {
-      roundedTokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
+      roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
 
       return {
         maxBorrow: formatCryptoBalance(
@@ -87,7 +87,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { maxBorrow, tokenAmount } = bannerValues({
     liquidationRatio: cardData.liquidationRatio,
     currentCollateralPrice: cardData.currentCollateralPrice,
-    userTokenBalance: cardData.userTokenBalance,
+    balance: cardData.balance,
     debtFloor: cardData.debtFloor,
   })
 

@@ -57,7 +57,7 @@ interface ProductCardEarnProps {
 export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const { t } = useTranslation()
   const defaultDaiValue = new BigNumber(100000)
-  console.log('EARN', cardData)
+
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
 
@@ -67,14 +67,14 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
   const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
 
-  const { userTokenBalance, debtFloor, currentCollateralPrice } = cardData
-  const hasBalance = userTokenBalance
-  const isBalanceAboveFloor = userTokenBalance?.gt(debtFloor.div(currentCollateralPrice))
+  const { balance, debtFloor, currentCollateralPrice } = cardData
+  const hasBalance = balance
+  const isBalanceAboveFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
 
   let tokenAmount = defaultDaiValue
   console.log('cardata.token', cardData.token)
   if (hasBalance && isBalanceAboveFloor) {
-    tokenAmount = new BigNumber(userTokenBalance.toFixed(0, 3))
+    tokenAmount = new BigNumber(balance.toFixed(0, 3))
   } else if (hasBalance) {
     tokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
   }

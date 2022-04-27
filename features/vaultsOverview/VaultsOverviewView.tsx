@@ -352,7 +352,6 @@ interface Props {
   context: Context
   address: string
   productCardsData: ProductCardData[]
-  tokenBalances: TokenBalances | undefined
 }
 
 function getHeaderTranslationKey(
@@ -427,8 +426,8 @@ function TabContent(props: {
   type: 'borrow' | 'multiply' | 'earn'
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   productCardsData: ProductCardData[]
-  tokenBalances: TokenBalances | undefined
 }) {
+  const { productCardsData } = props
   const ProductCard = props.renderProductCard
 
   const productCardsDataByVaultType = {
@@ -441,11 +440,7 @@ function TabContent(props: {
     ? productCardsDataByVaultType[props.type]
     : productCardsDataByVaultType['multiply']
 
-  const cardFilters = cardFiltersFromBalances(props.tokenBalances)
-  const productCardsData = addUserBalancesToProductCardsData(
-    props.productCardsData,
-    props.tokenBalances,
-  )
+  const cardFilters = cardFiltersFromBalances(productCardsData)
 
   let filteredCards: ProductCardData[] = []
 
@@ -513,15 +508,9 @@ function TabHeaderParagraph({ children }: WithChildren) {
   )
 }
 
-function VaultSuggestions({
-  productCardsData,
-  tokenBalances,
-}: {
-  productCardsData: ProductCardData[]
-  tokenBalances: TokenBalances | undefined
-}) {
+function VaultSuggestions(props: { productCardsData: ProductCardData[] }) {
   const { t } = useTranslation()
-
+  const { productCardsData } = props
   const isEarnEnabled = useFeatureToggle('EarnProduct')
 
   return (
@@ -538,7 +527,6 @@ function VaultSuggestions({
                 type="multiply"
                 renderProductCard={ProductCardMultiply}
                 productCardsData={productCardsData}
-                tokenBalances={tokenBalances}
               />
             ),
             tabHeaderPara: (
@@ -557,7 +545,6 @@ function VaultSuggestions({
                 type="borrow"
                 renderProductCard={ProductCardBorrow}
                 productCardsData={productCardsData}
-                tokenBalances={tokenBalances}
               />
             ),
             tabHeaderPara: (
@@ -578,7 +565,6 @@ function VaultSuggestions({
                       type="earn"
                       renderProductCard={ProductCardEarn}
                       productCardsData={productCardsData}
-                      tokenBalances={tokenBalances}
                     />
                   ),
                   tabHeaderPara: (
@@ -603,13 +589,7 @@ function VaultSuggestions({
   )
 }
 
-export function VaultsOverviewView({
-  vaultsOverview,
-  context,
-  address,
-  productCardsData,
-  tokenBalances,
-}: Props) {
+export function VaultsOverviewView({ vaultsOverview, context, address, productCardsData }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -714,9 +694,7 @@ export function VaultsOverviewView({
           </Grid>
         </>
       )}
-      {isOwnerViewing && (
-        <VaultSuggestions productCardsData={productCardsData} tokenBalances={tokenBalances} />
-      )}
+      {isOwnerViewing && <VaultSuggestions productCardsData={productCardsData} />}
     </Grid>
   )
 }
