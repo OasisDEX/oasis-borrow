@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-interface ContentCardLiquidationPriceModalProps {
+interface ContentCardCollateralizationRatioModalProps {
   collateralizationRatioFormatted: string
   collateralizationRatioAtNextPriceFormated?: string
 }
@@ -23,7 +23,7 @@ interface ContentCardCollateralizationRatioProps {
 function ContentCardLiquidationPriceModal({
   collateralizationRatioFormatted,
   collateralizationRatioAtNextPriceFormated,
-}: ContentCardLiquidationPriceModalProps) {
+}: ContentCardCollateralizationRatioModalProps) {
   const { t } = useTranslation()
 
   return (
@@ -80,7 +80,7 @@ export function ContentCardCollateralizationRatio({
       }),
   }
 
-  const contentCardModalSettings: ContentCardLiquidationPriceModalProps = {
+  const contentCardModalSettings: ContentCardCollateralizationRatioModalProps = {
     collateralizationRatioFormatted: formatted.collateralizationRatio,
   }
 
