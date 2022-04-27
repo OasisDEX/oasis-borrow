@@ -5,6 +5,7 @@ import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/Vaul
 import { VaultDetailsCardDynamicStopPrice } from 'components/vault/detailsCards/VaultDetailsCardDynamicStopPrice'
 import { VaultDetailsCardMaxTokenOnStopLossTrigger } from 'components/vault/detailsCards/VaultDetailsCardMaxTokenOnStopLossTrigger'
 import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards/VaultDetailsCardStopLossCollRatio'
+import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
@@ -97,7 +98,17 @@ export function ProtectionDetailsLayout({
       <DetailsSection
         title={t('system.protection')}
         badge={isStopLossEnabled}
-        content={<DetailsSectionContentCardWrapper>Lorem ipsum</DetailsSectionContentCardWrapper>}
+        content={
+          <DetailsSectionContentCardWrapper>
+            <ContentCardStopLossCollateralRatio
+              isStopLossEnabled={isStopLossEnabled}
+              isEditing={isEditing}
+              slRatio={slRatio}
+              collateralizationRatio={collateralizationRatio}
+              afterSlRatio={afterSlRatio}
+            />
+          </DetailsSectionContentCardWrapper>
+        }
       />
     </Box>
   )
