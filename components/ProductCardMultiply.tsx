@@ -16,7 +16,7 @@ function calculatePersonalisedValues(
 
   let roundedTokenAmount = new BigNumber(0)
   if (balanceAboveDebtFloor && balance) {
-    roundedTokenAmount = new BigNumber(balance!.toFixed(0, 3))
+    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
   }
   if (!balanceAboveDebtFloor || !balance) {
     roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
