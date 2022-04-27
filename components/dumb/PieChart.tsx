@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import React from 'react'
 
 type SliceBackground = {
-  color: string,
+  color?: string,
   svgBgId?: string,
 }
 
@@ -35,7 +35,7 @@ function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   return slices
 }
 
-export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: number }) {
+export function PieChart({ items, size = 258 }: { items: PieChartItem[], size?: number }) {
   const strokeWidth = 34
   const radius = size / 2
   const viewSize = size + strokeWidth
@@ -62,7 +62,7 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size: n
       </linearGradient>
     </defs>
     {slices.map(({ length, angle, color, svgBgId }) => svgBgId ? renderSlice(length, angle, svgBgId) : [
-      renderSlice(length, angle, color),
+      renderSlice(length, angle, color || '#999'),
       renderSlice(length, angle, 'url(#pieChart-fallback-gradient)')
     ])}
   </svg>
