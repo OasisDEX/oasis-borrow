@@ -1,3 +1,4 @@
+import { Box } from '@theme-ui/components'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
@@ -8,9 +9,11 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Image } from 'theme-ui'
+import { Image, Text } from 'theme-ui'
 
+import { HasGasEstimation } from '../../helpers/form'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
+import { getEstimatedGasFeeText, VaultChangesInformationItem } from './VaultChangesInformation'
 
 export function VaultProxyStatusCard({
   stage,
@@ -49,8 +52,10 @@ export function VaultProxyStatusCard({
 
 export function VaultProxyContentBox({
   stage,
+  gasData,
 }: {
   stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
+  gasData: HasGasEstimation
 }) {
   const { t } = useTranslation()
 
@@ -62,7 +67,18 @@ export function VaultProxyContentBox({
           sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}
         />
       ) : (
-        <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+        <>
+          <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+          <Box>
+            <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>
+              {t('creating-proxy-contract')}
+            </Text>
+            <VaultChangesInformationItem
+              label={t('transaction-fee')}
+              value={getEstimatedGasFeeText(gasData)}
+            />
+          </Box>
+        </>
       )}
     </>
   )

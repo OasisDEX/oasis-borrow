@@ -13,6 +13,7 @@ import { ManageVaultCollateralAllowance } from '../../../../components/vault/com
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
+import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -70,6 +71,7 @@ export function ManageVaultForm(
   const automationEnabled = useFeatureToggle('Automation')
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
+  const gasData = extractGasDataFromState(props)
   const mostRecentEvent = vaultHistory[0]
 
   const isVaultClosed =
@@ -86,7 +88,7 @@ export function ManageVaultForm(
       ) : (
         <>
           <ManageVaultFormHeader {...props} />
-          {isProxyStage && <VaultProxyContentBox stage={stage} />}
+          {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
           {isEditingStage && <ManageVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

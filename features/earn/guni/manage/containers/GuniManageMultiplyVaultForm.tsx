@@ -2,7 +2,7 @@ import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import React from 'react'
 
@@ -43,7 +43,6 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />
-      {isProxyStage && <VaultProxyContentBox stage={stage} />}
       {isEditingStage && <GuniManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

@@ -8,6 +8,7 @@ import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 
+import { createDsProxy } from '../../../../blockchain/calls/proxy'
 import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
@@ -137,7 +138,7 @@ export function applyEstimateGas(
   state: OpenVaultState,
 ): Observable<OpenVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const { proxyAddress, generateAmount, depositAmount, ilk, token } = state
+    const { proxyAddress, generateAmount, depositAmount, ilk, token, isProxyStage } = state
 
     if (proxyAddress && (generateAmount || depositAmount)) {
       return estimateGas(vaultActions.open, {
@@ -148,6 +149,10 @@ export function applyEstimateGas(
         ilk,
         token,
       })
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined
