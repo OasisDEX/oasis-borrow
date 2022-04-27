@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { TokenBalances } from 'blockchain/tokens'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'

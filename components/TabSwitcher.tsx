@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
+import React, { MouseEvent, ReactNode, useState } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
@@ -99,11 +99,10 @@ export function TabSwitcher(props: {
 }) {
   const [selectedTab, setSelectedTab] = useState('0')
 
-  // TODO: Does this function need to be wrapped with useCallback?
-  const selectTab = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+  const selectTab = (event: MouseEvent<HTMLButtonElement>) => {
     const nextTab = (event.currentTarget.value as unknown) as string
     setSelectedTab(nextTab)
-  }, [])
+  }
 
   const isEmpty = !props.tabs.length
   const isOneTab = props.tabs.length === 1

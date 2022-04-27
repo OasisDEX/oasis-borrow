@@ -54,13 +54,6 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
-  // const { tokenAmount, exposure } = bannerValues({
-  //   maxMultiple,
-  //   currentCollateralPrice: cardData.currentCollateralPrice,
-  //   balance: cardData.balance,
-  //   debtFloor: cardData.debtFloor,
-  // })
-
   const { tokenAmount, exposure } = bannerValues({ ...cardData, maxMultiple })
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]

@@ -2,7 +2,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { TokenBalances } from 'blockchain/tokens'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
@@ -20,16 +19,12 @@ import {
   formatPercent,
 } from 'helpers/formatters/format'
 import {
-  addUserBalancesToProductCardsData,
   borrowPageCardsData,
   cardFiltersFromBalances,
   earnPageCardsData,
   landingPageCardsData,
   multiplyPageCardsData,
-  pageCardsDataByProduct,
   ProductCardData,
-  productCardsConfig,
-  ProductLandingPagesFiltersKeys,
 } from 'helpers/productCards'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -37,7 +32,7 @@ import { useRedirect } from 'helpers/useRedirect'
 import { zero } from 'helpers/zero'
 import _ from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 import { Dictionary } from 'ts-essentials'
