@@ -60,7 +60,13 @@ export function ManageMultiplyVaultContainer({
   return (
     <>
       {!automationEnabled && (
-        <Header header={t('vault.header', { ilk, id })} id={id} ilkData={ilkData} />
+        <Header
+          header={t('vault.header', { ilk, id })}
+          id={id}
+          ilkData={ilkData}
+          token={manageVault.vault.token}
+          priceInfo={manageVault.priceInfo}
+        />
       )}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>

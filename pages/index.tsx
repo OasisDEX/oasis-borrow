@@ -1,5 +1,6 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { LandingPageLayout } from 'components/Layouts'
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -15,6 +16,7 @@ function LandingPage() {
   return (
     <WithConnection>
       <HomepageView />
+      <Survey for="homepage" />
     </WithConnection>
   )
 }

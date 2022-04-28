@@ -1,5 +1,8 @@
 import { Box, Button, Grid } from '@theme-ui/components'
-import { TAB_CHANGE_SUBJECT, TabChange } from 'features/automation/common/UITypes/TabChange'
+import {
+  TAB_CHANGE_SUBJECT,
+  TabChange,
+} from 'features/automation/protection/common/UITypes/TabChange'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
@@ -15,6 +18,7 @@ export enum VaultViewMode {
   Overview,
   Protection,
   History,
+  VaultInfo,
 }
 
 interface VaultTabButtonProps {
@@ -101,19 +105,23 @@ type VaultTabSwitchOptionAutomationBasicBuyAndSell = {
 export function VaultTabSwitch({
   defaultMode,
   heading,
+  headline,
   headerControl,
   overViewControl,
   historyControl,
   protectionControl,
+  vaultInfo,
   showProtectionTab,
   protectionEnabled,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
   heading: JSX.Element
+  headline: JSX.Element
   headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
+  vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
 }): JSX.Element {
@@ -176,18 +184,22 @@ export function VaultTabSwitch({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
-        <Heading
-          as="h1"
-          variant="heading1"
-          sx={{
-            fontWeight: 'semiBold',
-            pb: 2,
-          }}
-        >
-          {heading}
-        </Heading>
-      </Flex>
+      {automationBasicBuyAndSellEnabled ? (
+        <Box sx={{ zIndex: 0 }}>{headline}</Box>
+      ) : (
+        <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
+          <Heading
+            as="h1"
+            variant="heading1"
+            sx={{
+              fontWeight: 'semiBold',
+              pb: 2,
+            }}
+          >
+            {heading}
+          </Heading>
+        </Flex>
+      )}
       <Box sx={{ display: ['block', 'none'] }}>
         <ReactSelect<VaultTabSwitchOption>
           options={options}
@@ -205,6 +217,7 @@ export function VaultTabSwitch({
               borderBottom: '3px solid',
               borderColor: 'rgba(37, 39, 61, 0.1)',
               width: '100%',
+              mb: 4,
             }}
           >
             <VaultTabButton
@@ -222,6 +235,12 @@ export function VaultTabSwitch({
                 <VaultTabTag isEnabled={protectionEnabled} />
               </VaultTabButton>
             )}
+            <VaultTabButton
+              onClick={() => setMode(VaultViewMode.VaultInfo)}
+              variant={getVariant(mode, VaultViewMode.VaultInfo)}
+            >
+              {t('system.vault-info')}
+            </VaultTabButton>
             <VaultTabButton
               onClick={() => setMode(VaultViewMode.History)}
               variant={getVariant(mode, VaultViewMode.History)}
@@ -271,7 +290,9 @@ export function VaultTabSwitch({
           ? overViewControl
           : mode === VaultViewMode.Protection
           ? protectionControl
-          : historyControl}
+          : mode === VaultViewMode.History
+          ? historyControl
+          : vaultInfo}
       </Box>
     </Grid>
   )

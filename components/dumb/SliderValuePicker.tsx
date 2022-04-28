@@ -29,8 +29,6 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
 
   const leftLabel = t(`slider.${props.sliderKey}.left-label`)
   const rightLabel = t(`slider.${props.sliderKey}.right-label`)
-  const leftFooter = t(`slider.${props.sliderKey}.left-footer`)
-  const rightFooter = t(`slider.${props.sliderKey}.right-footer`)
 
   const background = props.sliderPercentageFill
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
@@ -77,18 +75,6 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
             props.onChange(new BigNumber(e.target.value))
           }}
         />
-      </Box>
-      <Box>
-        <Flex
-          sx={{
-            variant: 'text.paragraph4',
-            justifyContent: 'space-between',
-            color: 'text.subtitle',
-          }}
-        >
-          {leftFooter && <Text>{leftFooter}</Text>}
-          {rightFooter && <Text>{rightFooter}</Text>}
-        </Flex>
       </Box>
     </Grid>
   )

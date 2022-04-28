@@ -21,7 +21,7 @@ import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
-import { StopLossTriggerData } from '../automation/common/StopLossTriggerDataExtractor'
+import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'

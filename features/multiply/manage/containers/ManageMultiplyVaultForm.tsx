@@ -2,7 +2,7 @@ import { VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import React, { useState } from 'react'
 
@@ -14,7 +14,7 @@ import {
 import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { StopLossTriggeredFormControl } from '../../../automation/controls/StopLossTriggeredFormControl'
+import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 import { ManageMultiplyVaultBorrowTransition } from './ManageMultiplyVaultBorrowTransition'
 import { ManageMultiplyVaultChangesInformation } from './ManageMultiplyVaultChangesInformation'
@@ -69,6 +69,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       ) : (
         <>
           <ManageMultiplyVaultFormHeader {...props} />
+          {isProxyStage && <VaultProxyContentBox stage={stage} />}
           {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

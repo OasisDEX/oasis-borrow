@@ -3,7 +3,7 @@ import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADe
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormVaultTypeSwitch } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -29,6 +29,7 @@ export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
         title={t('vault-form.header.edit')}
         subTitle={t('vault-form.subtext.edit-multiply')}
       />
+      {isProxyStage && <VaultProxyContentBox stage={stage} />}
       {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && (

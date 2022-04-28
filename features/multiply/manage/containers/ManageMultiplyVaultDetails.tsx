@@ -18,9 +18,9 @@ import { Box, Grid } from 'theme-ui'
 import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
 import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/controls/GetProtectionBannerControl'
-import { StopLossBannerControl } from '../../../automation/controls/StopLossBannerControl'
-import { StopLossTriggeredBannerControl } from '../../../automation/controls/StopLossTriggeredBannerControl'
+import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
 
 function DefaultManageMultiplyVaultDetailsSummary({

@@ -52,6 +52,7 @@ const oasisBaseTheme = {
     mutedAlt: '#656F75',
     error: '#FDEDE8',
     onError: '#F75524',
+    dimError: 'rgba(247, 85, 36, 0.1)',
     success: '#E7FCFA',
     dimSuccess: 'rgba(26, 171, 155, 0.1)',
     onSuccess: '#1AAB9B',
@@ -135,11 +136,10 @@ const oasisBaseTheme = {
     },
     headerSettings: {
       fontFamily: 'body',
-      fontWeight: 'medium',
+      fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
-      mb: 3,
     },
     paragraph1: {
       fontFamily: 'body',
@@ -203,6 +203,13 @@ const oasisBaseTheme = {
       fontWeight: 'medium',
       letterSpacing: '0.02em',
     },
+    label: {
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      fontSize: 1,
+      color: 'text.subtitle',
+    },
   },
   borders: {
     light: '1px solid #787a9b40',
@@ -218,6 +225,7 @@ const oasisBaseTheme = {
     mediumLarge: 12,
     large: 16,
     roundish: 20,
+    rounder: 24,
     round: 32,
     circle: 50,
   },
@@ -242,6 +250,7 @@ const oasisBaseTheme = {
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
     userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+    bottomSheet: '0px 4px 28px rgba(37, 39, 61, 0.3)',
   },
   gradients: {
     app: 'linear-gradient(180deg, #EAFFFB 0.01%, #EAF0FF 24.48%, rgba(255, 255, 255, 0) 100%)',
@@ -518,6 +527,26 @@ const oasisBaseTheme = {
         opacity: 0.5,
       },
     },
+    tertiary: {
+      variant: 'text.paragraph3',
+      px: '24px',
+      py: 2,
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      cursor: 'pointer',
+      bg: 'backgroundAlt',
+      color: 'primary',
+      borderRadius: 'round',
+      whiteSpace: 'nowrap',
+      '&:focus': {
+        outline: 'none',
+      },
+      '&:disabled': {
+        pointerEvents: 'none',
+        opacity: 0.5,
+      },
+    },
     square: {
       variant: 'text.paragraph2',
       bg: 'white',
@@ -706,6 +735,10 @@ const oasisBaseTheme = {
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
+      ':hover': {
+        boxShadow: 'selectMenu',
+      },
+      transition: TRANSITIONS.global,
     },
     menuButtonRound: {
       variant: 'buttons.menuButton',
@@ -723,6 +756,27 @@ const oasisBaseTheme = {
       color: 'inherit',
       cursor: 'pointer',
       fontFamily: 'body',
+    },
+    action: {
+      px: '24px',
+      py: 2,
+      fontFamily: 'body',
+      fontSize: 1,
+      fontWeight: 'semiBold',
+      lineHeight: '18px',
+      color: 'primary',
+      backgroundColor: 'background',
+      border: 'lightMuted',
+      borderRadius: 'rounder',
+      cursor: 'pointer',
+      transition: 'border-color 200ms',
+      '&:hover': {
+        borderColor: 'primary',
+      },
+    },
+    actionActive: {
+      variant: 'buttons.action',
+      borderColor: 'primary',
     },
   },
   links: {

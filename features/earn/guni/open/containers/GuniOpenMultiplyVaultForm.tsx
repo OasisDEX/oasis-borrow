@@ -2,7 +2,7 @@ import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllo
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -34,6 +34,7 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
         }
         token="DAI"
       />
+      {isProxyStage && <VaultProxyContentBox stage={stage} />}
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} token="DAI" />}
       {isOpenStage && (
