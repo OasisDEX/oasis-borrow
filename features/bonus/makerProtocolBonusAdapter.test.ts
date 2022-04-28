@@ -1,44 +1,67 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { NEVER, of } from 'rxjs'
+import { NEVER, noop, Observable, of } from 'rxjs'
 import sinon from 'sinon'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
-import { vaultActionsLogic } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver'
-import { protoTxHelpers } from '../../components/AppContext'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { createMockVaultResolver$, VaultResolve } from '../../blockchain/calls/vaultResolver'
+import { protoTxHelpers, TxHelpers } from '../../components/AppContext'
 import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
+import { ContextConnected } from '../../blockchain/network'
+
+function constructMakerProtocolBonusAdapterForTests({
+  customVaultActionsLogicImp,
+  customTxHelpersImp,
+  customContextConnectedImp,
+  customVaultResolverImp,
+}: {
+  customVaultActionsLogicImp?: VaultActionsLogicInterface
+  customTxHelpersImp?: Observable<TxHelpers>
+  customContextConnectedImp?: Observable<ContextConnected>
+  customVaultResolverImp?: () => Observable<VaultResolve>
+} = {}) {
+  const _vaultActionsLogic =
+    customVaultActionsLogicImp || vaultActionsLogic(MockProxyActionsSmartContractAdapter)
+  const _txHelpers = customTxHelpersImp || of(protoTxHelpers)
+  const _contextConnected = customContextConnectedImp || of(mockContextConnected)
+  const _vaultResolver = customVaultResolverImp || createMockVaultResolver$
+  return createMakerProtocolBonusAdapter(
+    () => _vaultResolver(),
+    () => of(new BigNumber('213546478530833333208')),
+    {
+      stake$: () => of(new BigNumber('884164304490031118333')),
+      share$: () => of(new BigNumber('1991795778107046866929307986')),
+      bonusTokenAddress$: () => of('0xTokenAddress'),
+      stock$: () => of(new BigNumber('1907391335880109885123')),
+      total$: () => of(new BigNumber('1907391335880109885123')),
+      crops$: () => of(new BigNumber('921300255712382934088')),
+    },
+    {
+      tokenDecimals$: () => of(new BigNumber(18)),
+      tokenSymbol$: () => of('CSH'),
+      tokenName$: () => of('token name'),
+      tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
+    },
+    _contextConnected,
+    _txHelpers,
+    _vaultActionsLogic,
+    () => of('0xProxyAddress'),
+    new BigNumber(123),
+  )
+}
 
 describe('makerProtocolBonusAdapter', () => {
   describe('retrieving bonuses', () => {
     it('pipes the decimals and symbol correctly', () => {
-      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
-        () => createMockVaultResolver$(),
-        () => of(new BigNumber('213546478530833333208')),
-        {
-          stake$: () => of(new BigNumber('884164304490031118333')),
-          share$: () => of(new BigNumber('1991795778107046866929307986')),
-          bonusTokenAddress$: () => of('0xTokenAddress'),
-          stock$: () => of(new BigNumber('1907391335880109885123')),
-          total$: () => of(new BigNumber('1907391335880109885123')),
-          crops$: () => of(new BigNumber('921300255712382934088')),
-        },
-        {
-          tokenDecimals$: () => of(new BigNumber(18)),
-          tokenSymbol$: () => of('CSH'),
-          tokenName$: () => of('token name'),
-          tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
-        },
-        of(mockContextConnected),
-        of(protoTxHelpers),
-        vaultActionsLogic(MockProxyActionsSmartContractAdapter),
-        () => of('0xProxyAddress'),
-        new BigNumber(123),
-      )
+      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests()
 
       const bonusStreamState = getStateUnpacker(makerdaoBonusAdapter.bonus$)
       const claimFuncStreamState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)
@@ -50,8 +73,6 @@ describe('makerProtocolBonusAdapter', () => {
       expect(claimFuncStreamState).to.exist
       expect(bonusStreamState()?.readableAmount).to.eq('939CSH')
     })
-
-    it('returns undefined if the CDP does not support bonuses')
   })
 
   describe('claiming bonuses', () => {
@@ -59,29 +80,11 @@ describe('makerProtocolBonusAdapter', () => {
       const txHelpersMock = { ...protoTxHelpers, sendWithGasEstimation: sinon.spy() }
 
       const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
-        () => createMockVaultResolver$(),
-        () => of(new BigNumber('213546478530833333208')),
-        {
-          stake$: () => of(new BigNumber('884164304490031118333')),
-          share$: () => of(new BigNumber('1991795778107046866929307986')),
-          bonusTokenAddress$: () => of('0xTokenAddress'),
-          stock$: () => of(new BigNumber('1907391335880109885123')),
-          total$: () => of(new BigNumber('1907391335880109885123')),
-          crops$: () => of(new BigNumber('921300255712382934088')),
-        },
-        {
-          tokenDecimals$: () => of(new BigNumber(18)),
-          tokenSymbol$: () => of('CSH'),
-          tokenName$: () => of('token name'),
-          tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
-        },
-        of(mockContextConnected),
-        of(txHelpersMock),
-        mockVaultActions,
-        () => of('0xProxyAddress'),
-        new BigNumber(123),
-      )
+
+      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+        customVaultActionsLogicImp: mockVaultActions,
+        customTxHelpersImp: of(txHelpersMock),
+      })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
       getStateUnpacker(claimAllCbState!())
@@ -139,29 +142,9 @@ describe('makerProtocolBonusAdapter', () => {
           sendWithGasEstimation: sinon.stub().returns(of({ status: txStatus })),
         }
 
-        const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
-          () => createMockVaultResolver$(),
-          () => of(new BigNumber('213546478530833333208')),
-          {
-            stake$: () => of(new BigNumber('884164304490031118333')),
-            share$: () => of(new BigNumber('1991795778107046866929307986')),
-            bonusTokenAddress$: () => of('0xTokenAddress'),
-            stock$: () => of(new BigNumber('1907391335880109885123')),
-            total$: () => of(new BigNumber('1907391335880109885123')),
-            crops$: () => of(new BigNumber('921300255712382934088')),
-          },
-          {
-            tokenDecimals$: () => of(new BigNumber(18)),
-            tokenSymbol$: () => of('CSH'),
-            tokenName$: () => of('token name'),
-            tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
-          },
-          of(mockContextConnected),
-          of(txHelpersMock),
-          vaultActionsLogic(MockProxyActionsSmartContractAdapter),
-          () => of('0xProxyAddress'),
-          new BigNumber(123),
-        )
+        const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+          customTxHelpersImp: of(txHelpersMock),
+        })
 
         const claimRewardFunc$ = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
         const claimRewardState = getStateUnpacker(claimRewardFunc$!())
@@ -174,60 +157,20 @@ describe('makerProtocolBonusAdapter', () => {
     })
 
     it('does not provide claim function if there is no wallet connected', () => {
-      const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
-        () => createMockVaultResolver$(),
-        () => of(new BigNumber('213546478530833333208')),
-        {
-          stake$: () => of(new BigNumber('884164304490031118333')),
-          share$: () => of(new BigNumber('1991795778107046866929307986')),
-          bonusTokenAddress$: () => of('0xTokenAddress'),
-          stock$: () => of(new BigNumber('1907391335880109885123')),
-          total$: () => of(new BigNumber('1907391335880109885123')),
-          crops$: () => of(new BigNumber('921300255712382934088')),
-        },
-        {
-          tokenDecimals$: () => of(new BigNumber(18)),
-          tokenSymbol$: () => of('CSH'),
-          tokenName$: () => of('token name'),
-          tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
-        },
-        NEVER,
-        NEVER, // no txHelpers
-        mockVaultActions,
-        () => of('0xProxyAddress'),
-        new BigNumber(123),
-      )
+      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+        customContextConnectedImp: NEVER,
+        customTxHelpersImp: NEVER,
+      })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
       expect(claimAllCbState).to.be.undefined
     })
 
     it('does not provide claim function if the connected wallet is not the same as the vault controller', () => {
-      const mockVaultActions = vaultActionsLogic(MockProxyActionsSmartContractAdapter)
-      const makerdaoBonusAdapter = createMakerProtocolBonusAdapter(
-        () => createMockVaultResolver$({ controller: '0xDifferentAddress' }),
-        () => of(new BigNumber('213546478530833333208')),
-        {
-          stake$: () => of(new BigNumber('884164304490031118333')),
-          share$: () => of(new BigNumber('1991795778107046866929307986')),
-          bonusTokenAddress$: () => of('0xTokenAddress'),
-          stock$: () => of(new BigNumber('1907391335880109885123')),
-          total$: () => of(new BigNumber('1907391335880109885123')),
-          crops$: () => of(new BigNumber('921300255712382934088')),
-        },
-        {
-          tokenDecimals$: () => of(new BigNumber(18)),
-          tokenSymbol$: () => of('CSH'),
-          tokenName$: () => of('token name'),
-          tokenBalanceRawForJoin$: () => of(new BigNumber('1907391335880109885123')),
-        },
-        of(mockContextConnected),
-        of(protoTxHelpers),
-        mockVaultActions,
-        () => of('0xProxyAddress'),
-        new BigNumber(123),
-      )
+      const makerdaoBonusAdapter = constructMakerProtocolBonusAdapterForTests({
+        customVaultResolverImp: () =>
+          createMockVaultResolver$({ controller: '0xDifferentAddress' }),
+      })
 
       const claimAllCbState = getStateUnpacker(makerdaoBonusAdapter.claimAll$)()
       expect(claimAllCbState).to.be.undefined
