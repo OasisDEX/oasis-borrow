@@ -61,7 +61,7 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size?: 
         <stop offset="100%" style={{stopColor: 'rgb(255, 255, 255, 0)'}} />
       </linearGradient>
     </defs>
-    {slices.map(({ length, angle, color, svgBgId }) => svgBgId ? renderSlice(length, angle, svgBgId) : [
+    {slices.map(({ length, angle, color, svgBgId }) => svgBgId ? renderSlice(length, angle, `url(#${svgBgId})`) : [
       renderSlice(length, angle, color || '#999'),
       renderSlice(length, angle, 'url(#pieChart-fallback-gradient)')
     ])}

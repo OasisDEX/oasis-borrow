@@ -11,12 +11,17 @@ export interface TokenConfig {
   icon: string
   iconCircle: string
   iconColor: string
+  iconBgId?: string // used in PieChart, use defs from tokenIcons.tsx > InjectTokenIconsDefs
   ticker: string
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  bannerGif?: string
   token0?: string
   token1?: string
+  coinbaseTicker?: string
+  background?: string
+  digitsInstant?: number
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -32,6 +37,7 @@ export const tokens = [
     icon: 'ether',
     iconCircle: 'ether_circle_color',
     iconColor: 'ether_color',
+    iconBgId: 'eth_paint0_linear',
     ticker: 'eth-ethereum',
     coinbaseTicker: 'eth-usdc',
     color: '#667FE3',
@@ -48,6 +54,7 @@ export const tokens = [
     icon: 'bat',
     iconCircle: 'bat_circle_color',
     iconColor: 'bat_color',
+    iconBgId: 'bat_paint0_linear',
     color: '#ff4625',
     bannerIcon: '',
     background: '',
@@ -65,6 +72,7 @@ export const tokens = [
     icon: 'wbtc',
     iconCircle: 'wbtc_circle_color',
     iconColor: 'wbtc_circle_color',
+    iconBgId: 'wbtc_paint0_linear',
     ticker: 'wbtc-wrapped-bitcoin',
     color: '#f09242',
     background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -84,6 +92,7 @@ export const tokens = [
     icon: 'renbtc',
     iconCircle: 'renbtc_circle_color',
     iconColor: 'renbtc_circle_color',
+    iconBgId: 'renbtc_paint0_linear',
     ticker: 'renbtc-renbtc',
     color: '#838489',
     background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
@@ -114,6 +123,7 @@ export const tokens = [
     icon: 'kyber',
     iconCircle: 'kyber_circle_color',
     iconColor: 'kyber_color',
+    iconBgId: 'knc_paint0_linear',
     color: '#30cb9e',
     bannerIcon: '',
     background: '',
@@ -128,6 +138,7 @@ export const tokens = [
     icon: 'mana',
     iconCircle: 'mana_circle_color',
     iconColor: 'mana_color',
+    iconBgId: 'mana_paint1_linear',
     color: '#f05',
     background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
@@ -156,6 +167,7 @@ export const tokens = [
     icon: 'usdt',
     iconCircle: 'usdt_circle_color',
     iconColor: 'usdt_color',
+    iconBgId: 'usdt_paint0_linear',
     color: '259c77',
     bannerIcon: '',
     background: '',
@@ -170,6 +182,7 @@ export const tokens = [
     icon: 'compound',
     iconCircle: 'compound_circle_color',
     iconColor: 'compound_color',
+    iconBgId: 'comp_paint0_linear',
     color: '#00D395',
     bannerIcon: '',
     background: '',
@@ -184,6 +197,7 @@ export const tokens = [
     icon: 'lrc',
     iconCircle: 'lrc_circle_color',
     iconColor: 'lrc_color',
+    iconBgId: 'lrc_paint0_linear',
     color: '#1c60ff',
     bannerIcon: '',
     background: '',
@@ -198,6 +212,7 @@ export const tokens = [
     icon: 'chainlink',
     iconCircle: 'chainlink_circle_color',
     iconColor: 'chainlink_color',
+    iconBgId: 'link_paint0_linear',
     color: '#375bd2',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
@@ -242,6 +257,7 @@ export const tokens = [
     icon: 'usdc',
     iconCircle: 'usdc_circle_color',
     iconColor: 'usdc_circle_color',
+    iconBgId: 'usdc_paint0_linear',
     ticker: 'usdc-usd-coin',
     color: '#2775ca',
     background: 'linear-gradient(152.45deg, #0666CE 8.53%, #61A9F8 91.7%)',
@@ -258,6 +274,7 @@ export const tokens = [
     icon: 'usdc',
     iconCircle: 'bal_circle',
     iconColor: 'bal_circle_color',
+    iconBgId: 'bal_paint0_linear',
     color: '#000',
     bannerIcon: '',
     background: '',
@@ -273,6 +290,7 @@ export const tokens = [
     icon: 'usdc',
     iconCircle: 'yfi_circle_color',
     iconColor: 'yfi_circle_color',
+    iconBgId: 'yfi_paint0_linear',
     color: '#0657f9',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
@@ -288,6 +306,7 @@ export const tokens = [
     icon: 'uni_circle_color',
     iconCircle: 'uni_circle_color',
     iconColor: 'uni_circle_color',
+    iconBgId: 'uni_paint0_linear',
     color: '#ff077d',
     background: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
@@ -303,6 +322,7 @@ export const tokens = [
     icon: 'aave_circle_color',
     iconCircle: 'aave_circle_color',
     iconColor: 'aave_circle_color',
+    iconBgId: 'aave_paint0_linear',
     color: '#ff077d',
     background: 'linear-gradient(286.73deg, #B6509E 2.03%, #2EBAC6 100%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/banner_icons/aave.svg'),
@@ -502,6 +522,7 @@ export const tokens = [
     icon: 'matic_circle_color',
     iconCircle: 'matic_circle_color',
     iconColor: 'matic_circle_color',
+    iconBgId: 'matic_paint0_linear',
     color: '#ff077d',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
@@ -517,6 +538,7 @@ export const tokens = [
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
+    iconBgId: 'wsteth_paint0_linear',
     color: '#ff077d',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wstETH.png'),
@@ -533,6 +555,7 @@ export const tokens = [
     icon: 'dai',
     iconCircle: 'dai_circle_color',
     iconColor: 'dai_color',
+    iconBgId: 'paint0_linear_dai',
     ticker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
     color: '#fdc134',
