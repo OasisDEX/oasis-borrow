@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
+import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD, WAD_PRECISION } from 'components/constants'
 import padEnd from 'lodash/padEnd'
 import ethAbi, { AbiCoder } from 'web3-eth-abi'
 
@@ -10,6 +10,10 @@ BigNumber.set({ DECIMAL_PLACES: 45 })
 
 export function amountFromRay(amount: BigNumber): BigNumber {
   return amount.div(RAY).decimalPlaces(RAY_PRECISION)
+}
+
+export function amountToRay(amount: BigNumber): BigNumber {
+  return amount.times(RAY)
 }
 
 export function amountFromRad(amount: BigNumber): BigNumber {
@@ -34,6 +38,10 @@ export function amountFromWei(amount: BigNumber, token: string): BigNumber {
 
 export function amountToWad(amount: BigNumber): BigNumber {
   return amount.times(WAD)
+}
+
+export function amountFromPrecision(amount: BigNumber, precision: BigNumber): BigNumber {
+  return amount.div(new BigNumber(10).pow(precision)).decimalPlaces(precision.toNumber())
 }
 
 export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumber {

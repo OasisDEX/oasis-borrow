@@ -57,3 +57,29 @@ export const cropperBonusTokenAddress: CallDef<{ ilk: string }, string> = {
   },
   prepareArgs: () => [],
 }
+
+export const cropperStock: CallDef<{ ilk: string }, BigNumber> = {
+  call: ({ ilk }, { web3, joins }) => {
+    const join = joins[ilk]
+    console.log(`cropperStock ilk ${ilk} join ${join}`)
+    const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
+    return contract.methods.stock
+  },
+  prepareArgs: () => [],
+  postprocess: (result: any) => {
+    return new BigNumber(result) // crops per gem    [bonus decimals * ray / wad]
+  },
+}
+
+export const cropperTotal: CallDef<{ ilk: string }, BigNumber> = {
+  call: ({ ilk }, { web3, joins }) => {
+    const join = joins[ilk]
+    console.log(`cropperTotal ilk ${ilk} join ${join}`)
+    const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
+    return contract.methods.total
+  },
+  prepareArgs: () => [],
+  postprocess: (result: any) => {
+    return new BigNumber(result) // crops per gem    [bonus decimals * ray / wad]
+  },
+}

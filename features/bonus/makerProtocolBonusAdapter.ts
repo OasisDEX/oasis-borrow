@@ -1,7 +1,7 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap, take } from 'rxjs/operators'
+import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
 
 import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
@@ -10,76 +10,126 @@ import { ContextConnected } from '../../blockchain/network'
 import { TxHelpers } from '../../components/AppContext'
 import { RAY } from '../../components/constants'
 import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
+import { TokenBalanceArgs, TokenBalanceRawForJoinArgs } from '../../blockchain/calls/erc20'
+import { amountFromRay, amountFromPrecision, amountToRay } from '../../blockchain/utils'
+import { zero } from '../../helpers/zero'
 
-// calculateUnclaimedBonusAmount is a first-pass implementation to get the unclaimed bonus amount.
-// The value could not be up to date, and the real value will be higher.
-// The exact calculation would be something of this sort:
+function calculateUnclaimedBonusAmount({
+  unclaimedInCurve,
+  erc20Balance,
+  stock,
+  share,
+  total,
+  stake,
+  crops,
+  bonusDecimals,
+}: {
+  unclaimedInCurve: BigNumber // token precision
+  erc20Balance: BigNumber // token precision (18 - wad)
+  stock: BigNumber // token precision (18 - wad)
+  share: BigNumber // [bonus decimals * ray / wad] === ray
+  total: BigNumber // total gems       [wad]
+  stake: BigNumber // gems per user   [wad]
+  crops: BigNumber // crops per user  [bonus decimals]
+  bonusDecimals: BigNumber
+}) {
+  const potentialCrop = unclaimedInCurve.plus(erc20Balance).minus(stock) // token precision
+  const potentialShare = share.plus(amountToRay(potentialCrop).div(total))
+  const potentialCurr = amountFromRay(stake.times(potentialShare))
+  const potentialBonusBonusPrecision = potentialCurr.minus(crops) // bonus precision
+  const unclaimedBonus = amountFromPrecision(potentialBonusBonusPrecision, bonusDecimals)
+  return unclaimedBonus.lt(zero) ? zero : unclaimedBonus
+}
 
-// unclaimedInCurve = pool.earned(address(cropJoin));
-// potentialCrop    = unclaimedInCurve + bonus.balanceOf(address(cropJoin)) - cropJoin.stock();
-// potentialShare   = add(cropJoin.share(), rdiv(potentialCrop, cropJoin.total()));
-// potentialCurr    = rmul(cropJoin.stake(from), potentialShare);
-// potentialBonus   = potentialCurr - cropJoin.crops(from);
+type CropperCalls = {
+  stake$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+  share$: (args: { ilk: string }) => Observable<BigNumber>
+  bonusTokenAddress$: (args: { ilk: string }) => Observable<string>
+  stock$: (args: { ilk: string }) => Observable<BigNumber>
+  total$: (args: { ilk: string }) => Observable<BigNumber>
+  crops$: (args: { ilk: string; usr: string }) => Observable<BigNumber>
+}
 
-// (not tested at all, so don't use it without verifying first)
-
-function calculateUnclaimedBonusAmount(
-  stake: BigNumber,
-  share: BigNumber,
-  bonusDecimals: BigNumber,
-): BigNumber {
-  return stake.times(share).div(RAY).div(new BigNumber(10).pow(bonusDecimals))
+type Erc20Calls = {
+  tokenDecimals$: (address: string) => Observable<BigNumber>
+  tokenSymbol$: (address: string) => Observable<string>
+  tokenName$: (address: string) => Observable<string>
+  tokenBalanceRawForJoin$: (args: TokenBalanceRawForJoinArgs) => Observable<BigNumber>
 }
 
 export function createMakerProtocolBonusAdapter(
   vaultResolver$: (
     cdpId: BigNumber,
   ) => Observable<{ urnAddress: string; ilk: string; controller: string }>,
-  cropperStake$: (args: { ilk: string; usr: string }) => Observable<BigNumber>,
-  cropperShare$: (args: { ilk: string }) => Observable<BigNumber>,
-  cropperBonusTokenAddress$: (args: { ilk: string }) => Observable<string>,
-  tokenDecimals$: (address: string) => Observable<BigNumber>,
-  tokenSymbol$: (address: string) => Observable<string>,
-  tokenName$: (address: string) => Observable<string>,
+  unclaimedInCrv$: (args: string) => Observable<BigNumber>,
+  cropperCalls: CropperCalls,
+  erc20Calls: Erc20Calls,
   context$: Observable<ContextConnected>,
   txHelpers$: Observable<TxHelpers>,
   vaultActions: VaultActionsLogicInterface,
   proxyAddress$: (address: string) => Observable<string | undefined>,
   cdpId: BigNumber,
 ): BonusAdapter {
+  const { stake$, share$, bonusTokenAddress$, stock$, total$, crops$ } = cropperCalls
+  const { tokenDecimals$, tokenSymbol$, tokenName$, tokenBalanceRawForJoin$ } = erc20Calls
+
   const vault$ = vaultResolver$(cdpId).pipe(take(1))
 
   const bonus$: Observable<Bonus> = vault$.pipe(
     // read how much bonus the user has in maker
     switchMap(({ ilk, urnAddress }) => {
+      console.log(ilk)
       return combineLatest(
-        cropperStake$({ ilk, usr: urnAddress }),
-        cropperShare$({ ilk }),
-        cropperBonusTokenAddress$({ ilk }),
+        combineLatest(
+          stake$({ ilk, usr: urnAddress }),
+          share$({ ilk }),
+          bonusTokenAddress$({ ilk }),
+          stock$({ ilk }),
+          total$({ ilk }),
+          crops$({ ilk, usr: urnAddress }),
+        ),
+        unclaimedInCrv$(ilk),
+        of(ilk),
       )
     }),
     // get bonus token info
-    switchMap(([stake, share, bonusAddress]) => {
+    switchMap(([[stake, share, bonusAddress, stock, total, crops], unclaimedInCurve, ilk]) => {
       return combineLatest(
-        tokenDecimals$(bonusAddress),
-        tokenSymbol$(bonusAddress),
-        tokenName$(bonusAddress),
-        of(stake),
-        of(share),
+        combineLatest(
+          tokenDecimals$(bonusAddress),
+          tokenSymbol$(bonusAddress),
+          tokenName$(bonusAddress),
+          tokenBalanceRawForJoin$({ tokenAddress: bonusAddress, ilk }),
+        ),
+        combineLatest(of(stake), of(share), of(stock), of(total), of(crops), of(unclaimedInCurve)),
       )
     }),
     // all together now
-    map(([bonusDecimals, bonusTokenSymbol, tokenName, stake, share]) => {
-      return {
-        amountToClaim: calculateUnclaimedBonusAmount(stake, share, bonusDecimals),
-        symbol: bonusTokenSymbol,
-        name: tokenName,
-        moreInfoLink: 'https://example.com',
-        get readableAmount() {
-          return this.amountToClaim.toFixed(0) + this.symbol
-        },
-      }
-    }),
+    map(
+      ([
+        [bonusDecimals, bonusTokenSymbol, tokenName, tokenBalanceRaw],
+        [stake, share, stock, total, crops, unclaimedInCurve],
+      ]) => {
+        return {
+          amountToClaim: calculateUnclaimedBonusAmount({
+            stake,
+            share,
+            stock,
+            total,
+            crops,
+            unclaimedInCurve,
+            erc20Balance: tokenBalanceRaw,
+            bonusDecimals,
+          }),
+          symbol: bonusTokenSymbol,
+          name: tokenName,
+          moreInfoLink: 'https://example.com',
+          get readableAmount() {
+            return this.amountToClaim.toFixed(0) + this.symbol
+          },
+        }
+      },
+    ),
   )
 
   function claimAll(): Observable<ClaimTxnState> {

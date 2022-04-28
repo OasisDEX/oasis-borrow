@@ -31,6 +31,7 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
+import * as lidoCrvLiquidityFarmingReward from './abi/lido-crv-liquidity-farming-reward.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,
@@ -105,6 +106,7 @@ const tokensMainnet = {
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+  LDO: contractDesc(erc20, '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'),
 } as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
@@ -172,6 +174,10 @@ const protoMain = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(
+    lidoCrvLiquidityFarmingReward,
+    '0x99ac10631f69c753ddb595d074422a0922d9056b',
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -245,6 +251,7 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const goerli: NetworkConfig = {
@@ -319,6 +326,7 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const hardhat: NetworkConfig = {

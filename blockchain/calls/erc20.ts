@@ -7,6 +7,8 @@ import * as erc20AbiWithDecimals from '../abi/erc20-with-decimals.json'
 import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
+import * as erc20 from '../abi/erc20.json'
+import { contractDesc } from '../config'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //
@@ -24,6 +26,21 @@ export const tokenBalance: CallDef<TokenBalanceArgs, BigNumber> = {
   prepareArgs: ({ account }) => [account],
   postprocess: (result, { token }) =>
     amountFromWei(new BigNumber(result), getToken(token).precision),
+}
+
+export interface TokenBalanceRawForJoinArgs {
+  tokenAddress: string
+  ilk: string
+}
+
+export const tokenBalanceRawForJoin: CallDef<TokenBalanceRawForJoinArgs, BigNumber> = {
+  call: ({ tokenAddress }, { contract }) => {
+    console.log(`tokenBalanceRawForJoin tokenAddress ${tokenAddress}`)
+    const cd = contractDesc(erc20, tokenAddress)
+    return contract<Erc20>(cd).methods.balanceOf
+  },
+  prepareArgs: ({ ilk }, { joins }) => [joins[ilk]],
+  postprocess: (result) => new BigNumber(result),
 }
 
 interface TokenAllowanceArgs {

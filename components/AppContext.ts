@@ -123,8 +123,10 @@ import {
 
 import {
   cropperBonusTokenAddress,
+  cropperCrops,
   cropperShare,
   cropperStake,
+  cropperStock,
   cropperUrnProxy,
 } from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
@@ -133,6 +135,8 @@ import {
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenBalanceRawForJoin,
+  TokenBalanceRawForJoinArgs,
   tokenDecimals,
   tokenName,
   tokenSymbol,
@@ -160,7 +164,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { BonusAdapter, createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
@@ -185,6 +189,11 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { amountFromWei } from '@oasisdex/utils'
+import { amountToWei } from '@oasisdex/utils/src/utils'
+import { amountFromRay, amountFromPrecision, amountToRay } from '../blockchain/utils'
+import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
+import { zero } from '../helpers/zero'
 
 export type TxData =
   | OpenData
@@ -423,6 +432,9 @@ export function setupAppContext() {
 
   const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
   const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
+  const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperTotal$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
 
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
@@ -458,6 +470,86 @@ export function setupAppContext() {
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
+
+  const unclaimed$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
+
+  function yes() {
+    // const unclaimedInCurve$ = unclaimed$('0x82D8bfDB61404C796385f251654F6d7e92092b5D')
+    const unclaimedLdoInCurve$ = unclaimed$('CRVV1ETHSTETH-A')
+    // const erc20Balance$ = tokenBalanceRawForJoin$({
+    //   tokenAddress: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32', // LIDO Erc20
+    //   ilk: '0x82D8bfDB61404C796385f251654F6d7e92092b5D', // crv cropjoin contract
+    // })
+    const erc20Balance$ = tokenBalanceRawForJoin$({
+      tokenAddress: '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32', // LIDO Erc20
+      ilk: 'CRVV1ETHSTETH-A', // crv cropjoin contract
+    })
+    const stock$ = cropperStock$({ ilk: 'CRVV1ETHSTETH-A' })
+    const share$ = cropperShare$({ ilk: 'CRVV1ETHSTETH-A' })
+    const total$ = cropperTotal$({ ilk: 'CRVV1ETHSTETH-A' })
+    const stake$ = cropperStake$({
+      ilk: 'CRVV1ETHSTETH-A',
+      usr: '0x84AfD70DBcd615b37533f0e5e4762bDbb3D41c60',
+    })
+    const crops$ = cropperCrops$({
+      ilk: 'CRVV1ETHSTETH-A',
+      usr: '0x84AfD70DBcd615b37533f0e5e4762bDbb3D41c60',
+    })
+    const potentialCrop$ = combineLatest(
+      unclaimedLdoInCurve$,
+      erc20Balance$,
+      stock$,
+      share$,
+      total$,
+      stake$,
+      crops$,
+    ).pipe(
+      map(
+        ([
+          unclaimedInCurve, // unknown precision - wad?
+          erc20Balance, // token precision (18 - wad)
+          stock, // token precision (18 - wad)
+          share, // [bonus decimals * ray / wad] === ray
+          total, // total gems       [wad]
+          stake, // gems per user   [wad]
+          crops, // crops per user  [bonus decimals]
+        ]) => {
+          console.log(`unclaimedInCurve ${unclaimedInCurve}`)
+          console.log(`erc20Balance ${erc20Balance}`)
+          console.log(`stock ${stock}`)
+          console.log(`share ${share}`)
+          console.log(`total ${total}`)
+          console.log(`stake ${stake}`)
+          console.log(`crops ${crops}`)
+
+          // unclaimedInCurve = pool.earned(address(cropJoin));
+          // potentialCrop    = unclaimedInCurve + bonus.balanceOf(address(cropJoin)) - cropJoin.stock();
+          // potentialShare   = add(cropJoin.share(), rdiv(potentialCrop, cropJoin.total()));
+          // potentialCurr    = rmul(cropJoin.stake(from), potentialShare);
+          // potentialBonus   = potentialCurr - cropJoin.crops(from);
+
+          const potentialCrop = unclaimedInCurve.plus(erc20Balance).minus(stock) // wad
+          const potentialShare = share.plus(amountToRay(potentialCrop).div(total))
+          const potentialCurr = amountFromRay(stake.times(potentialShare))
+          const potentialBonus = potentialCurr.minus(crops) // wad
+
+          return amountFromPrecision(potentialBonus, new BigNumber(18))
+        },
+      ),
+    )
+
+    potentialCrop$.subscribe((v) => {
+      console.log('---------------------------')
+      console.log(`${v}`)
+      console.log('---------------------------')
+    })
+
+    // const erc20Balance = bonus.balanceOf(address(cropJoin))
+    // const potentialCrop = unclaimedInCurve.plus()
+    console.log('hey')
+  }
+  // yes()
 
   const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
   const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
@@ -497,12 +589,21 @@ export function setupAppContext() {
     (cdpId: BigNumber) =>
       createMakerProtocolBonusAdapter(
         urnResolver$,
-        cropperStake$,
-        cropperShare$,
-        cropperBonusTokenAddress$,
-        tokenDecimals$,
-        tokenSymbol$,
-        tokenName$,
+        unclaimed$,
+        {
+          stake$: cropperStake$,
+          share$: cropperShare$,
+          bonusTokenAddress$: cropperBonusTokenAddress$,
+          stock$: cropperStock$,
+          total$: cropperTotal$,
+          crops$: cropperCrops$,
+        },
+        {
+          tokenDecimals$,
+          tokenSymbol$,
+          tokenName$,
+          tokenBalanceRawForJoin$,
+        },
         connectedContext$,
         txHelpers$,
         vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
@@ -512,10 +613,26 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  function fakeBonusAdapter(): BonusAdapter {
+    return {
+      bonus$: of({
+        readableAmount: 'readable amount',
+        name: 'name',
+        amountToClaim: zero,
+        symbol: 'CSH',
+        moreInfoLink: 'example.com',
+      }),
+      claimAll$: of(undefined),
+    }
+  }
+
   const bonus$ = memoize(
     (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
+    // (cdpId: BigNumber) => createBonusPipe$(fakeBonusAdapter, cdpId),
     bigNumberTostring,
   )
+
+  // bonus$(new BigNumber('27919')).subscribe(console.log)
 
   const vault$ = memoize(
     (id: BigNumber) =>
