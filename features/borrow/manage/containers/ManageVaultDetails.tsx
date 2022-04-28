@@ -117,6 +117,7 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
       collateralizationRatio,
+      ilk,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -145,7 +146,9 @@ export function ManageVaultDetails(
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && <GetProtectionBannerControl vaultId={id} />}
+          {!automationBasicBuyAndSellEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -235,7 +238,7 @@ export function ManageVaultDetails(
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
         </Box>
       )}
     </Box>

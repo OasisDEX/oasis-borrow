@@ -122,7 +122,7 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
-  console.log('afterNetValueUSD', afterNetValueUSD.toNumber())
+
   return !automationBasicBuyAndSellEnabled ? (
     <>
       <Grid variant="vaultDetailsCardsContainer">

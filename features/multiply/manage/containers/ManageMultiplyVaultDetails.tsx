@@ -93,7 +93,7 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD },
+    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD, ilk },
     ilkData: { liquidationRatio },
     afterDebt,
     afterLockedCollateral,
@@ -131,7 +131,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && <GetProtectionBannerControl vaultId={id} />}
+          {!automationBasicBuyAndSellEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -240,7 +242,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
         </Box>
       )}
     </Box>
