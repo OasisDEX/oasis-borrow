@@ -183,7 +183,7 @@ export function VaultTabSwitch({
   const selectComponents = useMemo(() => reactSelectCustomComponents<VaultTabSwitchOption>(), [])
 
   return (
-    <Grid gap={0} sx={{ width: '100%' }}>
+    <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
       {automationBasicBuyAndSellEnabled ? (
         <Box sx={{ zIndex: 0 }}>{headline}</Box>
       ) : (

@@ -1,9 +1,15 @@
 import React, { ReactNode } from 'react'
-import { Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Heading, Text } from 'theme-ui'
+
+import {
+  DetailsSectionContentCardChangePill,
+  DetailsSectionContentCardChangePillProps,
+} from './DetailsSectionContentCard'
 
 interface DetailsSectionFooterItemProps {
   title: string
   value: string
+  change?: DetailsSectionContentCardChangePillProps
 }
 
 export function DetailsSectionFooterItemWrapper({ children }: { children: ReactNode }) {
@@ -23,18 +29,19 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
   )
 }
 
-export function DetailsSectionFooterItem({ title, value }: DetailsSectionFooterItemProps) {
+export function DetailsSectionFooterItem({ title, value, change }: DetailsSectionFooterItemProps) {
   return (
     <Flex
       as="li"
       sx={{
+        alignItems: 'flex-start',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         flexBasis: ['100%', null, null, '25%'],
         p: 3,
         '&:nth-child(-n+3)': {
           flexGrow: 1,
         },
+        wordWrap: 'break-word',
       }}
     >
       <Heading as="h3" variant="label" sx={{ mb: 1 }}>
@@ -43,6 +50,11 @@ export function DetailsSectionFooterItem({ title, value }: DetailsSectionFooterI
       <Text as="p" variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
         {value}
       </Text>
+      {change && (
+        <Box sx={{ maxWidth: '100%', mt: 2 }}>
+          <DetailsSectionContentCardChangePill {...change} />
+        </Box>
+      )}
     </Flex>
   )
 }

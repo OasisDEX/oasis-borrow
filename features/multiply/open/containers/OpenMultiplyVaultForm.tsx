@@ -14,6 +14,7 @@ import {
   OpenMultiplyVaultStatus,
 } from '../../../../components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../../components/vault/commonMultiply/OpenMultiplyVaultTitle'
+import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
@@ -21,6 +22,7 @@ import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
 export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
   const { t } = useTranslation()
+  const gasData = extractGasDataFromState(props)
 
   return (
     <VaultFormContainer toggleTitle="Open Vault">
@@ -29,7 +31,7 @@ export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
         title={t('vault-form.header.edit')}
         subTitle={t('vault-form.subtext.edit-multiply')}
       />
-      {isProxyStage && <VaultProxyContentBox stage={stage} />}
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
       {isEditingStage && <OpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && (

@@ -1,4 +1,7 @@
 import { BigNumber } from 'bignumber.js'
+import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
 import { useAppContext } from '../../../../components/AppContextProvider'
@@ -11,27 +14,49 @@ import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 
 interface GetProtectionBannerProps {
   vaultId: BigNumber
+  token?: string
 }
 
-export function GetProtectionBannerControl({ vaultId }: GetProtectionBannerProps) {
+export function GetProtectionBannerControl({ vaultId, token }: GetProtectionBannerProps) {
+  const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   const handleClose = useCallback(() => setIsBannerClosed(true), [])
 
   return !slData?.isStopLossEnabled && !isBannerClosed ? (
-    <GetProtectionBannerLayout
-      handleClick={() => {
-        uiChanges.publish(TAB_CHANGE_SUBJECT, {
-          type: 'change-tab',
-          currentMode: VaultViewMode.Protection,
-        })
-      }}
-      handleClose={handleClose}
-    />
+    <>
+      {!automationBasicBuyAndSellEnabled ? (
+        <GetProtectionBannerLayout
+          handleClick={() => {
+            uiChanges.publish(TAB_CHANGE_SUBJECT, {
+              type: 'change-tab',
+              currentMode: VaultViewMode.Protection,
+            })
+          }}
+          handleClose={handleClose}
+        />
+      ) : (
+        <SetupBanner
+          header={t('vault-banners.setup-stop-loss.header')}
+          content={t('vault-banners.setup-stop-loss.content', { token })}
+          button={t('vault-banners.setup-stop-loss.button')}
+          backgroundImage="/static/img/setup-banner/stop-loss.svg"
+          backgroundColor={setupBannerGradientPresets.stopLoss[0]}
+          backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
+          handleClick={() => {
+            uiChanges.publish(TAB_CHANGE_SUBJECT, {
+              type: 'change-tab',
+              currentMode: VaultViewMode.Protection,
+            })
+          }}
+        />
+      )}
+    </>
   ) : null
 }
