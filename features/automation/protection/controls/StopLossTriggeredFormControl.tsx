@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import React from 'react'
 
+import { amountFromWei } from '../../../../blockchain/utils'
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { calculatePriceImpact } from '../../../shared/priceImpact'
@@ -30,12 +31,20 @@ export function StopLossTriggeredFormControl({
     onClick()
   }
 
+  const offerPrice = closeEvent.oraclePrice.isZero()
+    ? closeEvent.marketPrice
+    : closeEvent.oraclePrice
+
   const outstandingDebt = closeEvent.beforeDebt
   const isToCollateral = closeEvent.kind === 'CLOSE_VAULT_TO_COLLATERAL'
   const withdrawAmount = isToCollateral ? closeEvent.exitCollateral : closeEvent.exitDai
   const tokenPrice = closeEvent.marketPrice
-  const priceImpact = calculatePriceImpact(closeEvent.oraclePrice, closeEvent.marketPrice)
-  const totalFee = closeEvent.totalFee
+  const priceImpact = calculatePriceImpact(closeEvent.marketPrice, offerPrice)
+  const totalFee = BigNumber.sum(
+    closeEvent.totalFee,
+    amountFromWei(closeEvent.gasFee, 'ETH').times(closeEvent.ethPrice),
+  )
+
   const token = closeEvent.token
   const slippage = new BigNumber(2) // TODO missing info in cache
   const date = closeEvent.timestamp

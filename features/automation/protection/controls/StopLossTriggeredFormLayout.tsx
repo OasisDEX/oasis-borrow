@@ -58,7 +58,7 @@ function StopLossSummaryInformation({
 
   const tokenOrDaiWithdrawn = isToCollateral
     ? `${formatAmount(withdrawAmount, token)} ${token}`
-    : `${formatAmount(withdrawAmount.multipliedBy(tokenPrice), 'USD')} DAI`
+    : `${formatAmount(withdrawAmount, 'USD')} DAI`
 
   const impact = (
     <>
@@ -109,7 +109,7 @@ function StopLossSummaryInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-or-dai-withdrawn', {
-          token: isToCollateral ? token : 'DAI',
+          token,
         })}`}
         value={<Flex>{tokenOrDaiWithdrawn}</Flex>}
       />
