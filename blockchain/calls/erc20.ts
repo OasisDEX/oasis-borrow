@@ -3,7 +3,6 @@ import { BigNumber } from 'bignumber.js'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
 import { Erc20WithDecimals } from '../../types/web3-v1-contracts/erc20-with-decimals'
-import * as erc20AbiWithDecimals from '../abi/erc20-with-decimals.json'
 import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
@@ -80,19 +79,19 @@ export const disapprove: TransactionDef<DisapproveData> = {
 // gets number of decimals at an ERC token address (e.g. 18)
 export const tokenDecimals: CallDef<string, BigNumber> = {
   call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20AbiWithDecimals, address }).methods.decimals,
+    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.decimals,
   prepareArgs: () => [],
   postprocess: (decimals: any) => new BigNumber(decimals),
 }
 
 export const tokenSymbol: CallDef<string, string> = {
   call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20AbiWithDecimals, address }).methods.symbol,
+    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.symbol,
   prepareArgs: () => [],
 }
 
 export const tokenName: CallDef<string, string> = {
   call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20AbiWithDecimals, address }).methods.name,
+    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.name,
   prepareArgs: () => [],
 }
