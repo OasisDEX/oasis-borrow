@@ -9,13 +9,14 @@ import {
   vaultActionsLogic,
   VaultActionsLogicInterface,
 } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { createMockVaultResolver$, VaultResolve } from '../../blockchain/calls/vaultResolver'
+import { VaultResolve } from '../../blockchain/calls/vaultResolver'
 import { protoTxHelpers, TxHelpers } from '../../components/AppContext'
 import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
 import { ContextConnected } from '../../blockchain/network'
+import { createMockVaultResolver$ } from '../../blockchain/calls/vaultResolver.mock'
 
 function constructMakerProtocolBonusAdapterForTests({
   customVaultActionsLogicImp,

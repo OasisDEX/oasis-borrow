@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { charterIlks, cropJoinIlks } from 'blockchain/config'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 export enum MakerVaultType {
@@ -15,17 +15,6 @@ export interface VaultResolve {
   controller: string
   urnAddress: string
   type: MakerVaultType
-}
-
-export function createMockVaultResolver$(args?: Partial<VaultResolve>): Observable<VaultResolve> {
-  return of({
-    ilk: 'ETH-A',
-    owner: '0xVaultOwner',
-    controller: '0xUserAddress',
-    urnAddress: '0xVaultUrnAddress',
-    type: MakerVaultType.STANDARD,
-    ...args,
-  })
 }
 
 export function createVaultResolver$(
