@@ -1,4 +1,4 @@
-import { ALLOWED_AUTOMATION_ILKS, getToken } from 'blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -140,14 +140,15 @@ export function ManageVaultDetails(
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
-  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
 
   return (
     <Box>
-      {automationEnabled && isAllowedForAutomation && (
+      {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && <GetProtectionBannerControl vaultId={id} />}
+          {!automationBasicBuyAndSellEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -237,7 +238,7 @@ export function ManageVaultDetails(
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
         </Box>
       )}
     </Box>
