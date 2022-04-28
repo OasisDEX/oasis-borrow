@@ -35,8 +35,8 @@ export function createProxyAddress$(
   address: string,
 ): Observable<string | undefined> {
   return combineLatest(onEveryBlock$, context$).pipe(
-    switchMap(([_, context]) => {
-      return defer(() =>
+    switchMap(([_, context]) =>
+      defer(() =>
         call(
           context,
           proxyAddress,
@@ -55,8 +55,8 @@ export function createProxyAddress$(
             )
           }),
         ),
-      )
-    }),
+      ),
+    ),
     distinctUntilChanged(isEqual),
     shareReplay(1),
   )

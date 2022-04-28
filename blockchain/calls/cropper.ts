@@ -11,7 +11,6 @@ export const cropperUrnProxy: CallDef<string, string> = {
   prepareArgs: (usr) => [usr],
 }
 
-// returns the bonuses allocated to the usr
 export const cropperCrops: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
@@ -32,7 +31,7 @@ export const cropperStake: CallDef<{ ilk: string; usr: string }, BigNumber> = {
   },
   prepareArgs: ({ usr }) => [usr],
   postprocess: (result: any) => {
-    return new BigNumber(result) // gems for user (wad)
+    return new BigNumber(result) // gems per user   [wad]
   },
 }
 
@@ -48,7 +47,6 @@ export const cropperShare: CallDef<{ ilk: string }, BigNumber> = {
   },
 }
 
-// returns bonus token address for the cropjoin ilk
 export const cropperBonusTokenAddress: CallDef<{ ilk: string }, string> = {
   call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
@@ -66,7 +64,7 @@ export const cropperStock: CallDef<{ ilk: string }, BigNumber> = {
   },
   prepareArgs: () => [],
   postprocess: (result: any) => {
-    return new BigNumber(result) // crops per gem    [bonus decimals * ray / wad]
+    return new BigNumber(result) // crop balance     [bonus decimals]
   },
 }
 
@@ -78,6 +76,6 @@ export const cropperTotal: CallDef<{ ilk: string }, BigNumber> = {
   },
   prepareArgs: () => [],
   postprocess: (result: any) => {
-    return new BigNumber(result) // crops per gem    [bonus decimals * ray / wad]
+    return new BigNumber(result) // total gems       [wad]
   },
 }

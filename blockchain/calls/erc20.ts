@@ -2,7 +2,6 @@ import { amountFromWei, amountToWei } from '@oasisdex/utils'
 import { BigNumber } from 'bignumber.js'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
-import { Erc20WithDecimals } from '../../types/web3-v1-contracts/erc20-with-decimals'
 import * as erc20 from '../abi/erc20.json'
 import { contractDesc } from '../config'
 import { getToken } from '../tokensMetadata'
@@ -76,22 +75,18 @@ export const disapprove: TransactionDef<DisapproveData> = {
   prepareArgs: ({ spender }) => [spender, 0],
 }
 
-// gets number of decimals at an ERC token address (e.g. 18)
 export const tokenDecimals: CallDef<string, BigNumber> = {
-  call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.decimals,
+  call: (address, { contract }) => contract<Erc20>({ abi: erc20, address }).methods.decimals,
   prepareArgs: () => [],
   postprocess: (decimals: any) => new BigNumber(decimals),
 }
 
 export const tokenSymbol: CallDef<string, string> = {
-  call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.symbol,
+  call: (address, { contract }) => contract<Erc20>({ abi: erc20, address }).methods.symbol,
   prepareArgs: () => [],
 }
 
 export const tokenName: CallDef<string, string> = {
-  call: (address, { contract }) =>
-    contract<Erc20WithDecimals>({ abi: erc20, address }).methods.name,
+  call: (address, { contract }) => contract<Erc20>({ abi: erc20, address }).methods.name,
   prepareArgs: () => [],
 }
