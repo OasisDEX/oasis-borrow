@@ -93,7 +93,7 @@ describe('bonusPipe', () => {
       expect(state().claimTxnState).eq(ClaimTxnState.SUCCEEDED)
     })
 
-    it('pipes new bonus vaules', () => {
+    it('pipes new bonus values', () => {
       const bonusMock$ = new BehaviorSubject({
         amountToClaim: new BigNumber(30),
         symbol: 'CSH',

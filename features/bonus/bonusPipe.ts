@@ -30,15 +30,15 @@ export type BonusAdapter = {
 }
 
 export function createBonusPipe$(
-  bonusAdapter: (cdpId: BigNumber) => BonusAdapter,
+  createbBonusAdapter: (cdpId: BigNumber) => BonusAdapter,
   cdpId: BigNumber,
 ): Observable<BonusViewModel> {
-  const { bonus$, claimAll$ } = bonusAdapter(cdpId)
+  const bonusAdapter = createbBonusAdapter(cdpId)
   const claimClick$ = new Subject<void>()
 
   const claimTnxState$: Observable<ClaimTxnState | undefined> = combineLatest(
     claimClick$,
-    claimAll$,
+    bonusAdapter.claimAll$,
   ).pipe(
     map(([_, claimAll]) => claimAll),
     switchMap((claimAll) => {
@@ -52,26 +52,26 @@ export function createBonusPipe$(
     map((claimTxnState) => claimTxnState === ClaimTxnState.PENDING),
   )
 
-  function claimAllFun() {
+  function claimAllFunction() {
     claimClick$.next()
   }
 
-  const claimAllFun$: Observable<(() => void) | undefined> = combineLatest(
-    bonus$,
+  const claimAll$: Observable<(() => void) | undefined> = combineLatest(
+    bonusAdapter.bonus$,
     claimTxnInProgress$,
-    claimAll$,
+    bonusAdapter.claimAll$,
   ).pipe(
     map(([bonus, claimTxnInProgress, claimAll]) =>
       bonus && bonus.amountToClaim.gt(zero) && !claimTxnInProgress && !!claimAll
-        ? claimAllFun
+        ? claimAllFunction
         : undefined,
     ),
   )
 
-  return combineLatest(bonus$, claimAllFun$, claimTnxState$).pipe(
-    map(([bonus, claimAllFunction, claimTxnState]) => ({
+  return combineLatest(bonusAdapter.bonus$, claimAll$, claimTnxState$).pipe(
+    map(([bonus, claimAll, claimTxnState]) => ({
       bonus,
-      claimAll: claimAllFunction,
+      claimAll,
       claimTxnState,
     })),
   )

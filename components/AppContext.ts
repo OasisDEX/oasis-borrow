@@ -359,7 +359,7 @@ export function setupAppContext() {
   const [onEveryBlock$] = createOnEveryBlock$(web3ContextConnected$)
 
   const context$ = createContext$(web3ContextConnected$)
-  web3Context$.pipe(tap((v) => console.log(`web3Context$`, v)))
+
   const connectedContext$ = createContextConnected$(context$)
 
   combineLatest(account$, connectedContext$)
@@ -424,19 +424,19 @@ export function setupAppContext() {
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
-
   const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
   const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
   const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
   const cropperTotal$ = observe(onEveryBlock$, context$, cropperStock)
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
-
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
+
+  const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
 
   const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
@@ -458,6 +458,11 @@ export function setupAppContext() {
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkToToken$ = curry(createIlkToToken$)(context$)
@@ -465,13 +470,6 @@ export function setupAppContext() {
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
   )
-
-  const unclaimed$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
-  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
-
-  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
-  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
-  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
 
   const charterCdps$ = memoize(
     curry(createGetRegistryCdps$)(
@@ -507,7 +505,7 @@ export function setupAppContext() {
     (cdpId: BigNumber) =>
       createMakerProtocolBonusAdapter(
         urnResolver$,
-        unclaimed$,
+        unclaimedCrvLdoRewardsForIlk$,
         {
           stake$: cropperStake$,
           share$: cropperShare$,
@@ -535,8 +533,6 @@ export function setupAppContext() {
     (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
     bigNumberTostring,
   )
-
-  // bonus$(new BigNumber('27919')).subscribe(console.log)
 
   const vault$ = memoize(
     (id: BigNumber) =>
