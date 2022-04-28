@@ -40,11 +40,17 @@ export function BonusContainer(props: BonusContainerProps) {
             {t('claim-rewards.for-this-position', {
               bonusTokenName: bonus.name,
             })}{' '}
-            {t(bonusInstructionSnippet, bonus)} {t('claim-rewards.more-info.text1')}{' '}
+            {t('claim-rewards.more-info.text1')}{' '}
             <a href={bonus.moreInfoLink} target="_blank">
               {t('claim-rewards.more-info.link-text')}
             </a>
             {t('claim-rewards.more-info.text2')}
+          </Text>
+          <Text
+            mt={3}
+            sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
+          >
+            {t(bonusInstructionSnippet, bonus)}
           </Text>
           <Button
             disabled={
