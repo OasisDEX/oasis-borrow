@@ -104,6 +104,7 @@
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
   ],
+  "creating-proxy-contract": "Creating your smart proxy contract",
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
