@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD, WAD_PRECISION } from 'components/constants'
+import { RAD, RAD_PRECISION, RAY, RAY_PRECISION, WAD } from 'components/constants'
 import padEnd from 'lodash/padEnd'
 import ethAbi, { AbiCoder } from 'web3-eth-abi'
 

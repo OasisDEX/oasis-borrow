@@ -1,18 +1,17 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map, startWith, switchMap, take, tap } from 'rxjs/operators'
+import { map, startWith, switchMap, take } from 'rxjs/operators'
 
+import { TokenBalanceRawForJoinArgs } from '../../blockchain/calls/erc20'
 import { ClaimRewardData } from '../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { VaultActionsLogicInterface } from '../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from '../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../blockchain/network'
+import { amountFromPrecision, amountFromRay, amountToRay } from '../../blockchain/utils'
 import { TxHelpers } from '../../components/AppContext'
-import { RAY } from '../../components/constants'
-import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
-import { TokenBalanceArgs, TokenBalanceRawForJoinArgs } from '../../blockchain/calls/erc20'
-import { amountFromRay, amountFromPrecision, amountToRay } from '../../blockchain/utils'
 import { zero } from '../../helpers/zero'
+import { Bonus, BonusAdapter, ClaimTxnState } from './bonusPipe'
 
 function calculateUnclaimedBonusAmount({
   unclaimedInCurve,

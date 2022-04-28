@@ -3,11 +3,11 @@ import { BigNumber } from 'bignumber.js'
 import { Erc20 } from 'types/web3-v1-contracts/erc20'
 
 import { Erc20WithDecimals } from '../../types/web3-v1-contracts/erc20-with-decimals'
+import * as erc20 from '../abi/erc20.json'
+import { contractDesc } from '../config'
 import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
-import * as erc20 from '../abi/erc20.json'
-import { contractDesc } from '../config'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //

@@ -1,7 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { NEVER, Observable, of } from 'rxjs'
+import { NEVER, of } from 'rxjs'
 import sinon from 'sinon'
 
 import { MockProxyActionsSmartContractAdapter } from '../../blockchain/calls/proxyActions/adapters/mockProxyActionsSmartContractAdapter'
@@ -12,8 +12,6 @@ import { mockContextConnected } from '../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../helpers/testHelpers'
 import { ClaimTxnState } from './bonusPipe'
 import { createMakerProtocolBonusAdapter } from './makerProtocolBonusAdapter'
-import { zero } from '../../helpers/zero'
-import { TokenBalanceRawForJoinArgs } from '../../blockchain/calls/erc20'
 
 describe('makerProtocolBonusAdapter', () => {
   describe('retrieving bonuses', () => {

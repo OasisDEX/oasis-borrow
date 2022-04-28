@@ -21,6 +21,7 @@ import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as guniToken from './abi/guni-token.json'
+import * as lidoCrvLiquidityFarmingReward from './abi/lido-crv-liquidity-farming-reward.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
@@ -31,7 +32,6 @@ import * as mcdSpot from './abi/mcd-spot.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
-import * as lidoCrvLiquidityFarmingReward from './abi/lido-crv-liquidity-farming-reward.json'
 import {
   getCollateralJoinContracts,
   getCollaterals,

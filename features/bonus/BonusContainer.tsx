@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Heading, Spinner, Text } from 'theme-ui'
+import { Box, Button, Card, Heading, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
+import { AppSpinner } from '../../helpers/AppSpinner'
 import { useObservable } from '../../helpers/observableHook'
 import { ClaimTxnState } from './bonusPipe'
-import { AppSpinner } from '../../helpers/AppSpinner'
 
 type BonusContainerProps = {
   cdpId: BigNumber

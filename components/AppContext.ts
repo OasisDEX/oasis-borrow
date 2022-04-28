@@ -136,12 +136,12 @@ import {
   tokenAllowance,
   tokenBalance,
   tokenBalanceRawForJoin,
-  TokenBalanceRawForJoinArgs,
   tokenDecimals,
   tokenName,
   tokenSymbol,
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
+import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
 import { observe } from '../blockchain/calls/observe'
 import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
@@ -164,7 +164,7 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
-import { BonusAdapter, createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
@@ -189,11 +189,6 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { amountFromWei } from '@oasisdex/utils'
-import { amountToWei } from '@oasisdex/utils/src/utils'
-import { amountFromRay, amountFromPrecision, amountToRay } from '../blockchain/utils'
-import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
-import { zero } from '../helpers/zero'
 
 export type TxData =
   | OpenData
