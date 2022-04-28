@@ -14,10 +14,10 @@ import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 
 interface GetProtectionBannerProps {
   vaultId: BigNumber
-  symbol?: string
+  token?: string
 }
 
-export function GetProtectionBannerControl({ vaultId, symbol }: GetProtectionBannerProps) {
+export function GetProtectionBannerControl({ vaultId, token }: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
@@ -44,7 +44,7 @@ export function GetProtectionBannerControl({ vaultId, symbol }: GetProtectionBan
       ) : (
         <SetupBanner
           header={t('vault-banners.setup-stop-loss.header')}
-          content={t('vault-banners.setup-stop-loss.content', { token: symbol })}
+          content={t('vault-banners.setup-stop-loss.content', { token })}
           button={t('vault-banners.setup-stop-loss.button')}
           backgroundImage="/static/img/setup-banner/stop-loss.svg"
           backgroundColor={setupBannerGradientPresets.stopLoss[0]}

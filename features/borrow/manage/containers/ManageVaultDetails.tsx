@@ -139,7 +139,6 @@ export function ManageVaultDetails(
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
-  const { symbol } = getToken(token)
 
   return (
     <Box>
@@ -236,7 +235,7 @@ export function ManageVaultDetails(
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} symbol={symbol} />
+          <GetProtectionBannerControl vaultId={id} token={token} />
         </Box>
       )}
     </Box>
