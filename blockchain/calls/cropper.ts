@@ -61,7 +61,6 @@ export const cropperBonusTokenAddress: CallDef<{ ilk: string }, string> = {
 export const cropperStock: CallDef<{ ilk: string }, BigNumber> = {
   call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
-    console.log(`cropperStock ilk ${ilk} join ${join}`)
     const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
     return contract.methods.stock
   },
@@ -74,7 +73,6 @@ export const cropperStock: CallDef<{ ilk: string }, BigNumber> = {
 export const cropperTotal: CallDef<{ ilk: string }, BigNumber> = {
   call: ({ ilk }, { web3, joins }) => {
     const join = joins[ilk]
-    console.log(`cropperTotal ilk ${ilk} join ${join}`)
     const contract = new web3.eth.Contract((mcdCropJoinAbi as any).default, join)
     return contract.methods.total
   },
