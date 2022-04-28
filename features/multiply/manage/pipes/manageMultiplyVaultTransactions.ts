@@ -637,6 +637,7 @@ export function applyEstimateGas(
       closeVaultTo,
       closeToDaiParams,
       closeToCollateralParams,
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -724,6 +725,10 @@ export function applyEstimateGas(
           }
         }
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

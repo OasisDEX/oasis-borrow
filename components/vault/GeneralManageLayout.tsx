@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container, Grid } from 'theme-ui'
 
-import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
+import { ALLOWED_AUTOMATION_ILKS } from '../../blockchain/tokensMetadata'
 import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
@@ -29,7 +29,7 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
+  const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 

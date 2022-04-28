@@ -27,7 +27,7 @@ export function ProtectionBanner({
       close={() => {
         handleClose()
       }}
-      sx={{ marginBottom: 3, height: '160px', py: '24px' }}
+      sx={{ marginBottom: 3, py: '24px' }}
     >
       <Flex sx={{ flexDirection: 'column' }}>
         <Heading variant="header2" as="h1" sx={{ mb: 2, zIndex: 1, fontSize: '28px' }}>
@@ -35,7 +35,14 @@ export function ProtectionBanner({
         </Heading>
         <Text
           variant="subheader"
-          sx={{ fontSize: 2, mb: '23px', fontWeight: 'semiBold', zIndex: 1 }}
+          sx={{
+            fontSize: 2,
+            mb: '23px',
+            fontWeight: 'semiBold',
+            zIndex: 1,
+            wordBreak: 'normal',
+          }}
+          as="span"
         >
           {description}
         </Text>

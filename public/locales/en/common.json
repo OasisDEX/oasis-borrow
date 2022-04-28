@@ -104,6 +104,7 @@
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
   ],
+  "creating-proxy-contract": "Creating your smart proxy contract",
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
@@ -352,7 +353,7 @@
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
       "collateralization-ratio-header2": "Current Collateralization ratio:",
       "collateralization-ratio-description": "The price used to calculate the value of your collateral is the price obtained from the Maker oracles. Your collateralization ratio needs to be above the minimum required at all times to not get liquidated.",
-      "collateralization-ratio-next-price": "Your collateralization ratio on the next price will be:",
+      "collateralization-ratio-next-price": "Collateralization ratio on the next price will be:",
       "collateral-locked-amount": "The total amount of collateral locked in your vault is:",
       "collateral-locked-USD": "The total value in dollars of the collateral in your vault is:",
       "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
@@ -624,6 +625,8 @@
     "liquidation-fee": "Liquidation Fee",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
+    "buying-power": "Buying Power",
+    "net-value-pnl": "Net Value & P&L",
     "dust-limit": "Dust Limit",
     "min-coll-ratio": "Min Coll. Ratio",
     "minimum-coll-ratio": "Minimum collateral ratio",
@@ -642,7 +645,32 @@
     "overview": "Overview",
     "protection": "Protection",
     "history": "History",
-    "vault-info": "Vault Info"
+    "vault-info": "Vault Info",
+    "actions": {
+      "common": {
+        "close-vault": "Close Vault",
+        "edit-position": "Edit Position"
+      },
+      "borrow": {
+        "edit-dai": "Edit DAI",
+        "edit-collateral": "Edit Collateral",
+        "switch-to-multiply": "Switch to Multiply"
+      }
+    },
+    "cards": {
+      "common": {
+        "after": "after"
+      },
+      "liquidation-price": {
+        "footnote": "{{amount}} {{level}} current price",
+        "modal": {
+          "price-relation": "That is {{level}} the current price"
+        }
+      },
+      "collateralization-ratio": {
+        "footnote": "{{amount}} on next price"
+      }
+    }
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -792,6 +820,11 @@
     },
     "debt-ceiling-rise": {
       "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
+    },
+    "setup-stop-loss": {
+      "header": "Get vault protection",
+      "content": "Set up a stop loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "button": "Setup Stop Loss"
     }
   },
   "view": "View",
@@ -885,22 +918,22 @@
   "protection": {
     "navigate-cancel": "Cancel downside protection",
     "navigate-adjust": "Return to adjusting stop loss",
-    "set-downside-protection": "Set Downside Protection",
-    "set-downside-protection-desc": "Some intro text. Some more text, even more, even more, even more, even more, even more, even more, even more {{ link }}",
+    "set-downside-protection": "Set up Stop-Loss Protection",
+    "set-downside-protection-desc": "Set the Collateralisation Ratio trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
-    "setting-downside-protection": "Setting downside protections",
+    "setting-downside-protection": "Setting Stop-Loss Protection",
     "cancelling-downside-protection": "Cancelling stop loss",
-    "setting-downside-protection-desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras iaculis quam quis risus finibus, non imperdiet.",
+    "setting-downside-protection-desc": "Your Vault is currently being updated to add Stop-Loss Protection. Your Vault will not be protected from Liquidation until this completes.",
     "cancelling-downside-protection-desc": "The stop loss cancellation is in progress. Once the transaction is done, the stop loss will be removed.",
     "position-again-at-risk": "Your position is then at risk of liquidation again once the liquidation price is hit.",
-    "downside-protection-complete": "Downside protection complete",
-    "cancel-protection-complete": "Stop loss cancellation complete",
-    "downside-protection-updated": "Downside protection updated",
-    "downside-protection-complete-desc": "Some intro text. 29 Vaults saved in the 30 days using Oasis Automation. Find out more about setting stop loss →",
-    "cancel-protection-complete-desc": "Stop loss has been cancelled successfully. You can always set up it again to protect your vault. Your position is now again at risk of liquidation once the liquidation price is hit.",
-    "banner-header": "Get vault protection",
-    "banner-content": "Short text to introduce vault protection.",
+    "downside-protection-complete": "Stop-Loss Protection Enabled",
+    "cancel-protection-complete": "Stop-Loss cancellation complete",
+    "downside-protection-updated": "Stop-Loss Protection Updated",
+    "downside-protection-complete-desc": "You have successfully setup Stop-Loss Protection on your Vault. Find out more about how Stop-Loss works",
+    "cancel-protection-complete-desc": "Stop-Loss has been cancelled successfully. You can always set up it again to protect your vault. Your position is now again at risk of liquidation once the liquidation price is hit.",
+    "banner-header": "Get Vault Protection with Stop-Loss",
+    "banner-content": "Setup a dynamic Stop-Loss based on your Collateralisation Ratio to help protect your Vault from liquidation or the worry of big losses.",
     "banner-button": "Set up Vault Protection ->",
     "edit-vault-protection": "Edit Vault Protection",
     "dynamic-stop-loss-price": "Dynamic Stop Loss Price",
@@ -909,10 +942,10 @@
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
-    "zero-debt-heading": "You need to generate DAI before you can set up Stop Loss Protection",
-    "zero-debt-description": "Oasis Protection allows you to set up a stop loss for your vault. In the case of a sharp downturn in collateralisation ratio, while you are unavailable to manage your vault, the protection set at your desired collateralisation level will sell some of your collateral to cover your complete debt. Learn more about how it works under the hood",
+    "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
+    "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
     "summary-of-protection": "Summary of protection",
-    "on-stop-loss-trigger": "On stop loss trigger",
+    "on-stop-loss-trigger": "On Stop-Loss trigger",
     "estimated-to-receive": "Estimated to receive",
     "saving-comp-to-liquidation": "Saving compared to liquidation",
     "estimated-fees-on-trigger": "Estimated fees on trigger",
@@ -921,20 +954,20 @@
     "guarantee-factors": "Several factor can relate to its success. These include liquidity, volatility and gas.",
     "learn-more-about-automation": "Learn more about automation and how Oasis is building the best automation product on Ethereum →",
     "automation-fact": "{{success}} of {{total}} Vaults using Automation have successfully been saved the last 90 days",
-    "modal-description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
-    "your-stop-loss-triggered": "Your stop loss was triggered",
+    "modal-description": "You have the Stop-Loss protection enabled. Click on the banner below to see more details.",
+    "your-stop-loss-triggered": "Your Stop-Loss was triggered",
     "your-stop-loss-triggered-desc": "See below for a summary of what happened to the Vault.",
-    "stop-loss-summary": "Stop loss summary",
+    "stop-loss-summary": "Stop-Loss summary",
     "token-sold": "{{token}} sold",
     "token-or-dai-withdrawn": "{{token}} / DAI withdrawn",
     "reopen-position": "Reopen position",
-    "stop-loss-triggered": "Stop loss triggered",
-    "stop-loss-triggered-desc": "Your stop loss was triggered on your Vault",
-    "cancel-notice": "Cancelling your stop loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
-    "find-more-about-setting-stop-loss": "Find out more about setting stop loss →",
-    "set-stop-loss-again": "Set up stop loss again",
-    "sl-triggered-gas-estimation": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Felis, dictum est non quisque aenean ac velit adipiscing.",
-    "stop-loss-on": "Stop Loss On"
+    "stop-loss-triggered": "Stop-Loss triggered",
+    "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
+    "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
+    "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
+    "set-stop-loss-again": "Set up Stop-Loss again",
+    "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
+    "stop-loss-on": "Stop-Loss On"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1060,7 +1093,8 @@
   },
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
-  "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
+  "below": "below",
+  "above": "above",
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
 

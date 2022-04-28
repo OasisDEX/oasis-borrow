@@ -32,7 +32,7 @@ export function GetProtectionBannerLayout({
       image={
         <Image
           src={staticFilesRuntimeUrl('/static/img/automation.svg')}
-          sx={{ position: 'absolute', right: 0, top: 0, opacity: [0.4, 1] }}
+          sx={{ position: 'absolute', right: 0, top: 0, opacity: [0.4, 0.6], height: '183px' }}
         />
       }
     />

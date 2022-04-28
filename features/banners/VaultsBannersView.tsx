@@ -54,13 +54,17 @@ export function VaultBanner({
     <>
       {isVisible && (
         <Banner close={() => setIsVisible(false)} withClose={withClose}>
-          <Flex sx={{ py: 2, pr: 5 }}>
+          <Flex sx={{ py: 2, pr: [2, 5] }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
-              <Heading as="h3" sx={{ color }}>
+              <Heading as="h3" sx={{ color, wordBreak: 'normal' }}>
                 {header}
               </Heading>
-              {subheader && <Text variant="subheader">{subheader}</Text>}
+              {subheader && (
+                <Text variant="subheader" as="span" sx={{ wordBreak: 'normal' }}>
+                  {subheader}
+                </Text>
+              )}
             </Grid>
           </Flex>
         </Banner>
