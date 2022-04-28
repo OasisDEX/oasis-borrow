@@ -1,5 +1,6 @@
 import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
 import { VaultDetailsCardNetValue } from 'components/vault/detailsCards/VaultDetailsCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
   getAfterPillColors,
@@ -15,8 +16,17 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { DetailsSection } from '../../../../components/DetailsSection'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from '../../../../components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from '../../../../components/DetailsSectionFooterItem'
 import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
 import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { ContentCardBuyingPower } from '../../../../components/vault/detailsSection/ContentCardBuyingPower'
+import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
@@ -83,8 +93,12 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id },
+    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD },
     ilkData: { liquidationRatio },
+    afterDebt,
+    afterLockedCollateral,
+    multiply,
+    afterMultiply,
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
@@ -103,17 +117,21 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     stopLossTriggered,
   } = props
   const openModal = useModal()
+  const { t } = useTranslation()
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
+  const oraclePrice = priceInfo.currentCollateralPrice
 
   return (
     <Box>
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          <GetProtectionBannerControl vaultId={id} />
+          {!automationBasicBuyAndSellEnabled && <GetProtectionBannerControl vaultId={id} />}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -123,49 +141,108 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           />
         </>
       )}
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationRatio,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-            vaultId: id,
-          }}
-        />
+      {!automationBasicBuyAndSellEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardLiquidationPrice
+              {...{
+                liquidationPrice,
+                liquidationRatio,
+                liquidationPriceCurrentPriceDifference,
+                afterLiquidationPrice,
+                afterPillColors,
+                showAfterPill,
+                vaultId: id,
+              }}
+            />
 
-        <VaultDetailsCard
-          title={`Buying Power`}
-          value={`$${formatAmount(buyingPowerUSD, 'USD')}`}
-          valueBottom={`${formatAmount(buyingPower, token)} ${token}`}
-          valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
-          openModal={() => openModal(VaultDetailsBuyingPowerModal)}
-          afterPillColors={afterPillColors}
-        />
+            <VaultDetailsCard
+              title={`Buying Power`}
+              value={`$${formatAmount(buyingPowerUSD, 'USD')}`}
+              valueBottom={`${formatAmount(buyingPower, token)} ${token}`}
+              valueAfter={showAfterPill && `$${formatAmount(afterBuyingPowerUSD, 'USD')}`}
+              openModal={() => openModal(VaultDetailsBuyingPowerModal)}
+              afterPillColors={afterPillColors}
+            />
 
-        <VaultDetailsCardCurrentPrice {...props.priceInfo} />
+            <VaultDetailsCardCurrentPrice {...props.priceInfo} />
 
-        <VaultDetailsCardNetValue
-          {...{
-            netValueUSD,
-            afterNetValueUSD,
-            afterPillColors,
-            showAfterPill,
-            currentPnL,
-            marketPrice,
-            totalGasSpentUSD,
-            vault,
-            priceInfo,
-          }}
+            <VaultDetailsCardNetValue
+              {...{
+                netValueUSD,
+                afterNetValueUSD,
+                afterPillColors,
+                showAfterPill,
+                currentPnL,
+                marketPrice,
+                totalGasSpentUSD,
+                vault,
+                priceInfo,
+              }}
+            />
+          </Grid>
+          <DefaultManageMultiplyVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      ) : (
+        <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardBuyingPower
+                token={token}
+                buyingPower={buyingPower}
+                buyingPowerUSD={buyingPowerUSD}
+                afterBuyingPowerUSD={afterBuyingPowerUSD}
+                changeVariant={changeVariant}
+              />
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                marketPrice={marketPrice}
+                netValueUSD={netValueUSD}
+                afterNetValueUSD={afterNetValueUSD}
+                totalGasSpentUSD={totalGasSpentUSD}
+                currentPnL={currentPnL}
+                lockedCollateral={lockedCollateral}
+                lockedCollateralUSD={lockedCollateralUSD}
+                debt={debt}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
+          }
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsMultiply
+                token={token}
+                debt={debt}
+                lockedCollateral={lockedCollateral}
+                multiply={multiply}
+                afterDebt={afterDebt}
+                afterLockedCollateral={afterLockedCollateral}
+                afterMultiply={afterMultiply}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
         />
-      </Grid>
-      <DefaultManageMultiplyVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-      />
+      )}
+      {automationEnabled && automationBasicBuyAndSellEnabled && (
+        <Box sx={{ mt: 3 }}>
+          <GetProtectionBannerControl vaultId={id} token={token} />
+        </Box>
+      )}
     </Box>
   )
 }

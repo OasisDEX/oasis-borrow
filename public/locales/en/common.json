@@ -352,7 +352,7 @@
       "collateralization-ratio-calculated": "Your collateralization ratio is calculated by: value of your collateral / Dai debt.",
       "collateralization-ratio-header2": "Current Collateralization ratio:",
       "collateralization-ratio-description": "The price used to calculate the value of your collateral is the price obtained from the Maker oracles. Your collateralization ratio needs to be above the minimum required at all times to not get liquidated.",
-      "collateralization-ratio-next-price": "Your collateralization ratio on the next price will be:",
+      "collateralization-ratio-next-price": "Collateralization ratio on the next price will be:",
       "collateral-locked-amount": "The total amount of collateral locked in your vault is:",
       "collateral-locked-USD": "The total value in dollars of the collateral in your vault is:",
       "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
@@ -626,6 +626,8 @@
     "liquidation-fee": "Liquidation Fee",
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
+    "buying-power": "Buying Power",
+    "net-value-pnl": "Net Value & P&L",
     "dust-limit": "Dust Limit",
     "min-coll-ratio": "Min Coll. Ratio",
     "minimum-coll-ratio": "Minimum collateral ratio",
@@ -644,7 +646,32 @@
     "overview": "Overview",
     "protection": "Protection",
     "history": "History",
-    "vault-info": "Vault Info"
+    "vault-info": "Vault Info",
+    "actions": {
+      "common": {
+        "close-vault": "Close Vault",
+        "edit-position": "Edit Position"
+      },
+      "borrow": {
+        "edit-dai": "Edit DAI",
+        "edit-collateral": "Edit Collateral",
+        "switch-to-multiply": "Switch to Multiply"
+      }
+    },
+    "cards": {
+      "common": {
+        "after": "after"
+      },
+      "liquidation-price": {
+        "footnote": "{{amount}} {{level}} current price",
+        "modal": {
+          "price-relation": "That is {{level}} the current price"
+        }
+      },
+      "collateralization-ratio": {
+        "footnote": "{{amount}} on next price"
+      }
+    }
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -794,6 +821,11 @@
     },
     "debt-ceiling-rise": {
       "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
+    },
+    "setup-stop-loss": {
+      "header": "Get vault protection",
+      "content": "Set up a stop loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "button": "Setup Stop Loss"
     }
   },
   "view": "View",
@@ -1061,5 +1093,7 @@
     }
   },
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
-  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in "
+  "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
+  "below": "below",
+  "above": "above"
 }

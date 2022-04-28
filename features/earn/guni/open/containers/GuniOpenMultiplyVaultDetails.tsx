@@ -1,9 +1,18 @@
+import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import {
   AfterPillProps,
   getAfterPillColors,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -77,7 +86,9 @@ function GuniOpenMultiplyVaultDetailsSummary({
 }
 
 export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
+  const { t } = useTranslation()
   const {
+    token,
     afterNetValueUSD,
     inputAmountsEmpty,
     stage,
@@ -85,36 +96,74 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
     currentPnL,
     totalGasSpentUSD,
     priceInfo,
+    afterOutstandingDebt,
+    totalCollateral,
+    multiply,
   } = props
 
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
+  const oraclePrice = priceInfo.currentCollateralPrice
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <>
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardNetValue
-          {...{
-            netValueUSD,
-            afterNetValueUSD,
-            afterPillColors,
-            showAfterPill,
-            currentPnL,
-            totalGasSpentUSD,
-            priceInfo,
-            vault: undefined,
-            relevant: inputAmountChangedSinceFirstRender,
-          }}
+      {!automationBasicBuyAndSellEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardNetValue
+              {...{
+                netValueUSD,
+                afterNetValueUSD,
+                afterPillColors,
+                showAfterPill,
+                currentPnL,
+                totalGasSpentUSD,
+                priceInfo,
+                vault: undefined,
+                relevant: inputAmountChangedSinceFirstRender,
+              }}
+            />
+          </Grid>
+          <GuniOpenMultiplyVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+            relevant={inputAmountChangedSinceFirstRender}
+          />
+        </>
+      ) : (
+        <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                afterNetValueUSD={afterNetValueUSD}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
+          }
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsMultiply
+                token={token}
+                debt={zero}
+                lockedCollateral={zero}
+                multiply={zero}
+                afterDebt={afterOutstandingDebt}
+                afterLockedCollateral={totalCollateral}
+                afterMultiply={multiply}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
         />
-      </Grid>
-      <GuniOpenMultiplyVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-        relevant={inputAmountChangedSinceFirstRender}
-      />
+      )}
     </>
   )
 }
