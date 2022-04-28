@@ -176,6 +176,7 @@ const protoMain = {
   cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(
     lidoCrvLiquidityFarmingReward,
+    // address from here: https://docs.lido.fi/deployed-contracts
     '0x99ac10631f69c753ddb595d074422a0922d9056b',
   ),
 }
