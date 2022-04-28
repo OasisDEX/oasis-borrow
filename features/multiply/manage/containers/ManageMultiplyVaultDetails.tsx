@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
+import { ALLOWED_AUTOMATION_ILKS } from '../../../../blockchain/tokensMetadata'
 import { VaultDetailsBuyingPowerModal } from '../../../../components/vault/detailsCards/VaultDetailsBuyingPower'
 import { VaultDetailsCardLiquidationPrice } from '../../../../components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
@@ -83,7 +84,7 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id },
+    vault: { token, liquidationPrice, id, ilk },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
@@ -107,10 +108,11 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
+  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
 
   return (
     <Box>
-      {automationEnabled && (
+      {automationEnabled && isAllowedForAutomation && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           <GetProtectionBannerControl vaultId={id} />

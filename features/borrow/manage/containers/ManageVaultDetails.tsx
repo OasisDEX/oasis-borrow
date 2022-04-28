@@ -1,4 +1,4 @@
-import { getToken } from 'blockchain/tokensMetadata'
+import { ALLOWED_AUTOMATION_ILKS, getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
 import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
@@ -101,7 +101,7 @@ export function ManageVaultDetails(
   props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
 ) {
   const {
-    vault: { id, token, liquidationPrice, lockedCollateral, lockedCollateralUSD },
+    vault: { id, token, liquidationPrice, lockedCollateral, lockedCollateralUSD, ilk },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
@@ -118,10 +118,11 @@ export function ManageVaultDetails(
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
 
   return (
     <Box>
-      {automationEnabled && (
+      {automationEnabled && isAllowedForAutomation && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           <GetProtectionBannerControl vaultId={id} />
