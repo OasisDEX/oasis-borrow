@@ -15,7 +15,7 @@ export const ASSETS_PAGES = [
       'ETH-A',
       'WSTETH-A',
       'ETH-B',
-      // 'CRVV1ETHSTETH-A' temporarily disabled
+      'CRVV1ETHSTETH-A'
     ],
   },
   {
