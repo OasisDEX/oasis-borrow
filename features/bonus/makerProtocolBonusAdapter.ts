@@ -78,7 +78,6 @@ export function createMakerProtocolBonusAdapter(
   const bonus$: Observable<Bonus> = vault$.pipe(
     // read how much bonus the user has in maker
     switchMap(({ ilk, urnAddress }) => {
-      console.log(ilk)
       return combineLatest(
         combineLatest(
           stake$({ ilk, usr: urnAddress }),
@@ -104,7 +103,7 @@ export function createMakerProtocolBonusAdapter(
         combineLatest(of(stake), of(share), of(stock), of(total), of(crops), of(unclaimedInCurve)),
       )
     }),
-    // all together now
+    // put it all together
     map(
       ([
         [bonusDecimals, bonusTokenSymbol, tokenName, tokenBalanceRaw],

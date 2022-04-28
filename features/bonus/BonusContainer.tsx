@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Heading, Text } from 'theme-ui'
+import { Box, Button, Card, Heading, Spinner, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { useObservable } from '../../helpers/observableHook'
 import { ClaimTxnState } from './bonusPipe'
+import { AppSpinner } from '../../helpers/AppSpinner'
 
 type BonusContainerProps = {
   cdpId: BigNumber
@@ -45,8 +46,34 @@ export function BonusContainer(props: BonusContainerProps) {
             </a>
             {t('claim-rewards.more-info.text2')}
           </Text>
-          <Button disabled={!claimAll} variant="secondary" mt={3} onClick={claimAll}>
-            {t('claim-rewards.claim-button.claim-rewards')}
+          <Button
+            disabled={
+              !claimAll ||
+              claimTxnState === ClaimTxnState.PENDING ||
+              claimTxnState === ClaimTxnState.SUCCEEDED
+            }
+            variant="secondary"
+            mt={3}
+            onClick={claimAll}
+            sx={{
+              height: '40px',
+              width: '160px',
+            }}
+          >
+            {claimTxnState === ClaimTxnState.PENDING ? (
+              <AppSpinner
+                variant="styles.spinner.medium"
+                size={20}
+                sx={{
+                  color: 'black',
+                  boxSizing: 'content-box',
+                }}
+              />
+            ) : claimTxnState === ClaimTxnState.SUCCEEDED ? (
+              'Success'
+            ) : (
+              t('claim-rewards.claim-button.claim-rewards')
+            )}
           </Button>
         </Box>
       </Card>
