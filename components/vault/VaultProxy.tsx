@@ -1,4 +1,3 @@
-import { Box } from '@theme-ui/components'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { WithArrow } from 'components/WithArrow'
@@ -9,7 +8,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Image, Text } from 'theme-ui'
+import { Box, Image, Text } from 'theme-ui'
 
 import { HasGasEstimation } from '../../helpers/form'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
