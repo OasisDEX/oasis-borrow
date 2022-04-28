@@ -121,7 +121,8 @@ export function createMakerProtocolBonusAdapter(
           }),
           symbol: bonusTokenSymbol,
           name: tokenName,
-          moreInfoLink: 'https://example.com',
+          moreInfoLink:
+            'https://blog.lido.fi/providing-steth-liquidity-via-curve-to-receive-rewards/',
           get readableAmount() {
             return this.amountToClaim.toFixed(0) + this.symbol
           },
