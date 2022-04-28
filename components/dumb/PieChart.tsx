@@ -1,21 +1,16 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 
-type SliceBackground = {
-  color?: string,
-  svgBgId?: string,
+export type PieChartItem = {
+  value: BigNumber,
+  color: string,
 }
 
-export type PieChartItem = {
-  value: BigNumber
-} & SliceBackground
-
-type SliceDimensions = {
+type Slice = {
   length: number,
   angle: number,
+  color: string
 }
-
-type Slice = SliceDimensions & SliceBackground
 
 function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
   const values = items.map(i => i.value)
@@ -28,7 +23,6 @@ function getSlices(items: PieChartItem[], circleLength: number): Slice[] {
       length: circleLength * ratio,
       angle,
       color: items[i].color,
-      svgBgId: items[i].svgBgId,
     })
     angle += 360 * ratio
   }
@@ -56,14 +50,14 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[], size?: 
 
   return <svg width={size} height={size} viewBox={`0 0 ${viewSize} ${viewSize}`}>
     <defs>
-      <linearGradient id="pieChart-fallback-gradient">
+      <linearGradient id="pieChart-white-gradient">
         <stop offset="0%" style={{stopColor: 'rgb(255, 255, 255, 0.4)'}} />
         <stop offset="100%" style={{stopColor: 'rgb(255, 255, 255, 0)'}} />
       </linearGradient>
     </defs>
-    {slices.map(({ length, angle, color, svgBgId }) => svgBgId ? renderSlice(length, angle, `url(#${svgBgId})`) : [
-      renderSlice(length, angle, color || '#999'),
-      renderSlice(length, angle, 'url(#pieChart-fallback-gradient)')
+    {slices.map(({ length, angle, color }) => [
+      renderSlice(length, angle, color),
+      renderSlice(length, angle, 'url(#pieChart-white-gradient)')
     ])}
   </svg>
 }
