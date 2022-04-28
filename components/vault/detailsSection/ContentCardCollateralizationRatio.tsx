@@ -20,7 +20,7 @@ interface ContentCardCollateralizationRatioProps {
   changeVariant?: ChangeVariantType
 }
 
-function ContentCardLiquidationPriceModal({
+function ContentCardCollateralizationRatioModal({
   collateralizationRatioFormatted,
   collateralizationRatioAtNextPriceFormated,
 }: ContentCardCollateralizationRatioModalProps) {
@@ -91,7 +91,7 @@ export function ContentCardCollateralizationRatio({
   const contentCardSettings: ContentCardProps = {
     title: t('system.collateralization-ratio'),
     value: formatted.collateralizationRatio,
-    modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
+    modal: <ContentCardCollateralizationRatioModal {...contentCardModalSettings} />,
   }
 
   if (afterCollateralizationRatio && changeVariant)
