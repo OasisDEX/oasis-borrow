@@ -50,7 +50,9 @@ const infuraProjectId =
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
 const mainnetCacheUrl =
-  process.env.MAINNET_CACHE_URL || getConfig()?.publicRuntimeConfig?.mainnetCacheURL || ''
+  process.env.MAINNET_CACHE_URL ||
+  getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
+  'https://oazo-bcache.new.oasis.app/api/v1'
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
