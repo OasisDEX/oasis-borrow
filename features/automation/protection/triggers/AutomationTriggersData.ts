@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
-import { Context } from 'blockchain/network'
+import { Context, every5Seconds$ } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { GraphQLClient } from 'graphql-request'
 import { List } from 'lodash'
@@ -43,7 +43,7 @@ export function createAutomationTriggersData(
   vauit$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
-  return onEveryBlock$.pipe(
+  return every5Seconds$.pipe(
     withLatestFrom(context$, vauit$(id)),
     mergeMap(([, , vault]) => {
       const networkConfig = networksById[vault.chainId]
