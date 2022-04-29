@@ -3,7 +3,6 @@ import { networksById } from 'blockchain/config'
 import { Context, every5Seconds$ } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { GraphQLClient } from 'graphql-request'
-import { List } from 'lodash'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
@@ -34,7 +33,7 @@ export interface TriggerRecord {
 
 export interface TriggersData {
   isAutomationEnabled: boolean
-  triggers?: List<TriggerRecord>
+  triggers?: TriggerRecord[]
 }
 
 export function createAutomationTriggersData(

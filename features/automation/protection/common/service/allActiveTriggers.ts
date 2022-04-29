@@ -1,6 +1,5 @@
 import { TriggerRecord } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { gql, GraphQLClient } from 'graphql-request'
-import { List } from 'lodash'
 
 const query = gql`
   query activeTriggersForVault($vaultId: BigFloat) {
@@ -24,7 +23,7 @@ interface ActiveTrigger {
 export async function getAllActiveTriggers(
   client: GraphQLClient,
   vaultId: string,
-): Promise<List<TriggerRecord>> {
+): Promise<TriggerRecord[]> {
   const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(query, {
     vaultId,
   })
