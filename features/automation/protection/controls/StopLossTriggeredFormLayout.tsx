@@ -73,7 +73,7 @@ function StopLossSummaryInformation({
 
   const collateral = (
     <>
-      {formatAmount(withdrawAmount, token)} {token} <VaultChangesInformationArrow />
+      {formatAmount(tokensSold, token)} {token} <VaultChangesInformationArrow />
       {formatAmount(zero, token)}
     </>
   )
