@@ -14,9 +14,6 @@ function EarnTableHeader({ label, tooltip }: EarnTableHeaderVM) {
 }
 
 function pad(count: number) {
-  if (count === 0) {
-    return []
-  }
   return Array(count).fill(<div/>)
 }
 
