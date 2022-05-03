@@ -33,11 +33,11 @@ function pad(count: number) {
 }
 
 function EarnTableCell({ children }: WithChildren) {
-  return <Box sx={{ pt: 1, pb: 3 }}>
-    <Text sx={{ color: 'primary' }}>
-      {children}
-    </Text>
-  </Box>
+  return (
+    <Box sx={{ pt: 1, pb: 3 }}>
+      <Text sx={{ color: 'primary' }}>{children}</Text>
+    </Box>
+  )
 }
 
 export function EarnTable({
@@ -57,7 +57,9 @@ export function EarnTable({
         <EarnTableHeader {...headerVM} />
       ))}{' '}
       {pad(columnCount - headerData.length)}
-      {paddedRows.flat().map(cellContent => <EarnTableCell>{cellContent}</EarnTableCell>)}
+      {paddedRows.flat().map((cellContent) => (
+        <EarnTableCell>{cellContent}</EarnTableCell>
+      ))}
     </Grid>
   )
 }
