@@ -15,8 +15,12 @@ export interface TokenConfig {
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  bannerGif?: string
   token0?: string
   token1?: string
+  coinbaseTicker?: string
+  background?: string
+  digitsInstant?: number
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
