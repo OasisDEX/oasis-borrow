@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
+import { WithChildren } from 'helpers/types'
 import React from 'react'
-import { Flex, Grid, SxStyleProp, Text } from 'theme-ui'
+import { Box, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
 export type EarnTableHeaderVM = {
   label: string
@@ -31,6 +32,14 @@ function pad(count: number) {
   return Array(count).fill(<div />)
 }
 
+function EarnTableCell({ children }: WithChildren) {
+  return <Box sx={{ pt: 1, pb: 3 }}>
+    <Text>
+      {children}
+    </Text>
+  </Box>
+}
+
 export function EarnTable({
   headerData,
   rows,
@@ -43,12 +52,12 @@ export function EarnTable({
   const columnCount = Math.max(headerData.length, ...rows.map((row) => row.length))
   const paddedRows = rows.map((row) => row.concat(pad(columnCount - row.length)))
   return (
-    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, 1fr)`, ...sx }}>
+    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, 1fr)`, gap: 4, ...sx }}>
       {headerData.map((headerVM) => (
         <EarnTableHeader {...headerVM} />
       ))}{' '}
       {pad(columnCount - headerData.length)}
-      {paddedRows.flat()}
+      {paddedRows.flat().map(cellContent => <EarnTableCell>{cellContent}</EarnTableCell>)}
     </Grid>
   )
 }
