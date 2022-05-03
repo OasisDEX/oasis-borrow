@@ -38,7 +38,7 @@ import { ModalProps, useModal } from '../../helpers/modalHook'
 import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 import { Modal, ModalCloseIcon } from '../Modal'
 import { ChevronDown } from 'react-feather'
-import { createPopup } from '@typeform/embed'
+import { Widget } from '@typeform/embed-react'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -408,6 +408,31 @@ export function ConnectWalletModal({ close }: ModalProps<void>) {
   )
 }
 
+function WalletRecommendationModal({ close }: ModalProps<void>) {
+  return (
+    <Modal
+      close={close}
+      sx={{
+        maxWidth: '756px',
+        margin: '0 auto',
+        height: 'auto',
+        mt: '174px',
+      }}
+    >
+      <ModalCloseIcon {...{ close }} />
+      <Box sx={{ padding: '5px' }}>
+        <Widget
+          id="X2EGx7W4"
+          style={{ height: '650px' }}
+          opacity={0}
+          hideFooter={true}
+          hideHeaders={true}
+        />
+      </Box>
+    </Modal>
+  )
+}
+
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
@@ -583,14 +608,14 @@ export function ConnectWallet() {
             variant="links.inText"
             sx={{ color: '#575CFE', cursor: 'pointer' }}
             onClick={() => {
-              console.log('hello')
-              createPopup('mz6jmc', {})
+              openModal(WalletRecommendationModal)
             }}
           >
             Let us know -&gt;
           </Link>
         </Text>
       )}
+
       <Box sx={{ mt: 4 }}>
         <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
           {t('new-to-ethereum')}
