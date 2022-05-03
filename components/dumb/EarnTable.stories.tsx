@@ -43,52 +43,54 @@ export const Positions = () => {
   return (
     <>
       <InjectTokenIconsDefs />
-      <EarnTable
-        headerData={[
-          {
-            label: 'Asset',
-            tooltip: 'The asset',
-          },
-          {
-            label: 'Vault ID',
-            tooltip: 'A number',
-          },
-          {
-            label: 'Collateral Ratio',
-            tooltip: (
-              <Box>
-                More info on collateral <Link href="#">here</Link>
-              </Box>
-            ),
-          },
-          { label: 'Dai Debt', tooltip: 'The Dai Debt' },
-          { label: 'Collateral Locked' },
-          {
-            label: 'Variable %',
-            tooltip: 'The variable',
-          },
-          {
-            label: 'Automation',
-            tooltip: 'We have all sorts of robots at our base.',
-          },
-        ]}
-        rows={data.map((position) => [
-          <Flex sx={{ alignItems: 'center', minWidth: '180px' }}>
-            <Icon name={position.icon} size="36px" sx={{ mr: 2 }} /> {position.ilk}
-          </Flex>,
-          position.vaultID,
-          <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
-            {position.colRatio}
-          </Text>,
-          position.debt,
-          position.locked,
-          position.variable,
-          <Box sx={{ minWidth: '280px' }}>
-            <Button variant="outline">Activate</Button>
-            <Button variant="outline">Edit Vault</Button>
-          </Box>,
-        ])}
-      />
+      <Box sx={{ width: '1200px', px: 4 }}>
+        <EarnTable
+          headerData={[
+            {
+              label: 'Asset',
+              tooltip: 'The asset',
+            },
+            {
+              label: 'Vault ID',
+              tooltip: 'A number',
+            },
+            {
+              label: 'Collateral Ratio',
+              tooltip: (
+                <Box>
+                  More info on collateral <Link href="#">here</Link>
+                </Box>
+              ),
+            },
+            { label: 'Dai Debt', tooltip: 'The Dai Debt' },
+            { label: 'Collateral Locked' },
+            {
+              label: 'Variable %',
+              tooltip: 'The variable',
+            },
+            {
+              label: 'Automation',
+              tooltip: 'We have all sorts of robots at our base.',
+            },
+          ]}
+          rows={data.map((position) => [
+            <Flex sx={{ alignItems: 'center', minWidth: '180px' }}>
+              <Icon name={position.icon} size="36px" sx={{ mr: 2 }} /> {position.ilk}
+            </Flex>,
+            position.vaultID,
+            <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
+              {position.colRatio}
+            </Text>,
+            position.debt,
+            position.locked,
+            position.variable,
+            <Box sx={{ minWidth: '280px' }}>
+              <Button variant="outline">Activate</Button>
+              <Button variant="outline">Edit Vault</Button>
+            </Box>,
+          ])}
+        />
+      </Box>
     </>
   )
 }

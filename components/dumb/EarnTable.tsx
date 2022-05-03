@@ -53,12 +53,12 @@ export function EarnTable({
   const paddedRows = rows.map((row) => row.concat(pad(columnCount - row.length)))
   return (
     <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, ...sx }}>
-      {headerData.map((headerVM) => (
-        <EarnTableHeader {...headerVM} />
+      {headerData.map((headerVM, index) => (
+        <EarnTableHeader key={index} {...headerVM} />
       ))}{' '}
       {pad(columnCount - headerData.length)}
-      {paddedRows.flat().map((cellContent) => (
-        <EarnTableCell>{cellContent}</EarnTableCell>
+      {paddedRows.flat().map((cellContent, index) => (
+        <EarnTableCell key={index}>{cellContent}</EarnTableCell>
       ))}
     </Grid>
   )
