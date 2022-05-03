@@ -14,16 +14,30 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { Fragment, useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  Flex,
+  Grid,
+  Heading,
+  Image,
+  SxStyleProp,
+  Text,
+} from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
+import { MobileSidePanelPortal, Modal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
+import { ModalProps, useModal } from '../helpers/modalHook'
+import { SwitchNetworkModalType } from './SwitchNetworkModal'
+import { ConnectWalletModal } from './connectWallet/ConnectWallet'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -722,6 +736,9 @@ function DisconnectedHeader() {
   const { pathname } = useRouter()
   const earnEnabled = useFeatureToggle('EarnProduct')
 
+  const openModal = useModal()
+  const openWalletConnectionModal = () => openModal(ConnectWalletModal)
+
   return (
     <>
       <Box sx={{ display: ['none', 'block'] }}>
@@ -754,9 +771,9 @@ function DisconnectedHeader() {
             <AssetsDropdown />
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
-            <AppLink
+            <Button
               variant="buttons.secondary"
-              href="/connect"
+              onClick={openWalletConnectionModal}
               sx={{
                 boxShadow: 'cardLanding',
                 bg: 'surface',
@@ -775,7 +792,7 @@ function DisconnectedHeader() {
                 size="15px"
                 sx={{ position: 'relative', left: '6px', transition: '0.2s' }}
               />
-            </AppLink>
+            </Button>
             <LanguageDropdown
               sx={{ '@media (max-width: 1330px)': { '.menu': { right: '-6px' } } }}
             />

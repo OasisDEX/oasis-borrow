@@ -27,15 +27,18 @@ import { WithChildren } from 'helpers/types'
 import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
-import { Alert, Box, Button, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Alert, Box, Button, Flex, Grid, Heading, Link, Text } from 'theme-ui'
 import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
 
-import { useModal } from '../../helpers/modalHook'
+import { ModalProps, useModal } from '../../helpers/modalHook'
 import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
+import { Modal, ModalCloseIcon } from '../Modal'
+import { ChevronDown } from 'react-feather'
+import { createPopup } from '@typeform/embed'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -133,17 +136,13 @@ export async function getConnector(
 const SUPPORTED_WALLETS: ConnectionKind[] = [
   'injected',
   'walletConnect',
-  'walletLink',
-  'portis',
-  'myetherwallet',
+  'ledger',
   'trezor',
+  'walletLink',
+  'myetherwallet',
+  'portis',
   'gnosisSafe',
 ]
-
-const isFirefox = browserDetect().name === 'firefox'
-if (!isFirefox) {
-  SUPPORTED_WALLETS.push('ledger')
-}
 
 function ConnectWalletButtonWrapper({
   children,
@@ -158,19 +157,46 @@ function ConnectWalletButtonWrapper({
   )
 }
 
+type ConnectWalletButtonProps = {
+  web3Context: Web3Context
+  connectionKind: ConnectionKind
+  setConnectingLedger: () => void
+  switchNetworkModal: (type: SwitchNetworkModalType) => void
+}
+
 function ConnectWalletButton({
-  isConnecting,
-  iconName,
-  connect,
-  description,
-  missingInjectedWallet,
-}: {
-  isConnecting: boolean
-  iconName: string
-  description: string
-  connect?: () => void
-  missingInjectedWallet: boolean
-}) {
+  web3Context,
+  connectionKind,
+  setConnectingLedger,
+  switchNetworkModal,
+}: ConnectWalletButtonProps) {
+  const { t } = useTranslation()
+  const isConnecting =
+    (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
+    web3Context.connectionKind === connectionKind
+  const walletKind = getWalletKind(connectionKind)
+  const { friendlyName, connectIcon } = getConnectionDetails(walletKind)
+  const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
+  const missingInjectedWallet = walletKind === 'nonexistent'
+  const description = missingInjectedWallet
+    ? t('connect-install-metamask')
+    : t(descriptionTranslation, {
+        connectionKind: friendlyName,
+      })
+
+  const networkId = getNetworkId()
+
+  const connectClick =
+    web3Context.status === 'connecting'
+      ? undefined
+      : connectionKind === 'ledger'
+      ? networkId !== 1
+        ? () => switchNetworkModal('appNetwork')
+        : () => setConnectingLedger()
+      : connect(web3Context, connectionKind, networkId, {
+          switchNetworkModal,
+        })
+
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
       <Button
@@ -179,32 +205,21 @@ function ConnectWalletButton({
           cursor: 'pointer',
           textAlign: 'center',
           width: '100%',
-          '&:hover .connect-wallet-arrow': {
-            transform: 'translateX(5px)',
+          '&:hover': {
+            boxShadow: 'cardLanding',
             opacity: '1',
           },
+          border: 'solid 1px #EAEAEA',
+          padding: 3,
         }}
-        onClick={connect}
+        onClick={connectClick}
       >
-        <Flex sx={{ alignItems: 'center' }}>
-          <Flex sx={{ ml: 1, mr: 3, alignItems: 'center' }}>
-            {isConnecting ? <AppSpinner size={22} /> : <Icon name={iconName} size={22} />}
-          </Flex>
-          <Flex sx={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Box>{description}</Box>
-            <Box
-              className="connect-wallet-arrow"
-              sx={{
-                ml: 1,
-                opacity: '0',
-                transform: 'translateX(0px)',
-                transition: 'opacity ease-in 0.2s, transform ease-in 0.3s',
-              }}
-            >
-              <Icon sx={{ position: 'relative', top: '3px' }} name="arrow_right" />
-            </Box>
-          </Flex>
-        </Flex>
+        {isConnecting ? (
+          <AppSpinner size={42} />
+        ) : (
+          <Icon name={connectIcon || 'metamask_color'} size={42} />
+        )}
+        <Box>{description}</Box>
       </Button>
     </ConnectWalletButtonWrapper>
   )
@@ -284,32 +299,32 @@ interface ConnectionDetail {
 const connectionDetails: Record<WalletKind, ConnectionDetail> = {
   walletConnect: {
     friendlyName: 'WalletConnect',
-    connectIcon: 'wallet_connect_color',
+    connectIcon: 'walletConnect_connect_icon',
     userIcon: 'walletConnect_user',
   },
   walletLink: {
     friendlyName: 'Coinbase wallet',
-    connectIcon: 'coinbase_color',
+    connectIcon: 'coinbase_connect_icon',
     userIcon: 'walletLink_user',
   },
   portis: {
     friendlyName: 'Portis wallet',
-    connectIcon: 'portis',
+    connectIcon: 'portis_connect_icon',
     userIcon: 'portis_user',
   },
   myetherwallet: {
     friendlyName: 'My Ether Wallet',
-    connectIcon: 'myetherwallet',
+    connectIcon: 'myetherwallet_connect_icon',
     userIcon: 'myetherwallet_user',
   },
   trezor: {
     friendlyName: 'Trezor',
-    connectIcon: 'trezor',
+    connectIcon: 'trezor_connect_icon',
     userIcon: 'trezor_user',
   },
   ledger: {
     friendlyName: 'Ledger',
-    connectIcon: 'ledger',
+    connectIcon: 'ledger_connect_icon',
     userIcon: 'ledger_user',
   },
   network: {
@@ -317,7 +332,7 @@ const connectionDetails: Record<WalletKind, ConnectionDetail> = {
   },
   gnosisSafe: {
     friendlyName: 'Gnosis Safe',
-    connectIcon: 'gnosis_safe',
+    connectIcon: 'gnosis_safe_connect_icon',
     userIcon: 'gnosisSafe_user',
   },
   magicLink: {
@@ -328,7 +343,7 @@ const connectionDetails: Record<WalletKind, ConnectionDetail> = {
   },
   metamask: {
     friendlyName: 'MetaMask',
-    connectIcon: 'metamask_color',
+    connectIcon: 'metamask_connect_icon',
     userIcon: 'metamask_user',
   },
   alphawallet: {
@@ -369,15 +384,41 @@ export function getWalletKind(connectionKind: ConnectionKind): WalletKind {
   return connectionKind === 'injected' ? getInjectedWalletKind() : connectionKind
 }
 
+export function ConnectWalletModal({ close }: ModalProps<void>) {
+  return (
+    <Modal
+      close={close}
+      sx={{
+        maxWidth: '756px',
+        margin: '0 auto',
+        height: 'auto',
+        mt: '174px',
+      }}
+    >
+      <ModalCloseIcon {...{ close }} />
+      <Grid
+        p={4}
+        sx={{
+          mt: 4,
+        }}
+      >
+        <ConnectWallet />
+      </Grid>
+    </Modal>
+  )
+}
+
 export function ConnectWallet() {
   const { web3Context$, redirectState$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const { t } = useTranslation()
   const { replace } = useRedirect()
-  const [connectingLedger, setConnectingLedger] = React.useState(false)
+  const [connectingLedger, setConnectingLedger] = useState(false)
   const openModal = useModal()
   const switchNetworkModal = (type: SwitchNetworkModalType) =>
     openModal(SwitchNetworkModal, { type })
+
+  const [showMoreWallets, setShowMoreWallets] = useState(false)
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
@@ -470,74 +511,108 @@ export function ConnectWallet() {
         width: '100%',
       }}
     >
-      <Heading as="h1">{t('connect-wallet')}</Heading>
+      <Heading
+        as="h1"
+        sx={{
+          fontSize: '20px',
+          color: 'primary',
+        }}
+      >
+        {t('connect-wallet')}
+      </Heading>
       {web3Context.status === 'error' && (
         <Alert variant="error" sx={{ fontWeight: 'normal', borderRadius: 'large' }}>
           <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
         </Alert>
       )}
-      <Grid columns={1} sx={{ maxWidth: '280px', width: '100%', mx: 'auto' }}>
-        {SUPPORTED_WALLETS.map((connectionKind) => {
-          const isConnecting =
-            (web3Context.status === 'connecting' || web3Context.status === 'connected') &&
-            web3Context.connectionKind === connectionKind
-          const walletKind = getWalletKind(connectionKind)
-          const { friendlyName, connectIcon } = getConnectionDetails(walletKind)
-          const descriptionTranslation = isConnecting ? 'connect-confirm' : 'connect-with'
-          const missingInjectedWallet = walletKind === 'nonexistent'
-          const description = missingInjectedWallet
-            ? t('connect-install-metamask')
-            : t(descriptionTranslation, {
-                connectionKind: friendlyName,
-              })
-
-          const networkId = getNetworkId()
-
+      <Grid columns={4}>
+        {SUPPORTED_WALLETS.slice(0, 4).map((connectionKind) => {
           return (
             <ConnectWalletButton
-              {...{
-                key: connectionKind,
-                isConnecting,
-                iconName: connectIcon || 'metamask_color', // todo: use some default icon instead of metamask
-                description,
-                connect:
-                  web3Context.status === 'connecting'
-                    ? undefined
-                    : connectionKind === 'ledger'
-                    ? networkId !== 1
-                      ? () => switchNetworkModal('appNetwork')
-                      : () => setConnectingLedger(true)
-                    : connect(web3Context, connectionKind, networkId, {
-                        switchNetworkModal,
-                      }),
-                missingInjectedWallet,
-              }}
+              key={connectionKind}
+              web3Context={web3Context}
+              setConnectingLedger={() => setConnectingLedger(true)}
+              switchNetworkModal={switchNetworkModal}
+              connectionKind={connectionKind}
             />
           )
         })}
-        <Box sx={{ mt: 4 }}>
-          <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
-            {t('new-to-ethereum')}
-          </Text>
-          <AppLink
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              transition: 'opacity ease-in 0.2s',
-              '&:hover': {
-                opacity: 0.7,
-              },
-            }}
-            href={t('learn-more-link')}
-          >
-            <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
-              {t('learn-about-wallets')}
-            </Text>
-            <Icon sx={{ ml: 1 }} name="open_in_new_tab" />
-          </AppLink>
-        </Box>
+        {showMoreWallets &&
+          SUPPORTED_WALLETS.slice(4, SUPPORTED_WALLETS.length).map((connectionKind) => {
+            return (
+              <ConnectWalletButton
+                key={connectionKind}
+                web3Context={web3Context}
+                setConnectingLedger={() => setConnectingLedger(true)}
+                switchNetworkModal={switchNetworkModal}
+                connectionKind={connectionKind}
+              />
+            )
+          })}
       </Grid>
+
+      {!showMoreWallets && (
+        <Text
+          variant="paragraph2"
+          sx={{
+            fontWeight: 'semiBold',
+            color: '#787A9B',
+            '&:hover': {
+              color: 'primary',
+            },
+            cursor: 'pointer',
+          }}
+          onClick={() => setShowMoreWallets(true)}
+        >
+          More wallets
+          <Icon
+            name="chevron_down"
+            sx={{
+              position: 'relative',
+              top: '4px',
+              left: '9px',
+            }}
+          />
+        </Text>
+      )}
+
+      {showMoreWallets && (
+        <Text variant="paragraph2" sx={{ color: '#787A9B' }}>
+          Not found the wallet you use?{' '}
+          <Link
+            variant="links.inText"
+            sx={{ color: '#575CFE', cursor: 'pointer' }}
+            onClick={() => {
+              console.log('hello')
+              createPopup('mz6jmc', {})
+            }}
+          >
+            Let us know -&gt;
+          </Link>
+        </Text>
+      )}
+      <Box sx={{ mt: 4 }}>
+        <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
+          {t('new-to-ethereum')}
+        </Text>
+        <AppLink
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            transition: 'opacity ease-in 0.2s',
+            '&:hover': {
+              opacity: 0.7,
+            },
+          }}
+          href={t('learn-more-link')}
+        >
+          <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
+            {t('learn-about-wallets')}
+          </Text>
+          <Icon sx={{ ml: 1 }} name="open_in_new_tab" />
+        </AppLink>
+      </Box>
     </Grid>
   )
 }
