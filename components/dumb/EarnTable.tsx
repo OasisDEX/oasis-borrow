@@ -34,7 +34,7 @@ function pad(count: number) {
 
 function EarnTableCell({ children }: WithChildren) {
   return <Box sx={{ pt: 1, pb: 3 }}>
-    <Text>
+    <Text sx={{ color: 'primary' }}>
       {children}
     </Text>
   </Box>
@@ -46,13 +46,13 @@ export function EarnTable({
   sx,
 }: {
   headerData: EarnTableHeaderVM[]
-  rows: JSX.Element[][]
+  rows: (JSX.Element | string)[][]
   sx?: SxStyleProp
 }) {
   const columnCount = Math.max(headerData.length, ...rows.map((row) => row.length))
   const paddedRows = rows.map((row) => row.concat(pad(columnCount - row.length)))
   return (
-    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, 1fr)`, gap: 4, ...sx }}>
+    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, ...sx }}>
       {headerData.map((headerVM) => (
         <EarnTableHeader {...headerVM} />
       ))}{' '}
