@@ -19,6 +19,8 @@ import { landingPageCardsData, ProductCardData } from '../../helpers/productCard
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
+import { useModal } from '../../helpers/modalHook'
+import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
 
 function TabContent(props: {
   paraText: JSX.Element
@@ -113,6 +115,7 @@ export function HomepageView() {
   const { context$, productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const openModal = useModal()
 
   return (
     <Box
@@ -352,7 +355,7 @@ export function HomepageView() {
             subtitle={t('landing.info-cards.manage.make-actions')}
             links={[
               {
-                href: '/connect',
+                onClick: () => openModal(ConnectWalletModal),
                 text: t('landing.info-cards.manage.connect-your-wallet'),
               },
             ]}
@@ -370,6 +373,7 @@ export function HomepageView() {
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
+  const openModal = useModal()
 
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
@@ -391,7 +395,12 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       <AppLink
-        href={isConnected ? '/' : '/connect'}
+        onClick={() => {
+          if (!isConnected) {
+            openModal(ConnectWalletModal)
+          }
+        }}
+        href="/"
         variant="primary"
         sx={{
           display: 'flex',

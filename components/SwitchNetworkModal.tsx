@@ -14,11 +14,14 @@ export type SwitchNetworkModalType = 'injected' | 'appNetwork' | 'userNetwork'
 
 const mainnetId = 1
 
-export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNetworkModalType }>) {
+export function SwitchNetworkModal({
+  close,
+  type,
+  promptForReconnection,
+}: ModalProps<{ type: SwitchNetworkModalType; promptForReconnection: () => void }>) {
   const { t } = useTranslation()
   const w = window as any
   const ethereum = w.ethereum
-  const { push } = useRouter()
   const account = useWeb3React<Web3Provider>()
   const [userNetworkId, setUserNetworkId] = useState<number | undefined>(undefined)
 
@@ -77,7 +80,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
 
   async function handleAppNetworkSwitch() {
     close()
-    await push('/connect')
+    promptForReconnection()
   }
 
   return (

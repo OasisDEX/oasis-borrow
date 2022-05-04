@@ -26,6 +26,8 @@ import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
+import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
+import { useModal } from '../../helpers/modalHook'
 
 const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {
@@ -402,6 +404,7 @@ function VaultsOverwiewPerType({
 export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
+  const openModal = useModal()
 
   if (vaultSummary === undefined) {
     return null
@@ -467,7 +470,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         {context.status === 'connectedReadonly' && vaultSummary.numberOfVaults === 0 && (
           <>
             <AppLink
-              href="/connect"
+              href="/"
               variant="primary"
               sx={{
                 display: 'flex',
@@ -480,6 +483,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
                   transform: 'translateX(10px)',
                 },
               }}
+              onClick={() => openModal(ConnectWalletModal)}
             >
               {t('connect-wallet')}
               <Icon

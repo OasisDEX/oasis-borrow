@@ -34,7 +34,7 @@ import { Alert, Box, Button, Flex, Grid, Heading, Link, Text } from 'theme-ui'
 import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
 
-import { ModalProps, useModal } from '../../helpers/modalHook'
+import { ModalProps, useModal, WithClose } from '../../helpers/modalHook'
 import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 import { Modal, ModalCloseIcon } from '../Modal'
 import { ChevronDown } from 'react-feather'
@@ -401,7 +401,7 @@ export function ConnectWalletModal({ close }: ModalProps<void>) {
           mt: 4,
         }}
       >
-        <ConnectWallet />
+        <ConnectWallet close={close} />
       </Grid>
     </Modal>
   )
@@ -432,7 +432,8 @@ function WalletRecommendationModal({ close }: ModalProps<void>) {
   )
 }
 
-export function ConnectWallet() {
+export function ConnectWallet(props: WithClose) {
+  const closeModal = props.close
   const { web3Context$, redirectState$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const { t } = useTranslation()
@@ -440,20 +441,17 @@ export function ConnectWallet() {
   const [connectingLedger, setConnectingLedger] = useState(false)
   const openModal = useModal()
   const switchNetworkModal = (type: SwitchNetworkModalType) =>
-    openModal(SwitchNetworkModal, { type })
+    openModal(SwitchNetworkModal, {
+      type,
+      promptForReconnection: () => openModal(WalletRecommendationModal),
+    })
 
   const [showMoreWallets, setShowMoreWallets] = useState(false)
 
   useEffect(() => {
     const subscription = web3Context$.subscribe((web3Context) => {
       if (web3Context.status === 'connected') {
-        const url = redirectState$.value
-        if (url !== undefined) {
-          replace(url)
-          redirectState$.next(undefined)
-        } else {
-          replace(`/owner/${web3Context.account}`)
-        }
+        closeModal()
       }
     })
     return () => subscription.unsubscribe()
@@ -712,16 +710,28 @@ async function connectReadonly(web3Context: Web3ContextNotConnected) {
   web3Context.connect(await getConnector('network', getNetworkId()), 'network')
 }
 
+/**
+ * Ensures a connection.
+ *
+ * If connection state error or unsupported chain ID, push current location to stack and redirect
+ * to connect page.
+ *
+ * If connection is readonly, push current current locaation on to redirect state
+ *
+ * Triggers reconnection from localstorage.
+ *
+ * @param children
+ * @constructor
+ */
 export function WithConnection({ children }: WithChildren) {
-  const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const openModal = useModal()
 
   useEffect(() => {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
-      redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      openModal(ConnectWalletModal)
     }
 
     if (web3Context && web3Context.status === 'connectedReadonly') {
@@ -734,26 +744,29 @@ export function WithConnection({ children }: WithChildren) {
   return children
 }
 
+/**
+ * Ensures a different type of connection?
+ * @param children
+ * @constructor
+ */
 export function WithWalletConnection({ children }: WithChildren) {
-  const { replace } = useRedirect()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const openModal = useModal()
 
   useEffect(() => {
     if (web3Context?.status === 'error' && web3Context.error instanceof UnsupportedChainIdError) {
       disconnect(web3Context)
-      redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      openModal(ConnectWalletModal)
     }
 
     if (web3Context?.status === 'connectedReadonly') {
-      redirectState$.next(window.location.pathname)
-      replace(`/connect`)
+      openModal(ConnectWalletModal)
     }
 
     if (web3Context?.status === 'notConnected') {
       redirectState$.next(window.location.pathname)
-      autoConnect(web3Context$, getNetworkId(), () => replace(`/connect`))
+      autoConnect(web3Context$, getNetworkId(), () => openModal(ConnectWalletModal))
     }
   }, [web3Context?.status])
 

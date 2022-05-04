@@ -56,10 +56,37 @@ function CardWrapper({
 type InfoCardProps = {
   title: string
   subtitle: string
-  links: Array<{ href: string; text: string }>
+  links: Array<LinkHref | LinkOnClick>
   backgroundImage: string
   backgroundGradient: string
   sx?: SxStyleProp
+}
+
+type LinkHref = { href: string; text: string; onClick?: () => void }
+
+type LinkOnClick = { onClick: () => void; text: string }
+
+function isHref(link: LinkHref | LinkOnClick): link is LinkHref {
+  return (link as LinkHref).href !== undefined
+}
+
+function isOnClick(link: LinkHref | LinkOnClick): link is LinkHref {
+  return (link as LinkOnClick).onClick !== undefined
+}
+
+function getLinkActionProps(
+  link: LinkHref | LinkOnClick,
+): { href: string } | { onClick: (event: any) => void } {
+  if (isHref(link)) {
+    return { href: link.href }
+  } else {
+    return {
+      onClick: (event: any) => {
+        event.preventDefault()
+        link.onClick()
+      },
+    }
+  }
 }
 
 export function InfoCard(props: InfoCardProps) {
@@ -67,7 +94,7 @@ export function InfoCard(props: InfoCardProps) {
     return (
       <CardWrapper {...props} sx={{ ...props.sx, p: 0 }}>
         <AppLink
-          href={props.links[0].href}
+          href="#"
           variant="unStyled"
           sx={{
             display: 'block',
@@ -78,6 +105,7 @@ export function InfoCard(props: InfoCardProps) {
               transform: 'translateX(8px)',
             },
           }}
+          {...getLinkActionProps(props.links[0])}
         >
           <CardContent title={props.title} subtitle={props.subtitle}>
             <Box
@@ -103,10 +131,10 @@ export function InfoCard(props: InfoCardProps) {
     return (
       <CardWrapper {...props} sx={{ ...props.sx, p: 4 }}>
         <CardContent title={props.title} subtitle={props.subtitle}>
-          {props.links.map(({ href, text }) => (
-            <Box sx={{ pb: 3 }} key={href}>
+          {props.links.map((link) => (
+            <Box sx={{ pb: 3 }} key={link.text}>
               <AppLink
-                href={href}
+                href="#"
                 sx={{
                   fontSize: 3,
                   color: 'primary',
@@ -114,8 +142,9 @@ export function InfoCard(props: InfoCardProps) {
                     transform: 'translateX(8px)',
                   },
                 }}
+                {...getLinkActionProps(link)}
               >
-                {text}
+                {link.text}
                 <Icon
                   name="arrow_right"
                   size="15px"
