@@ -106,3 +106,23 @@ export function saveUserUsingApi$(
     },
   }).pipe(map((_) => {}))
 }
+
+export function updateClaimsUsingApi$(
+  user_address: string,
+  week_number: Number[],
+  token: string
+): Observable<void> {
+  console.log(week_number)
+  return ajax({
+    url: `${basePath}/api/user/claims/update`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: 'Bearer ' + token,
+    },
+    body: {
+      user_address,
+      week_number,
+    },
+  }).pipe(map((_) => {}))
+}
