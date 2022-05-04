@@ -43,7 +43,6 @@ enum VaultType {
 
 model User {
     address                    String        @unique
-    proxy_address              String?
     createdAt                  DateTime      @default(now())
     user_that_referred_address String?
     total_amount               String
