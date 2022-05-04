@@ -5,9 +5,7 @@ import * as mcdCropJoinAbi from '../abi/dss-crop-join.json'
 import { CallDef } from './callsHelpers'
 
 export const cropperUrnProxy: CallDef<string, string> = {
-  call: (_, { contract, dssCropper }) => {
-    return contract<DssCropper>(dssCropper).methods.proxy
-  },
+  call: (_, { contract, dssCropper }) => contract<DssCropper>(dssCropper).methods.proxy,
   prepareArgs: (usr) => [usr],
 }
 
