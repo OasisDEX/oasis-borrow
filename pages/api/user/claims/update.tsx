@@ -12,7 +12,6 @@ const bodySchema = z.object({
 
 const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { week_number, user_address } = bodySchema.parse(req.body)
-  console.log(week_number)
   const user = getUserFromRequest(req)
   try {
     if (user_address.toLocaleLowerCase() === user.address) {
