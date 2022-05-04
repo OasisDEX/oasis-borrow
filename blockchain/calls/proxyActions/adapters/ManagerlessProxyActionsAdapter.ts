@@ -18,6 +18,9 @@ import {
   WithdrawAndPaybackData,
 } from './ProxyActionsSmartContractAdapterInterface'
 
+// Adapter for maker protocol proxy actions that does not require a `manager`.  These proxy actions
+// use the CDP Registry instead, on the maker protocol side.
+// https://docs.google.com/presentation/d/10eXe7CZCVqwafg7kQiSMpJEF8CAVuE78ovylJyOXsm8/edit#slide=id.g10e6e999398_0_151
 export abstract class ManagerlessProxyActionsContractAdapter<
   DssProxyActionsType extends DssProxyActionsCharter | DssProxyActionsCropjoin
 > implements ProxyActionsSmartContractAdapterInterface {

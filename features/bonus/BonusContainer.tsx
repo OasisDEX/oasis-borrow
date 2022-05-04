@@ -19,11 +19,16 @@ export function BonusContainer(props: BonusContainerProps) {
 
   if (bonusViewModel) {
     const { bonus, claimAll, claimTxnState } = bonusViewModel
-    const bonusInstructionSnippet = bonus.amountToClaim.eq(0)
-      ? 'claim-rewards.instructions.nothing-to-claim'
-      : claimTxnState === ClaimTxnState.SUCCEEDED
-      ? 'claim-rewards.instructions.claim-succeeded'
-      : 'claim-rewards.instructions.tokens-to-claim'
+
+    let bonusInstructionSnippet: string
+    if (bonus.amountToClaim.eq(0)) {
+      bonusInstructionSnippet = 'claim-rewards.instructions.nothing-to-claim'
+    } else if (claimTxnState === ClaimTxnState.SUCCEEDED) {
+      bonusInstructionSnippet = 'claim-rewards.instructions.claim-succeeded'
+    } else {
+      bonusInstructionSnippet = 'claim-rewards.instructions.tokens-to-claim'
+    }
+
     return (
       <Card sx={{ borderRadius: 'large', border: 'lightMuted', mt: 3, padding: 3 }}>
         <Box sx={{ margin: 2 }}>

@@ -30,10 +30,10 @@ export type BonusAdapter = {
 }
 
 export function createBonusPipe$(
-  createbBonusAdapter: (cdpId: BigNumber) => BonusAdapter,
+  createBonusAdapter: (cdpId: BigNumber) => BonusAdapter,
   cdpId: BigNumber,
 ): Observable<BonusViewModel> {
-  const bonusAdapter = createbBonusAdapter(cdpId)
+  const bonusAdapter = createBonusAdapter(cdpId)
   const claimClick$ = new Subject<void>()
 
   const claimTnxState$: Observable<ClaimTxnState | undefined> = combineLatest(
