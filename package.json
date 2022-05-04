@@ -30,7 +30,7 @@
     "typechain:generate:web3": "typechain --target=web3-v1 'blockchain/abi/*.json'",
     "typechain:generate:ethers": "typechain --target=ethers-v5 'blockchain/abi/*.json'",
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
-    "storybook": "start-storybook -p 6006 -s ./public",
+    "storybook": "start-storybook -p 6006",
     "build:storybook": "build-storybook",
     "publish:storybook": "storybook-to-aws-s3",
     "release": "release-it"
@@ -45,7 +45,7 @@
     "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/bundle-analyzer": "^12.0.4",
     "@next/mdx": "^12.0.4",
-    "@oasisdex/automation": "^1.0.5",
+    "@oasisdex/automation": "^1.0.6",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "0.2.5-alpha.6",
     "@oasisdex/transactions": "^0.1.0",

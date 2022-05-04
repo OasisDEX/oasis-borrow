@@ -50,6 +50,10 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+const mainnetCacheUrl =
+  process.env.MAINNET_CACHE_URL ||
+  getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
+  'https://oazo-bcache.new.oasis.app/api/v1'
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -173,7 +177,7 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: mainnetCacheUrl,
   lidoCrvLiquidityFarmingReward: contractDesc(
     lidoCrvLiquidityFarmingReward,
     // address from here: https://docs.lido.fi/deployed-contracts

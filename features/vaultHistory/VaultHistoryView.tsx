@@ -307,7 +307,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
                 item={item}
                 etherscan={context?.etherscan}
                 ethtx={context?.ethtx}
-                key={`${item.id}${`-${item.splitId}` || ''}`}
+                key={`${item.id}-${item.splitId || item.hash}`}
               />
             ))}
           </Grid>
@@ -328,7 +328,7 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
                 item={item}
                 etherscan={context?.etherscan}
                 ethtx={context?.ethtx}
-                key={`${item.id}${`-${item.splitId}` || ''}`}
+                key={`${item.id}-${item.splitId || item.hash}`}
               />
             ))}
           </DefinitionList>

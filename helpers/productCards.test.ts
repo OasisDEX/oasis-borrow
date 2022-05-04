@@ -289,19 +289,19 @@ describe('createProductCardsData$', () => {
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
         name: 'WSTETH',
         isFull: false,
-      }, // remove this when crv is added back to the borrow page
-      // {
-      //   token: crv.token,
-      //   ilk: crv.ilk,
-      //   liquidationRatio: crv.liquidationRatio,
-      //   stabilityFee: crv.stabilityFee,
-      //   currentCollateralPrice: new BigNumber('550'),
-      //   bannerIcon: '/static/img/tokens/crv_steth_eth.png',
-      //   bannerGif: '/static/img/tokens/crv_steth_eth.gif',
-      //   background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-      //   name: 'stETH/ETH CRV',
-      //   isFull: false,
-      // }, temporary disabled
+      },
+      {
+        token: crv.token,
+        ilk: crv.ilk,
+        liquidationRatio: crv.liquidationRatio,
+        stabilityFee: crv.stabilityFee,
+        currentCollateralPrice: new BigNumber('550'),
+        bannerIcon: '/static/img/tokens/crv_steth_eth.png',
+        bannerGif: '/static/img/tokens/crv_steth_eth.gif',
+        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+        name: 'stETH/ETH CRV',
+        isFull: false,
+      },
     ])
   })
 
