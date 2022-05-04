@@ -397,7 +397,6 @@ export function ConnectWalletModal({ close }: ModalProps<void>) {
     >
       <ModalCloseIcon {...{ close }} />
       <Grid
-        p={4}
         sx={{
           mt: 4,
         }}
@@ -528,12 +527,9 @@ export function ConnectWallet() {
   }
 
   return (
-    <Grid
-      gap={4}
-      columns="1fr"
+    <Box
       sx={{
         textAlign: 'center',
-        width: '100%',
       }}
     >
       <Heading
@@ -541,6 +537,8 @@ export function ConnectWallet() {
         sx={{
           fontSize: '20px',
           color: 'primary',
+          mb: 4,
+          mt: '24px',
         }}
       >
         {t('connect-wallet')}
@@ -550,20 +548,18 @@ export function ConnectWallet() {
           <Text sx={{ my: 1, ml: 2, fontSize: 3, lineHeight: 'body' }}>{t('connect-error')}</Text>
         </Alert>
       )}
-      <Grid columns={4}>
-        {SUPPORTED_WALLETS.slice(0, 4).map((connectionKind) => {
-          return (
-            <ConnectWalletButton
-              key={connectionKind}
-              web3Context={web3Context}
-              setConnectingLedger={() => setConnectingLedger(true)}
-              switchNetworkModal={switchNetworkModal}
-              connectionKind={connectionKind}
-            />
-          )
-        })}
-        {showMoreWallets &&
-          SUPPORTED_WALLETS.slice(4, SUPPORTED_WALLETS.length).map((connectionKind) => {
+      <Grid
+        gap="24px"
+        columns="1fr"
+        sx={{
+          textAlign: 'center',
+          width: '100%',
+          paddingLeft: 4,
+          paddingRight: 4,
+        }}
+      >
+        <Grid columns={4} gap={2}>
+          {SUPPORTED_WALLETS.slice(0, 4).map((connectionKind) => {
             return (
               <ConnectWalletButton
                 key={connectionKind}
@@ -574,50 +570,62 @@ export function ConnectWallet() {
               />
             )
           })}
-      </Grid>
+          {showMoreWallets &&
+            SUPPORTED_WALLETS.slice(4, SUPPORTED_WALLETS.length).map((connectionKind) => {
+              return (
+                <ConnectWalletButton
+                  key={connectionKind}
+                  web3Context={web3Context}
+                  setConnectingLedger={() => setConnectingLedger(true)}
+                  switchNetworkModal={switchNetworkModal}
+                  connectionKind={connectionKind}
+                />
+              )
+            })}
+        </Grid>
 
-      {!showMoreWallets && (
-        <Text
-          variant="paragraph2"
-          sx={{
-            fontWeight: 'semiBold',
-            color: '#787A9B',
-            '&:hover': {
-              color: 'primary',
-            },
-            cursor: 'pointer',
-          }}
-          onClick={() => setShowMoreWallets(true)}
-        >
-          More wallets
-          <Icon
-            name="chevron_down"
+        {!showMoreWallets && (
+          <Text
+            variant="paragraph3"
             sx={{
-              position: 'relative',
-              top: '4px',
-              left: '9px',
+              fontWeight: 'semiBold',
+              color: '#787A9B',
+              '&:hover': {
+                color: 'primary',
+              },
+              cursor: 'pointer',
             }}
-          />
-        </Text>
-      )}
-
-      {showMoreWallets && (
-        <Text variant="paragraph2" sx={{ color: '#787A9B' }}>
-          Not found the wallet you use?{' '}
-          <Link
-            variant="links.inText"
-            sx={{ color: '#575CFE', cursor: 'pointer' }}
-            onClick={() => {
-              openModal(WalletRecommendationModal)
-            }}
+            onClick={() => setShowMoreWallets(true)}
           >
-            Let us know -&gt;
-          </Link>
-        </Text>
-      )}
+            More wallets
+            <Icon
+              name="chevron_down"
+              sx={{
+                position: 'relative',
+                top: '4px',
+                left: '9px',
+              }}
+            />
+          </Text>
+        )}
 
-      <Box sx={{ mt: 4 }}>
-        <Text sx={{ fontWeight: 'semiBold', mb: 2 }} variant="paragraph2">
+        {showMoreWallets && (
+          <Text variant="paragraph3" sx={{ color: '#787A9B' }}>
+            Not found the wallet you use?{' '}
+            <Link
+              variant="links.inText"
+              sx={{ color: '#575CFE', cursor: 'pointer' }}
+              onClick={() => {
+                openModal(WalletRecommendationModal)
+              }}
+            >
+              Let us know -&gt;
+            </Link>
+          </Text>
+        )}
+      </Grid>
+      <Box sx={{ mt: '20px', pt: '24px', pb: '24px', borderTop: 'solid #EAEAEA 1px' }}>
+        <Text sx={{ mb: 2 }} variant="paragraph3">
           {t('new-to-ethereum')}
         </Text>
         <AppLink
@@ -632,13 +640,13 @@ export function ConnectWallet() {
           }}
           href={t('learn-more-link')}
         >
-          <Text variant="paragraph2" sx={{ color: 'inherit', fontWeight: 'semiBold' }}>
+          <Text variant="paragraph3" sx={{ color: 'inherit' }}>
             {t('learn-about-wallets')}
           </Text>
           <Icon sx={{ ml: 1 }} name="open_in_new_tab" />
         </AppLink>
       </Box>
-    </Grid>
+    </Box>
   )
 }
 
