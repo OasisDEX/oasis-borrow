@@ -70,10 +70,6 @@ function isHref(link: LinkHref | LinkOnClick): link is LinkHref {
   return (link as LinkHref).href !== undefined
 }
 
-function isOnClick(link: LinkHref | LinkOnClick): link is LinkHref {
-  return (link as LinkOnClick).onClick !== undefined
-}
-
 function getLinkActionProps(
   link: LinkHref | LinkOnClick,
 ): { href: string } | { onClick: (event: any) => void } {

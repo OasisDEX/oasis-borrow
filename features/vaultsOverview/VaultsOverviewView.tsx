@@ -20,14 +20,14 @@ import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
 import { Dictionary } from 'ts-essentials'
 
+import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
+import { useModal } from '../../helpers/modalHook'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
-import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
-import { useModal } from '../../helpers/modalHook'
 
 const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {

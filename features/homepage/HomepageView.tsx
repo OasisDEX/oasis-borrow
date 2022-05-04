@@ -5,6 +5,7 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
+import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
@@ -14,13 +15,12 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { useModal } from '../../helpers/modalHook'
 import { useObservable } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
-import { useModal } from '../../helpers/modalHook'
-import { ConnectWalletModal } from '../../components/connectWallet/ConnectWallet'
 
 function TabContent(props: {
   paraText: JSX.Element

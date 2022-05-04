@@ -14,30 +14,18 @@ import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { Fragment, useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Flex,
-  Grid,
-  Heading,
-  Image,
-  SxStyleProp,
-  Text,
-} from 'theme-ui'
+import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
+import { useModal } from '../helpers/modalHook'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
-import { MobileSidePanelPortal, Modal, ModalCloseIcon } from './Modal'
+import { ConnectWalletModal } from './connectWallet/ConnectWallet'
+import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidget } from './uniswapWidget/UniswapWidget'
-import { ModalProps, useModal } from '../helpers/modalHook'
-import { SwitchNetworkModalType } from './SwitchNetworkModal'
-import { ConnectWalletModal } from './connectWallet/ConnectWallet'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (

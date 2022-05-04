@@ -8,6 +8,7 @@ import {
   Web3Context,
   Web3ContextNotConnected,
 } from '@oasisdex/web3-context'
+import { Widget } from '@typeform/embed-react'
 import { UnsupportedChainIdError } from '@web3-react/core'
 import { InjectedConnector } from '@web3-react/injected-connector'
 import { NetworkConnector } from '@web3-react/network-connector'
@@ -15,7 +16,6 @@ import { PortisConnector } from '@web3-react/portis-connector'
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import { WalletLinkConnector } from '@web3-react/walletlink-connector'
 import { dappName, networksById, pollingInterval } from 'blockchain/config'
-import browserDetect from 'browser-detect'
 import { useAppContext } from 'components/AppContextProvider'
 import { LedgerAccountSelection } from 'components/connectWallet/LedgerAccountSelection'
 import { TrezorAccountSelection } from 'components/connectWallet/TrezorAccountSelection'
@@ -24,21 +24,18 @@ import { redirectState$ } from 'features/router/redirectState'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
-import { useRedirect } from 'helpers/useRedirect'
 import { mapValues } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { identity, Observable } from 'rxjs'
 import { first, tap } from 'rxjs/operators'
-import { Alert, Box, Button, Flex, Grid, Heading, Link, Text } from 'theme-ui'
+import { Alert, Box, Button, Grid, Heading, Link, Text } from 'theme-ui'
 import { UserWalletIconName } from 'theme/icons'
 import { assert } from 'ts-essentials'
 
 import { ModalProps, useModal, WithClose } from '../../helpers/modalHook'
-import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 import { Modal, ModalCloseIcon } from '../Modal'
-import { ChevronDown } from 'react-feather'
-import { Widget } from '@typeform/embed-react'
+import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 
 export const AUTO_CONNECT = 'autoConnect'
 
@@ -434,10 +431,9 @@ function WalletRecommendationModal({ close }: ModalProps<void>) {
 
 export function ConnectWallet(props: WithClose) {
   const closeModal = props.close
-  const { web3Context$, redirectState$ } = useAppContext()
+  const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
   const { t } = useTranslation()
-  const { replace } = useRedirect()
   const [connectingLedger, setConnectingLedger] = useState(false)
   const openModal = useModal()
   const switchNetworkModal = (type: SwitchNetworkModalType) =>

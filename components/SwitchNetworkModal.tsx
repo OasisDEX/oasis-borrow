@@ -2,7 +2,6 @@ import { Web3Provider } from '@ethersproject/providers'
 import { getNetworkId } from '@oasisdex/web3-context'
 import { useWeb3React } from '@web3-react/core'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
