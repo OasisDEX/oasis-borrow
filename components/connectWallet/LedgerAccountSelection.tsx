@@ -70,21 +70,79 @@ export function LedgerAccountSelection({
 
   if (error || web3Context.status === 'error') {
     return (
-      <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
-        <Heading variant="header2" as="h1">
-          {t('ledger-select-address')}
+      <Box
+        sx={{
+          textAlign: 'center',
+        }}
+      >
+        <Heading
+          as="h1"
+          sx={{
+            fontSize: '20px',
+            color: 'primary',
+            mb: 4,
+            mt: '24px',
+          }}
+        >
+          Oops, failed to connect *Ledger Legacy*
         </Heading>
-        <Button onClick={cancel} variant="textual">
-          {t('ledger-error')}
-        </Button>
-      </Grid>
+        <Grid
+          gap="24px"
+          columns="1fr"
+          sx={{
+            textAlign: 'center',
+            width: '100%',
+            paddingLeft: 4,
+            paddingRight: 4,
+            justifyItems: 'center',
+          }}
+        >
+          <Icon name="wallet_error_during_setup" size={62} />
+          <Text variant="paragraph2" sx={{ color: 'lavender' }}>
+            Something went wrong when connecting your Ledger.
+            <br /> Please go back to connect your wallet again or try other wallets.
+          </Text>
+        </Grid>
+        <Box sx={{ mt: '20px', borderTop: 'solid #EAEAEA 1px', textAlign: 'left' }}>
+          <Text
+            onClick={cancel}
+            variant="links.inText"
+            sx={{ fontSize: '14px', mt: '32px', mb: '32px', ml: '34px', cursor: 'pointer' }}
+          >
+            &lt;- {t('ledger-cancel')}
+          </Text>
+        </Box>
+      </Box>
     )
   }
 
   return accountsLoaded ? (
-    <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
-      <Heading as="h1">{t('ledger-select-address')}</Heading>
-      <Grid gap={3}>
+    <Box
+      sx={{
+        textAlign: 'center',
+      }}
+    >
+      <Heading
+        as="h1"
+        sx={{
+          fontSize: '20px',
+          color: 'primary',
+          mb: 4,
+          mt: '24px',
+        }}
+      >
+        {t('ledger-select-address')}
+      </Heading>
+      <Grid
+        gap="24px"
+        columns="1fr"
+        sx={{
+          textAlign: 'center',
+          width: '100%',
+          paddingLeft: 4,
+          paddingRight: 4,
+        }}
+      >
         {accounts!.map(({ address, ethAmount, daiAmount }, i) => (
           <Button
             disabled={loadingAccounts}
@@ -141,7 +199,7 @@ export function LedgerAccountSelection({
       <Button onClick={cancel} variant="textual">
         {t('ledger-cancel')}
       </Button>
-    </Grid>
+    </Box>
   ) : (
     <DerivationPathSelection {...{ connectLedger, liveLoading, legacyLoading, cancel }} />
   )
@@ -163,43 +221,78 @@ function DerivationPathSelection({
 }) {
   const { t } = useTranslation()
   return (
-    <Grid gap={4} sx={{ textAlign: 'center', margin: '0 auto' }}>
-      <Heading as="h1">{t('ledger-select-title')}</Heading>
-      <Grid gap={3} mx={3}>
-        <Button
-          disabled={liveLoading || legacyLoading}
-          variant="outlineSquare"
-          onClick={() => connectLedger(LEDGER_LIVE_PATH)}
-        >
-          <Flex p={2} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Grid gap={1}>
-              <Text variant="smallHeading">{t('ledger-live')}</Text>
-              <Text variant="surfaceText" sx={{ fontSize: 3, textAlign: 'left' }}>
-                {LEDGER_LIVE_PATH}
-              </Text>
-            </Grid>
-            {liveLoading ? <AppSpinner size={18} /> : <Icon name="chevron_right" size={12} />}
-          </Flex>
-        </Button>
-        <Button
-          disabled={liveLoading || legacyLoading}
-          variant="outlineSquare"
-          onClick={() => connectLedger(LEDGER_LEGACY_PATH)}
-        >
-          <Flex p={2} sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <Grid gap={1}>
-              <Text variant="smallHeading">{t('ledger-legacy')}</Text>
-              <Text variant="surfaceText" sx={{ fontSize: 3, textAlign: 'left' }}>
-                {LEDGER_LEGACY_PATH}
-              </Text>
-            </Grid>
-            {legacyLoading ? <AppSpinner size={18} /> : <Icon name="chevron_right" size={12} />}
-          </Flex>
-        </Button>
+    <Box
+      sx={{
+        textAlign: 'center',
+      }}
+    >
+      <Heading
+        as="h1"
+        sx={{
+          fontSize: '20px',
+          color: 'primary',
+          mb: 4,
+          mt: '24px',
+        }}
+      >
+        {t('ledger-select-title')}
+      </Heading>
+      <Grid
+        gap="24px"
+        columns="1fr"
+        sx={{
+          textAlign: 'center',
+          width: '100%',
+          paddingLeft: 4,
+          paddingRight: 4,
+        }}
+      >
+        <Grid columns={2} gap={2}>
+          <Button
+            disabled={liveLoading || legacyLoading}
+            variant="connectModal"
+            onClick={() => connectLedger(LEDGER_LIVE_PATH)}
+          >
+            <Flex p={2} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Grid gap={1}>
+                <Text variant="paragraph2" sx={{ textAlign: 'center' }}>
+                  {t('ledger-live')}
+                </Text>
+                <Text variant="paragraph3" sx={{ textAlign: 'center', color: 'lavender' }}>
+                  {LEDGER_LIVE_PATH}
+                </Text>
+                {liveLoading && <AppSpinner size={18} />}
+              </Grid>
+            </Flex>
+          </Button>
+          <Button
+            disabled={liveLoading || legacyLoading}
+            variant="connectModal"
+            onClick={() => connectLedger(LEDGER_LEGACY_PATH)}
+          >
+            <Flex p={2} sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Grid gap={1}>
+                <Text variant="paragraph2" sx={{ textAlign: 'center' }}>
+                  {t('ledger-legacy')}
+                </Text>
+                <Text variant="paragraph3" sx={{ textAlign: 'center', color: 'lavender' }}>
+                  {LEDGER_LEGACY_PATH}
+                </Text>
+              </Grid>
+              {legacyLoading && <AppSpinner size={18} />}
+            </Flex>
+          </Button>
+        </Grid>
       </Grid>
-      <Button onClick={cancel} variant="textual">
-        {t('ledger-cancel')}
-      </Button>
-    </Grid>
+      <Box sx={{ mt: '20px', borderTop: 'solid #EAEAEA 1px', textAlign: 'left' }}>
+        <Text
+          onClick={cancel}
+          variant="links.inText"
+          sx={{ fontSize: '14px', mt: '32px', mb: '32px', ml: '34px', cursor: 'pointer' }}
+        >
+          &lt;- {t('ledger-cancel')}
+        </Text>
+      </Box>
+    </Box>
   )
 }

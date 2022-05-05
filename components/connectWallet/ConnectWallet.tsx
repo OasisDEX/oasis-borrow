@@ -196,21 +196,7 @@ function ConnectWalletButton({
 
   return (
     <ConnectWalletButtonWrapper {...{ missingInjectedWallet }}>
-      <Button
-        variant="square"
-        sx={{
-          cursor: 'pointer',
-          textAlign: 'center',
-          width: '100%',
-          '&:hover': {
-            boxShadow: 'cardLanding',
-            opacity: '1',
-          },
-          border: 'solid 1px #EAEAEA',
-          padding: 3,
-        }}
-        onClick={connectClick}
-      >
+      <Button variant="connectModal" onClick={connectClick}>
         {isConnecting ? (
           <AppSpinner size={42} />
         ) : (
@@ -618,8 +604,8 @@ export function ConnectWallet(props: WithClose) {
           </Text>
         )}
       </Grid>
-      <Box sx={{ mt: '20px', pt: '24px', pb: '24px', borderTop: 'solid #EAEAEA 1px' }}>
-        <Text sx={{ mb: 2 }} variant="paragraph3">
+      <Box sx={{ mt: '20px', borderTop: 'solid #EAEAEA 1px' }}>
+        <Text sx={{ mb: 2, mt: '24px' }} variant="paragraph3">
           {t('new-to-ethereum')}
         </Text>
         <AppLink
@@ -631,6 +617,7 @@ export function ConnectWallet(props: WithClose) {
             '&:hover': {
               opacity: 0.7,
             },
+            mb: '24px',
           }}
           href={t('learn-more-link')}
         >

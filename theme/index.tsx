@@ -566,6 +566,18 @@ const oasisBaseTheme = {
         boxShadow: 'surface',
       },
     },
+    connectModal: {
+      variant: 'buttons.square',
+      cursor: 'pointer',
+      textAlign: 'center',
+      width: '100%',
+      '&:hover': {
+        boxShadow: 'cardLanding',
+        opacity: '1',
+      },
+      border: 'solid 1px #EAEAEA',
+      padding: 3,
+    },
     expandable: {
       variant: 'text.header3',
       width: '100%',
