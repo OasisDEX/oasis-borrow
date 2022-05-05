@@ -1,5 +1,6 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { LandingPageLayout } from 'components/Layouts'
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -11,13 +12,16 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function LandingPage() {
+function LandingPage() {
   return (
     <WithConnection>
       <HomepageView />
+      <Survey for="homepage" />
     </WithConnection>
   )
 }
 
 LandingPage.layout = LandingPageLayout
 LandingPage.theme = 'Landing'
+
+export default LandingPage

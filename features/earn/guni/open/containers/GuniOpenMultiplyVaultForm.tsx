@@ -2,7 +2,7 @@ import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllo
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { VaultProxyStatusCard } from 'components/vault/VaultProxy'
+import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -13,6 +13,7 @@ import {
   OpenMultiplyVaultStatus,
 } from '../../../../../components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../../../components/vault/commonMultiply/OpenMultiplyVaultTitle'
+import { extractGasDataFromState } from '../../../../../helpers/extractGasDataFromState'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
 import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVaultChangesInformation'
 import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
@@ -20,6 +21,7 @@ import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
 export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, stage } = props
   const { t } = useTranslation()
+  const gasData = extractGasDataFromState(props)
 
   return (
     <VaultFormContainer toggleTitle={t('open-vault.title')}>
@@ -34,6 +36,7 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
         }
         token="DAI"
       />
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
       {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} token="DAI" />}
       {isOpenStage && (

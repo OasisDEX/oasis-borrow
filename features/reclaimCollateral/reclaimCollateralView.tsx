@@ -14,7 +14,7 @@ type ReclaimCollateralButtonProps = {
 export function ReclaimCollateralButton({ amount, token, id }: ReclaimCollateralButtonProps) {
   const { t } = useTranslation()
   const { reclaimCollateral$ } = useAppContext()
-  const state = useObservable(reclaimCollateral$(id, token, amount))
+  const [state] = useObservable(reclaimCollateral$(id, token, amount))
 
   if (!state) return null
   const { reclaim, txStatus } = state

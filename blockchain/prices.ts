@@ -14,7 +14,7 @@ import {
   tap,
 } from 'rxjs/operators'
 
-import { getToken } from '../blockchain/tokensMetadata'
+import { getToken } from './tokensMetadata'
 
 export interface Ticker {
   [label: string]: BigNumber
@@ -69,13 +69,10 @@ export function createGasPrice$(
           maxPriorityFeePerGas: minersTip,
         } as GasPriceParams
         if (blockNative.maxFeePerGas.gt(0)) {
-          console.log('from blockNative')
           gasFees.maxFeePerGas = new BigNumber(1000000000).multipliedBy(blockNative.maxFeePerGas)
           gasFees.maxPriorityFeePerGas = new BigNumber(1000000000).multipliedBy(
             blockNative.maxPriorityFeePerGas,
           )
-        } else {
-          console.log('defaults', gasFees)
         }
         return gasFees
       },
@@ -145,7 +142,7 @@ function transformOraclePrice({
   return new BigNumber(rawPrice)
 }
 
-function calculatePricePercentageChange(current: BigNumber, next: BigNumber): BigNumber {
+export function calculatePricePercentageChange(current: BigNumber, next: BigNumber): BigNumber {
   const rawPriceChange = current.div(next)
   if (rawPriceChange.isZero()) return zero
   return current.minus(next).div(current).times(-1)

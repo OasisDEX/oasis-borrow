@@ -1,50 +1,34 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useCallback, useMemo } from 'react'
-import ReactSelect, {
-  components,
-  OptionProps,
-  SingleValueProps,
-  StylesConfig,
-  ValueType,
-} from 'react-select'
-import { Flex } from 'theme-ui'
+import ReactSelect, { OptionProps, SingleValueProps, StylesConfig, ValueType } from 'react-select'
+import { Box, Flex } from 'theme-ui'
 
 import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from '../helpers/productCards'
-import { theme } from '../theme'
+import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 const customStyles: StylesConfig = {
-  control: (styles) => ({
-    ...styles,
-    height: '64px',
-    borderRadius: '8px',
-    outline: 'none',
-    ':hover': { borderColor: theme.colors.primary, boxShadow: 'unset' },
-  }),
   container: (styles) => ({ ...styles, maxWidth: '378px', flex: 1 }),
-  singleValue: (styles) => ({ ...styles, fontWeight: theme.fontWeights.semiBold }),
-  indicatorSeparator: () => ({ display: 'none' }),
-  option: (styles, { isSelected }) => {
-    return {
-      ...styles,
-      backgroundColor: isSelected ? theme.colors.selected : undefined,
-      color: theme.colors.primary,
-      ':hover': {
-        backgroundColor: theme.colors.secondaryAlt,
-      },
-    }
-  },
 }
 
-const { Option } = components
-
-function OptionWithIcon(props: OptionProps<ProductLandingPagesFilter>) {
+function OptionWithIcon({ innerProps, data, isSelected }: OptionProps<ProductLandingPagesFilter>) {
   return (
-    <Option {...props}>
+    <Box
+      {...innerProps}
+      sx={{
+        py: 2,
+        px: 3,
+        bg: isSelected ? 'selected' : undefined,
+        cursor: 'pointer',
+        '&:hover': {
+          bg: 'secondaryAlt',
+        },
+      }}
+    >
       <Flex sx={{ alignItems: 'center', fontWeight: 'semiBold' }}>
-        <Icon name={`${props.data.icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
-        {props.data.name}
+        <Icon name={`${data.icon}_color`} size="32px" sx={{ mr: 2, ml: 2 }} />
+        {data.name}
       </Flex>
-    </Option>
+    </Box>
   )
 }
 
@@ -88,6 +72,11 @@ export function ProductCardsSelect({
     [currentFilter],
   )
 
+  const productCardSelectComponents = useMemo(
+    () => reactSelectCustomComponents<ProductLandingPagesFilter>(),
+    [],
+  )
+
   return (
     <ReactSelect<ProductLandingPagesFilter>
       options={options}
@@ -95,6 +84,7 @@ export function ProductCardsSelect({
       styles={customStyles}
       value={value}
       components={{
+        ...productCardSelectComponents,
         Option: OptionWithIcon,
         SingleValue: InputWithIcon,
       }}

@@ -1,6 +1,7 @@
 import { Observable } from 'rxjs'
 
-import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions'
+import { createDsProxy } from '../../../../../blockchain/calls/proxy'
+import { closeGuniVaultCall } from '../../../../../blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from '../../../../../components/AppContext'
 import { zero } from '../../../../../helpers/zero'
@@ -21,6 +22,7 @@ export function applyGuniManageEstimateGas(
       swap,
       minToTokenAmount,
       vault,
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -38,6 +40,10 @@ export function applyGuniManageEstimateGas(
         exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '0x',
         proxyAddress: proxyAddress!,
       })
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

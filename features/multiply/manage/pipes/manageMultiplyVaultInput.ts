@@ -284,6 +284,8 @@ export function applyManageVaultInput(
       ...state,
       ...manageMultiplyInputsDefaults,
       requiredCollRatio: change.requiredCollRatio,
+      depositAmount: state.depositAmount,
+      depositAmountUSD: state.depositAmountUSD,
     }
   }
 
@@ -381,6 +383,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       depositAmount: change.depositAmount,
       depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -394,6 +397,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       depositAmountUSD: change.depositAmountUSD,
       depositAmount: change.depositAmountUSD?.div(currentCollateralPrice),
+      showSliderController: false,
     }
   }
 
@@ -405,6 +409,7 @@ export function applyManageVaultInput(
       ...manageMultiplyInputsDefaults,
       depositAmount: maxDepositAmount,
       depositAmountUSD: maxDepositAmountUSD,
+      showSliderController: false,
     }
   }
 

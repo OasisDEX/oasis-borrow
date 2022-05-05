@@ -5,8 +5,20 @@ import { mockManageVault, mockManageVault$ } from 'helpers/mocks/manageVault.moc
 import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
+import { of } from 'rxjs'
+
+import { mockedStopLossTrigger } from '../../../../helpers/mocks/stopLoss.mock'
 
 describe('manageVaultValidations', () => {
+  before(() => {
+    // TODO: remove after mainnet deployment
+    window.location.search = ['?network=goerli'] as any
+  })
+
+  after(() => {
+    window.location.search = [] as any
+  })
+
   it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
     const depositAmountExceeds = new BigNumber('2')
     const depositAmountAll = new BigNumber('1')
@@ -285,5 +297,52 @@ describe('manageVaultValidations', () => {
 
     state().updateDeposit!(depositAmount)
     expect(state().errorMessages).to.deep.eq(['depositCollateralOnVaultUnderDebtFloor'])
+  })
+
+  it('validates if next coll ratio on dai generate action is below stop loss level', () => {
+    localStorage.setItem('features', '{"Automation":true}')
+    const generateAmountStopLossError = new BigNumber(500)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {
+          debtFloor: new BigNumber(1500),
+        },
+        vault: {
+          collateral: new BigNumber(4.5),
+          debt: new BigNumber(1990),
+          ilk: 'ETH-A',
+        },
+        _automationTriggersData$: of(mockedStopLossTrigger),
+      }),
+    )
+
+    state().toggle!('daiEditing')
+    state().setMainAction!('depositGenerate')
+    state().updateGenerate!(generateAmountStopLossError)
+    expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
+  })
+
+  it('validates if next coll ratio on collateral withdraw action is below stop loss level', () => {
+    localStorage.setItem('features', '{"Automation":true}')
+    const withdrawCollateralStopLossError = new BigNumber(0.5)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {
+          debtFloor: new BigNumber(1500),
+        },
+        vault: {
+          collateral: new BigNumber(4.5),
+          debt: new BigNumber(1990),
+          ilk: 'ETH-A',
+        },
+        _automationTriggersData$: of(mockedStopLossTrigger),
+      }),
+    )
+
+    state().setMainAction!('withdrawPayback')
+    state().updateWithdraw!(withdrawCollateralStopLossError)
+    expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
   })
 })

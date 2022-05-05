@@ -1,33 +1,44 @@
-import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
+import { DetailsSection } from 'components/DetailsSection'
+import {
+  DetailsSectionContentCardWrapper,
+  getChangeVariant,
+} from 'components/DetailsSectionContentCard'
+import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
+import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
+import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
+import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
+import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import {
   AfterPillProps,
   getAfterPillColors,
   getCollRatioColor,
-  VaultDetailsCard,
-  VaultDetailsCardCollateralLocked,
-  VaultDetailsCardCollaterlizationRatioModal,
-  VaultDetailsCardCurrentPrice,
-  VaultDetailsCardLiquidationPrice,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { useModal } from 'helpers/modalHook'
+import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid, Text } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
-import { ManageVaultState } from '../pipes/manageVault'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
+import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
+import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
-function ManageVaultDetailsSummary({
+export function ManageVaultDetailsSummary({
   vault: { debt, token, freeCollateral, daiYieldFromLockedCollateral },
   afterDebt,
   afterFreeCollateral,
   daiYieldFromTotalCollateral,
   afterPillColors,
   showAfterPill,
-}: ManageVaultState & AfterPillProps) {
+}: ManageStandardBorrowVaultState & AfterPillProps) {
   const { t } = useTranslation()
   const { symbol } = getToken(token)
 
@@ -92,98 +103,144 @@ function ManageVaultDetailsSummary({
   )
 }
 
-export function ManageVaultDetails(props: ManageVaultState) {
+export function ManageVaultDetails(
+  props: ManageStandardBorrowVaultState & { onBannerButtonClickHandler: () => void },
+) {
   const {
     vault: {
+      daiYieldFromLockedCollateral,
+      debt,
+      freeCollateral,
+      id,
       token,
-      collateralizationRatio,
       liquidationPrice,
       lockedCollateral,
       lockedCollateralUSD,
+      collateralizationRatio,
+      ilk,
     },
+    ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
     afterLiquidationPrice,
     afterCollateralizationRatio,
     afterLockedCollateralUSD,
     collateralizationRatioAtNextPrice,
+    afterDebt,
+    afterFreeCollateral,
+    daiYieldFromTotalCollateral,
     inputAmountsEmpty,
     stage,
+    stopLossTriggered,
   } = props
+
   const { t } = useTranslation()
-  const openModal = useModal()
-  const collRatioColor = getCollRatioColor(props, collateralizationRatio)
-  const collRatioNextPriceColor = getCollRatioColor(props, collateralizationRatioAtNextPrice)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
+  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
+  const automationEnabled = useFeatureToggle('Automation')
+  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <Box>
-      <Grid variant="vaultDetailsCardsContainer">
-        <VaultDetailsCardLiquidationPrice
-          {...{
-            liquidationPrice,
-            liquidationPriceCurrentPriceDifference,
-            afterLiquidationPrice,
-            afterPillColors,
-            showAfterPill,
-          }}
-        />
+      {automationEnabled && (
+        <>
+          {stopLossTriggered && <StopLossTriggeredBannerControl />}
+          {!automationBasicBuyAndSellEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
+          )}
+          <StopLossBannerControl
+            vaultId={id}
+            liquidationPrice={liquidationPrice}
+            liquidationRatio={liquidationRatio}
+            afterLiquidationPrice={afterLiquidationPrice}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      )}
+      {!automationBasicBuyAndSellEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardLiquidationPrice
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+              afterLiquidationPrice={afterLiquidationPrice}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+              vaultId={id}
+            />
+            <VaultDetailsCardCollateralizationRatio
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+              {...props}
+            />
 
-        <VaultDetailsCard
-          title={`${t('system.collateralization-ratio')}`}
-          value={
-            <Text as="span" sx={{ color: collRatioColor }}>
-              {formatPercent(collateralizationRatio.times(100), {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </Text>
+            <VaultDetailsCardCurrentPrice {...props.priceInfo} />
+            <VaultDetailsCardCollateralLocked
+              depositAmountUSD={lockedCollateralUSD}
+              afterDepositAmountUSD={afterLockedCollateralUSD}
+              depositAmount={lockedCollateral}
+              token={token}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+            />
+          </Grid>
+          <ManageVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      ) : (
+        <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardCollateralizationRatio
+                collateralizationRatio={collateralizationRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                afterCollateralizationRatio={afterCollateralizationRatio}
+                changeVariant={changeVariant}
+              />
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
           }
-          valueAfter={
-            showAfterPill &&
-            formatPercent(afterCollateralizationRatio.times(100), {
-              precision: 2,
-              roundMode: BigNumber.ROUND_DOWN,
-            })
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsBorrow
+                token={token}
+                debt={debt}
+                freeCollateral={freeCollateral}
+                afterDebt={afterDebt}
+                afterFreeCollateral={afterFreeCollateral}
+                daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+                daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
           }
-          valueBottom={
-            <>
-              <Text as="span" sx={{ color: collRatioNextPriceColor }}>
-                {formatPercent(collateralizationRatioAtNextPrice.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
-                {` on next price`}
-              </Text>
-            </>
-          }
-          openModal={() =>
-            openModal(VaultDetailsCardCollaterlizationRatioModal, {
-              collateralRatioOnNextPrice: collateralizationRatioAtNextPrice,
-              currentCollateralRatio: collateralizationRatio,
-            })
-          }
-          afterPillColors={afterPillColors}
         />
-
-        <VaultDetailsCardCurrentPrice {...props} />
-        <VaultDetailsCardCollateralLocked
-          depositAmountUSD={lockedCollateralUSD}
-          afterDepositAmountUSD={afterLockedCollateralUSD}
-          depositAmount={lockedCollateral}
-          token={token}
-          afterPillColors={afterPillColors}
-          showAfterPill={showAfterPill}
-        />
-      </Grid>
-      <ManageVaultDetailsSummary
-        {...props}
-        afterPillColors={afterPillColors}
-        showAfterPill={showAfterPill}
-      />
+      )}
+      {automationEnabled && automationBasicBuyAndSellEnabled && (
+        <Box sx={{ mt: 3 }}>
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
+        </Box>
+      )}
     </Box>
   )
 }

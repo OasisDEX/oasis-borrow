@@ -5,12 +5,8 @@ import { createDsProxy, CreateDsProxyData } from 'blockchain/calls/proxy'
 import {
   adjustMultiplyVault,
   closeVaultCall,
-  depositAndGenerate,
-  DepositAndGenerateData,
   MultiplyAdjustData,
-  withdrawAndPayback,
-  WithdrawAndPaybackData,
-} from 'blockchain/calls/proxyActions'
+} from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
@@ -21,6 +17,12 @@ import { one, zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
+import {
+  DepositAndGenerateData,
+  WithdrawAndPaybackData,
+} from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { StandardDssProxyActionsContractAdapter } from '../../../../blockchain/calls/proxyActions/adapters/standardDssProxyActionsContractAdapter'
+import { vaultActionsLogic } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxError } from '../../../../helpers/types'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
 
@@ -317,15 +319,18 @@ export function manageVaultDepositAndGenerate(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(depositAndGenerate, {
-          kind: TxMetaKind.depositAndGenerate,
-          generateAmount,
-          depositAmount,
-          proxyAddress: proxyAddress!,
-          ilk,
-          token,
-          id,
-        }).pipe(
+        sendWithGasEstimation(
+          vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
+          {
+            kind: TxMetaKind.depositAndGenerate,
+            generateAmount,
+            depositAmount,
+            proxyAddress: proxyAddress!,
+            ilk,
+            token,
+            id,
+          },
+        ).pipe(
           transactionToX<ManageMultiplyVaultChange, DepositAndGenerateData>(
             { kind: 'manageWaitingForApproval' },
             (txState) =>
@@ -365,16 +370,19 @@ export function manageVaultWithdrawAndPayback(
     .pipe(
       first(),
       switchMap(({ sendWithGasEstimation }) =>
-        sendWithGasEstimation(withdrawAndPayback, {
-          kind: TxMetaKind.withdrawAndPayback,
-          withdrawAmount,
-          paybackAmount,
-          proxyAddress: proxyAddress!,
-          ilk,
-          token,
-          id,
-          shouldPaybackAll,
-        }).pipe(
+        sendWithGasEstimation(
+          vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+          {
+            kind: TxMetaKind.withdrawAndPayback,
+            withdrawAmount,
+            paybackAmount,
+            proxyAddress: proxyAddress!,
+            ilk,
+            token,
+            id,
+            shouldPaybackAll,
+          },
+        ).pipe(
           transactionToX<ManageMultiplyVaultChange, WithdrawAndPaybackData>(
             { kind: 'manageWaitingForApproval' },
             (txState) =>
@@ -629,6 +637,7 @@ export function applyEstimateGas(
       closeVaultTo,
       closeToDaiParams,
       closeToCollateralParams,
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -663,7 +672,7 @@ export function applyEstimateGas(
           ilk,
         })
       } else {
-        if (state.otherAction === 'closeVault') {
+        if (state.otherAction === 'closeVault' && !debt.isZero()) {
           const { fromTokenAmount, toTokenAmount, minToTokenAmount } =
             closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 
@@ -687,29 +696,39 @@ export function applyEstimateGas(
           const isDepositAndGenerate = depositAmount || generateAmount
 
           if (isDepositAndGenerate) {
-            return estimateGas(depositAndGenerate, {
-              kind: TxMetaKind.depositAndGenerate,
-              generateAmount: generateAmount || zero,
-              depositAmount: depositAmount || zero,
-              proxyAddress: proxyAddress!,
-              ilk,
-              token,
-              id,
-            })
+            return estimateGas(
+              vaultActionsLogic(StandardDssProxyActionsContractAdapter).depositAndGenerate,
+              {
+                kind: TxMetaKind.depositAndGenerate,
+                generateAmount: generateAmount || zero,
+                depositAmount: depositAmount || zero,
+                proxyAddress: proxyAddress!,
+                ilk,
+                token,
+                id,
+              },
+            )
           } else {
-            return estimateGas(withdrawAndPayback, {
-              kind: TxMetaKind.withdrawAndPayback,
-              withdrawAmount: withdrawAmount || zero,
-              paybackAmount: paybackAmount || zero,
-              proxyAddress: proxyAddress!,
-              ilk,
-              token,
-              id,
-              shouldPaybackAll,
-            })
+            return estimateGas(
+              vaultActionsLogic(StandardDssProxyActionsContractAdapter).withdrawAndPayback,
+              {
+                kind: TxMetaKind.withdrawAndPayback,
+                withdrawAmount: withdrawAmount || zero,
+                paybackAmount: paybackAmount || zero,
+                proxyAddress: proxyAddress!,
+                ilk,
+                token,
+                id,
+                shouldPaybackAll,
+              },
+            )
           }
         }
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

@@ -15,6 +15,7 @@ import { one, zero } from 'helpers/zero'
 import { Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { VaultHistoryEvent } from '../../features/vaultHistory/vaultHistory'
 import { mockedMultiplyEvents } from '../multiply/calculations.test'
 import { mockBalanceInfo$, MockBalanceInfoProps } from './balanceInfo.mock'
@@ -24,6 +25,7 @@ import { mockIlkData$, MockIlkDataProps } from './ilks.mock'
 import { addGasEstimationMock } from './openVault.mock'
 import { mockPriceInfo$, MockPriceInfoProps } from './priceInfo.mock'
 import { slippageLimitMock } from './slippageLimit.mock'
+import { mockedEmptyStopLossTrigger } from './stopLoss.mock'
 import { mockVault$, MockVaultProps } from './vaults.mock'
 
 export const MOCK_VAULT_ID = one
@@ -36,7 +38,8 @@ export interface MockManageMultiplyVaultProps {
   _priceInfo$?: Observable<PriceInfo>
   _balanceInfo$?: Observable<BalanceInfo>
   _proxyAddress$?: Observable<string | undefined>
-  _vaultMultiplyHistory$?: Observable<VaultHistoryEvent[]>
+  _vaultHistory$?: Observable<VaultHistoryEvent[]>
+  _automationTriggersData$?: Observable<TriggersData>
   _collateralAllowance$?: Observable<BigNumber>
   _daiAllowance$?: Observable<BigNumber>
   _vault$?: Observable<Vault>
@@ -62,7 +65,8 @@ export function mockManageMultiplyVault$({
   _priceInfo$,
   _balanceInfo$,
   _proxyAddress$,
-  _vaultMultiplyHistory$,
+  _vaultHistory$,
+  _automationTriggersData$,
   _collateralAllowance$,
   _daiAllowance$,
   _vault$,
@@ -111,8 +115,12 @@ export function mockManageMultiplyVault$({
     return _proxyAddress$ || of(proxyAddress)
   }
 
-  function vaultMultiplyHistory$() {
-    return _vaultMultiplyHistory$ || of(mockedMultiplyEvents)
+  function vaultHistory$() {
+    return _vaultHistory$ || of(mockedMultiplyEvents)
+  }
+
+  function automationTriggersData$() {
+    return _automationTriggersData$ || of(mockedEmptyStopLossTrigger)
   }
 
   function allowance$(_token: string) {
@@ -134,7 +142,7 @@ export function mockManageMultiplyVault$({
             _ilkData$: ilkData$(),
             priceInfo,
             ...vault,
-          })
+          }).vault$
         }),
       )
     )
@@ -156,8 +164,9 @@ export function mockManageMultiplyVault$({
     mockExchangeQuote$(exchangeQuote),
     addGasEstimationMock,
     slippageLimitMock(),
-    vaultMultiplyHistory$,
+    vaultHistory$,
     saveVaultType$,
+    automationTriggersData$,
     MOCK_VAULT_ID,
   )
 }

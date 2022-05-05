@@ -5,6 +5,8 @@ import { DEFAULT_PROXY_ADDRESS } from 'helpers/mocks/vaults.mock'
 import { openVaultStory } from 'helpers/stories/OpenVaultStory'
 import { one } from 'helpers/zero'
 
+import { AllowanceOption } from '../../../allowance/allowance'
+
 const proxyAddress = DEFAULT_PROXY_ADDRESS
 
 export const VaultWillBeUnderCollateralized = openVaultStory({
@@ -101,7 +103,7 @@ export const CustomAllowanceEmpty = openVaultStory({
 })({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
   allowanceAmount: undefined,
 })
 
@@ -112,7 +114,7 @@ export const CustomAllowanceAmountGreaterThanMaxUint256 = openVaultStory({
 })({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
   allowanceAmount: maxUint256.plus(one),
 })
 
@@ -124,7 +126,7 @@ export const CustomAllowanceAmountLessThanDepositAmount = openVaultStory({
   stage: 'allowanceWaitingForConfirmation',
   depositAmount: new BigNumber('10'),
   allowanceAmount: new BigNumber('9'),
-  selectedAllowanceRadio: 'custom',
+  selectedAllowanceRadio: AllowanceOption.CUSTOM,
 })
 
 // eslint-disable-next-line import/no-default-export

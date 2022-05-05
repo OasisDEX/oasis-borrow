@@ -148,8 +148,9 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
 
 export function PendingTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$)?.pendingTransactions
-  const context = useObservable(context$)
+  const [transactions] = useObservable(transactionManager$)
+  const pendingTransactions = transactions?.pendingTransactions
+  const [context] = useObservable(context$)
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 
@@ -157,7 +158,7 @@ export function PendingTransactions() {
     setTransactionsCount(transactionsCount + TRANSACTIONS_INCREMENT)
   }
 
-  if (!context || !transactions || !transactions.length) return null
+  if (!context || !pendingTransactions || !pendingTransactions.length) return null
   const { etherscan } = context
 
   return (
@@ -166,19 +167,20 @@ export function PendingTransactions() {
         {t('pending-transactions')}
       </Heading>
       <Box px={3} mx={1}>
-        {transactions.slice(0, transactionsCount).map((transaction) => (
+        {pendingTransactions.slice(0, transactionsCount).map((transaction) => (
           <PendingTransaction {...{ transaction, etherscan, key: transaction.id }} />
         ))}
       </Box>
-      {transactionsCount < transactions.length && <ViewMore viewMore={viewMore} />}
+      {transactionsCount < pendingTransactions.length && <ViewMore viewMore={viewMore} />}
     </Grid>
   )
 }
 
 export function RecentTransactions() {
   const { transactionManager$, context$ } = useAppContext()
-  const transactions = useObservable(transactionManager$)?.recentTransactions
-  const context = useObservable(context$)
+  const [transactions] = useObservable(transactionManager$)
+  const recentTransactions = transactions?.recentTransactions
+  const [context] = useObservable(context$)
   const [transactionsCount, setTransactionsCount] = useState(TRANSACTIONS_INCREMENT)
   const { t } = useTranslation()
 
@@ -186,7 +188,7 @@ export function RecentTransactions() {
     setTransactionsCount(transactionsCount + TRANSACTIONS_INCREMENT)
   }
 
-  if (!context || !transactions || !transactions.length) return null
+  if (!context || !recentTransactions || !recentTransactions.length) return null
   const { etherscan } = context
 
   return (
@@ -195,11 +197,11 @@ export function RecentTransactions() {
         {t('recent-transactions')}
       </Heading>
       <Box px={3} mx={1}>
-        {transactions.slice(0, transactionsCount).map((transaction) => (
+        {recentTransactions.slice(0, transactionsCount).map((transaction) => (
           <RecentTransaction {...{ transaction, etherscan, key: transaction.id }} />
         ))}
       </Box>
-      {transactionsCount < transactions.length && <ViewMore viewMore={viewMore} />}
+      {transactionsCount < recentTransactions.length && <ViewMore viewMore={viewMore} />}
     </Grid>
   )
 }

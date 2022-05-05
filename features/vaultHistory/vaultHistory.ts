@@ -8,64 +8,7 @@ import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
-
-const query = gql`
-  query vaultEvents($urn: String) {
-    allVaultEvents(
-      filter: { urn: { equalTo: $urn }, kind: { notEqualTo: "TAKE" } }
-      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
-    ) {
-      nodes {
-        kind
-        collateralAmount
-        daiAmount
-        vaultCreator
-        cdpId
-        transferFrom
-        transferTo
-        collateralTaken
-        coveredDebt
-        remainingCollateral
-        rate
-        timestamp
-        id
-        urn
-        hash
-        logIndex
-        auctionId
-        txId
-        blockId
-        oraclePrice
-      }
-    }
-  }
-`
-
-async function getVaultHistory(client: GraphQLClient, urn: string): Promise<ReturnedEvent[]> {
-  const data = await client.request(query, { urn: urn.toLowerCase() })
-
-  return data.allVaultEvents.nodes as ReturnedEvent[]
-}
-
-function parseBigNumbersFields(event: Partial<ReturnedEvent>): VaultEvent {
-  const bigNumberFields = [
-    'collateralAmount',
-    'daiAmount',
-    'collateralTaken',
-    'coveredDebt',
-    'remainingCollateral',
-    'rate',
-    'oraclePrice',
-  ]
-  return Object.entries(event).reduce(
-    (acc, [key, value]) =>
-      bigNumberFields.includes(key) && value != null
-        ? { ...acc, [key]: new BigNumber(value) }
-        : { ...acc, [key]: value },
-    {},
-  ) as VaultEvent
-}
+import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
 
 type WithSplitMark<T> = T & { splitId?: number }
 
@@ -125,6 +68,181 @@ export function fetchWithOperationId(url: string, options?: RequestInit) {
   return fetch(url, { ...options, body: JSON.stringify({ ...parsedBody, operationName }) })
 }
 
+export interface VaultHistoryChange {
+  kind: 'vaultHistory'
+  vaultHistory: VaultHistoryEvent[]
+}
+
+const query = gql`
+  query vaultMultiplyHistories($urn: String) {
+    allVaultMultiplyHistories(
+      filter: { urn: { equalTo: $urn } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        hash
+        txId
+        logIndex
+        blockId
+        blockNumber
+        blockHash
+        timestamp
+        id
+        urn
+        kind
+        marketPrice
+        beforeLockedCollateral
+        lockedCollateral
+        beforeCollateralizationRatio
+        collateralizationRatio
+        beforeDebt
+        debt
+        beforeMultiple
+        multiple
+        beforeLiquidationPrice
+        liquidationPrice
+        netValue
+        oazoFee
+        loanFee
+        gasFee
+        totalFee
+        bought
+        depositCollateral
+        depositDai
+        sold
+        withdrawnCollateral
+        withdrawnDai
+        exitCollateral
+        exitDai
+        collateralAmount
+        daiAmount
+        rate
+        vaultCreator
+        depositor
+        cdpId
+        transferFrom
+        transferTo
+        collateral
+        auctionId
+        liqPenalty
+        collateralPrice
+        coveredDebt
+        remainingDebt
+        remainingCollateral
+        collateralTaken
+        ilk
+        oraclePrice
+        ethPrice
+      }
+    }
+  }
+`
+
+const triggerEventsQuery = gql`
+  query triggerEvents($cdpId: BigFloat) {
+    allTriggerEvents(
+      filter: { cdpId: { equalTo: $cdpId } }
+      orderBy: [TIMESTAMP_DESC, LOG_INDEX_DESC]
+    ) {
+      nodes {
+        id
+        triggerId
+        cdpId
+        number
+        kind
+        eventType
+        hash
+        timestamp
+      }
+    }
+  }
+`
+
+function parseBigNumbersFields(
+  event: Partial<ReturnedEvent & ReturnedAutomationEvent>,
+): VaultEvent {
+  const bigNumberFields = [
+    'marketPrice',
+    'beforeLockedCollateral',
+    'lockedCollateral',
+    'beforeCollateralizationRatio',
+    'collateralizationRatio',
+    'beforeDebt',
+    'debt',
+    'beforeMultiple',
+    'multiple',
+    'beforeLiquidationPrice',
+    'liquidationPrice',
+    'netValue',
+    'oazoFee',
+    'loanFee',
+    'gasFee',
+    'totalFee',
+    'bought',
+    'depositCollateral',
+    'depositDai',
+    'sold',
+    'withdrawnCollateral',
+    'withdrawnDai',
+    'exitCollateral',
+    'exitDai',
+    'collateralAmount',
+    'daiAmount',
+    'rate',
+    'collateral',
+    'liqPenalty',
+    'collateralPrice',
+    'coveredDebt',
+    'remainingDebt',
+    'remainingCollateral',
+    'collateralTaken',
+    'oraclePrice',
+    'ethPrice',
+  ]
+  return Object.entries(event).reduce(
+    (acc, [key, value]) =>
+      bigNumberFields.includes(key) && value != null
+        ? { ...acc, [key]: new BigNumber(value) }
+        : { ...acc, [key]: value },
+    {},
+  ) as VaultEvent
+}
+
+async function getVaultMultiplyHistory(
+  client: GraphQLClient,
+  urn: string,
+): Promise<ReturnedEvent[]> {
+  const data = await client.request(query, { urn })
+  return data.allVaultMultiplyHistories.nodes
+}
+
+async function getVaultAutomationHistory(
+  client: GraphQLClient,
+  id: BigNumber,
+): Promise<ReturnedAutomationEvent[]> {
+  const triggersData = await client.request(triggerEventsQuery, { cdpId: id.toNumber() })
+  return triggersData.allTriggerEvents.nodes
+}
+
+function addReclaimFlag(events: VaultHistoryEvent[]) {
+  return events.map((event, index, array) => {
+    if (index === 0) {
+      return { ...event, reclaim: false }
+    }
+    const previousEvent = array[index - 1]
+
+    if (
+      event.kind === 'DEPOSIT' &&
+      previousEvent.kind === 'AUCTION_FINISHED_V2' &&
+      previousEvent.remainingCollateral.eq(event.collateralAmount)
+    ) {
+      return { ...event, reclaim: true }
+    }
+
+    return { ...event, reclaim: false }
+  })
+}
+
 export function createVaultHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
@@ -134,26 +252,41 @@ export function createVaultHistory$(
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
-
   return combineLatest(context$, vault$(vaultId)).pipe(
-    switchMap(([{ etherscan, cacheApi }, { address, token }]) =>
-      onEveryBlock$.pipe(
-        switchMap(() => getVaultHistory(makeClient(cacheApi), address)),
-        map((returnedEvents) =>
+    switchMap(([{ etherscan, cacheApi, ethtx }, { token, address, id }]) => {
+      return onEveryBlock$.pipe(
+        switchMap(() => {
+          const apiClient = makeClient(cacheApi)
+
+          return combineLatest(
+            getVaultMultiplyHistory(apiClient, address.toLowerCase()),
+            getVaultAutomationHistory(apiClient, id),
+          )
+        }),
+        map(([returnedEvents, returnedAutomationEvents]) =>
           flatten(
-            returnedEvents
+            [...returnedEvents, ...returnedAutomationEvents]
+              .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
               .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
               .map(parseBigNumbersFields),
           ),
         ),
-        map((events) => events.map((event) => ({ etherscan, token, ...event }))),
+        map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
+        map(addReclaimFlag),
         catchError(() => of([])),
-      ),
-    ),
+      )
+    }),
   )
 }
 
-export interface VaultHistoryChange {
-  kind: 'vaultHistory'
-  vaultHistory: VaultHistoryEvent[]
+export function createHistoryChange$(
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  id: BigNumber,
+) {
+  return vaultHistory$(id).pipe(
+    map((vaultHistory) => ({
+      kind: 'vaultHistory',
+      vaultHistory,
+    })),
+  )
 }

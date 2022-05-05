@@ -4,11 +4,17 @@ import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
 import { Abi } from '../helpers/types'
+import * as automationBot from './abi/automation-bot.json'
+import * as cdpRegistry from './abi/cdp-registry.json'
 import * as eth from './abi/ds-eth-token.json'
 import * as dsProxyFactory from './abi/ds-proxy-factory.json'
 import * as dsProxyRegistry from './abi/ds-proxy-registry.json'
 import * as dssCdpManager from './abi/dss-cdp-manager.json'
+import * as dssCharter from './abi/dss-charter.json'
+import * as dssCropper from './abi/dss-cropper.json'
 import * as guniProxyActions from './abi/dss-guni-proxy-actions.json'
+import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
+import * as dssProxyActionsCropjoin from './abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
 import * as erc20 from './abi/erc20.json'
@@ -43,6 +49,14 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+const mainnetCacheUrl =
+  process.env.MAINNET_CACHE_URL ||
+  getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
+  'https://oazo-bcache.new.oasis.app/api/v1'
+
+export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
+
+export const cropJoinIlks = ['CRVV1ETHSTETH-A']
 
 export const supportedIlks = [
   /* export just for test purposes */ 'ETH-A',
@@ -84,6 +98,9 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
+
+  ...charterIlks,
+  ...cropJoinIlks,
 ]
 
 const tokensMainnet = {
@@ -114,6 +131,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000123'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
   vat: contractDesc(vat, mainnetAddresses.MCD_VAT),
@@ -121,12 +139,21 @@ const protoMain = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, mainnetAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, mainnetAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
+  automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
+  serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
   guniRouter: '0x14E6D67F824C3a7b4329d3228807f8654294e4bd',
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     '0x2a49eae5cca3f050ebec729cf90cc910fadaf7a2',
+  ),
+  dssCropper: contractDesc(dssCropper, '0x8377CD01a5834a6EaD3b7efb482f678f2092b77e'),
+  cdpRegistry: contractDesc(cdpRegistry, '0xBe0274664Ca7A68d6b5dF826FB3CcB7c620bADF3'),
+  dssProxyActionsCropjoin: contractDesc(
+    dssProxyActionsCropjoin,
+    '0xa2f69F8B9B341CFE9BfBb3aaB5fe116C89C95bAF',
   ),
   defaultExchange: contractDesc(exchange, '0xb5eB8cB6cED6b6f8E13bcD502fb489Db4a726C7B'),
   noFeesExchange: contractDesc(exchange, '0x99e4484dac819aa74b347208752306615213d324'),
@@ -148,7 +175,7 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: mainnetCacheUrl,
 }
 
 export type NetworkConfig = typeof protoMain
@@ -179,6 +206,7 @@ const kovan: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
   vat: contractDesc(vat, kovanAddresses.MCD_VAT),
@@ -186,11 +214,19 @@ const kovan: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, kovanAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, kovanAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, kovanAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    kovanAddresses.PROXY_ACTIONS_CHARTER,
+  ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions || '',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
   defaultExchange: contractDesc(exchange, getConfig()?.publicRuntimeConfig?.exchangeAddress || ''), // TODO: UPDATE ADDRESS AFTER DEPLOYMENT
@@ -205,6 +241,7 @@ const kovan: NetworkConfig = {
   ethtx: {
     url: 'https://ethtx.info/kovan',
   },
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   taxProxyRegistries: [kovanAddresses.PROXY_REGISTRY],
   tokensMainnet: protoMain.tokensMainnet,
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, kovanAddresses.PROXY_ACTIONS_DSR),
@@ -231,6 +268,9 @@ const goerli: NetworkConfig = {
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
     ...getCollateralJoinContracts(goerliAddresses, supportedIlks),
+    // Todo: move to goerli network config when available at changelog.makerdao.com
+    'INST-ETH-A': '0x99507A436aC9E8eB5A89001a2dFc80E343D82122',
+    'INST-WBTC-A': '0xbd5978308C9BbF6d8d1D26cD1df9AA3EA83F782a',
   },
   getCdps: contractDesc(getCdps, goerliAddresses.GET_CDPS),
   mcdOsms: getOsms(goerliAddresses, supportedIlks),
@@ -239,6 +279,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
   vat: contractDesc(vat, goerliAddresses.MCD_VAT),
@@ -246,17 +287,26 @@ const goerli: NetworkConfig = {
   dsProxyRegistry: contractDesc(dsProxyRegistry, goerliAddresses.PROXY_REGISTRY),
   dsProxyFactory: contractDesc(dsProxyFactory, goerliAddresses.PROXY_FACTORY),
   dssProxyActions: contractDesc(dssProxyActions, goerliAddresses.PROXY_ACTIONS),
+  dssProxyActionsCharter: contractDesc(
+    dssProxyActionsCharter,
+    '0xfFb896D7BEf704DF73abc9A2EBf295CE236c5919',
+  ),
+  cdpRegistry: contractDesc(cdpRegistry, '0x0636E6878703E30aB11Ba13A68C6124d9d252e6B'),
+  dssProxyActionsCropjoin: contractDesc(dssProxyActionsCropjoin, '0x'),
   dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
-    '0x24E54706B100e2061Ed67fAe6894791ec421B421',
+    '0xc9628adc0a9f95D1d912C5C19aaBFF85E420a853',
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
+  dssCropper: contractDesc(dssCropper, '0x00000'), // DOES NOT EXISTS
   guniResolver: '0x',
   guniRouter: '0x',
+  automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
   // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
-  lowerFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
-  noFeesExchange: contractDesc(exchange, '0x84564e7D57Ee18D646b32b645AFACE140B19083d'),
+  defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  noFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
   etherscan: {
@@ -282,7 +332,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

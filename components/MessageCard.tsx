@@ -4,9 +4,10 @@ import { Card, Flex, Grid, Text } from 'theme-ui'
 interface NoticeCardProps {
   messages: (string | JSX.Element)[]
   type: 'error' | 'warning'
+  withBullet?: boolean
 }
 
-export function MessageCard({ messages, type }: NoticeCardProps) {
+export function MessageCard({ messages, type, withBullet = true }: NoticeCardProps) {
   const cardColor = type === 'error' ? 'danger' : 'warning'
   const textColor = type === 'error' ? 'onError' : 'onWarning'
 
@@ -16,9 +17,11 @@ export function MessageCard({ messages, type }: NoticeCardProps) {
       <Grid>
         {messages.map((message, idx) => (
           <Flex key={idx}>
-            <Text pr={2} sx={{ fontSize: 2, color: textColor }}>
-              •
-            </Text>
+            {withBullet && (
+              <Text pr={2} sx={{ fontSize: 2, color: textColor }}>
+                •
+              </Text>
+            )}
             <Text sx={{ fontSize: 2, color: textColor }}>{message}</Text>
           </Flex>
         ))}

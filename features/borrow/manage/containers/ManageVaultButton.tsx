@@ -5,9 +5,9 @@ import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
 import { UnreachableCaseError } from 'ts-essentials'
 
-import { ManageVaultState } from '../pipes/manageVault'
+import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
-function manageVaultButtonText(state: ManageVaultState): string {
+function manageVaultButtonText(state: ManageStandardBorrowVaultState): string {
   const { t } = useTranslation()
 
   switch (state.stage) {
@@ -108,7 +108,7 @@ function manageVaultButtonText(state: ManageVaultState): string {
   }
 }
 
-function manageVaultSecondaryButtonText(state: ManageVaultState): string {
+function manageVaultSecondaryButtonText(state: ManageStandardBorrowVaultState): string {
   const {
     isCollateralAllowanceStage,
     vault: { token },
@@ -127,7 +127,7 @@ function manageVaultSecondaryButtonText(state: ManageVaultState): string {
       return t('edit-vault-details')
   }
 }
-export function ManageVaultButton(props: ManageVaultState) {
+export function ManageVaultButton(props: ManageStandardBorrowVaultState) {
   const {
     progress,
     stage,

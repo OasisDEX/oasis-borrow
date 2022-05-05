@@ -5,12 +5,12 @@ import { AppLink } from 'components/Links'
 import { getTeamPicsFileNames, parseMemberInfo, TeamMember } from 'features/about/about'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { sortBy } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Grid, Heading, Image, Text } from 'theme-ui'
 
-export default function AboutPage({ members }: { members: TeamMember[] }) {
+function AboutPage({ members }: { members: TeamMember[] }) {
   const { t } = useTranslation()
 
   return (
@@ -52,6 +52,8 @@ AboutPage.layoutProps = {
   topBackground: 'lighter',
   variant: 'marketingSmallContainer',
 }
+
+export default AboutPage
 
 function PortraitsGrid({ members }: { members: TeamMember[] }) {
   const PORTRAIT_SIZE = '169px'

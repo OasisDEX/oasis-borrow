@@ -44,7 +44,7 @@ const FOOTER_SECTIONS = [
         url: '/support',
       },
       // add link
-      // { labelKey: 'nav.knowledge-centre', url: '/' },
+      { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
     ],
   },
@@ -133,6 +133,7 @@ export function TemporaryFooter() {
             <Link
               href={`https://github.com/OasisDex/oasis-borrow/commit/${buildHash}`}
               target="_blank"
+              rel="noopener noreferrer"
             >
               {commit}
             </Link>

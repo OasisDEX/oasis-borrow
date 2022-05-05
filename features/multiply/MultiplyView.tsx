@@ -9,16 +9,14 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservableWithError } from '../../helpers/observableHook'
+import { useObservable } from '../../helpers/observableHook'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const { error: productCardsDataError, value: productCardsDataValue } = useObservableWithError(
-    productCardsData$,
-  )
+  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
 
   const earnEnabled = useFeatureToggle('EarnProduct')
 

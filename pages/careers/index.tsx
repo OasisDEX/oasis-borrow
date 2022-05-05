@@ -3,13 +3,24 @@ import { PageSEOTags } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
 import { AppLink } from 'components/Links'
 import { Career, getCareerByFileName, getCareerFileNames } from 'features/careers/careers'
-import { groupBy } from 'lodash'
+import { groupBy, orderBy } from 'lodash'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Box, Button, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
-export default function CareersPage({ careers }: { careers: Career[] }) {
+export const getStaticProps = async ({ locale }: { locale: string }) => {
+  const careers = await Promise.all(getCareerFileNames().map((file) => getCareerByFileName(file)))
+  const translations = await serverSideTranslations(locale, ['common'])
+
+  return {
+    props: {
+      careers,
+      ...translations,
+    },
+  }
+}
+function CareersPage({ careers }: { careers: Career[] }) {
   const { t } = useTranslation()
   const careersByArea = groupBy(careers, 'area')
 
@@ -37,7 +48,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
                 />
               </Flex>
               <Grid>
-                {careers.map((career) => (
+                {orderBy(careers, ['order']).map((career) => (
                   <AppLink
                     key={career.slug}
                     href={`/careers/${career.slug}`}
@@ -82,7 +93,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-positions-you-like')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
           </Text>
         </Box>
       ) : (
@@ -90,7 +101,7 @@ export default function CareersPage({ careers }: { careers: Career[] }) {
           <Text variant="light">{t('careers.no-open-positions')}</Text>
           <br />
           <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link> .
+            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
           </Text>
         </Box>
       )}
@@ -126,13 +137,4 @@ CareersPage.layoutProps = {
   variant: 'marketingSmallContainer',
 }
 
-export const getStaticProps = async ({ locale }: { locale: string }) => {
-  const careers = await Promise.all(getCareerFileNames().map((file) => getCareerByFileName(file)))
-
-  return {
-    props: {
-      careers,
-      ...(await serverSideTranslations(locale, ['common'])),
-    },
-  }
-}
+export default CareersPage

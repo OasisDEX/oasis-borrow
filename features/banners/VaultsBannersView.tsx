@@ -21,6 +21,7 @@ type VaultBannerProps = {
   status?: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
+  withClose?: boolean
 }
 
 function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
@@ -45,19 +46,25 @@ export function VaultBanner({
   header,
   subheader,
   color,
+  withClose = true,
 }: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
+
   return (
     <>
       {isVisible && (
-        <Banner close={() => setIsVisible(false)}>
-          <Flex sx={{ py: 2, pr: 5 }}>
+        <Banner close={() => setIsVisible(false)} withClose={withClose}>
+          <Flex sx={{ py: 2, pr: [2, 5] }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
-              <Heading as="h3" sx={{ color }}>
+              <Heading as="h3" sx={{ color, wordBreak: 'normal' }}>
                 {header}
               </Heading>
-              {subheader && <Text variant="subheader">{subheader}</Text>}
+              {subheader && (
+                <Text variant="subheader" as="span" sx={{ wordBreak: 'normal' }}>
+                  {subheader}
+                </Text>
+              )}
             </Grid>
           </Flex>
         </Banner>
@@ -369,9 +376,9 @@ export function VaultNextPriceUpdateCounter({
 
 export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
-  const state = useObservable(vaultBanners$(id))
+  const [vaultBanners] = useObservable(vaultBanners$(id))
 
-  if (!state) return null
+  if (!vaultBanners) return null
 
   const {
     token,
@@ -381,7 +388,7 @@ export function VaultBannersView({ id }: { id: BigNumber }) {
     unlockedCollateral,
     banner,
     isVaultController,
-  } = state
+  } = vaultBanners
 
   switch (banner) {
     case 'liquidated':

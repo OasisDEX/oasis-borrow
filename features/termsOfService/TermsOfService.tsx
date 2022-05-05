@@ -172,8 +172,8 @@ const hiddenStages: TermsAcceptanceStage[] = [
 
 export function TermsOfService() {
   const { web3Context$, termsAcceptance$ } = useAppContext()
-  const termsAcceptance = useObservable(termsAcceptance$)
-  const web3Context = useObservable(web3Context$)
+  const [termsAcceptance] = useObservable(termsAcceptance$)
+  const [web3Context] = useObservable(web3Context$)
 
   function disconnectHandler() {
     disconnect(web3Context)
@@ -221,7 +221,7 @@ export function TermsOfService() {
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const { web3ContextConnected$ } = useAppContext()
-  const web3ContextConnected = useObservable(web3ContextConnected$)
+  const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
 
   if (!web3ContextConnected) {

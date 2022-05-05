@@ -21,12 +21,16 @@ import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
+import { StopLossTriggerData } from '../../../automation/protection/common/StopLossTriggerDataExtractor'
+import {
+  createStopLossDataChange$,
+  TriggersData,
+} from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
-import { VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
-import { createMultiplyHistoryChange$ } from './manageMultiplyHistory'
+import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import {
   applyExchange,
   createExchangeChange$,
@@ -250,6 +254,7 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     initialTotalSteps: number
     totalSteps: number
     currentStep: number
+    stopLossData?: StopLossTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -444,7 +449,7 @@ export function defaultMutableManageMultiplyVaultState(
     daiAllowanceAmount: maxUint256,
     selectedCollateralAllowanceRadio: 'unlimited',
     selectedDaiAllowanceRadio: 'unlimited',
-    showSliderController: true,
+    showSliderController: false,
     closeVaultTo: 'collateral',
     mainAction: 'buy',
     otherAction: 'depositCollateral',
@@ -469,8 +474,9 @@ export function createManageMultiplyVault$(
   ) => Observable<Quote>,
   addGasEstimation$: AddGasEstimationFunction,
   slippageLimit$: Observable<UserSettingsState>,
-  vaultMultiplyHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
+  vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   saveVaultType$: SaveVaultType,
+  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -524,6 +530,7 @@ export function createManageMultiplyVault$(
                     vault,
                     priceInfo,
                     vaultHistory: [],
+                    stopLossData: undefined,
                     balanceInfo,
                     ilkData,
                     account,
@@ -555,7 +562,8 @@ export function createManageMultiplyVault$(
                     createInitialQuoteChange(exchangeQuote$, vault.token, slippage),
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
-                    createMultiplyHistoryChange$(vaultMultiplyHistory$, id),
+                    createHistoryChange$(vaultHistory$, id),
+                    createStopLossDataChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

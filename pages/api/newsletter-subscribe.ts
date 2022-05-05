@@ -1,3 +1,4 @@
+import { withSentry } from '@sentry/nextjs'
 import md5 from 'crypto-js/md5'
 import { NextApiRequest, NextApiResponse } from 'next'
 
@@ -13,7 +14,7 @@ type UserStatus = 'pending' | 'subscribed' | 'unsubscribed' | 'cleaned' | 'trans
 // change to subscribed if there is no need for opt-in
 const INITIAL_USER_STATUS: UserStatus = 'subscribed'
 
-export default async function (req: NextApiRequest, res: NextApiResponse) {
+const handler = async function (req: NextApiRequest, res: NextApiResponse) {
   const { email } = req.body
 
   try {
@@ -69,3 +70,5 @@ export default async function (req: NextApiRequest, res: NextApiResponse) {
     return res.status(500).json({ error: error.message || error.toString() })
   }
 }
+
+export default withSentry(handler)

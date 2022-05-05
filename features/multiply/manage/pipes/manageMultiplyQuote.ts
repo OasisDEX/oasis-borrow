@@ -135,7 +135,7 @@ export function createExchangeChange$(
             slippage,
             otherAction,
             closeVaultTo,
-            vault: { token },
+            vault: { token, debt },
             closeToDaiParams,
             closeToCollateralParams,
             oneInchAmount,
@@ -150,7 +150,7 @@ export function createExchangeChange$(
             return exchangeQuote$(token, slippage, oneInchAmount, exchangeAction, 'defaultExchange')
           }
 
-          if (otherAction === 'closeVault') {
+          if (otherAction === 'closeVault' && !debt.isZero()) {
             const { fromTokenAmount } =
               closeVaultTo === 'dai' ? closeToDaiParams : closeToCollateralParams
 

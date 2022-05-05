@@ -42,12 +42,7 @@ export function getCollateralTokens(addresses: Dictionary<string>, ilks: string[
 export function getCollateralJoinContracts(addresses: Dictionary<string>, ilks: string[]) {
   return Object.entries(addresses)
     .filter(([key]) => /MCD_JOIN_(.*)/.test(key))
-    .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace('_', '-'), address])
-    .filter(
-      ([key]) =>
-        ilks.filter((possibleKey) => {
-          return key === possibleKey
-        }).length > 0,
-    )
+    .map(([key, address]) => [key.replace('MCD_JOIN_', '').replace(/_/g, '-'), address])
+    .filter(([key]) => ilks.includes(key))
     .reduce((acc, [ilk, address]) => ({ ...acc, [ilk]: address }), {} as Dictionary<string>)
 }

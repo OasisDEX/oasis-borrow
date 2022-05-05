@@ -1,8 +1,8 @@
 import { Divider } from '@theme-ui/components'
 import { BigNumber } from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { useTranslation } from 'react-i18next'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { Stage } from '../../../features/earn/guni/open/pipes/openGuniVault'

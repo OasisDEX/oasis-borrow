@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { PriceInfo } from 'features/shared/priceInfo'
+import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -10,17 +12,23 @@ export interface DefaultVaultHeaderProps {
   header: string
   id?: BigNumber
   ilkData: IlkData
+  token: string
+  priceInfo: PriceInfo
 }
 
-export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
+export function DefaultVaultHeader(props: DefaultVaultHeaderProps & WithChildren) {
   const {
     ilkData: { liquidationRatio, stabilityFee, liquidationPenalty, debtFloor },
     id,
     header,
+    children,
+    token,
+    priceInfo,
   } = props
   const { t } = useTranslation()
+
   return (
-    <VaultHeader header={header} id={id}>
+    <VaultHeader id={id} header={header} token={token} priceInfo={priceInfo}>
       <VaultIlkDetailsItem
         label={t('manage-vault.stability-fee')}
         value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
@@ -59,6 +67,7 @@ export function DefaultVaultHeader(props: DefaultVaultHeaderProps) {
           },
         }}
       />
+      {children}
     </VaultHeader>
   )
 }

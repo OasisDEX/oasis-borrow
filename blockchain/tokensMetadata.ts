@@ -15,8 +15,12 @@ export interface TokenConfig {
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  bannerGif?: string
   token0?: string
   token1?: string
+  coinbaseTicker?: string
+  background?: string
+  digitsInstant?: number
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
@@ -541,6 +545,21 @@ export const tokens = [
     bannerGif: '',
     tags: ['stablecoin'],
   },
+  {
+    symbol: 'CRVV1ETHSTETH',
+    precision: 18,
+    digits: 5,
+    digitsInstant: 2,
+    name: 'stETH/ETH CRV',
+    icon: 'curve_circle_color',
+    iconCircle: 'curve_circle_color',
+    iconColor: 'curve_circle_color',
+    color: '#ff077d',
+    background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/crv_steth_eth.gif'),
+    tags: ['lp-token'],
+  },
 ]
 
 // ticker comes from coinpaprika api https://api.coinpaprika.com/v1/tickers
@@ -572,3 +591,19 @@ export const ETH_TOKENS = tokens
   .map((ethToken) => ethToken.symbol)
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
+
+export const ALLOWED_AUTOMATION_ILKS = [
+  'ETH-A',
+  'ETH-B',
+  'ETH-C',
+  'WBTC-A',
+  'WBTC-B',
+  'WBTC-C',
+  'WSTETH-A',
+  'WSTETH-C',
+  'RENBTC-A',
+  'YFI-A',
+  'UNI-A',
+  'LINK-A',
+  'MANA-A',
+]

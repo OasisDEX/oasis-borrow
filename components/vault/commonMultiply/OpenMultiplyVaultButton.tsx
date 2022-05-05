@@ -86,7 +86,7 @@ export interface OpenMultiplyVaultButtonProps {
 
 export function OpenMultiplyVaultButton(props: OpenMultiplyVaultButtonProps) {
   const { accountData$ } = useAppContext()
-  const accountData = useObservable(accountData$)
+  const [accountData] = useObservable(accountData$)
   const { t } = useTranslation()
   const { replace } = useRedirect()
   const {

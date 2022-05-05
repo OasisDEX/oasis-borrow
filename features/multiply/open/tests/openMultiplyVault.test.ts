@@ -13,7 +13,7 @@ import { zero } from 'helpers/zero'
 import { of, Subject } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { parseVaultIdFromReceiptLogs } from '../pipes/openMultiplyVaultTransactions'
+import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { newCDPTxReceipt } from './fixtures/newCDPtxReceipt'
 
 describe('open multiply vault', () => {
@@ -52,7 +52,7 @@ describe('open multiply vault', () => {
           ilk: 'ETH-Z',
         }),
       )
-      expect(state).to.throw()
+      expect(state).to.throw('Ilk ETH-Z does not exist')
     })
 
     it('should start by default at the editing stage', () => {
@@ -347,7 +347,7 @@ describe('open multiply vault', () => {
       expect(state().stage).to.deep.equal('editing')
     })
 
-    it('shold update totalSteps if allowance amount is less than deposit amount', () => {
+    it('should update totalSteps if allowance amount is less than deposit amount', () => {
       const depositAmount = new BigNumber('100')
       const startingAllowanceAmount = new BigNumber('99')
 
@@ -391,86 +391,6 @@ describe('open multiply vault', () => {
       expect(state().allowance!).to.be.deep.eq(zero)
       state().regress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
-    })
-
-    it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
-      const depositAmount = new BigNumber('100')
-
-      const state = getStateUnpacker(
-        mockOpenMultiplyVault({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: maxUint256,
-          ilk: 'WBTC-A',
-        }),
-      )
-
-      expect(state().totalSteps).to.deep.equal(2)
-      state().updateDeposit!(depositAmount)
-      state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-    })
-
-    it('should open vault successfully and progress to editing', () => {
-      const depositAmount = new BigNumber('100')
-
-      const state = getStateUnpacker(
-        mockOpenMultiplyVault({
-          _txHelpers$: of({
-            ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
-          }),
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: maxUint256,
-          ilk: 'WBTC-A',
-        }),
-      )
-      state().updateDeposit!(depositAmount)
-      state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-      state().progress!()
-      expect(state().stage).to.deep.equal('txSuccess')
-      expect(state().id!).to.deep.equal(new BigNumber('3281'))
-      state().progress!()
-      expect(state().stage).to.deep.equal('editing')
-    })
-
-    it('should handle open vault tx failing and back to editing', () => {
-      const state = getStateUnpacker(
-        mockOpenMultiplyVault({
-          _txHelpers$: of({
-            ...protoTxHelpers,
-            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
-              mockTxState(meta, TxStatus.Failure),
-          }),
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: maxUint256,
-          ilk: 'WBTC-A',
-        }),
-      )
-      state().progress!()
-      state().progress!()
-      expect(state().stage).to.deep.equal('txFailure')
-      state().regress!()
-      expect(state().stage).to.deep.equal('editing')
-    })
-
-    it('shold update totalSteps if allowance amount is less than deposit amount', () => {
-      const depositAmount = new BigNumber('100')
-      const startingAllowanceAmount = new BigNumber('99')
-
-      const state = getStateUnpacker(
-        mockOpenMultiplyVault({
-          proxyAddress: DEFAULT_PROXY_ADDRESS,
-          allowance: startingAllowanceAmount,
-          ilk: 'WBTC-A',
-        }),
-      )
-
-      expect(state().totalSteps).to.deep.equal(2)
-
-      state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should clear form values and go to editing stage', () => {

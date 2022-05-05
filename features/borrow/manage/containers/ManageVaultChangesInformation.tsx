@@ -3,17 +3,18 @@ import BigNumber from 'bignumber.js'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
-  VaultChangesInformationEstimatedGasFee,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { ManageVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
 
-export function ManageVaultChangesInformation(props: ManageVaultState) {
+export function ManageVaultChangesInformation(
+  props: ManageStandardBorrowVaultState & { txnCostDisplay?: ReactNode },
+) {
   const { t } = useTranslation()
   const {
     afterCollateralizationRatio,
@@ -32,6 +33,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
       token,
       daiYieldFromLockedCollateral,
     },
+    txnCostDisplay,
   } = props
   const collRatioColor = getCollRatioColor(props, collateralizationRatio)
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
@@ -108,7 +110,7 @@ export function ManageVaultChangesInformation(props: ManageVaultState) {
           </Flex>
         }
       />
-      <VaultChangesInformationEstimatedGasFee {...props} />
+      {txnCostDisplay}
     </VaultChangesInformationContainer>
   ) : null
 }

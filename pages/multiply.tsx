@@ -1,3 +1,4 @@
+import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -11,13 +12,16 @@ export const getStaticProps = async ({ locale }: { locale: string }) => ({
   },
 })
 
-export default function MultiplyPage() {
+function MultiplyPage() {
   return (
     <WithConnection>
       <MultiplyView />
+      <Survey for="multiply" />
     </WithConnection>
   )
 }
 
 MultiplyPage.layout = ProductPagesLayout
 MultiplyPage.theme = 'Landing'
+
+export default MultiplyPage

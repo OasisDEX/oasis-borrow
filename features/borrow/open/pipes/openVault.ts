@@ -11,11 +11,27 @@ import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
+import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
+import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
 import { TxError } from '../../../../helpers/types'
+import {
+  AllowanceChanges,
+  AllowanceOption,
+  applyAllowanceChanges,
+} from '../../../allowance/allowance'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../form/warningMessagesHandler'
 import { createProxy } from '../../../proxy/createProxy'
-import { applyOpenVaultAllowance, OpenVaultAllowanceChange } from './openVaultAllowances'
+import { applyProxyChanges, ProxyChanges } from '../../../proxy/proxy'
+import { OpenVaultTransactionChange } from '../../../shared/transactions'
+import {
+  createApplyOpenVaultTransition,
+  OpenVaultTransitionChange,
+} from '../../../vaultTransitions/openVaultTransitions'
 import {
   applyOpenVaultCalculations,
   defaultOpenVaultStateCalculations,
@@ -36,13 +52,7 @@ import {
   defaultOpenVaultSummary,
   OpenVaultSummary,
 } from './openVaultSummary'
-import {
-  applyEstimateGas,
-  applyOpenVaultTransaction,
-  openVault,
-  OpenVaultTransactionChange,
-} from './openVaultTransactions'
-import { applyOpenVaultTransition, OpenVaultTransitionChange } from './openVaultTransitions'
+import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -50,7 +60,7 @@ interface OpenVaultInjectedOverrideChange {
   stateToOverride: Partial<OpenVaultState>
 }
 
-function applyOpenVaultInjectedOverride(change: OpenVaultChange, state: OpenVaultState) {
+function applyOpenVaultInjectedOverride(state: OpenVaultState, change: OpenVaultChange) {
   if (change.kind === 'injectStateOverride') {
     return {
       ...state,
@@ -65,23 +75,10 @@ export type OpenVaultChange =
   | OpenVaultFormChange
   | OpenVaultTransitionChange
   | OpenVaultTransactionChange
-  | OpenVaultAllowanceChange
+  | AllowanceChanges
+  | ProxyChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
-
-function apply(state: OpenVaultState, change: OpenVaultChange) {
-  const s1 = applyOpenVaultInput(change, state)
-  const s2 = applyOpenVaultForm(change, s1)
-  const s3 = applyOpenVaultTransition(change, s2)
-  const s4 = applyOpenVaultTransaction(change, s3)
-  const s5 = applyOpenVaultAllowance(change, s4)
-  const s6 = applyOpenVaultEnvironment(change, s5)
-  const s7 = applyOpenVaultInjectedOverride(change, s6)
-  const s8 = applyOpenVaultCalculations(s7)
-  const s9 = applyOpenVaultStageCategorisation(s8)
-  const s10 = applyOpenVaultConditions(s9)
-  return applyOpenVaultSummary(s10)
-}
 
 export type OpenVaultStage =
   | 'editing'
@@ -107,7 +104,7 @@ export interface MutableOpenVaultState {
   depositAmountUSD?: BigNumber
   generateAmount?: BigNumber
   showGenerateOption: boolean
-  selectedAllowanceRadio: 'unlimited' | 'depositAmount' | 'custom'
+  selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   id?: BigNumber
 }
@@ -165,6 +162,7 @@ export type OpenVaultState = MutableOpenVaultState &
 
 function addTransitions(
   txHelpers: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
   proxyAddress$: Observable<string | undefined>,
   change: (ch: OpenVaultChange) => void,
   state: OpenVaultState,
@@ -240,7 +238,7 @@ function addTransitions(
   if (state.stage === 'txWaitingForConfirmation' || state.stage === 'txFailure') {
     return {
       ...state,
-      progress: () => openVault(txHelpers, change, state),
+      progress: () => openVault(txHelpers, vaultActions, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -261,8 +259,11 @@ function addTransitions(
 export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   stage: 'editing' as OpenVaultStage,
   showGenerateOption: false,
-  selectedAllowanceRadio: 'unlimited' as 'unlimited',
+  selectedAllowanceRadio: AllowanceOption.UNLIMITED,
   allowanceAmount: maxUint256,
+  depositAmount: undefined,
+  depositAmountUSD: undefined,
+  generateAmount: undefined,
 }
 
 export function createOpenVault$(
@@ -274,8 +275,13 @@ export function createOpenVault$(
   balanceInfo$: (token: string, address: string | undefined) => Observable<BalanceInfo>,
   ilks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  ilkToToken$: Observable<(ilk: string) => string>,
+  ilkToToken$: (ilk: string) => Observable<string>,
   addGasEstimation$: AddGasEstimationFunction,
+  proxyActionsAdapterResolver$: ({
+    ilk,
+  }: {
+    ilk: string
+  }) => Observable<ProxyActionsSmartContractAdapterInterface>,
   ilk: string,
 ): Observable<OpenVaultState> {
   return ilks$.pipe(
@@ -283,10 +289,14 @@ export function createOpenVault$(
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkToToken$).pipe(
-          switchMap(([context, txHelpers, ilkToToken]) => {
+        combineLatest(
+          context$,
+          txHelpers$,
+          ilkToToken$(ilk),
+          proxyActionsAdapterResolver$({ ilk }),
+        ).pipe(
+          switchMap(([context, txHelpers, token, proxyActionsAdapter]) => {
             const account = context.account
-            const token = ilkToToken(ilk)
             return combineLatest(
               priceInfo$(token),
               balanceInfo$(token, account),
@@ -298,6 +308,7 @@ export function createOpenVault$(
                 ((proxyAddress && allowance$(token, account, proxyAddress)) || of(undefined)).pipe(
                   first(),
                   switchMap((allowance) => {
+                    const vaultActions = vaultActionsLogic(proxyActionsAdapter)
                     const change$ = new Subject<OpenVaultChange>()
 
                     function change(ch: OpenVaultChange) {
@@ -335,6 +346,30 @@ export function createOpenVault$(
                       injectStateOverride,
                     }
 
+                    const apply = combineApplyChanges<OpenVaultState, OpenVaultChange>(
+                      applyOpenVaultInput,
+                      applyOpenVaultForm,
+                      createApplyOpenVaultTransition<
+                        OpenVaultState,
+                        MutableOpenVaultState,
+                        OpenVaultCalculations,
+                        OpenVaultConditions
+                      >(
+                        defaultMutableOpenVaultState,
+                        defaultOpenVaultStateCalculations,
+                        defaultOpenVaultConditions,
+                      ),
+                      applyProxyChanges,
+                      applyOpenVaultTransaction,
+                      applyAllowanceChanges,
+                      applyOpenVaultEnvironment,
+                      applyOpenVaultInjectedOverride,
+                      applyOpenVaultCalculations,
+                      applyOpenVaultStageCategorisation,
+                      applyOpenVaultConditions,
+                      applyOpenVaultSummary,
+                    )
+
                     const environmentChanges$ = merge(
                       priceInfoChange$(priceInfo$, token),
                       balanceInfoChange$(balanceInfo$, token, account),
@@ -347,8 +382,15 @@ export function createOpenVault$(
                       scan(apply, initialState),
                       map(validateErrors),
                       map(validateWarnings),
-                      switchMap(curry(applyEstimateGas)(addGasEstimation$)),
-                      map(curry(addTransitions)(txHelpers, connectedProxyAddress$, change)),
+                      switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(
+                        curry(addTransitions)(
+                          txHelpers,
+                          vaultActions,
+                          connectedProxyAddress$,
+                          change,
+                        ),
+                      ),
                     )
                   }),
                 ),

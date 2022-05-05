@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
+import { STOP_LOSS_MARGIN } from '../../helpers/multiply/calculations'
 import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
@@ -391,5 +392,20 @@ export function daiAllowanceProgressionDisabledValidator({
     (customDaiAllowanceAmountEmpty ||
       customDaiAllowanceAmountExceedsMaxUint256 ||
       customDaiAllowanceAmountLessThanPaybackAmount)
+  )
+}
+
+export function afterCollRatioBelowStopLossRatioValidator({
+  afterCollateralizationRatio,
+  afterCollateralizationRatioAtNextPrice,
+  stopLossRatio,
+}: {
+  afterCollateralizationRatio: BigNumber
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  stopLossRatio: BigNumber
+}) {
+  return (
+    afterCollateralizationRatio.lt(stopLossRatio) ||
+    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
   )
 }
