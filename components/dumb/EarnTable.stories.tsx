@@ -3,17 +3,19 @@ import React from 'react'
 import { Box, Button, Flex, Link, Text } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
-import { EarnTable } from './EarnTable'
+import { EarnTable, EarnTablesContainer } from './EarnTable'
 
 export const MissingHeaders = () => (
-  <EarnTable
-    sx={{ maxWidth: '600px' }}
-    headerData={[{ label: 'Tokens', tooltip: 'These are tokens' }]}
-    rows={[
-      [<Text>ETH</Text>, <Text>Ethereum</Text>],
-      [<Text>BTC</Text>, <Text>Bitcoin</Text>, <Text>Is the first coin</Text>],
-    ]}
-  />
+  <EarnTablesContainer columnCount={3}>
+    <EarnTable
+      sx={{ maxWidth: '600px' }}
+      headerData={[{ label: 'Tokens', tooltip: 'These are tokens' }]}
+      rows={[
+        [<Text>ETH</Text>, <Text>Ethereum</Text>],
+        [<Text>BTC</Text>, <Text>Bitcoin</Text>, <Text>Is the first coin</Text>],
+      ]}
+    />
+  </EarnTablesContainer>
 )
 
 export const Positions = () => {
@@ -40,56 +42,59 @@ export const Positions = () => {
     },
   ]
 
+  const table = <EarnTable
+    headerData={[
+      {
+        label: 'Asset',
+        tooltip: 'The asset',
+      },
+      {
+        label: 'Vault ID',
+        tooltip: 'A number',
+      },
+      {
+        label: 'Collateral Ratio',
+        tooltip: (
+          <Box>
+            More info on collateral <Link href="#">here</Link>
+          </Box>
+        ),
+      },
+      { label: 'Dai Debt', tooltip: 'The Dai Debt' },
+      { label: 'Collateral Locked' },
+      {
+        label: 'Variable %',
+        tooltip: 'The variable',
+      },
+      {
+        label: 'Automation',
+        tooltip: 'We have all sorts of robots at our base.',
+      },
+    ]}
+    rows={data.map((position) => [
+      <Flex sx={{ alignItems: 'center', minWidth: '180px' }}>
+        <Icon name={position.icon} size="36px" sx={{ mr: 2 }} /> {position.ilk}
+      </Flex>,
+      position.vaultID,
+      <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
+        {position.colRatio}
+      </Text>,
+      position.debt,
+      position.locked,
+      position.variable,
+      <Button variant="outline">Activate</Button>,
+      <Button variant="outline">Edit Vault</Button>,
+    ])}
+  />
+
   return (
     <>
       <InjectTokenIconsDefs />
       <Box sx={{ width: '1200px', px: 4 }}>
-        <EarnTable
-          headerData={[
-            {
-              label: 'Asset',
-              tooltip: 'The asset',
-            },
-            {
-              label: 'Vault ID',
-              tooltip: 'A number',
-            },
-            {
-              label: 'Collateral Ratio',
-              tooltip: (
-                <Box>
-                  More info on collateral <Link href="#">here</Link>
-                </Box>
-              ),
-            },
-            { label: 'Dai Debt', tooltip: 'The Dai Debt' },
-            { label: 'Collateral Locked' },
-            {
-              label: 'Variable %',
-              tooltip: 'The variable',
-            },
-            {
-              label: 'Automation',
-              tooltip: 'We have all sorts of robots at our base.',
-            },
-          ]}
-          rows={data.map((position) => [
-            <Flex sx={{ alignItems: 'center', minWidth: '180px' }}>
-              <Icon name={position.icon} size="36px" sx={{ mr: 2 }} /> {position.ilk}
-            </Flex>,
-            position.vaultID,
-            <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
-              {position.colRatio}
-            </Text>,
-            position.debt,
-            position.locked,
-            position.variable,
-            <Box sx={{ minWidth: '280px' }}>
-              <Button variant="outline">Activate</Button>
-              <Button variant="outline">Edit Vault</Button>
-            </Box>,
-          ])}
-        />
+        <EarnTablesContainer columnCount={8}>
+          {table}
+          {table}
+        </EarnTablesContainer>
       </Box>
     </>
   )

@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithChildren } from 'helpers/types'
-import React from 'react'
+import React, { Children, createContext, useContext } from 'react'
 import { Box, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
 export type EarnTableHeaderVM = {
@@ -29,6 +29,9 @@ function EarnTableHeader({ label, tooltip }: EarnTableHeaderVM) {
 }
 
 function pad(count: number) {
+  if (count < 0) {
+    throw  new Error('columnCount is less than amount of cells in row. ')
+  }
   return Array(count).fill(<div />)
 }
 
@@ -40,19 +43,22 @@ function EarnTableCell({ children }: WithChildren) {
   )
 }
 
+const ColumnCountContext = createContext<number>(0)
+
 export function EarnTable({
   headerData,
   rows,
-  sx,
 }: {
   headerData: EarnTableHeaderVM[]
   rows: (JSX.Element | string)[][]
-  sx?: SxStyleProp
 }) {
-  const columnCount = Math.max(headerData.length, ...rows.map((row) => row.length))
+  const columnCount = useContext(ColumnCountContext)
+  if (columnCount === 0) {
+    throw new Error('EarnTable should be used inside EarnTablesContainer')
+  }
   const paddedRows = rows.map((row) => row.concat(pad(columnCount - row.length)))
   return (
-    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center', ...sx }}>
+    <>
       {headerData.map((headerVM, index) => (
         <EarnTableHeader key={index} {...headerVM} />
       ))}{' '}
@@ -60,6 +66,15 @@ export function EarnTable({
       {paddedRows.flat().map((cellContent, index) => (
         <EarnTableCell key={index}>{cellContent}</EarnTableCell>
       ))}
-    </Grid>
+    </>
   )
+}
+
+export function EarnTablesContainer({ columnCount, children }: { columnCount: number } & WithChildren) {
+  const arrayChildren = Children.toArray(children)
+  return <ColumnCountContext.Provider value={columnCount}>
+    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center' }}>
+      {Children.map(arrayChildren, (child: any) => <>{child} <Box sx={{ gridColumn: `1 / span ${columnCount}` }}>------</Box> </>)}
+    </Grid>
+  </ColumnCountContext.Provider>
 }
