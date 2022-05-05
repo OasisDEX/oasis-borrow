@@ -798,7 +798,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
-    getOasisStats$,
+    getOasisStats$: memoize(getOasisStats$),
     addGasEstimation$,
     instiVault$,
     ilkToToken$,

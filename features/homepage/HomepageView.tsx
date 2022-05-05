@@ -110,12 +110,6 @@ function Pills({ sx }: { sx?: SxProps }) {
 }
 
 function StatCell({ label, value }: { label: string; value: string }) {
-  const { getOasisStats$ } = useAppContext()
-
-  const { error: oasisStatsError, value: oasisStatsValue } = useObservableWithError(
-    getOasisStats$(),
-  )
-
   return (
     <Box sx={{ mb: [3, 1, 1] }}>
       <Text
@@ -135,23 +129,25 @@ function Stats({ sx }: { sx?: SxProps }) {
   const { t } = useTranslation()
   const { getOasisStats$ } = useAppContext()
 
-  const { error: oasisStatsError, value: oasisStatsValue } = useObservableWithError(
-    getOasisStats$(),
-  )
+  const [oasisStatsValue] = useObservable(getOasisStats$())
+
+  if (!oasisStatsValue) {
+    return null
+  }
 
   return (
     <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
       <StatCell
         label={t('landing.stats.30-day-volume')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(3900000000))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume))}`}
       />
       <StatCell
         label={t('landing.stats.managed-on-oasis')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(1440000000))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis))}`}
       />
       <StatCell
         label={t('landing.stats.median-vault')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(212000))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize))}`}
       />
     </Grid>
   )
