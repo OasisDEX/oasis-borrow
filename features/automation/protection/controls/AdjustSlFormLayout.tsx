@@ -178,7 +178,10 @@ function SetDownsideProtectionInformation({
         <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
         <Text sx={{ mb: 3 }}>
           {t('protection.guarantee-factors')}{' '}
-          <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontWeight: 'body' }}>
+          <AppLink
+            href="https://kb.oasis.app/help/stop-loss-protection"
+            sx={{ fontWeight: 'body' }}
+          >
             {t('protection.learn-more-about-automation')}
           </AppLink>
         </Text>
