@@ -30,7 +30,7 @@ function ContentCardStopLossCollateralRatioModal({
       <Text as="p" variant="subheader" sx={{ fontSize: 2, mt: 2 }}>
         {t('manage-multiply-vault.card.stop-loss-coll-ratio-desc')}
       </Text>
-      <Text variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
+      <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>
         {t('manage-multiply-vault.card.current-stop-loss-coll-ratio')}
       </Text>
       <Card as="p" variant="vaultDetailsCardModal" sx={{ mt: 2 }}>
@@ -76,7 +76,7 @@ export function ContentCardStopLossCollateralRatio({
 
   if (isStopLossEnabled) contentCardSettings.value = formatted.slRatio
 
-  if (afterSlRatio && isEditing)
+  if (isEditing)
     contentCardSettings.change = {
       value: `${formatted.afterSlRatio} ${t('system.cards.common.after')}`,
       variant: 'positive',
