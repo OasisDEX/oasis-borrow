@@ -6,6 +6,7 @@ import { VaultDetailsCardDynamicStopPrice } from 'components/vault/detailsCards/
 import { VaultDetailsCardMaxTokenOnStopLossTrigger } from 'components/vault/detailsCards/VaultDetailsCardMaxTokenOnStopLossTrigger'
 import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards/VaultDetailsCardStopLossCollRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
+import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -114,6 +115,20 @@ export function ProtectionDetailsLayout({
               slRatio={slRatio}
               liquidationPrice={liquidationPrice}
               liquidationRatio={liquidationRatio}
+              afterSlRatio={afterSlRatio}
+            />
+            <ContentCardEstTokenOnTrigger
+              isCollateralActive={isCollateralActive}
+              isStopLossEnabled={isStopLossEnabled}
+              isEditing={isEditing}
+              token={token}
+              slRatio={slRatio}
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              lockedCollateral={lockedCollateral}
+              debt={vaultDebt}
+              currentOraclePrice={currentOraclePrice}
+              liquidationPenalty={liquidationPenalty}
               afterSlRatio={afterSlRatio}
             />
           </DetailsSectionContentCardWrapper>

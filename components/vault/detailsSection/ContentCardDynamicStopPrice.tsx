@@ -12,10 +12,10 @@ interface ContentCardDynamicStopPriceModalProps {
 
 interface ContentCardDynamicStopPriceProps {
   isStopLossEnabled: boolean
+  isEditing: boolean
   slRatio: BigNumber
   liquidationPrice: BigNumber
   liquidationRatio: BigNumber
-  isEditing: boolean
   afterSlRatio: BigNumber
 }
 
@@ -45,10 +45,10 @@ function ContentCardDynamicStopPriceModal({
 
 export function ContentCardDynamicStopPrice({
   isStopLossEnabled,
+  isEditing,
   slRatio,
   liquidationPrice,
   liquidationRatio,
-  isEditing,
   afterSlRatio,
 }: ContentCardDynamicStopPriceProps) {
   const { t } = useTranslation()
