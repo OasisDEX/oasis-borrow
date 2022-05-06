@@ -49,6 +49,10 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+const mainnetCacheUrl =
+  process.env.MAINNET_CACHE_URL ||
+  getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
+  'https://oazo-bcache.new.oasis.app/api/v1'
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -171,7 +175,7 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: mainnetCacheUrl,
 }
 
 export type NetworkConfig = typeof protoMain
@@ -328,7 +332,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

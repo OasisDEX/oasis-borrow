@@ -117,6 +117,7 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
       collateralizationRatio,
+      ilk,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -139,14 +140,15 @@ export function ManageVaultDetails(
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
-  const { symbol } = getToken(token)
 
   return (
     <Box>
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && <GetProtectionBannerControl vaultId={id} />}
+          {!automationBasicBuyAndSellEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -236,7 +238,7 @@ export function ManageVaultDetails(
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} symbol={symbol} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
       )}
     </Box>

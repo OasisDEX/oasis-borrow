@@ -22,7 +22,7 @@ interface ContentCardCollateralLockedProps {
   changeVariant?: ChangeVariantType
 }
 
-function ContentCardLiquidationPriceModal({
+function ContentCardCollateralLockedModal({
   lockedCollateralUSDFormatted,
   lockedCollateralFormatted,
 }: ContentCardCollateralLockedModalProps) {
@@ -69,7 +69,7 @@ export function ContentCardCollateralLocked({
   const contentCardSettings: ContentCardProps = {
     title: t('system.collateral-locked'),
     value: formatted.lockedCollateralUSD,
-    modal: <ContentCardLiquidationPriceModal {...contentCardModalSettings} />,
+    modal: <ContentCardCollateralLockedModal {...contentCardModalSettings} />,
   }
 
   if (afterLockedCollateralUSD && changeVariant)

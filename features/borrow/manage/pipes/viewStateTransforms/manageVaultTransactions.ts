@@ -468,6 +468,7 @@ export function applyEstimateGas(
       paybackAmount,
       shouldPaybackAll,
       vault: { ilk, token, id },
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -495,6 +496,10 @@ export function applyEstimateGas(
           shouldPaybackAll,
         })
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

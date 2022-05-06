@@ -178,7 +178,10 @@ function SetDownsideProtectionInformation({
         <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
         <Text sx={{ mb: 3 }}>
           {t('protection.guarantee-factors')}{' '}
-          <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
+          <AppLink
+            href="https://kb.oasis.app/help/stop-loss-protection"
+            sx={{ fontWeight: 'body' }}
+          >
             {t('protection.learn-more-about-automation')}
           </AppLink>
         </Text>
@@ -245,7 +248,7 @@ export function AdjustSlFormLayout({
             description: (
               <>
                 {t('protection.set-downside-protection-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
               </>
@@ -264,7 +267,7 @@ export function AdjustSlFormLayout({
             description: (
               <>
                 {t('protection.downside-protection-complete-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
               </>
