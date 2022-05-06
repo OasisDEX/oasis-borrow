@@ -120,9 +120,23 @@ export async function getConnector(
         dAppId: 'e0ac7d6b-a19b-4f61-928d-fb97b15c424a',
       })
     case 'myetherwallet':
-      return new MewConnectConnector({
-        url: rpcUrls[network],
-      })
+      if (typeof window !== 'undefined') {
+        const module = await import('@myetherwallet/mewconnect-web-client')
+        const MEWconnect = module.default
+        const provider = new MEWconnect.Provider({
+          rpcUrl: rpcUrls[network],
+          chainId: network,
+        })
+
+        const web3provider = provider.makeWeb3Provider()
+
+        window.provider = provider
+        window.makeWeb3Provider = web3provider
+        return provider
+      }
+    // return new MewConnectConnector({
+    //   url: rpcUrls[network],
+    // })
     case 'gnosisSafe':
       return new SafeAppConnector()
     case 'magicLink':
