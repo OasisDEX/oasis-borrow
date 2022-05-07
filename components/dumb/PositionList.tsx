@@ -3,7 +3,7 @@ import { StatefulTooltip } from 'components/Tooltip'
 import { WithChildren } from 'helpers/types'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { Children, createContext, useContext } from 'react'
+import React from 'react'
 import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
 function Header({ label, tooltip }: {
@@ -45,60 +45,22 @@ function useHeaders() {
     netValue: renderHeader('net-value'),
     multiple: renderHeader('multiple'),
     liquidationPrice: renderHeader('liquidation-price'),
+    fundingCost: renderHeader('funding-cost'),
     pnl: renderHeader('pnl'),
     sevenDayYield: renderHeader('seven-day-yield'),
     liquidity: renderHeader('liquidity'),
   }
 }
 
-function emptyDivs(count: number) {
-  return Array(count).fill(<div />)
-}
-
 function Cell({ children, sx }: { sx?: SxStyleProp } & WithChildren) {
   return (
-    <Box sx={{ pt: 1, pb: 3, color: 'primary', ...sx }}>
+    <Box sx={{ py: 2, color: 'primary', ...sx }}>
       <Text>{children}</Text>
     </Box>
   )
 }
 
-const ColumnCountContext = createContext<number>(0)
-
-function TableGroup({ columnCount, children }: { columnCount: number } & WithChildren) {
-  const arrayChildren = Children.toArray(children)
-  return <ColumnCountContext.Provider value={columnCount}>
-    <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center' }}>
-      {Children.map(arrayChildren, (child: any) => <>{child} <Box sx={{ gridColumn: `1 / span ${columnCount}` }}>------</Box> </>)}
-    </Grid>
-  </ColumnCountContext.Provider>
-}
-
-function Table({
-  headers,
-  rows,
-}: {
-  headers: JSX.Element[]
-  rows: (JSX.Element | string)[][]
-}) {
-  const columnCount = useContext(ColumnCountContext)
-  if (columnCount === 0) {
-    throw new Error('Table should be used inside TableGroup')
-  }
-  const paddedRows = rows.map((row) => row.concat(pad(columnCount - row.length)))
-  return (
-    <>
-      {headers}{' '}
-      {pad(columnCount - headers.length)}
-      {paddedRows.flat().map((cellContent, index) => (
-        <Cell key={index}>{cellContent}</Cell>
-      ))}
-    </>
-  )
-}
-
 type PositionCommonProps = {
-  type: 'borrow' | 'multiply' | 'earn',
   icon: string,
   ilk: string,
   vaultID: string,
@@ -113,22 +75,22 @@ type BorrowPositionVM = {
   collateralLocked: string,
   variable: string,
   automationEnabled: boolean,
-  onAutomationBtnClick: Function
+  onAutomationClick: Function
 } & PositionCommonProps
 
 type MultiplyPositionVM = {
   type: 'multiply',
-  netVaule: string,
+  netValue: string,
   multiple: string,
   liquidationPrice: string,
   fundingCost: string
   automationEnabled: boolean,
-  onAutomationBtnClick: Function
+  onAutomationClick: Function
 } & PositionCommonProps
 
 type EarnPositionVM = {
   type: 'earn',
-  netVaule: string,
+  netValue: string,
   pnl: string,
   sevenDayYield: string,
   liquidity: string
@@ -142,11 +104,11 @@ function IlkWithIcon({ icon, ilk }: { icon: string, ilk: string}) {
   </Flex>
 }
 
-export function PositionsList({ positions, columnCount = 8 }: { positions: PositionVM[], columnCount?: number}) {
+export function PositionList({ positions }: { positions: PositionVM[] }) {
   const headers = useHeaders()
   const positionsByType = _.groupBy(positions, 'type')
 
-  return <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center' }}>
+  return <Grid sx={{ gridTemplateColumns: 'repeat(8, auto)', gap: 4, alignItems: 'center' }}>
   {Object.entries(positionsByType).map(([type, positions]) => {
     switch(type) {
       case 'borrow': return <>
@@ -158,7 +120,8 @@ export function PositionsList({ positions, columnCount = 8 }: { positions: Posit
           headers.collateralLocked,
           headers.variablePerc,
           headers.automation,
-        ].concat(emptyDivs(columnCount - 7))}
+          <div />,
+        ]}
       {(positions as BorrowPositionVM[]).map(position => [
         <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
         <Cell>{position.vaultID}</Cell>,
@@ -167,10 +130,56 @@ export function PositionsList({ positions, columnCount = 8 }: { positions: Posit
         <Cell>{position.collateralLocked}</Cell>,
         <Cell>{position.variable}</Cell>,
         position.automationEnabled ? 
-          <Button variant="outline" onClick={() => position.onAutomationBtnClick()}>On</Button> : 
-          <Button variant="outline" onClick={() => position.onAutomationBtnClick()}>Activate</Button>,
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>,
         <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
       ])}
+      </>
+      case 'multiply': return <>
+        {[
+          headers.asset,
+          headers.vaultID,
+          headers.netValue,
+          headers.multiple,
+          headers.liquidationPrice,
+          headers.fundingCost,
+          headers.automation,
+          <div />,
+        ]}
+        {(positions as MultiplyPositionVM[]).map(position => [
+          <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
+          <Cell>{position.vaultID}</Cell>,
+          <Cell>{position.netValue}</Cell>,
+          <Cell>{position.multiple}</Cell>,
+          <Cell>{position.liquidationPrice}</Cell>,
+          <Cell>{position.fundingCost}</Cell>,
+          position.automationEnabled ? 
+            <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
+            <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>,
+          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
+        ])}
+      </>
+      case 'earn': return <>
+        {[
+          headers.asset,
+          headers.vaultID,
+          headers.netValue,
+          headers.pnl,
+          headers.sevenDayYield,
+          headers.liquidity,
+          <div />,
+          <div />,
+        ]}
+        {(positions as EarnPositionVM[]).map(position => [
+          <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
+          <Cell>{position.vaultID}</Cell>,
+          <Cell>{position.netValue}</Cell>,
+          <Cell>{position.pnl}</Cell>,
+          <Cell>{position.sevenDayYield}</Cell>,
+          <Cell>{position.liquidity}</Cell>,
+          <div />,
+          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
+        ])}
       </>
     }
   })}

@@ -1139,6 +1139,10 @@
         "label": "Liquidation Price",
         "tooltip": "The Liquidation Price"
       },
+      "funding-cost": {
+        "label": "Funding Cost",
+        "tooltip": "The Funding Cost"
+      },
       "pnl": {
         "label": "PnL",
         "tooltip": "Profit and loss"
