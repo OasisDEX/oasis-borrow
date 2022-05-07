@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
-function Header({ label, tooltip }: {
+function DumbHeader({ label, tooltip }: {
   label: string
   tooltip?: JSX.Element | string
 }) {
@@ -21,40 +21,21 @@ function Header({ label, tooltip }: {
             </Text>
           }
         >
-          <Icon name="question_o" size="16px" sx={{ ml: 1 }} color="text.subtitle" />
+          <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
         </StatefulTooltip>
       )}
     </Flex>
   )
 }
 
-function useHeaders() {
+function Header({ name } : {name: string}) {
   const { t } = useTranslation()
-
-  const renderHeader = (headerKey: string) => 
-    <Header label={t(`earn.position-headers.${headerKey}.label`)} tooltip={t(`earn.position-headers.${headerKey}.tooltip`)} />
-
-  return {
-    asset: renderHeader('asset'),
-    vaultID: renderHeader('vault-id'),
-    collateralRatio: renderHeader('collateral-ratio'),
-    daiDebt: renderHeader('dai-debt'),
-    collateralLocked: renderHeader('collateral-locked'),
-    variablePerc: renderHeader('variable-perc'),
-    automation: renderHeader('automation'),
-    netValue: renderHeader('net-value'),
-    multiple: renderHeader('multiple'),
-    liquidationPrice: renderHeader('liquidation-price'),
-    fundingCost: renderHeader('funding-cost'),
-    pnl: renderHeader('pnl'),
-    sevenDayYield: renderHeader('seven-day-yield'),
-    liquidity: renderHeader('liquidity'),
-  }
+  return <DumbHeader label={t(`earn.position-headers.${name}.label`)} tooltip={t(`earn.position-headers.${name}.tooltip`)} />
 }
 
-function Cell({ children, sx }: { sx?: SxStyleProp } & WithChildren) {
+function Cell({ children }:  WithChildren) {
   return (
-    <Box sx={{ py: 2, color: 'primary', ...sx }}>
+    <Box sx={{ py: 2, color: 'primary' }}>
       <Text>{children}</Text>
     </Box>
   )
@@ -98,92 +79,126 @@ type EarnPositionVM = {
 
 type PositionVM = BorrowPositionVM | MultiplyPositionVM | EarnPositionVM
 
-function IlkWithIcon({ icon, ilk }: { icon: string, ilk: string}) {
-  return <Flex sx={{ alignItems: 'center', minWidth: '180px' }}>
-    <Icon name={icon} size="36px" sx={{ mr: 2 }} /> {ilk}
-  </Flex>
+interface InfoItem {
+  header: JSX.Element
+  info: JSX.Element | string
+}
+
+function getPositionInfoItems(position: PositionVM): InfoItem[] {
+
+  const assetInfo = {
+    header: <Header name="asset" />,
+    info: <Flex sx={{ alignItems: 'center' }}>
+      <Icon name={position.icon} size="36px" sx={{ mr: 2, flexShrink: 0 }} /> {position.ilk}
+    </Flex>
+  }
+
+  const vaultIdInfo = {
+    header: <Header name="vault-id" />,
+    info: position.vaultID
+  }
+
+  switch (position.type) {
+    case 'borrow': return [assetInfo, vaultIdInfo,
+      {
+        header: <Header name="collateral-ratio" />,
+        info: <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>{position.collateralRatio}</Text>
+      },{
+        header: <Header name="dai-debt" />,
+        info: position.daiDebt
+      },{
+        header: <Header name="collateral-locked" />,
+        info: position.collateralLocked
+      },{
+        header: <Header name="variable-perc" />,
+        info: position.variable
+      },{
+        header: <Header name="automation" />,
+        info: position.automationEnabled ? 
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>
+      },
+    ]
+    case 'multiply': return [assetInfo, vaultIdInfo,
+      {
+        header: <Header name="net-value" />,
+        info: position.netValue
+      },
+      {
+        header: <Header name="multiple" />,
+        info: position.multiple
+      },
+      {
+        header: <Header name="liquidation-price" />,
+        info: position.liquidationPrice
+      },
+      {
+        header: <Header name="funding-cost" />,
+        info: position.fundingCost
+      },
+      {
+        header: <Header name="automation" />,
+        info: position.automationEnabled ? 
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
+          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>
+      },
+    ]
+    case 'earn': return [assetInfo, vaultIdInfo,
+      {
+        header: <Header name="net-value" />,
+        info: position.netValue
+      },
+      {
+        header: <Header name="pnl" />,
+        info: position.pnl
+      },
+      {
+        header: <Header name="seven-day-yield" />,
+        info: position.sevenDayYield
+      },
+      {
+        header: <Header name="liquidity" />,
+        info: position.liquidity
+      },
+    ]
+  }
 }
 
 export function PositionList({ positions }: { positions: PositionVM[] }) {
-  const headers = useHeaders()
+  const columnCount = 8
   const positionsByType = _.groupBy(positions, 'type')
 
-  return <Grid sx={{ gridTemplateColumns: 'repeat(8, auto)', gap: 4, alignItems: 'center' }}>
+  function pad(items: any[], count: number) { 
+    return items.concat(new Array(count - items.length).fill(<div />))
+  }
+  return <>
+    {/* DESKTOP */}
+    <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'] }}>
+    {Object.entries(positionsByType).map(([type, positions]) => {
+      const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
+      return <><Box sx={{ gridColumn: `1 / span ${columnCount}`}}>
+        {type} Positions ({positions.length})
+      </Box>
+      {headers}
+      {positions.map(position => 
+        <>
+          {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
+          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
+        </>
+      )}
+      </>
+    })}
+    </Grid>
+
+  {/* MOBILE */}
+  <Box sx={{ display: ['block', 'none']}}>
   {Object.entries(positionsByType).map(([type, positions]) => {
-    switch(type) {
-      case 'borrow': return <>
-        {[
-          headers.asset,
-          headers.vaultID,
-          headers.collateralRatio,
-          headers.daiDebt,
-          headers.collateralLocked,
-          headers.variablePerc,
-          headers.automation,
-          <div />,
-        ]}
-      {(positions as BorrowPositionVM[]).map(position => [
-        <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
-        <Cell>{position.vaultID}</Cell>,
-        <Cell sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>{position.collateralRatio}</Cell>,
-        <Cell>{position.daiDebt}</Cell>,
-        <Cell>{position.collateralLocked}</Cell>,
-        <Cell>{position.variable}</Cell>,
-        position.automationEnabled ? 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>,
-        <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
-      ])}
-      </>
-      case 'multiply': return <>
-        {[
-          headers.asset,
-          headers.vaultID,
-          headers.netValue,
-          headers.multiple,
-          headers.liquidationPrice,
-          headers.fundingCost,
-          headers.automation,
-          <div />,
-        ]}
-        {(positions as MultiplyPositionVM[]).map(position => [
-          <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
-          <Cell>{position.vaultID}</Cell>,
-          <Cell>{position.netValue}</Cell>,
-          <Cell>{position.multiple}</Cell>,
-          <Cell>{position.liquidationPrice}</Cell>,
-          <Cell>{position.fundingCost}</Cell>,
-          position.automationEnabled ? 
-            <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
-            <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>,
-          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
-        ])}
-      </>
-      case 'earn': return <>
-        {[
-          headers.asset,
-          headers.vaultID,
-          headers.netValue,
-          headers.pnl,
-          headers.sevenDayYield,
-          headers.liquidity,
-          <div />,
-          <div />,
-        ]}
-        {(positions as EarnPositionVM[]).map(position => [
-          <IlkWithIcon icon={position.icon} ilk={position.ilk} />,
-          <Cell>{position.vaultID}</Cell>,
-          <Cell>{position.netValue}</Cell>,
-          <Cell>{position.pnl}</Cell>,
-          <Cell>{position.sevenDayYield}</Cell>,
-          <Cell>{position.liquidity}</Cell>,
-          <div />,
-          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
-        ])}
-      </>
-    }
+    
+    
   })}
-  </Grid>
+  </Box>
+
+  </>
   
 
 
