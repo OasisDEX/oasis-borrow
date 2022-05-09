@@ -308,6 +308,7 @@ describe('createProductCardsData$', () => {
         liquidationRatio: crv.liquidationRatio,
         stabilityFee: crv.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
+        debtFloor: crv.debtFloor,
         bannerIcon: '/static/img/tokens/crv_steth_eth.png',
         bannerGif: '/static/img/tokens/crv_steth_eth.gif',
         background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
