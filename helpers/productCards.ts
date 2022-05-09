@@ -205,7 +205,12 @@ export const productCardsConfig: {
   },
   landing: {
     featuredCards: {
-      borrow: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-A'],
+      borrow: [
+        'ETH-C',
+        'WBTC-C',
+        // 'CRVV1ETHSTETH-A',
+        'WSTETH-A',
+      ],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
     },
