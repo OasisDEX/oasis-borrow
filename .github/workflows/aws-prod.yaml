@@ -54,6 +54,7 @@ jobs:
                      --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
                      --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }} \
                      --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_PROD }} \
+                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }} \
                      --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
                      --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
                      --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
