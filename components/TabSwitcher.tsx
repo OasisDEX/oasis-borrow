@@ -108,44 +108,45 @@ export function TabSwitcher(props: {
   const isOneTab = props.tabs.length === 1
 
   return !isEmpty ? (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
+    <>
       {props.tabs
         .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
-        .map(({ tabHeaderPara }) => tabHeaderPara)}
-      {!isOneTab && (
-        <>
-          <NarrowTabSelector
-            selectedTab={selectedTab}
-            tabs={props.tabs}
-            setSelectedTab={setSelectedTab}
-            narrowTabsSx={props.narrowTabsSx}
-          />
-          <WideTabSelector
-            wideTabsSx={props.wideTabsSx}
-            selectTab={selectTab}
-            selectedTab={selectedTab}
-            tabs={props.tabs}
-          />
-        </>
-      )}
-      {props.tabs
-        .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
-        .map(({ tabLabel, tabContent }) => (
-          <Box
-            key={tabLabel}
+        .map(({ tabHeaderPara, tabLabel, tabContent }) => (
+          <Flex
+            key={`${tabLabel}-`}
             sx={{
-              ...slideInAnimation,
-              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
-            {tabContent}
-          </Box>
+            <Box key={tabLabel}>{tabHeaderPara}</Box>
+            {!isOneTab && (
+              <>
+                <NarrowTabSelector
+                  selectedTab={selectedTab}
+                  tabs={props.tabs}
+                  setSelectedTab={setSelectedTab}
+                  narrowTabsSx={props.narrowTabsSx}
+                />
+                <WideTabSelector
+                  wideTabsSx={props.wideTabsSx}
+                  selectTab={selectTab}
+                  selectedTab={selectedTab}
+                  tabs={props.tabs}
+                />
+              </>
+            )}
+            <Box
+              key={tabLabel}
+              sx={{
+                ...slideInAnimation,
+                width: '100%',
+              }}
+            >
+              {tabContent}
+            </Box>
+          </Flex>
         ))}
-    </Flex>
+    </>
   ) : null
 }

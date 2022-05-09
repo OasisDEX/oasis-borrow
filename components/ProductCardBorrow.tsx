@@ -6,32 +6,26 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard } from './ProductCard'
 
-function calculatePersonalisedValues(
-  productCardData: ProductCardData,
-  singleTokenMaxBorrow: BigNumber,
-) {
-  const { currentCollateralPrice, balance, debtFloor } = productCardData
-
-  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
-
-  let roundedTokenAmount: BigNumber
-  if (balanceAboveDebtFloor && balance) {
-    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
-  } else {
-    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
-  }
+function personaliseCardData({
+  productCardData,
+  singleTokenMaxBorrow,
+}: {
+  productCardData: ProductCardData
+  singleTokenMaxBorrow: BigNumber
+}) {
+  const { roundedTokenAmount } = calculateTokenAmount(productCardData)
 
   return {
+    ...calculateTokenAmount(productCardData),
     maxBorrow: formatCryptoBalance(
       roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
     ),
-    tokenAmount: formatCryptoBalance(roundedTokenAmount),
   }
 }
 
-function calculateBannerValues(singleTokenMaxBorrow: BigNumber) {
+function makeCardData(singleTokenMaxBorrow: BigNumber) {
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
 
@@ -71,14 +65,13 @@ function calculateBannerValues(singleTokenMaxBorrow: BigNumber) {
 
 function bannerValues(props: ProductCardData) {
   const { liquidationRatio, currentCollateralPrice, balance } = props
-
   const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
 
   if (balance) {
-    return calculatePersonalisedValues(props, singleTokenMaxBorrow)
+    return personaliseCardData({ productCardData: props, singleTokenMaxBorrow })
   }
 
-  return calculateBannerValues(singleTokenMaxBorrow)
+  return makeCardData(singleTokenMaxBorrow)
 }
 
 export function ProductCardBorrow(props: { cardData: ProductCardData }) {

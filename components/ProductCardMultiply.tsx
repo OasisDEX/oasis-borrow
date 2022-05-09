@@ -5,42 +5,36 @@ import React from 'react'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard } from './ProductCard'
 
-function calculatePersonalisedValues(
-  productCardData: ProductCardData,
-  roundedMaxMultiple: BigNumber,
-) {
-  const { currentCollateralPrice, balance, debtFloor } = productCardData
-  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
-
-  let roundedTokenAmount = new BigNumber(0)
-  if (balanceAboveDebtFloor && balance) {
-    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
-  }
-  if (!balanceAboveDebtFloor || !balance) {
-    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
-  }
+function personaliseCardData({
+  productCardData,
+  roundedMaxMultiple,
+}: {
+  productCardData: ProductCardData
+  roundedMaxMultiple: BigNumber
+}) {
+  const { roundedTokenAmount } = calculateTokenAmount(productCardData)
 
   return {
-    tokenAmount: roundedTokenAmount,
+    ...calculateTokenAmount(productCardData),
     exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
   }
 }
 
-function bannerValues(props: ProductCardData & { maxMultiple: BigNumber }) {
-  const { maxMultiple, currentCollateralPrice, balance } = props
+function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
+  const { currentCollateralPrice, balance } = props
   const dollarWorthInputColllateral = new BigNumber(150000)
   const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
   const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
 
   if (balance) {
-    return calculatePersonalisedValues(props, roundedMaxMultiple)
+    return personaliseCardData({ productCardData: props, roundedMaxMultiple })
   }
 
   return {
-    tokenAmount: roundedTokenAmount,
+    tokenAmount: formatCryptoBalance(roundedTokenAmount),
     exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
   }
 }
@@ -54,7 +48,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
-  const { tokenAmount, exposure } = bannerValues({ ...cardData, maxMultiple })
+  const { tokenAmount, exposure } = bannerValues(cardData, maxMultiple)
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 
@@ -69,7 +63,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: isGuniToken ? '100,000' : formatCryptoBalance(tokenAmount),
+          tokenAmount,
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken

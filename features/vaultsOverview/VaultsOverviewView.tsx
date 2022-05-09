@@ -542,7 +542,7 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[]; address:
               />
             ),
             tabHeaderPara: (
-              <TabHeaderParagraph key="multiply">
+              <TabHeaderParagraph>
                 {t('landing.tabs.multiply.tabParaContent')}{' '}
                 <AppLink href="/multiply" variant="inText">
                   {t('landing.tabs.multiply.tabParaLinkContent')}
@@ -560,7 +560,7 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[]; address:
               />
             ),
             tabHeaderPara: (
-              <TabHeaderParagraph key="borrow">
+              <TabHeaderParagraph>
                 <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
                 <AppLink href="/borrow" variant="inText">
                   {t('landing.tabs.borrow.tabParaLinkContent')}
@@ -580,7 +580,7 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[]; address:
                     />
                   ),
                   tabHeaderPara: (
-                    <TabHeaderParagraph key="earn">
+                    <TabHeaderParagraph>
                       {t('landing.tabs.earn.tabParaContent')}{' '}
                       <AppLink href="/multiply" variant="inText">
                         {t('landing.tabs.earn.tabParaLinkContent')}
