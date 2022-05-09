@@ -16,18 +16,10 @@ function calculatePersonalisedValues(
 
   const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
 
-  let roundedTokenAmount = new BigNumber(0)
+  let roundedTokenAmount: BigNumber
   if (balanceAboveDebtFloor && balance) {
     roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
-
-    return {
-      maxBorrow: formatCryptoBalance(
-        roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
-      ),
-      tokenAmount: formatCryptoBalance(roundedTokenAmount),
-    }
-  }
-  if (!balanceAboveDebtFloor || !balance) {
+  } else {
     roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
   }
 
