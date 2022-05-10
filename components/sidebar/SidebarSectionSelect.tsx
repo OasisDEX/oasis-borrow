@@ -4,19 +4,19 @@ import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHan
 import React, { useState } from 'react'
 import { Box, Button, Text } from 'theme-ui'
 
-export interface SidebarSectionSelectItem {
+export interface SidebarSectionHeaderSelectItem {
   label: string
   shortLabel?: string
   icon?: string
   panel?: string
   action?: () => void
 }
-interface SidebarSectionSelectProps {
-  items: SidebarSectionSelectItem[]
+interface SidebarSectionHeaderSelectProps {
+  items: SidebarSectionHeaderSelectItem[]
   onSelect: (panel: string) => void
 }
 
-export function SidebarSectionSelect({ items, onSelect }: SidebarSectionSelectProps) {
+export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHeaderSelectProps) {
   const [active, setActive] = useState<number>(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))

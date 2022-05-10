@@ -1,17 +1,9 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import React, { Fragment, useState } from 'react'
-import { Box, Card, Flex, Text } from 'theme-ui'
+import { Box, Card } from 'theme-ui'
 
-import { SidebarSectionSelect, SidebarSectionSelectItem } from './SidebarSectionSelect'
+import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
-interface SidebarSectionProps {
-  title: string
-  dropdown?: SidebarSectionSelectItem[]
-  textbutton?: {
-    label: string
-    icon?: string
-    action: () => void
-  }
+interface SidebarSectionProps extends Omit<SidebarSectionHeaderProps, 'onSelect'> {
   content:
     | JSX.Element
     | {
@@ -34,49 +26,14 @@ export function SidebarSection({ title, dropdown, textbutton, content }: Sidebar
         border: 'lightMuted',
       }}
     >
-      <Flex
-        sx={{
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          py: 3,
-          px: '24px',
-          borderBottom: 'lightMuted',
+      <SidebarSectionHeader
+        title={title}
+        dropdown={dropdown}
+        textbutton={textbutton}
+        onSelect={(panel) => {
+          setActivePanel(panel)
         }}
-      >
-        <Text
-          as="h2"
-          variant="headerSettings"
-          sx={{
-            fontSize: 3,
-            fontWeight: 600,
-            lineHeight: '40px',
-          }}
-        >
-          {title}
-        </Text>
-        {dropdown ? (
-          <SidebarSectionSelect
-            items={dropdown}
-            onSelect={(panel) => {
-              setActivePanel(panel)
-            }}
-          />
-        ) : textbutton ? (
-          <Flex
-            sx={{
-              alignItems: 'center',
-              color: 'link',
-              fontSize: 2,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-            onClick={textbutton.action}
-          >
-            {textbutton.icon && <Icon name={textbutton.icon} size="16px" sx={{ mr: 2 }} />}
-            {textbutton.label}
-          </Flex>
-        ) : null}
-      </Flex>
+      />
       <Box
         sx={{
           m: '24px',
