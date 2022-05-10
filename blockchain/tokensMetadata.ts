@@ -592,8 +592,8 @@ export const ETH_TOKENS = tokens
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
-export const ALLOWED_AUTOMATION_ILKS = {
-  mainnet: [
+const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
+  main: [
     'ETH-A',
     'ETH-B',
     'ETH-C',
@@ -609,4 +609,9 @@ export const ALLOWED_AUTOMATION_ILKS = {
     'MANA-A',
   ],
   goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C'],
+}
+
+export function isSupportedAutomationIlk(network: string, ilk: string) {
+  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'main'
+  return ALLOWED_AUTOMATION_ILKS[key].includes(ilk)
 }

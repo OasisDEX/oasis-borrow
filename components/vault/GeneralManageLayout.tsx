@@ -1,9 +1,9 @@
-import { getNetworkId } from '@oasisdex/web3-context'
+import { getNetworkName } from '@oasisdex/web3-context'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { ALLOWED_AUTOMATION_ILKS } from '../../blockchain/tokensMetadata'
 import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
@@ -29,15 +29,7 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const MAINNET_ID = 1
-  const GOERLI_ID = 5
-  const networkId = getNetworkId()
-  const showProtectionTab =
-    networkId === MAINNET_ID
-      ? ALLOWED_AUTOMATION_ILKS.mainnet.includes(vault.ilk)
-      : networkId === GOERLI_ID
-      ? ALLOWED_AUTOMATION_ILKS.goerli.includes(vault.ilk)
-      : false
+  const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
