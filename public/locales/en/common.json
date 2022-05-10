@@ -944,6 +944,7 @@
     "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
     "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
     "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
+    "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
     "estimated-to-receive": "Estimated to receive",

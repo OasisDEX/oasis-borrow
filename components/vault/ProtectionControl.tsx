@@ -15,17 +15,25 @@ import { useAppContext } from '../AppContextProvider'
 import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
-function ZeroDebtProtectionBanner() {
+interface ZeroDebtProtectionBannerProps {
+  headerTranslationKey: string
+  descriptionTranslationKey: string
+}
+
+function ZeroDebtProtectionBanner({
+  headerTranslationKey,
+  descriptionTranslationKey,
+}: ZeroDebtProtectionBannerProps) {
   const { t } = useTranslation()
 
   return (
     <VaultBanner
       status={<Icon size="34px" name="warning" />}
       withClose={false}
-      header={t('protection.zero-debt-heading')}
+      header={t(headerTranslationKey)}
       subheader={
         <>
-          {t('protection.zero-debt-description')}
+          {t(descriptionTranslationKey)}
           {', '}
           <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 3 }}>
             {t('here')}.
@@ -48,8 +56,9 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
+  const dustLimit = ilkData.debtFloor
 
-  return !vault.debt.isZero() ? (
+  return !vault.debt.isZero() && vault.debt > dustLimit ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
@@ -80,9 +89,19 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
+  ) : vault.debt.isZero() ? (
+    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+      <ZeroDebtProtectionBanner
+        headerTranslationKey={'zero-debt-heading'}
+        descriptionTranslationKey={'zero-debt-description'}
+      />
+    </Container>
   ) : (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-      <ZeroDebtProtectionBanner />
+      <ZeroDebtProtectionBanner
+        headerTranslationKey={'below-dust-limit-heading'}
+        descriptionTranslationKey={'zero-debt-description'}
+      />
     </Container>
   )
 }
