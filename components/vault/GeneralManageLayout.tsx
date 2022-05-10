@@ -1,3 +1,4 @@
+import { getNetworkId } from '@oasisdex/web3-context'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -28,7 +29,15 @@ export function GeneralManageLayout({
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
   const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
+  const MAINNET_ID = 1
+  const GOERLI_ID = 5
+  const networkId = getNetworkId()
+  const showProtectionTab =
+    networkId === MAINNET_ID
+      ? ALLOWED_AUTOMATION_ILKS.mainnet.includes(vault.ilk)
+      : networkId === GOERLI_ID
+      ? ALLOWED_AUTOMATION_ILKS.goerli.includes(vault.ilk)
+      : false
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
