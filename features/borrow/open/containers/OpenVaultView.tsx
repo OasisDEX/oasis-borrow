@@ -1,5 +1,5 @@
 import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS, getToken } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
@@ -83,33 +83,41 @@ function OpenVaultForm(props: OpenVaultState) {
     <>
       <SidebarSection
         title="Lorem ipsum title"
-        dropdown={[
-          {
-            label: 'Manage collateral (ETH)',
-            shortLabel: 'ETH',
-            icon: getToken('ETH').iconCircle,
-            panel: 'eth',
+        // dropdown={[
+        //   {
+        //     label: 'Manage collateral (ETH)',
+        //     shortLabel: 'ETH',
+        //     icon: getToken('ETH').iconCircle,
+        //     panel: 'eth',
+        //   },
+        //   {
+        //     label: 'Manage DAI',
+        //     shortLabel: 'DAI',
+        //     icon: getToken('DAI').iconCircle,
+        //     panel: 'dai',
+        //   },
+        //   {
+        //     label: 'Switch to multiply',
+        //   },
+        // ]}
+        textbutton={{
+          label: 'Text button',
+          icon: 'refresh',
+          action: () => {
+            alert('action')
           },
-          {
-            label: 'Manage DAI',
-            shortLabel: 'DAI',
-            icon: getToken('DAI').iconCircle,
-            panel: 'dai',
-          },
-          {
-            label: 'Switch to multiply',
-          },
-        ]}
-        content={[
-          {
-            panel: 'eth',
-            content: <Box>Eth panel open</Box>,
-          },
-          {
-            panel: 'dai',
-            content: <Box>Dai panel open</Box>,
-          },
-        ]}
+        }}
+        content={<>single panel</>}
+        // content={[
+        //   {
+        //     panel: 'eth',
+        //     content: <Box>Eth panel open</Box>,
+        //   },
+        //   {
+        //     panel: 'dai',
+        //     content: <Box>Dai panel open</Box>,
+        //   },
+        // ]}
       />
       <VaultFormContainer toggleTitle="Open Vault">
         <OpenVaultTitle {...props} />
