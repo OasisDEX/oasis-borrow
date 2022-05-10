@@ -13,9 +13,10 @@ export interface SidebarSectionSelectItem {
 }
 interface SidebarSectionSelectProps {
   items: SidebarSectionSelectItem[]
+  onSelect: (panel: string) => void
 }
 
-export function SidebarSectionSelect({ items }: SidebarSectionSelectProps) {
+export function SidebarSectionSelect({ items, onSelect }: SidebarSectionSelectProps) {
   const [active, setActive] = useState<number>(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
@@ -53,7 +54,7 @@ export function SidebarSectionSelect({ items }: SidebarSectionSelectProps) {
             sx={{ verticalAlign: 'text-bottom', mr: 1 }}
           />
         ) : (
-          <Box 
+          <Box
             sx={{
               width: 26,
               height: 26,
@@ -94,6 +95,8 @@ export function SidebarSectionSelect({ items }: SidebarSectionSelectProps) {
             onClick={() => {
               setIsExpanded(false)
               setActive(i)
+              if (item.panel) onSelect(item.panel)
+              if (item.action) item.action()
             }}
             sx={{
               py: 2,

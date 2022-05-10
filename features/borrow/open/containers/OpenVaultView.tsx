@@ -85,19 +85,31 @@ function OpenVaultForm(props: OpenVaultState) {
         title="Lorem ipsum title"
         dropdown={[
           {
-            label: 'Collateral (ETH)',
+            label: 'Manage collateral (ETH)',
             shortLabel: 'ETH',
             icon: getToken('ETH').iconCircle,
+            panel: 'eth',
           },
           {
-            label: 'Dai',
+            label: 'Manage DAI',
+            shortLabel: 'DAI',
             icon: getToken('DAI').iconCircle,
+            panel: 'dai',
           },
           {
             label: 'Switch to multiply',
           },
         ]}
-        content={<p>Lorem ipsum</p>}
+        content={[
+          {
+            panel: 'eth',
+            content: <Box>Eth panel open</Box>,
+          },
+          {
+            panel: 'dai',
+            content: <Box>Dai panel open</Box>,
+          },
+        ]}
       />
       <VaultFormContainer toggleTitle="Open Vault">
         <OpenVaultTitle {...props} />

@@ -36,7 +36,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
             variant="headerSettings"
             sx={{
               alignItems: 'center',
-              height: '36px',
+              height: '40px',
               fontSize: 3,
               fontWeight: 600,
             }}
@@ -44,15 +44,17 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
             {title}
             {badge !== undefined && <VaultTabTag isEnabled={badge} />}
           </Flex>
-          <Flex
-            sx={{
-              mt: [2, null, 0],
-            }}
-          >
-            {buttons?.map((button, i) => (
-              <ExpandableButton button={button} key={i} />
-            ))}
-          </Flex>
+          {buttons && (
+            <Flex
+              sx={{
+                mt: [2, null, 0],
+              }}
+            >
+              {buttons?.map((button, i) => (
+                <ExpandableButton button={button} key={i} />
+              ))}
+            </Flex>
+          )}
         </Flex>
       )}
       <Box
