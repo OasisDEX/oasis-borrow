@@ -16,11 +16,14 @@ import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ZeroDebtProtectionBannerProps {
-  headerTranslationKey : string
+  headerTranslationKey: string
   descriptionTranslationKey: string
 }
 
-function ZeroDebtProtectionBanner({headerTranslationKey , descriptionTranslationKey}: ZeroDebtProtectionBannerProps) {
+function ZeroDebtProtectionBanner({
+  headerTranslationKey,
+  descriptionTranslationKey,
+}: ZeroDebtProtectionBannerProps) {
   const { t } = useTranslation()
 
   return (
@@ -49,7 +52,6 @@ interface ProtectionControlProps {
 }
 
 export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
-  const { t } = useTranslation()
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
@@ -89,12 +91,17 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
     </WithErrorHandler>
   ) : vault.debt.isZero() ? (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-      <ZeroDebtProtectionBanner headerTranslationKey={'zero-debt-heading'} descriptionTranslationKey={'zero-debt-description'}  />
+      <ZeroDebtProtectionBanner
+        headerTranslationKey={'zero-debt-heading'}
+        descriptionTranslationKey={'zero-debt-description'}
+      />
     </Container>
-  ) :
-  (
+  ) : (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-    <ZeroDebtProtectionBanner headerTranslationKey={'below-dust-limit-heading'} descriptionTranslationKey={'zero-debt-description'} />
-  </Container>
+      <ZeroDebtProtectionBanner
+        headerTranslationKey={'below-dust-limit-heading'}
+        descriptionTranslationKey={'zero-debt-description'}
+      />
+    </Container>
   )
 }
