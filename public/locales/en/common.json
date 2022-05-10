@@ -361,7 +361,6 @@
   },
   "manage-insti-vault": {
     "origination-fee": "Origination Fee",
-
     "tooltip": {
       "origination-fee": "Institutional Vault Origination Fee"
     },
@@ -559,7 +558,6 @@
       "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
       "title": "Oasis.app"
     },
-
     "support": {
       "description": "All the answers to the most common questions.",
       "title": "FAQs"
@@ -1096,5 +1094,23 @@
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "below": "below",
-  "above": "above"
+  "above": "above",
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} position rewards",
+
+    "for-this-position":"For this position you are currently earning {{ name }} rewards.",
+    "instructions": {
+      "tokens-to-claim": "Press the button to claim {{ readableAmount }}.",
+      "claim-succeeded": "You have claimed {{ readableAmount }}. It may take a few minutes for your position to update.",
+      "nothing-to-claim": "You currently have no {{ name }} rewards to claim."
+    },
+    "more-info" : {
+      "text1": "More information about these rewards",
+      "link-text": "here",
+      "text2": "."
+    },
+    "claim-button": {
+      "claim-rewards": "Claim Rewards"
+    }
+  }
 }

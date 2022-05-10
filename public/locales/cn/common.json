@@ -697,5 +697,14 @@
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
       "link": "Learn more about Earn ->"
     }
+  },
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} 仓位奖励",
+    "text1": "当前你在这个仓位赚取{{ bonusTokenName }}奖励。按下按钮来认领{{ bonusAmount }}。 在",
+    "link-text": "这里",
+    "text2": "可以获取更多关于奖励的信息。",
+    "claim-button": {
+      "claim-rewards": "领取奖励"
+    }
   }
 }
