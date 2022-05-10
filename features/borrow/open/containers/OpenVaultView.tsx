@@ -100,7 +100,7 @@ function OpenVaultForm(props: OpenVaultState) {
             label: 'Switch to multiply',
           },
         ]}
-        // textbutton={{
+        // headerButton={{
         //   label: 'Text button',
         //   icon: 'refresh',
         //   action: () => {
@@ -118,6 +118,13 @@ function OpenVaultForm(props: OpenVaultState) {
             content: <Box>Dai panel open</Box>,
           },
         ]}
+        primaryButton={{
+          label: 'Configure',
+          action: () => {
+            alert('action')
+          },
+          steps: [1, 3],
+        }}
       />
       <VaultFormContainer toggleTitle="Open Vault">
         <OpenVaultTitle {...props} />

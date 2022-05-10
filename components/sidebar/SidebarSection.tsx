@@ -1,9 +1,12 @@
 import React, { Fragment, useState } from 'react'
 import { Box, Card } from 'theme-ui'
 
+import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
 import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
-interface SidebarSectionProps extends Omit<SidebarSectionHeaderProps, 'onSelect'> {
+interface SidebarSectionProps
+  extends Omit<SidebarSectionHeaderProps, 'onSelect'>,
+    SidebarSectionFooterProps {
   content:
     | JSX.Element
     | {
@@ -12,7 +15,16 @@ interface SidebarSectionProps extends Omit<SidebarSectionHeaderProps, 'onSelect'
       }[]
 }
 
-export function SidebarSection({ title, dropdown, textbutton, content }: SidebarSectionProps) {
+export function SidebarSection({
+  title,
+  dropdown,
+  headerButton,
+  content,
+  primaryButton,
+  secondaryButton,
+  textButton,
+  progress,
+}: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
   )
@@ -29,7 +41,7 @@ export function SidebarSection({ title, dropdown, textbutton, content }: Sidebar
       <SidebarSectionHeader
         title={title}
         dropdown={dropdown}
-        textbutton={textbutton}
+        headerButton={headerButton}
         onSelect={(panel) => {
           setActivePanel(panel)
         }}
@@ -49,13 +61,22 @@ export function SidebarSection({ title, dropdown, textbutton, content }: Sidebar
         ) : (
           content
         )}
-        <p>asd</p>
-        <p>asd</p>
-        <p>asd</p>
-        <p>asd</p>
-        <p>asd</p>
-        <p>asd</p>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
       </Box>
+      <SidebarSectionFooter
+        primaryButton={primaryButton}
+        secondaryButton={secondaryButton}
+        textButton={textButton}
+        progress={progress}
+      />
     </Card>
   )
 }
