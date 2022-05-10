@@ -1,10 +1,11 @@
+import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
-import { ALLOWED_AUTOMATION_ILKS } from '../../../../blockchain/tokensMetadata'
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { useObservable } from '../../../../helpers/observableHook'
@@ -32,7 +33,7 @@ export function GetProtectionBannerControl({
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
-  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
+  const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
