@@ -38,6 +38,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
               alignItems: 'center',
               height: '36px',
               fontSize: 3,
+              fontWeight: 600,
             }}
           >
             {title}
