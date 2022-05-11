@@ -1,19 +1,14 @@
-import React, { Fragment, useState } from 'react'
-import { Box, Card } from 'theme-ui'
+import React, { useState } from 'react'
+import { Card } from 'theme-ui'
 
+import { SidebarSectionContent, SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
 import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
 interface SidebarSectionProps
   extends Omit<SidebarSectionHeaderProps, 'onSelect'>,
-    SidebarSectionFooterProps {
-  content:
-    | JSX.Element
-    | {
-        panel: string
-        content: JSX.Element
-      }[]
-}
+    Omit<SidebarSectionContentProps, 'activePanel'>,
+    SidebarSectionFooterProps {}
 
 export function SidebarSection({
   title,
@@ -34,7 +29,6 @@ export function SidebarSection({
       sx={{
         position: 'relative',
         p: 0,
-        maxHeight: 720,
         border: 'lightMuted',
       }}
     >
@@ -46,31 +40,7 @@ export function SidebarSection({
           setActivePanel(panel)
         }}
       />
-      <Box
-        sx={{
-          m: '24px',
-          mb: 0,
-        }}
-      >
-        {Array.isArray(content) ? (
-          <>
-            {content?.map((item, i) => (
-              <Fragment key={i}>{activePanel === item.panel && item.content}</Fragment>
-            ))}
-          </>
-        ) : (
-          content
-        )}
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-      </Box>
+      <SidebarSectionContent content={content} activePanel={activePanel} />
       <SidebarSectionFooter
         primaryButton={primaryButton}
         secondaryButton={secondaryButton}

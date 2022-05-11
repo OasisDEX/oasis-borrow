@@ -27,24 +27,25 @@ export function SidebarSectionHeader({
   return (
     <Flex
       sx={{
-        alignItems: 'center',
         justifyContent: 'space-between',
+        mb: '24px',
         py: 3,
         px: '24px',
         borderBottom: 'lightMuted',
       }}
     >
-      <Text
-        as="h2"
-        variant="headerSettings"
-        sx={{
-          fontSize: 3,
-          fontWeight: 600,
-          lineHeight: '40px',
-        }}
-      >
-        {title}
-      </Text>
+      <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
+        <Text
+          as="h2"
+          variant="headerSettings"
+          sx={{
+            fontSize: 3,
+            fontWeight: 600,
+          }}
+        >
+          {title}
+        </Text>
+      </Flex>
       {dropdown ? (
         <SidebarSectionHeaderSelect items={dropdown} onSelect={onSelect} />
       ) : headerButton ? (

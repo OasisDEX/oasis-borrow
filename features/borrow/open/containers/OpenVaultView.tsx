@@ -1,7 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS, getToken } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
@@ -80,74 +79,27 @@ function OpenVaultForm(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
 
   return (
-    <>
-      <SidebarSection
-        title="Lorem ipsum title"
-        dropdown={[
-          {
-            label: 'Manage collateral (ETH)',
-            shortLabel: 'ETH',
-            icon: getToken('ETH').iconCircle,
-            panel: 'eth',
-          },
-          {
-            label: 'Manage DAI',
-            shortLabel: 'DAI',
-            icon: getToken('DAI').iconCircle,
-            panel: 'dai',
-          },
-          {
-            label: 'Switch to multiply',
-          },
-        ]}
-        // headerButton={{
-        //   label: 'Text button',
-        //   icon: 'refresh',
-        //   action: () => {
-        //     alert('action')
-        //   },
-        // }}
-        // content={<>single panel</>}
-        content={[
-          {
-            panel: 'eth',
-            content: <Box>Eth panel open</Box>,
-          },
-          {
-            panel: 'dai',
-            content: <Box>Dai panel open</Box>,
-          },
-        ]}
-        primaryButton={{
-          label: 'Configure',
-          action: () => {
-            alert('action')
-          },
-          steps: [1, 3],
-        }}
-      />
-      <VaultFormContainer toggleTitle="Open Vault">
-        <OpenVaultTitle {...props} />
-        {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
-        {isEditingStage && <OpenVaultEditing {...props} />}
-        {isAllowanceStage && <VaultAllowance {...props} />}
-        {isOpenStage && <OpenVaultConfirmation {...props} />}
-        <VaultErrors {...props} />
-        <VaultWarnings {...props} />
-        {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
-        <OpenVaultButton {...props} />
-        {isProxyStage && <VaultProxyStatusCard {...props} />}
-        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-        {isOpenStage && <OpenVaultStatus {...props} />}
-        {isEditingStage ? (
-          <VaultFormVaultTypeSwitch
-            href={`/vaults/open-multiply/${ilk}`}
-            title="Switch to Multiply"
-            visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
-          />
-        ) : null}
-      </VaultFormContainer>
-    </>
+    <VaultFormContainer toggleTitle="Open Vault">
+      <OpenVaultTitle {...props} />
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
+      {isEditingStage && <OpenVaultEditing {...props} />}
+      {isAllowanceStage && <VaultAllowance {...props} />}
+      {isOpenStage && <OpenVaultConfirmation {...props} />}
+      <VaultErrors {...props} />
+      <VaultWarnings {...props} />
+      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
+      <OpenVaultButton {...props} />
+      {isProxyStage && <VaultProxyStatusCard {...props} />}
+      {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+      {isOpenStage && <OpenVaultStatus {...props} />}
+      {isEditingStage ? (
+        <VaultFormVaultTypeSwitch
+          href={`/vaults/open-multiply/${ilk}`}
+          title="Switch to Multiply"
+          visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
+        />
+      ) : null}
+    </VaultFormContainer>
   )
 }
 

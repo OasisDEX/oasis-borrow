@@ -41,9 +41,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
         sx={{
           display: 'flex',
           alignItems: 'center',
-          py: '3px',
-          pr: '10px',
-          pl: '3px',
+          p: '3px 10px 3px 3px',
           fontSize: 2,
         }}
       >
@@ -58,9 +56,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             sx={{
               width: 26,
               height: 26,
-              my: '3px',
-              mr: '7px',
-              ml: '3px',
+              m: '3px 7px 3px 3px',
               backgroundColor: 'secondaryAlt',
               borderRadius: 'circle',
             }}
@@ -94,8 +90,10 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             as="li"
             onClick={() => {
               setIsExpanded(false)
-              setActive(i)
-              if (item.panel) onSelect(item.panel)
+              if (item.panel) {
+                onSelect(item.panel)
+                setActive(i)
+              }
               if (item.action) item.action()
             }}
             sx={{
@@ -106,6 +104,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
               fontSize: 1,
               fontWeight: 'semiBold',
               backgroundColor: 'transparent',
+              color: active === i ? 'primary' : 'text.muted',
               transition: 'background-color 150ms',
               '&:hover': {
                 backgroundColor: 'border',
