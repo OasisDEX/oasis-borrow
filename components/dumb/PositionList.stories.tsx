@@ -17,6 +17,7 @@ export const Positions = () => {
       collateralLocked: '754.33 ETH',
       variable: '1.1%',
       automationEnabled: true,
+      protectionAmount: '155%',
       onEditClick: () => alert('Editing vault 3290'),
       onAutomationClick: () => alert('Disabling automation for vault 3290'),
     },

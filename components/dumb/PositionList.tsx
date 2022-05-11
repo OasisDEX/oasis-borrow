@@ -56,6 +56,7 @@ type BorrowPositionVM = {
   collateralLocked: string,
   variable: string,
   automationEnabled: boolean,
+  protectionAmount?: string,
   onAutomationClick: Function
 } & PositionCommonProps
 
@@ -82,6 +83,12 @@ type PositionVM = BorrowPositionVM | MultiplyPositionVM | EarnPositionVM
 interface InfoItem {
   header: JSX.Element
   info: JSX.Element | string
+}
+
+function automationButton(position: BorrowPositionVM | MultiplyPositionVM) {
+  return position.automationEnabled ? 
+    <Button variant="actionActiveGreen" sx={{ whiteSpace: 'nowrap'}} onClick={() => position.onAutomationClick()}>On {position.type === 'borrow' && position.protectionAmount}</Button> : 
+    <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
 }
 
 function getPositionInfoItems(position: PositionVM): InfoItem[] {
@@ -114,9 +121,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
         info: position.variable
       },{
         header: <Header name="automation" />,
-        info: position.automationEnabled ? 
-          <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>On</Button> : 
-          <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
+        info: automationButton(position)
       },
     ]
     case 'multiply': return [assetInfo, vaultIdInfo,
@@ -138,9 +143,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
       },
       {
         header: <Header name="automation" />,
-        info: position.automationEnabled ? 
-          <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>On</Button> : 
-          <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
+        info: automationButton(position)
       },
     ]
     case 'earn': return [assetInfo, vaultIdInfo,
