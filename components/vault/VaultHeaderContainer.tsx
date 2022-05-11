@@ -24,31 +24,32 @@ export function VaultHeaderContainer({
       {automationBasicBuyAndSellEnabled ? (
         <VaultHeadline header={header} token={token} priceInfo={priceInfo} />
       ) : (
-        <Heading
-          as="h1"
-          variant="heading1"
-          sx={{
-            fontWeight: 'semiBold',
-            pb: 2,
-          }}
-        >
-          {header}
-        </Heading>
+        <>
+          <Heading
+            as="h1"
+            variant="heading1"
+            sx={{
+              fontWeight: 'semiBold',
+              pb: 2,
+            }}
+          >
+            {header}
+          </Heading>
+          <Box
+            sx={{
+              mb: 4,
+              fontSize: 1,
+              fontWeight: 'semiBold',
+              color: 'text.subtitle',
+              display: ['grid', 'flex'],
+              gridTemplateColumns: '1fr 1fr',
+              gap: [3, 0],
+            }}
+          >
+            {children}
+          </Box>
+        </>
       )}
-
-      <Box
-        sx={{
-          mb: 4,
-          fontSize: 1,
-          fontWeight: 'semiBold',
-          color: 'text.subtitle',
-          display: ['grid', 'flex'],
-          gridTemplateColumns: '1fr 1fr',
-          gap: [3, 0],
-        }}
-      >
-        {children}
-      </Box>
     </Grid>
   )
 }

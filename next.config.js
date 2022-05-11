@@ -51,6 +51,7 @@ const conf = withBundleAnalyzer(
         exchangeAddress:
           process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
         multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
+        mainnetCacheURL: process.env.MAINNET_CACHE_URL,
       },
       webpack: function (config, { isServer }) {
         config.module.rules.push({

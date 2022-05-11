@@ -21,6 +21,7 @@ import { Box, Container, Grid, Text } from 'theme-ui'
 
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
+import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
 import { OpenVaultState } from '../pipes/openVault'
 import { createOpenVaultAnalytics$ } from '../pipes/openVaultAnalytics'
 import { OpenVaultButton } from './OpenVaultButton'
@@ -75,10 +76,12 @@ function OpenVaultTitle({
 function OpenVaultForm(props: OpenVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
 
+  const gasData = extractGasDataFromState(props)
+
   return (
     <VaultFormContainer toggleTitle="Open Vault">
       <OpenVaultTitle {...props} />
-      {isProxyStage && <VaultProxyContentBox stage={stage} />}
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
       {isEditingStage && <OpenVaultEditing {...props} />}
       {isAllowanceStage && <VaultAllowance {...props} />}
       {isOpenStage && <OpenVaultConfirmation {...props} />}

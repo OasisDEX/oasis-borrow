@@ -157,14 +157,9 @@ export const productCardsConfig: {
       { name: 'MANA', icon: 'mana_circle' },
       { name: 'MATIC', icon: 'matic_circle' },
       { name: 'GUSD', icon: 'gusd_circle' },
-      // { name: 'Curve LP', icon: 'curve_circle' }, temporary disabled
+      { name: 'Curve LP', icon: 'curve_circle' },
     ],
-    featuredCards: [
-      'ETH-C',
-      'WBTC-C',
-      // 'CRVV1ETHSTETH-A' temporarily disabled
-      'WSTETH-A',
-    ],
+    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -213,7 +208,7 @@ export const productCardsConfig: {
       borrow: [
         'ETH-C',
         'WBTC-C',
-        // 'CRVV1ETHSTETH-A', temporarily disabled
+        // 'CRVV1ETHSTETH-A',
         'WSTETH-A',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],

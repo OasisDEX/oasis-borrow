@@ -24,9 +24,14 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
     // TODO: Johnnie, you shouldn't take the last one here, but rather the one that's sooner to be executed (with the highest stop loss level)
     const stopLossRecord = last(data.triggers)!
 
+    const MAINNET_ID = 1
+    const GOERLI_ID = 5
+
+    const networkId = getNetworkId() === GOERLI_ID ? GOERLI_ID : MAINNET_ID
+
     const [, triggerType, stopLossLevel] = decodeTriggerData(
       stopLossRecord.commandAddress,
-      getNetworkId(),
+      networkId,
       stopLossRecord.executionParams,
     )
     return {

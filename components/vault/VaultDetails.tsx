@@ -7,7 +7,7 @@ import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
-type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
+export type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
 
 export type AfterPillProps = {
   showAfterPill?: boolean

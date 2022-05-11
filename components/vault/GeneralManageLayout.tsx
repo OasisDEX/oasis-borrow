@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Container, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
-import { ALLOWED_MULTIPLY_TOKENS } from '../../blockchain/tokensMetadata'
+import { ALLOWED_AUTOMATION_ILKS } from '../../blockchain/tokensMetadata'
 import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
@@ -10,7 +10,6 @@ import { GeneralManageVaultState } from '../../features/generalManageVault/gener
 import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from '../../features/generalManageVault/vaultType'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { GenericAnnouncement } from '../Announcement'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -28,8 +27,14 @@ export function GeneralManageLayout({
   autoTriggersData,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { ilkData, vault, account, priceInfo } = generalManageVault.state
-  const showProtectionTab = ALLOWED_MULTIPLY_TOKENS.includes(vault.token)
+  const {
+    ilkData,
+    vault,
+    account,
+    priceInfo,
+    collateralizationRatioAtNextPrice,
+  } = generalManageVault.state
+  const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
@@ -38,16 +43,6 @@ export function GeneralManageLayout({
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      {generalManageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
-        <Container variant="announcement">
-          <GenericAnnouncement
-            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
-            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
-            linkText="Visit Maker Forum for details"
-            disableClosing={true}
-          />
-        </Container>
-      )}
       <VaultBannersView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
@@ -71,7 +66,14 @@ export function GeneralManageLayout({
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
-        protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
+        protectionControl={
+          <ProtectionControl
+            vault={vault}
+            ilkData={ilkData}
+            account={account}
+            collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+          />
+        }
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled}

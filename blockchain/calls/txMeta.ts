@@ -14,5 +14,5 @@ export enum TxMetaKind {
   closeGuni = 'closeGuni',
   addTrigger = 'addTrigger',
   removeTrigger = 'removeTrigger',
-  claim = 'claim',
+  claimReward = 'claimReward',
 }
