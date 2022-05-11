@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -27,6 +28,7 @@ interface Props {
   collateralPrices: CollateralPricesWithFilters
   vault: Vault
   account?: string
+  collateralizationRatioAtNextPrice: BigNumber
 }
 
 export function ProtectionFormControl({
@@ -35,6 +37,7 @@ export function ProtectionFormControl({
   collateralPrices,
   vault,
   account,
+  collateralizationRatioAtNextPrice,
 }: Props) {
   const { txHelpers$, context$, uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -91,6 +94,7 @@ export function ProtectionFormControl({
                 tx={txHelpers}
                 ctx={context}
                 accountIsController={accountIsController}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 toggleForms={() => {
                   uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
                     type: 'change-mode',

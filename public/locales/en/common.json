@@ -361,7 +361,6 @@
   },
   "manage-insti-vault": {
     "origination-fee": "Origination Fee",
-
     "tooltip": {
       "origination-fee": "Institutional Vault Origination Fee"
     },
@@ -559,7 +558,6 @@
       "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
       "title": "Oasis.app"
     },
-
     "support": {
       "description": "All the answers to the most common questions.",
       "title": "FAQs"
@@ -946,6 +944,7 @@
     "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
     "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
     "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
+    "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
     "estimated-to-receive": "Estimated to receive",
@@ -969,7 +968,8 @@
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
-    "stop-loss-on": "Stop-Loss On"
+    "stop-loss-on": "Stop-Loss On",
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1096,5 +1096,23 @@
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "below": "below",
-  "above": "above"
+  "above": "above",
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} position rewards",
+
+    "for-this-position":"For this position you are currently earning {{ name }} rewards.",
+    "instructions": {
+      "tokens-to-claim": "Press the button to claim {{ readableAmount }}.",
+      "claim-succeeded": "You have claimed {{ readableAmount }}. It may take a few minutes for your position to update.",
+      "nothing-to-claim": "You currently have no {{ name }} rewards to claim."
+    },
+    "more-info" : {
+      "text1": "More information about these rewards",
+      "link-text": "here",
+      "text2": "."
+    },
+    "claim-button": {
+      "claim-rewards": "Claim Rewards"
+    }
+  }
 }
