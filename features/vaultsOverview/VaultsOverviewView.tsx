@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { CoinTag, getToken } from 'blockchain/tokensMetadata'
+import { CoinTag, getToken, tokens } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -26,6 +26,8 @@ import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
+import { PieChart } from '../../components/dumb/PieChart'
+import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 
 const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {
@@ -422,7 +424,9 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
+
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+        <AssetsAndPositionsOverview />
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

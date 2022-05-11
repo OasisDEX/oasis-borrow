@@ -109,6 +109,11 @@ const tokensMainnet = {
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+  MKR: contractDesc(erc20, mainnetAddresses['MCD_GOV']),
+  STETH: contractDesc(erc20, mainnetAddresses['STETH']),
+  USDP: contractDesc(erc20, '0x8E870D67F660D95d5be530380D0eC0bd388289E1'),
+  WSTETH: contractDesc(erc20, mainnetAddresses['WSTETH']),
+  RENBTC: contractDesc(erc20, mainnetAddresses['RENBTC']),
 } as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
@@ -195,6 +200,8 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+    MKR: contractDesc(erc20, kovanAddresses['MCD_GOV']),
+    stETH: contractDesc(erc20, '0x00'),
   },
   joins: {
     ...getCollateralJoinContracts(kovanAddresses, supportedIlks),
@@ -264,6 +271,8 @@ const goerli: NetworkConfig = {
     ...getCollateralTokens(goerliAddresses, supportedIlks),
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
+    MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
+    stETH: contractDesc(erc20, goerliAddresses['STETH']),
   },
   tokensMainnet: protoMain.tokensMainnet,
   joins: {

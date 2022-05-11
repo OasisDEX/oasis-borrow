@@ -387,6 +387,15 @@ const oasisBaseTheme = {
       padding: '24px',
       pb: 3,
     },
+    positionsOverview: {
+      boxSizing: 'border-box',
+      maxWidth: '789px',
+      background: '#FFFFFF',
+      opacity: '0.8',
+      boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+      borderRadius: '16px',
+      padding: '32px',
+    },
   },
   badges: {
     dsr: {

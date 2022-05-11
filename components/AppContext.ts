@@ -45,7 +45,9 @@ import {
   createGasPrice$,
   createOraclePriceData$,
   GasPriceParams,
-  tokenPricesInUSD$,
+  createTokenPriceInUSD$,
+  coinbaseOrderBook$,
+  coinPaprikaTicker$,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -139,6 +141,7 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
+  every10Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
 import {
@@ -164,6 +167,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 
 export type TxData =
   | OpenData
@@ -370,11 +374,15 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const tokenPriceUSD$ = memoize(
+    curry(createTokenPriceInUSD$)(every10Seconds$, coinbaseOrderBook$, coinPaprikaTicker$),
+  )
+
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPricesInUSD$, txHelpers$, state, call)
+    return doGasEstimation(gasPrice$, tokenPriceUSD$(['DAI', 'ETH']), txHelpers$, state, call)
   }
 
   // base
@@ -739,6 +747,10 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
   )
 
+  const positionsOverviewSummary$ = memoize(
+    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$),
+  )
+
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
     currentContent.tos.version,
@@ -800,6 +812,7 @@ export function setupAppContext() {
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
+    positionsOverviewSummary$,
   }
 }
 

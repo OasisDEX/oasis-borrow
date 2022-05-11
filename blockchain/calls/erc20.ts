@@ -5,6 +5,8 @@ import { Erc20 } from 'types/web3-v1-contracts/erc20'
 import { getToken } from '../tokensMetadata'
 import { CallDef, TransactionDef } from './callsHelpers'
 import { TxMetaKind } from './txMeta'
+import { ContractDesc } from '@oasisdex/web3-context'
+import { Dictionary } from 'ts-essentials'
 
 export const MIN_ALLOWANCE = new BigNumber('0xffffffffffffffffffffffffffffffff')
 //
