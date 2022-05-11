@@ -124,7 +124,10 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
                 <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
                   {t('protection.cancel-protection-complete-desc')}
                 </Text>
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
+                <AppLink
+                  href="https://kb.oasis.app/help/stop-loss-protection"
+                  sx={{ fontWeight: 'body' }}
+                >
                   {t('protection.find-more-about-setting-stop-loss')}
                 </AppLink>
               </>

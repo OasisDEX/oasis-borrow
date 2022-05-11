@@ -113,22 +113,37 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import { cropperUrnProxy } from '../blockchain/calls/cropper'
+import {
+  cropperBonusTokenAddress,
+  cropperCrops,
+  cropperShare,
+  cropperStake,
+  cropperStock,
+  cropperUrnProxy,
+} from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenBalanceRawForJoin,
+  tokenDecimals,
+  tokenName,
+  tokenSymbol,
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
+import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
 import { observe } from '../blockchain/calls/observe'
+import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
 } from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
+import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
@@ -141,6 +156,8 @@ import {
   createWeb3ContextConnected$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import { createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
@@ -181,6 +198,7 @@ export type TxData =
   | AutomationBotAddTriggerData
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
+  | ClaimRewardData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -398,11 +416,19 @@ export function setupAppContext() {
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
+  const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
+  const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
+  const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperTotal$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
+  const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
+
+  const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
 
   const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
@@ -424,6 +450,11 @@ export function setupAppContext() {
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
   const ilkToToken$ = curry(createIlkToToken$)(context$)
@@ -460,6 +491,39 @@ export function setupAppContext() {
     cdpRegistryOwns$,
     cdpManagerOwner$,
     proxyOwner$,
+  )
+
+  const bonusAdapter = memoize(
+    (cdpId: BigNumber) =>
+      createMakerProtocolBonusAdapter(
+        urnResolver$,
+        unclaimedCrvLdoRewardsForIlk$,
+        {
+          stake$: cropperStake$,
+          share$: cropperShare$,
+          bonusTokenAddress$: cropperBonusTokenAddress$,
+          stock$: cropperStock$,
+          total$: cropperTotal$,
+          crops$: cropperCrops$,
+        },
+        {
+          tokenDecimals$,
+          tokenSymbol$,
+          tokenName$,
+          tokenBalanceRawForJoin$,
+        },
+        connectedContext$,
+        txHelpers$,
+        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
+        proxyAddress$,
+        cdpId,
+      ),
+    bigNumberTostring,
+  )
+
+  const bonus$ = memoize(
+    (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
+    bigNumberTostring,
   )
 
   const vault$ = memoize(
@@ -800,6 +864,7 @@ export function setupAppContext() {
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
+    bonus$,
   }
 }
 

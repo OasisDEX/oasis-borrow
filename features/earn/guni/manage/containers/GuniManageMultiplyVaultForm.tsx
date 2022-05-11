@@ -13,6 +13,7 @@ import {
 } from '../../../../../components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
 import { ManageVaultCollateralAllowance } from '../../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { extractGasDataFromState } from '../../../../../helpers/extractGasDataFromState'
 import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 import { GuniManageMultiplyVaultEditing } from './GuniManageMultiplyVaultEditing'
@@ -34,6 +35,8 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     otherAction,
   } = props
 
+  const gasData = extractGasDataFromState(props)
+
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
@@ -43,7 +46,7 @@ export function GuniManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
       <GuniManageMultiplyVaultFormHeader {...props} />
-      {isProxyStage && <VaultProxyContentBox stage={stage} />}
+      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
       {isEditingStage && <GuniManageMultiplyVaultEditing {...props} />}
       {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
       {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}
