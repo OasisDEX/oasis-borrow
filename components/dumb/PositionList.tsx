@@ -4,7 +4,7 @@ import { WithChildren } from 'helpers/types'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 function DumbHeader({ label, tooltip }: {
   label: string
@@ -115,8 +115,8 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
       },{
         header: <Header name="automation" />,
         info: position.automationEnabled ? 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>
+          <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>On</Button> : 
+          <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
       },
     ]
     case 'multiply': return [assetInfo, vaultIdInfo,
@@ -139,8 +139,8 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
       {
         header: <Header name="automation" />,
         info: position.automationEnabled ? 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>On</Button> : 
-          <Button variant="outline" onClick={() => position.onAutomationClick()}>Activate</Button>
+          <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>On</Button> : 
+          <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
       },
     ]
     case 'earn': return [assetInfo, vaultIdInfo,
@@ -175,7 +175,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     Your positions ({positions.length})
 
     {/* DESKTOP */}
-    <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'] }}>
+    <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'], 'button': { width: '100%'} }}>
     {Object.entries(positionsByType).map(([type, positions]) => {
       const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
       return <><Box sx={{ gridColumn: `1 / span ${columnCount}`}}>
@@ -185,7 +185,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
       {positions.map(position => 
         <>
           {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
-          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
+          <Button variant="secondary" onClick={() => position.onEditClick()}>Edit Vault</Button>
         </>
       )}
       </>
@@ -204,7 +204,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
               {info}
             </Box>)}
           </Grid>
-          <Button variant="outline" onClick={() => position.onEditClick()}>Edit Vault</Button>
+          <Button variant="secondary" onClick={() => position.onEditClick()}>Edit Vault</Button>
         </Grid>)}
         {index < positions.length && '(separator)'}
       </Box>
