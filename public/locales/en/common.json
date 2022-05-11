@@ -968,7 +968,8 @@
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
-    "stop-loss-on": "Stop-Loss On"
+    "stop-loss-on": "Stop-Loss On",
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

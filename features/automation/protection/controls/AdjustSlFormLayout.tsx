@@ -3,6 +3,7 @@ import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { MessageCard } from 'components/MessageCard'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
@@ -103,6 +104,8 @@ interface SetDownsideProtectionInformationProps {
   tokenPrice: BigNumber
   ethPrice: BigNumber
   isCollateralActive: boolean
+  collateralizationRatioAtNextPrice: BigNumber
+  selectedSLValue: BigNumber
 }
 
 function SetDownsideProtectionInformation({
@@ -114,8 +117,12 @@ function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
+  collateralizationRatioAtNextPrice,
+  selectedSLValue,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
+
+  const nextCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -149,6 +156,11 @@ function SetDownsideProtectionInformation({
       .multipliedBy(ethPrice)
       .dividedBy(new BigNumber(10).pow(9)),
   )
+
+  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
+    .times(100)
+    .decimalPlaces(0)
+    .minus(nextCollateralizationPriceAlertRange)
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -186,6 +198,13 @@ function SetDownsideProtectionInformation({
           </AppLink>
         </Text>
       </Box>
+      {selectedSLValue.isGreaterThanOrEqualTo(nextCollateralizationPriceFloor) && (
+        <MessageCard
+          messages={[t('protection.coll-ratio-close-to-current')]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -212,6 +231,7 @@ export interface AdjustSlFormLayoutProps {
   selectedSLValue: BigNumber
   firstStopLossSetup: boolean
   isEditing: boolean
+  collateralizationRatioAtNextPrice: BigNumber
 }
 
 export function AdjustSlFormLayout({
@@ -234,6 +254,7 @@ export function AdjustSlFormLayout({
   selectedSLValue,
   firstStopLossSetup,
   isEditing,
+  collateralizationRatioAtNextPrice,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
@@ -299,6 +320,8 @@ export function AdjustSlFormLayout({
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  selectedSLValue={selectedSLValue}
                 />
               </Box>
             </>

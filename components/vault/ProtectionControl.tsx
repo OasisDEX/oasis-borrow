@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -49,9 +50,15 @@ interface ProtectionControlProps {
   vault: Vault
   ilkData: IlkData
   account?: string
+  collateralizationRatioAtNextPrice: BigNumber
 }
 
-export function ProtectionControl({ vault, ilkData, account }: ProtectionControlProps) {
+export function ProtectionControl({
+  vault,
+  ilkData,
+  account,
+  collateralizationRatioAtNextPrice,
+}: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
@@ -82,6 +89,7 @@ export function ProtectionControl({ vault, ilkData, account }: ProtectionControl
                   collateralPrices={collateralPrices}
                   vault={vault}
                   account={account}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
               }
             />

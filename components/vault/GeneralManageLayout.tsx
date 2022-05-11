@@ -27,7 +27,13 @@ export function GeneralManageLayout({
   autoTriggersData,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { ilkData, vault, account, priceInfo } = generalManageVault.state
+  const {
+    ilkData,
+    vault,
+    account,
+    priceInfo,
+    collateralizationRatioAtNextPrice,
+  } = generalManageVault.state
   const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
@@ -60,7 +66,14 @@ export function GeneralManageLayout({
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
         historyControl={<HistoryControl generalManageVault={generalManageVault} />}
-        protectionControl={<ProtectionControl vault={vault} ilkData={ilkData} account={account} />}
+        protectionControl={
+          <ProtectionControl
+            vault={vault}
+            ilkData={ilkData}
+            account={account}
+            collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+          />
+        }
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled}
