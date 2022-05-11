@@ -1,17 +1,21 @@
-import { expect } from 'chai'
-import { coinPaprikaTicker$, createTokenPriceInUSD$ } from './prices'
 import BigNumber from 'bignumber.js'
-import { NEVER, of, throwError } from 'rxjs'
+import { expect } from 'chai'
+import { of, throwError } from 'rxjs'
+
 import { getStateUnpacker } from '../helpers/testHelpers'
+import { createTokenPriceInUSD$ } from './prices'
 
 describe('createTokenPriceInUSD$', () => {
-  const coinbaseOrderBook$ = () =>
-    of({
+  function coinbaseOrderBook$() {
+    return of({
       bids: [['1']] as [string][],
       asks: [['2']] as [string][],
     })
+  }
 
-  const coinPaprikaTicker$ = () => of(new BigNumber('31605.56989258439'))
+  function coinPaprikaTicker$() {
+    return of(new BigNumber('31605.56989258439'))
+  }
 
   it('maps token price from coinbase', () => {
     const tokenPrice$ = createTokenPriceInUSD$(of(null), coinbaseOrderBook$, coinPaprikaTicker$, [

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { Context, every10Seconds$ } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
@@ -9,7 +9,6 @@ import {
   distinctUntilChanged,
   first,
   map,
-  pluck,
   shareReplay,
   switchMap,
   tap,
@@ -88,23 +87,25 @@ type CoinbaseOrderBook = {
   asks: [string][]
 }
 
-export const coinbaseOrderBook$ = (ticker: string): Observable<AjaxResponse['response']> =>
-  ajax({
+export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['response']> {
+  return ajax({
     url: `https://api.pro.coinbase.com/products/${ticker}/book`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
   }).pipe(map(({ response }) => response))
+}
 
-export const coinPaprikaTicker$ = (ticker: string): Observable<BigNumber> =>
-  ajax({
+export function coinPaprikaTicker$(ticker: string): Observable<BigNumber> {
+  return ajax({
     url: `https://api.coinpaprika.com/v1/tickers/${ticker}`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
   }).pipe(map(({ response }) => new BigNumber(response.quotes.USD.price)))
+}
 
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,

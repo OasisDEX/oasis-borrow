@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { CoinTag, getToken, tokens } from 'blockchain/tokensMetadata'
+import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { AppLink } from 'components/Links'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
@@ -22,12 +22,11 @@ import { Dictionary } from 'ts-essentials'
 
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
+import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSummary } from './vaultSummary'
-import { PieChart } from '../../components/dumb/PieChart'
-import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 
 const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {

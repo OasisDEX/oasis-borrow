@@ -42,12 +42,12 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
-  createGasPrice$,
-  createOraclePriceData$,
-  GasPriceParams,
-  createTokenPriceInUSD$,
   coinbaseOrderBook$,
   coinPaprikaTicker$,
+  createGasPrice$,
+  createOraclePriceData$,
+  createTokenPriceInUSD$,
+  GasPriceParams,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -164,10 +164,10 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 
 export type TxData =
   | OpenData

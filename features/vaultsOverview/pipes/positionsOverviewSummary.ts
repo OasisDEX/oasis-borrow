@@ -1,9 +1,10 @@
-import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import BigNumber from 'bignumber.js'
-import * as tokenList from '../../../components/uniswapWidget/tokenList.json'
-import { map } from 'rxjs/operators'
 import { uniq } from 'lodash'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map } from 'rxjs/operators'
+
 import { Ticker } from '../../../blockchain/prices'
+import * as tokenList from '../../../components/uniswapWidget/tokenList.json'
 import { zero } from '../../../helpers/zero'
 
 export type Asset = {
