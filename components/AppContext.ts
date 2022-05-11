@@ -209,6 +209,7 @@ export type TxData =
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
+  | ClaimMultipleData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -887,6 +888,8 @@ export function setupAppContext() {
     instiVault$,
     ilkToToken$,
     bonus$,
+    userReferral$,
+    checkReferralLocal$
   }
 }
 
