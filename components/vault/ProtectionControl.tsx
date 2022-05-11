@@ -100,15 +100,15 @@ export function ProtectionControl({
   ) : vault.debt.isZero() ? (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <ZeroDebtProtectionBanner
-        headerTranslationKey={'zero-debt-heading'}
-        descriptionTranslationKey={'zero-debt-description'}
+        headerTranslationKey={'protection.zero-debt-heading'}
+        descriptionTranslationKey={'protection.zero-debt-description'}
       />
     </Container>
   ) : (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <ZeroDebtProtectionBanner
-        headerTranslationKey={'below-dust-limit-heading'}
-        descriptionTranslationKey={'zero-debt-description'}
+        headerTranslationKey={'protection.below-dust-limit-heading'}
+        descriptionTranslationKey={'protection.zero-debt-description'}
       />
     </Container>
   )
