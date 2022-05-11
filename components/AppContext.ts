@@ -20,6 +20,7 @@ import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
+import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -190,6 +191,7 @@ export type TxData =
   | AutomationBotAddTriggerData
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
+  | ClaimMultipleData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -758,10 +760,12 @@ export function setupAppContext() {
 
   const userReferral$ = createUserReferral$(
     web3Context$,
+    txHelpers$,
     getUserFromApi$,
     getReferralsFromApi$,
     getTopEarnersFromApi$,
     getWeeklyClaimsFromApi$,
+    checkReferralLocalStorage$
   )
 
   const checkReferralLocal$ = checkReferralLocalStorage$()

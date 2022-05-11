@@ -49,6 +49,7 @@ model User {
     user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
     referred_users             User[]        @relation("UserToUser")
     weekly_claims              WeeklyClaim[]
+    accepted                   Boolean
 }
 
 model WeeklyClaim {
