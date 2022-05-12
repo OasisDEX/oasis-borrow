@@ -185,6 +185,7 @@ import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipe
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 
 export type TxData =
   | OpenData
@@ -574,6 +575,8 @@ export function setupAppContext() {
     ]),
   )
 
+  const positions$ = memoize(curry(createPositions$)(vaults$))
+
   const ilks$ = createIlks$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
@@ -812,7 +815,7 @@ export function setupAppContext() {
   )
 
   const positionsOverviewSummary$ = memoize(
-    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$),
+    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$),
   )
 
   const termsAcceptance$ = createTermsAcceptance$(
