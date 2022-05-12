@@ -99,7 +99,7 @@ function AutomationButton({position}: { position: BorrowPositionVM | MultiplyPos
   const { t } = tempDummyTranslator()
 
   return position.automationEnabled ? 
-    <Button variant="actionActiveGreen" sx={{ whiteSpace: 'nowrap'}} onClick={() => position.onAutomationClick()}>{t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}</Button> : 
+    <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>{t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}</Button> : 
     <Button variant="action" onClick={() => position.onAutomationClick()}>{t('earn.automation-button-off')}</Button>
 }
 
@@ -198,29 +198,31 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     {t('earn.your-positions')} ({positions.length})
 
     {/* DESKTOP */}
-    <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'], 'button': { width: '100%'} }}>
-    {Object.entries(positionsByType).map(([type, positions], index, array) => {
-      const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
-      return <><Box sx={fillRowSx}>
-        {t(`product-page.${type}.title`)} ({positions.length})
-      </Box>
-      {headers}
-      {positions.map(position => 
-        <>
-          {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
-          <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
+    <Box sx={{ display: ['none', 'block'], overflowX: 'scroll', maxWidth: '100vw', whiteSpace: 'nowrap' }}>
+      <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center', minWidth: '1136px', 'button': { width: '100%'} }}>
+      {Object.entries(positionsByType).map(([type, positions], index, array) => {
+        const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
+        return <><Box sx={fillRowSx}>
+          {t(`product-page.${type}.title`)} ({positions.length})
+        </Box>
+        {headers}
+        {positions.map(position => 
+          <>
+            {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
+            <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
+          </>
+        )}
+        {index < array.length - 1 && <Separator sx={fillRowSx} />}
         </>
-      )}
-      {index < array.length - 1 && <Separator sx={fillRowSx} />}
-      </>
-    })}
-    </Grid>
+      })}
+      </Grid>
+    </Box>
 
     {/* MOBILE */}
     <Box sx={{ display: ['block', 'none']}}>
     {Object.entries(positionsByType).map(([type, positions], index, array) => {
       return <Box sx={{ maxWidth: '600px' }}>
-        <Text> {t(`product-page.${type}.title`)} ({positions.length})</Text>
+        <Text>{t(`product-page.${type}.title`)} ({positions.length})</Text>
         {positions.map(position => <Grid>
           <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start'}}>
             {getPositionInfoItems(position).map(({header, info}) => <Box>
