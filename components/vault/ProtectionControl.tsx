@@ -13,7 +13,7 @@ import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSp
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
-import { AppLink } from '../Links'
+// import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ZeroDebtProtectionBannerProps {
@@ -35,10 +35,10 @@ function ZeroDebtProtectionBanner({
       subheader={
         <>
           {t(descriptionTranslationKey)}
-          {', '}
+          {/* {', '}
           <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 3 }}>
             {t('here')}.
-          </AppLink>
+          </AppLink> */}
         </>
       }
       color="primary"
@@ -65,7 +65,9 @@ export function ProtectionControl({
   const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
   const dustLimit = ilkData.debtFloor
 
-  return !vault.debt.isZero() && vault.debt > dustLimit ? (
+  return !vault.debt.isZero() &&
+    vault.debt > dustLimit &&
+    automationTriggersData?.triggers?.length ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
@@ -97,19 +99,27 @@ export function ProtectionControl({
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
-  ) : vault.debt.isZero() ? (
-    <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-      <ZeroDebtProtectionBanner
-        headerTranslationKey={'protection.zero-debt-heading'}
-        descriptionTranslationKey={'protection.zero-debt-description'}
-      />
-    </Container>
   ) : (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <ZeroDebtProtectionBanner
-        headerTranslationKey={'protection.below-dust-limit-heading'}
-        descriptionTranslationKey={'protection.zero-debt-description'}
+        headerTranslationKey="Creation of the new stop loss trigger is currently disabled."
+        descriptionTranslationKey="To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW stop loss triggers, as they might not result in the expected outcome. Please use the 'close vault' option if you want to close your vault right now."
       />
     </Container>
   )
+  // ) : vault.debt.isZero() ? (
+  //   <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+  //     <ZeroDebtProtectionBanner
+  //       headerTranslationKey={'protection.zero-debt-heading'}
+  //       descriptionTranslationKey={'protection.zero-debt-description'}
+  //     />
+  //   </Container>
+  // ) : (
+  //   <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+  //     <ZeroDebtProtectionBanner
+  //       headerTranslationKey={'protection.below-dust-limit-heading'}
+  //       descriptionTranslationKey={'protection.zero-debt-description'}
+  //     />
+  //   </Container>
+  // )
 }
