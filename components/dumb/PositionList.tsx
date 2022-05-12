@@ -38,7 +38,7 @@ function Header({ name }: { name: string }) {
 function Cell({ children }: WithChildren) {
   return (
     <Box sx={{ py: 2, color: 'primary' }}>
-      <Text>{children}</Text>
+      <Text sx={{ my: 1 }}>{children}</Text>
     </Box>
   )
 }
@@ -236,7 +236,8 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
         <Grid
           sx={{
             gridTemplateColumns: `repeat(${columnCount}, auto)`,
-            gap: 4,
+            columnGap: 4,
+            rowGap: 3,
             alignItems: 'center',
             minWidth: '1136px',
             button: { width: '100%' },
@@ -273,7 +274,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     </Button>
                   </>
                 ))}
-                {index < array.length - 1 && <Separator sx={fillRowSx} />}
+                {index < array.length - 1 && <Separator sx={{ mb: 2, ...fillRowSx }} />}
               </>
             )
           })}
