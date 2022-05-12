@@ -46,7 +46,7 @@ export function AutomationFormButtons({
 
   return (
     <>
-      {!txSuccess && (
+      {!txSuccess && type === 'cancel' && (
         <Box>
           <RetryableLoadingButton {...triggerConfig} />
         </Box>
