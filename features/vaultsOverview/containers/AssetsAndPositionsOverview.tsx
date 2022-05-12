@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
-import { Box, Card, Flex, Text } from 'theme-ui'
+import { Box, Card, Flex, Link, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -12,6 +12,7 @@ import { useObservable } from '../../../helpers/observableHook'
 import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { PositionView } from '../pipes/positionsOverviewSummary'
+import { AppLink } from '../../../components/Links'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -64,9 +65,22 @@ function AssetRow(props: PositionView) {
           (${formatAmount(props.fundsAvailableUsd, 'USD')})
         </Text>
       )}
-      <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />
+      {/*<Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />*/}
+      <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto' }} />
     </Flex>
   )
+}
+
+function LinkedRow(props: PositionView) {
+  if (props.url) {
+    return (
+      <AppLink href={props.url}>
+        <AssetRow {...props} />
+      </AppLink>
+    )
+  } else {
+    return <AssetRow {...props} />
+  }
 }
 
 export function AssetsAndPositionsOverview() {
@@ -104,7 +118,7 @@ export function AssetsAndPositionsOverview() {
 
                 <Box sx={{ flex: 1, ml: [null, '53px'] }}>
                   {top5AssetsAndPositions.map((row) => (
-                    <AssetRow key={row.token} {...row} />
+                    <LinkedRow key={row.token} {...row} />
                   ))}
                 </Box>
               </Flex>

@@ -32,7 +32,7 @@ export function createPositions$(
           token: vault.token,
           fundsAvailable: vault.availableDebt,
           title: makerPositionName(vault),
-          url: 'https://example.com',
+          url: `/${vault.id}`,
         }
       })
     }),
