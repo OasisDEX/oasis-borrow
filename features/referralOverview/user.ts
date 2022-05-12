@@ -31,8 +31,8 @@ interface Referrer {
 
 export interface UserReferralState {
   state: UserState
-  claims: boolean
-  invitePending: boolean
+  claims?: boolean
+  invitePending?: boolean
   referrer: Referrer
   user?: User
   referrals?: string[]
@@ -40,7 +40,7 @@ export interface UserReferralState {
   totalAmount?: string
   totalClaim?: string
   performClaimMultiple?: () => void
-  claimTxnState: ClaimTxnState
+  claimTxnState?: ClaimTxnState
 }
 
 export function createUserReferral$(
@@ -70,7 +70,7 @@ export function createUserReferral$(
           if (!user) {
             return of({
               state: 'newUser',
-              referrer,
+              referrer
             })
           }
 
