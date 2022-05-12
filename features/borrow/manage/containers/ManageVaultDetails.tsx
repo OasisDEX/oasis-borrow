@@ -144,7 +144,7 @@ export function ManageVaultDetails(
 
   return (
     <Box>
-      {automationEnabled && (
+      {false && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {!automationBasicBuyAndSellEnabled && (
@@ -237,7 +237,7 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {false && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
