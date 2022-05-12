@@ -16,10 +16,16 @@ import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 interface GetProtectionBannerProps {
   vaultId: BigNumber
   ilk: string
+  debt: BigNumber
   token?: string
 }
 
-export function GetProtectionBannerControl({ vaultId, token, ilk }: GetProtectionBannerProps) {
+export function GetProtectionBannerControl({
+  vaultId,
+  token,
+  ilk,
+  debt,
+}: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
@@ -32,7 +38,10 @@ export function GetProtectionBannerControl({ vaultId, token, ilk }: GetProtectio
 
   const handleClose = useCallback(() => setIsBannerClosed(true), [])
 
-  return !slData?.isStopLossEnabled && !isBannerClosed && isAllowedForAutomation ? (
+  return !slData?.isStopLossEnabled &&
+    !isBannerClosed &&
+    isAllowedForAutomation &&
+    !debt.isZero() ? (
     <>
       {!automationBasicBuyAndSellEnabled ? (
         <GetProtectionBannerLayout

@@ -16,6 +16,7 @@ export interface VaultResolve {
   urnAddress: string
   type: MakerVaultType
 }
+
 export function createVaultResolver$(
   cdpToIlk$: (cdpId: BigNumber) => Observable<string>,
   cdpManagerUrns$: (cdpId: BigNumber) => Observable<string>,

@@ -37,6 +37,13 @@ export type OpenData = {
   proxyAddress: string
 }
 
+export type ClaimRewardData = {
+  kind: TxMetaKind.claimReward
+  gemJoinAddress: string
+  cdpId: BigNumber
+  proxyAddress: string
+}
+
 export enum ProxyActionsAdapterType {
   STANDARD = 'STANDARD',
   CHARTER = 'CHARTER',
@@ -126,4 +133,9 @@ export interface ProxyActionsSmartContractAdapterInterface {
   ) => NonPayableTransactionObject<string>
 
   open: (context: ContextConnected, data: OpenData) => NonPayableTransactionObject<string>
+
+  claimRewards: (
+    context: ContextConnected,
+    data: ClaimRewardData,
+  ) => NonPayableTransactionObject<void>
 }

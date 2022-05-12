@@ -1207,5 +1207,14 @@
     }
   },
   "guni-slippage-overridden": "El deslizamiento personalizado fue modificado para este Vault. Los Vaults GUNI sólo pueden ser abiertos con un deslizamiento de 0.1%.",
-  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en"
+  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en",
+  "claim-rewards": {
+    "title": "Recompensas por su posición en {{ bonusTokenName }}",
+    "text1": "Esta posición otorga recompensas en {{ bonusTokenName }}. Presione el botón para obtener {{ bonusAmount }}. Puede ver más información sobre estas recompensas",
+    "link-text": "aquí",
+    "text2": ".",
+    "claim-button": {
+      "claim-rewards": "Reclamar recompensas"
+    }
+  }
 }

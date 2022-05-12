@@ -132,7 +132,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {!automationBasicBuyAndSellEnabled && (
-            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
           )}
           <StopLossBannerControl
             vaultId={id}
@@ -242,7 +242,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       )}
       {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
       )}
     </Box>

@@ -31,7 +31,7 @@ const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[]
   {
     headerLabel: 'system.asset',
     header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ ilk, token, isStopLossEnabled }) => {
+    cell: ({ ilk, token, isStopLossEnabled, debt }) => {
       const tokenInfo = getToken(token)
       const { t } = useTranslation()
 
@@ -39,7 +39,7 @@ const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[]
         <Flex>
           <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
           <Box sx={{ whiteSpace: 'nowrap' }}>{ilk}</Box>
-          {isStopLossEnabled && (
+          {isStopLossEnabled && !debt.isZero() && (
             <Box ml={2}>
               <VaultDetailsAfterPill
                 afterPillColors={{ color: 'onSuccess', bg: 'success' }}
