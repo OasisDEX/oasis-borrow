@@ -786,8 +786,8 @@ const oasisBaseTheme = {
       variant: 'buttons.action',
       border: 'none',
       bg: 'onSuccess',
-      color: 'onPrimary'
-    }
+      color: 'onPrimary',
+    },
   },
   links: {
     unStyled: {

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Box } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
 import { PositionList } from './PositionList'
