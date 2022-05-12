@@ -37,8 +37,9 @@ export function FeesView({ userReferral }: Props) {
           isReferred ? userReferral.user.user_that_referred_address : null,
           userReferral.user.address,
           jwtToken,
-        ).subscribe((res) => { // sorry for that Konrad ;p
-          res[0] === 'OK' ? window.location.reload() : console.log('boop')
+        ).subscribe((res) => {
+          // sorry for that Konrad ;p
+          res === 200 ? window.location.reload() : console.log('boop')
         })
     }
   }
@@ -62,17 +63,8 @@ export function FeesView({ userReferral }: Props) {
           height: '100%',
           ...fadeInAnimation,
         }}
-        /*    onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave} */
       >
-        <Grid
-          columns={[1, 3, 3]}
-          /* sx={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flexWrap: "wrap"
-          }} */
-        >
+        <Grid columns={[1, 3, 3]}>
           <Box sx={{ py: 1 }}>
             <Text
               sx={{
