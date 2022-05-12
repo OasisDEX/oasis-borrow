@@ -107,8 +107,8 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
 
   const assetInfo = {
     header: <Header name="asset" />,
-    info: <Flex sx={{ alignItems: 'center' }}>
-      <Icon name={position.icon} size="36px" sx={{ mr: 2, flexShrink: 0 }} /> {position.ilk}
+    info: <Flex sx={{ alignItems: 'center', wordBreak: ['break-word', null], whiteSpace: [null, 'nowrap'] }}>
+      <Icon name={position.icon} size={[26, 42]} sx={{ mr: 2, flexShrink: 0 }} /> <Text>{position.ilk}</Text>
     </Flex>
   }
 
@@ -199,11 +199,11 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     return items.concat(new Array(count - items.length).fill(<div />))
   }
 
-  return <Box>
+  return <Box sx={{ color: 'primary' }}>
     <Text variant="paragraph2" sx={{ fontWeight: 'medium', my: 3 }}>{t('earn.your-positions')} ({positions.length})</Text>
 
     {/* DESKTOP */}
-    <Box sx={{ display: ['none', 'block'], overflowX: 'scroll', whiteSpace: 'nowrap' }}>
+    <Box sx={{ display: ['none', 'block'], overflowX: 'scroll' }}>
       <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center', minWidth: '1136px', 'button': { width: '100%'} }}>
       {Object.entries(positionsByType).map(([type, positions], index, array) => {
         const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
@@ -214,7 +214,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
         {positions.map(position => 
           <>
             {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
-            <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
+            <Button variant="secondary" sx={{ fontSize: 1 }} onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
           </>
         )}
         {index < array.length - 1 && <Separator sx={fillRowSx} />}
@@ -224,7 +224,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     </Box>
 
     {/* MOBILE */}
-    <Box sx={{ display: ['block', 'none'], wordBreak: 'break-word' }}>
+    <Box sx={{ display: ['block', 'none'] }}>
     {Object.entries(positionsByType).map(([type, positions], index, array) => {
       return <Box sx={{ pt: 1 }}>
         <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
@@ -235,7 +235,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
               {info}
             </Grid>)}
           </Grid>
-          <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
+          <Button variant="secondary" sx={{ fontSize: 1 }} onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </Grid>)}
         {index < array.length - 1 && <Separator sx={{ my: 4 }} />}
       </Box>
