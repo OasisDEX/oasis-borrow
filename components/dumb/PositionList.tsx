@@ -4,7 +4,7 @@ import { WithChildren } from 'helpers/types'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
 import english from '../../public/locales/en/common.json'
 
@@ -179,12 +179,17 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
   }
 }
 
+function Separator({ sx }: { sx?: SxStyleProp }) {
+  return <Box sx={{ borderTop: '1px solid', borderColor: 'border', height: '1px', width: '100%', ...sx }} />
+}
+
 export function PositionList({ positions }: { positions: PositionVM[] }) {
   // const { t } = useTranslation()
   const { t } = tempDummyTranslator()
 
   const columnCount = 8
   const positionsByType = _.groupBy(positions, 'type')
+  const fillRowSx = { gridColumn: `1 / span ${columnCount}` }
 
   function pad(items: any[], count: number) { 
     return items.concat(new Array(count - items.length).fill(<div />))
@@ -194,9 +199,9 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
 
     {/* DESKTOP */}
     <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'], 'button': { width: '100%'} }}>
-    {Object.entries(positionsByType).map(([type, positions]) => {
+    {Object.entries(positionsByType).map(([type, positions], index, array) => {
       const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
-      return <><Box sx={{ gridColumn: `1 / span ${columnCount}`}}>
+      return <><Box sx={fillRowSx}>
         {t(`product-page.${type}.title`)} ({positions.length})
       </Box>
       {headers}
@@ -206,13 +211,14 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
           <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </>
       )}
+      {index < array.length - 1 && <Separator sx={fillRowSx} />}
       </>
     })}
     </Grid>
 
     {/* MOBILE */}
     <Box sx={{ display: ['block', 'none']}}>
-    {Object.entries(positionsByType).map(([type, positions], index) => {
+    {Object.entries(positionsByType).map(([type, positions], index, array) => {
       return <Box sx={{ maxWidth: '600px' }}>
         <Text> {t(`product-page.${type}.title`)} ({positions.length})</Text>
         {positions.map(position => <Grid>
@@ -224,7 +230,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
           </Grid>
           <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </Grid>)}
-        {index < positions.length && '(separator)'}
+        {index < array.length - 1 && <Separator sx={{ my: 4 }} />}
       </Box>
     })}
     </Box>
