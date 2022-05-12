@@ -4,11 +4,12 @@ import { Box, SxStyleProp, Text } from 'theme-ui'
 export function WithArrow({
   children,
   gap = 2,
+  variant = 'paragraph3',
   sx,
-}: React.PropsWithChildren<{ gap?: string | number; sx?: SxStyleProp }>) {
+}: React.PropsWithChildren<{ gap?: string | number; sx?: SxStyleProp; variant?: string }>) {
   return (
     <Text
-      variant="paragraph3"
+      variant={variant}
       sx={{
         fontWeight: 'semiBold',
         fontSize: [1, 2],

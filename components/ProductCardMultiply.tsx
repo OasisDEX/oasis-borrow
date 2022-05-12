@@ -6,6 +6,7 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
 import { calculateTokenAmount, ProductCard } from './ProductCard'
+import { ProductCardProtocolLink } from './ProductCardProtocolLink'
 
 function personaliseCardData({
   productCardData,
@@ -53,12 +54,14 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
 
+  const title = t(`product-card-title.${cardData.ilk}`)
+
   return (
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
-      title={cardData.ilk}
+      title={title}
       description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
@@ -77,14 +80,24 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
               token: cardData.token,
             }),
       }}
-      leftSlot={{
-        title: t('system.max-multiple'),
-        value: `${maxMultiple.toFixed(2, 1)}x`,
-      }}
-      rightSlot={{
-        title: t(t('system.variable-annual-fee')),
-        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
-      }}
+      labels={[
+        {
+          title: t('system.max-multiple'),
+          value: `${maxMultiple.toFixed(2, 1)}x`,
+        },
+        {
+          title: t('system.liquidity-available'),
+          value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
+        },
+        {
+          title: t('system.stability-fee'),
+          value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+        },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+      ]}
       button={{
         link: `/vaults/open-multiply/${cardData.ilk}`,
         text: t('nav.multiply'),

@@ -125,13 +125,12 @@ export interface ProductCardProps {
   title: string
   description: string
   banner: { title: string; description: string }
-  leftSlot: { title: string; value: ReactNode }
-  rightSlot: { title: string; value: ReactNode }
   button: { link: string; text: string }
   background: string
   isFull: boolean
   floatingLabelText?: string
   inactive?: boolean
+  labels?: { title: string; value: ReactNode }[]
 }
 
 export function ProductCard({
@@ -140,13 +139,12 @@ export function ProductCard({
   title,
   description,
   banner,
-  leftSlot,
-  rightSlot,
   button,
   background,
   isFull,
   floatingLabelText,
   inactive,
+  labels,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -183,84 +181,97 @@ export function ProductCard({
             {floatingLabelText && (
               <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
             )}
-            <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-              <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
-              <Heading
-                variant="header2"
-                as="h3"
-                sx={{ fontSize: '28px', pb: 3, textAlign: 'center', fontWeight: 'semiBold' }}
-              >
-                {title}
-              </Heading>
-              <Text
-                sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
-                variant="paragraph3"
-              >
-                {description}
-              </Text>
+            <Flex
+              sx={{
+                flexDirection: 'row',
+                alignItems: 'fl',
+                pb: 2,
+                justifyContent: 'space-between',
+              }}
+            >
+              <Flex sx={{ flexDirection: 'column', width: '184px' }}>
+                <Heading
+                  variant="header2"
+                  as="h3"
+                  sx={{ fontSize: '18px', pb: 3, textAlign: 'left', fontWeight: 'semiBold' }}
+                >
+                  {title}
+                </Heading>
+                <Text
+                  sx={{ color: 'text.subtitle', pb: '12px', fontSize: '14px', textAlign: 'left' }}
+                  variant="paragraph3"
+                >
+                  {description}
+                </Text>
+              </Flex>
+              <Image
+                src={hover ? tokenGif : tokenImage}
+                sx={{ height: '146px', width: '146px', flexGrow: 2 }}
+              />
             </Flex>
             <ProductCardBanner {...banner} />
           </Box>
-          <Box>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
-              <div>
-                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                  {leftSlot.title}
-                </Text>
-                <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-                  {leftSlot.value}
-                </Text>
-              </div>
-              <div>
-                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                  {rightSlot.title}
-                </Text>
-                <Text variant="paragraph1" sx={{ textAlign: 'right', fontWeight: 'semiBold' }}>
-                  {rightSlot.value}
-                </Text>
-              </div>
-            </Flex>
-            <Flex>
-              <AppLink
-                href={button.link}
-                disabled={isFull}
-                sx={{ width: '100%' }}
-                onClick={handleClick}
-              >
-                <Button
-                  variant="primary"
+          <Flex sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
+            {labels?.map(({ title, value }) => {
+              return (
+                <Flex
                   sx={{
-                    width: '100%',
-                    height: '54px',
-                    fontWeight: 'semiBold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                    backgroundColor: inactive || isFull ? '#80818A' : 'primary',
-                    '&:hover': {
-                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                      transition: '0.2s ease-in',
-                      backgroundColor: isFull ? '#80818A' : 'primary',
-                      cursor: isFull ? 'default' : 'pointer',
-                    },
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    lineHeight: '22px',
+                    pb: '12px',
                   }}
                 >
-                  {isFull ? t('full') : !clicked ? button.text : ''}
-                  {clicked && (
-                    <Spinner
-                      variant="styles.spinner.medium"
-                      size={20}
-                      sx={{
-                        color: 'white',
-                        boxSizing: 'content-box',
-                      }}
-                    />
-                  )}
-                </Button>
-              </AppLink>
-            </Flex>
-          </Box>
+                  <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                    {title}
+                  </Text>
+                  <Text variant="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
+                    {value}
+                  </Text>
+                </Flex>
+              )
+            })}
+          </Flex>
+          <Flex>
+            <AppLink
+              href={button.link}
+              disabled={isFull}
+              sx={{ width: '100%' }}
+              onClick={handleClick}
+            >
+              <Button
+                variant="primary"
+                sx={{
+                  width: '100%',
+                  height: '54px',
+                  fontWeight: 'semiBold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+                  backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                  '&:hover': {
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                    transition: '0.2s ease-in',
+                    backgroundColor: isFull ? '#80818A' : 'primary',
+                    cursor: isFull ? 'default' : 'pointer',
+                  },
+                }}
+              >
+                {isFull ? t('full') : !clicked ? button.text : ''}
+                {clicked && (
+                  <Spinner
+                    variant="styles.spinner.medium"
+                    size={20}
+                    sx={{
+                      color: 'white',
+                      boxSizing: 'content-box',
+                    }}
+                  />
+                )}
+              </Button>
+            </AppLink>
+          </Flex>
         </Flex>
       </Card>
       {inactive && <InactiveCard />}
