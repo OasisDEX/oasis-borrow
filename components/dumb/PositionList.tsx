@@ -183,6 +183,10 @@ function Separator({ sx }: { sx?: SxStyleProp }) {
   return <Box sx={{ borderTop: '1px solid', borderColor: 'border', height: '1px', width: '100%', ...sx }} />
 }
 
+function ProductHeading({title, count}: { title: string, count: number}) {
+  return <Text variant='paragraph3' sx={{ fontWeight: 'medium', my: 2 }}>{title} ({count})</Text>
+}
+
 export function PositionList({ positions }: { positions: PositionVM[] }) {
   // const { t } = useTranslation()
   const { t } = tempDummyTranslator()
@@ -194,16 +198,17 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
   function pad(items: any[], count: number) { 
     return items.concat(new Array(count - items.length).fill(<div />))
   }
+
   return <Box>
-    {t('earn.your-positions')} ({positions.length})
+    <Text variant="paragraph2" sx={{ fontWeight: 'medium', my: 3 }}>{t('earn.your-positions')} ({positions.length})</Text>
 
     {/* DESKTOP */}
-    <Box sx={{ display: ['none', 'block'], overflowX: 'scroll', maxWidth: '100vw', whiteSpace: 'nowrap' }}>
+    <Box sx={{ display: ['none', 'block'], overflowX: 'scroll', whiteSpace: 'nowrap' }}>
       <Grid sx={{ gridTemplateColumns: `repeat(${columnCount}, auto)`, gap: 4, alignItems: 'center', minWidth: '1136px', 'button': { width: '100%'} }}>
       {Object.entries(positionsByType).map(([type, positions], index, array) => {
         const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
         return <><Box sx={fillRowSx}>
-          {t(`product-page.${type}.title`)} ({positions.length})
+          <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
         </Box>
         {headers}
         {positions.map(position => 
@@ -221,8 +226,8 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     {/* MOBILE */}
     <Box sx={{ display: ['block', 'none']}}>
     {Object.entries(positionsByType).map(([type, positions], index, array) => {
-      return <Box sx={{ maxWidth: '600px' }}>
-        <Text>{t(`product-page.${type}.title`)} ({positions.length})</Text>
+      return <Box>
+        <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
         {positions.map(position => <Grid>
           <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start'}}>
             {getPositionInfoItems(position).map(({header, info}) => <Box>

@@ -64,9 +64,7 @@ export const Positions = () => {
   return (
     <>
       <InjectTokenIconsDefs />
-      <Box sx={{ width: '1200px', px: 4 }}>
-        <PositionList positions={positions} />
-      </Box>
+      <PositionList positions={positions} />
     </>
   )
 }
