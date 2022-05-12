@@ -1,10 +1,11 @@
-import { expect } from 'chai'
-import sinon from 'sinon'
-import { createPositionsOverviewSummary$ } from './positionsOverviewSummary'
-import { of } from 'rxjs'
 import BigNumber from 'bignumber.js'
+import { expect } from 'chai'
+import { of } from 'rxjs'
+import sinon from 'sinon'
+
 import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { zero } from '../../../helpers/zero'
+import { createPositionsOverviewSummary$, Position, PositionView } from './positionsOverviewSummary'
 
 describe('positionsOverviewSummary', () => {
   it('calculates proportions correctly, maps usd, and sorts values', () => {
@@ -23,7 +24,12 @@ describe('positionsOverviewSummary', () => {
         WBTC: new BigNumber(6),
       }),
     )
-    const obsv$ = createPositionsOverviewSummary$(walletBalance$, tokenPriceUsd$, '0x00')
+    const obsv$ = createPositionsOverviewSummary$(
+      walletBalance$,
+      tokenPriceUsd$,
+      () => of([]),
+      '0x00',
+    )
 
     const state = getStateUnpacker(obsv$)
 
@@ -32,8 +38,8 @@ describe('positionsOverviewSummary', () => {
 
     expect(wbtc.token, 'orders values by usd').eq('WBTC')
     expect(eth.token, 'orders values by usd').eq('ETH')
-    expect(wbtc.valueUSD?.toString(), 'calculates usd value').eq('30')
-    expect(eth.valueUSD?.toString(), 'calculates usd value').eq('2')
+    expect(wbtc.fundsAvailableUsd?.toString(), 'calculates usd value').eq('30')
+    expect(eth.fundsAvailableUsd?.toString(), 'calculates usd value').eq('2')
     expect(wbtc.proportion?.toString(), 'calculates proportion').eq('93.75')
     expect(eth.proportion?.toString(), 'calculates proportion').eq('6.25')
   })
@@ -65,11 +71,76 @@ describe('positionsOverviewSummary', () => {
         RENBTC: new BigNumber(1),
       }),
     )
-    const obsv$ = createPositionsOverviewSummary$(walletBalance$, tokenPriceUsd$, '0x00')
+    const obsv$ = createPositionsOverviewSummary$(
+      walletBalance$,
+      tokenPriceUsd$,
+      () => of([]),
+      '0x00',
+    )
 
     const state = getStateUnpacker(obsv$)
 
     expect(state().percentageOther.toString()).eq('10')
   })
-  it('includes the maker positions')
+
+  it('includes the maker positions', () => {
+    const mockBalances = {
+      ETH: new BigNumber(1),
+    }
+
+    const walletBalance$ = sinon
+      .stub()
+      .callsFake((token: keyof typeof mockBalances) => of(mockBalances[token] || zero))
+
+    const tokenPriceUsd$ = sinon.stub().returns(
+      of({
+        ETH: new BigNumber(6),
+      }),
+    )
+
+    const positions: Array<Position> = [
+      {
+        token: 'ETH',
+        title: 'ETH-A Oasis Multiply',
+        fundsAvailable: new BigNumber(5),
+        url: 'example.com/eth',
+      },
+      {
+        token: 'DAI',
+        title: 'DAI-A Oasis Earn',
+        fundsAvailable: new BigNumber(7),
+        url: 'example.com/earn',
+      },
+    ]
+
+    const obsv$ = createPositionsOverviewSummary$(
+      walletBalance$,
+      tokenPriceUsd$,
+      () => of(positions),
+      '0x00',
+    )
+
+    const state = getStateUnpacker(obsv$)
+
+    const earnPosition = state().assetsAndPositions[0]
+    const ethInWallet = state().assetsAndPositions[1]
+    const multiplyPosition = state().assetsAndPositions[2]
+
+    expect(earnPosition.token)
+
+    expect(earnPosition.token).eq('DAI')
+    expect(earnPosition.fundsAvailableUsd?.toString()).eq('7')
+    expect((earnPosition as PositionView).title).eq('DAI-A Oasis Earn')
+    expect((earnPosition as PositionView).url).eq('example.com/earn')
+
+    expect(ethInWallet.token).eq('ETH')
+    expect(ethInWallet.fundsAvailableUsd?.toString()).eq('6')
+
+    expect(multiplyPosition.token).eq('ETH')
+    expect(multiplyPosition.fundsAvailableUsd?.toString()).eq('5')
+    expect((multiplyPosition as PositionView).title).eq('ETH-A Oasis Multiply')
+    expect((multiplyPosition as PositionView).url).eq('example.com/eth')
+
+    expect(state().totalValueUsd.toString()).eq('18')
+  })
 })

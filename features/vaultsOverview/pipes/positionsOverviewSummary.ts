@@ -7,22 +7,36 @@ import { Ticker } from '../../../blockchain/prices'
 import * as tokenList from '../../../components/uniswapWidget/tokenList.json'
 import { zero } from '../../../helpers/zero'
 
-export type Asset = {
-  token: string
-  proportion?: BigNumber
-  valueUSD?: BigNumber
-}
-
-type Position = {
+export type PositionView = {
   token: string
   title: string
-  proportion: BigNumber
-  valueUSD: BigNumber
+  fundsAvailableUsd?: BigNumber
+  url?: string
+  proportion?: BigNumber
+}
+
+function isPosition(thing: Position | WalletBalance): thing is Position {
+  return (thing as Position).fundsAvailable !== undefined
+}
+
+function getPositionOrAssetValue(thing: Position | WalletBalance): BigNumber {
+  return isPosition(thing) ? thing.fundsAvailable : thing.balanceUsd
+}
+
+export type Position = {
+  token: string
+  title: string
+  fundsAvailable: BigNumber
   url: string
 }
 
+type WalletBalance = {
+  balanceUsd: BigNumber
+  token: string
+}
+
 type Top5AssetsAndPositionsViewModal = {
-  assetsAndPositions: Array<Asset | Position>
+  assetsAndPositions: Array<PositionView>
   percentageOther: BigNumber
   totalValueUsd: BigNumber
 }
@@ -33,38 +47,31 @@ tokensWeCareAbout.push('ETH')
 export function createPositionsOverviewSummary$(
   walletBalance$: (token: string, address: string) => Observable<BigNumber>,
   createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Ticker>,
-  // vaults$: (address: string) => Observable<VaultWithType[]>,
+  createPositions$: (address: string) => Observable<Position[]>,
   address: string,
 ): Observable<Top5AssetsAndPositionsViewModal> {
-  const tokenBalances: Array<Observable<{
-    balanceUsd: BigNumber
-    token: string
-  }>> = tokensWeCareAbout.map((t) =>
-    combineLatest(walletBalance$(t, address), of(t), createTokenPriceInUSD$([t])).pipe(
-      map(([balance, token, priceData]) => {
-        return {
-          balanceUsd: balance.multipliedBy(priceData[token] || zero),
-          token,
-        }
-      }),
+  const tokenBalances$: Observable<Array<WalletBalance>> = combineLatest(
+    tokensWeCareAbout.map((t) =>
+      combineLatest(walletBalance$(t, address), of(t), createTokenPriceInUSD$([t])).pipe(
+        map(([balance, token, priceData]) => {
+          return {
+            balanceUsd: balance.multipliedBy(priceData[token] || zero),
+            token,
+          }
+        }),
+      ),
     ),
   )
 
-  const totalAssetsUsd$: Observable<BigNumber> = combineLatest(tokenBalances).pipe(
-    map((tokensAndBalances) =>
-      tokensAndBalances.reduce((acc, { balanceUsd }) => acc.plus(balanceUsd), zero),
-    ),
-  )
-
-  // gather positions
+  const positions$ = createPositions$(address)
 
   // merge and sort
-  const flattedTokenBalances$ = combineLatest(tokenBalances).pipe(
-    map((tokensAndBalances) =>
-      tokensAndBalances
+  const flattenedTokensAndPositions$ = combineLatest(tokenBalances$, positions$).pipe(
+    map(([tokensAndBalances, makerPositions]) =>
+      [...tokensAndBalances, ...makerPositions]
         .sort((tokenA, tokenB) => {
-          const tokenAUsdAmount = tokenA.balanceUsd
-          const tokenBUsdAmount = tokenB.balanceUsd
+          const tokenAUsdAmount = getPositionOrAssetValue(tokenA)
+          const tokenBUsdAmount = getPositionOrAssetValue(tokenB)
           if (!tokenAUsdAmount) {
             return 1 // push a to bottom
           }
@@ -73,38 +80,71 @@ export function createPositionsOverviewSummary$(
           }
           return tokenBUsdAmount.minus(tokenAUsdAmount).toNumber()
         })
-        .filter(({ balanceUsd }) => balanceUsd.gt(zero)),
+        .filter((token) => getPositionOrAssetValue(token).gt(zero)),
     ),
   )
 
-  const assetsAndPositions$: Observable<Array<Asset | Position>> = combineLatest(
-    flattedTokenBalances$,
-    totalAssetsUsd$,
-  ).pipe(
-    map(([flattenedTokenBalances, totalAssetsUsd]) =>
-      flattenedTokenBalances.map(({ token, balanceUsd }) => {
-        return {
-          token,
-          valueUSD: balanceUsd,
-          proportion: balanceUsd && balanceUsd.div(totalAssetsUsd).times(100),
+  // consolidate to view model
+  const assetsAndPositions$: Observable<Array<PositionView>> = flattenedTokensAndPositions$.pipe(
+    map((flattenedTokenBalances) =>
+      flattenedTokenBalances.map((assetOrPosition) => {
+        if (isPosition(assetOrPosition)) {
+          return {
+            token: assetOrPosition.token,
+            title: assetOrPosition.title,
+            fundsAvailableUsd: assetOrPosition.fundsAvailable,
+            url: assetOrPosition.url,
+          }
+        } else {
+          return {
+            token: assetOrPosition.token,
+            title: assetOrPosition.token,
+            fundsAvailableUsd: assetOrPosition.balanceUsd,
+          }
         }
       }),
     ),
   )
 
-  const percentageOther$: Observable<BigNumber> = combineLatest(
+  // calc total assets value
+  const totalAssetsUsd$: Observable<BigNumber> = assetsAndPositions$.pipe(
+    map((tokensAndBalances) =>
+      tokensAndBalances.reduce(
+        (acc, { fundsAvailableUsd }) => acc.plus(fundsAvailableUsd || zero),
+        zero,
+      ),
+    ),
+  )
+
+  // add percentages
+  const rowViewModels$: Observable<Array<PositionView>> = combineLatest(
     assetsAndPositions$,
+    totalAssetsUsd$,
+  ).pipe(
+    map(([assetsAndPositions, totalAssetsUsd]) =>
+      assetsAndPositions.map((assetOrPosition) => {
+        return {
+          ...assetOrPosition,
+          proportion: assetOrPosition.fundsAvailableUsd?.div(totalAssetsUsd).times(100),
+        }
+      }),
+    ),
+  )
+
+  // create percentage of other things
+  const percentageOther$: Observable<BigNumber> = combineLatest(
+    rowViewModels$,
     totalAssetsUsd$,
   ).pipe(
     map(([assetsAndPositions, totalAssetsUsd]) => {
       const top5Sum = assetsAndPositions
         .slice(0, 5)
-        .reduce((acc, { valueUSD }) => acc.plus(valueUSD || zero), zero)
+        .reduce((acc, { fundsAvailableUsd }) => acc.plus(fundsAvailableUsd || zero), zero)
       return totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
     }),
   )
 
-  return combineLatest(assetsAndPositions$, percentageOther$, totalAssetsUsd$).pipe(
+  return combineLatest(rowViewModels$, percentageOther$, totalAssetsUsd$).pipe(
     map(([assetsAndPositions, percentageOther, totalValueUsd]) => ({
       assetsAndPositions,
       percentageOther,

@@ -181,11 +181,11 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 
 export type TxData =
   | OpenData

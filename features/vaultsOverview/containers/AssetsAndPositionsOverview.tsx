@@ -11,13 +11,13 @@ import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { useObservable } from '../../../helpers/observableHook'
 import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
-import { Asset } from '../pipes/positionsOverviewSummary'
+import { PositionView } from '../pipes/positionsOverviewSummary'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
 }
 
-function AssetRow(props: Asset) {
+function AssetRow(props: PositionView) {
   return (
     <Flex
       sx={{
@@ -42,7 +42,7 @@ function AssetRow(props: Asset) {
           ml: '8px',
         }}
       >
-        {props.token}
+        {props.title}
       </Text>
       {props.proportion && (
         <Text
@@ -54,14 +54,14 @@ function AssetRow(props: Asset) {
           {formatPercent(props.proportion)}
         </Text>
       )}
-      {props.valueUSD && (
+      {props.fundsAvailableUsd && (
         <Text
           variant="paragraph3"
           sx={{
             ml: '8px',
           }}
         >
-          (${formatAmount(props.valueUSD, 'USD')})
+          (${formatAmount(props.fundsAvailableUsd, 'USD')})
         </Text>
       )}
       <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />
@@ -82,9 +82,6 @@ export function AssetsAndPositionsOverview() {
       <WithLoadingIndicator value={positionsOverviewSummary}>
         {(positionsOverviewSummary) => {
           const top5AssetsAndPositions = positionsOverviewSummary.assetsAndPositions.slice(0, 5)
-          console.log(
-            `positionsOverviewSummary.percentageOther ${positionsOverviewSummary.percentageOther}`,
-          )
           const pieSlices = [
             ...top5AssetsAndPositions.map((ap) => ({
               value: ap.proportion || zero,
