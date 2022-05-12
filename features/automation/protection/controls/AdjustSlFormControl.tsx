@@ -255,7 +255,6 @@ export function AdjustSlFormControl({
     isRetry: false,
     isEditing,
     disabled:
-      !replacedTriggerId|| //if we are not replacing anything then disable button
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
       (!isEditing && !uiState?.txDetails),

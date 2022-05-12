@@ -121,14 +121,14 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  // const automationEnabled = useFeatureToggle('Automation')
+  const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
   return (
     <Box>
-      {false && (
+      {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {!automationBasicBuyAndSellEnabled && (
@@ -240,7 +240,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }
         />
       )}
-      {false && automationBasicBuyAndSellEnabled && (
+      {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>

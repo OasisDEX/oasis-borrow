@@ -26,7 +26,7 @@ import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+// import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { BonusContainer } from '../../../bonus/BonusContainer'
@@ -118,7 +118,7 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
       collateralizationRatio,
-      ilk,
+      // ilk,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -139,17 +139,17 @@ export function ManageVaultDetails(
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  // const automationEnabled = useFeatureToggle('Automation')
+  const automationEnabled = useFeatureToggle('Automation')
   const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
 
   return (
     <Box>
-      {false && (
+      {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && (
+          {/* {!automationBasicBuyAndSellEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
-          )}
+          )} */}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -237,11 +237,11 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {false && automationBasicBuyAndSellEnabled && (
+      {/* {automationEnabled && automationBasicBuyAndSellEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
-      )}
+      )} */}
       <BonusContainer cdpId={props.vault.id} />
     </Box>
   )
