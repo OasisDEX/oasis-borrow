@@ -87,12 +87,12 @@ export function getWeeklyClaimsFromApi$(address: String): Observable<WeeklyClaim
     }),
   )
 }
-export function saveUserUsingApi$(
-  accept: boolean,
-  referrer: string,
+export function createUserUsingApi$(
+  accepted: boolean,
+  referrer: string | null,
   address: string,
   token: string
-): Observable<void> {
+): Observable<string[]> {
   return ajax({
     url: `${basePath}/api/user/create`,
     method: 'POST',
@@ -101,10 +101,11 @@ export function saveUserUsingApi$(
       authorization: 'Bearer ' + token,
     },
     body: {
-      user_that_referred_address: accept ? referrer : '0x000000000000000000000000000000000000dead',
+      user_that_referred_address:  referrer ,
       address: address,
+      accepted: accepted
     },
-  }).pipe(map((_) => {}))
+  }).pipe(map((resp) => { if (resp.status === 200) return of("OK"); else return of("NOK")}))
 }
 
 export function updateClaimsUsingApi$(

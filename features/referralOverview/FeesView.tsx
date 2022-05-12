@@ -1,73 +1,48 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import axios from 'axios'
 import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
-import { ethers } from 'ethers'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Button, Card, Divider, Flex, Grid, Text } from 'theme-ui'
 import { Spinner } from 'theme-ui'
-import { MerkleRedeemer } from 'types/ethers-contracts/'
 
-import { default as goerliAddresses } from '../../blockchain/addresses/goerli.json'
 import { fadeInAnimation } from '../../theme/animations'
-// import { ManageClaimButton } from "./ManageClaimButton"
-import { UserReferralState } from './user'
-const merkleRedeemer = require('../../blockchain/abi/merkle-redeemer.json')
+import { ClaimTxnState, UserReferralState } from './user'
+import { createUserUsingApi$ } from './userApi'
 
 interface Props {
   context: Context
   userReferral: UserReferralState
 }
+export interface UpsertUser {
+  hasAccepted: boolean
+  isReferred: boolean
+}
 
 export function FeesView({ userReferral }: Props) {
   const { t } = useTranslation()
-  const [processing, setProcessing] = useState(false)
-  const createUser = async (accept: boolean, referred: boolean) => {
-    await axios.post(`/api/user/create`, {
-      user_that_referred_address: referred ? userReferral?.user?.user_that_referred_address : null,
-      address: userReferral.user?.address,
-      accepted: accept,
-    })
-  }
-  const claimFees = async (
-    weeks: ethers.BigNumberish[],
-    amounts: ethers.BigNumberish[],
-    proofs: ethers.utils.BytesLike[][],
-  ): Promise<string | undefined> => {
-    setProcessing(true)
-    // @ts-ignore
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-    const signer = provider.getSigner()
 
-    const merkleRedeemerContract = new ethers.Contract(
-      goerliAddresses.MERKLE_REDEEMER,
-      merkleRedeemer,
-      signer,
-    ) as MerkleRedeemer
+  // move to pipe
 
-    let tx
-    try {
-      tx = await merkleRedeemerContract.claimMultiple(weeks, amounts, proofs)
-      console.log(tx)
-      if (tx) {
-        await tx.wait(0)
+  const createUser = async (upsertUser: UpsertUser) => {
+    const { hasAccepted, isReferred } = upsertUser
 
-        await axios.post('/api/user/claims/update', {
-          user_address: userReferral.user?.address,
-          week_number: weeks.map((v) => Number(v)),
+    if (userReferral.user) {
+      const jwtToken = jwtAuthGetToken(userReferral.user.address)
+      if (jwtToken)
+        createUserUsingApi$(
+          hasAccepted,
+          isReferred ? userReferral.user.user_that_referred_address : null,
+          userReferral.user.address,
+          jwtToken,
+        ).subscribe((res) => { // sorry for that Konrad ;p
+          res[0] === 'OK' ? window.location.reload() : console.log('boop')
         })
-        setProcessing(false)
-        return tx.hash
-      }
-      setProcessing(false)
-    } catch (error) {
-      setProcessing(false)
-      return undefined
     }
-    return undefined
   }
+
   return (
     <Box
       sx={{
@@ -115,10 +90,7 @@ export function FeesView({ userReferral }: Props) {
               }}
               variant="strong"
             >
-              {`${ethers.utils.formatEther(
-                ethers.BigNumber.from(userReferral.user?.total_amount),
-              )}`}{' '}
-              <span style={{ fontSize: '18px' }}>DAI</span>
+              {`${userReferral.totalAmount}`} <span style={{ fontSize: '18px' }}>DAI</span>
             </Text>
           </Box>
           <Box sx={{ py: 1 }}>
@@ -138,76 +110,36 @@ export function FeesView({ userReferral }: Props) {
                 }}
                 variant="strong"
               >
-                {userReferral.claims &&
-                  `${ethers.utils.formatEther(
-                    userReferral.claims.amounts.reduce(
-                      (p, c) => p.add(c),
-                      ethers.BigNumber.from('0'),
-                    ),
-                  )}`}{' '}
+                {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
+                  ? '0.00'
+                  : `${userReferral.totalClaim}`}{' '}
                 <span style={{ fontSize: '18px' }}>DAI</span>
               </Text>
             </Box>
           </Box>
-          <Flex sx={{ alignItems: ['start', 'end','end'], flexDirection: 'column', py: 1 }}>
-            {/*  <ManageClaimButton {...state}/> */}
-            {/*  <Button
-                variant="secondary"
-                disabled={userReferral.state === 'currentUserNoClaims'}
-                onClick={() =>
-                  //@ts-ignore
-                  userReferral.performClaimMultiple()
-                }
-              >
-                {processing ? (
-                  <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <Text sx={{ position: 'relative' }} pl={2}>
-                      <Spinner
-                        size={25}
-                        color="main"
-                        sx={{
-                          position: 'absolute',
-                          left: 0,
-                          top: '50%',
-                          transform: 'translate(-105%, -50%)',
-                        }}
-                      />
-                      {'Claiming DAI fees'}
-                    </Text>
-                  </Flex>
-                ) : null}
-                {!processing
-                  ? userReferral.claims?.amounts.length === 0
-                    ? 'Nothing to claim'
-                    : t('ref.claim')
-                  : null}
-              </Button> */}
+          <Flex sx={{ alignItems: ['start', 'end', 'end'], flexDirection: 'column', py: 1 }}>
             <Button
               variant="outline"
-              disabled={userReferral.claims?.amounts.length === 0 || processing}
+              disabled={
+                !userReferral.claims || userReferral.claimTxnState === ClaimTxnState.PENDING
+              }
               onClick={() =>
-                userReferral.claims
-                  ? claimFees(
-                      userReferral.claims.weeks,
-                      userReferral.claims.amounts,
-                      userReferral.claims.proofs,
-                    )
-                  : null
+                userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
               }
               sx={{ p: '4px' }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                {processing ? (
+                {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
                   <Spinner size={30} color="main" />
                 ) : (
                   <Icon name="dai_circle_color" size="30px" />
                 )}
                 <Text px="2" sx={{ whiteSpace: 'nowrap' }}>
-                  {!processing
-                    ? userReferral.claims?.amounts.length === 0
-                      ? 'No claims'
+                  {userReferral.claimTxnState !== ClaimTxnState.PENDING
+                    ? !userReferral.claims
+                      ? t('ref.no-claim')
                       : t('ref.claim')
-                    : 'Claiming'}
+                    : t('ref.claiming')}
                 </Text>
               </Flex>
             </Button>
@@ -310,25 +242,22 @@ export function FeesView({ userReferral }: Props) {
                   }}
                   variant="subtitle"
                 >
-                  {userReferral.user?.user_that_referred_address &&
-                    userReferral.user?.accepted &&
-                    userReferral.user?.user_that_referred_address.toString()}{' '}
-                  {!userReferral.user?.user_that_referred_address &&
-                    userReferral.user?.accepted &&
+                  {userReferral.referrer.referrer &&
+                    !userReferral.invitePending &&
+                    userReferral.referrer.referrer}{' '}
+                  {!userReferral.referrer.referrer &&
+                    !userReferral.invitePending &&
                     t(`ref.you-were-not-referred`)}
-                  {userReferral.user?.user_that_referred_address &&
-                    !userReferral.user?.accepted &&
+                  {userReferral.referrer.referrer &&
+                    userReferral.invitePending &&
                     `${t('ref.you-have-been-invited')} ${formatAddress(
-                      userReferral.user?.user_that_referred_address,
+                      userReferral.referrer.referrer,
                       6,
-                    )}`}{' '}
-                  {!userReferral.user?.user_that_referred_address &&
-                    !userReferral.user?.accepted &&
-                    t(`ref.you-were-not-referred`)}
+                    )}`}
                 </Text>
               </Box>
               <Box>
-                {userReferral.user?.user_that_referred_address && userReferral.user?.accepted && (
+                {userReferral.state === 'currentUser' && !userReferral.invitePending && (
                   <AppLink
                     href={`https://etherscan.com/account/#`}
                     sx={{ fontSize: 2 }}
@@ -338,13 +267,13 @@ export function FeesView({ userReferral }: Props) {
                     Etherscan
                   </AppLink>
                 )}
-                {userReferral.user?.user_that_referred_address && !userReferral.user?.accepted && (
+                {userReferral.state === 'currentUser' && userReferral.invitePending && (
                   <>
                     {' '}
                     <Button
                       sx={{ fontSize: 2 }}
                       variant="textual"
-                      onClick={() => createUser(true, true)}
+                      onClick={() => createUser({ hasAccepted: true, isReferred: true })}
                     >
                       {' '}
                       {t(`ref.accept-invite`)}
@@ -353,7 +282,7 @@ export function FeesView({ userReferral }: Props) {
                     <Button
                       sx={{ fontSize: 2 }}
                       variant="textual"
-                      onClick={() => createUser(false, false)}
+                      onClick={() => createUser({ hasAccepted: false, isReferred: false })}
                     >
                       {' '}
                       {t(`ref.reject-invite`)}

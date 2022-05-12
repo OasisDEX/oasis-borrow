@@ -9,8 +9,16 @@ const bodySchema = z.object({
   week_number: z.array(z.number()),
   user_address: z.string(),
 })
+const handler: NextApiHandler = async (req, res) => {
+  switch (req.method) {
+    case 'POST':
+      return await update(req, res)
+    default:
+      return res.status(405).end()
+  }
+}
 
-const handler: NextApiHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+const update = async (req: NextApiRequest, res: NextApiResponse) => {
   const { week_number, user_address } = bodySchema.parse(req.body)
   const user = getUserFromRequest(req)
   try {

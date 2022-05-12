@@ -1123,6 +1123,8 @@
     "total": "Total DAI fees earned",
     "not-claimed": "DAI not claimed",
     "claim": "Claim DAI",
+    "no-claim": "No claims",
+    "claiming": "Claiming",
     "top": "Top earners",
     "link": "Your Oasis.app referral link",
     "explanation": "Once someone clicks your referal link and accepts then you will see them appear in the “Accounts you’ve referred” below. Then you are all set, fee sharing is active! Your link is reasable as many time as you’d like.",

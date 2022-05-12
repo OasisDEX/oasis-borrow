@@ -3,20 +3,22 @@ import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'components/NewReferralModal'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
 import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 import { useModal } from '../../helpers/modalHook'
+import { UpsertUser } from './FeesView'
 import { UserReferralState } from './user'
+import { createUserUsingApi$ } from './userApi'
 
 interface Props {
   context: Context
-
   userReferral: UserReferralState
 }
 
@@ -40,10 +42,29 @@ export function ReferralLandingSummary() {
 export function ReferralLanding({ context, userReferral }: Props) {
   const { t } = useTranslation()
   const openModal = useModal()
+  const { replace } = useRedirect()
+
   const isConnected = context?.status === 'connected'
 
   const connectedAccount = isConnected ? context.account : undefined
- 
+
+  const createUser = async (upsertUser: UpsertUser) => {
+    const { hasAccepted, isReferred } = upsertUser
+
+    if (userReferral && connectedAccount) {
+      const jwtToken = jwtAuthGetToken(connectedAccount)
+      if (jwtToken)
+        createUserUsingApi$(
+          hasAccepted,
+          isReferred ? userReferral.referrer.referrer : null,
+          connectedAccount,
+          jwtToken,
+        ).subscribe((res) => {
+          res[0] === 'OK' ? replace(`/referrals/${connectedAccount}`) : null
+        })
+    }
+  }
+
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
       <Flex sx={{ mt: 1, mb: 4, flexDirection: 'column' }}>
@@ -66,7 +87,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 {t('ref.intro-link')}
               </AppLink>
             </Text>
-            <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: "center" }}>
+            <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
               <Image
                 src={staticFilesRuntimeUrl('/static/img/referral_landing.svg')}
                 mb="16px"
@@ -102,11 +123,15 @@ export function ReferralLanding({ context, userReferral }: Props) {
                       transform: 'translateX(10px)',
                     },
                   }}
-                  onClick={() =>
-                    openModal(NewReferralModal, {
-                      referrer: userReferral.referrer.referrer,
-                      address: connectedAccount,
-                    })
+                  // if new user witohut refereal - write to db on click and redirect to dashboard
+                  onClick={
+                    userReferral.referrer.referrer
+                      ? () =>
+                          openModal(NewReferralModal, {
+                            referrer: userReferral.referrer.referrer,
+                            address: connectedAccount,
+                          })
+                      : () => createUser({ hasAccepted: true, isReferred: false })
                   }
                 >
                   {t('ref.get-started')}
