@@ -20,32 +20,26 @@ export enum ClaimTxnState {
 
 export type UserState = 'newUser' | 'currentUser' | 'walletConnectionInProgress'
 
-/* interface Claim {
-  weeks: ethers.BigNumber[]
-  amounts: ethers.BigNumber[]
-  proofs: string[][]
-} */
 interface Referrer {
   referrer: string | null
 }
 
 export interface UserReferralState {
-  state: UserState
-  claims?: boolean
-  invitePending?: boolean
-  referrer: Referrer
   user?: User
-  referrals?: string[]
-  topEarners?: string[]
-  totalAmount?: string
+  claims?: boolean
+  state: UserState
+  referrer: Referrer
   totalClaim?: string
-  trigger? : () => void
-  performClaimMultiple?: () => void
+  totalAmount?: string
+  referrals?: string[]
+  trigger?: () => void
+  topEarners?: string[]
+  invitePending?: boolean
   claimTxnState?: ClaimTxnState
+  performClaimMultiple?: () => void
 }
 const trigger$ = new Subject<void>()
 function trigger() {
-  console.log('boopiks')
   trigger$.next()
 }
 export function createUserReferral$(
@@ -71,6 +65,7 @@ export function createUserReferral$(
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, topEarners, weeklyClaims, referrer]) => {
+          // newUser gets referrer address from local storage, currentUser from the db
           if (!user) {
             return of({
               state: 'newUser',
@@ -107,8 +102,8 @@ export function createUserReferral$(
                       txnState.account,
                       claimsOut.weeks.map((week: ethers.BigNumber) => Number(week)),
                       jwtToken,
-                    ).subscribe();
-                    trigger();
+                    ).subscribe()
+                    trigger()
                   }
 
                   switch (txnState.status) {
@@ -160,7 +155,7 @@ export function createUserReferral$(
               user,
               referrer: { referrer: user.user_that_referred_address },
               referrals: referralsOut,
-              trigger:trigger,
+              trigger: trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               topEarners: topEarnersOut,

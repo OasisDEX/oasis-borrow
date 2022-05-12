@@ -137,7 +137,6 @@ export function updateClaimsUsingApi$(
   week_number: Number[],
   token: string,
 ): Observable<void> {
-  console.log(week_number)
   return ajax({
     url: `${basePath}/api/user/claims/update`,
     method: 'POST',

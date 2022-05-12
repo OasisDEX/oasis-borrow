@@ -117,17 +117,10 @@ export function HomepageView() {
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const router = useRouter()
   useEffect(() => {
-    const localStorageReferral = checkReferralLocal?.referral
-    console.log(localStorageReferral)
+    const localStorageReferral = checkReferralLocal?.referrer
     if (!localStorageReferral) {
       const linkReferral = router.query.ref as string
-      console.log(linkReferral)
       if (linkReferral) {
-        // TODO add check for checksum and if it's in db ?
-        // observable -> user -> check on load ref vs user
-        // if user that referrs exists ? Is address on curve
-        // edit: dont add checks here as someone can manually add the address to storage
-        // check when adding user -> referral modal
         localStorage.setItem(`referral`, linkReferral)
       }
     }
