@@ -48,6 +48,17 @@ export const Positions = () => {
       onEditClick: () => alert('Editing vault 3292'),
       onAutomationClick: () => alert('Disabling automation for vault 3292'),
     },
+    {
+      type: 'earn' as const,
+      icon: 'ether_circle_color',
+      ilk: 'ETH-A',
+      vaultID: '#3293',
+      netValue: '1.23m',
+      pnl: '+ $100k',
+      sevenDayYield: '11.29%',
+      liquidity: '11.2m DAI',
+      onEditClick: () => alert('Editing vault 3293'),
+    },
   ]
 
   return (
