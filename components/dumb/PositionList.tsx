@@ -224,16 +224,16 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     </Box>
 
     {/* MOBILE */}
-    <Box sx={{ display: ['block', 'none']}}>
+    <Box sx={{ display: ['block', 'none'], wordBreak: 'break-word' }}>
     {Object.entries(positionsByType).map(([type, positions], index, array) => {
-      return <Box>
+      return <Box sx={{ pt: 1 }}>
         <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
-        {positions.map(position => <Grid>
-          <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start'}}>
-            {getPositionInfoItems(position).map(({header, info}) => <Box>
+        {positions.map(position => <Grid sx={{ gap: 4, mb: 4, pt: 3, pb: 2 }}>
+          <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start', gap: 4 }}>
+            {getPositionInfoItems(position).map(({header, info}) => <Grid sx={{ gap: 2 }}>
               {header}
               {info}
-            </Box>)}
+            </Grid>)}
           </Grid>
           <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </Grid>)}
@@ -242,7 +242,5 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     })}
     </Box>
   </Box>
-  
-
 
 }
