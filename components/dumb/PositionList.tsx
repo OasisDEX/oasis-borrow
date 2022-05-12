@@ -6,8 +6,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
-import english from '../../public/locales/en/common.json'
-
 function DumbHeader({ label, tooltip }: {
   label: string
   tooltip?: JSX.Element | string
@@ -30,15 +28,8 @@ function DumbHeader({ label, tooltip }: {
   )
 }
 
-function tempDummyTranslator() {
-  return {
-    t: (path: string) => _.get(english, path)
-  }
-}
-
 function Header({ name } : {name: string}) {
-  // const { t } = useTranslation()
-  const { t } = tempDummyTranslator()
+  const { t } = useTranslation()
   return <DumbHeader label={t(`earn.position-headers.${name}.label`)} tooltip={t(`earn.position-headers.${name}.tooltip`)} />
 }
 
@@ -95,8 +86,7 @@ interface InfoItem {
 }
 
 function AutomationButton({position}: { position: BorrowPositionVM | MultiplyPositionVM }) {
-  // const { t } = useTranslation()
-  const { t } = tempDummyTranslator()
+  const { t } = useTranslation()
 
   return position.automationEnabled ? 
     <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>{t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}</Button> : 
@@ -188,8 +178,7 @@ function ProductHeading({title, count}: { title: string, count: number}) {
 }
 
 export function PositionList({ positions }: { positions: PositionVM[] }) {
-  // const { t } = useTranslation()
-  const { t } = tempDummyTranslator()
+  const { t } = useTranslation()
 
   const columnCount = 8
   const positionsByType = _.groupBy(positions, 'type')
