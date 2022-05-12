@@ -39,14 +39,19 @@ export interface UserReferralState {
   topEarners?: string[]
   totalAmount?: string
   totalClaim?: string
+  trigger? : () => void
   performClaimMultiple?: () => void
   claimTxnState?: ClaimTxnState
 }
-
+const trigger$ = new Subject<void>()
+function trigger() {
+  console.log('boopiks')
+  trigger$.next()
+}
 export function createUserReferral$(
   web3Context$: Observable<Web3Context>,
   txHelpers$: Observable<TxHelpers>,
-  getUserFromApi$: (address: string) => Observable<User | null>,
+  getUserFromApi$: (address: string, trigger$: Subject<void>) => Observable<User | null>,
   getReferralsFromApi$: (address: string) => Observable<User[] | null>,
   getTopEarnersFromApi$: () => Observable<User[] | null>,
   getWeeklyClaimsFromApi$: (address: string) => Observable<WeeklyClaim[] | null>,
@@ -58,7 +63,7 @@ export function createUserReferral$(
         return of({ state: 'walletConnectionInProgress' } as UserReferralState)
       }
       return combineLatest(
-        getUserFromApi$(web3Context.account),
+        getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
         getTopEarnersFromApi$(),
         getWeeklyClaimsFromApi$(web3Context.account),
@@ -66,11 +71,10 @@ export function createUserReferral$(
         txHelpers$,
       ).pipe(
         switchMap(([user, referrals, topEarners, weeklyClaims, referrer]) => {
-
           if (!user) {
             return of({
               state: 'newUser',
-              referrer
+              referrer,
             })
           }
 
@@ -103,7 +107,8 @@ export function createUserReferral$(
                       txnState.account,
                       claimsOut.weeks.map((week: ethers.BigNumber) => Number(week)),
                       jwtToken,
-                    ).subscribe()
+                    ).subscribe();
+                    trigger();
                   }
 
                   switch (txnState.status) {
@@ -123,7 +128,7 @@ export function createUserReferral$(
               ),
             )
           }
-          
+
           function claimAllFunction() {
             claimClick$.next()
           }
@@ -155,6 +160,7 @@ export function createUserReferral$(
               user,
               referrer: { referrer: user.user_that_referred_address },
               referrals: referralsOut,
+              trigger:trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               topEarners: topEarnersOut,
@@ -177,7 +183,6 @@ export function createUserReferral$(
             })),
           )
         }),
-        
       )
     }),
   )

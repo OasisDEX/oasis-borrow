@@ -27,7 +27,8 @@ export function ReferralLandingSummary() {
 
   const [context, contextError] = useObservable(context$)
   const [userReferral, userReferralError] = useObservable(userReferral$)
-
+console.log("asdasdasd")
+console.log(userReferral)
   return (
     <WithErrorHandler error={[contextError, userReferralError]}>
       <WithLoadingIndicator value={[context, userReferral]}>

@@ -38,8 +38,7 @@ export function FeesView({ userReferral }: Props) {
           userReferral.user.address,
           jwtToken,
         ).subscribe((res) => {
-          // sorry for that Konrad ;p
-          res === 200 ? window.location.reload() : console.log('boop')
+          res === 200 ? userReferral.trigger && userReferral.trigger() : null
         })
     }
   }

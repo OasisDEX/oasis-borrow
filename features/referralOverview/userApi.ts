@@ -1,29 +1,53 @@
 import { User, WeeklyClaim } from '@prisma/client'
 import getConfig from 'next/config'
 import { of } from 'ramda'
-import { Observable } from 'rxjs'
+import { Observable, Subject } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map } from 'rxjs/operators'
+import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function getUserFromApi$(address: String): Observable<User | null> {
-  return ajax({
-    url: `${basePath}/api/user/${address}`,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).pipe(
-    map((resp) => {
-      const user = resp.response as User
-      return user
-    }),
-    catchError((err) => {
-      if (err.xhr.status === 404) {
-        return of(null)
-      }
-      throw err
+export function getUserFromApi$(address: String, trigger$: Subject<void>): Observable<User | null> {
+  return trigger$.pipe(
+    startWith(
+      ajax({
+        url: `${basePath}/api/user/${address}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).pipe(
+        map((resp) => {
+          const user = resp.response as User
+          return user
+        }),
+        catchError((err) => {
+          if (err.xhr.status === 404) {
+            return of(null)
+          }
+          throw err
+        }),
+      ),
+    ),
+    switchMap((_) => {
+      return ajax({
+        url: `${basePath}/api/user/${address}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).pipe(
+        map((resp) => {
+          const user = resp.response as User
+          return user
+        }),
+        catchError((err) => {
+          if (err.xhr.status === 404) {
+            return of(null)
+          }
+          throw err
+        }),
+      )
     }),
   )
 }
@@ -91,7 +115,7 @@ export function createUserUsingApi$(
   accepted: boolean,
   referrer: string | null,
   address: string,
-  token: string
+  token: string,
 ): Observable<number> {
   return ajax({
     url: `${basePath}/api/user/create`,
@@ -101,9 +125,9 @@ export function createUserUsingApi$(
       authorization: 'Bearer ' + token,
     },
     body: {
-      user_that_referred_address:  referrer ,
+      user_that_referred_address: referrer,
       address: address,
-      accepted: accepted
+      accepted: accepted,
     },
   }).pipe(map((resp) => resp.status))
 }
@@ -111,7 +135,7 @@ export function createUserUsingApi$(
 export function updateClaimsUsingApi$(
   user_address: string,
   week_number: Number[],
-  token: string
+  token: string,
 ): Observable<void> {
   console.log(week_number)
   return ajax({
