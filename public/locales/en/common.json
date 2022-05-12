@@ -1098,6 +1098,11 @@
   "below": "below",
   "above": "above",
   "earn": {
+    "your-positions": "Your Positions",
+    "positions-of-type": "{{type}} Positions",
+    "edit-vault": "Edit Vault",
+    "automation-button-on": "On",
+    "automation-button-off": "Activate",
     "position-headers": {
       "asset": {
         "label": "Asset",

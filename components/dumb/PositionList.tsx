@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
+import english from '../../public/locales/en/common.json'
+
 function DumbHeader({ label, tooltip }: {
   label: string
   tooltip?: JSX.Element | string
@@ -28,8 +30,15 @@ function DumbHeader({ label, tooltip }: {
   )
 }
 
+function tempDummyTranslator() {
+  return {
+    t: (path: string) => _.get(english, path)
+  }
+}
+
 function Header({ name } : {name: string}) {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
+  const { t } = tempDummyTranslator()
   return <DumbHeader label={t(`earn.position-headers.${name}.label`)} tooltip={t(`earn.position-headers.${name}.tooltip`)} />
 }
 
@@ -85,10 +94,13 @@ interface InfoItem {
   info: JSX.Element | string
 }
 
-function automationButton(position: BorrowPositionVM | MultiplyPositionVM) {
+function AutomationButton({position}: { position: BorrowPositionVM | MultiplyPositionVM }) {
+  // const { t } = useTranslation()
+  const { t } = tempDummyTranslator()
+
   return position.automationEnabled ? 
-    <Button variant="actionActiveGreen" sx={{ whiteSpace: 'nowrap'}} onClick={() => position.onAutomationClick()}>On {position.type === 'borrow' && position.protectionAmount}</Button> : 
-    <Button variant="action" onClick={() => position.onAutomationClick()}>Activate</Button>
+    <Button variant="actionActiveGreen" sx={{ whiteSpace: 'nowrap'}} onClick={() => position.onAutomationClick()}>{t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}</Button> : 
+    <Button variant="action" onClick={() => position.onAutomationClick()}>{t('earn.automation-button-off')}</Button>
 }
 
 function getPositionInfoItems(position: PositionVM): InfoItem[] {
@@ -121,7 +133,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
         info: position.variable
       },{
         header: <Header name="automation" />,
-        info: automationButton(position)
+        info: <AutomationButton position={position} />
       },
     ]
     case 'multiply': return [assetInfo, vaultIdInfo,
@@ -143,7 +155,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
       },
       {
         header: <Header name="automation" />,
-        info: automationButton(position)
+        info: <AutomationButton position={position} />
       },
     ]
     case 'earn': return [assetInfo, vaultIdInfo,
@@ -168,6 +180,9 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
 }
 
 export function PositionList({ positions }: { positions: PositionVM[] }) {
+  // const { t } = useTranslation()
+  const { t } = tempDummyTranslator()
+
   const columnCount = 8
   const positionsByType = _.groupBy(positions, 'type')
 
@@ -175,20 +190,20 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     return items.concat(new Array(count - items.length).fill(<div />))
   }
   return <Box>
-    Your positions ({positions.length})
+    {t('earn.your-positions')} ({positions.length})
 
     {/* DESKTOP */}
     <Grid sx={{ gridTemplateColumns: `200px repeat(${columnCount - 1}, auto)`, gap: 4, alignItems: 'center', display: ['none', 'grid'], 'button': { width: '100%'} }}>
     {Object.entries(positionsByType).map(([type, positions]) => {
       const headers = pad(getPositionInfoItems(positions[0]).map(infoItem => infoItem.header), columnCount)
       return <><Box sx={{ gridColumn: `1 / span ${columnCount}`}}>
-        {type} Positions ({positions.length})
+        {t(`product-page.${type}.title`)} ({positions.length})
       </Box>
       {headers}
       {positions.map(position => 
         <>
           {pad(getPositionInfoItems(position).map(infoItem => <Cell>{infoItem.info}</Cell>), columnCount - 1)}
-          <Button variant="secondary" onClick={() => position.onEditClick()}>Edit Vault</Button>
+          <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </>
       )}
       </>
@@ -199,7 +214,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
     <Box sx={{ display: ['block', 'none']}}>
     {Object.entries(positionsByType).map(([type, positions], index) => {
       return <Box sx={{ maxWidth: '600px' }}>
-        <Text>Oasis {type} ({positions.length})</Text>
+        <Text> {t(`product-page.${type}.title`)} ({positions.length})</Text>
         {positions.map(position => <Grid>
           <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start'}}>
             {getPositionInfoItems(position).map(({header, info}) => <Box>
@@ -207,7 +222,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
               {info}
             </Box>)}
           </Grid>
-          <Button variant="secondary" onClick={() => position.onEditClick()}>Edit Vault</Button>
+          <Button variant="secondary" onClick={() => position.onEditClick()}>{t('earn.edit-vault')}</Button>
         </Grid>)}
         {index < positions.length && '(separator)'}
       </Box>
