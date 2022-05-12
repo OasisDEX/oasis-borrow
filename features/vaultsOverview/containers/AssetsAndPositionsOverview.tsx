@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React from 'react'
-import { Box, Card, Flex, Link, Text } from 'theme-ui'
+import React, { useRef, useState } from 'react'
+import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { useAppContext } from '../../../components/AppContextProvider'
@@ -13,6 +13,8 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { PositionView } from '../pipes/positionsOverviewSummary'
 import { AppLink } from '../../../components/Links'
+import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
+import { SystemStyleObject } from '@styled-system/css'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -72,6 +74,8 @@ function AssetRow(props: PositionView) {
 }
 
 function LinkedRow(props: PositionView) {
+  const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
+  const breakpointIndex = useBreakpointIndex()
   if (props.url) {
     return (
       <AppLink href={props.url}>
@@ -79,8 +83,60 @@ function LinkedRow(props: PositionView) {
       </AppLink>
     )
   } else {
-    return <AssetRow {...props} />
+    return (
+      <Box
+        onClick={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect()
+          if (breakpointIndex <= 1) {
+            setMenuPosition({
+              right: `${window.innerWidth - rect.right - 20}px`,
+              top: `${rect.top}px`,
+            })
+          } else {
+            setMenuPosition({ left: rect.right, top: rect.top })
+          }
+        }}
+      >
+        {menuPosition && <Menu sx={menuPosition} close={() => setMenuPosition(undefined)} />}
+        <AssetRow {...props} />
+      </Box>
+    )
   }
+}
+
+function MenuRow(props: { icon: string; text: string }) {
+  return (
+    <Flex sx={{ color: 'black', alignItems: 'center' }}>
+      <Icon name={props.icon} sx={{ mr: '15px' }} />
+      <Text variant="paragraph2" sx={{ color: 'black' }}>
+        {props.text}
+      </Text>
+    </Flex>
+  )
+}
+
+function Menu(props: { close: () => void; sx?: SystemStyleObject }) {
+  const componentRef = useOutsideElementClickHandler(props.close)
+  return (
+    <Card
+      ref={componentRef}
+      sx={{
+        position: 'absolute',
+        boxShadow: 'elevation',
+        background: '#FFFFFF',
+        borderRadius: '12px',
+        border: 'none',
+        padding: '24px',
+        ...props.sx,
+      }}
+    >
+      <Grid columns={1} gap={20}>
+        <MenuRow icon="exchange" text="Swap" />
+        <MenuRow icon="copy" text="Multiply" />
+        <MenuRow icon="collateral" text="Borrow" />
+      </Grid>
+    </Card>
+  )
 }
 
 export function AssetsAndPositionsOverview() {
@@ -89,8 +145,6 @@ export function AssetsAndPositionsOverview() {
   const [positionsOverviewSummary, err] = useObservable(
     positionsOverviewSummary$('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'),
   )
-  // console.log(positionsOverviewSummary)
-  // console.log(err)
   return (
     <WithErrorHandler error={err}>
       <WithLoadingIndicator value={positionsOverviewSummary}>

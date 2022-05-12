@@ -36,7 +36,7 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
         <Box
           sx={{
             bg: 'surface',
-            boxShadow: 'userSettingsCardDropdown',
+            boxShadow: 'elevation',
             borderRadius: 'mediumLarge',
             width: '380px',
           }}

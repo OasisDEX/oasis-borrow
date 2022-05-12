@@ -211,7 +211,7 @@ function ButtonDropdown({
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',
-          boxShadow: 'userSettingsCardDropdown',
+          boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
           overflowX: 'visible',
