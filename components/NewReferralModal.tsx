@@ -3,7 +3,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useObservable } from 'helpers/observableHook'
-// import { useRedirect } from 'helpers/useRedirect'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
@@ -25,7 +25,7 @@ interface UpsertUser {
 
 export function NewReferralModal({ close, address }: ModalProps<NewReferralProps>) {
   const { t } = useTranslation()
-  //const { replace } = useRedirect()
+  const { replace } = useRedirect()
   const { userReferral$ } = useAppContext()
   const [userReferral] = useObservable(userReferral$)
 
@@ -43,7 +43,10 @@ export function NewReferralModal({ close, address }: ModalProps<NewReferralProps
           address,
           jwtToken,
         ).subscribe((res) => {
-          res[0] === 'OK' ? close() : null
+          if (res === 200) {
+            replace(`/referrals/${address}`)
+            close()
+          }
         })
     }
   }

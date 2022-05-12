@@ -92,7 +92,7 @@ export function createUserUsingApi$(
   referrer: string | null,
   address: string,
   token: string
-): Observable<string[]> {
+): Observable<number> {
   return ajax({
     url: `${basePath}/api/user/create`,
     method: 'POST',
@@ -105,7 +105,7 @@ export function createUserUsingApi$(
       address: address,
       accepted: accepted
     },
-  }).pipe(map((resp) => { if (resp.status === 200) return of("OK"); else return of("NOK")}))
+  }).pipe(map((resp) => resp.status))
 }
 
 export function updateClaimsUsingApi$(
