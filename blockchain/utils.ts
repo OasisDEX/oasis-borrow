@@ -12,6 +12,10 @@ export function amountFromRay(amount: BigNumber): BigNumber {
   return amount.div(RAY).decimalPlaces(RAY_PRECISION)
 }
 
+export function amountToRay(amount: BigNumber): BigNumber {
+  return amount.times(RAY)
+}
+
 export function amountFromRad(amount: BigNumber): BigNumber {
   return amount.div(RAD).decimalPlaces(RAD_PRECISION)
 }
@@ -34,6 +38,10 @@ export function amountFromWei(amount: BigNumber, token: string): BigNumber {
 
 export function amountToWad(amount: BigNumber): BigNumber {
   return amount.times(WAD)
+}
+
+export function amountFromPrecision(amount: BigNumber, precision: BigNumber): BigNumber {
+  return amount.div(new BigNumber(10).pow(precision)).decimalPlaces(precision.toNumber())
 }
 
 export function amountToWeiRoundDown(amount: BigNumber, token: string): BigNumber {

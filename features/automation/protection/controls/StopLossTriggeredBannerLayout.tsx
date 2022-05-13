@@ -20,7 +20,7 @@ export function StopLossTriggeredBannerLayout({ handleClose }: StopLossTriggered
       image={
         <Image
           src={staticFilesRuntimeUrl('/static/img/stop_loss_triggered.svg')}
-          sx={{ position: 'absolute', right: 0, top: 0, opacity: [0.4, 1] }}
+          sx={{ position: 'absolute', right: 0, top: -12, opacity: [0.4, 1] }}
         />
       }
     />

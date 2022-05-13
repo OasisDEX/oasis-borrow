@@ -6,6 +6,7 @@ import { ContextConnected } from '../../network'
 import { amountToWei } from '../../utils'
 import { TransactionDef } from '../callsHelpers'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   ProxyActionsSmartContractAdapterInterface,
@@ -16,12 +17,26 @@ export interface VaultActionsLogicInterface {
   open: TransactionDef<OpenData>
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
+  claimReward: TransactionDef<ClaimRewardData>
 }
 
 export function vaultActionsLogic(
   proxyActionsSmartContractWrapper: ProxyActionsSmartContractAdapterInterface,
 ): VaultActionsLogicInterface {
   return {
+    claimReward: {
+      call: ({ proxyAddress }, { contract }) => {
+        return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[
+          'execute(address,bytes)'
+        ]
+      },
+      prepareArgs: (data, context) => {
+        return [
+          proxyActionsSmartContractWrapper.resolveContractAddress(context),
+          proxyActionsSmartContractWrapper.claimRewards(context, data).encodeABI(),
+        ]
+      },
+    },
     open: {
       call: ({ proxyAddress }, { contract }) => {
         return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods[

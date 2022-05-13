@@ -55,6 +55,7 @@ interface AdjustSlFormControlProps {
   triggerData: TriggersData
   ctx: Context
   accountIsController: boolean
+  collateralizationRatioAtNextPrice: BigNumber
   toggleForms: () => void
   tx?: TxHelpers
 }
@@ -66,6 +67,7 @@ export function AdjustSlFormControl({
   triggerData,
   ctx,
   accountIsController,
+  collateralizationRatioAtNextPrice,
   toggleForms,
   tx,
 }: AdjustSlFormControlProps) {
@@ -295,6 +297,7 @@ export function AdjustSlFormControl({
     toggleForms,
     firstStopLossSetup,
     isEditing,
+    collateralizationRatioAtNextPrice,
   }
 
   return <AdjustSlFormLayout {...props} />
