@@ -64,7 +64,6 @@ export function createVaults$(
   cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
-  console.log('called...createVaults$:')
   return combineLatest(onEveryBlock$, context$).pipe(
     switchMap(([_, context]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
@@ -74,9 +73,9 @@ export function createVaults$(
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-        shareReplay(1),
       ),
     ),
+    shareReplay(1),
   )
 }
 
