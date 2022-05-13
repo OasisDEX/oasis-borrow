@@ -646,6 +646,7 @@
     "date": "Date",
     "overview": "Overview",
     "protection": "Protection",
+    "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
     "actions": {
@@ -671,6 +672,9 @@
       },
       "collateralization-ratio": {
         "footnote": "{{amount}} on next price"
+      },
+      "stop-loss-collateral-ratio": {
+        "footnote": "{{amount}} Current Collateral Ratio"
       }
     }
   },
