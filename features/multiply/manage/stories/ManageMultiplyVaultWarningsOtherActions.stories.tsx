@@ -42,7 +42,7 @@ export const InsufficientDaiAllowance = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
-  otherAction: 'depositDai',
+  otherAction: 'paybackDai',
   paybackAmount: new BigNumber('600'),
 })
 
@@ -202,7 +202,7 @@ export const PayingBackAllDebt = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
-  otherAction: 'depositDai',
+  otherAction: 'paybackDai',
   paybackAmount: new BigNumber('2000'),
 })
 
@@ -233,7 +233,7 @@ export const PayingBackAllDaiBalance = manageMultiplyVaultStory({
   proxyAddress,
 })({
   stage: 'otherActions',
-  otherAction: 'depositDai',
+  otherAction: 'paybackDai',
   paybackAmount: new BigNumber('500'),
 })
 

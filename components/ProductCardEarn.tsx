@@ -7,7 +7,7 @@ import { Flex, Text } from 'theme-ui'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard } from './ProductCard'
 import { StatefulTooltip } from './Tooltip'
 
 interface UnprofitableTooltipProps {
@@ -56,6 +56,7 @@ interface ProductCardEarnProps {
 
 export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const { t } = useTranslation()
+  const defaultDaiValue = new BigNumber(100000)
 
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
@@ -65,6 +66,8 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
 
   const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
   const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
+
+  const { roundedTokenAmount } = calculateTokenAmount({ ...cardData, balance: defaultDaiValue })
 
   return (
     <ProductCard
@@ -77,11 +80,11 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: '100,000',
+          value: roundedTokenAmount.toFormat(0),
           token: 'DAI',
         }),
         description: t(`product-card-banner.guni`, {
-          value: formatCryptoBalance(maxMultiple.times(100000)),
+          value: formatCryptoBalance(maxMultiple.times(roundedTokenAmount)),
           token: cardData.token,
         }),
       }}

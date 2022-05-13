@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { MouseEvent, ReactNode, useCallback, useState } from 'react'
+import React, { MouseEvent, ReactNode, useState } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Grid, SxStyleProp } from 'theme-ui'
 
@@ -8,6 +8,7 @@ import { slideInAnimation } from '../theme/animations'
 export type TabSwitcherTab = {
   tabLabel: string
   tabContent: ReactNode
+  tabHeaderPara?: ReactNode // Positioned above tabs
 }
 
 const WideTabSelector = (props: {
@@ -98,51 +99,54 @@ export function TabSwitcher(props: {
 }) {
   const [selectedTab, setSelectedTab] = useState('0')
 
-  const selectTab = useCallback(
-    (event: MouseEvent<HTMLButtonElement>) =>
-      setSelectedTab((event.currentTarget.value as unknown) as string),
-    [],
-  )
+  const selectTab = (event: MouseEvent<HTMLButtonElement>) => {
+    const nextTab = (event.currentTarget.value as unknown) as string
+    setSelectedTab(nextTab)
+  }
 
   const isEmpty = !props.tabs.length
   const isOneTab = props.tabs.length === 1
 
   return !isEmpty ? (
-    <Flex
-      sx={{
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}
-    >
-      {!isOneTab && (
-        <>
-          <NarrowTabSelector
-            selectedTab={selectedTab}
-            tabs={props.tabs}
-            setSelectedTab={setSelectedTab}
-            narrowTabsSx={props.narrowTabsSx}
-          />
-          <WideTabSelector
-            wideTabsSx={props.wideTabsSx}
-            selectTab={selectTab}
-            selectedTab={selectedTab}
-            tabs={props.tabs}
-          />
-        </>
-      )}
+    <>
       {props.tabs
         .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
-        .map(({ tabLabel, tabContent }) => (
-          <Box
-            key={tabLabel}
+        .map(({ tabHeaderPara, tabLabel, tabContent }) => (
+          <Flex
+            key={`${tabLabel}-`}
             sx={{
-              ...slideInAnimation,
-              width: '100%',
+              flexDirection: 'column',
+              alignItems: 'center',
             }}
           >
-            {tabContent}
-          </Box>
+            <Box key={tabLabel}>{tabHeaderPara}</Box>
+            {!isOneTab && (
+              <>
+                <NarrowTabSelector
+                  selectedTab={selectedTab}
+                  tabs={props.tabs}
+                  setSelectedTab={setSelectedTab}
+                  narrowTabsSx={props.narrowTabsSx}
+                />
+                <WideTabSelector
+                  wideTabsSx={props.wideTabsSx}
+                  selectTab={selectTab}
+                  selectedTab={selectedTab}
+                  tabs={props.tabs}
+                />
+              </>
+            )}
+            <Box
+              key={tabLabel}
+              sx={{
+                ...slideInAnimation,
+                width: '100%',
+              }}
+            >
+              {tabContent}
+            </Box>
+          </Flex>
         ))}
-    </Flex>
+    </>
   ) : null
 }

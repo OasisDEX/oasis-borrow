@@ -4978,10 +4978,10 @@
     web3 "^1.5.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/multiply@0.2.5-alpha.6":
-  version "0.2.5-alpha.6"
-  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.5-alpha.6.tgz#5ee8e0d89f194d5a4072885df5fed370bf3cb12f"
-  integrity sha512-xeKtmPVGx9gMqqGjiVTkjksnbA8WTS+ber8feJZNvAScTnoGs8ODZW157JGbDqwOFr0i2xI6IYCPMKszPh/SEg==
+"@oasisdex/multiply@^0.2.8":
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.10.tgz#5eea596dddee83f3e15cb2201dd0706a6c0cf28c"
+  integrity sha512-LQhmqmrLKyymbMfCOetp6o5zfSAPDBLlL485KBxdZgD3gehC9aSMKGJhhAOz6HjDC8gjvf8CUfZ0fArBFDh+kw==
   dependencies:
     "@types/chai" "^4.2.21"
     "@types/mocha" "^9.0.0"
