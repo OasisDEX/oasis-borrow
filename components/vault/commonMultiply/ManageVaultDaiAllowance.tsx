@@ -10,6 +10,7 @@ import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
 import { AllVaultStages } from '../../../features/types/vaults/AllVaultStages'
+import { zero } from '../../../helpers/zero'
 
 type ManageVaultDaiAllowanceProps = {
   stage: AllVaultStages
@@ -17,12 +18,14 @@ type ManageVaultDaiAllowanceProps = {
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
+  setDaiAllowanceAmountToDepositDaiAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   selectedDaiAllowanceRadio: SelectedDaiAllowanceRadio
   paybackAmount?: BigNumber
+  depositDaiAmount?: BigNumber
 }
 
-export type SelectedDaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
+export type SelectedDaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'
 
 export function ManageVaultDaiAllowance({
   stage,
@@ -30,17 +33,26 @@ export function ManageVaultDaiAllowance({
   updateDaiAllowanceAmount,
   setDaiAllowanceAmountUnlimited,
   setDaiAllowanceAmountToPaybackAmount,
+  setDaiAllowanceAmountToDepositDaiAmount,
   resetDaiAllowanceAmount,
   selectedDaiAllowanceRadio,
   paybackAmount,
+  depositDaiAmount,
 }: ManageVaultDaiAllowanceProps) {
   const canSelectRadio = stage === 'daiAllowanceWaitingForConfirmation'
 
   const { t } = useTranslation()
 
   const isUnlimited = selectedDaiAllowanceRadio === 'unlimited'
-  const isPayback = selectedDaiAllowanceRadio === 'paybackAmount'
+  const isPayback = selectedDaiAllowanceRadio === 'actionAmount'
   const isCustom = selectedDaiAllowanceRadio === 'custom'
+
+  const actionDaiAmount = depositDaiAmount?.gt(zero) ? depositDaiAmount : paybackAmount
+  const actionDaiAmountKey = depositDaiAmount?.gt(zero) ? 'dai-depositing' : 'dai-paying-back'
+
+  const onChangeHandler = depositDaiAmount?.gt(zero)
+    ? setDaiAllowanceAmountToDepositDaiAmount
+    : setDaiAllowanceAmountToPaybackAmount
 
   return (
     <Grid>
@@ -55,13 +67,9 @@ export function ManageVaultDaiAllowance({
               {t('unlimited-allowance')}
             </Text>
           </Radio>
-          <Radio
-            onChange={setDaiAllowanceAmountToPaybackAmount!}
-            name="manage-vault-dai-allowance"
-            checked={isPayback}
-          >
+          <Radio onChange={onChangeHandler!} name="manage-vault-dai-allowance" checked={isPayback}>
             <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: '18px' }}>
-              {t('dai-paying-back', { amount: formatCryptoBalance(paybackAmount!) })}
+              {t(actionDaiAmountKey, { amount: formatCryptoBalance(actionDaiAmount!) })}
             </Text>
           </Radio>
           <Radio onChange={resetDaiAllowanceAmount!} name="allowance-open-form" checked={isCustom}>

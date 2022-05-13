@@ -109,6 +109,7 @@
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
+  "dai-depositing": "Dai depositing ({{amount}})",
   "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
   "decide-later": "Decide later",
@@ -207,6 +208,7 @@
     "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
     "deposited": "Deposited",
+    "withdrawn": "Withdrawn",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
     "exit-collateral": "Exit collateral",
     "exit-dai": "Exit Dai",
@@ -707,6 +709,7 @@
   },
   "vault-errors": {
     "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+    "deposit-dai-amount-exceeds-dai-balance": "You cannot deposit more Dai than the amount in your wallet",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral": "The collateralization ratio for this Maker Vault will be too low. Please generate less Dai",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collateralization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
     "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}}",
