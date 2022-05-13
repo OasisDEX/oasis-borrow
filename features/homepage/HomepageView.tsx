@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
@@ -116,15 +117,16 @@ export function HomepageView() {
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const router = useRouter()
-  useEffect(() => {
-    const localStorageReferral = checkReferralLocal?.referrer
-    if (!localStorageReferral) {
-      const linkReferral = router.query.ref as string
-      if (linkReferral) {
-        localStorage.setItem(`referral`, linkReferral)
+  const handleClose = () =>
+    void useEffect(() => {
+      const localStorageReferral = checkReferralLocal?.referrer
+      if (!localStorageReferral) {
+        const linkReferral = router.query.ref as string
+        if (linkReferral) {
+          localStorage.setItem(`referral`, linkReferral)
+        }
       }
-    }
-  }, [checkReferralLocal])
+    }, [checkReferralLocal])
 
   return (
     <Box
@@ -132,6 +134,9 @@ export function HomepageView() {
         flex: 1,
       }}
     >
+      <Flex sx={{ justifyContent: 'center',mt: 4 }}>
+        <ReferralBanner handleClose={handleClose} heading={t('ref.banner')}></ReferralBanner>
+      </Flex>
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
