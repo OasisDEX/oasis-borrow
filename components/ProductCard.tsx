@@ -1,4 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { ProductCardData } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -263,4 +266,22 @@ export function ProductCard({
       {inactive && <InactiveCard />}
     </Box>
   )
+}
+
+export function calculateTokenAmount(productCardData: ProductCardData) {
+  const { currentCollateralPrice, balance, debtFloor } = productCardData
+
+  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
+
+  let roundedTokenAmount: BigNumber
+  if (balanceAboveDebtFloor && balance) {
+    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
+  } else {
+    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+  }
+
+  return {
+    tokenAmount: formatCryptoBalance(roundedTokenAmount),
+    roundedTokenAmount,
+  }
 }
