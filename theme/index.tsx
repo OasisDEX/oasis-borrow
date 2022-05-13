@@ -145,28 +145,28 @@ const oasisBaseTheme = {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 4,
+      fontSize: 4, // 18px
       color: 'primary',
     },
     paragraph2: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 3,
+      fontSize: 3, // 16px
       color: 'primary',
     },
     paragraph3: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 2,
+      fontSize: 2, // 14px
       color: 'primary',
     },
     paragraph4: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 1,
+      fontSize: 1, // 12px
       color: 'primary',
     },
     subheader: {
@@ -781,6 +781,12 @@ const oasisBaseTheme = {
     actionActive: {
       variant: 'buttons.action',
       borderColor: 'primary',
+    },
+    actionActiveGreen: {
+      variant: 'buttons.action',
+      border: 'none',
+      bg: 'onSuccess',
+      color: 'onPrimary',
     },
   },
   links: {

@@ -1102,6 +1102,71 @@
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "below": "below",
   "above": "above",
+  "earn": {
+    "your-positions": "Your Positions",
+    "positions-of-type": "{{type}} Positions",
+    "edit-vault": "Edit Vault",
+    "automation-button-on": "On",
+    "automation-button-off": "Activate",
+    "position-headers": {
+      "asset": {
+        "label": "Asset",
+        "tooltip": "The Asset"
+      },
+      "vault-id": {
+        "label": "Vault ID",
+        "tooltip": "The Vault ID"
+      },
+      "collateral-ratio": {
+        "label": "Collateral Ratio",
+        "tooltip": "The Collateral Ratio"
+      },
+      "dai-debt": {
+        "label": "Dai Debt",
+        "tooltip": "The Dai Debt"
+      },
+      "collateral-locked": {
+        "label": "Collateral Locked",
+        "tooltip": "Collateral Locked"
+      },
+      "variable-perc": {
+        "label": "Variable %",
+        "tooltip": "Variable Percentage"
+      },
+      "automation": {
+        "label": "Automation",
+        "tooltip": "Protection features"
+      },
+      "net-value": {
+        "label": "Net Value",
+        "tooltip": "The Net Value"
+      },
+      "multiple": {
+        "label": "Multiple",
+        "tooltip": "The Multiple"
+      },
+      "liquidation-price": {
+        "label": "Liquidation Price",
+        "tooltip": "The Liquidation Price"
+      },
+      "funding-cost": {
+        "label": "Funding Cost",
+        "tooltip": "The Funding Cost"
+      },
+      "pnl": {
+        "label": "PnL",
+        "tooltip": "Profit and loss"
+      },
+      "seven-day-yield": {
+        "label": "7 Day Yield",
+        "tooltip": "The 7 Day Yield"
+      },
+      "liquidity": {
+        "label": "Liquidity",
+        "tooltip": "The Liquidity "
+      }
+    }
+  },
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
 
