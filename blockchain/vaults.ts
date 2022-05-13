@@ -64,6 +64,7 @@ export function createVaults$(
   cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
+  console.log('called...createVaults$:')
   return combineLatest(onEveryBlock$, context$).pipe(
     switchMap(([_, context]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(

@@ -18,6 +18,7 @@ export function createAccountData(
   vaults$: (address: string) => Observable<Vault[]>,
   ensName$: (address: string) => Observable<string>,
 ): Observable<AccountDetails> {
+  console.log('creating account data and calling vaults$')
   return context$.pipe(
     filter((context): context is ContextConnected => context.status === 'connected'),
     switchMap((context) =>
