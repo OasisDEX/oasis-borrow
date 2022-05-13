@@ -38,7 +38,9 @@ export function FeesView({ userReferral }: Props) {
           userReferral.user.address,
           jwtToken,
         ).subscribe((res) => {
-          res === 200 ? userReferral.trigger && userReferral.trigger() : null
+          if (res === 200) {
+            userReferral.trigger && userReferral.trigger()
+          }
         })
     }
   }

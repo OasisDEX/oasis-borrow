@@ -60,7 +60,9 @@ export function ReferralLanding({ context, userReferral }: Props) {
           connectedAccount,
           jwtToken,
         ).subscribe((res) => {
-          res === 200 ? replace(`/referrals/${connectedAccount}`) : null
+          if (res === 200) {
+            replace(`/referrals/${connectedAccount}`)
+          }
         })
     }
   }
