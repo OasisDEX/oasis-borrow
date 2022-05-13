@@ -96,22 +96,14 @@ export function NewReferralModal({ close, address }: ModalProps<NewReferralProps
                 <Button
                   variant="primary"
                   sx={{ fontSize: 3, width: '100%', py: '10px', my: '6px' }}
-                  onClick={
-                    userReferral.referrer.referrer
-                      ? () => createUser({ hasAccepted: true, isReferred: true })
-                      : () => createUser({ hasAccepted: true, isReferred: false })
-                  }
+                  onClick={() => createUser({ hasAccepted: true, isReferred: true })}
                 >
                   {userReferral.referrer.referrer ? t('ref.modal.accept') : 'Go to dashboard ->'}
                 </Button>
                 <Button
                   variant="textual"
                   sx={{ fontSize: 3, width: '100%', mt: '6px' }}
-                  onClick={
-                    userReferral.referrer.referrer
-                      ? () => createUser({ hasAccepted: false, isReferred: true })
-                      : () => createUser({ hasAccepted: false, isReferred: false })
-                  }
+                  onClick={() => createUser({ hasAccepted: false, isReferred: true })}
                 >
                   {userReferral.referrer.referrer ? t('ref.modal.later') : "I'll check later"}
                 </Button>
