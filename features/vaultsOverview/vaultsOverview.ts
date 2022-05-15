@@ -5,7 +5,7 @@ import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
 import { combineLatest, iif, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, switchMap } from 'rxjs/operators'
 
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { extractStopLossData } from '../automation/protection/common/StopLossTriggerDataExtractor'
