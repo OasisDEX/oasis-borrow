@@ -27,8 +27,7 @@ function Summary({ address }: { address: string }) {
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
   const [context, contextError] = useObservable(context$)
-  console.log('context:', context)
-  console.log('vaultsOverview:', vaultsOverview)
+
   return (
     <WithErrorHandler error={[vaultsOverviewError, contextError]}>
       <WithLoadingIndicator value={[vaultsOverview, context]}>

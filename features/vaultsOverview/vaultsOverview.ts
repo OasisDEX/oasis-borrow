@@ -30,7 +30,7 @@ export function createVaultsOverview$(
   address: string,
 ): Observable<VaultsOverview> {
   const automationEnabled = useFeatureToggle('Automation')
-  const vaultsAddress$ = vaults$(address).pipe(shareReplay(1))
+  const vaultsAddress$ = vaults$(address)
 
   const vaultWithAutomationData$ = vaultsAddress$.pipe(
     switchMap((vaults) => {
@@ -63,7 +63,7 @@ export function createVaultsOverview$(
   return combineLatest(
     vaultsWithFilter$(borrowVaults),
     vaultsWithFilter$(multiplyVaults),
-    vaults$(address).pipe(map(getVaultsSummary)),
+    vaultsAddress$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
     map(([borrow, multiply, vaultSummary, ilksWithFilters]) => ({
