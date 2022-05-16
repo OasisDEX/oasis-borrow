@@ -10,6 +10,7 @@ import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
+import { WithArrow } from './WithArrow'
 
 function InactiveCard() {
   return (
@@ -71,6 +72,18 @@ function InactiveCard() {
 interface ProductCardBannerProps {
   title: string
   description: string
+}
+
+export function ProductCardProtocolLink({ ilk }: Partial<ProductCardData>) {
+  return (
+    <Box sx={{ paddingRight: '10px' }}>
+      <AppLink href={`https://makerburn.com/#/collateral/${ilk}`}>
+        <WithArrow variant="styles.a" gap="1">
+          {ilk}
+        </WithArrow>
+      </AppLink>
+    </Box>
+  )
 }
 
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
@@ -184,7 +197,6 @@ export function ProductCard({
             <Flex
               sx={{
                 flexDirection: 'row',
-                alignItems: 'fl',
                 pb: 2,
                 justifyContent: 'space-between',
               }}
@@ -204,10 +216,7 @@ export function ProductCard({
                   {description}
                 </Text>
               </Flex>
-              <Image
-                src={hover ? tokenGif : tokenImage}
-                sx={{ height: '146px', width: '146px', flexGrow: 2 }}
-              />
+              <Image src={hover ? tokenGif : tokenImage} sx={{ width: '146px', flexGrow: 2 }} />
             </Flex>
             <ProductCardBanner {...banner} />
           </Box>
@@ -220,6 +229,7 @@ export function ProductCard({
                     justifyContent: 'space-between',
                     lineHeight: '22px',
                     pb: '12px',
+                    fontSize: '14px',
                   }}
                 >
                   <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">

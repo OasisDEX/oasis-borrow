@@ -6,8 +6,7 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
-import { calculateTokenAmount, ProductCard } from './ProductCard'
-import { ProductCardProtocolLink } from './ProductCardProtocolLink'
+import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
 function personaliseCardData({
   productCardData,
