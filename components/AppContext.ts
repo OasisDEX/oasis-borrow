@@ -184,8 +184,13 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { createProductCardsData$ } from '../helpers/productCards'
+import {
+  createProductCardsData$,
+  supportedBorrowIlks,
+  supportedMultiplyIlks,
+} from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 
 export type TxData =
   | OpenData
@@ -814,8 +819,16 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
   )
 
+  const assetActions$ = memoize(
+    curry(createAssetActions$)(ilkToToken$, {
+      borrow: supportedBorrowIlks,
+      multiply: supportedMultiplyIlks,
+      earn: [],
+    }),
+  )
+
   const positionsOverviewSummary$ = memoize(
-    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$),
+    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$, assetActions$),
   )
 
   const termsAcceptance$ = createTermsAcceptance$(

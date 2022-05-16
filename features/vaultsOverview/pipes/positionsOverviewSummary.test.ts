@@ -28,6 +28,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
+      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
@@ -75,6 +76,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
+      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
@@ -117,6 +119,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of(positions),
+      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
@@ -143,4 +146,6 @@ describe('positionsOverviewSummary', () => {
 
     expect(state().totalValueUsd.toString()).eq('18')
   })
+
+  it('shows what actions we can perform', () => {})
 })

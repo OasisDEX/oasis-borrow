@@ -15,6 +15,7 @@ import { PositionView } from '../pipes/positionsOverviewSummary'
 import { AppLink } from '../../../components/Links'
 import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
 import { SystemStyleObject } from '@styled-system/css'
+import { AssetAction } from '../pipes/assetActions'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -67,8 +68,8 @@ function AssetRow(props: PositionView) {
           (${formatAmount(props.fundsAvailableUsd, 'USD')})
         </Text>
       )}
-      {/*<Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />*/}
-      <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto' }} />
+      {props.actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />}
+      {props.url && <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto' }} />}
     </Flex>
   )
 }
@@ -97,25 +98,37 @@ function LinkedRow(props: PositionView) {
           }
         }}
       >
-        {menuPosition && <Menu sx={menuPosition} close={() => setMenuPosition(undefined)} />}
+        {menuPosition && props.actions && (
+          <Menu
+            sx={menuPosition}
+            close={() => setMenuPosition(undefined)}
+            assetActions={props.actions}
+          />
+        )}
         <AssetRow {...props} />
       </Box>
     )
   }
 }
 
-function MenuRow(props: { icon: string; text: string }) {
+function MenuRow(props: { icon: string; text: string; url: string }) {
   return (
     <Flex sx={{ color: 'black', alignItems: 'center' }}>
-      <Icon name={props.icon} sx={{ mr: '15px' }} />
-      <Text variant="paragraph2" sx={{ color: 'black' }}>
-        {props.text}
-      </Text>
+      <Link href={props.url}>
+        <Icon name={props.icon} sx={{ mr: '15px' }} />
+        <Text variant="paragraph2" sx={{ color: 'black' }}>
+          {props.text}
+        </Text>
+      </Link>
     </Flex>
   )
 }
 
-function Menu(props: { close: () => void; sx?: SystemStyleObject }) {
+function Menu(props: {
+  close: () => void
+  sx?: SystemStyleObject
+  assetActions: Array<AssetAction>
+}) {
   const componentRef = useOutsideElementClickHandler(props.close)
   return (
     <Card
@@ -131,9 +144,9 @@ function Menu(props: { close: () => void; sx?: SystemStyleObject }) {
       }}
     >
       <Grid columns={1} gap={20}>
-        <MenuRow icon="exchange" text="Swap" />
-        <MenuRow icon="copy" text="Multiply" />
-        <MenuRow icon="collateral" text="Borrow" />
+        {props.assetActions.map((aa) => (
+          <MenuRow icon={aa.icon} text={aa.text} url={aa.url} />
+        ))}
       </Grid>
     </Card>
   )

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators'
 import { Ticker } from '../../../blockchain/prices'
 import * as tokenList from '../../../components/uniswapWidget/tokenList.json'
 import { zero } from '../../../helpers/zero'
+import { AssetAction } from './assetActions'
 
 export type PositionView = {
   token: string
@@ -13,13 +14,14 @@ export type PositionView = {
   fundsAvailableUsd?: BigNumber
   url?: string
   proportion?: BigNumber
+  actions?: Array<AssetAction>
 }
 
-function isPosition(thing: Position | WalletBalance): thing is Position {
+function isPosition(thing: Position | WalletAssets): thing is Position {
   return (thing as Position).fundsAvailable !== undefined
 }
 
-function getPositionOrAssetValue(thing: Position | WalletBalance): BigNumber {
+function getPositionOrAssetValue(thing: Position | WalletAssets): BigNumber {
   return isPosition(thing) ? thing.fundsAvailable : thing.balanceUsd
 }
 
@@ -30,9 +32,10 @@ export type Position = {
   url: string
 }
 
-type WalletBalance = {
+type WalletAssets = {
   balanceUsd: BigNumber
   token: string
+  assetActions: Array<AssetAction>
 }
 
 type Top5AssetsAndPositionsViewModal = {
@@ -48,15 +51,22 @@ export function createPositionsOverviewSummary$(
   walletBalance$: (token: string, address: string) => Observable<BigNumber>,
   createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Ticker>,
   createPositions$: (address: string) => Observable<Position[]>,
+  createAssetActions$: (token: string) => Observable<Array<AssetAction>>,
   address: string,
 ): Observable<Top5AssetsAndPositionsViewModal> {
-  const tokenBalances$: Observable<Array<WalletBalance>> = combineLatest(
+  const tokenBalances$: Observable<Array<WalletAssets>> = combineLatest(
     tokensWeCareAbout.map((t) =>
-      combineLatest(walletBalance$(t, address), of(t), createTokenPriceInUSD$([t])).pipe(
-        map(([balance, token, priceData]) => {
+      combineLatest(
+        walletBalance$(t, address),
+        of(t),
+        createTokenPriceInUSD$([t]),
+        createAssetActions$(t),
+      ).pipe(
+        map(([balance, token, priceData, assetActions]) => {
           return {
             balanceUsd: balance.multipliedBy(priceData[token] || zero),
             token,
+            assetActions,
           }
         }),
       ),
@@ -100,6 +110,7 @@ export function createPositionsOverviewSummary$(
             token: assetOrPosition.token,
             title: assetOrPosition.token,
             fundsAvailableUsd: assetOrPosition.balanceUsd,
+            actions: assetOrPosition.assetActions,
           }
         }
       }),
