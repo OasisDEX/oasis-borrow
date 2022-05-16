@@ -106,6 +106,7 @@ export const supportedMultiplyIlks = [
   'YFI-A',
   'MANA-A',
   'MATIC-A',
+  'WSTETH-B',
 ]
 
 export const supportedIlksList = [
