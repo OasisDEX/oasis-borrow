@@ -130,8 +130,8 @@ export function ReferralLanding({ context, userReferral }: Props) {
                     userReferral.referrer.referrer
                       ? () =>
                           openModal(NewReferralModal, {
-                            referrer: userReferral.referrer.referrer,
-                            address: connectedAccount,
+                            userReferral,
+                            account: connectedAccount,
                           })
                       : () => createUser({ hasAccepted: true, isReferred: false })
                   }

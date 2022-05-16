@@ -1,21 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-// import axios from 'axios'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
-import { useObservable } from 'helpers/observableHook'
-import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-import { ModalProps } from '../helpers/modalHook'
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
-import { useAppContext } from './AppContextProvider'
 import { Modal } from './Modal'
 
 interface NewReferralProps {
-  referrer: string | null | undefined
-  address: string | undefined
+  account: string | undefined
+  userReferral: any
 }
 
 interface UpsertUser {
@@ -23,29 +18,25 @@ interface UpsertUser {
   isReferred: boolean
 }
 
-export function NewReferralModal({ close, address }: ModalProps<NewReferralProps>) {
+export function NewReferralModal({ account, userReferral }: NewReferralProps) {
   const { t } = useTranslation()
-  const { replace } = useRedirect()
-  const { userReferral$ } = useAppContext()
-  const [userReferral] = useObservable(userReferral$)
 
   // TODO pipe
 
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 
-    if (userReferral && address) {
-      const jwtToken = jwtAuthGetToken(address)
+    if (userReferral && account) {
+      const jwtToken = jwtAuthGetToken(account)
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,
           isReferred ? userReferral.referrer.referrer : null,
-          address,
+          account,
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
-            replace(`/referrals/${address}`)
-            close()
+            userReferral.trigger && userReferral.trigger()
           }
         })
     }
@@ -53,8 +44,8 @@ export function NewReferralModal({ close, address }: ModalProps<NewReferralProps
 
   return (
     <>
-      {userReferral && (
-        <Modal close={close} sx={{ maxWidth: '445px', margin: '0 auto' }}>
+      {userReferral && userReferral.state === 'newUser' && (
+        <Modal sx={{ maxWidth: '445px', margin: '0 auto' }}  close={() => null}>
           <Grid p={4} sx={{ pb: '14px' }}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>

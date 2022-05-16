@@ -70,6 +70,7 @@ export function createUserReferral$(
             return of({
               state: 'newUser',
               referrer,
+              trigger: trigger,
             })
           }
 
@@ -146,8 +147,7 @@ export function createUserReferral$(
             share(),
             startWith(undefined),
           )
-          // add api call to the pipe
-
+        
           return combineLatest(
             ClaimTxnState$,
             of({
