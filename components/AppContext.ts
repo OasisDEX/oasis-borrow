@@ -188,6 +188,7 @@ import {
   createProductCardsData$,
   supportedBorrowIlks,
   supportedMultiplyIlks,
+  createProductCardsWithBalance$
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
@@ -810,6 +811,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
@@ -889,6 +891,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,

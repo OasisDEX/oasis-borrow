@@ -168,6 +168,27 @@ function PaybackInput({
   )
 }
 
+function DepositDaiInput({
+  depositDaiAmount,
+  updateDepositDaiAmount,
+  updateDepositDaiAmountMax,
+  maxDepositDaiAmount,
+}: ManageMultiplyVaultState) {
+  return (
+    <VaultActionInput
+      action="Deposit"
+      amount={depositDaiAmount}
+      token="DAI"
+      showMax={true}
+      maxAmount={maxDepositDaiAmount}
+      maxAmountLabel={'Max'}
+      onSetMax={updateDepositDaiAmountMax}
+      onChange={handleNumericInput(updateDepositDaiAmount!)}
+      hasError={false}
+    />
+  )
+}
+
 function GenerateInput({
   generateAmount,
   updateGenerateAmount,
@@ -202,17 +223,18 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     requiredCollRatio,
     updateRequiredCollRatio,
     maxCollRatio,
+    minCollRatio,
     collapsed,
     multiply,
     hasToDepositCollateralOnEmptyVault,
-    depositAmount,
   } = props
 
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
-  const sliderMax = depositAmount?.gt(zero) ? maxCollRatio : MAX_COLL_RATIO
+  const sliderMax = maxCollRatio || MAX_COLL_RATIO
+  const sliderMin = minCollRatio || liquidationRatio
   const slider = new BigNumber(100).minus(
-    sliderValue.minus(liquidationRatio).div(sliderMax.minus(liquidationRatio)).times(100) || zero,
+    sliderValue.minus(sliderMin).div(sliderMax.minus(sliderMin)).times(100) || zero,
   )
 
   const sliderBackground =
@@ -263,7 +285,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
           }}
           disabled={hasToDepositCollateralOnEmptyVault}
           step={5}
-          min={liquidationRatio.times(100).toNumber()}
+          min={sliderMin.times(100).toNumber()}
           max={sliderMax.times(100).toNumber()}
           value={
             requiredCollRatio?.times(100).toNumber() || collateralizationRatio.times(100).toNumber()
@@ -334,6 +356,7 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
 const OTHER_ACTIONS_OPTIONS: { value: OtherAction; label: string }[] = [
   { value: 'depositCollateral', label: 'Deposit Collateral' },
   { value: 'depositDai', label: 'Deposit Dai' },
+  { value: 'paybackDai', label: 'Payback Dai' },
   { value: 'withdrawCollateral', label: 'Withdraw Collateral' },
   { value: 'withdrawDai', label: 'Withdraw Dai' },
   { value: 'closeVault', label: 'Close Vault' },
@@ -493,7 +516,7 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
             }}
           >
             {showSliderController ? <MinusIcon /> : <PlusIcon />}
-            <Text pr={1}>Increase multiply with this transaction</Text>
+            <Text pr={1}>Adjust multiple with this transaction</Text>
           </Button>
 
           {showSliderController && (
@@ -508,85 +531,109 @@ function DepositCollateralAction(props: ManageMultiplyVaultState) {
 }
 
 function WithdrawCollateralAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const {
+    showSliderController,
+    toggleSliderController,
+    withdrawAmount,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={2}>
       <WithdrawTokenInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Decrease multiply with this transaction</Text>
-        </Button>
+      {withdrawAmount?.gt(zero) && debt.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiple with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
+    </Grid>
+  )
+}
+
+function PaybackDAIAction(props: ManageMultiplyVaultState) {
+  return (
+    <Grid gap={2}>
+      <PaybackInput {...props} />
     </Grid>
   )
 }
 
 function DepositDAIAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const { showSliderController, toggleSliderController, depositDaiAmount } = props
 
   return (
     <Grid gap={2}>
-      <PaybackInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Increase multiply with this transaction</Text>
-        </Button>
+      <DepositDaiInput {...props} />
+      {depositDaiAmount?.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiply with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }
 
 function WithdrawDAIAction(props: ManageMultiplyVaultState) {
-  // const { showSliderController, toggleSliderController } = props
+  const {
+    showSliderController,
+    toggleSliderController,
+    generateAmount,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={2}>
       <GenerateInput {...props} />
-      {/* <Box>
-        <Button
-          variant={`actionOption${showSliderController ? 'Opened' : ''}`}
-          mt={3}
-          onClick={() => {
-            toggleSliderController!()
-          }}
-        >
-          {showSliderController ? <MinusIcon /> : <PlusIcon />}
-          <Text pr={1}>Decrease multiply with this transaction</Text>
-        </Button>
+      {generateAmount?.gt(zero) && debt.gt(zero) && (
+        <Box>
+          <Button
+            variant={`actionOption${showSliderController ? 'Opened' : ''}`}
+            mt={3}
+            onClick={() => {
+              toggleSliderController!()
+            }}
+          >
+            {showSliderController ? <MinusIcon /> : <PlusIcon />}
+            <Text pr={1}>Adjust multiple with this transaction</Text>
+          </Button>
 
-        {showSliderController && (
-          <Box>
-            <SliderInput {...props} collapsed={true} />
-          </Box>
-        )}
-      </Box> */}
+          {showSliderController && (
+            <Box>
+              <SliderInput {...props} collapsed={true} />
+            </Box>
+          )}
+        </Box>
+      )}
     </Grid>
   )
 }
@@ -603,6 +650,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
       {otherAction === 'closeVault' && !debt.isZero() && <CloseVaultAction {...props} />}
       {otherAction === 'depositCollateral' && <DepositCollateralAction {...props} />}
       {otherAction === 'withdrawCollateral' && <WithdrawCollateralAction {...props} />}
+      {otherAction === 'paybackDai' && <PaybackDAIAction {...props} />}
       {otherAction === 'depositDai' && <DepositDAIAction {...props} />}
       {otherAction === 'withdrawDai' && <WithdrawDAIAction {...props} />}
     </Grid>

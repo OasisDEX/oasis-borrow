@@ -6,13 +6,28 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard } from './ProductCard'
 
-function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
+function personaliseCardData({
+  productCardData,
+  singleTokenMaxBorrow,
+}: {
+  productCardData: ProductCardData
+  singleTokenMaxBorrow: BigNumber
+}) {
+  const { roundedTokenAmount } = calculateTokenAmount(productCardData)
+
+  return {
+    ...calculateTokenAmount(productCardData),
+    maxBorrow: formatCryptoBalance(
+      roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+    ),
+  }
+}
+
+function makeCardData(singleTokenMaxBorrow: BigNumber) {
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
-
-  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
 
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
@@ -48,14 +63,22 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   }
 }
 
+function bannerValues(props: ProductCardData) {
+  const { liquidationRatio, currentCollateralPrice, balance } = props
+  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
+
+  if (balance) {
+    return personaliseCardData({ productCardData: props, singleTokenMaxBorrow })
+  }
+
+  return makeCardData(singleTokenMaxBorrow)
+}
+
 export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const { maxBorrow, tokenAmount } = bannerValues(
-    cardData.liquidationRatio,
-    cardData.currentCollateralPrice,
-  )
+  const { maxBorrow, tokenAmount } = bannerValues(cardData)
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
 

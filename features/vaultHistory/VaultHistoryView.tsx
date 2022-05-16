@@ -79,18 +79,26 @@ function MultiplyHistoryEventDetails(event: VaultHistoryEvent) {
             {'bought' in event && formatCryptoBalance(event.bought)} {event.token}
           </MultiplyHistoryEventDetailsItem>
         )}
-        {event.kind === 'INCREASE_MULTIPLE' && (
-          <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
-            {'depositCollateral' in event && formatCryptoBalance(event.depositCollateral)}
-            {event.token}
-          </MultiplyHistoryEventDetailsItem>
-        )}
+        {event.kind === 'INCREASE_MULTIPLE' &&
+          'depositCollateral' in event &&
+          event.depositCollateral.gt(zero) && (
+            <MultiplyHistoryEventDetailsItem label={t('history.deposited')}>
+              {formatCryptoBalance(event.depositCollateral)} {event.token}
+            </MultiplyHistoryEventDetailsItem>
+          )}
         {(event.kind === 'DECREASE_MULTIPLE' || closeEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('history.sold')}>
             {'sold' in event && formatCryptoBalance(event.sold)}{' '}
             {guniVaultEvent ? 'USDC' : event.token}
           </MultiplyHistoryEventDetailsItem>
         )}
+        {event.kind === 'DECREASE_MULTIPLE' &&
+          'withdrawnCollateral' in event &&
+          event.withdrawnCollateral.gt(zero) && (
+            <MultiplyHistoryEventDetailsItem label={t('history.withdrawn')}>
+              {formatCryptoBalance(event.withdrawnCollateral)} {event.token}
+            </MultiplyHistoryEventDetailsItem>
+          )}
         {!(closeEvent && guniVaultEvent) && (
           <MultiplyHistoryEventDetailsItem label={t('system.oracle-price')}>
             {'oraclePrice' in event && '$' + formatFiatBalance(event.oraclePrice!)}

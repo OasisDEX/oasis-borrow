@@ -47,7 +47,7 @@
     "@next/mdx": "^12.0.4",
     "@oasisdex/automation": "^1.0.6",
     "@oasisdex/connectors": "^0.1.0",
-    "@oasisdex/multiply": "0.2.5-alpha.6",
+    "@oasisdex/multiply": "^0.2.8",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",

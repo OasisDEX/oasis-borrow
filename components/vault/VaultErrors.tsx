@@ -40,6 +40,8 @@ export function VaultErrors({
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
+      case 'depositDaiAmountExceedsDaiBalance':
+        return translate('deposit-dai-amount-exceeds-dai-balance')
       case 'generateAmountExceedsDaiYieldFromDepositingCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-depositing-collateral')
       case 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice':

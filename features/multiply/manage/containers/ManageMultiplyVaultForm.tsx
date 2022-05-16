@@ -49,7 +49,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
     (accountIsController ||
       (!accountIsController &&
         stage !== 'adjustPosition' &&
-        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
+        (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
 
   const gasData = extractGasDataFromState(props)
   const mostRecentEvent = vaultHistory[0]

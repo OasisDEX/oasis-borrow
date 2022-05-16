@@ -104,7 +104,7 @@ export function applyManageVaultAllowance<VaultState extends ManageStandardBorro
     } = state
     return {
       ...state,
-      selectedDaiAllowanceRadio: 'paybackAmount',
+      selectedDaiAllowanceRadio: 'actionAmount',
       daiAllowanceAmount: paybackAmount!.plus(debtOffset),
     }
   }
