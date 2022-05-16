@@ -97,9 +97,7 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
-import {
-  checkReferralLocalStorage$,
-} from 'features/referralOverview/referralLocal'
+import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
 import {
   getReferralsFromApi$,
@@ -830,7 +828,7 @@ export function setupAppContext() {
     getReferralsFromApi$,
     getTopEarnersFromApi$,
     getWeeklyClaimsFromApi$,
-    checkReferralLocalStorage$
+    checkReferralLocalStorage$,
   )
 
   const checkReferralLocal$ = checkReferralLocalStorage$()
@@ -891,7 +889,7 @@ export function setupAppContext() {
     ilkToToken$,
     bonus$,
     userReferral$,
-    checkReferralLocal$
+    checkReferralLocal$,
   }
 }
 

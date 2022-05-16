@@ -181,13 +181,17 @@ export function TermsOfService() {
     disconnect(web3Context)
   }
   if (
-    
     userReferral?.state === 'newUser' &&
     userReferral?.referrer.referrer &&
     web3Context?.status === 'connected' &&
     termsAcceptance?.stage === 'acceptanceAccepted'
   )
-    return <NewReferralModal account={web3Context.account} userReferral={userReferral}></NewReferralModal>
+    return (
+      <NewReferralModal
+        account={web3Context.account}
+        userReferral={userReferral}
+      ></NewReferralModal>
+    )
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 

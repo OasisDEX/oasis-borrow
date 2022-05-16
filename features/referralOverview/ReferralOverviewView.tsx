@@ -58,8 +58,8 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
               sx={{
                 justifyItems: 'center',
                 position: 'relative',
-                maxWidth: "688px",
-            
+                maxWidth: '688px',
+
                 gap: 4,
                 margin: '0 auto',
               }}

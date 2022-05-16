@@ -215,7 +215,7 @@ const kovan: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, "0x0"),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0x0'),
   dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),

@@ -45,7 +45,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
   return (
     <>
       {userReferral && userReferral.state === 'newUser' && (
-        <Modal sx={{ maxWidth: '445px', margin: '0 auto' }}  close={() => null}>
+        <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={() => null}>
           <Grid p={4} sx={{ pb: '14px' }}>
             <Flex sx={{ flexDirection: 'column' }}>
               <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>

@@ -10,6 +10,7 @@ import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 import { useModal } from '../../helpers/modalHook'

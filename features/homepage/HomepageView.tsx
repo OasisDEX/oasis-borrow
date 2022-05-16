@@ -134,7 +134,7 @@ export function HomepageView() {
         flex: 1,
       }}
     >
-      <Flex sx={{ justifyContent: 'center',mt: 4 }}>
+      <Flex sx={{ justifyContent: 'center', mt: 4 }}>
         <ReferralBanner handleClose={handleClose} heading={t('ref.banner')}></ReferralBanner>
       </Flex>
       <Hero

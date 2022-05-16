@@ -147,7 +147,7 @@ export function createUserReferral$(
             share(),
             startWith(undefined),
           )
-        
+
           return combineLatest(
             ClaimTxnState$,
             of({

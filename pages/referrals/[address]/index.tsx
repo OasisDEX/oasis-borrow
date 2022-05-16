@@ -1,4 +1,3 @@
-
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
