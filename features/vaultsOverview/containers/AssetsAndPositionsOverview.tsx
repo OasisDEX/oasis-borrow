@@ -113,14 +113,14 @@ function LinkedRow(props: PositionView) {
 
 function MenuRow(props: { icon: string; text: string; url: string }) {
   return (
-    <Flex sx={{ color: 'black', alignItems: 'center' }}>
-      <Link href={props.url}>
+    <Link href={props.url}>
+      <Flex sx={{ color: 'black', alignItems: 'center' }}>
         <Icon name={props.icon} sx={{ mr: '15px' }} />
         <Text variant="paragraph2" sx={{ color: 'black' }}>
           {props.text}
         </Text>
-      </Link>
-    </Flex>
+      </Flex>
+    </Link>
   )
 }
 

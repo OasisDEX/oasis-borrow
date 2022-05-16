@@ -147,5 +147,7 @@ describe('positionsOverviewSummary', () => {
     expect(state().totalValueUsd.toString()).eq('18')
   })
 
-  it('shows what actions we can perform', () => {})
+  it('includes asset actions')
+
+  it('filters out tokens from which we cannot perform any action')
 })

@@ -71,6 +71,10 @@ export function createPositionsOverviewSummary$(
         }),
       ),
     ),
+  ).pipe(
+    map((tokenBalancesAndActions) => {
+      return [...tokenBalancesAndActions.filter(({ assetActions }) => assetActions.length > 0)]
+    }),
   )
 
   const positions$ = createPositions$(address)
