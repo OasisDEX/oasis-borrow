@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -110,9 +112,21 @@ function Pills({ sx }: { sx?: SxProps }) {
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
-  const { context$, productCardsData$ } = useAppContext()
+  const { context$, productCardsData$, checkReferralLocal$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const [checkReferralLocal] = useObservable(checkReferralLocal$)
+  const router = useRouter()
+  const handleClose = () =>
+    void useEffect(() => {
+      const localStorageReferral = checkReferralLocal?.referrer
+      if (!localStorageReferral) {
+        const linkReferral = router.query.ref as string
+        if (linkReferral) {
+          localStorage.setItem(`referral`, linkReferral)
+        }
+      }
+    }, [checkReferralLocal])
 
   return (
     <Box
@@ -120,6 +134,9 @@ export function HomepageView() {
         flex: 1,
       }}
     >
+      <Flex sx={{ justifyContent: 'center',mt: 4 }}>
+        <ReferralBanner handleClose={handleClose} heading={t('ref.banner')}></ReferralBanner>
+      </Flex>
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{

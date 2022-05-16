@@ -20,6 +20,7 @@ import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
+import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -96,6 +97,16 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
+import {
+  checkReferralLocalStorage$,
+} from 'features/referralOverview/referralLocal'
+import { createUserReferral$ } from 'features/referralOverview/user'
+import {
+  getReferralsFromApi$,
+  getTopEarnersFromApi$,
+  getUserFromApi$,
+  getWeeklyClaimsFromApi$,
+} from 'features/referralOverview/userApi'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -181,7 +192,6 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -199,6 +209,7 @@ export type TxData =
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
+  | ClaimMultipleData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -812,6 +823,18 @@ export function setupAppContext() {
     saveAcceptanceFromApi$,
   )
 
+  const userReferral$ = createUserReferral$(
+    web3Context$,
+    txHelpers$,
+    getUserFromApi$,
+    getReferralsFromApi$,
+    getTopEarnersFromApi$,
+    getWeeklyClaimsFromApi$,
+    checkReferralLocalStorage$
+  )
+
+  const checkReferralLocal$ = checkReferralLocalStorage$()
+
   const vaultBanners$ = memoize(
     curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
@@ -867,6 +890,8 @@ export function setupAppContext() {
     instiVault$,
     ilkToToken$,
     bonus$,
+    userReferral$,
+    checkReferralLocal$
   }
 }
 

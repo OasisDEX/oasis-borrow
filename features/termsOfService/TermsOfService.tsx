@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { disconnect } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
+import { NewReferralModal } from 'components/NewReferralModal'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -171,13 +172,22 @@ const hiddenStages: TermsAcceptanceStage[] = [
 ]
 
 export function TermsOfService() {
-  const { web3Context$, termsAcceptance$ } = useAppContext()
+  const { web3Context$, termsAcceptance$, userReferral$ } = useAppContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
   const [web3Context] = useObservable(web3Context$)
+  const [userReferral] = useObservable(userReferral$)
 
   function disconnectHandler() {
     disconnect(web3Context)
   }
+  if (
+    
+    userReferral?.state === 'newUser' &&
+    userReferral?.referrer.referrer &&
+    web3Context?.status === 'connected' &&
+    termsAcceptance?.stage === 'acceptanceAccepted'
+  )
+    return <NewReferralModal account={web3Context.account} userReferral={userReferral}></NewReferralModal>
 
   if (!termsAcceptance || hiddenStages.includes(termsAcceptance.stage)) return null
 
