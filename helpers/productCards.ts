@@ -4,6 +4,7 @@ import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
@@ -14,7 +15,6 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
-import { supportedIlks } from '../blockchain/config'
 
 export interface ProductCardData {
   token: string
