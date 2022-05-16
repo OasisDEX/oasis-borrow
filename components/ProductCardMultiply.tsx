@@ -15,7 +15,7 @@ function personaliseCardData({
   roundedMaxMultiple: BigNumber
 }) {
   const { roundedTokenAmount } = calculateTokenAmount(productCardData)
-
+  console.log('roundedTokenAmount:', roundedTokenAmount)
   return {
     ...calculateTokenAmount(productCardData),
     exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
@@ -24,11 +24,12 @@ function personaliseCardData({
 
 function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
   const { currentCollateralPrice, balance } = props
+
   const dollarWorthInputColllateral = new BigNumber(150000)
   const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
   const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
-
+  console.log('roundedTokenAmount:', roundedTokenAmount.toString())
   if (balance) {
     return personaliseCardData({ productCardData: props, roundedMaxMultiple })
   }
@@ -63,7 +64,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          tokenAmount,
+          value: tokenAmount,
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
