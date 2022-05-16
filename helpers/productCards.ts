@@ -4,6 +4,7 @@ import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
@@ -63,30 +64,7 @@ export type ProductLandingPagesFilter = {
 }
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
-type Ilk =
-  | 'WBTC-B'
-  | 'ETH-B'
-  | 'ETH-C'
-  | 'WBTC-C'
-  | 'GUSD-A'
-  | 'ETH-A'
-  | 'WBTC-A'
-  | 'LINK-A'
-  | 'UNI-A'
-  | 'YFI-A'
-  | 'MANA-A'
-  | 'MATIC-A'
-  | 'WSTETH-A'
-  | 'RENBTC-A'
-  | 'GUNIV3DAIUSDC1-A'
-  | 'GUNIV3DAIUSDC2-A'
-  | 'UNIV2DAIETH-A'
-  | 'UNIV2WBTCETH-A'
-  | 'UNIV2USDCETH-A'
-  | 'UNIV2DAIUSDC-A'
-  | 'UNIV2UNIETH-A'
-  | 'UNIV2WBTCDAI-A'
-  | 'CRVV1ETHSTETH-A'
+type Ilk = typeof supportedIlks[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -110,6 +88,7 @@ export const supportedBorrowIlks = [
   'UNIV2UNIETH-A',
   'UNIV2WBTCDAI-A',
   'CRVV1ETHSTETH-A',
+  'WSTETH-B',
 ]
 
 export const supportedMultiplyIlks = [
@@ -127,6 +106,7 @@ export const supportedMultiplyIlks = [
   'YFI-A',
   'MANA-A',
   'MATIC-A',
+  'WSTETH-B',
 ]
 
 export const supportedIlksList = [
@@ -164,7 +144,7 @@ export const productCardsConfig: {
       { name: 'GUSD', icon: 'gusd_circle' },
       { name: 'Curve LP', icon: 'curve_circle' },
     ],
-    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-A'],
+    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -214,7 +194,7 @@ export const productCardsConfig: {
         'ETH-C',
         'WBTC-C',
         // 'CRVV1ETHSTETH-A',
-        'WSTETH-A',
+        'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
@@ -225,6 +205,7 @@ export const productCardsConfig: {
     'ETH-B': 'biggest-multiply',
     'ETH-C': 'lowest-stabilityFee-and-cheapest',
     'WSTETH-A': 'staking-rewards',
+    'WSTETH-B': 'lowest-annual-fee-cheapest-vault',
     'WBTC-A': 'medium-exposure-medium-cost',
     'WBTC-B': 'biggest-multiply',
     'WBTC-C': 'lowest-stabilityFee-and-cheapest',
