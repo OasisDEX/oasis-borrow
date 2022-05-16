@@ -17,11 +17,11 @@ export function VaultHeaderContainer({
   token: string
   priceInfo: PriceInfo
 }) {
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Grid mt={4}>
-      {automationBasicBuyAndSellEnabled ? (
+      {newComponentsEnabled ? (
         <VaultHeadline header={header} token={token} priceInfo={priceInfo} />
       ) : (
         <>
