@@ -201,7 +201,7 @@ export function ProductCard({
                 justifyContent: 'space-between',
               }}
             >
-              <Flex sx={{ flexDirection: 'column', width: '184px' }}>
+              <Flex sx={{ flexDirection: 'column' }}>
                 <Heading
                   variant="header2"
                   as="h3"
@@ -216,7 +216,10 @@ export function ProductCard({
                   {description}
                 </Text>
               </Flex>
-              <Image src={hover ? tokenGif : tokenImage} sx={{ width: '146px', flexGrow: 2 }} />
+              <Box sx={{ minWidth: '146px', flexGrow: 1, margin: 'auto' }}>
+                <Image src={hover ? tokenGif : tokenImage} sx={{ height: '146px', width: '146px' }} />
+              </Box>
+
             </Flex>
             <ProductCardBanner {...banner} />
           </Box>
