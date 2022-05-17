@@ -92,6 +92,7 @@
   "copy-address": "Copy address",
   "country": "Country",
   "configure-your-vault": "Configure your vault",
+  "edit-vault": "Edit vault",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",

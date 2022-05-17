@@ -2,6 +2,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { SideBarOpenBorrowVault } from 'components/vault/sidebar/SideBarOpenBorrowVault'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
@@ -79,27 +80,30 @@ function OpenVaultForm(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
 
   return (
-    <VaultFormContainer toggleTitle="Open Vault">
-      <OpenVaultTitle {...props} />
-      {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
-      {isEditingStage && <OpenVaultEditing {...props} />}
-      {isAllowanceStage && <VaultAllowance {...props} />}
-      {isOpenStage && <OpenVaultConfirmation {...props} />}
-      <VaultErrors {...props} />
-      <VaultWarnings {...props} />
-      {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
-      <OpenVaultButton {...props} />
-      {isProxyStage && <VaultProxyStatusCard {...props} />}
-      {isAllowanceStage && <VaultAllowanceStatus {...props} />}
-      {isOpenStage && <OpenVaultStatus {...props} />}
-      {isEditingStage ? (
-        <VaultFormVaultTypeSwitch
-          href={`/vaults/open-multiply/${ilk}`}
-          title="Switch to Multiply"
-          visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
-        />
-      ) : null}
-    </VaultFormContainer>
+    <>
+      <SideBarOpenBorrowVault {...props} />
+      <VaultFormContainer toggleTitle="Open Vault">
+        <OpenVaultTitle {...props} />
+        {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
+        {isEditingStage && <OpenVaultEditing {...props} />}
+        {isAllowanceStage && <VaultAllowance {...props} />}
+        {isOpenStage && <OpenVaultConfirmation {...props} />}
+        <VaultErrors {...props} />
+        <VaultWarnings {...props} />
+        {stage === 'txSuccess' && <VaultChangesWithADelayCard />}
+        <OpenVaultButton {...props} />
+        {isProxyStage && <VaultProxyStatusCard {...props} />}
+        {isAllowanceStage && <VaultAllowanceStatus {...props} />}
+        {isOpenStage && <OpenVaultStatus {...props} />}
+        {isEditingStage ? (
+          <VaultFormVaultTypeSwitch
+            href={`/vaults/open-multiply/${ilk}`}
+            title="Switch to Multiply"
+            visible={ALLOWED_MULTIPLY_TOKENS.includes(props.token)}
+          />
+        ) : null}
+      </VaultFormContainer>
+    </>
   )
 }
 

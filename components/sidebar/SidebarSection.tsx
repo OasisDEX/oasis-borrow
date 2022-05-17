@@ -5,7 +5,7 @@ import { SidebarSectionContent, SidebarSectionContentProps } from './SidebarSect
 import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
 import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
-interface SidebarSectionProps
+export interface SidebarSectionProps
   extends Omit<SidebarSectionHeaderProps, 'onSelect'>,
     Omit<SidebarSectionContentProps, 'activePanel'>,
     SidebarSectionFooterProps {}
