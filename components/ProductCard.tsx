@@ -217,9 +217,11 @@ export function ProductCard({
                 </Text>
               </Flex>
               <Box sx={{ minWidth: '146px', flexGrow: 1, margin: 'auto' }}>
-                <Image src={hover ? tokenGif : tokenImage} sx={{ height: '146px', width: '146px' }} />
+                <Image
+                  src={hover ? tokenGif : tokenImage}
+                  sx={{ height: '146px', width: '146px' }}
+                />
               </Box>
-
             </Flex>
             <ProductCardBanner {...banner} />
           </Box>
