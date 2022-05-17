@@ -17,6 +17,7 @@ const wbtcA = mockIlkData({
   ilk: 'WBTC-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const wbtcB = mockIlkData({
@@ -24,6 +25,7 @@ const wbtcB = mockIlkData({
   ilk: 'WBTC-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const wbtcC = mockIlkData({
@@ -31,6 +33,7 @@ const wbtcC = mockIlkData({
   ilk: 'WBTC-C',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const renbtc = mockIlkData({
@@ -38,6 +41,7 @@ const renbtc = mockIlkData({
   ilk: 'RENBTC-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const ethA = mockIlkData({
@@ -45,6 +49,7 @@ const ethA = mockIlkData({
   ilk: 'ETH-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const ethB = mockIlkData({
@@ -52,6 +57,7 @@ const ethB = mockIlkData({
   ilk: 'ETH-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const ethC = mockIlkData({
@@ -59,6 +65,7 @@ const ethC = mockIlkData({
   ilk: 'ETH-C',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const linkA = mockIlkData({
@@ -66,6 +73,7 @@ const linkA = mockIlkData({
   ilk: 'LINK-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const wstethA = mockIlkData({
@@ -73,6 +81,7 @@ const wstethA = mockIlkData({
   ilk: 'WSTETH-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const wstethB = mockIlkData({
@@ -80,6 +89,7 @@ const wstethB = mockIlkData({
   ilk: 'WSTETH-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const guni = mockIlkData({
@@ -87,6 +97,7 @@ const guni = mockIlkData({
   ilk: 'GUNIV3DAIUSDC2-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 const crv = mockIlkData({
@@ -94,6 +105,7 @@ const crv = mockIlkData({
   ilk: 'CRVV1ETHSTETH-A',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
+  ilkDebtAvailable: new BigNumber('100'),
 })()
 
 describe('createProductCardsData$', () => {
@@ -106,10 +118,11 @@ describe('createProductCardsData$', () => {
       bannerGif: '/static/img/tokens/wbtc.gif',
       currentCollateralPrice: new BigNumber(550),
       ilk: 'WBTC-A',
-      liquidationRatio: new BigNumber(1.4),
+      liquidationRatio: wbtcA.liquidationRatio,
+      liquidityAvailable: wbtcA.ilkDebtAvailable,
       debtFloor: wbtcA.debtFloor,
       name: 'Wrapped Bitcoin',
-      stabilityFee: new BigNumber(0.045),
+      stabilityFee: wbtcA.stabilityFee,
       token: 'WBTC',
       isFull: false,
     })
@@ -127,6 +140,7 @@ describe('createProductCardsData$', () => {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
         liquidationRatio: wbtcB.liquidationRatio,
+        liquidityAvailable: wbtcB.ilkDebtAvailable,
         stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcB.debtFloor,
@@ -140,6 +154,7 @@ describe('createProductCardsData$', () => {
         token: ethB.token,
         ilk: ethB.ilk,
         liquidationRatio: ethB.liquidationRatio,
+        liquidityAvailable: ethB.ilkDebtAvailable,
         stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethB.debtFloor,
@@ -153,6 +168,7 @@ describe('createProductCardsData$', () => {
         token: guni.token,
         ilk: guni.ilk,
         liquidationRatio: guni.liquidationRatio,
+        liquidityAvailable: guni.ilkDebtAvailable,
         stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: guni.debtFloor,
@@ -180,6 +196,7 @@ describe('createProductCardsData$', () => {
         token: wbtcB.token,
         ilk: wbtcB.ilk,
         liquidationRatio: wbtcB.liquidationRatio,
+        liquidityAvailable: wbtcB.ilkDebtAvailable,
         stabilityFee: wbtcB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcB.debtFloor,
@@ -193,6 +210,7 @@ describe('createProductCardsData$', () => {
         token: ethB.token,
         ilk: ethB.ilk,
         liquidationRatio: ethB.liquidationRatio,
+        liquidityAvailable: ethB.ilkDebtAvailable,
         stabilityFee: ethB.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethB.debtFloor,
@@ -206,6 +224,7 @@ describe('createProductCardsData$', () => {
         token: guni.token,
         ilk: guni.ilk,
         liquidationRatio: guni.liquidationRatio,
+        liquidityAvailable: guni.ilkDebtAvailable,
         stabilityFee: guni.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: guni.debtFloor,
@@ -233,6 +252,7 @@ describe('createProductCardsData$', () => {
         token: ethA.token,
         ilk: ethA.ilk,
         liquidationRatio: ethA.liquidationRatio,
+        liquidityAvailable: ethA.ilkDebtAvailable,
         stabilityFee: ethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: ethA.debtFloor,
@@ -246,6 +266,7 @@ describe('createProductCardsData$', () => {
         token: wstethA.token,
         ilk: wstethA.ilk,
         liquidationRatio: wstethA.liquidationRatio,
+        liquidityAvailable: wstethA.ilkDebtAvailable,
         stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wstethA.debtFloor,
@@ -270,6 +291,7 @@ describe('createProductCardsData$', () => {
       token: wbtcC.token,
       ilk: wbtcC.ilk,
       liquidationRatio: wbtcC.liquidationRatio,
+      liquidityAvailable: wbtcC.ilkDebtAvailable,
       stabilityFee: wbtcC.stabilityFee,
       currentCollateralPrice: new BigNumber('550'),
       debtFloor: wbtcC.debtFloor,
@@ -311,6 +333,7 @@ describe('createProductCardsData$', () => {
         token: renbtc.token,
         ilk: renbtc.ilk,
         liquidationRatio: renbtc.liquidationRatio,
+        liquidityAvailable: renbtc.ilkDebtAvailable,
         stabilityFee: renbtc.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: renbtc.debtFloor,
@@ -324,6 +347,7 @@ describe('createProductCardsData$', () => {
         token: wbtcA.token,
         ilk: wbtcA.ilk,
         liquidationRatio: wbtcA.liquidationRatio,
+        liquidityAvailable: wbtcA.ilkDebtAvailable,
         stabilityFee: wbtcA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
         debtFloor: wbtcA.debtFloor,

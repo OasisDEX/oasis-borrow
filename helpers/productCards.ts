@@ -20,6 +20,7 @@ export interface ProductCardData {
   token: string
   ilk: Ilk
   liquidationRatio: BigNumber
+  liquidityAvailable: BigNumber
   stabilityFee: BigNumber
   balance?: BigNumber
   balanceInUsd?: BigNumber
@@ -397,6 +398,7 @@ export function createProductCardsWithBalance$(
                 balanceInUsd: ilk.balancePriceInUsd,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
+                liquidityAvailable: ilk.ilkDebtAvailable,
                 stabilityFee: ilk.stabilityFee,
                 debtFloor: ilk.debtFloor,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
@@ -430,6 +432,7 @@ export function createProductCardsData$(
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
+                liquidityAvailable: ilk.ilkDebtAvailable,
                 stabilityFee: ilk.stabilityFee,
                 debtFloor: ilk.debtFloor,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
