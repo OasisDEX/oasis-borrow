@@ -1025,6 +1025,7 @@
     "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
     "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "lowest-annual-fee-cheapest-vault": "The lowest Annual Fee and cheapest Vault for borrowing using staked ETH",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
     "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",

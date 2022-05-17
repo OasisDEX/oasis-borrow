@@ -100,10 +100,10 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
-
+  'WSTETH-B',
   ...charterIlks,
   ...cropJoinIlks,
-]
+] as const
 
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),

@@ -68,9 +68,16 @@ const linkA = mockIlkData({
   liquidationRatio: new BigNumber('1.4'),
 })()
 
-const wsteth = mockIlkData({
+const wstethA = mockIlkData({
   token: 'WSTETH',
   ilk: 'WSTETH-A',
+  stabilityFee: new BigNumber('0.045'),
+  liquidationRatio: new BigNumber('1.4'),
+})()
+
+const wstethB = mockIlkData({
+  token: 'WSTETH',
+  ilk: 'WSTETH-B',
   stabilityFee: new BigNumber('0.045'),
   liquidationRatio: new BigNumber('1.4'),
 })()
@@ -110,7 +117,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), () => mockPriceInfo$()),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -160,7 +167,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), () => mockPriceInfo$()),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -213,7 +220,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wsteth]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcA, ethA, linkA, wstethA]), () => mockPriceInfo$()),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -236,12 +243,12 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: wsteth.token,
-        ilk: wsteth.ilk,
-        liquidationRatio: wsteth.liquidationRatio,
-        stabilityFee: wsteth.stabilityFee,
+        token: wstethA.token,
+        ilk: wstethA.ilk,
+        liquidationRatio: wstethA.liquidationRatio,
+        stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        debtFloor: wsteth.debtFloor,
+        debtFloor: wstethA.debtFloor,
         bannerIcon: '/static/img/tokens/wstETH.png',
         bannerGif: '/static/img/tokens/wstETH.gif',
         background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
@@ -251,9 +258,32 @@ describe('createProductCardsData$', () => {
     ])
   })
 
-  it('should return correct borrow page product data', () => {
+  it('maps one product card correctly', () => {
+    const state = getStateUnpacker(createProductCardsData$(of([wbtcC]), () => mockPriceInfo$()))
+
+    const borrowPageData = borrowPageCardsData({
+      productCardsData: state(),
+      cardsFilter: 'Featured',
+    })
+
+    expect(borrowPageData[0]).to.eql({
+      token: wbtcC.token,
+      ilk: wbtcC.ilk,
+      liquidationRatio: wbtcC.liquidationRatio,
+      stabilityFee: wbtcC.stabilityFee,
+      currentCollateralPrice: new BigNumber('550'),
+      debtFloor: wbtcC.debtFloor,
+      bannerIcon: '/static/img/tokens/wbtc.png',
+      bannerGif: '/static/img/tokens/wbtc.gif',
+      background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
+      name: 'Wrapped Bitcoin',
+      isFull: false,
+    })
+  })
+
+  it('sorts and filters product cards', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wsteth, crv]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wstethB, crv]), () => mockPriceInfo$()),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -261,66 +291,15 @@ describe('createProductCardsData$', () => {
       cardsFilter: 'Featured',
     })
 
-    expect(borrowPageData).to.eql([
-      {
-        token: wbtcC.token,
-        ilk: wbtcC.ilk,
-        liquidationRatio: wbtcC.liquidationRatio,
-        stabilityFee: wbtcC.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        debtFloor: wbtcC.debtFloor,
-        bannerIcon: '/static/img/tokens/wbtc.png',
-        bannerGif: '/static/img/tokens/wbtc.gif',
-        background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
-        name: 'Wrapped Bitcoin',
-        isFull: false,
-      },
-      {
-        token: ethC.token,
-        ilk: ethC.ilk,
-        liquidationRatio: ethC.liquidationRatio,
-        stabilityFee: ethC.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        debtFloor: ethC.debtFloor,
-        bannerIcon: '/static/img/tokens/eth.png',
-        bannerGif: '/static/img/tokens/eth.gif',
-        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-        name: 'Ether',
-        isFull: false,
-      },
-      {
-        // from here
-        token: wsteth.token,
-        ilk: wsteth.ilk,
-        liquidationRatio: wsteth.liquidationRatio,
-        stabilityFee: wsteth.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        debtFloor: wsteth.debtFloor,
-        bannerIcon: '/static/img/tokens/wstETH.png',
-        bannerGif: '/static/img/tokens/wstETH.gif',
-        background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
-        name: 'WSTETH',
-        isFull: false,
-      },
-      {
-        token: crv.token,
-        ilk: crv.ilk,
-        liquidationRatio: crv.liquidationRatio,
-        stabilityFee: crv.stabilityFee,
-        currentCollateralPrice: new BigNumber('550'),
-        debtFloor: crv.debtFloor,
-        bannerIcon: '/static/img/tokens/crv_steth_eth.png',
-        bannerGif: '/static/img/tokens/crv_steth_eth.gif',
-        background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
-        name: 'stETH/ETH CRV',
-        isFull: false,
-      },
-    ])
+    expect(borrowPageData[0].ilk).to.eql(wbtcC.ilk)
+    expect(borrowPageData[1].ilk).to.eql(ethC.ilk)
+    expect(borrowPageData[2].ilk).to.eql(wstethB.ilk)
+    expect(borrowPageData[3].ilk).to.eql(crv.ilk)
   })
 
   it('should return correct borrow page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wsteth, renbtc]), () =>
+      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wstethA, renbtc]), () =>
         mockPriceInfo$(),
       ),
     )
@@ -360,7 +339,7 @@ describe('createProductCardsData$', () => {
   it('should custom sort the cards', () => {
     const state = getStateUnpacker(
       createProductCardsData$(
-        of([wbtcA, ethA, ethC, linkA, wsteth, renbtc, ethB, wbtcB, wbtcC]),
+        of([wbtcA, ethA, ethC, linkA, wstethA, renbtc, ethB, wbtcB, wbtcC]),
         () => mockPriceInfo$(),
       ),
     )
@@ -369,7 +348,7 @@ describe('createProductCardsData$', () => {
 
     expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
     expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
-    expect(borrowPageData[2].ilk).to.eql(wsteth.ilk)
+    expect(borrowPageData[2].ilk).to.eql(wstethA.ilk)
     expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
 
     const multiplyCardData = multiplyPageCardsData({
