@@ -31,7 +31,7 @@ import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import { AdjustSlFormLayout, AdjustSlFormLayoutProps, slCollRatioIsAtLiquidationRatio } from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -257,7 +257,7 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails),
+      (!isEditing && !uiState?.txDetails) || slCollRatioIsAtLiquidationRatio(selectedSLValue, ilkData),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice

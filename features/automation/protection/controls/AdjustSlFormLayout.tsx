@@ -205,6 +205,13 @@ function SetDownsideProtectionInformation({
           withBullet={false}
         />
       )}
+      {slCollRatioIsAtLiquidationRatio(selectedSLValue, ilkData) && (
+        <MessageCard
+          messages={[t('protection.coll-ratio-liquidation')]}
+          type="error"
+          withBullet={false}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -232,6 +239,10 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+}
+
+export function slCollRatioIsAtLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
+  return selectedSLValue.isLessThanOrEqualTo(ilkData.liquidationRatio.multipliedBy(100))
 }
 
 export function AdjustSlFormLayout({
