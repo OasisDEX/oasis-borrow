@@ -375,7 +375,7 @@ function getHeaderTranslationKey(
     : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
 
-function VaultsOverwiewPerType({
+function VaultsOverviewPerType({
   vaults,
   heading,
   multiply,
@@ -616,7 +616,6 @@ export function VaultsOverviewView({
   }
 
   const connectedAccount = context?.status === 'connected' ? context.account : undefined
-
   const headerTranslationKey = getHeaderTranslationKey(
     connectedAccount,
     address,
@@ -707,8 +706,8 @@ export function VaultsOverviewView({
         <>
           <Summary summary={vaultSummary} />
           <Grid gap={5}>
-            <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
-            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
+            <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
+            <VaultsOverviewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
           </Grid>
         </>
       )}

@@ -7,7 +7,7 @@ import { Flex, Text } from 'theme-ui'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
-import { calculateTokenAmount, ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 import { StatefulTooltip } from './Tooltip'
 
 interface UnprofitableTooltipProps {
@@ -61,11 +61,14 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
 
-  const sevenDayAverage = new BigNumber(0.1201) // TODO to be replaced with calculations
+  const sevenDayAvarange = new BigNumber(0.1402) // TODO to be replaced with calculations
+  const ninetyDayAverage = new BigNumber(0.1201) // TODO to be replaced with calculations
   const unprofitable = false // TODO to be replaced with calculations
 
-  const stabilityFeePercentage = formatPercent(cardData.stabilityFee.times(100), { precision: 2 })
-  const yieldAsPercentage = formatPercent(sevenDayAverage.times(100), { precision: 2 })
+  const yieldSevenDayAsPercentage = formatPercent(sevenDayAvarange.times(100), { precision: 2 })
+  const yieldNinetyDayAsPercentage = formatPercent(ninetyDayAverage.times(100), { precision: 2 })
+
+  const title = t(`product-card-title.${cardData.ilk}`)
 
   const { roundedTokenAmount } = calculateTokenAmount({ ...cardData, balance: defaultDaiValue })
 
@@ -74,7 +77,7 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
-      title={cardData.ilk}
+      title={title}
       description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
@@ -88,22 +91,32 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
           token: cardData.token,
         }),
       }}
-      leftSlot={{
-        title: t('system.seven-day-average'),
-        value: unprofitable ? (
-          <UnprofitableSlot value={yieldAsPercentage} variant="left" />
-        ) : (
-          yieldAsPercentage
-        ),
-      }}
-      rightSlot={{
-        title: t(t('system.variable-annual-fee')),
-        value: unprofitable ? (
-          <UnprofitableSlot value={stabilityFeePercentage} variant="right" />
-        ) : (
-          stabilityFeePercentage
-        ),
-      }}
+      labels={[
+        {
+          title: t('system.seven-day-average'),
+          value: unprofitable ? (
+            <UnprofitableSlot value={yieldSevenDayAsPercentage} variant="left" />
+          ) : (
+            yieldSevenDayAsPercentage
+          ),
+        },
+        {
+          title: t('system.ninety-day-average'),
+          value: unprofitable ? (
+            <UnprofitableSlot value={yieldNinetyDayAsPercentage} variant="left" />
+          ) : (
+            yieldNinetyDayAsPercentage
+          ),
+        },
+        {
+          title: t('system.liquidity-available'),
+          value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
+        },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+      ]}
       button={{
         // TODO to be replaced with open-earn in the future
         link: `/vaults/open-multiply/${cardData.ilk}`,

@@ -6,7 +6,7 @@ import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
 import { one } from '../helpers/zero'
-import { calculateTokenAmount, ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
 function personaliseCardData({
   productCardData,
@@ -82,12 +82,14 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
 
+  const title = t(`product-card-title.${cardData.ilk}`)
+
   return (
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
-      title={cardData.ilk}
+      title={title}
       description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
@@ -100,16 +102,26 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
           value: maxBorrow,
         }),
       }}
-      leftSlot={{
-        title: t('system.min-coll-ratio'),
-        value: `${formatPercent(cardData.liquidationRatio.times(100), {
-          precision: 2,
-        })}`,
-      }}
-      rightSlot={{
-        title: t(t('system.variable-annual-fee')),
-        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
-      }}
+      labels={[
+        {
+          title: t('system.min-coll-ratio'),
+          value: `${formatPercent(cardData.liquidationRatio.times(100), {
+            precision: 2,
+          })}`,
+        },
+        {
+          title: t('system.liquidity-available'),
+          value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
+        },
+        {
+          title: t('system.stability-fee'),
+          value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+        },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+      ]}
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
       background={cardData.background}
       inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}
