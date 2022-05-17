@@ -50,6 +50,7 @@ model User {
     referred_users             User[]        @relation("UserToUser")
     weekly_claims              WeeklyClaim[]
     accepted                   Boolean
+    @@map("user")
 }
 
 model WeeklyClaim {
@@ -62,9 +63,11 @@ model WeeklyClaim {
     claimant     User     @relation(fields: [user_address], references: [address])
 
     @@unique([week_number, user_address], name: "week_number_userAddress_unique_id")
+    @@map("weekly_claim")
 }
 
 model MerkleTree {
     week_number Int    @unique
     tree_root   String
+    @@map("merkle_tree")
 }
