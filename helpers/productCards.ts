@@ -15,6 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { zero } from './zero'
 
 export interface ProductCardData {
   token: string
@@ -387,30 +388,31 @@ export function createProductCardsWithBalance$(
   return ilksWithBalance$.pipe(
     switchMap((ilkDataList) =>
       combineLatest(
-        ...ilkDataList.map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
-
-          return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) => {
-              return of({
-                token: ilk.token,
-                balance: ilk.balance,
-                balanceInUsd: ilk.balancePriceInUsd,
-                ilk: ilk.ilk as Ilk,
-                liquidationRatio: ilk.liquidationRatio,
-                liquidityAvailable: ilk.ilkDebtAvailable,
-                stabilityFee: ilk.stabilityFee,
-                debtFloor: ilk.debtFloor,
-                currentCollateralPrice: priceInfo.currentCollateralPrice,
-                bannerIcon: tokenMeta.bannerIcon,
-                bannerGif: tokenMeta.bannerGif,
-                background: tokenMeta.background,
-                name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              })
-            }),
-          )
-        }),
+        ...ilkDataList
+          .filter((ilk) => ilk.debtCeiling.gt(zero))
+          .map((ilk) => {
+            const tokenMeta = getToken(ilk.token)
+            return priceInfo$(ilk.token).pipe(
+              switchMap((priceInfo) => {
+                return of({
+                  token: ilk.token,
+                  balance: ilk.balance,
+                  balanceInUsd: ilk.balancePriceInUsd,
+                  ilk: ilk.ilk as Ilk,
+                  liquidationRatio: ilk.liquidationRatio,
+                  liquidityAvailable: ilk.ilkDebtAvailable,
+                  stabilityFee: ilk.stabilityFee,
+                  debtFloor: ilk.debtFloor,
+                  currentCollateralPrice: priceInfo.currentCollateralPrice,
+                  bannerIcon: tokenMeta.bannerIcon,
+                  bannerGif: tokenMeta.bannerGif,
+                  background: tokenMeta.background,
+                  name: tokenMeta.name,
+                  isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+                })
+              }),
+            )
+          }),
       ),
     ),
   )
