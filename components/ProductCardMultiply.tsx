@@ -4,7 +4,7 @@ import React from 'react'
 
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
-import { one } from '../helpers/zero'
+import { one, zero } from '../helpers/zero'
 import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
 function personaliseCardData({
@@ -30,7 +30,7 @@ function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
   const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
 
-  if (balance) {
+  if (balance?.gt(zero)) {
     return personaliseCardData({ productCardData: props, roundedMaxMultiple })
   }
 
