@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { formatCryptoBalance } from 'helpers/formatters/format'
-import { ProductCardData } from 'helpers/productCards'
+import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -75,11 +75,15 @@ interface ProductCardBannerProps {
 }
 
 export function ProductCardProtocolLink({ ilk }: Partial<ProductCardData>) {
+  const { link, name } = productCardsConfig.descriptionLinks[ilk!] ?? {
+    link: `https://makerburn.com/#/collateral/${ilk}`,
+    ilk,
+  }
   return (
     <Box sx={{ paddingRight: '10px' }}>
-      <AppLink href={`https://makerburn.com/#/collateral/${ilk}`}>
+      <AppLink href={link}>
         <WithArrow variant="styles.a" gap="1">
-          {ilk}
+          {name}
         </WithArrow>
       </AppLink>
     </Box>
