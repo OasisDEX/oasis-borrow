@@ -1,14 +1,13 @@
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { handleNumericInput } from 'helpers/input'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { VaultActionInput } from '../VaultActionInput'
 
 export function SideBarOpenBorrowVaultContent(props: OpenVaultState) {
   const {
-    stage,
     token,
     depositAmount,
     generateAmount,
@@ -27,13 +26,19 @@ export function SideBarOpenBorrowVaultContent(props: OpenVaultState) {
     priceInfo: { currentCollateralPrice },
   } = props
 
+  const [isGenerateDaiDisabled, setIsGenerateDaiDisabled] = useState<boolean>(true)
+
   useEffect(() => {
-    if (!showGenerateOption) toggleGenerateOption!()
-  }, [showGenerateOption, depositAmount])
+    if (!depositAmount || depositAmount.isZero()) {
+      setIsGenerateDaiDisabled(true)
+    } else {
+      if (!showGenerateOption) toggleGenerateOption!()
+      setIsGenerateDaiDisabled(false)
+    }
+  }, [depositAmount])
 
   return (
     <Grid gap={3}>
-      <span>stage: {stage}</span>
       <VaultActionInput
         action="Deposit"
         token={token}
@@ -62,6 +67,7 @@ export function SideBarOpenBorrowVaultContent(props: OpenVaultState) {
         onSetMax={updateGenerateMax}
         onChange={handleNumericInput(updateGenerate!)}
         hasError={false}
+        disabled={isGenerateDaiDisabled}
       />
       <OpenVaultChangesInformation {...props} />
     </Grid>

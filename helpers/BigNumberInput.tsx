@@ -53,7 +53,12 @@ export const BigNumberInput = ({
         <Input
           ref={ref}
           {...xprops}
-          sx={{ color: 'primary', fontWeight: 'semiBold', '&::placeholder': { color: 'text.subtitle' }, ...sx }}
+          sx={{
+            color: 'primary',
+            fontWeight: 'semiBold',
+            '&::placeholder': { color: 'text.subtitle' },
+            ...sx,
+          }}
         />
       )}
     />

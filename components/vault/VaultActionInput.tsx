@@ -110,8 +110,9 @@ export function VaultActionInput({
     <Box
       sx={{
         position: 'relative',
-        opacity: disabled ? '0.3' : '1.0',
+        opacity: disabled ? '0.5' : '1',
         cursor: disabled ? 'not-allowed' : 'default',
+        transition: 'opacity 200ms',
         ...(collapsed && {
           variant: 'styles.collapsedContentContainer',
         }),
@@ -140,9 +141,9 @@ export function VaultActionInput({
                   : null}
               </>
             )}
-            {showMin && showMax && ' - '}
-            {showMax && (
+            {showMax && maxAmount?.isGreaterThan(minAmount || zero) && (
               <>
+                {showMin && ' - '}
                 {maxAmountLabel}{' '}
                 <Text
                   as="span"
@@ -195,7 +196,7 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onChange}
-              value={amount ? formatBigNumber(amount, tokenDigits) : undefined}
+              value={amount ? formatBigNumber(amount, tokenDigits) : ''}
               placeholder={`0 ${tokenSymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
@@ -209,9 +210,7 @@ export function VaultActionInput({
                 prefix: '',
               })}
               onChange={onAuxiliaryChange}
-              value={
-                auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : undefined
-              }
+              value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : ''}
               placeholder={`0 ${auxiliarySymbol}`}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
@@ -246,10 +245,10 @@ export function VaultActionInput({
               pr: 3,
               '& svg': {
                 transform: 'rotate(90deg)',
-                transition: 'color 0.2s ease-in',
+                transition: 'color 200ms',
                 color: 'lightIcon',
                 '&:hover': {
-                  color: 'lavender',
+                  color: 'borderSelected',
                 },
               },
             }}

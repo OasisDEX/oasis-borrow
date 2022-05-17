@@ -1,13 +1,17 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { getEditVaultButton } from 'features/sidebar/getEditVaultButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getResetButton } from 'features/sidebar/getResetButton'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid } from 'theme-ui'
 
 import { SideBarOpenBorrowVaultContent } from './SideBarOpenBorrowVaultContent'
 
@@ -21,6 +25,7 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
   const {
     stage,
     canProgress,
+    progress,
     canRegress,
     regress,
     isEditingStage,
@@ -28,12 +33,23 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
     token,
     totalSteps,
     currentStep,
+    updateDeposit,
+    inputAmountsEmpty,
   } = props
 
   const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ stage, token }),
+    ...(isEditingStage &&
+      !inputAmountsEmpty && {
+        headerButton: getResetButton({
+          t,
+          callback: () => {
+            updateDeposit!(undefined)
+          },
+        }),
+      }),
     ...(canRegress && {
       headerButton: getEditVaultButton({
         t,
@@ -46,9 +62,11 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
       }),
     }),
     content: (
-      <>
+      <Grid gap={3}>
         {isEditingStage && <SideBarOpenBorrowVaultContent {...props} />}
-      </>
+        <VaultErrors {...props} />
+        <VaultWarnings {...props} />
+      </Grid>
     ),
     primaryButton: {
       label: getPrimaryButtonLabel({ stage, token }),
@@ -56,7 +74,7 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
       disabled: !canProgress,
       isLoading: isLoadingStage,
       action: () => {
-        alert('asd')
+        progress!()
       },
     },
   }

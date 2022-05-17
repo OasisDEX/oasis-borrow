@@ -140,5 +140,5 @@ export function VaultErrors({
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'error' }} />
+  return <MessageCard {...{ messages, type: 'error', withBullet: messages.length > 1 }} />
 }
