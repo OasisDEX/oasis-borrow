@@ -41,8 +41,13 @@ interface VaultActionInputProps {
   auxiliaryAmount?: BigNumber
   auxiliaryToken?: string
   onAuxiliaryChange?: (e: ChangeEvent<HTMLInputElement>) => void
+  minAuxiliaryAmount?: BigNumber
   maxAuxiliaryAmount?: BigNumber
   auxiliaryUsdPrice?: BigNumber
+
+  showMin?: boolean
+  minAmount?: BigNumber
+  minAmountLabel?: string
 
   showMax?: boolean
   onSetMax?: () => void
@@ -61,6 +66,10 @@ export function VaultActionInput({
   onChange,
   disabled,
 
+  showMin,
+  minAmount,
+  minAmountLabel,
+
   showMax,
   onSetMax,
   maxAmount,
@@ -71,6 +80,7 @@ export function VaultActionInput({
   auxiliaryToken,
   onAuxiliaryChange,
   maxAuxiliaryAmount,
+  minAuxiliaryAmount,
   auxiliaryUsdPrice,
 
   hasError,
@@ -111,34 +121,47 @@ export function VaultActionInput({
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
           {action} {token}
         </Text>
-        {!auxiliaryFlag && BigNumber.isBigNumber(maxAmount) && showMax ? (
+        {(showMin || showMax) && (
           <Text
-            onClick={!disabled ? onSetMax : () => null}
             variant="paragraph4"
             sx={{
               fontWeight: 'semiBold',
               textAlign: 'right',
-              cursor: 'pointer',
               color: 'text.subtitle',
             }}
           >
-            {maxAmountLabel} {formatCryptoBalance(maxAmount)} {tokenSymbol}
+            {showMin && (
+              <>
+                {minAmountLabel}{' '}
+                {auxiliaryFlag && BigNumber.isBigNumber(minAuxiliaryAmount)
+                  ? formatCryptoBalance(minAuxiliaryAmount)
+                  : !auxiliaryFlag && BigNumber.isBigNumber(minAmount)
+                  ? formatCryptoBalance(minAmount)
+                  : null}
+              </>
+            )}
+            {showMin && showMax && ' - '}
+            {showMax && (
+              <>
+                {maxAmountLabel}{' '}
+                <Text
+                  as="span"
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={!disabled ? onSetMax : () => null}
+                >
+                  {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount)
+                    ? formatCryptoBalance(maxAuxiliaryAmount)
+                    : !auxiliaryFlag && BigNumber.isBigNumber(maxAmount)
+                    ? formatCryptoBalance(maxAmount)
+                    : null}
+                </Text>
+              </>
+            )}{' '}
+            {tokenSymbol}
           </Text>
-        ) : null}
-        {auxiliaryFlag && BigNumber.isBigNumber(maxAuxiliaryAmount) && showMax ? (
-          <Text
-            onClick={!disabled ? onSetMax : () => null}
-            variant="paragraph4"
-            sx={{
-              fontWeight: 'semiBold',
-              textAlign: 'right',
-              cursor: 'pointer',
-              color: 'text.subtitle',
-            }}
-          >
-            {maxAmountLabel} {formatCryptoBalance(maxAuxiliaryAmount)} {auxiliarySymbol}
-          </Text>
-        ) : null}
+        )}
       </Grid>
 
       <Grid
@@ -147,17 +170,16 @@ export function VaultActionInput({
           border: '1px solid',
           borderRadius: 'medium',
           alignItems: 'center',
-          borderColor: hasError ? 'onError' : 'primaryAlt',
+          borderColor: hasError ? 'onError' : 'border',
           transition: `
-            box-shadow ease-in 0.2s,
-            border-color ease-in 0.2s
+            box-shadow 200ms,
+            border-color 200ms
           `,
           ...(disabled
             ? {}
             : {
                 '&:hover, &:focus-within': {
-                  boxShadow: 'surface',
-                  borderColor: hasError ? 'onError' : 'primary',
+                  borderColor: hasError ? 'onError' : 'borderSelected',
                 },
               }),
         }}

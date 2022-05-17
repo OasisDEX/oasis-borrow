@@ -23,6 +23,7 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
     canProgress,
     canRegress,
     regress,
+    isEditingStage,
     isLoadingStage,
     token,
     totalSteps,
@@ -44,7 +45,11 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
         },
       }),
     }),
-    content: <SideBarOpenBorrowVaultContent {...props} />,
+    content: (
+      <>
+        {isEditingStage && <SideBarOpenBorrowVaultContent {...props} />}
+      </>
+    ),
     primaryButton: {
       label: getPrimaryButtonLabel({ stage, token }),
       steps: [currentStep, totalSteps],
