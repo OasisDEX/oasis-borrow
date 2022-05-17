@@ -107,11 +107,11 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const oraclePrice = priceInfo.currentCollateralPrice
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardNetValue
