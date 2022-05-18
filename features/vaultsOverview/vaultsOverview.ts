@@ -46,7 +46,11 @@ export function createVaultsOverview$(
     }),
   )
 
-  const borrowVaults = (iif(() => stopLossReadEnabled, vaultWithAutomationData$, vaultsAddress$).pipe(
+  const borrowVaults = (iif(
+    () => stopLossReadEnabled,
+    vaultWithAutomationData$,
+    vaultsAddress$,
+  ).pipe(
     map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
     // TODO casting won't be necessary when Automation feature flag will be removed
   ) as unknown) as Observable<VaultWithSLData>
