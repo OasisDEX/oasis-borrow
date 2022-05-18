@@ -1,10 +1,10 @@
-import { combineLatest, Observable, of } from 'rxjs'
 import { map as mapL, reduce } from 'lodash'
-import { filter, map } from 'rxjs/operators'
+import { combineLatest, Observable, of } from 'rxjs'
+import { map } from 'rxjs/operators'
+
 import { UIChanges } from '../../../components/AppContext'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetState,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
 
@@ -51,9 +51,9 @@ function productCategoryToAssetAction(productCategory: ProductCategory): AssetAc
         icon: 'copy',
       }
     case 'earn':
-      throw 'not yet'
+      throw new Error('not yet')
     default:
-      throw `no asset action for productCategory ${productCategory}`
+      throw new Error(`no asset action for productCategory ${productCategory}`)
   }
 }
 

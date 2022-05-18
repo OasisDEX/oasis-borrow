@@ -19,16 +19,16 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
-import { useAppContext } from './AppContextProvider'
-import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
-import { useSharedUI } from './SharedUIProvider'
-import { UniswapWidget, UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
   SwapWidgetState,
 } from '../features/automation/protection/common/UITypes/SwapWidgetChange'
+import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import { useAppContext } from './AppContextProvider'
+import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
+import { useSharedUI } from './SharedUIProvider'
+import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (

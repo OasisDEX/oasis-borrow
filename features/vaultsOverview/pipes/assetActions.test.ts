@@ -1,8 +1,10 @@
-import { expect } from 'chai'
-import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
-import { of } from 'rxjs'
-import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { AssertionError } from 'assert'
+import { expect } from 'chai'
+import { of } from 'rxjs'
+
+import { UIChanges } from '../../../components/AppContext'
+import { getStateUnpacker } from '../../../helpers/testHelpers'
+import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
 
 function assertAssetAction(
   assetActionIsCorrectType: any,
@@ -13,15 +15,40 @@ function assertAssetAction(
   }
 }
 
-describe.only('asset actions', () => {
+describe('asset actions', () => {
+  const stubUIChanges: UIChanges = {
+    publish: () => {
+      throw new Error('unimplemented')
+    },
+    subscribe: () => {
+      throw new Error('unimplemented')
+    },
+    lastPayload: () => {
+      throw new Error('unimplemented')
+    },
+    clear: () => {
+      throw new Error('unimplemented')
+    },
+    configureSubject: () => {
+      throw new Error('unimplemented')
+    },
+  }
   it('shows borrow action for borrow token', () => {
-    const ilkToToken$ = (ilk: string) => of('ETH')
+    function ilkToToken$() {
+      return of('ETH')
+    }
+
     const productCategoryIlks = {
       borrow: ['ETH-A'],
       multiply: [],
       earn: [],
     }
-    const assetActions$ = createAssetActions$(ilkToToken$, productCategoryIlks, 'ETH')
+    const assetActions$ = createAssetActions$(
+      ilkToToken$,
+      productCategoryIlks,
+      stubUIChanges,
+      'ETH',
+    )
 
     const state = getStateUnpacker(assetActions$)
 
@@ -35,13 +62,21 @@ describe.only('asset actions', () => {
   })
 
   it('shows moth borrow and multiply action', () => {
-    const ilkToToken$ = (ilk: string) => of('WBTC')
+    function ilkToToken$() {
+      return of('WBTC')
+    }
+
     const productCategoryIlks = {
       borrow: ['WBTC-A'],
       multiply: ['WBTC-A'],
       earn: [],
     }
-    const assetActions$ = createAssetActions$(ilkToToken$, productCategoryIlks, 'WBTC')
+    const assetActions$ = createAssetActions$(
+      ilkToToken$,
+      productCategoryIlks,
+      stubUIChanges,
+      'WBTC',
+    )
 
     const state = getStateUnpacker(assetActions$)
 
@@ -61,13 +96,21 @@ describe.only('asset actions', () => {
   })
 
   it('includes swaps', () => {
-    const ilkToToken$ = (ilk: string) => of('WBTC')
+    function ilkToToken$() {
+      return of('WBTC')
+    }
+
     const productCategoryIlks = {
       borrow: ['WBTC-A'],
       multiply: ['WBTC-A'],
       earn: [],
     }
-    const assetActions$ = createAssetActions$(ilkToToken$, productCategoryIlks, 'WBTC')
+    const assetActions$ = createAssetActions$(
+      ilkToToken$,
+      productCategoryIlks,
+      stubUIChanges,
+      'WBTC',
+    )
 
     const state = getStateUnpacker(assetActions$)
     const swapAction = state()[0]

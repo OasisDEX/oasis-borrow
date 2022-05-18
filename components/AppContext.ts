@@ -159,6 +159,12 @@ import {
   every10Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+  SwapWidgetState,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
@@ -181,23 +187,17 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
+  createProductCardsWithBalance$,
   supportedBorrowIlks,
   supportedMultiplyIlks,
-  createProductCardsWithBalance$,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetState,
-  SwapWidgetChangeAction,
-  swapWidgetChangeReducer,
-} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 
 export type TxData =
   | OpenData
