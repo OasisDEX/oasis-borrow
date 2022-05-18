@@ -86,14 +86,6 @@ export function AdjustSlFormControl({
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
-  const initialVaultCollRatio = new BigNumber(
-    ilkData.liquidationRatio
-      .plus(vault.collateralizationRatio)
-      .dividedBy(2)
-      .toFixed(2, BigNumber.ROUND_CEIL),
-  )
-
-  const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
 
@@ -119,7 +111,7 @@ export function AdjustSlFormControl({
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
     selectedSLValue: uiState.selectedSLValue,
-    startingSlRatio,
+    startingSlRatio: selectedSLValue,
     stopLossLevel,
     collateralActive: uiState.collateralActive,
     isToCollateral,
