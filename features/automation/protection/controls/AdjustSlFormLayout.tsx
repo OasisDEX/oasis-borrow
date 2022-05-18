@@ -199,7 +199,7 @@ function SetDownsideProtectionInformation({
           </AppLink>
         </Text>
       </Box>
-      {selectedSLValue.isGreaterThanOrEqualTo(nextCollateralizationPriceFloor) && (
+      {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
         <MessageCard
           messages={[t('protection.coll-ratio-close-to-current')]}
           type="warning"
