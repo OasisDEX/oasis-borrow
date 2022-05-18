@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
@@ -77,6 +77,7 @@ function AssetRow(props: PositionView) {
 function LinkedRow(props: PositionView) {
   const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
   const breakpointIndex = useBreakpointIndex()
+
   if (props.url) {
     return (
       <AppLink href={props.url}>
@@ -101,7 +102,9 @@ function LinkedRow(props: PositionView) {
         {menuPosition && props.actions && (
           <Menu
             sx={menuPosition}
-            close={() => setMenuPosition(undefined)}
+            close={() => {
+              setMenuPosition(undefined)
+            }}
             assetActions={props.actions}
           />
         )}
@@ -122,7 +125,7 @@ function MenuRowDisplay(props: AssetAction) {
   )
 }
 
-function MenuRow(props: AssetAction) {
+function MenuRow(props: AssetAction & { close: () => void }) {
   if (isUrlAction(props)) {
     return (
       <Link href={props.url}>
@@ -131,7 +134,13 @@ function MenuRow(props: AssetAction) {
     )
   } else {
     return (
-      <Link onClick={props.onClick}>
+      <Link
+        onClick={(e) => {
+          e.stopPropagation() // prevent menu from opening again
+          props.close()
+          props.onClick()
+        }}
+      >
         <MenuRowDisplay {...props} />
       </Link>
     )
@@ -159,7 +168,7 @@ function Menu(props: {
     >
       <Grid columns={1} gap={20}>
         {props.assetActions.map((aa) => (
-          <MenuRow {...aa} key={aa.text} />
+          <MenuRow {...aa} key={aa.text} close={props.close} />
         ))}
       </Grid>
     </Card>
