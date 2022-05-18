@@ -54,7 +54,7 @@ export const OtherActionPaybackStage = manageMultiplyVaultStory({
 })({
   stage: 'otherActions',
   originalEditingStage: 'otherActions',
-  otherAction: 'depositDai',
+  otherAction: 'paybackDai',
   paybackAmount: new BigNumber('300'),
 })
 

@@ -23,19 +23,26 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 
 // TODO Move this to /features
 function Summary({ address }: { address: string }) {
-  const { vaultsOverview$, context$ } = useAppContext()
+  const { vaultsOverview$, context$, productCardsWithBalance$, accountData$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
+
+  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsWithBalance$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
   const [context, contextError] = useObservable(context$)
+  const [accountData, accountDataError] = useObservable(accountData$)
 
   return (
-    <WithErrorHandler error={[vaultsOverviewError, contextError]}>
-      <WithLoadingIndicator value={[vaultsOverview, context]}>
-        {([vaultsOverview, context]) => (
+    <WithErrorHandler
+      error={[vaultsOverviewError, contextError, productCardsDataError, accountDataError]}
+    >
+      <WithLoadingIndicator value={[vaultsOverview, context, productCardsDataValue]}>
+        {([_vaultsOverview, _context, _productCardsDataValue]) => (
           <VaultsOverviewView
-            vaultsOverview={vaultsOverview}
-            context={context}
+            vaultsOverview={_vaultsOverview}
+            context={_context}
             address={checksumAddress}
+            ensName={accountData?.ensName}
+            productCardsData={_productCardsDataValue}
           />
         )}
       </WithLoadingIndicator>

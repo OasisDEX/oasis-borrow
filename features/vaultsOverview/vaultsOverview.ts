@@ -3,7 +3,7 @@ import { VaultWithType } from 'blockchain/vaults'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
-import { combineLatest } from 'rxjs'
+import { combineLatest, iif, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged, switchMap } from 'rxjs/operators'
 
@@ -30,27 +30,32 @@ export function createVaultsOverview$(
   address: string,
 ): Observable<VaultsOverview> {
   const automationEnabled = useFeatureToggle('Automation')
-
   const vaultsAddress$ = vaults$(address)
 
-  const vaultWithAutomationData$ = vaults$(address).pipe(
+  const vaultWithAutomationData$ = vaultsAddress$.pipe(
     switchMap((vaults) => {
       return combineLatest(
-        vaults.map((vault) => {
-          return automationTriggersData$(vault.id).pipe(
-            map((automationData) => ({ ...vault, ...extractStopLossData(automationData) })),
-          )
-        }),
+        (vaults || []).length > 0
+          ? vaults.map((vault) => {
+              return automationTriggersData$(vault.id).pipe(
+                map((automationData) => ({ ...vault, ...extractStopLossData(automationData) })),
+              )
+            })
+          : of([]),
       )
     }),
   )
 
-  const borrowVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
+  const borrowVaults = (iif(() => automationEnabled, vaultWithAutomationData$, vaultsAddress$).pipe(
     map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
     // TODO casting won't be necessary when Automation feature flag will be removed
   ) as unknown) as Observable<VaultWithSLData>
 
-  const multiplyVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
+  const multiplyVaults = (iif(
+    () => automationEnabled,
+    vaultWithAutomationData$,
+    vaultsAddress$,
+  ).pipe(
     map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
     // TODO casting won't be necessary when Automation feature flag will be removed
   ) as unknown) as Observable<VaultWithSLData>

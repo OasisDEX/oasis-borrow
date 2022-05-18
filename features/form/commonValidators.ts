@@ -7,7 +7,7 @@ import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
-type DaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
+type DaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'
 
 export function vaultWillBeAtRiskLevelDangerValidator({
   inputAmountsEmpty,
@@ -323,17 +323,25 @@ export function insufficientCollateralAllowanceValidator({
 
 export function insufficientDaiAllowanceValidator({
   paybackAmount,
+  depositDaiAmount,
   daiAllowance,
   debtOffset,
 }: {
   paybackAmount?: BigNumber
+  depositDaiAmount?: BigNumber
   daiAllowance?: BigNumber
   debtOffset: BigNumber
 }) {
+  const amountToValidate = paybackAmount?.gt(zero)
+    ? paybackAmount
+    : depositDaiAmount?.gt(zero)
+    ? depositDaiAmount
+    : zero
+
   return !!(
-    paybackAmount &&
-    !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.plus(debtOffset).gt(daiAllowance))
+    amountToValidate &&
+    !amountToValidate.isZero() &&
+    (!daiAllowance || amountToValidate.plus(debtOffset).gt(daiAllowance))
   )
 }
 

@@ -7,6 +7,7 @@ import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { zero } from 'helpers/zero'
 
+import { roundRatioToBeDivisibleByFive } from '../../../../helpers/roundRatioToBeDivisibleByFive'
 import { getVaultChange } from '../pipes/manageMultiplyVaultCalculations'
 
 describe('Adjust multiply calculations', () => {
@@ -42,7 +43,78 @@ describe('Adjust multiply calculations', () => {
     expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
   })
 
-  it.skip('Decrease multiply', () => {
+  it('Increase multiply deposit collateral', () => {
+    const debt = new BigNumber(1000)
+    const lockedCollateral = new BigNumber(5)
+    const oraclePrice = new BigNumber(1000)
+    const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
+    const depositAmount = new BigNumber(1)
+
+    const requiredCollRatio = new BigNumber(2)
+
+    const { debtDelta, collateralDelta, loanFee } = getVaultChange({
+      requiredCollRatio,
+      debt,
+      lockedCollateral,
+      currentCollateralPrice: oraclePrice,
+      marketPrice,
+      slippage,
+      depositAmount,
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount: zero,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+    })
+
+    const afterCollateralizationRatio = lockedCollateral
+      .plus(collateralDelta.plus(depositAmount))
+      .times(oraclePrice)
+      .div(debt.plus(debtDelta).plus(loanFee))
+
+    expect(
+      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
+    ).to.deep.eq(requiredCollRatio)
+  })
+
+  it('Increase multiply deposit dai', () => {
+    const debt = new BigNumber(1000)
+    const lockedCollateral = new BigNumber(5)
+    const oraclePrice = new BigNumber(1000)
+    const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
+    const depositDaiAmount = new BigNumber(1000)
+
+    const requiredCollRatio = new BigNumber(2)
+
+    const { debtDelta, collateralDelta, loanFee } = getVaultChange({
+      requiredCollRatio,
+      debt,
+      lockedCollateral,
+      currentCollateralPrice: oraclePrice,
+      marketPrice,
+      slippage,
+      depositAmount: depositDaiAmount.div(marketPrice),
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount: zero,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+    })
+
+    const afterCollateralizationRatio = lockedCollateral
+      .plus(collateralDelta)
+      .plus(depositDaiAmount.div(marketPrice))
+      .times(oraclePrice)
+      .div(debt.plus(debtDelta).plus(loanFee))
+
+    expect(
+      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
+    ).to.deep.eq(requiredCollRatio)
+  })
+
+  it('Decrease multiply', () => {
     const debt = new BigNumber(2000)
     const lockedCollateral = new BigNumber(5)
     const oraclePrice = new BigNumber(1000)
@@ -71,7 +143,79 @@ describe('Adjust multiply calculations', () => {
       .times(oraclePrice)
       .div(debt.plus(debtDelta))
 
-    expect(afterCollateralizationRatio).to.deep.eq(requiredCollRatio)
+    expect(
+      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_UP),
+    ).to.deep.eq(requiredCollRatio)
+  })
+
+  it('Decrease multiply withdraw collateral', () => {
+    const debt = new BigNumber(5000)
+    const lockedCollateral = new BigNumber(5)
+    const oraclePrice = new BigNumber(1000)
+    const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
+    const withdrawAmount = new BigNumber(1)
+
+    const requiredCollRatio = new BigNumber(3)
+
+    const { debtDelta, collateralDelta } = getVaultChange({
+      requiredCollRatio,
+      debt,
+      lockedCollateral,
+      currentCollateralPrice: oraclePrice,
+      marketPrice,
+      slippage,
+      depositAmount: zero,
+      paybackAmount: zero,
+      withdrawAmount,
+      generateAmount: zero,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+    })
+
+    const afterCollateralizationRatio = lockedCollateral
+      .plus(collateralDelta.minus(withdrawAmount))
+      .times(oraclePrice)
+      .div(debt.plus(debtDelta))
+
+    expect(
+      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
+    ).to.deep.eq(requiredCollRatio)
+  })
+
+  it('Decrease multiply withdraw dai', () => {
+    const debt = new BigNumber(5000)
+    const lockedCollateral = new BigNumber(5)
+    const oraclePrice = new BigNumber(1000)
+    const marketPrice = new BigNumber(1010)
+    const slippage = new BigNumber(0.05)
+    const generateAmount = new BigNumber(1)
+
+    const requiredCollRatio = new BigNumber(3)
+
+    const { debtDelta, collateralDelta } = getVaultChange({
+      requiredCollRatio,
+      debt,
+      lockedCollateral,
+      currentCollateralPrice: oraclePrice,
+      marketPrice,
+      slippage,
+      depositAmount: zero,
+      paybackAmount: zero,
+      withdrawAmount: zero,
+      generateAmount,
+      OF: OAZO_FEE,
+      FF: LOAN_FEE,
+    })
+
+    const afterCollateralizationRatio = lockedCollateral
+      .plus(collateralDelta)
+      .times(oraclePrice)
+      .div(debt.plus(debtDelta).plus(generateAmount))
+
+    expect(
+      roundRatioToBeDivisibleByFive(afterCollateralizationRatio, BigNumber.ROUND_DOWN),
+    ).to.deep.eq(requiredCollRatio)
   })
 
   it('Calculates net value USD, after net value USD, after collateral delta USD using market price', () => {

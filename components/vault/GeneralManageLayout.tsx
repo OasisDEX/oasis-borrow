@@ -35,8 +35,9 @@ export function GeneralManageLayout({
     priceInfo,
     collateralizationRatioAtNextPrice,
   } = generalManageVault.state
-  const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+
+  const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
   const vaultHeadingKey =
@@ -55,9 +56,9 @@ export function GeneralManageLayout({
             priceInfo={priceInfo}
           />
         }
-        // TODO this prop to be removed when automationBasicBuyAndSellEnabled wont be needed anymore
+        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
         headerControl={
-          !automationBasicBuyAndSellEnabled ? (
+          !newComponentsEnabled ? (
             <DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />
           ) : (
             <></>

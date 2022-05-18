@@ -107,11 +107,11 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
   const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
   const oraclePrice = priceInfo.currentCollateralPrice
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardNetValue
