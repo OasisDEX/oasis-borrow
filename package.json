@@ -142,6 +142,9 @@
     "whatwg-fetch": "2.0.3",
     "zod": "^1.5.0"
   },
+  "resolutions": {
+    "webpack": "5"
+  },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.17.12",
     "@ethersproject/providers": "5.6.2",
@@ -191,6 +194,7 @@
     "autoprefixer": "7.1.6",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "10.0.0",
+    "buffer": "^4.3.0",
     "chai": "^4.2.0",
     "chai-subset": "^1.6.0",
     "codecov": "^3.7.2",
@@ -224,7 +228,6 @@
     "stream-browserify": "^3.0.0",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
-    "typescript": "^4.4.3",
-    "webpack": "^4.42.1"
+    "typescript": "^4.4.3"
   }
 }

@@ -9,8 +9,7 @@ module.exports = {
   typescript: { reactDocgen: false },
   stories: [
     '../theme/*.stories.tsx',
-    // '../features/**/*.stories.tsx',
-    '../features/borrow/manage/stories/ManageVaultErrors.stories.tsx',
+    '../features/**/*.stories.tsx',
     '../components/**/*.stories.tsx',
   ],
   addons: [
@@ -32,7 +31,13 @@ module.exports = {
   webpackFinal: async (config) => {
     const nextConfig = require('../next.config.js')
     config.resolve.modules = [path.resolve(__dirname, '..'), 'node_modules']
-
+    // Work around for Buffer is undefined:
+    // https://github.com/webpack/changelog-v5/issues/10
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      }),
+    )
     return {
       ...nextConfig.webpack,
       ...config,
@@ -42,14 +47,7 @@ module.exports = {
         alias: {
           ...config.resolve.alias,
         },
-        plugins: [
-          new TsconfigPathsPlugin(),
-          // Work around for Buffer is undefined:
-          // https://github.com/webpack/changelog-v5/issues/10
-          new webpack.ProvidePlugin({
-            Buffer: ['buffer', 'Buffer'],
-          }),
-        ],
+        plugins: [new TsconfigPathsPlugin()],
         fallback: {
           crypto: require.resolve('crypto-browserify'),
           fs: false,

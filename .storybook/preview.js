@@ -3,6 +3,9 @@ import React, { Suspense } from 'react'
 import { ThemeProvider } from 'theme-ui'
 import { theme } from '../theme'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
+import { setConfig } from 'next/config'
+import { publicRuntimeConfig } from '../runtimeConfig.js'
+setConfig({ publicRuntimeConfig })
 
 addDecorator((storyFn) => <ThemeProvider theme={theme}>{storyFn()}</ThemeProvider>)
 addDecorator((story, context) => <Suspense fallback="Loading...">{story(context)}</Suspense>)

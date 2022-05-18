@@ -23,6 +23,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "runtimeConfig.js", "runtimeConfig.js"],
   "exclude": ["node_modules"]
 }
