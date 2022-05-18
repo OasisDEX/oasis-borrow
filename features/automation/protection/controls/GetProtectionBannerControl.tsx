@@ -34,7 +34,7 @@ export function GetProtectionBannerControl({
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')
-  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
+  const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
