@@ -32,7 +32,11 @@ import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps, slCollRatioIsAtLiquidationRatio } from './AdjustSlFormLayout'
+import {
+  AdjustSlFormLayout,
+  AdjustSlFormLayoutProps,
+  slCollRatioIsAtLiquidationRatio,
+} from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -131,7 +135,9 @@ export function AdjustSlFormControl({
   )
 
   const maxBoundry =
-    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite() ? new BigNumber(5) : nextPriceCollRatio
+    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
+      ? new BigNumber(5)
+      : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
   const liqRatioWithOffset = liqRatio.plus(STOP_LOSS_LIQUIDATION_OFFSET)
@@ -153,7 +159,6 @@ export function AdjustSlFormControl({
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
     .div(nextPriceCollRatio.minus(liqRatio))
-
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -252,7 +257,8 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails) || slCollRatioIsAtLiquidationRatio(selectedSLValue, ilkData),
+      (!isEditing && !uiState?.txDetails) ||
+      slCollRatioIsAtLiquidationRatio(selectedSLValue, ilkData),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
