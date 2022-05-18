@@ -9,6 +9,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
@@ -93,7 +94,7 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD /* , ilk */ },
+    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD, ilk },
     ilkData: { liquidationRatio },
     afterDebt,
     afterLockedCollateral,
@@ -122,6 +123,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
@@ -131,9 +133,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {/* {!newComponentsEnabled && (
+          {!newComponentsEnabled && stopLossWriteEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
-          )} */}
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -240,11 +242,11 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }
         />
       )}
-      {/* {automationEnabled && newComponentsEnabled && (
+      {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
-      )} */}
+      )}
     </Box>
   )
 }

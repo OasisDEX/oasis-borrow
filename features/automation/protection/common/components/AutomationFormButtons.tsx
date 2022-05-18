@@ -1,4 +1,5 @@
 import { Box, Button } from '@theme-ui/components'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex } from 'theme-ui'
@@ -32,6 +33,7 @@ export function AutomationFormButtons({
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   function backToVaultOverview() {
     uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -46,7 +48,8 @@ export function AutomationFormButtons({
 
   return (
     <>
-      {!txSuccess && type === 'cancel' && (
+      {((!stopLossWriteEnabled && !txSuccess && type === 'cancel') ||
+        (stopLossWriteEnabled && !txSuccess)) && (
         <Box>
           <RetryableLoadingButton {...triggerConfig} />
         </Box>

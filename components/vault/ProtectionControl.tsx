@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -13,17 +14,21 @@ import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSp
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
-// import { AppLink } from '../Links'
+import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface ZeroDebtProtectionBannerProps {
-  headerTranslationKey: string
-  descriptionTranslationKey: string
+  useTranslationKeys?: boolean
+  header: string
+  description: string
+  showLink?: boolean
 }
 
 function ZeroDebtProtectionBanner({
-  headerTranslationKey,
-  descriptionTranslationKey,
+  useTranslationKeys = true,
+  header,
+  description,
+  showLink = true,
 }: ZeroDebtProtectionBannerProps) {
   const { t } = useTranslation()
 
@@ -31,14 +36,18 @@ function ZeroDebtProtectionBanner({
     <VaultBanner
       status={<Icon size="34px" name="warning" />}
       withClose={false}
-      header={t(headerTranslationKey)}
+      header={useTranslationKeys ? t(header) : header}
       subheader={
         <>
-          {t(descriptionTranslationKey)}
-          {/* {', '}
-          <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 3 }}>
-            {t('here')}.
-          </AppLink> */}
+          {useTranslationKeys ? t(description) : description}
+          {showLink && (
+            <>
+              {', '}
+              <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 3 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          )}
         </>
       }
       color="primary"
@@ -53,6 +62,43 @@ interface ProtectionControlProps {
   collateralizationRatioAtNextPrice: BigNumber
 }
 
+function getZeroDebtProtectionBannerProps({
+  stopLossWriteEnabled,
+  isVaultDebtZero,
+  isVaultDebtBelowDustLumit,
+}: {
+  stopLossWriteEnabled: boolean
+  isVaultDebtZero: boolean
+  isVaultDebtBelowDustLumit: boolean
+}): ZeroDebtProtectionBannerProps {
+  if (stopLossWriteEnabled) {
+    if (isVaultDebtZero) {
+      return {
+        header: 'protection.zero-debt-heading',
+        description: 'protection.zero-debt-description',
+      }
+    } else if (isVaultDebtBelowDustLumit) {
+      return {
+        header: 'protection.below-dust-limit',
+        description: 'protection.zero-debt-description',
+      }
+    } else
+      return {
+        header: 'Unable to access stop loss',
+        description: 'Please try again later',
+        showLink: false,
+      }
+  } else {
+    return {
+      useTranslationKeys: false,
+      showLink: false,
+      header: 'Creation of the new stop loss trigger is currently disabled.',
+      description:
+        "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW stop loss triggers, as they might not result in the expected outcome. Please use the 'close vault' option if you want to close your vault right now.",
+    }
+  }
+}
+
 export function ProtectionControl({
   vault,
   ilkData,
@@ -64,10 +110,11 @@ export function ProtectionControl({
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
   const dustLimit = ilkData.debtFloor
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   return !vault.debt.isZero() &&
     vault.debt > dustLimit &&
-    automationTriggersData?.triggers?.length ? (
+    (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
@@ -102,24 +149,12 @@ export function ProtectionControl({
   ) : (
     <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
       <ZeroDebtProtectionBanner
-        headerTranslationKey="Creation of the new stop loss trigger is currently disabled."
-        descriptionTranslationKey="To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW stop loss triggers, as they might not result in the expected outcome. Please use the 'close vault' option if you want to close your vault right now."
+        {...getZeroDebtProtectionBannerProps({
+          stopLossWriteEnabled,
+          isVaultDebtZero: vault.debt.isZero(),
+          isVaultDebtBelowDustLumit: vault.debt <= dustLimit,
+        })}
       />
     </Container>
   )
-  // ) : vault.debt.isZero() ? (
-  //   <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-  //     <ZeroDebtProtectionBanner
-  //       headerTranslationKey={'protection.zero-debt-heading'}
-  //       descriptionTranslationKey={'protection.zero-debt-description'}
-  //     />
-  //   </Container>
-  // ) : (
-  //   <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-  //     <ZeroDebtProtectionBanner
-  //       headerTranslationKey={'protection.below-dust-limit-heading'}
-  //       descriptionTranslationKey={'protection.zero-debt-description'}
-  //     />
-  //   </Container>
-  // )
 }

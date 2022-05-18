@@ -1,9 +1,10 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
@@ -108,7 +109,6 @@ interface SetDownsideProtectionInformationProps {
   selectedSLValue: BigNumber
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function SetDownsideProtectionInformation({
   vault,
   ilkData,
@@ -241,23 +241,24 @@ export function AdjustSlFormLayout({
   txState,
   txHash,
   txCost,
-  // slValuePickerConfig,
+  slValuePickerConfig,
   closePickerConfig,
   accountIsController,
   addTriggerConfig,
   tokenPrice,
-  // ethPrice,
+  ethPrice,
   vault,
   ilkData,
-  // gasEstimation,
+  gasEstimation,
   etherscan,
   toggleForms,
   selectedSLValue,
   firstStopLossSetup,
-}: // isEditing,
-// collateralizationRatioAtNextPrice,
-AdjustSlFormLayoutProps) {
+  isEditing,
+  collateralizationRatioAtNextPrice,
+}: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   return (
     <Grid columns={[1]}>
@@ -267,8 +268,16 @@ AdjustSlFormLayoutProps) {
         translations={{
           editing: {
             header: t('protection.set-downside-protection'),
-            description:
-              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
+            description: stopLossWriteEnabled ? (
+              <>
+                {t('protection.set-downside-protection-desc')}{' '}
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </>
+            ) : (
+              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+            ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -292,7 +301,7 @@ AdjustSlFormLayoutProps) {
         }}
       />
       {txProgressing && <OpenVaultAnimation />}
-      {/* {!txProgressing && txState !== TxStatus.Success && (
+      {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
           <Box mt={3}>
             <SliderValuePicker {...slValuePickerConfig} />
@@ -322,7 +331,7 @@ AdjustSlFormLayoutProps) {
             </>
           )}
         </>
-      )} */}
+      )}
 
       {txState === TxStatus.Success && (
         <>
