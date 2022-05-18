@@ -34,6 +34,10 @@ const oasisBaseTheme = {
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
+    grey: {
+      darker: '#E6E9EB',
+      light: '#F1F3F4'
+    },
 
     text: {
       focused: '#272940',
