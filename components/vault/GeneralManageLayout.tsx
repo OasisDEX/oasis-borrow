@@ -36,7 +36,7 @@ export function GeneralManageLayout({
     collateralizationRatioAtNextPrice,
   } = generalManageVault.state
 
-  const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
+  const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
