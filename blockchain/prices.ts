@@ -107,17 +107,28 @@ export function coinPaprikaTicker$(ticker: string): Observable<BigNumber> {
   }).pipe(map(({ response }) => new BigNumber(response.quotes.USD.price)))
 }
 
+export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
+  return ajax({
+    url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(map(({ response }) => new BigNumber(response[ticker].usd)))
+}
+
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
   coinbaseOrderBook$: (ticker: string) => Observable<CoinbaseOrderBook>,
   coinpaprikaTicker$: (ticker: string) => Observable<BigNumber>,
+  coinGeckoTicker$: (ticker: string) => Observable<BigNumber>,
   tokens: Array<string>,
 ): Observable<Ticker> {
   return every10Seconds$.pipe(
     switchMap(() =>
       forkJoin(
         tokens.map((token) => {
-          const { coinbaseTicker, coinpaprikaTicker } = getToken(token)
+          const { coinbaseTicker, coinpaprikaTicker, coinGeckoTicker } = getToken(token)
           if (coinbaseTicker) {
             return coinbaseOrderBook$(coinbaseTicker).pipe(
               map((response) => {
@@ -134,6 +145,12 @@ export function createTokenPriceInUSD$(
             )
           } else if (coinpaprikaTicker) {
             return coinpaprikaTicker$(coinpaprikaTicker).pipe(
+              map((price) => ({
+                [token]: price,
+              })),
+            )
+          } else if (coinGeckoTicker) {
+            return coinGeckoTicker$(coinGeckoTicker).pipe(
               map((price) => ({
                 [token]: price,
               })),

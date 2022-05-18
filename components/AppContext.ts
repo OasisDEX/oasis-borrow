@@ -43,6 +43,7 @@ import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   coinbaseOrderBook$,
+  coinGeckoTicker$,
   coinPaprikaTicker$,
   createGasPrice$,
   createOraclePriceData$,
@@ -409,7 +410,12 @@ export function setupAppContext() {
   const transactionManager$ = createTransactionManager(transactions$)
 
   const tokenPriceUSD$ = memoize(
-    curry(createTokenPriceInUSD$)(every10Seconds$, coinbaseOrderBook$, coinPaprikaTicker$),
+    curry(createTokenPriceInUSD$)(
+      every10Seconds$,
+      coinbaseOrderBook$,
+      coinPaprikaTicker$,
+      coinGeckoTicker$,
+    ),
   )
 
   function addGasEstimation$<S extends HasGasEstimation>(

@@ -588,6 +588,7 @@ export const tokens = [
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
+    coinGeckoTicker: 'wrapped-steth',
     color: '#ff077d',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wstETH.png'),
