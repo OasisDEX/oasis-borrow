@@ -11,7 +11,6 @@ type Features =
   | 'Exchange'
   | 'AutomationBasicBuyAndSell'
   | 'NewComponents'
-  | 'HideStopLossUI'
 
 const configuredFeatures: Record<Features, boolean> = {
   TestFeature: false, // used in unit tests
@@ -21,7 +20,6 @@ const configuredFeatures: Record<Features, boolean> = {
   Exchange: true,
   AutomationBasicBuyAndSell: false,
   NewComponents: false,
-  HideStopLossUI: true,
   // your feature here....
 }
 
