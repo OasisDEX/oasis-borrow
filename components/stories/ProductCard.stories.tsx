@@ -3,7 +3,7 @@ import EthGif from 'public/static/img/tokens/eth.gif'
 import EthImage from 'public/static/img/tokens/eth.png'
 import React from 'react'
 
-import { ProductCard } from '../ProductCard'
+import { ProductCard, ProductCardProtocolLink } from '../ProductCard'
 
 export const Borrow = () => {
   const { t } = useTranslation()
@@ -12,7 +12,7 @@ export const Borrow = () => {
     <ProductCard
       tokenImage={EthImage}
       tokenGif={EthGif}
-      title="ETH-A"
+      title="Maker ETH Vault"
       description={t(`product-card.borrow`, { token: 'ETH' })}
       banner={{
         title: t('product-card-banner.with', { value: '100', token: 'ETH' }),
@@ -20,8 +20,12 @@ export const Borrow = () => {
           value: '280,000',
         }),
       }}
-      leftSlot={{ title: t('system.min-coll-ratio'), value: '50%' }}
-      rightSlot={{ title: t(t('system.stability-fee')), value: '2.0%' }}
+      labels={[
+        { title: t('system.min-coll-ratio'), value: '50%' },
+        { title: t('system.liquidity-available'), value: '40.5M' },
+        { title: t('system.stability-fee'), value: '2.0%' },
+        { title: t('system.protocol'), value: <ProductCardProtocolLink ilk={'ETH-A'} /> },
+      ]}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open/ETH-A', text: t('nav.borrow') }}
       isFull={false}
@@ -36,7 +40,7 @@ export const Multiply = () => {
     <ProductCard
       tokenImage={EthImage}
       tokenGif={EthGif}
-      title="ETH-A"
+      title="Maker ETH Vault"
       description={t(`product-card.multiply`, { token: 'ETH' })}
       banner={{
         title: t('product-card-banner.with', { value: '100', token: 'ETH' }),
@@ -45,8 +49,12 @@ export const Multiply = () => {
           token: 'ETH',
         }),
       }}
-      leftSlot={{ title: t('system.max-multiple'), value: '3x' }}
-      rightSlot={{ title: t(t('system.stability-fee')), value: '2.0%' }}
+      labels={[
+        { title: t('system.max-multiple'), value: '3x' },
+        { title: t('system.liquidity-available'), value: '40.5M' },
+        { title: t('system.stability-fee'), value: '2.0%' },
+        { title: t('system.protocol'), value: <ProductCardProtocolLink ilk={'ETH-A'} /> },
+      ]}
       background="linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF"
       button={{ link: '/vaults/open-multiply/ETH-A', text: t('nav.multiply') }}
       floatingLabelText="Get up to 3.3x ETH exposure"

@@ -298,13 +298,13 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const [context] = useObservable(context$)
   const { t } = useTranslation()
 
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const spitedEvents = flatten(vaultHistory.map(splitEvents))
 
   return (
     <>
       {/* TODO: remove VaultHistoryItem, MultiplyHistoryEventDetails and MultiplyHistoryEventDetailsItem components when this flag is no longer needed */}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <Box>
           <Heading variant="header3" sx={{ mb: [4, 3] }}>
             {t('vault-history')}

@@ -4,6 +4,7 @@ import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
@@ -14,11 +15,13 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { zero } from './zero'
 
 export interface ProductCardData {
   token: string
   ilk: Ilk
   liquidationRatio: BigNumber
+  liquidityAvailable: BigNumber
   stabilityFee: BigNumber
   balance?: BigNumber
   balanceInUsd?: BigNumber
@@ -63,30 +66,7 @@ export type ProductLandingPagesFilter = {
 }
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
-type Ilk =
-  | 'WBTC-B'
-  | 'ETH-B'
-  | 'ETH-C'
-  | 'WBTC-C'
-  | 'GUSD-A'
-  | 'ETH-A'
-  | 'WBTC-A'
-  | 'LINK-A'
-  | 'UNI-A'
-  | 'YFI-A'
-  | 'MANA-A'
-  | 'MATIC-A'
-  | 'WSTETH-A'
-  | 'RENBTC-A'
-  | 'GUNIV3DAIUSDC1-A'
-  | 'GUNIV3DAIUSDC2-A'
-  | 'UNIV2DAIETH-A'
-  | 'UNIV2WBTCETH-A'
-  | 'UNIV2USDCETH-A'
-  | 'UNIV2DAIUSDC-A'
-  | 'UNIV2UNIETH-A'
-  | 'UNIV2WBTCDAI-A'
-  | 'CRVV1ETHSTETH-A'
+type Ilk = typeof supportedIlks[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -110,6 +90,7 @@ export const supportedBorrowIlks = [
   'UNIV2UNIETH-A',
   'UNIV2WBTCDAI-A',
   'CRVV1ETHSTETH-A',
+  'WSTETH-B',
 ]
 
 export const supportedMultiplyIlks = [
@@ -127,6 +108,7 @@ export const supportedMultiplyIlks = [
   'YFI-A',
   'MANA-A',
   'MATIC-A',
+  'WSTETH-B',
 ]
 
 export const supportedIlksList = [
@@ -149,6 +131,7 @@ export const productCardsConfig: {
     featuredCards: Record<ProductTypes, Array<Ilk>>
   }
   descriptionCustomKeys: Record<Ilk, string>
+  descriptionLinks: Record<Ilk, { link: string; name: string }>
 } = {
   borrow: {
     cardsFilters: [
@@ -164,7 +147,7 @@ export const productCardsConfig: {
       { name: 'GUSD', icon: 'gusd_circle' },
       { name: 'Curve LP', icon: 'curve_circle' },
     ],
-    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-A'],
+    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -214,7 +197,7 @@ export const productCardsConfig: {
         'ETH-C',
         'WBTC-C',
         // 'CRVV1ETHSTETH-A',
-        'WSTETH-A',
+        'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
@@ -225,6 +208,7 @@ export const productCardsConfig: {
     'ETH-B': 'biggest-multiply',
     'ETH-C': 'lowest-stabilityFee-and-cheapest',
     'WSTETH-A': 'staking-rewards',
+    'WSTETH-B': 'lowest-annual-fee-cheapest-vault',
     'WBTC-A': 'medium-exposure-medium-cost',
     'WBTC-B': 'biggest-multiply',
     'WBTC-C': 'lowest-stabilityFee-and-cheapest',
@@ -246,6 +230,123 @@ export const productCardsConfig: {
     'UNIV2WBTCDAI-A': 'lp-tokens',
     'CRVV1ETHSTETH-A': 'borrow',
   } as Record<string, string>,
+  descriptionLinks: {
+    'ETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-A)',
+    },
+    'ETH-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-B)',
+    },
+    'ETH-C': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-C)',
+    },
+    'WSTETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      name: 'Maker (WSTETH-A)',
+    },
+    'WSTETH-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      name: 'Maker (WSTETH-B)',
+    },
+    'WBTC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-A)',
+    },
+    'WBTC-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-B)',
+    },
+    'WBTC-C': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-C)',
+    },
+    'RENBTC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
+      name: 'Maker (RENBTC-A)',
+    },
+    'LINK-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
+      name: 'Maker (LINK-A)',
+    },
+    'MANA-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
+      name: 'Maker (MANA-A)',
+    },
+    'MATIC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
+      name: 'Maker (MATIC-A)',
+    },
+    'GUSD-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
+      name: 'Maker (GUSD-A)',
+    },
+    'YFI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
+      name: 'Maker (YFI-A)',
+    },
+    'UNI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_5813529831231652792943692',
+      name: 'Maker (UNI-A)',
+    },
+    'GUNIV3DAIUSDC2-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Gelato/Uniswap',
+    },
+    'UNIV2DAIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2USDCETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2DAIUSDC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2UNIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCDAI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'CRVV1ETHSTETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
+      name: 'Maker/Curve/Lido',
+    },
+  },
 }
 
 function btcProductCards(productCardsData: ProductCardData[]) {
@@ -405,29 +506,31 @@ export function createProductCardsWithBalance$(
   return ilksWithBalance$.pipe(
     switchMap((ilkDataList) =>
       combineLatest(
-        ...ilkDataList.map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
-
-          return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) => {
-              return of({
-                token: ilk.token,
-                balance: ilk.balance,
-                balanceInUsd: ilk.balancePriceInUsd,
-                ilk: ilk.ilk as Ilk,
-                liquidationRatio: ilk.liquidationRatio,
-                stabilityFee: ilk.stabilityFee,
-                debtFloor: ilk.debtFloor,
-                currentCollateralPrice: priceInfo.currentCollateralPrice,
-                bannerIcon: tokenMeta.bannerIcon,
-                bannerGif: tokenMeta.bannerGif,
-                background: tokenMeta.background,
-                name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              })
-            }),
-          )
-        }),
+        ...ilkDataList
+          .filter((ilk) => ilk.debtCeiling.gt(zero))
+          .map((ilk) => {
+            const tokenMeta = getToken(ilk.token)
+            return priceInfo$(ilk.token).pipe(
+              switchMap((priceInfo) => {
+                return of({
+                  token: ilk.token,
+                  balance: ilk.balance,
+                  balanceInUsd: ilk.balancePriceInUsd,
+                  ilk: ilk.ilk as Ilk,
+                  liquidationRatio: ilk.liquidationRatio,
+                  liquidityAvailable: ilk.ilkDebtAvailable,
+                  stabilityFee: ilk.stabilityFee,
+                  debtFloor: ilk.debtFloor,
+                  currentCollateralPrice: priceInfo.currentCollateralPrice,
+                  bannerIcon: tokenMeta.bannerIcon,
+                  bannerGif: tokenMeta.bannerGif,
+                  background: tokenMeta.background,
+                  name: tokenMeta.name,
+                  isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+                })
+              }),
+            )
+          }),
       ),
     ),
   )
@@ -449,6 +552,7 @@ export function createProductCardsData$(
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
+                liquidityAvailable: ilk.ilkDebtAvailable,
                 stabilityFee: ilk.stabilityFee,
                 debtFloor: ilk.debtFloor,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,

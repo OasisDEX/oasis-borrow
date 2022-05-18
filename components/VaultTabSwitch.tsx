@@ -50,22 +50,21 @@ function VaultTabButton({ onClick, variant, children }: VaultTabButtonProps) {
 }
 
 const InputWithTag = ({ data }: SingleValueProps<VaultTabSwitchOption>) => {
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   return (
     <Flex sx={{ alignItems: 'center' }}>
       {(data as VaultTabSwitchOption).label}
-      {(data as VaultTabSwitchOptionAutomationBasicBuyAndSell).withTag &&
-        automationBasicBuyAndSellEnabled && (
-          <VaultTabTag
-            isEnabled={(data as VaultTabSwitchOptionAutomationBasicBuyAndSell).isTagEnabled}
-          />
-        )}
+      {(data as VaultTabSwitchOptionNewComponentDesignEnabled).withTag && newComponentsEnabled && (
+        <VaultTabTag
+          isEnabled={(data as VaultTabSwitchOptionNewComponentDesignEnabled).isTagEnabled}
+        />
+      )}
     </Flex>
   )
 }
 
 function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOption>) {
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box
@@ -82,9 +81,7 @@ function Option({ innerProps, isSelected, data }: OptionProps<VaultTabSwitchOpti
     >
       <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}>
         {data.label}
-        {data.withTag && automationBasicBuyAndSellEnabled && (
-          <VaultTabTag isEnabled={data.isTagEnabled} />
-        )}
+        {data.withTag && newComponentsEnabled && <VaultTabTag isEnabled={data.isTagEnabled} />}
       </Flex>
     </Box>
   )
@@ -95,7 +92,7 @@ type VaultTabSwitchOption = {
   label: keyof typeof VaultViewMode
 }
 
-type VaultTabSwitchOptionAutomationBasicBuyAndSell = {
+type VaultTabSwitchOptionNewComponentDesignEnabled = {
   value: VaultViewMode
   label: keyof typeof VaultViewMode
   withTag: boolean
@@ -128,7 +125,7 @@ export function VaultTabSwitch({
   const [mode, setMode] = useState<VaultViewMode>(defaultMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -141,7 +138,7 @@ export function VaultTabSwitch({
   }, [])
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
-    if (automationBasicBuyAndSellEnabled) {
+    if (newComponentsEnabled) {
       return currentMode === activeMode ? 'vaultTab' : 'vaultTabInactive'
     }
     return currentMode === activeMode ? 'tab' : 'tabInactive'
@@ -158,13 +155,13 @@ export function VaultTabSwitch({
       [VaultViewMode.Protection]: protectionEnabled,
     } as Record<VaultViewMode, boolean>
 
-    return automationBasicBuyAndSellEnabled
+    return newComponentsEnabled
       ? (vaultViewModeTuples.map(([label, value]) => ({
           value,
           label,
           withTag: Object.keys(tagMap).includes(value.toString()),
           isTagEnabled: tagMap[value as VaultViewMode],
-        })) as VaultTabSwitchOptionAutomationBasicBuyAndSell[])
+        })) as VaultTabSwitchOptionNewComponentDesignEnabled[])
       : (vaultViewModeTuples.map(([label, value]) => ({
           value,
           label,
@@ -184,7 +181,7 @@ export function VaultTabSwitch({
 
   return (
     <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
-      {automationBasicBuyAndSellEnabled ? (
+      {newComponentsEnabled ? (
         <Box sx={{ zIndex: 0 }}>{headline}</Box>
       ) : (
         <Flex mt={2} mb={3} sx={{ zIndex: 0 }}>
@@ -211,7 +208,7 @@ export function VaultTabSwitch({
         />
       </Box>
       <Box sx={{ display: ['none', 'block'], zIndex: 1 }}>
-        {automationBasicBuyAndSellEnabled ? (
+        {newComponentsEnabled ? (
           <Flex
             sx={{
               borderBottom: '3px solid',
