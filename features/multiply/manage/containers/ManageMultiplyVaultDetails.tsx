@@ -121,14 +121,14 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
   return (
     <Box>
-      {automationEnabled && (
+      {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {/* {!newComponentsEnabled && (

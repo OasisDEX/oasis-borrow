@@ -26,12 +26,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   return (
     <WithConnection>
       <WithTermsOfService>
-        {automationEnabled ? (
+        {stopLossReadEnabled ? (
           <>
             <BackgroundLight />
             {isValidVaultId ? (

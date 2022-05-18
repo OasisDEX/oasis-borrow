@@ -139,12 +139,12 @@ export function ManageVaultDetails(
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
-      {automationEnabled && (
+      {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {/* {!newComponentsEnabled && (
