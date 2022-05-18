@@ -58,14 +58,14 @@ function AssetRow(props: PositionView) {
           {formatPercent(props.proportion)}
         </Text>
       )}
-      {props.fundsAvailableUsd && (
+      {props.contentsUsd && (
         <Text
           variant="paragraph3"
           sx={{
             ml: '8px',
           }}
         >
-          (${formatAmount(props.fundsAvailableUsd, 'USD')})
+          (${formatAmount(props.contentsUsd, 'USD')})
         </Text>
       )}
       {props.actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />}

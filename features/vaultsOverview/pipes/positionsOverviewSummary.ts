@@ -11,24 +11,24 @@ import { AssetAction } from './assetActions'
 export type PositionView = {
   token: string
   title: string
-  fundsAvailableUsd?: BigNumber
+  contentsUsd?: BigNumber
   url?: string
   proportion?: BigNumber
   actions?: Array<AssetAction>
 }
 
 function isPosition(thing: Position | WalletAssets): thing is Position {
-  return (thing as Position).fundsAvailable !== undefined
+  return (thing as Position).contentsUsd !== undefined
 }
 
 function getPositionOrAssetValue(thing: Position | WalletAssets): BigNumber {
-  return isPosition(thing) ? thing.fundsAvailable : thing.balanceUsd
+  return isPosition(thing) ? thing.contentsUsd : thing.balanceUsd
 }
 
 export type Position = {
   token: string
   title: string
-  fundsAvailable: BigNumber
+  contentsUsd: BigNumber
   url: string
 }
 
@@ -106,14 +106,14 @@ export function createPositionsOverviewSummary$(
           return {
             token: assetOrPosition.token,
             title: assetOrPosition.title,
-            fundsAvailableUsd: assetOrPosition.fundsAvailable,
+            contentsUsd: assetOrPosition.contentsUsd,
             url: assetOrPosition.url,
           }
         } else {
           return {
             token: assetOrPosition.token,
             title: assetOrPosition.token,
-            fundsAvailableUsd: assetOrPosition.balanceUsd,
+            contentsUsd: assetOrPosition.balanceUsd,
             actions: assetOrPosition.assetActions,
           }
         }
@@ -124,10 +124,7 @@ export function createPositionsOverviewSummary$(
   // calc total assets value
   const totalAssetsUsd$: Observable<BigNumber> = assetsAndPositions$.pipe(
     map((tokensAndBalances) =>
-      tokensAndBalances.reduce(
-        (acc, { fundsAvailableUsd }) => acc.plus(fundsAvailableUsd || zero),
-        zero,
-      ),
+      tokensAndBalances.reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero),
     ),
   )
 
@@ -140,7 +137,7 @@ export function createPositionsOverviewSummary$(
       assetsAndPositions.map((assetOrPosition) => {
         return {
           ...assetOrPosition,
-          proportion: assetOrPosition.fundsAvailableUsd?.div(totalAssetsUsd).times(100),
+          proportion: assetOrPosition.contentsUsd?.div(totalAssetsUsd).times(100),
         }
       }),
     ),
@@ -154,7 +151,7 @@ export function createPositionsOverviewSummary$(
     map(([assetsAndPositions, totalAssetsUsd]) => {
       const top5Sum = assetsAndPositions
         .slice(0, 5)
-        .reduce((acc, { fundsAvailableUsd }) => acc.plus(fundsAvailableUsd || zero), zero)
+        .reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero)
       return totalAssetsUsd.minus(top5Sum).div(totalAssetsUsd).times(100)
     }),
   )

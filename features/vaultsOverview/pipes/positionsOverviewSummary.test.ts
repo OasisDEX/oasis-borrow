@@ -39,8 +39,8 @@ describe('positionsOverviewSummary', () => {
 
     expect(wbtc.token, 'orders values by usd').eq('WBTC')
     expect(eth.token, 'orders values by usd').eq('ETH')
-    expect(wbtc.fundsAvailableUsd?.toString(), 'calculates usd value').eq('30')
-    expect(eth.fundsAvailableUsd?.toString(), 'calculates usd value').eq('2')
+    expect(wbtc.contentsUsd?.toString(), 'calculates usd value').eq('30')
+    expect(eth.contentsUsd?.toString(), 'calculates usd value').eq('2')
     expect(wbtc.proportion?.toString(), 'calculates proportion').eq('93.75')
     expect(eth.proportion?.toString(), 'calculates proportion').eq('6.25')
   })
@@ -104,13 +104,13 @@ describe('positionsOverviewSummary', () => {
       {
         token: 'ETH',
         title: 'ETH-A Oasis Multiply',
-        fundsAvailable: new BigNumber(5),
+        contentsUsd: new BigNumber(5),
         url: 'example.com/eth',
       },
       {
         token: 'DAI',
         title: 'DAI-A Oasis Earn',
-        fundsAvailable: new BigNumber(7),
+        contentsUsd: new BigNumber(7),
         url: 'example.com/earn',
       },
     ]
@@ -132,15 +132,15 @@ describe('positionsOverviewSummary', () => {
     expect(earnPosition.token)
 
     expect(earnPosition.token).eq('DAI')
-    expect(earnPosition.fundsAvailableUsd?.toString()).eq('7')
+    expect(earnPosition.contentsUsd?.toString()).eq('7')
     expect((earnPosition as PositionView).title).eq('DAI-A Oasis Earn')
     expect((earnPosition as PositionView).url).eq('example.com/earn')
 
     expect(ethInWallet.token).eq('ETH')
-    expect(ethInWallet.fundsAvailableUsd?.toString()).eq('6')
+    expect(ethInWallet.contentsUsd?.toString()).eq('6')
 
     expect(multiplyPosition.token).eq('ETH')
-    expect(multiplyPosition.fundsAvailableUsd?.toString()).eq('5')
+    expect(multiplyPosition.contentsUsd?.toString()).eq('5')
     expect((multiplyPosition as PositionView).title).eq('ETH-A Oasis Multiply')
     expect((multiplyPosition as PositionView).url).eq('example.com/eth')
 

@@ -30,7 +30,7 @@ export function createPositions$(
       return vaults.map((vault) => {
         return {
           token: vault.token,
-          fundsAvailable: vault.availableDebt,
+          contentsUsd: vault.lockedCollateralUSD,
           title: makerPositionName(vault),
           url: `/${vault.id}`,
         }
