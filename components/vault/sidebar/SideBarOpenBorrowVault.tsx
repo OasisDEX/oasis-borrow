@@ -1,19 +1,20 @@
 import { trackingEvents } from 'analytics/analytics'
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { getEditVaultButton } from 'features/sidebar/getEditVaultButton'
+import { getHeaderButton } from 'features/sidebar/getHeaderButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getResetButton } from 'features/sidebar/getResetButton'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SideBarOpenBorrowVaultContent } from './SideBarOpenBorrowVaultContent'
+import { SideBarOpenBorrowVaultEditingStage } from './SideBarOpenBorrowVaultEditingStage'
+import { SideBarOpenBorrowVaultOpenStage } from './SideBarOpenBorrowVaultOpenStage'
 
 interface SideBarOpenBorrowVaultProps {}
 
@@ -29,10 +30,12 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
     canRegress,
     regress,
     isEditingStage,
+    isOpenStage,
     isLoadingStage,
     token,
     totalSteps,
     currentStep,
+    ilk,
     updateDeposit,
     inputAmountsEmpty,
   } = props
@@ -41,29 +44,24 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ stage, token }),
-    ...(isEditingStage &&
-      !inputAmountsEmpty && {
-        headerButton: getResetButton({
-          t,
-          callback: () => {
-            updateDeposit!(undefined)
-          },
-        }),
-      }),
-    ...(canRegress && {
-      headerButton: getEditVaultButton({
-        t,
-        regress,
-        callback: () => {
-          if (stage !== 'allowanceFailure') {
-            trackingEvents.confirmVaultEdit(firstCDP)
-          }
-        },
-      }),
+    headerButton: getHeaderButton({
+      canResetForm: isEditingStage && !inputAmountsEmpty,
+      resetForm: () => {
+        updateDeposit!(undefined)
+      },
+      canRegress,
+      regress,
+      regressCallback: () => {
+        if (stage !== 'allowanceFailure') {
+          trackingEvents.confirmVaultEdit(firstCDP)
+        }
+      },
     }),
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SideBarOpenBorrowVaultContent {...props} />}
+        stage: {stage}
+        {isEditingStage && <SideBarOpenBorrowVaultEditingStage {...props} />}
+        {isOpenStage && <SideBarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -77,6 +75,13 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
         progress!()
       },
     },
+    ...(isEditingStage &&
+      ALLOWED_MULTIPLY_TOKENS.includes(token) && {
+        textButton: {
+          label: t('system.actions.borrow.switch-to-multiply'),
+          url: `/vaults/open-multiply/${ilk}`,
+        },
+      }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

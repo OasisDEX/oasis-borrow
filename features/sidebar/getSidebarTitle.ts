@@ -33,6 +33,6 @@ export function getSidebarTitle({ stage, token }: GetSidebarTitleProps): string 
     case 'txSuccess':
       return t('vault-form.header.confirm')
     default:
-      return 'Unhandled title'
+      return ''
   }
 }

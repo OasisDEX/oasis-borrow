@@ -7,7 +7,7 @@ import {
   SidebarSectionFooterButtonProps,
 } from './SidebarSectionFooterButton'
 
-type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
+export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
 
 export interface SidebarSectionFooterProps {
   primaryButton: SidebarSectionFooterButtonSettings

@@ -408,7 +408,7 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
-      transition: 'background 0.2s ease-in',
+      transition: 'background 200ms',
       '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },

@@ -4,6 +4,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatBigNumber, formatCryptoBalance } from 'helpers/formatters/format'
 import { calculateTokenPrecisionByValue } from 'helpers/tokens'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
@@ -89,6 +90,7 @@ export function VaultActionInput({
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const { symbol: tokenSymbol } = getToken(token)
   const { symbol: auxiliarySymbol } = auxiliaryToken ? getToken(auxiliaryToken) : { symbol: 'USD' }
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const tokenDigits = calculateTokenPrecisionByValue({
     token: token,
@@ -118,7 +120,13 @@ export function VaultActionInput({
         }),
       }}
     >
-      <Grid columns="1fr 2fr" py={2}>
+      <Grid
+        columns="1fr 2fr"
+        sx={{
+          paddingTop: !newComponentsEnabled ? 2 : 0,
+          paddingBottom: 2,
+        }}
+      >
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
           {action} {token}
         </Text>
