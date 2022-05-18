@@ -1,8 +1,9 @@
+import { getNetworkName } from '@oasisdex/web3-context'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { ALLOWED_AUTOMATION_ILKS } from '../../blockchain/tokensMetadata'
 import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
 import { VaultBannersView } from '../../features/banners/VaultsBannersView'
@@ -34,6 +35,7 @@ export function GeneralManageLayout({
     priceInfo,
     collateralizationRatioAtNextPrice,
   } = generalManageVault.state
+
   const showProtectionTab = ALLOWED_AUTOMATION_ILKS.includes(vault.ilk)
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
