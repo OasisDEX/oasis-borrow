@@ -1,3 +1,4 @@
+import { notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from '../../../form/warningMessagesHandler'
 import { OpenVaultState } from './openVault'
@@ -15,6 +16,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     customAllowanceAmountLessThanDepositAmount,
     depositAmountExceedsCollateralBalance,
     ledgerWalletContractDataDisabled,
+    insufficientEthFundsForTx,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
@@ -44,6 +46,7 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }
@@ -74,6 +77,36 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
         vaultWillBeAtRiskLevelDangerAtNextPrice,
         vaultWillBeAtRiskLevelWarning,
         vaultWillBeAtRiskLevelWarningAtNextPrice,
+      }),
+    )
+  }
+  return { ...state, warningMessages }
+}
+
+export function finalValidation(state: OpenVaultState): OpenVaultState {
+  const {
+    token,
+    gasEstimationUsd,
+    balanceInfo: { ethBalance },
+    priceInfo: { currentEthPrice },
+    depositAmount,
+    isEditingStage,
+  } = state
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice: currentEthPrice,
+    depositAmount,
+  })
+
+  const warningMessages: VaultWarningMessage[] = []
+
+  if (isEditingStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialInsufficientEthFundsForTx,
       }),
     )
   }

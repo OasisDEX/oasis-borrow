@@ -35,7 +35,7 @@ import { BalanceInfo, balanceInfoChange$ } from '../../../shared/balanceInfo'
 import { BaseManageVaultStage } from '../../../types/vaults/BaseManageVaultStage'
 import { createHistoryChange$, VaultHistoryEvent } from '../../../vaultHistory/vaultHistory'
 import { BorrowManageAdapterInterface } from './adapters/borrowManageAdapterInterface'
-import { validateErrors, validateWarnings } from './manageVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './manageVaultValidations'
 import { ManageVaultAllowanceChange } from './viewStateTransforms/manageVaultAllowances'
 import { ManageVaultCalculations } from './viewStateTransforms/manageVaultCalculations'
 import { ManageVaultConditions } from './viewStateTransforms/manageVaultConditions'
@@ -456,6 +456,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     map(validateWarnings),
                     map(vaultViewStateProvider.addErrorsAndWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                    map(finalValidation),
                     map(vaultViewStateProvider.addTxnCost),
                     map(
                       curry(addTransitions)(

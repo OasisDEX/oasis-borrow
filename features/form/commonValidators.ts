@@ -99,6 +99,35 @@ export function depositingAllEthBalanceValidator({
   return token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 }
 
+export function notEnoughETHtoPayForTx({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  depositAmount,
+}: {
+  token: string
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  depositAmount?: BigNumber
+}) {
+  if (!gasEstimationUsd) {
+    return false
+  }
+
+  if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
+    console.log(
+      'ETH balance after deposit (USD)',
+      ethBalance.minus(depositAmount).times(ethPrice).toNumber(),
+    )
+    console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
+    return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
+  }
+
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
+}
+
 export function customAllowanceAmountEmptyValidator({
   selectedAllowanceRadio,
   allowanceAmount,
@@ -138,6 +167,10 @@ export function customAllowanceAmountLessThanDepositAmountValidator({
 
 export function ledgerWalletContractDataDisabledValidator({ txError }: { txError?: TxError }) {
   return txError?.name === 'EthAppPleaseEnableContractData'
+}
+
+export function ethFundsForTxValidator({ txError }: { txError?: TxError }) {
+  return txError?.message === 'insufficient funds for gas * price + value'
 }
 
 export function debtIsLessThanDebtFloorValidator({

@@ -72,6 +72,8 @@ export function VaultErrors({
         return translate('depositing-all-eth-balance')
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
+      case 'insufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
       case 'exchangeError':
         return translate('exchange-error')
       case 'withdrawAmountExceedsFreeCollateral':
