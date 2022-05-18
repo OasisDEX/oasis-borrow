@@ -26,7 +26,7 @@ import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+// import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { BonusContainer } from '../../../bonus/BonusContainer'
@@ -118,7 +118,7 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
       collateralizationRatio,
-      ilk,
+      // ilk,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -140,16 +140,16 @@ export function ManageVaultDetails(
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && (
+          {/* {!newComponentsEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
-          )}
+          )} */}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -159,7 +159,7 @@ export function ManageVaultDetails(
           />
         </>
       )}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice
@@ -237,11 +237,11 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {/* {automationEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
-      )}
+      )} */}
       <BonusContainer cdpId={props.vault.id} />
     </Box>
   )

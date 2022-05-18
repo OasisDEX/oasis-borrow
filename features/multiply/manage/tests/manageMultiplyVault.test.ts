@@ -181,7 +181,7 @@ describe('manageMultiplyVault', () => {
 
         expect(state().generateAmount).to.deep.equal(state().maxGenerateAmount)
 
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         expect(state().generateAmount!).to.be.undefined
       })
 
@@ -198,8 +198,8 @@ describe('manageMultiplyVault', () => {
         )
 
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
-        expect(state().otherAction).to.deep.equal('depositDai')
+        state().setOtherAction!('paybackDai')
+        expect(state().otherAction).to.deep.equal('paybackDai')
 
         state().updatePaybackAmount!(paybackAmount)
         expect(state().paybackAmount!).to.deep.equal(paybackAmount)
@@ -324,7 +324,7 @@ describe('manageMultiplyVault', () => {
         )
 
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
@@ -360,7 +360,7 @@ describe('manageMultiplyVault', () => {
         state().updateWithdrawAmount!(withdrawAmount)
         expect(state().totalSteps).to.deep.equal(2)
 
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
         expect(state().totalSteps).to.deep.equal(3)
 
@@ -516,7 +516,7 @@ describe('manageMultiplyVault', () => {
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
 
         state().progress!()
@@ -682,7 +682,7 @@ describe('manageMultiplyVault', () => {
 
         legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
 
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()

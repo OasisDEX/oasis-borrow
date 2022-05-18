@@ -5,17 +5,37 @@ import React from 'react'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
-function bannerValues(maxMultiple: BigNumber, currentCollateralPrice: BigNumber) {
-  const dollarWorthInputColllateral = new BigNumber(150000)
-  const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
-
-  const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
-  const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
+function personaliseCardData({
+  productCardData,
+  roundedMaxMultiple,
+}: {
+  productCardData: ProductCardData
+  roundedMaxMultiple: BigNumber
+}) {
+  const { roundedTokenAmount } = calculateTokenAmount(productCardData)
 
   return {
-    tokenAmount: roundedTokenAmount,
+    ...calculateTokenAmount(productCardData),
+    exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
+  }
+}
+
+function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
+  const { currentCollateralPrice, balance } = props
+
+  const dollarWorthInputColllateral = new BigNumber(150000)
+  const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
+  const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
+  const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
+
+  if (balance) {
+    return personaliseCardData({ productCardData: props, roundedMaxMultiple })
+  }
+
+  return {
+    tokenAmount: formatCryptoBalance(roundedTokenAmount),
     exposure: roundedTokenAmount.multipliedBy(roundedMaxMultiple),
   }
 }
@@ -29,22 +49,24 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
 
-  const { tokenAmount, exposure } = bannerValues(maxMultiple, cardData.currentCollateralPrice)
+  const { tokenAmount, exposure } = bannerValues(cardData, maxMultiple)
 
   const tagKey = productCardsConfig.multiply.tags[cardData.ilk]
+
+  const title = t(`product-card-title.${cardData.ilk}`)
 
   return (
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
-      title={cardData.ilk}
+      title={title}
       description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: isGuniToken ? '100,000' : formatCryptoBalance(tokenAmount),
+          value: tokenAmount,
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
@@ -57,14 +79,24 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
               token: cardData.token,
             }),
       }}
-      leftSlot={{
-        title: t('system.max-multiple'),
-        value: `${maxMultiple.toFixed(2, 1)}x`,
-      }}
-      rightSlot={{
-        title: t(t('system.variable-annual-fee')),
-        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
-      }}
+      labels={[
+        {
+          title: t('system.max-multiple'),
+          value: `${maxMultiple.toFixed(2, 1)}x`,
+        },
+        {
+          title: t('system.liquidity-available'),
+          value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
+        },
+        {
+          title: t('system.stability-fee'),
+          value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+        },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+      ]}
       button={{
         link: `/vaults/open-multiply/${cardData.ilk}`,
         text: t('nav.multiply'),

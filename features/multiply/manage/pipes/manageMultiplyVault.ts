@@ -139,6 +139,7 @@ export type CloseVaultTo = 'collateral' | 'dai'
 export type OtherAction =
   | 'depositCollateral'
   | 'depositDai'
+  | 'paybackDai'
   | 'withdrawCollateral'
   | 'withdrawDai'
   | 'closeVault'
@@ -152,6 +153,7 @@ export interface MutableManageMultiplyVaultState {
 
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  depositDaiAmount?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   paybackAmount?: BigNumber
@@ -195,7 +197,9 @@ interface ManageVaultFunctions {
 
   updateDepositAmount?: (depositAmount?: BigNumber) => void
   updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositDaiAmount?: (depositDaiAmount?: BigNumber) => void
   updateDepositAmountMax?: () => void
+  updateDepositDaiAmountMax?: () => void
   updatePaybackAmount?: (paybackAmount?: BigNumber) => void
   updatePaybackAmountMax?: () => void
 
@@ -214,6 +218,7 @@ interface ManageVaultFunctions {
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
+  setDaiAllowanceAmountToDepositDaiAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   clear: () => void
 
@@ -314,6 +319,11 @@ function addTransitions(
         change({ kind: 'paybackAmount', paybackAmount })
       },
       updatePaybackAmountMax: () => change({ kind: 'paybackAmountMax' }),
+
+      updateDepositDaiAmount: (depositDaiAmount?: BigNumber) => {
+        change({ kind: 'depositDaiAmount', depositDaiAmount })
+      },
+      updateDepositDaiAmountMax: () => change({ kind: 'depositDaiAmountMax' }),
       updateWithdrawAmount: (withdrawAmount?: BigNumber) => {
         change({ kind: 'withdrawAmount', withdrawAmount })
       },
@@ -403,6 +413,8 @@ function addTransitions(
         change({ kind: 'daiAllowance', daiAllowanceAmount }),
       setDaiAllowanceAmountUnlimited: () => change({ kind: 'daiAllowanceUnlimited' }),
       setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
+      setDaiAllowanceAmountToDepositDaiAmount: () =>
+        change({ kind: 'daiAllowanceAsDepositDaiAmount' }),
       resetDaiAllowanceAmount: () =>
         change({
           kind: 'daiAllowanceReset',

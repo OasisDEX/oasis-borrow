@@ -1,8 +1,10 @@
 import { BigNumber } from 'bignumber.js'
+import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
+import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
 import {
   ALLOWED_MULTIPLY_TOKENS,
@@ -13,12 +15,17 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { zero } from './zero'
 
 export interface ProductCardData {
   token: string
   ilk: Ilk
   liquidationRatio: BigNumber
+  liquidityAvailable: BigNumber
   stabilityFee: BigNumber
+  balance?: BigNumber
+  balanceInUsd?: BigNumber
+  debtFloor: BigNumber
   currentCollateralPrice: BigNumber
   bannerIcon: string
   bannerGif: string
@@ -57,31 +64,9 @@ export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
   icon: ProductLandingPagesFiltersIcons
 }
+export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
-type Ilk =
-  | 'WBTC-B'
-  | 'ETH-B'
-  | 'ETH-C'
-  | 'WBTC-C'
-  | 'GUSD-A'
-  | 'ETH-A'
-  | 'WBTC-A'
-  | 'LINK-A'
-  | 'UNI-A'
-  | 'YFI-A'
-  | 'MANA-A'
-  | 'MATIC-A'
-  | 'WSTETH-A'
-  | 'RENBTC-A'
-  | 'GUNIV3DAIUSDC1-A'
-  | 'GUNIV3DAIUSDC2-A'
-  | 'UNIV2DAIETH-A'
-  | 'UNIV2WBTCETH-A'
-  | 'UNIV2USDCETH-A'
-  | 'UNIV2DAIUSDC-A'
-  | 'UNIV2UNIETH-A'
-  | 'UNIV2WBTCDAI-A'
-  | 'CRVV1ETHSTETH-A'
+type Ilk = typeof supportedIlks[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -105,6 +90,7 @@ export const supportedBorrowIlks = [
   'UNIV2UNIETH-A',
   'UNIV2WBTCDAI-A',
   'CRVV1ETHSTETH-A',
+  'WSTETH-B',
 ]
 
 export const supportedMultiplyIlks = [
@@ -122,6 +108,7 @@ export const supportedMultiplyIlks = [
   'YFI-A',
   'MANA-A',
   'MATIC-A',
+  'WSTETH-B',
 ]
 
 export const supportedIlksList = [
@@ -141,7 +128,7 @@ export const productCardsConfig: {
   multiply: ProductPageType
   earn: ProductPageType
   landing: {
-    featuredCards: Record<'borrow' | 'multiply' | 'earn', Array<Ilk>>
+    featuredCards: Record<ProductTypes, Array<Ilk>>
   }
   descriptionCustomKeys: Record<Ilk, string>
 } = {
@@ -159,7 +146,7 @@ export const productCardsConfig: {
       { name: 'GUSD', icon: 'gusd_circle' },
       { name: 'Curve LP', icon: 'curve_circle' },
     ],
-    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-A'],
+    featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-C', 'ETH-A', 'WSTETH-A', 'ETH-B'],
@@ -209,7 +196,7 @@ export const productCardsConfig: {
         'ETH-C',
         'WBTC-C',
         // 'CRVV1ETHSTETH-A',
-        'WSTETH-A',
+        'WSTETH-B',
       ],
       multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
       earn: ['GUNIV3DAIUSDC2-A'],
@@ -220,6 +207,7 @@ export const productCardsConfig: {
     'ETH-B': 'biggest-multiply',
     'ETH-C': 'lowest-stabilityFee-and-cheapest',
     'WSTETH-A': 'staking-rewards',
+    'WSTETH-B': 'lowest-annual-fee-cheapest-vault',
     'WBTC-A': 'medium-exposure-medium-cost',
     'WBTC-B': 'biggest-multiply',
     'WBTC-C': 'lowest-stabilityFee-and-cheapest',
@@ -267,10 +255,24 @@ export function landingPageCardsData({
   product = 'multiply',
 }: {
   productCardsData: ProductCardData[]
-  product?: 'multiply' | 'borrow' | 'earn'
+  product?: ProductTypes
 }) {
   return productCardsData.filter((ilk) =>
     productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
+  )
+}
+
+export function pageCardsDataByProduct({
+  productCardsData,
+  product = 'multiply',
+}: {
+  productCardsData: ProductCardData[]
+  product?: ProductTypes
+}) {
+  return productCardsData.filter((ilk) =>
+    productCardsConfig[product].cardsFilters.map((cardFilter) =>
+      ilk.token.includes(cardFilter.name),
+    ),
   )
 }
 
@@ -371,6 +373,51 @@ export function borrowPageCardsData({
   return productCardsData.filter((ilk) => ilk.token === cardsFilter)
 }
 
+export function cardFiltersFromBalances(
+  productCardsData: ProductCardData[],
+): Array<ProductLandingPagesFiltersKeys> {
+  return productCardsData
+    .filter((cardData) => cardData.balance && cardData.balance.isGreaterThan(0))
+    .map((d) => (d.token as unknown) as ProductLandingPagesFiltersKeys)
+}
+
+export function createProductCardsWithBalance$(
+  ilksWithBalance$: Observable<IlkWithBalance[]>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+): Observable<ProductCardData[]> {
+  return ilksWithBalance$.pipe(
+    switchMap((ilkDataList) =>
+      combineLatest(
+        ...ilkDataList
+          .filter((ilk) => ilk.debtCeiling.gt(zero))
+          .map((ilk) => {
+            const tokenMeta = getToken(ilk.token)
+            return priceInfo$(ilk.token).pipe(
+              switchMap((priceInfo) => {
+                return of({
+                  token: ilk.token,
+                  balance: ilk.balance,
+                  balanceInUsd: ilk.balancePriceInUsd,
+                  ilk: ilk.ilk as Ilk,
+                  liquidationRatio: ilk.liquidationRatio,
+                  liquidityAvailable: ilk.ilkDebtAvailable,
+                  stabilityFee: ilk.stabilityFee,
+                  debtFloor: ilk.debtFloor,
+                  currentCollateralPrice: priceInfo.currentCollateralPrice,
+                  bannerIcon: tokenMeta.bannerIcon,
+                  bannerGif: tokenMeta.bannerGif,
+                  background: tokenMeta.background,
+                  name: tokenMeta.name,
+                  isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+                })
+              }),
+            )
+          }),
+      ),
+    ),
+  )
+}
+
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
@@ -380,13 +427,16 @@ export function createProductCardsData$(
       combineLatest(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
+
           return priceInfo$(ilk.token).pipe(
             switchMap((priceInfo) => {
               return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
                 liquidationRatio: ilk.liquidationRatio,
+                liquidityAvailable: ilk.ilkDebtAvailable,
                 stabilityFee: ilk.stabilityFee,
+                debtFloor: ilk.debtFloor,
                 currentCollateralPrice: priceInfo.currentCollateralPrice,
                 bannerIcon: tokenMeta.bannerIcon,
                 bannerGif: tokenMeta.bannerGif,

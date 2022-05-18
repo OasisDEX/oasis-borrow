@@ -109,6 +109,7 @@
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
+  "dai-depositing": "Dai depositing ({{amount}})",
   "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
   "decide-later": "Decide later",
@@ -207,6 +208,7 @@
     "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
     "deposited": "Deposited",
+    "withdrawn": "Withdrawn",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
     "exit-collateral": "Exit collateral",
     "exit-dai": "Exit Dai",
@@ -632,6 +634,8 @@
     "minimum-coll-ratio": "Minimum collateral ratio",
     "origination-fee": "Origination Fee",
     "stability-fee": "Stability Fee",
+    "liquidity-available": "Liquidity Available",
+    "protocol": "Protocol",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
@@ -640,10 +644,12 @@
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day average",
+    "ninety-day-average": "90 day average",
     "vault-protection": "Vault Protection",
     "date": "Date",
     "overview": "Overview",
     "protection": "Protection",
+    "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
     "actions": {
@@ -669,6 +675,9 @@
       },
       "collateralization-ratio": {
         "footnote": "{{amount}} on next price"
+      },
+      "stop-loss-collateral-ratio": {
+        "footnote": "{{amount}} Current Collateral Ratio"
       }
     }
   },
@@ -707,6 +716,7 @@
   },
   "vault-errors": {
     "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+    "deposit-dai-amount-exceeds-dai-balance": "You cannot deposit more Dai than the amount in your wallet",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral": "The collateralization ratio for this Maker Vault will be too low. Please generate less Dai",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collateralization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
     "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}}",
@@ -787,10 +797,12 @@
       "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
-      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
+      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet.",
+      "vault-suggestions": "{{address}}, do more on Oasis.app"
     },
     "number-of-vaults": "No. of Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
@@ -1017,6 +1029,7 @@
     "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
     "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "lowest-annual-fee-cheapest-vault": "The lowest Annual Fee and cheapest Vault for borrowing using staked ETH",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
     "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
@@ -1033,6 +1046,32 @@
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
     "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+  },
+  "product-card-title": {
+    "ETH-A": "Standard ETH",
+    "ETH-B": "High multiple ETH",
+    "ETH-C": "Low cost ETH",
+    "WBTC-A": "Standard wBTC",
+    "WBTC-B": "High multiple wBTC",
+    "WBTC-C": "Low cost wBTC",
+    "RENBTC-A": "Ren Bitcoin (RenBTC)",
+    "WSTETH-A": "Standard staked ETH",
+    "WSTETH-B": "Low cost staked ETH",
+    "UNI-A": "Uniswap (UNI)",
+    "MANA-A": "Decentraland (MANA)",
+    "MATIC-A": "Polygon (MATIC)",
+    "YFI-A": "Yearn (YFI)",
+    "LINK-A": "Chainlink (LINK)",
+    "GUSD-A": "Gemini USD (GUSD)",
+    "GUNIV3DAIUSDC2-A": "50x UNI V3 DAI / USDC 0.01% tier",
+    "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
+    "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
+    "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
+    "UNIV2WBTCETH-A": "UNI V2 WBTC / ETH LP",
+    "UNIV2WBTCDAI-A": "UNI V2 WBTC /DAI LP",
+    "UNIV2DAIETH-A": "UNI V2 ETH / DAI  LP",
+    "UNIV2UNIETH-A": "UNI V2 UNI / ETH LP",
+    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
   },
   "product-page": {
     "multiply": {
@@ -1098,6 +1137,71 @@
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "below": "below",
   "above": "above",
+  "earn": {
+    "your-positions": "Your Positions",
+    "positions-of-type": "{{type}} Positions",
+    "edit-vault": "Edit Vault",
+    "automation-button-on": "On",
+    "automation-button-off": "Activate",
+    "position-headers": {
+      "asset": {
+        "label": "Asset",
+        "tooltip": "The Asset"
+      },
+      "vault-id": {
+        "label": "Vault ID",
+        "tooltip": "The Vault ID"
+      },
+      "collateral-ratio": {
+        "label": "Collateral Ratio",
+        "tooltip": "The Collateral Ratio"
+      },
+      "dai-debt": {
+        "label": "Dai Debt",
+        "tooltip": "The Dai Debt"
+      },
+      "collateral-locked": {
+        "label": "Collateral Locked",
+        "tooltip": "Collateral Locked"
+      },
+      "variable-perc": {
+        "label": "Variable %",
+        "tooltip": "Variable Percentage"
+      },
+      "automation": {
+        "label": "Automation",
+        "tooltip": "Protection features"
+      },
+      "net-value": {
+        "label": "Net Value",
+        "tooltip": "The Net Value"
+      },
+      "multiple": {
+        "label": "Multiple",
+        "tooltip": "The Multiple"
+      },
+      "liquidation-price": {
+        "label": "Liquidation Price",
+        "tooltip": "The Liquidation Price"
+      },
+      "funding-cost": {
+        "label": "Funding Cost",
+        "tooltip": "The Funding Cost"
+      },
+      "pnl": {
+        "label": "PnL",
+        "tooltip": "Profit and loss"
+      },
+      "seven-day-yield": {
+        "label": "7 Day Yield",
+        "tooltip": "The 7 Day Yield"
+      },
+      "liquidity": {
+        "label": "Liquidity",
+        "tooltip": "The Liquidity "
+      }
+    }
+  },
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
 

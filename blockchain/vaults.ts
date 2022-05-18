@@ -73,9 +73,9 @@ export function createVaults$(
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-        shareReplay(1),
       ),
     ),
+    shareReplay(1),
   )
 }
 

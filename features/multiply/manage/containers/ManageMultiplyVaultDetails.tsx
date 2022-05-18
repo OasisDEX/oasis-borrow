@@ -28,7 +28,7 @@ import { ContentCardBuyingPower } from '../../../../components/vault/detailsSect
 import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+// import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
@@ -93,7 +93,7 @@ function DefaultManageMultiplyVaultDetailsSummary({
 
 export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const {
-    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD, ilk },
+    vault: { token, liquidationPrice, id, debt, lockedCollateral, lockedCollateralUSD /* , ilk */ },
     ilkData: { liquidationRatio },
     afterDebt,
     afterLockedCollateral,
@@ -122,7 +122,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const automationEnabled = useFeatureToggle('Automation')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
@@ -131,9 +131,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && (
+          {/* {!newComponentsEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
-          )}
+          )} */}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -143,7 +143,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           />
         </>
       )}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice
@@ -240,11 +240,11 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }
         />
       )}
-      {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {/* {automationEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }

@@ -31,7 +31,7 @@ export function GetProtectionBannerControl({
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
@@ -43,7 +43,7 @@ export function GetProtectionBannerControl({
     isAllowedForAutomation &&
     !debt.isZero() ? (
     <>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <GetProtectionBannerLayout
           handleClick={() => {
             uiChanges.publish(TAB_CHANGE_SUBJECT, {

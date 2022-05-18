@@ -780,10 +780,12 @@
       "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults Maker.",
       "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecte su cartera y abra un Vault",
-      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera"
+      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera",
+      "vault-suggestions": "{{address}}, hacer más en Oasis.app"
     },
     "number-of-vaults": "Número de Vaults",
     "subheader-no-vaults": "Abra un Vault de Maker, deposite su colateral, y tome prestado Dai o compre más colateral con su préstamo.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Deuda Total",
     "total-locked": "Total bloqueado",
     "vaults": "Vaults",

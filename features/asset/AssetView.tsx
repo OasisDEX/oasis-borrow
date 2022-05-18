@@ -10,7 +10,7 @@ import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { ProductCardData } from 'helpers/productCards'
+import { ProductCardData, ProductTypes } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
@@ -27,7 +27,7 @@ function Loader() {
 }
 
 function TabContent(props: {
-  type: 'borrow' | 'multiply' | 'earn'
+  type: ProductTypes
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   ilks: string[]
   productCardsData: ProductCardData[]

@@ -26,6 +26,7 @@ import { RetryableLoadingButtonProps } from '../../../../components/dumb/Retryab
 import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
+import { STOP_LOSS_LIQUIDATION_OFFSET } from '../common/consts/calculations'
 import { progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
@@ -86,17 +87,8 @@ export function AdjustSlFormControl({
   const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
   const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
-  const initialVaultCollRatio = new BigNumber(
-    ilkData.liquidationRatio
-      .plus(vault.collateralizationRatio)
-      .dividedBy(2)
-      .toFixed(2, BigNumber.ROUND_CEIL),
-  )
-
-  const startingSlRatio = isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
-
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
@@ -119,7 +111,7 @@ export function AdjustSlFormControl({
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
     selectedSLValue: uiState.selectedSLValue,
-    startingSlRatio,
+    startingSlRatio: selectedSLValue,
     stopLossLevel,
     collateralActive: uiState.collateralActive,
     isToCollateral,
@@ -142,6 +134,8 @@ export function AdjustSlFormControl({
     nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite() ? new BigNumber(5) : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
+  const liqRatioWithOffset = liqRatio.plus(STOP_LOSS_LIQUIDATION_OFFSET)
+  const minSliderBoundary = liqRatioWithOffset.times(100)
 
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
@@ -160,6 +154,7 @@ export function AdjustSlFormControl({
     .minus(liqRatio.times(100))
     .div(nextPriceCollRatio.minus(liqRatio))
 
+
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
     sliderPercentageFill,
@@ -173,7 +168,7 @@ export function AdjustSlFormControl({
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: liqRatio.multipliedBy(100),
+    minBoundry: minSliderBoundary,
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/

@@ -179,7 +179,7 @@ import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { createProductCardsData$ } from '../helpers/productCards'
+import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -794,6 +794,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
@@ -861,6 +862,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,

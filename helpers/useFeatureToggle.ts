@@ -10,6 +10,7 @@ type Features =
   | 'Automation'
   | 'Exchange'
   | 'AutomationBasicBuyAndSell'
+  | 'NewComponents'
 
 const configuredFeatures: Record<Features, boolean> = {
   TestFeature: false, // used in unit tests
@@ -18,6 +19,7 @@ const configuredFeatures: Record<Features, boolean> = {
   Automation: true,
   Exchange: true,
   AutomationBasicBuyAndSell: false,
+  NewComponents: false,
   // your feature here....
 }
 
