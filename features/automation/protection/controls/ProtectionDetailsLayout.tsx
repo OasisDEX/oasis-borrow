@@ -49,7 +49,7 @@ export function ProtectionDetailsLayout({
 }: ProtectionDetailsLayoutProps) {
   const { t } = useTranslation()
   const afterPillColors = getAfterPillColors('onSuccess')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
   const collateralizationRatio = lockedCollateral.times(currentOraclePrice).div(vaultDebt)
@@ -58,7 +58,7 @@ export function ProtectionDetailsLayout({
 
   return (
     <Box>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <Grid variant="vaultDetailsCardsContainer">
           <VaultDetailsCardStopLossCollRatio
             slRatio={slRatio}

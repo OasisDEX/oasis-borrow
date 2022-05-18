@@ -140,14 +140,14 @@ export function ManageVaultDetails(
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const automationEnabled = useFeatureToggle('Automation')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
       {automationEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {/* {!automationBasicBuyAndSellEnabled && (
+          {/* {!newComponentsEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
           )} */}
           <StopLossBannerControl
@@ -159,7 +159,7 @@ export function ManageVaultDetails(
           />
         </>
       )}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice
@@ -237,7 +237,7 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {/* {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {/* {automationEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
