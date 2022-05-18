@@ -242,7 +242,8 @@ export interface AdjustSlFormLayoutProps {
 }
 
 export function slCollRatioIsAtLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
-  return selectedSLValue.isLessThanOrEqualTo(ilkData.liquidationRatio.multipliedBy(100))
+  const margin = 5
+  return selectedSLValue.isLessThanOrEqualTo(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
 export function AdjustSlFormLayout({
