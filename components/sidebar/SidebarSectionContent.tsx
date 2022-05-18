@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
-import { Box } from 'theme-ui'
 import { theme } from 'theme';
+import { Box } from 'theme-ui'
 
 export interface SidebarSectionContentProps {
   activePanel: string
