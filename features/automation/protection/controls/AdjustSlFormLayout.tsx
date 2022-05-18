@@ -199,10 +199,17 @@ function SetDownsideProtectionInformation({
           </AppLink>
         </Text>
       </Box>
-      {selectedSLValue.isGreaterThanOrEqualTo(nextCollateralizationPriceFloor) && (
+      {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
         <MessageCard
           messages={[t('protection.coll-ratio-close-to-current')]}
           type="warning"
+          withBullet={false}
+        />
+      )}
+      {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+        <MessageCard
+          messages={[t('protection.coll-ratio-liquidation')]}
+          type="error"
           withBullet={false}
         />
       )}
@@ -233,6 +240,11 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+}
+
+export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
+  const margin = 5
+  return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
 export function AdjustSlFormLayout({

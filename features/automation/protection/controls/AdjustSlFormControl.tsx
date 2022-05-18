@@ -26,13 +26,16 @@ import { RetryableLoadingButtonProps } from '../../../../components/dumb/Retryab
 import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { STOP_LOSS_LIQUIDATION_OFFSET } from '../common/consts/calculations'
 import { progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import {
+  AdjustSlFormLayout,
+  AdjustSlFormLayoutProps,
+  slCollRatioNearLiquidationRatio,
+} from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -117,25 +120,25 @@ export function AdjustSlFormControl({
     isToCollateral,
   })
 
-  const currentCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.currentPrice)
+  const nextPriceCollRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
-  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
+  const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
-    .dividedBy(currentCollRatio)
+    .dividedBy(nextPriceCollRatio)
 
   const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
   const maxBoundry =
-    currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
+    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
+      ? new BigNumber(5)
+      : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
-  const liqRatioWithOffset = liqRatio.plus(STOP_LOSS_LIQUIDATION_OFFSET)
-  const minSliderBoundary = liqRatioWithOffset.times(100)
 
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
@@ -151,8 +154,8 @@ export function AdjustSlFormControl({
   }
 
   const sliderPercentageFill = uiState.selectedSLValue
-    .minus(minSliderBoundary)
-    .div(currentCollRatio.minus(liqRatioWithOffset))
+    .minus(liqRatio.times(100))
+    .div(nextPriceCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -167,7 +170,7 @@ export function AdjustSlFormControl({
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: minSliderBoundary,
+    minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
@@ -251,7 +254,8 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails),
+      (!isEditing && !uiState?.txDetails) ||
+      slCollRatioNearLiquidationRatio(selectedSLValue, ilkData),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
