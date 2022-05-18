@@ -174,7 +174,7 @@ export function FeesView({ userReferral }: Props) {
                     </Box>
                     <Box>
                       <AppLink
-                        href={`https://etherscan.com/account/${item}`}
+                        href={`https://etherscan.com/address/${item}`}
                         sx={{ fontSize: 2 }}
                         variant="inText"
                       >
@@ -202,7 +202,7 @@ export function FeesView({ userReferral }: Props) {
                   </Box>
                   <Box>
                     <AppLink
-                      href={`https://etherscan.com/account/#`}
+                      href={`https://etherscan.com/address/#`}
                       sx={{ fontSize: 2 }}
                       variant="inText"
                     >
@@ -250,9 +250,9 @@ export function FeesView({ userReferral }: Props) {
                 </Text>
               </Box>
               <Box>
-                {userReferral.state === 'currentUser' && !userReferral.invitePending && (
+                {userReferral.state === 'currentUser' && !userReferral.invitePending && userReferral?.referrer?.referrer  && (
                   <AppLink
-                    href={`https://etherscan.com/account/#`}
+                    href={`https://etherscan.com/address/${userReferral?.referrer?.referrer }`}
                     sx={{ fontSize: 2 }}
                     variant="inText"
                   >
