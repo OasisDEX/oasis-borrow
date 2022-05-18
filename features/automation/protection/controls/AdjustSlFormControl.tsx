@@ -125,21 +125,21 @@ export function AdjustSlFormControl({
     isToCollateral,
   })
 
-  const currentCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.currentPrice)
+  const nextPriceCollRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
-  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
+  const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
-    .dividedBy(currentCollRatio)
+    .dividedBy(nextPriceCollRatio)
 
   const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
   const maxBoundry =
-    currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
+    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite() ? new BigNumber(5) : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
 
@@ -158,7 +158,7 @@ export function AdjustSlFormControl({
 
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
-    .div(currentCollRatio.minus(liqRatio))
+    .div(nextPriceCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
