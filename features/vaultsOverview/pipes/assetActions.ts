@@ -1,11 +1,33 @@
 import { combineLatest, Observable, of } from 'rxjs'
 import { map as mapL, reduce } from 'lodash'
 import { filter, map } from 'rxjs/operators'
+import { UIChanges } from '../../../components/AppContext'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetState,
+  SwapWidgetChangeAction,
+} from '../../automation/protection/common/UITypes/SwapWidgetChange'
 
-export type AssetAction = {
+export type AssetAction = UrlAssetAction | OnClickAssetAction
+
+type UrlAssetAction = {
   url: string
   text: string
   icon: string
+}
+
+type OnClickAssetAction = {
+  onClick: () => void
+  text: string
+  icon: string
+}
+
+export function isUrlAction(aa: AssetAction): aa is UrlAssetAction {
+  return (aa as UrlAssetAction).url !== undefined
+}
+
+export function isOnClickAction(aa: AssetAction): aa is OnClickAssetAction {
+  return (aa as OnClickAssetAction).onClick !== undefined
 }
 
 type ProductCategory = 'multiply' | 'borrow' | 'earn'
@@ -39,6 +61,7 @@ function productCategoryToAssetAction(productCategory: ProductCategory): AssetAc
 export function createAssetActions$(
   ilkToToken$: (ilk: string) => Observable<string>,
   productCategoryIlks: ProductCategoryIlks,
+  uiChanges: UIChanges,
   token: string,
 ): Observable<Array<AssetAction>> {
   const ilkToProductCategory = reduce<
@@ -61,7 +84,7 @@ export function createAssetActions$(
     {},
   )
 
-  const tokenToProductCategories$ = combineLatest(
+  const assetActions$ = combineLatest(
     mapL(ilkToProductCategory, (productCategories, ilk) => {
       return combineLatest(ilkToToken$(ilk), of(productCategories))
     }),
@@ -74,7 +97,23 @@ export function createAssetActions$(
         }, [])
         .map(productCategoryToAssetAction)
     }),
+    // add swap
+    map((assetActions) => {
+      return [
+        {
+          onClick: () => {
+            uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+              type: 'open',
+              token,
+            })
+          },
+          text: 'Swap',
+          icon: 'exchange',
+        },
+        ...assetActions,
+      ]
+    }),
   )
 
-  return tokenToProductCategories$
+  return assetActions$
 }

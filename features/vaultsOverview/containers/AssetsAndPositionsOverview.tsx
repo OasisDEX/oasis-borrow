@@ -15,7 +15,7 @@ import { PositionView } from '../pipes/positionsOverviewSummary'
 import { AppLink } from '../../../components/Links'
 import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
 import { SystemStyleObject } from '@styled-system/css'
-import { AssetAction } from '../pipes/assetActions'
+import { AssetAction, isUrlAction } from '../pipes/assetActions'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -111,17 +111,31 @@ function LinkedRow(props: PositionView) {
   }
 }
 
-function MenuRow(props: { icon: string; text: string; url: string }) {
+function MenuRowDisplay(props: AssetAction) {
   return (
-    <Link href={props.url}>
-      <Flex sx={{ color: 'black', alignItems: 'center' }}>
-        <Icon name={props.icon} sx={{ mr: '15px' }} />
-        <Text variant="paragraph2" sx={{ color: 'black' }}>
-          {props.text}
-        </Text>
-      </Flex>
-    </Link>
+    <Flex sx={{ color: 'black', alignItems: 'center' }}>
+      <Icon name={props.icon} sx={{ mr: '15px' }} />
+      <Text variant="paragraph2" sx={{ color: 'black' }}>
+        {props.text}
+      </Text>
+    </Flex>
   )
+}
+
+function MenuRow(props: AssetAction) {
+  if (isUrlAction(props)) {
+    return (
+      <Link href={props.url}>
+        <MenuRowDisplay {...props} />
+      </Link>
+    )
+  } else {
+    return (
+      <Link onClick={props.onClick}>
+        <MenuRowDisplay {...props} />
+      </Link>
+    )
+  }
 }
 
 function Menu(props: {
@@ -145,7 +159,7 @@ function Menu(props: {
     >
       <Grid columns={1} gap={20}>
         {props.assetActions.map((aa) => (
-          <MenuRow icon={aa.icon} text={aa.text} url={aa.url} />
+          <MenuRow {...aa} key={aa.text} />
         ))}
       </Grid>
     </Card>
@@ -185,7 +199,7 @@ export function AssetsAndPositionsOverview() {
 
                 <Box sx={{ flex: 1, ml: [null, '53px'] }}>
                   {top5AssetsAndPositions.map((row) => (
-                    <LinkedRow key={row.token} {...row} />
+                    <LinkedRow key={row.token + row.title} {...row} />
                   ))}
                 </Box>
               </Flex>

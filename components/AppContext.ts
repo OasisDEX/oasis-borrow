@@ -188,10 +188,16 @@ import {
   createProductCardsData$,
   supportedBorrowIlks,
   supportedMultiplyIlks,
-  createProductCardsWithBalance$
+  createProductCardsWithBalance$,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetState,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 
 export type TxData =
   | OpenData
@@ -252,12 +258,14 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
+  | SwapWidgetState
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
+  SwapWidgetChange: SwapWidgetChangeAction
 }
 
 export type UIChanges = {
@@ -342,6 +350,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+  uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
 
   return uiChangesSubject
 }
@@ -821,12 +830,18 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
   )
 
+  const uiChanges = initializeUIChanges()
+
   const assetActions$ = memoize(
-    curry(createAssetActions$)(ilkToToken$, {
-      borrow: supportedBorrowIlks,
-      multiply: supportedMultiplyIlks,
-      earn: [],
-    }),
+    curry(createAssetActions$)(
+      ilkToToken$,
+      {
+        borrow: supportedBorrowIlks,
+        multiply: supportedMultiplyIlks,
+        earn: [],
+      },
+      uiChanges,
+    ),
   )
 
   const positionsOverviewSummary$ = memoize(
@@ -851,8 +866,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
-
-  const uiChanges = initializeUIChanges()
 
   return {
     web3Context$,

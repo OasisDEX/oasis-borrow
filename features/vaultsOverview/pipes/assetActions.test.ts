@@ -1,10 +1,20 @@
 import { expect } from 'chai'
-import { createAssetActions$ } from './assetActions'
+import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
 import { of } from 'rxjs'
 import { getStateUnpacker } from '../../../helpers/testHelpers'
+import { AssertionError } from 'assert'
+
+function assertAssetAction(
+  assetActionIsCorrectType: any,
+  message: string,
+): asserts assetActionIsCorrectType {
+  if (!assetActionIsCorrectType) {
+    throw new AssertionError({ message })
+  }
+}
 
 describe.only('asset actions', () => {
-  it('shows borrow action only for borrow token', () => {
+  it('shows borrow action for borrow token', () => {
     const ilkToToken$ = (ilk: string) => of('ETH')
     const productCategoryIlks = {
       borrow: ['ETH-A'],
@@ -15,15 +25,16 @@ describe.only('asset actions', () => {
 
     const state = getStateUnpacker(assetActions$)
 
-    expect(state().length).eq(1)
+    expect(state().length).eq(2)
 
-    const borrowAction = state()[0]
+    const borrowAction = state()[1]
+    assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).eq('Borrow')
     expect(borrowAction.icon).eq('collateral')
     expect(borrowAction.url).eq('/borrow')
   })
 
-  it('shows multiply action for multiply', () => {
+  it('shows moth borrow and multiply action', () => {
     const ilkToToken$ = (ilk: string) => of('WBTC')
     const productCategoryIlks = {
       borrow: ['WBTC-A'],
@@ -34,20 +45,37 @@ describe.only('asset actions', () => {
 
     const state = getStateUnpacker(assetActions$)
 
-    expect(state().length).eq(2)
+    expect(state().length).eq(3)
 
-    const borrowAction = state()[0]
+    const borrowAction = state()[1]
+    assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).eq('Borrow')
     expect(borrowAction.icon).eq('collateral')
     expect(borrowAction.url).eq('/borrow')
 
-    const multiplyAction = state()[1]
+    const multiplyAction = state()[2]
+    assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
     expect(multiplyAction.text).eq('Multiply')
     expect(multiplyAction.icon).eq('copy')
     expect(multiplyAction.url).eq('/multiply')
   })
 
-  it('includes swaps')
+  it('includes swaps', () => {
+    const ilkToToken$ = (ilk: string) => of('WBTC')
+    const productCategoryIlks = {
+      borrow: ['WBTC-A'],
+      multiply: ['WBTC-A'],
+      earn: [],
+    }
+    const assetActions$ = createAssetActions$(ilkToToken$, productCategoryIlks, 'WBTC')
+
+    const state = getStateUnpacker(assetActions$)
+    const swapAction = state()[0]
+    assertAssetAction(isOnClickAction(swapAction), 'swap action is not onclick asset action')
+    expect(swapAction.text).eq('Swap')
+    expect(swapAction.icon).eq('exchange')
+    expect(swapAction.onClick).to.not.be.undefined
+  })
 
   it('returns nothing/empty for something that has no actions')
 })
