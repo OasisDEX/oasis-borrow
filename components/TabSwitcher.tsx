@@ -22,7 +22,7 @@ const WideTabSelector = (props: {
       {props.tabs.map(({ tabLabel }, index) => {
         return (
           <Button
-            key={tabLabel}
+            key={`${index}-${tabLabel}`}
             onClick={props.selectTab}
             value={index}
             variant={
@@ -111,15 +111,15 @@ export function TabSwitcher(props: {
     <>
       {props.tabs
         .filter(({ tabLabel }) => tabLabel === props.tabs[parseInt(selectedTab)].tabLabel)
-        .map(({ tabHeaderPara, tabLabel, tabContent }) => (
+        .map(({ tabHeaderPara, tabLabel, tabContent }, index) => (
           <Flex
-            key={`${tabLabel}-`}
+            key={`${tabLabel}-${index}`}
             sx={{
               flexDirection: 'column',
               alignItems: 'center',
             }}
           >
-            <Box key={tabLabel}>{tabHeaderPara}</Box>
+            <Box>{tabHeaderPara}</Box>
             {!isOneTab && (
               <>
                 <NarrowTabSelector
@@ -137,7 +137,6 @@ export function TabSwitcher(props: {
               </>
             )}
             <Box
-              key={tabLabel}
               sx={{
                 ...slideInAnimation,
                 width: '100%',
