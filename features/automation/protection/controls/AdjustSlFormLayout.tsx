@@ -205,7 +205,7 @@ function SetDownsideProtectionInformation({
           withBullet={false}
         />
       )}
-      {slCollRatioIsAtLiquidationRatio(selectedSLValue, ilkData) && (
+      {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
         <MessageCard
           messages={[t('protection.coll-ratio-liquidation')]}
           type="error"
@@ -241,9 +241,9 @@ export interface AdjustSlFormLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
 }
 
-export function slCollRatioIsAtLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
+export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
   const margin = 5
-  return selectedSLValue.isLessThanOrEqualTo(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
+  return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
 export function AdjustSlFormLayout({

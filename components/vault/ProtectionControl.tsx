@@ -65,7 +65,7 @@ export function ProtectionControl({
   const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
   const dustLimit = ilkData.debtFloor
 
-  return !vault.debt.isZero() && vault.debt.isGreaterThan(dustLimit) ? (
+  return !vault.debt.isZero() && vault.debt.gt(dustLimit) ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
