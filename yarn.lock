@@ -2936,6 +2936,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.14.6":
+  version "7.17.9"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.9.tgz#d19fbf802d01a8cb6cf053a64e472d42c434ba72"
+  integrity sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.10.4.tgz#3251996c4200ebc71d1a8fc405fba940f36ba278"
@@ -12096,6 +12103,13 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
+cross-fetch@3.1.5, cross-fetch@^3.1.4:
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
+  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
+  dependencies:
+    node-fetch "2.6.7"
+
 cross-fetch@^2.1.0, cross-fetch@^2.1.1:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-2.2.3.tgz#e8a0b3c54598136e037f8650f8e823ccdfac198e"
@@ -12110,13 +12124,6 @@ cross-fetch@^3.0.6:
   integrity sha512-a+yso9lSpXQI9DH+YjAu/m0dVfP8IVoZDPBLLFcvGpeq3KHNdikkekTOdkHiXEuTq4GBOeO0MfWkE40yzF1w7g==
   dependencies:
     node-fetch "2.6.1"
-
-cross-fetch@^3.1.4:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/cross-fetch/-/cross-fetch-3.1.5.tgz#e1389f44d9e7ba767907f7af8454787952ab534f"
-  integrity sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==
-  dependencies:
-    node-fetch "2.6.7"
 
 cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
@@ -16731,10 +16738,24 @@ human-signals@^2.1.0:
   resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-2.1.0.tgz#dc91fcba42e4d06e4abaed33b3e7a3c02f514ea0"
   integrity sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==
 
+i18next-browser-languagedetector@^6.1.4:
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/i18next-browser-languagedetector/-/i18next-browser-languagedetector-6.1.4.tgz#7b087c5edb6f6acd38ef54ede2160ab9cde0108f"
+  integrity sha512-wukWnFeU7rKIWT66VU5i8I+3Zc4wReGcuDK2+kuFhtoxBRGWGdvYI9UQmqNL/yQH1KogWwh+xGEaIPH8V/i2Zg==
+  dependencies:
+    "@babel/runtime" "^7.14.6"
+
 i18next-fs-backend@^1.0.7:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/i18next-fs-backend/-/i18next-fs-backend-1.1.0.tgz#3baa63bfb6fd00a331b91d186776cd886b46d2f6"
   integrity sha512-QfzfrEYEsLsDC5sZsdSQl5fVYg8I5KrJynnWN7xgSU5yfClbBJ009mtNxUszR0uABQZ8PRr2gj3bN9+RNORBlg==
+
+i18next-http-backend@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/i18next-http-backend/-/i18next-http-backend-1.4.0.tgz#e6abef0615316e00837798d2385c13395096f963"
+  integrity sha512-wsvx7E/CT1pHmBM99Vu57YLJpsrHbVjxGxf25EIJ/6oTjsvCkZZ6c3SA4TejcK5jIHfv9oLxQX8l+DFKZHZ0Gg==
+  dependencies:
+    cross-fetch "3.1.5"
 
 i18next@^20.1.0:
   version "20.6.1"
@@ -24379,18 +24400,6 @@ storybook-addon-next-router@^3.1.1:
   integrity sha512-Z14dED37vNXkN7+VY80HhF9itGReWoBAlKREHEk2By/dW7zSSqcSyXYV4bDMXIMAFYHMaA1svcBC1idVG8FhAw==
   dependencies:
     tslib "^2.3.0"
-
-storybook-i18n@^1.0.0:
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/storybook-i18n/-/storybook-i18n-1.0.11.tgz#21963c8353b9ab68fec0faacdaee15de39b0220e"
-  integrity sha512-wHN/93ylrfdxot0MV8sMKWJF4TkJT/XOtuHnUA4CIWrenymC4o33uNcB1sOWa2UiiEqhOK3wJ5gOPOyhgjPjwA==
-
-storybook-i18next@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/storybook-i18next/-/storybook-i18next-1.0.3.tgz#d2b5811108153b8373f06882e43ae0f28cc6d1c3"
-  integrity sha512-3KuNAK8Uel4u5R8XMKFFYClvEdF3F2k9r4wDbbegpwud7c5Kj9eC1Se0HGqw58EcwpIHLTTs3zgVRefMdkuIsg==
-  dependencies:
-    storybook-i18n "^1.0.0"
 
 stream-blackhole@^1.0.3:
   version "1.0.3"

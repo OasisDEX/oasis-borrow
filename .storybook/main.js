@@ -6,7 +6,14 @@ module.exports = {
   core: {
     builder: 'webpack5',
   },
-  typescript: { reactDocgen: false },
+  typescript: {
+    reactDocgen: false,
+    reactDocgenTypescriptOptions: {
+      shouldExtractLiteralValuesFromEnum: true,
+      shouldExtractValuesFromUnion: true,
+      propFilter: (prop) => (prop.parent ? !/node_modules/.test(prop.parent.fileName) : true),
+    },
+  },
   stories: [
     '../theme/*.stories.tsx',
     '../features/**/*.stories.tsx',
@@ -17,7 +24,6 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-postcss',
     'storybook-addon-next-router',
-    'storybook-i18next',
   ],
   babel: async (options) => ({
     ...options,
@@ -46,6 +52,7 @@ module.exports = {
         ...config.resolve,
         alias: {
           ...config.resolve.alias,
+          'next-i18next': 'react-i18next',
         },
         plugins: [new TsconfigPathsPlugin()],
         fallback: {
