@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
@@ -36,8 +36,8 @@ export function MultiplyView() {
           href: 'https://kb.oasis.app/help/what-is-multiply',
           text: t('product-page.multiply.link'),
         }}
+        scrollToId={tab}
       />
-
       <WithErrorHandler error={[productCardsDataError]}>
         <WithLoadingIndicator
           value={[productCardsDataValue]}

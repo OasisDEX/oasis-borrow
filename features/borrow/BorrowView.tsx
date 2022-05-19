@@ -38,6 +38,7 @@ export function BorrowView() {
           href: 'https://kb.oasis.app/help/what-is-oasis-borrow ',
           text: t('product-page.borrow.link'),
         }}
+        scrollToId={tab}
       />
 
       <WithErrorHandler error={[productCardsDataError]}>
