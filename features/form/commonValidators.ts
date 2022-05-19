@@ -106,9 +106,9 @@ export function notEnoughETHtoPayForTx({
   ethPrice,
   depositAmount,
 }: {
-  token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
+  token?: string
   gasEstimationUsd?: BigNumber
   depositAmount?: BigNumber
 }) {
@@ -124,8 +124,10 @@ export function notEnoughETHtoPayForTx({
     console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
     return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
   }
+  console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
+  console.log('ETH balance (USD)', ethBalance.times(ethPrice).toNumber())
 
-  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd.plus(50))
 }
 
 export function customAllowanceAmountEmptyValidator({

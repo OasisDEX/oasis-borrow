@@ -24,8 +24,10 @@ import {
   formatPercent,
 } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { TxError } from '../../../../helpers/types'
 import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
@@ -106,6 +108,9 @@ interface SetDownsideProtectionInformationProps {
   isCollateralActive: boolean
   collateralizationRatioAtNextPrice: BigNumber
   selectedSLValue: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
+  gasEstimationUsd?: BigNumber
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -120,6 +125,9 @@ function SetDownsideProtectionInformation({
   isCollateralActive,
   collateralizationRatioAtNextPrice,
   selectedSLValue,
+  gasEstimationUsd,
+  ethBalance,
+  txError,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -162,6 +170,17 @@ function SetDownsideProtectionInformation({
     .times(100)
     .decimalPlaces(0)
     .minus(nextCollateralizationPriceAlertRange)
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
+  console.log('potentialInsufficientEthFundsForTx', potentialInsufficientEthFundsForTx)
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -213,6 +232,20 @@ function SetDownsideProtectionInformation({
           withBullet={false}
         />
       )}
+      {potentialInsufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-warnings.insufficient-eth-balance')]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
+      {insufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-errors.insufficient-eth-balance')]}
+          type="error"
+          withBullet={false}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -227,6 +260,7 @@ export interface AdjustSlFormLayoutProps {
   txProgressing: boolean
   txState?: TxStatus
   txHash?: string
+  txError?: TxError
   txCost?: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
@@ -240,6 +274,8 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  ethBalance: BigNumber
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
@@ -252,6 +288,7 @@ export function AdjustSlFormLayout({
   txProgressing,
   txState,
   txHash,
+  // txError,
   txCost,
   // slValuePickerConfig,
   closePickerConfig,
@@ -266,8 +303,10 @@ export function AdjustSlFormLayout({
   toggleForms,
   selectedSLValue,
   firstStopLossSetup,
-}: // isEditing,
-// collateralizationRatioAtNextPrice,
+}: // collateralizationRatioAtNextPrice,
+// isEditing,
+// gasEstimationUsd,
+// ethBalance,
 AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
@@ -323,12 +362,15 @@ AdjustSlFormLayoutProps) {
                   vault={vault}
                   ilkData={ilkData}
                   gasEstimation={gasEstimation}
+                  gasEstimationUsd={gasEstimationUsd}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
                   collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   selectedSLValue={selectedSLValue}
+                  ethBalance={ethBalance}
+                  txError={txError}
                 />
               </Box>
             </>

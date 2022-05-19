@@ -9,6 +9,7 @@ import { Vault } from '../../blockchain/vaults'
 import { ProtectionDetailsControl } from '../../features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from '../../features/automation/protection/controls/ProtectionFormControl'
 import { VaultBanner } from '../../features/banners/VaultsBannersView'
+import { BalanceInfo } from '../../features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
@@ -49,6 +50,7 @@ function ZeroDebtProtectionBanner({
 interface ProtectionControlProps {
   vault: Vault
   ilkData: IlkData
+  balanceInfo: BalanceInfo
   account?: string
   collateralizationRatioAtNextPrice: BigNumber
 }
@@ -58,6 +60,7 @@ export function ProtectionControl({
   ilkData,
   account,
   collateralizationRatioAtNextPrice,
+  balanceInfo,
 }: ProtectionControlProps) {
   const { automationTriggersData$, collateralPrices$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vault.id)
@@ -92,6 +95,7 @@ export function ProtectionControl({
                   vault={vault}
                   account={account}
                   collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  balanceInfo={balanceInfo}
                 />
               }
             />
