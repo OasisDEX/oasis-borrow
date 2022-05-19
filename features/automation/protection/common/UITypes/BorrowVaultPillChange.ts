@@ -1,6 +1,6 @@
 import { ManageBorrowVaultStage } from "features/borrow/manage/pipes/manageVault";
 
-export const BORROW_VAULT_PILL_CHANGE_SUBJECT = 'borrowPillChange'
+export const BORROW_VAULT_PILL_CHANGE_SUBJECT = 'BorrowPillChange'
 
 export type BorrowPillChangeAction = {type: 'change-borrow-pill'; currentStage: ManageBorrowVaultStage}
 
