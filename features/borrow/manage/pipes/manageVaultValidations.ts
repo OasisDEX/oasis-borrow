@@ -143,7 +143,7 @@ export function finalValidation(
     depositAmount,
   })
 
-  const warningMessages: VaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = [...state.warningMessages]
 
   if (isEditingStage || isProxyStage) {
     warningMessages.push(
@@ -153,5 +153,5 @@ export function finalValidation(
     )
   }
 
-  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
+  return { ...state, warningMessages }
 }

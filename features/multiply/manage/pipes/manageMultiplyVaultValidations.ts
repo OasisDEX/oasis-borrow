@@ -147,7 +147,7 @@ export function finalValidation(state: ManageMultiplyVaultState): ManageMultiply
     depositAmount,
   })
 
-  const warningMessages: VaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = [...state.warningMessages]
 
   if (isEditingStage || isProxyStage) {
     warningMessages.push(
@@ -157,5 +157,5 @@ export function finalValidation(state: ManageMultiplyVaultState): ManageMultiply
     )
   }
 
-  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
+  return { ...state, warningMessages }
 }

@@ -108,7 +108,7 @@ export function finalValidation(state: OpenMultiplyVaultState): OpenMultiplyVaul
     depositAmount,
   })
 
-  const warningMessages: VaultWarningMessage[] = []
+  const warningMessages: VaultWarningMessage[] = [...state.warningMessages]
 
   if (isEditingStage || isProxyStage) {
     warningMessages.push(
@@ -118,5 +118,5 @@ export function finalValidation(state: OpenMultiplyVaultState): OpenMultiplyVaul
     )
   }
 
-  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
+  return { ...state, warningMessages }
 }
