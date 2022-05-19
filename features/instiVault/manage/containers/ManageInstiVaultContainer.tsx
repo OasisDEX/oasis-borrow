@@ -33,7 +33,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -50,7 +50,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      {!automationEnabled && (
+      {!stopLossReadEnabled && (
         <DefaultVaultHeader
           header={t('vault.insti-header', { ilk, id })}
           ilkData={ilkData}
@@ -74,7 +74,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageInstiVaultDetails {...manageVault} />
-          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
+          {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm
