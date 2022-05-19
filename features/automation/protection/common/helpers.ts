@@ -1,7 +1,5 @@
 import BigNumber from 'bignumber.js'
 
-import { STOP_LOSS_LIQUIDATION_OFFSET } from './consts/calculations'
-
 export function getInitialVaultCollRatio({
   liquidationRatio,
   collateralizationRatio,
@@ -10,11 +8,7 @@ export function getInitialVaultCollRatio({
   collateralizationRatio: BigNumber
 }) {
   return new BigNumber(
-    liquidationRatio
-      .plus(collateralizationRatio)
-      .plus(STOP_LOSS_LIQUIDATION_OFFSET)
-      .dividedBy(2)
-      .toFixed(2, BigNumber.ROUND_CEIL),
+    liquidationRatio.plus(collateralizationRatio).dividedBy(2).toFixed(2, BigNumber.ROUND_CEIL),
   )
 }
 
