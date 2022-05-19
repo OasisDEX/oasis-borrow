@@ -141,6 +141,7 @@ export function finalValidation(
     ethPrice: currentEthPrice,
     depositAmount,
   })
+
   const warningMessages: VaultWarningMessage[] = []
 
   if (isEditingStage) {
@@ -150,5 +151,6 @@ export function finalValidation(
       }),
     )
   }
-  return { ...state, warningMessages }
+
+  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
 }

@@ -9,6 +9,7 @@ import {
   customAllowanceAmountExceedsMaxUint256Validator,
   customAllowanceAmountLessThanDepositAmountValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
@@ -121,6 +122,9 @@ export interface OpenMultiplyVaultConditions {
   isExchangeLoading: boolean
 
   highSlippage: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
@@ -157,6 +161,8 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   isExchangeLoading: false,
 
   highSlippage: false,
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -333,6 +339,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'txFailure',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -366,5 +374,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     isExchangeLoading,
 
     highSlippage,
+
+    insufficientEthFundsForTx,
   }
 }

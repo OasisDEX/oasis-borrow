@@ -1,3 +1,4 @@
+import { notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { errorMessagesHandler, VaultErrorMessage } from '../../../form/errorMessagesHandler'
 import { VaultWarningMessage, warningMessagesHandler } from '../../../form/warningMessagesHandler'
 import { ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -123,4 +124,35 @@ export function validateWarnings(state: ManageMultiplyVaultState): ManageMultipl
     )
   }
   return { ...state, warningMessages }
+}
+
+export function finalValidation(state: ManageMultiplyVaultState): ManageMultiplyVaultState {
+  const {
+    vault: { token },
+    gasEstimationUsd,
+    balanceInfo: { ethBalance },
+    priceInfo: { currentEthPrice },
+    depositAmount,
+    isEditingStage,
+  } = state
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice: currentEthPrice,
+    depositAmount,
+  })
+
+  const warningMessages: VaultWarningMessage[] = []
+
+  if (isEditingStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        potentialInsufficientEthFundsForTx,
+      }),
+    )
+  }
+
+  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
 }

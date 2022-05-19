@@ -253,7 +253,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     collateralBalance,
   })
 
-  const depositAmountExceedsCollateralBalance = false
+  const depositAmountExceedsCollateralBalance = !!depositAmount?.gt(collateralBalance)
 
   const generateAmountExceedsDaiYieldFromDepositingCollateral = !!generateAmount?.gt(
     daiYieldFromDepositingCollateral,

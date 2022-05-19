@@ -110,5 +110,6 @@ export function finalValidation(state: OpenVaultState): OpenVaultState {
       }),
     )
   }
-  return { ...state, warningMessages }
+
+  return { ...state, warningMessages: [...state.warningMessages, ...warningMessages] }
 }
