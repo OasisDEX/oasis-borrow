@@ -25,7 +25,7 @@ function personaliseCardData({
 function bannerValues(props: ProductCardData, maxMultiple: BigNumber) {
   const { currentCollateralPrice, balance } = props
 
-  const dollarWorthInputColllateral = new BigNumber(150000)
+  const dollarWorthInputColllateral = new BigNumber(150_000)
   const tokenAmount = dollarWorthInputColllateral.div(currentCollateralPrice)
   const roundedMaxMultiple = new BigNumber(maxMultiple.toFixed(2, 3))
   const roundedTokenAmount = new BigNumber(tokenAmount.toFixed(0, 3))
@@ -66,7 +66,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
       })}
       banner={{
         title: t('product-card-banner.with', {
-          value: tokenAmount,
+          value: isGuniToken ? formatCryptoBalance(new BigNumber(100_000)) : tokenAmount,
           token: isGuniToken ? 'DAI' : cardData.token,
         }),
         description: !isGuniToken
@@ -89,7 +89,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
           value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
         },
         {
-          title: t('system.stability-fee'),
+          title: t('system.variable-annual-fee'),
           value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
         },
         {

@@ -92,6 +92,7 @@ export function AdjustSlFormControl({
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0

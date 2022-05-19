@@ -29,7 +29,7 @@ export function createVaultsOverview$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   address: string,
 ): Observable<VaultsOverview> {
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const vaultsAddress$ = vaults$(address)
 
   const vaultWithAutomationData$ = vaultsAddress$.pipe(
@@ -46,13 +46,17 @@ export function createVaultsOverview$(
     }),
   )
 
-  const borrowVaults = (iif(() => automationEnabled, vaultWithAutomationData$, vaultsAddress$).pipe(
+  const borrowVaults = (iif(
+    () => stopLossReadEnabled,
+    vaultWithAutomationData$,
+    vaultsAddress$,
+  ).pipe(
     map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
     // TODO casting won't be necessary when Automation feature flag will be removed
   ) as unknown) as Observable<VaultWithSLData>
 
   const multiplyVaults = (iif(
-    () => automationEnabled,
+    () => stopLossReadEnabled,
     vaultWithAutomationData$,
     vaultsAddress$,
   ).pipe(
