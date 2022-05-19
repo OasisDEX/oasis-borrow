@@ -36,7 +36,6 @@ const oasisBaseTheme = {
     offWhite: '#F6F8F9',
     grey: {
       darker: '#E6E9EB',
-      light: '#F1F3F4'
     },
 
     text: {

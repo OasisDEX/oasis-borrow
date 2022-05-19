@@ -22,20 +22,20 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
         },
         '&::-webkit-scrollbar-thumb': {
           backgroundColor: theme.colors.grey.darker,
-          borderRadius: '18px',
-          height: '100px'
+          borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-track': {
           marginRight: '10px',
-          marginBottom: '15px',
-          backgroundColor: theme.colors.grey.light,
-          borderRadius: '18px',
+          marginBottom: '24px',
+          backgroundColor: theme.colors.backgroundAlt,
+          borderRadius: theme.radii.large,
         },
         maxHeight: 670,
         overflowY: 'auto',
         overflowX: 'hidden',
-        marginRight: '10px',
+        marginRight: '8px',
         p: '24px',
+        pr: '16px',
         pt: 0,
       }}
     >
