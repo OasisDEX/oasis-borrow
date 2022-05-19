@@ -1,7 +1,11 @@
 import { SidebarSectionHeaderButton } from 'components/sidebar/SidebarSectionHeader'
+import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
+import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
+import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 
 interface GetHeaderButtonProps {
+  stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
   canResetForm?: boolean
   resetForm?: () => void
   canRegress?: boolean
@@ -10,6 +14,7 @@ interface GetHeaderButtonProps {
 }
 
 export function getHeaderButton({
+  stage,
   canResetForm,
   resetForm,
   canRegress,
@@ -17,6 +22,12 @@ export function getHeaderButton({
   regressCallback,
 }: GetHeaderButtonProps): SidebarSectionHeaderButton | undefined {
   const { t } = useTranslation()
+
+  const isPastAllowanceSettings = [
+    'allowanceWaitingForApproval',
+    'allowanceInProgress',
+    'allowanceFailure',
+  ].includes(stage)
 
   if (canResetForm) {
     return {
@@ -26,7 +37,7 @@ export function getHeaderButton({
     }
   } else if (canRegress) {
     return {
-      label: t('edit-vault'),
+      label: isPastAllowanceSettings ? t('edit-allowance') : t('edit-vault'),
       icon: 'edit',
       action: () => {
         regress!()

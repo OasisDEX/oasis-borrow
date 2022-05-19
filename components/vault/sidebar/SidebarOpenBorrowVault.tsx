@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarOpenBorrowVaultAllowanceStage } from './SidebarOpenBorrowVaultAllowanceStage'
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
 import { SidebarOpenBorrowVaultProxyStage } from './SidebarOpenBorrowVaultProxyStage'
@@ -34,6 +35,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     regress,
     isEditingStage,
     isProxyStage,
+    isAllowanceStage,
     isOpenStage,
     isLoadingStage,
     isSuccessStage,
@@ -51,6 +53,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ stage, token }),
     headerButton: getHeaderButton({
+      stage,
       canResetForm: isEditingStage && !inputAmountsEmpty,
       resetForm: () => {
         updateDeposit!(undefined)
@@ -67,6 +70,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenBorrowVaultProxyStage stage={stage} gasData={gasData} />}
+        {isAllowanceStage && <SidebarOpenBorrowVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
