@@ -172,6 +172,9 @@ function SetDownsideProtectionInformation({
       uiChanges.publish(TAB_CHANGE_SUBJECT, {
         type: 'change-tab',
         currentMode: VaultViewMode.Overview,
+        
+        // set stage to daiEditing
+        // setMainAction!('withdrawPayback')
       })
       // onClick()
     }
