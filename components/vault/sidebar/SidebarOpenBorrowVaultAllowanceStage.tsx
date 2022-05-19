@@ -1,8 +1,7 @@
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
-import { Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import { VaultAllowance } from '../VaultAllowance'
 
