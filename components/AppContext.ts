@@ -181,7 +181,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { BorrowPillChangeAction, borrowPillChangeReducer, BORROW_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/BorrowVaultPillChange'
+import { BorrowPillChange, BorrowPillChangeAction, borrowPillChangeReducer, BORROW_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/BorrowVaultPillChange'
 
 export type TxData =
   | OpenData
@@ -242,6 +242,7 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
+  | BorrowPillChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
