@@ -31,7 +31,11 @@ import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import {
+  AdjustSlFormLayout,
+  AdjustSlFormLayoutProps,
+  slCollRatioNearLiquidationRatio,
+} from './AdjustSlFormLayout'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -88,7 +92,6 @@ export function AdjustSlFormControl({
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
-
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
@@ -117,21 +120,23 @@ export function AdjustSlFormControl({
     isToCollateral,
   })
 
-  const currentCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.currentPrice)
+  const nextPriceCollRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
-  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
+  const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
-    .dividedBy(currentCollRatio)
+    .dividedBy(nextPriceCollRatio)
 
   const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
   const maxBoundry =
-    currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
+    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
+      ? new BigNumber(5)
+      : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
 
@@ -150,7 +155,7 @@ export function AdjustSlFormControl({
 
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
-    .div(currentCollRatio.minus(liqRatio))
+    .div(nextPriceCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -249,7 +254,8 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails),
+      (!isEditing && !uiState?.txDetails) ||
+      slCollRatioNearLiquidationRatio(selectedSLValue, ilkData),
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice

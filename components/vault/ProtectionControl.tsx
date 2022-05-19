@@ -66,7 +66,7 @@ export function ProtectionControl({
   const dustLimit = ilkData.debtFloor
 
   return !vault.debt.isZero() &&
-    vault.debt > dustLimit &&
+    vault.debt.gt(dustLimit) &&
     automationTriggersData?.triggers?.length ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
