@@ -36,7 +36,7 @@ export function ManageMultiplyVaultContainer({
     ilkData,
   } = manageVault
   const { t } = useTranslation()
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
     const { token } = manageVault.vault
@@ -52,14 +52,14 @@ export function ManageMultiplyVaultContainer({
     ).subscribe()
 
     return () => {
-      !automationEnabled && clear()
+      !stopLossReadEnabled && clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      {!automationEnabled && (
+      {!stopLossReadEnabled && (
         <Header
           header={t('vault.header', { ilk, id })}
           id={id}
@@ -71,7 +71,7 @@ export function ManageMultiplyVaultContainer({
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />
-          {!automationEnabled && <History vaultHistory={manageVault.vaultHistory} />}
+          {!stopLossReadEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <Form {...manageVault} />

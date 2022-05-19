@@ -43,7 +43,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   } = props
 
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
@@ -60,7 +60,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => {
