@@ -609,6 +609,7 @@ export function VaultsOverviewView({
   ensName,
   productCardsData,
 }: Props) {
+  const earnEnabled = useFeatureToggle('EarnProduct')
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -632,7 +633,7 @@ export function VaultsOverviewView({
       )}
 
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        <AssetsAndPositionsOverview />
+        {earnEnabled && <AssetsAndPositionsOverview />}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}
