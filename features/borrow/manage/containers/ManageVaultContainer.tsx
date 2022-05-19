@@ -28,7 +28,7 @@ export function ManageVaultContainer({
     priceInfo,
   } = manageVault
   const { t } = useTranslation()
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -38,14 +38,14 @@ export function ManageVaultContainer({
     ).subscribe()
 
     return () => {
-      !automationEnabled && clear()
+      !stopLossReadEnabled && clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      {!automationEnabled && (
+      {!stopLossReadEnabled && (
         <DefaultVaultHeader
           header={t('vault.header', { ilk, id })}
           id={id}
@@ -65,7 +65,7 @@ export function ManageVaultContainer({
               })
             }}
           />
-          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
+          {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm

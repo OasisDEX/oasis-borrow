@@ -68,7 +68,7 @@ export function ManageVaultForm(
     stopLossTriggered,
     vaultHistory,
   } = props
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
   const gasData = extractGasDataFromState(props)
@@ -80,7 +80,7 @@ export function ManageVaultForm(
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => setReopenPositionClicked(true)}
