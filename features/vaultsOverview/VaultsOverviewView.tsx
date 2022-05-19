@@ -633,7 +633,7 @@ export function VaultsOverviewView({
       )}
 
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        {earnEnabled && <AssetsAndPositionsOverview />}
+        {earnEnabled && <AssetsAndPositionsOverview address={address} />}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

@@ -208,11 +208,9 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
   )
 }
 
-export function AssetsAndPositionsOverview() {
+export function AssetsAndPositionsOverview(props: { address: string }) {
   const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(
-    positionsOverviewSummary$('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'),
-  )
+  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(props.address))
   return (
     <WithErrorHandler error={err}>
       <WithLoadingIndicator value={positionsOverviewSummary}>
