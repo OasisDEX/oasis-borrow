@@ -26,7 +26,6 @@ import { RetryableLoadingButtonProps } from '../../../../components/dumb/Retryab
 import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus } from '../../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { STOP_LOSS_LIQUIDATION_OFFSET } from '../common/consts/calculations'
 import { progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
@@ -89,6 +88,7 @@ export function AdjustSlFormControl({
   const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
@@ -134,8 +134,6 @@ export function AdjustSlFormControl({
     currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
 
   const liqRatio = ilkData.liquidationRatio
-  const liqRatioWithOffset = liqRatio.plus(STOP_LOSS_LIQUIDATION_OFFSET)
-  const minSliderBoundary = liqRatioWithOffset.times(100)
 
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
@@ -151,8 +149,8 @@ export function AdjustSlFormControl({
   }
 
   const sliderPercentageFill = uiState.selectedSLValue
-    .minus(minSliderBoundary)
-    .div(currentCollRatio.minus(liqRatioWithOffset))
+    .minus(liqRatio.times(100))
+    .div(currentCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -167,7 +165,7 @@ export function AdjustSlFormControl({
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: minSliderBoundary,
+    minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/

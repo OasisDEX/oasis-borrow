@@ -102,13 +102,13 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   }, [size, description])
 
   return (
-    <Box sx={{ position: 'relative', pb: '24px' }}>
+    <Box sx={{ position: 'relative' }}>
       <Card
         opacity={0.7}
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: contentHeight > 100 ? '140px' : contentHeight > 75 ? '116px' : '88px',
+          minHeight: contentHeight > 100 ? '140px' : '116px',
           border: 'unset',
         }}
       />
@@ -117,7 +117,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           zIndex: 2,
           position: 'absolute',
           mixBlendMode: 'normal',
-          top: '19px',
+          top: `calc(50% - ${contentHeight / 2}px)`,
           left: '50%',
           transform: 'translateX(-50%)',
           width: 'calc(100% - 32px)',
@@ -132,6 +132,61 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           </Text>
         </Flex>
       </Box>
+    </Box>
+  )
+}
+
+interface ProductCardHeadingProps {
+  title: string
+  description: string
+  tokenImage: string
+  tokenGif: string
+  isHover: boolean
+}
+
+function ProductCardHeading({
+  title,
+  description,
+  tokenImage,
+  tokenGif,
+  isHover,
+}: ProductCardHeadingProps) {
+  const dataContainer = useRef<HTMLDivElement>(null)
+  const [contentHeight, setContentHeight] = useState(0)
+  const size = useWindowSize()
+
+  useEffect(() => {
+    if (dataContainer.current) {
+      const height = dataContainer.current.getBoundingClientRect().height
+      setContentHeight(height)
+    }
+  }, [size, description])
+
+  return (
+    <Box sx={{ minHeight: contentHeight > 170 ? '200px' : '164px' }}>
+      <Flex
+        sx={{
+          flexDirection: 'row',
+          pb: 2,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 1 }} ref={dataContainer}>
+          <Heading variant="paragraph1" as="h3" sx={{ textAlign: 'left', fontWeight: 'semiBold' }}>
+            {title}
+          </Heading>
+          <Text
+            sx={{ color: 'text.subtitle', pb: '12px', fontSize: '14px', textAlign: 'left' }}
+            variant="paragraph3"
+          >
+            {description}
+          </Text>
+        </Flex>
+        <Box sx={{ minWidth: '146px', flexGrow: 1 }}>
+          <Image src={isHover ? tokenGif : tokenImage} sx={{ height: '146px', width: '146px' }} />
+        </Box>
+      </Flex>
     </Box>
   )
 }
@@ -193,52 +248,36 @@ export function ProductCard({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+        <Flex
+          sx={{ flexDirection: 'column', justifyContent: 'flex-start', gap: 4, height: '100%' }}
+        >
           <Box>
             {floatingLabelText && (
               <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
             )}
-            <Flex
-              sx={{
-                flexDirection: 'row',
-                pb: 2,
-                justifyContent: 'space-between',
-              }}
-            >
-              <Flex sx={{ flexDirection: 'column' }}>
-                <Heading
-                  variant="header2"
-                  as="h3"
-                  sx={{ fontSize: '18px', pb: 3, textAlign: 'left', fontWeight: 'semiBold' }}
-                >
-                  {title}
-                </Heading>
-                <Text
-                  sx={{ color: 'text.subtitle', pb: '12px', fontSize: '14px', textAlign: 'left' }}
-                  variant="paragraph3"
-                >
-                  {description}
-                </Text>
-              </Flex>
-              <Box sx={{ minWidth: '146px', flexGrow: 1, margin: 'auto' }}>
-                <Image
-                  src={hover ? tokenGif : tokenImage}
-                  sx={{ height: '146px', width: '146px' }}
-                />
-              </Box>
-            </Flex>
+            <ProductCardHeading
+              tokenImage={tokenImage}
+              tokenGif={tokenGif}
+              title={title}
+              description={description}
+              isHover={hover}
+            />
             <ProductCardBanner {...banner} />
           </Box>
           <Flex sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
-            {labels?.map(({ title, value }) => {
+            {labels?.map(({ title, value }, index) => {
               return (
                 <Flex
+                  key={`${index}-${title}`}
                   sx={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     lineHeight: '22px',
-                    pb: '12px',
+                    pb: 2,
                     fontSize: '14px',
+                    ':last-child': {
+                      pb: '0',
+                    },
                   }}
                 >
                   <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">

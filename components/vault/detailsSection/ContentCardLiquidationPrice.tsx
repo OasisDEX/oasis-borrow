@@ -44,13 +44,13 @@ function ContentCardLiquidationPriceModal({
   isStopLossEnabled,
 }: ContentCardLiquidationPriceModalProps) {
   const { t } = useTranslation()
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   return (
     <Grid gap={2}>
       <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
       <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
-        {!automationEnabled
+        {!stopLossReadEnabled
           ? t('manage-multiply-vault.card.liquidation-price-description')
           : t('manage-multiply-vault.card.liquidation-price-description-AUTO')}
       </Text>
@@ -64,7 +64,7 @@ function ContentCardLiquidationPriceModal({
           })}
         </Text>
       )}
-      {automationEnabled && isStopLossEnabled && vaultId && (
+      {stopLossReadEnabled && isStopLossEnabled && vaultId && (
         <>
           <Heading variant="header3" sx={{ mt: 3 }}>{`${t('system.vault-protection')}`}</Heading>
           <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
@@ -93,7 +93,7 @@ export function ContentCardLiquidationPrice({
 }: ContentCardLiquidationPriceProps) {
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const formatted = {
     liquidationPrice: `$${formatAmount(liquidationPrice, 'USD')}`,
@@ -121,7 +121,7 @@ export function ContentCardLiquidationPrice({
     vaultId,
   }
 
-  if (vaultId && automationEnabled) {
+  if (vaultId && stopLossReadEnabled) {
     const autoTriggersData$ = automationTriggersData$(vaultId)
     const [automationTriggersData] = useObservable(autoTriggersData$)
     const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
