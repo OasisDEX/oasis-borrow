@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { sortBy } from 'lodash'
+import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
 
@@ -63,6 +63,8 @@ type ProductLandingPagesFiltersIcons =
 export type ProductLandingPagesFilter = {
   name: ProductLandingPagesFiltersKeys
   icon: ProductLandingPagesFiltersIcons
+  urlFragment: string
+  tokens: Readonly<Array<string>>
 }
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
@@ -123,6 +125,41 @@ type ProductPageType = {
   tags: Partial<Record<Ilk, string>>
 }
 
+const genericFilters = {
+  featured: { name: 'Featured', icon: 'star_circle', urlFragment: 'featured', tokens: [] },
+  eth: {
+    name: 'ETH',
+    icon: 'eth_circle',
+    urlFragment: 'eth',
+    tokens: ['ETH', 'WETH', 'wstETH', 'stETH'],
+  },
+  btc: { name: 'BTC', icon: 'btc_circle', urlFragment: 'btc', tokens: ['WBTC', 'renBTC'] },
+  unilp: { name: 'UNI LP', icon: 'uni_lp_circle', urlFragment: 'unilp', tokens: [] },
+  link: { name: 'LINK', icon: 'link_circle', urlFragment: 'link', tokens: ['LINK'] },
+  uni: { name: 'UNI', icon: 'uni_circle', urlFragment: 'uni', tokens: ['UNI'] },
+  yfi: { name: 'YFI', icon: 'yfi_circle', urlFragment: 'yfi', tokens: ['YFI'] },
+  mana: { name: 'MANA', icon: 'mana_circle', urlFragment: 'mana', tokens: ['MANA'] },
+  matic: { name: 'MATIC', icon: 'matic_circle', urlFragment: 'matic', tokens: ['MATIC'] },
+  gusd: { name: 'GUSD', icon: 'gusd_circle', urlFragment: 'gusd', tokens: ['GUSD'] },
+  crvlp: { name: 'Curve LP', icon: 'curve_circle', urlFragment: 'crvlp', tokens: [] },
+} as const
+
+const urlFragmentKeyedFilters = keyBy(genericFilters, 'urlFragment')
+
+export function mapUrlFragmentToFilter(urlFragment: string) {
+  return urlFragmentKeyedFilters[urlFragment]
+}
+
+const tokenKeyedFilters: {
+  [k: string]: ProductLandingPagesFilter
+} = _(genericFilters)
+  .flatMap((filter) => filter.tokens.map((token) => ({ [token]: filter })))
+  .reduce((acc, current) => ({ ...acc, ...current }), {})
+
+export function mapTokenToFilter(token: string) {
+  return tokenKeyedFilters[token]
+}
+
 export const productCardsConfig: {
   borrow: ProductPageType
   multiply: ProductPageType
@@ -135,17 +172,17 @@ export const productCardsConfig: {
 } = {
   borrow: {
     cardsFilters: [
-      { name: 'Featured', icon: 'star_circle' },
-      { name: 'ETH', icon: 'eth_circle' },
-      { name: 'BTC', icon: 'btc_circle' },
-      { name: 'UNI LP', icon: 'uni_lp_circle' },
-      { name: 'LINK', icon: 'link_circle' },
-      { name: 'UNI', icon: 'uni_circle' },
-      { name: 'YFI', icon: 'yfi_circle' },
-      { name: 'MANA', icon: 'mana_circle' },
-      { name: 'MATIC', icon: 'matic_circle' },
-      { name: 'GUSD', icon: 'gusd_circle' },
-      { name: 'Curve LP', icon: 'curve_circle' },
+      genericFilters.featured,
+      genericFilters.eth,
+      genericFilters.btc,
+      genericFilters.unilp,
+      genericFilters.link,
+      genericFilters.uni,
+      genericFilters.yfi,
+      genericFilters.mana,
+      genericFilters.matic,
+      genericFilters.gusd,
+      genericFilters.crvlp,
     ],
     featuredCards: ['ETH-C', 'WBTC-C', 'CRVV1ETHSTETH-A', 'WSTETH-B'],
     inactiveIlks: [],
@@ -162,15 +199,15 @@ export const productCardsConfig: {
   },
   multiply: {
     cardsFilters: [
-      { name: 'Featured', icon: 'star_circle' },
-      { name: 'ETH', icon: 'eth_circle' },
-      { name: 'BTC', icon: 'btc_circle' },
-      { name: 'UNI LP', icon: 'uni_lp_circle' },
-      { name: 'LINK', icon: 'link_circle' },
-      { name: 'UNI', icon: 'uni_circle' },
-      { name: 'YFI', icon: 'yfi_circle' },
-      { name: 'MANA', icon: 'mana_circle' },
-      { name: 'MATIC', icon: 'matic_circle' },
+      genericFilters.featured,
+      genericFilters.eth,
+      genericFilters.btc,
+      genericFilters.unilp,
+      genericFilters.link,
+      genericFilters.uni,
+      genericFilters.yfi,
+      genericFilters.mana,
+      genericFilters.matic,
     ],
     featuredCards: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
     inactiveIlks: [],

@@ -128,9 +128,9 @@ function MenuRowDisplay(props: AssetAction) {
 function MenuRow(props: AssetAction & { close: () => void }) {
   if (isUrlAction(props)) {
     return (
-      <Link href={props.url}>
+      <AppLink href={props.path} hash={props.hash}>
         <MenuRowDisplay {...props} />
-      </Link>
+      </AppLink>
     )
   } else {
     return (

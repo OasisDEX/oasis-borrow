@@ -17,6 +17,7 @@ export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
+  const tab = window.location.hash.replace(/^#/, '')
 
   const earnEnabled = useFeatureToggle('EarnProduct')
 
@@ -51,6 +52,7 @@ export function MultiplyView() {
               filters={productCardsConfig.multiply.cardsFilters.filter(
                 (f) => !(earnEnabled && f.name === 'UNI LP'),
               )}
+              selectedFilter={tab}
             >
               {(cardsFilter) => {
                 const filteredCards = multiplyPageCardsData({

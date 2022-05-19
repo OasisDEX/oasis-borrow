@@ -58,7 +58,7 @@ describe('asset actions', () => {
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).eq('Borrow')
     expect(borrowAction.icon).eq('collateral')
-    expect(borrowAction.url).eq('/borrow')
+    expect(borrowAction.path).eq('/borrow')
   })
 
   it('shows moth borrow and multiply action', () => {
@@ -86,13 +86,13 @@ describe('asset actions', () => {
     assertAssetAction(isUrlAction(borrowAction), 'borrow action is not url asset action')
     expect(borrowAction.text).eq('Borrow')
     expect(borrowAction.icon).eq('collateral')
-    expect(borrowAction.url).eq('/borrow')
+    expect(borrowAction.path).eq('/borrow')
 
     const multiplyAction = state()[2]
     assertAssetAction(isUrlAction(multiplyAction), 'borrow action is not url asset action')
     expect(multiplyAction.text).eq('Multiply')
     expect(multiplyAction.icon).eq('copy')
-    expect(multiplyAction.url).eq('/multiply')
+    expect(multiplyAction.path).eq('/multiply')
   })
 
   it('includes swaps', () => {

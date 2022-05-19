@@ -7,11 +7,13 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
+import { mapTokenToFilter } from '../../../helpers/productCards'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
 type UrlAssetAction = {
-  url: string
+  path: string
+  hash?: string
   text: string
   icon: string
 }
@@ -23,7 +25,7 @@ type OnClickAssetAction = {
 }
 
 export function isUrlAction(aa: AssetAction): aa is UrlAssetAction {
-  return (aa as UrlAssetAction).url !== undefined
+  return (aa as UrlAssetAction).path !== undefined
 }
 
 export function isOnClickAction(aa: AssetAction): aa is OnClickAssetAction {
@@ -36,17 +38,26 @@ type ProductCategoryIlks = {
   [category in ProductCategory]: Array<string> // Array<ilks>
 }
 
-function productCategoryToAssetAction(productCategory: ProductCategory): AssetAction {
+function productCategoryToAssetAction(
+  productCategory: ProductCategory,
+  token: string,
+): AssetAction {
+  const filter = mapTokenToFilter(token)
+
+  const urlFragment = filter ? `#${filter.urlFragment}` : ''
+
   switch (productCategory) {
     case 'borrow':
       return {
-        url: '/borrow',
+        path: `/borrow`,
+        hash: urlFragment,
         text: 'Borrow',
         icon: 'collateral',
       }
     case 'multiply':
       return {
-        url: '/multiply',
+        path: `/multiply`,
+        hash: urlFragment,
         text: 'Multiply',
         icon: 'copy',
       }
@@ -95,7 +106,7 @@ export function createAssetActions$(
         .reduce<Array<ProductCategory>>((acc, [_token, productCategories]) => {
           return [...new Set([...acc, ...productCategories])] // dedupe
         }, [])
-        .map(productCategoryToAssetAction)
+        .map((productCategory) => productCategoryToAssetAction(productCategory, token))
     }),
     // add swap
     map((assetActions) => {

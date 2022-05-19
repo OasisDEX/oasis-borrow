@@ -15,11 +15,13 @@ import {
   productCardsConfig,
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
+import { useLocation } from 'react-router'
 
 export function BorrowView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const tab = window.location.hash.replace(/^#/, '')
 
   return (
     <Grid
@@ -48,7 +50,10 @@ export function BorrowView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
+            <ProductCardsFilter
+              filters={productCardsConfig.borrow.cardsFilters}
+              selectedFilter={tab}
+            >
               {(cardsFilter: ProductLandingPagesFiltersKeys) => {
                 const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
 

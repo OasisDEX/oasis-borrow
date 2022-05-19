@@ -28,7 +28,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
-      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
@@ -76,7 +76,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of([]),
-      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
@@ -119,7 +119,7 @@ describe('positionsOverviewSummary', () => {
       walletBalance$,
       tokenPriceUsd$,
       () => of(positions),
-      () => of([{ url: 'url', icon: 'icon', text: 'text' }]),
+      () => of([{ path: 'url', icon: 'icon', text: 'text' }]),
       '0x00',
     )
 
