@@ -275,18 +275,6 @@ function UserDesktopMenu() {
           {t('my-positions')} {vaultCount && `(${vaultCount})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        {/*<ButtonDropdown*/}
-        {/*  ButtonContents={({ active }) => (*/}
-        {/*    <Icon name="exchange" size="auto" width="20" color={active ? 'primary' : 'inherit'} />*/}
-        {/*  )}*/}
-        {/*  round={true}*/}
-        {/*  showNewBeacon={!exchangeOnboarded && !exchangeOpened}*/}
-        {/*  onOpen={() => setExchangeOpened(true)}*/}
-        {/*  sx={{ mr: 3 }}*/}
-        {/*>*/}
-        {/*  <UniswapWidgetShowHide />*/}
-        {/*</ButtonDropdown>*/}
-
         <Box>
           <Button
             variant="menuButtonRound"

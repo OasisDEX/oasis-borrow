@@ -119,6 +119,4 @@ describe('asset actions', () => {
     expect(swapAction.icon).eq('exchange')
     expect(swapAction.onClick).to.not.be.undefined
   })
-
-  it('returns nothing/empty for something that has no actions')
 })
