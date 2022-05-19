@@ -8,6 +8,7 @@ import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { getHeaderButton } from 'features/sidebar/getHeaderButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
+import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -58,7 +59,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     }),
     content: (
       <Grid gap={3}>
-        stage: {stage}
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
@@ -82,6 +82,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         },
       }),
     progress: getSidebarProgress(props),
+    success: getSidebarSuccess(props),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
