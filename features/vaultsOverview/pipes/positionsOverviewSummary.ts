@@ -38,7 +38,7 @@ type WalletAssets = {
   assetActions: Array<AssetAction>
 }
 
-type Top5AssetsAndPositionsViewModal = {
+export type TopAssetsAndPositionsViewModal = {
   assetsAndPositions: Array<PositionView>
   percentageOther: BigNumber
   totalValueUsd: BigNumber
@@ -53,7 +53,7 @@ export function createPositionsOverviewSummary$(
   createPositions$: (address: string) => Observable<Position[]>,
   createAssetActions$: (token: string) => Observable<Array<AssetAction>>,
   address: string,
-): Observable<Top5AssetsAndPositionsViewModal> {
+): Observable<TopAssetsAndPositionsViewModal> {
   const tokenBalances$: Observable<Array<WalletAssets>> = combineLatest(
     tokensWeCareAbout.map((t) =>
       combineLatest(
@@ -94,7 +94,10 @@ export function createPositionsOverviewSummary$(
           }
           return tokenBUsdAmount.minus(tokenAUsdAmount).toNumber()
         })
-        .filter((token) => getPositionOrAssetValue(token).gt(zero)),
+        .filter((token) => {
+          const valueUsd = getPositionOrAssetValue(token)
+          return valueUsd.decimalPlaces(2).gt(zero) // only care about meaningful dollar values
+        }),
     ),
   )
 

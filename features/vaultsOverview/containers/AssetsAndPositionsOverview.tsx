@@ -15,7 +15,7 @@ import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElemen
 import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
-import { PositionView } from '../pipes/positionsOverviewSummary'
+import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -175,8 +175,40 @@ function Menu(props: {
   )
 }
 
-export function AssetsAndPositionsOverview() {
+function RenderPositions(props: TopAssetsAndPositionsViewModal) {
   const breakpointIndex = useBreakpointIndex()
+  const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
+  const pieSlices = [
+    ...topAssetsAndPositions.map((ap) => ({
+      value: ap.proportion || zero,
+      color: tokenColor(ap.token),
+    })),
+    { value: props.percentageOther, color: '#999' },
+  ]
+  return (
+    <Card variant="positionsOverview">
+      <Text
+        variant="paragraph2"
+        sx={{
+          fontWeight: 'semiBold',
+        }}
+      >
+        Top {topAssetsAndPositions.length} Assets and Positions
+      </Text>
+      <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
+        {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
+
+        <Box sx={{ flex: 1, ml: [null, '53px'] }}>
+          {topAssetsAndPositions.map((row) => (
+            <LinkedRow key={row.token + row.title} {...row} />
+          ))}
+        </Box>
+      </Flex>
+    </Card>
+  )
+}
+
+export function AssetsAndPositionsOverview() {
   const { positionsOverviewSummary$ } = useAppContext()
   const [positionsOverviewSummary, err] = useObservable(
     positionsOverviewSummary$('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'),
@@ -185,35 +217,11 @@ export function AssetsAndPositionsOverview() {
     <WithErrorHandler error={err}>
       <WithLoadingIndicator value={positionsOverviewSummary}>
         {(positionsOverviewSummary) => {
-          const top5AssetsAndPositions = positionsOverviewSummary.assetsAndPositions.slice(0, 5)
-          const pieSlices = [
-            ...top5AssetsAndPositions.map((ap) => ({
-              value: ap.proportion || zero,
-              color: tokenColor(ap.token),
-            })),
-            { value: positionsOverviewSummary.percentageOther, color: '#999' },
-          ]
-          return (
-            <Card variant="positionsOverview">
-              <Text
-                variant="paragraph2"
-                sx={{
-                  fontWeight: 'semiBold',
-                }}
-              >
-                Top 5 Assets and Positions
-              </Text>
-              <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
-                {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
-
-                <Box sx={{ flex: 1, ml: [null, '53px'] }}>
-                  {top5AssetsAndPositions.map((row) => (
-                    <LinkedRow key={row.token + row.title} {...row} />
-                  ))}
-                </Box>
-              </Flex>
-            </Card>
-          )
+          if (positionsOverviewSummary.assetsAndPositions.length > 0) {
+            return <RenderPositions {...positionsOverviewSummary} />
+          } else {
+            return <></>
+          }
         }}
       </WithLoadingIndicator>
     </WithErrorHandler>
