@@ -132,6 +132,7 @@ export function finalValidation(
     priceInfo: { currentEthPrice },
     depositAmount,
     isEditingStage,
+    isProxyStage,
   } = state
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -144,7 +145,7 @@ export function finalValidation(
 
   const warningMessages: VaultWarningMessage[] = []
 
-  if (isEditingStage) {
+  if (isEditingStage || isProxyStage) {
     warningMessages.push(
       ...warningMessagesHandler({
         potentialInsufficientEthFundsForTx,

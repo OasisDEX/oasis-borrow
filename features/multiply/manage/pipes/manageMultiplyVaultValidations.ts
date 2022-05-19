@@ -30,6 +30,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     ledgerWalletContractDataDisabled,
     invalidSlippage,
     afterCollRatioBelowStopLossRatio,
+    insufficientEthFundsForTx,
   } = state
 
   const errorMessages: VaultErrorMessage[] = []
@@ -86,6 +87,7 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }
@@ -134,6 +136,7 @@ export function finalValidation(state: ManageMultiplyVaultState): ManageMultiply
     priceInfo: { currentEthPrice },
     depositAmount,
     isEditingStage,
+    isProxyStage,
   } = state
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -146,7 +149,7 @@ export function finalValidation(state: ManageMultiplyVaultState): ManageMultiply
 
   const warningMessages: VaultWarningMessage[] = []
 
-  if (isEditingStage) {
+  if (isEditingStage || isProxyStage) {
     warningMessages.push(
       ...warningMessagesHandler({
         potentialInsufficientEthFundsForTx,

@@ -18,6 +18,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     depositAmountExceedsCollateralBalance,
     ledgerWalletContractDataDisabled,
     exchangeError,
+    insufficientEthFundsForTx,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
@@ -49,6 +50,7 @@ export function validateErrors(state: OpenMultiplyVaultState): OpenMultiplyVault
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }
@@ -95,6 +97,7 @@ export function finalValidation(state: OpenMultiplyVaultState): OpenMultiplyVaul
     priceInfo: { currentEthPrice },
     depositAmount,
     isEditingStage,
+    isProxyStage,
   } = state
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -107,7 +110,7 @@ export function finalValidation(state: OpenMultiplyVaultState): OpenMultiplyVaul
 
   const warningMessages: VaultWarningMessage[] = []
 
-  if (isEditingStage) {
+  if (isEditingStage || isProxyStage) {
     warningMessages.push(
       ...warningMessagesHandler({
         potentialInsufficientEthFundsForTx,
