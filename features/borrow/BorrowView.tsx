@@ -15,7 +15,6 @@ import {
   productCardsConfig,
   ProductLandingPagesFiltersKeys,
 } from '../../helpers/productCards'
-import { useLocation } from 'react-router'
 
 export function BorrowView() {
   const { t } = useTranslation()

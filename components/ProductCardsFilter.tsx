@@ -8,7 +8,6 @@ import {
   ProductLandingPagesFiltersKeys,
 } from '../helpers/productCards'
 import { ProductCardsSelect } from './ProductCardsSelect'
-import { keyBy } from 'lodash'
 
 interface TokenTabsProps {
   filters: Array<ProductLandingPagesFilter>

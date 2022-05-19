@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid } from 'theme-ui'
+import { Flex, Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'

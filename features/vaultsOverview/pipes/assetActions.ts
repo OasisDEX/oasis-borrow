@@ -3,11 +3,11 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { UIChanges } from '../../../components/AppContext'
+import { mapTokenToFilter } from '../../../helpers/productCards'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
-import { mapTokenToFilter } from '../../../helpers/productCards'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
