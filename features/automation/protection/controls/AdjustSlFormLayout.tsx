@@ -31,6 +31,7 @@ import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
+import { BORROW_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/BorrowVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface AdjustSlFormInformationProps {
@@ -172,11 +173,13 @@ function SetDownsideProtectionInformation({
       uiChanges.publish(TAB_CHANGE_SUBJECT, {
         type: 'change-tab',
         currentMode: VaultViewMode.Overview,
-        // state: 
-        // set stage to daiEditing
-        // setMainAction!('withdrawPayback')
       })
-      // onClick()
+
+      uiChanges.publish(BORROW_VAULT_PILL_CHANGE_SUBJECT, {
+        type: 'change-borrow-pill',
+        currentStage: 'daiEditing',
+      })
+      // TODO ŁW allow publish to use array of subjects
     }
 
   return (
