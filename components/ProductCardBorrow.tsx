@@ -114,7 +114,7 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
           value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
         },
         {
-          title: t('system.stability-fee'),
+          title: t('system.variable-annual-fee'),
           value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
         },
         {

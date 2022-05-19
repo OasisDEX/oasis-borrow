@@ -131,6 +131,7 @@ export const productCardsConfig: {
     featuredCards: Record<ProductTypes, Array<Ilk>>
   }
   descriptionCustomKeys: Record<Ilk, string>
+  descriptionLinks: Record<Ilk, { link: string; name: string }>
 } = {
   borrow: {
     cardsFilters: [
@@ -229,6 +230,123 @@ export const productCardsConfig: {
     'UNIV2WBTCDAI-A': 'lp-tokens',
     'CRVV1ETHSTETH-A': 'borrow',
   } as Record<string, string>,
+  descriptionLinks: {
+    'ETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-A)',
+    },
+    'ETH-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-B)',
+    },
+    'ETH-C': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_126274073291652792840397',
+      name: 'Maker (ETH-C)',
+    },
+    'WSTETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      name: 'Maker (WSTETH-A)',
+    },
+    'WSTETH-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_274014616431652792856773',
+      name: 'Maker (WSTETH-B)',
+    },
+    'WBTC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-A)',
+    },
+    'WBTC-B': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-B)',
+    },
+    'WBTC-C': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_884958393561652792865000',
+      name: 'Maker (WBTC-C)',
+    },
+    'RENBTC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_414294869681652792871926',
+      name: 'Maker (RENBTC-A)',
+    },
+    'LINK-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_42582440791652792878921',
+      name: 'Maker (LINK-A)',
+    },
+    'MANA-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_536808626201652802419989',
+      name: 'Maker (MANA-A)',
+    },
+    'MATIC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_615723980991652792924214',
+      name: 'Maker (MATIC-A)',
+    },
+    'GUSD-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4952663551081652792930397',
+      name: 'Maker (GUSD-A)',
+    },
+    'YFI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
+      name: 'Maker (YFI-A)',
+    },
+    'UNI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_5813529831231652792943692',
+      name: 'Maker (UNI-A)',
+    },
+    'GUNIV3DAIUSDC2-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Gelato/Uniswap',
+    },
+    'UNIV2DAIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2USDCETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2DAIUSDC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2UNIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCDAI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'CRVV1ETHSTETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_67885280351652802433065',
+      name: 'Maker/Curve/Lido',
+    },
+  },
 }
 
 function btcProductCards(productCardsData: ProductCardData[]) {

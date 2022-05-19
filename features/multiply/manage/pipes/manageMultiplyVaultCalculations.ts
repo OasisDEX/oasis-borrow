@@ -664,6 +664,8 @@ export function applyManageVaultCalculations(
     ? closeVaultTo === 'dai'
       ? closeToDaiParams.oazoFee
       : closeToCollateralParams.oazoFee
+    : otherAction === 'depositDai' && depositDaiAmount.gt(zero)
+    ? oazoFeeNonClose.plus(depositDaiAmount.times(OAZO_FEE))
     : oazoFeeNonClose
 
   const loanFee = isCloseAction
