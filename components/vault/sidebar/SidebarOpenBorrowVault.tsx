@@ -1,4 +1,3 @@
-import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -10,6 +9,10 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import {
+  progressTrackingEvent,
+  regressTrackingEvent,
+} from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
@@ -51,7 +54,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ stage, token }),
+    title: getSidebarTitle(props),
     headerButton: getHeaderButton({
       stage,
       canResetForm: isEditingStage && !inputAmountsEmpty,
@@ -61,9 +64,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       canRegress,
       regress,
       regressCallback: () => {
-        if (stage !== 'allowanceFailure') {
-          trackingEvents.confirmVaultEdit(firstCDP)
-        }
+        regressTrackingEvent({ props, firstCDP })
       },
     }),
     content: (
@@ -83,6 +84,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       isLoading: isLoadingStage,
       action: () => {
         if (!isSuccessStage) progress!()
+        progressTrackingEvent({ props, firstCDP })
       },
       url: isSuccessStage ? `/${id}` : undefined,
     },

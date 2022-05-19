@@ -1,12 +1,7 @@
-import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 
-interface GetSidebarTitleProps {
-  stage: OpenVaultStage
-  token: string
-}
-
-export function getSidebarTitle({ stage, token }: GetSidebarTitleProps): string {
+export function getSidebarTitle({ stage, token } : OpenVaultState): string {
   const { t } = useTranslation()
 
   switch (stage) {
