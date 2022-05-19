@@ -1,9 +1,11 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
+import { VaultViewMode } from 'components/VaultTabSwitch'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -29,6 +31,7 @@ import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
+import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface AdjustSlFormInformationProps {
   tokenPrice: BigNumber
@@ -163,6 +166,16 @@ function SetDownsideProtectionInformation({
     .decimalPlaces(0)
     .minus(nextCollateralizationPriceAlertRange)
 
+    const { uiChanges } = useAppContext()
+
+    const redirectToDaiPayback = () => {
+      uiChanges.publish(TAB_CHANGE_SUBJECT, {
+        type: 'change-tab',
+        currentMode: VaultViewMode.Overview,
+      })
+      // onClick()
+    }
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -211,7 +224,10 @@ function SetDownsideProtectionInformation({
           messages={[t('protection.coll-ratio-liquidation')]}
           type="error"
           withBullet={false}
+          handleClick={redirectToDaiPayback}
+          
         />
+        
       )}
     </VaultChangesInformationContainer>
   )

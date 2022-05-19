@@ -5,15 +5,16 @@ interface NoticeCardProps {
   messages: (string | JSX.Element)[]
   type: 'error' | 'warning'
   withBullet?: boolean
+  handleClick?: () => void
 }
 
-export function MessageCard({ messages, type, withBullet = true }: NoticeCardProps) {
+export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
   const cardColor = type === 'error' ? 'danger' : 'warning'
   const textColor = type === 'error' ? 'onError' : 'onWarning'
 
   if (!messages.length) return null
   return (
-    <Card variant={cardColor}>
+    <Card variant={cardColor} onClick={handleClick}>
       <Grid>
         {messages.map((message, idx) => (
           <Flex key={idx}>
