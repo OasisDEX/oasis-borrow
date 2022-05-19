@@ -20,6 +20,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -118,7 +119,7 @@ export function ManageVaultDetails(
       lockedCollateral,
       lockedCollateralUSD,
       collateralizationRatio,
-      // ilk,
+      ilk,
     },
     ilkData: { liquidationRatio },
     liquidationPriceCurrentPriceDifference,
@@ -139,17 +140,18 @@ export function ManageVaultDetails(
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
-      {automationEnabled && (
+      {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {/* {!newComponentsEnabled && (
+          {!newComponentsEnabled && stopLossWriteEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
-          )} */}
+          )}
           <StopLossBannerControl
             vaultId={id}
             liquidationPrice={liquidationPrice}
@@ -237,11 +239,11 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {/* {automationEnabled && newComponentsEnabled && (
+      {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
           <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
-      )} */}
+      )}
       <BonusContainer cdpId={props.vault.id} />
     </Box>
   )
