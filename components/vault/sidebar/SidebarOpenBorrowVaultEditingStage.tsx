@@ -6,7 +6,7 @@ import { Grid } from 'theme-ui'
 
 import { VaultActionInput } from '../VaultActionInput'
 
-export function SideBarOpenBorrowVaultEditingStage(props: OpenVaultState) {
+export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const {
     token,
     depositAmount,

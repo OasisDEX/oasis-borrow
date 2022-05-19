@@ -1,4 +1,4 @@
-import { TxStatusCardProgress } from 'components/vault/TxStatusCard'
+import { TxStatusCardProgress, TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -13,11 +13,7 @@ export interface SidebarSectionFooterProps {
   primaryButton: SidebarSectionFooterButtonSettings
   secondaryButton?: SidebarSectionFooterButtonSettings
   textButton?: SidebarSectionFooterButtonSettings
-  progress?: {
-    text: string
-    txHash: string
-    etherscan: string
-  }
+  progress?: TxStatusCardProgressProps
 }
 
 export function SidebarSectionFooter({

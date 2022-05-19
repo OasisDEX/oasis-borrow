@@ -7,18 +7,17 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { getHeaderButton } from 'features/sidebar/getHeaderButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SideBarOpenBorrowVaultEditingStage } from './SideBarOpenBorrowVaultEditingStage'
-import { SideBarOpenBorrowVaultOpenStage } from './SideBarOpenBorrowVaultOpenStage'
+import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
+import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
 
-interface SideBarOpenBorrowVaultProps {}
-
-export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & OpenVaultState) {
+export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
@@ -60,8 +59,8 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
     content: (
       <Grid gap={3}>
         stage: {stage}
-        {isEditingStage && <SideBarOpenBorrowVaultEditingStage {...props} />}
-        {isOpenStage && <SideBarOpenBorrowVaultOpenStage {...props} />}
+        {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
+        {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -82,6 +81,7 @@ export function SideBarOpenBorrowVault(props: SideBarOpenBorrowVaultProps & Open
           url: `/vaults/open-multiply/${ilk}`,
         },
       }),
+    progress: getSidebarProgress(props),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

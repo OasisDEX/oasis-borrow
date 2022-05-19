@@ -2,7 +2,7 @@ import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { SideBarOpenBorrowVault } from 'components/vault/sidebar/SideBarOpenBorrowVault'
+import { SidebarOpenBorrowVault } from 'components/vault/sidebar/SidebarOpenBorrowVault'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultFormVaultTypeSwitch, WithVaultFormStepIndicator } from 'components/vault/VaultForm'
@@ -81,7 +81,7 @@ function OpenVaultForm(props: OpenVaultState) {
 
   return (
     <>
-      <SideBarOpenBorrowVault {...props} />
+      <SidebarOpenBorrowVault {...props} />
       <VaultFormContainer toggleTitle="Open Vault">
         <OpenVaultTitle {...props} />
         {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
