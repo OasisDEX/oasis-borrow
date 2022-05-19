@@ -30,8 +30,9 @@ export function getSidebarTitle({ stage, token }: GetSidebarTitleProps): string 
     case 'txWaitingForConfirmation':
     case 'txWaitingForApproval':
     case 'txFailure':
-    case 'txSuccess':
       return t('vault-form.header.confirm')
+    case 'txSuccess':
+      return t('vault-form.header.success')
     default:
       return ''
   }

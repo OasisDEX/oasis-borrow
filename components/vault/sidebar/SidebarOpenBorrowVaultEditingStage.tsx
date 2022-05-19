@@ -62,6 +62,9 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
         showMin={true}
         minAmount={debtFloor}
         minAmountLabel={'From'}
+        onSetMin={() => {
+          updateGenerate!(debtFloor)
+        }}
         showMax={true}
         maxAmount={maxGenerateAmount}
         onSetMax={updateGenerateMax}

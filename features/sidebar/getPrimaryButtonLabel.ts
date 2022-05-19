@@ -1,17 +1,20 @@
-import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 
-interface GetPrimaryButtonLabelProps {
-  stage: OpenVaultStage
-  token: string
-}
-
-export function getPrimaryButtonLabel({ stage }: GetPrimaryButtonLabelProps): string {
+export function getPrimaryButtonLabel({
+  stage,
+  id,
+  token,
+  proxyAddress,
+  insufficientAllowance,
+}: OpenVaultState): string {
   const { t } = useTranslation()
 
   switch (stage) {
     case 'editing':
-      return t('confirm')
+      if (!proxyAddress) return t('setup-proxy')
+      else if (insufficientAllowance) return t('set-token-allowance', { token })
+      else return t('confirm')
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
     case 'proxyWaitingForApproval':
@@ -20,7 +23,9 @@ export function getPrimaryButtonLabel({ stage }: GetPrimaryButtonLabelProps): st
     case 'proxyFailure':
       return t('retry-create-proxy')
     case 'proxySuccess':
+      return insufficientAllowance ? t('set-token-allowance', { token }) : t('continue')
     case 'allowanceWaitingForConfirmation':
+      return t('set-token-allowance', { token: token })
     case 'allowanceWaitingForApproval':
     case 'allowanceInProgress':
       return t('approving-allowance')
@@ -33,11 +38,11 @@ export function getPrimaryButtonLabel({ stage }: GetPrimaryButtonLabelProps): st
     case 'txInProgress':
       return t('creating-vault')
     case 'txSuccess':
-      return t('go-to-vault')
+      return t('go-to-vault', { id })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')
     default:
-      return 'Unhandled label'
+      return ''
   }
 }

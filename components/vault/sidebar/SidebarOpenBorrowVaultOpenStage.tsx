@@ -15,7 +15,12 @@ export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
     case 'txInProgress':
       return <OpenVaultAnimation />
     case 'txSuccess':
-      return <VaultChangesWithADelayCard />
+      return (
+        <>
+          <OpenVaultChangesInformation {...props} />
+          <VaultChangesWithADelayCard />
+        </>
+      )
     default:
       return (
         <>

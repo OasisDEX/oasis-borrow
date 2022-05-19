@@ -47,6 +47,7 @@ interface VaultActionInputProps {
   auxiliaryUsdPrice?: BigNumber
 
   showMin?: boolean
+  onSetMin?: () => void
   minAmount?: BigNumber
   minAmountLabel?: string
 
@@ -68,6 +69,7 @@ export function VaultActionInput({
   disabled,
 
   showMin,
+  onSetMin,
   minAmount,
   minAmountLabel,
 
@@ -142,11 +144,19 @@ export function VaultActionInput({
             {showMin && (
               <>
                 {minAmountLabel}{' '}
-                {auxiliaryFlag && BigNumber.isBigNumber(minAuxiliaryAmount)
-                  ? formatCryptoBalance(minAuxiliaryAmount)
-                  : !auxiliaryFlag && BigNumber.isBigNumber(minAmount)
-                  ? formatCryptoBalance(minAmount)
-                  : null}
+                <Text
+                  as="span"
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={!disabled ? onSetMin : () => null}
+                >
+                  {auxiliaryFlag && BigNumber.isBigNumber(minAuxiliaryAmount)
+                    ? formatCryptoBalance(minAuxiliaryAmount)
+                    : !auxiliaryFlag && BigNumber.isBigNumber(minAmount)
+                    ? formatCryptoBalance(minAmount)
+                    : null}
+                </Text>
               </>
             )}
             {showMax && maxAmount?.isGreaterThan(minAmount || zero) && (

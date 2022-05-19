@@ -2,9 +2,17 @@ import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 
-export function getSidebarProgress(props: OpenVaultState): TxStatusCardProgressProps | undefined {
+export function getSidebarProgress({
+  stage,
+  proxyTxHash,
+  allowanceTxHash,
+  openTxHash,
+  etherscan,
+  proxyConfirmations,
+  safeConfirmations,
+  token,
+}: OpenVaultState): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
-  const { stage, proxyTxHash, allowanceTxHash, openTxHash, etherscan, proxyConfirmations, safeConfirmations, token } = props
 
   switch (stage) {
     case 'proxyInProgress':

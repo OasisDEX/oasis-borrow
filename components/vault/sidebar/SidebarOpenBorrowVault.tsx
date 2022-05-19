@@ -24,6 +24,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const [accountData] = useObservable(accountData$)
 
   const {
+    id,
     stage,
     canProgress,
     progress,
@@ -32,6 +33,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     isEditingStage,
     isOpenStage,
     isLoadingStage,
+    isSuccessStage,
     token,
     totalSteps,
     currentStep,
@@ -66,13 +68,14 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ stage, token }),
-      steps: [currentStep, totalSteps],
+      label: getPrimaryButtonLabel(props),
+      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
       action: () => {
-        progress!()
+        if (!isSuccessStage) progress!()
       },
+      url: isSuccessStage ? `/${id}` : undefined,
     },
     ...(isEditingStage &&
       ALLOWED_MULTIPLY_TOKENS.includes(token) && {
