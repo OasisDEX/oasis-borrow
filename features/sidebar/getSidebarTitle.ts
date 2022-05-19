@@ -12,9 +12,10 @@ export function getSidebarTitle({ stage, token }: GetSidebarTitleProps): string 
   switch (stage) {
     case 'editing':
       return t('vault-form.header.edit')
+    case 'proxyInProgress':
+      return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
-    case 'proxyInProgress':
     case 'proxyFailure':
       return t('vault-form.header.proxy')
     case 'proxySuccess':

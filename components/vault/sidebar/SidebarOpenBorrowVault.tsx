@@ -10,6 +10,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -17,6 +18,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
+import { SidebarOpenBorrowVaultProxyStage } from './SidebarOpenBorrowVaultProxyStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -31,6 +33,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     canRegress,
     regress,
     isEditingStage,
+    isProxyStage,
     isOpenStage,
     isLoadingStage,
     isSuccessStage,
@@ -42,6 +45,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     inputAmountsEmpty,
   } = props
 
+  const gasData = extractGasDataFromState(props)
   const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -62,6 +66,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
+        {isProxyStage && <SidebarOpenBorrowVaultProxyStage stage={stage} gasData={gasData} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
