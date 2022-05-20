@@ -133,6 +133,7 @@ export interface OpenVaultConditions {
   insufficientAllowance: boolean
 
   isLoadingStage: boolean
+  isSuccessStage: boolean
   canProgress: boolean
   canRegress: boolean
 }
@@ -164,6 +165,7 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   insufficientAllowance: false,
 
   isLoadingStage: false,
+  isSuccessStage: false,
   canProgress: false,
   canRegress: false,
 }
@@ -276,6 +278,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'txWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'txSuccess'
+
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
     allowanceAmount,
@@ -350,6 +354,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     insufficientAllowance,
 
     isLoadingStage,
+    isSuccessStage,
     canProgress,
     canRegress,
   }

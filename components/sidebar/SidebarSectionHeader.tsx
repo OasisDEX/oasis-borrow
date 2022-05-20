@@ -7,14 +7,16 @@ import {
   SidebarSectionHeaderSelectItem,
 } from './SidebarSectionHeaderSelect'
 
+export interface SidebarSectionHeaderButton {
+  label: string
+  icon?: string
+  action: () => void
+}
+
 export interface SidebarSectionHeaderProps {
   title: string
   dropdown?: SidebarSectionHeaderSelectItem[]
-  headerButton?: {
-    label: string
-    icon?: string
-    action: () => void
-  }
+  headerButton?: SidebarSectionHeaderButton
   onSelect: (panel: string) => void
 }
 

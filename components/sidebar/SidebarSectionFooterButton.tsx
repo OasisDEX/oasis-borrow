@@ -1,3 +1,4 @@
+import { useRedirect } from 'helpers/useRedirect'
 import React from 'react'
 import { Button, Spinner } from 'theme-ui'
 
@@ -7,7 +8,8 @@ export interface SidebarSectionFooterButtonProps {
   steps?: [number, number]
   disabled?: boolean
   isLoading?: boolean
-  action: () => void
+  action?: () => void
+  url?: string
 }
 
 export function SidebarSectionFooterButton({
@@ -17,13 +19,17 @@ export function SidebarSectionFooterButton({
   disabled,
   isLoading,
   action,
+  url,
 }: SidebarSectionFooterButtonProps) {
+  const { replace } = useRedirect()
+
   return (
     <Button
       disabled={disabled}
       variant={variant}
       onClick={() => {
-        action()
+        if (action) action()
+        if (url) replace(url)
       }}
       sx={{
         display: 'flex',
