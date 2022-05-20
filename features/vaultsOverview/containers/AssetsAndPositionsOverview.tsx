@@ -39,12 +39,19 @@ function AssetRow(props: PositionView) {
         borderRadius: '12px',
       }}
     >
-      <Icon name={getToken(props.token).iconCircle} size="32px" sx={{ verticalAlign: 'sub' }} />
+      <Icon
+        name={getToken(props.token).iconCircle}
+        size="32px"
+        sx={{ verticalAlign: 'sub', flexShrink: 0 }}
+      />
       <Text
         variant="paragraph2"
         sx={{
           fontWeight: 'semiBold',
           ml: '8px',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          overflow: 'hidden',
         }}
       >
         {props.title}
@@ -64,13 +71,16 @@ function AssetRow(props: PositionView) {
           variant="paragraph3"
           sx={{
             ml: '8px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
           }}
         >
           (${formatAmount(props.contentsUsd, 'USD')})
         </Text>
       )}
-      {props.actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto' }} />}
-      {props.url && <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto' }} />}
+      {props.actions && <Icon name="dots_v" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
+      {props.url && <Icon name="arrow_right" sx={{ fill: '#708390', ml: 'auto', flexShrink: 0 }} />}
     </Flex>
   )
 }
