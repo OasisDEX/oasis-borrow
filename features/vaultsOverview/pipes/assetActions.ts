@@ -8,6 +8,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
+import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
@@ -32,8 +33,6 @@ export function isOnClickAction(aa: AssetAction): aa is OnClickAssetAction {
   return (aa as OnClickAssetAction).onClick !== undefined
 }
 
-type ProductCategory = 'multiply' | 'borrow' | 'earn'
-
 type ProductCategoryIlks = {
   [category in ProductCategory]: Array<string> // Array<ilks>
 }
@@ -49,14 +48,14 @@ function productCategoryToAssetAction(
   switch (productCategory) {
     case 'borrow':
       return {
-        path: `/borrow`,
+        path: getProductCategoryUrl('borrow'),
         hash: urlFragment,
         text: 'Borrow',
         icon: 'collateral',
       }
     case 'multiply':
       return {
-        path: `/multiply`,
+        path: getProductCategoryUrl('multiply'),
         hash: urlFragment,
         text: 'Multiply',
         icon: 'copy',

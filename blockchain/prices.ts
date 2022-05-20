@@ -148,12 +148,20 @@ export function createTokenPriceInUSD$(
               map((price) => ({
                 [token]: price,
               })),
+              catchError((error) => {
+                console.log(error)
+                return of({})
+              }),
             )
           } else if (coinGeckoTicker) {
             return coinGeckoTicker$(coinGeckoTicker).pipe(
               map((price) => ({
                 [token]: price,
               })),
+              catchError((error) => {
+                console.log(error)
+                return of({})
+              }),
             )
           } else {
             console.log(`could not find price for ${token} - no ticker configured`)

@@ -159,7 +159,7 @@ function Menu(props: {
       sx={{
         position: 'absolute',
         boxShadow: 'elevation',
-        background: '#FFFFFF',
+        backgroundColor: 'background',
         borderRadius: '12px',
         border: 'none',
         padding: '24px',
