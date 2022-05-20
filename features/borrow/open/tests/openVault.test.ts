@@ -533,6 +533,41 @@ describe('openVault', () => {
       expect(state().errorMessages).to.deep.equal(['depositingAllEthBalance'])
     })
 
+    it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+      const depositAlmostAll = new BigNumber(10.9999)
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilks: ['ETH-A'],
+          ilk: 'ETH-A',
+          balanceInfo: {
+            ethBalance: new BigNumber(11),
+          },
+          gasEstimationUsd: new BigNumber(30),
+        }),
+      )
+
+      state().updateDeposit!(depositAlmostAll)
+      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+    })
+
+    it('validates if deposit amount leads to potential insufficient ETH funds for tx (other ilk case)', () => {
+      const depositAmount = new BigNumber('10')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilk: 'WBTC-A',
+          balanceInfo: {
+            ethBalance: new BigNumber(0.001),
+          },
+          gasEstimationUsd: new BigNumber(30),
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+    })
+
     it(`validates if generate doesn't exceeds debt ceiling and debt floor`, () => {
       const depositAmount = new BigNumber('2')
       const generateAmountAboveCeiling = new BigNumber('30')

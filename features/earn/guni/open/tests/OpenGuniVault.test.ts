@@ -52,6 +52,10 @@ function getGuniMintAmount$() {
 
 describe('OpenGuniVault', () => {
   it('playground', () => {
+    function gasEstimationMock$<T>(state: T) {
+      return addGasEstimationMock(state)
+    }
+
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -63,7 +67,7 @@ describe('OpenGuniVault', () => {
       () => ilkData$(),
       mockExchangeQuote$(),
       mockOnEveryBlock,
-      addGasEstimationMock,
+      gasEstimationMock$,
       'GUNIV3DAIUSDC1',
       token1Balance$,
       getGuniMintAmount$,
@@ -76,6 +80,10 @@ describe('OpenGuniVault', () => {
   })
 
   it('uses default GUNI slippage', () => {
+    function gasEstimationMock$<T>(state: T) {
+      return addGasEstimationMock(state)
+    }
+
     const openGuniVault$ = createOpenGuniVault$(
       of(mockContextConnected),
       of(protoTxHelpers),
@@ -87,7 +95,7 @@ describe('OpenGuniVault', () => {
       () => ilkData$(),
       mockExchangeQuote$(),
       mockOnEveryBlock,
-      addGasEstimationMock,
+      gasEstimationMock$,
       'GUNIV3DAIUSDC1',
       token1Balance$,
       getGuniMintAmount$,

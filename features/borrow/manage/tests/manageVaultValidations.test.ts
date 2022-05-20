@@ -345,4 +345,50 @@ describe('manageVaultValidations', () => {
     state().updateWithdraw!(withdrawCollateralStopLossError)
     expect(state().errorMessages).to.deep.equal(['afterCollRatioBelowStopLossRatio'])
   })
+
+  it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+    const depositAlmostAll = new BigNumber(10.9999)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {},
+        vault: {
+          ilk: 'ETH-A',
+          debt: new BigNumber(5000),
+          collateral: new BigNumber(6),
+        },
+        balanceInfo: {
+          ethBalance: new BigNumber(11),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        gasEstimationUsd: new BigNumber(30),
+      }),
+    )
+
+    state().updateDeposit!(depositAlmostAll)
+    expect(state().warningMessages).to.deep.eq(['potentialInsufficientEthFundsForTx'])
+  })
+
+  it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+    const depositAmount = new BigNumber(5)
+
+    const state = getStateUnpacker(
+      mockManageVault$({
+        ilkData: {},
+        vault: {
+          ilk: 'WBTC-A',
+          debt: new BigNumber(50000),
+          collateral: new BigNumber(6),
+        },
+        balanceInfo: {
+          ethBalance: new BigNumber(0.001),
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        gasEstimationUsd: new BigNumber(30),
+      }),
+    )
+
+    state().updateDeposit!(depositAmount)
+    expect(state().warningMessages).to.deep.eq(['potentialInsufficientEthFundsForTx'])
+  })
 })
