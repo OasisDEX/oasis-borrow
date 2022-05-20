@@ -841,6 +841,7 @@ export function setupAppContext() {
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
+      connectedContext$,
       ilkToToken$,
       {
         borrow: supportedBorrowIlks,

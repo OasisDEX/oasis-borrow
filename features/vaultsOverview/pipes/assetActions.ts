@@ -1,7 +1,8 @@
 import { map as mapL, reduce } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { flatMap, map, startWith } from 'rxjs/operators'
 
+import { ContextConnected } from '../../../blockchain/network'
 import { UIChanges } from '../../../components/AppContext'
 import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
 import { mapTokenToFilter, supportedEarnIlks } from '../../../helpers/productCards'
@@ -75,11 +76,13 @@ function productCategoryToAssetAction(
 
 // returns a list of actions a user can perform for a given asset
 export function createAssetActions$(
+  context$: Observable<ContextConnected>,
   ilkToToken$: (ilk: string) => Observable<string>,
   productCategoryIlks: ProductCategoryIlks,
   uiChanges: UIChanges,
   token: string,
 ): Observable<Array<AssetAction>> {
+  const contextConnected$ = context$.pipe(startWith(undefined))
   const ilkToProductCategory = reduce<
     ProductCategoryIlks,
     {
@@ -129,20 +132,23 @@ export function createAssetActions$(
       }
     }),
     // add swap
-    map((assetActions) => {
-      return [
-        {
-          onClick: () => {
-            uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
-              type: 'open',
-              token,
-            })
-          },
-          text: 'Swap',
-          icon: 'exchange',
-        },
-        ...assetActions,
-      ]
+    flatMap((assetActions) => combineLatest(of(assetActions), contextConnected$)),
+    map(([assetActions, contextIsConnected]) => {
+      const swapAction = contextIsConnected
+        ? [
+            {
+              onClick: () => {
+                uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                  type: 'open',
+                  token,
+                })
+              },
+              text: 'Swap',
+              icon: 'exchange',
+            },
+          ]
+        : []
+      return [...swapAction, ...assetActions]
     }),
   )
 

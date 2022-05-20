@@ -3,6 +3,7 @@ import { expect } from 'chai'
 import { of } from 'rxjs'
 
 import { UIChanges } from '../../../components/AppContext'
+import { mockContextConnected } from '../../../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../../../helpers/testHelpers'
 import { createAssetActions$, isOnClickAction, isUrlAction } from './assetActions'
 
@@ -44,6 +45,7 @@ describe('asset actions', () => {
       earn: [],
     }
     const assetActions$ = createAssetActions$(
+      of(mockContextConnected),
       ilkToToken$,
       productCategoryIlks,
       stubUIChanges,
@@ -72,6 +74,7 @@ describe('asset actions', () => {
       earn: [],
     }
     const assetActions$ = createAssetActions$(
+      of(mockContextConnected),
       ilkToToken$,
       productCategoryIlks,
       stubUIChanges,
@@ -106,6 +109,7 @@ describe('asset actions', () => {
       earn: [],
     }
     const assetActions$ = createAssetActions$(
+      of(mockContextConnected),
       ilkToToken$,
       productCategoryIlks,
       stubUIChanges,
