@@ -1,4 +1,5 @@
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
 export function getPrimaryButtonLabel({
@@ -43,6 +44,6 @@ export function getPrimaryButtonLabel({
     case 'txWaitingForConfirmation':
       return t('create-vault')
     default:
-      return ''
+      throw new UnreachableCaseError(stage)
   }
 }

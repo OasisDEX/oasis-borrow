@@ -1,4 +1,5 @@
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
 export function getSidebarTitle({ stage, token }: OpenVaultState): string {
@@ -30,6 +31,6 @@ export function getSidebarTitle({ stage, token }: OpenVaultState): string {
     case 'txSuccess':
       return t('vault-form.header.success')
     default:
-      return ''
+      throw new UnreachableCaseError(stage)
   }
 }
