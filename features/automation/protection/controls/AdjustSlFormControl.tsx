@@ -247,6 +247,7 @@ export function AdjustSlFormControl({
         finishLoader(false)
       }
 
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(addAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)

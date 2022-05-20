@@ -128,6 +128,7 @@ export function CancelSlFormControl({
         finishLoader(false)
       }
 
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(removeAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)

@@ -29,6 +29,7 @@ import { TxError } from '../../../../helpers/types'
 import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
@@ -419,6 +420,7 @@ export function AdjustSlFormLayout({
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
           txSuccess={txState === TxStatus.Success}
+          txError={txState && isTxStatusFailed(txState)}
         />
       )}
     </Grid>

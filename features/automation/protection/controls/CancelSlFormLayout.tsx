@@ -21,6 +21,7 @@ import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
 import { TxError } from '../../../../helpers/types'
 import { OpenVaultAnimation } from '../../../../theme/animations'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 import { progressStatuses } from '../common/consts/txStatues'
@@ -231,6 +232,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           }
           txSuccess={(props.txState as TxStatus) === TxStatus.Success}
           type="cancel"
+          txError={props.txState && isTxStatusFailed(props.txState)}
         />
       )}
     </Grid>

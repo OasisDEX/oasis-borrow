@@ -127,7 +127,8 @@ export function notEnoughETHtoPayForTx({
   console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
   console.log('ETH balance (USD)', ethBalance.times(ethPrice).toNumber())
 
-  return ethBalance.times(ethPrice).lt(gasEstimationUsd.plus(50))
+  // TODO plus 16974067 to be removed
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd.plus(16974067))
 }
 
 export function customAllowanceAmountEmptyValidator({
