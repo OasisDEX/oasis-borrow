@@ -15,6 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { Feature } from './useFeatureToggle'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -95,6 +96,11 @@ export const supportedBorrowIlks = [
   'WSTETH-B',
 ]
 
+// TODO: remove 'GUNIV3DAIUSDC2-A' from supportedMultiplyIlks when EarnProduct feature removed
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _thisConstJustProvidesCompileTimeError: Feature = 'EarnProduct'
+// the above line just to remind me
+
 export const supportedMultiplyIlks = [
   'ETH-A',
   'ETH-B',
@@ -104,7 +110,7 @@ export const supportedMultiplyIlks = [
   'WBTC-B',
   'WBTC-C',
   'RENBTC-A',
-  'GUNIV3DAIUSDC2-A',
+  'GUNIV3DAIUSDC2-A', // remove this when removing EarnProduct feature toggle
   'LINK-A',
   'UNI-A',
   'YFI-A',
@@ -112,6 +118,8 @@ export const supportedMultiplyIlks = [
   'MATIC-A',
   'WSTETH-B',
 ]
+
+export const supportedEarnIlks = ['GUNIV3DAIUSDC2-A']
 
 export const supportedIlksList = [
   ...new Set([...supportedBorrowIlks, supportedMultiplyIlks]),

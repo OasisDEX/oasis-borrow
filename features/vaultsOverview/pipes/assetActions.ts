@@ -1,14 +1,15 @@
 import { map as mapL, reduce } from 'lodash'
-import { combineLatest, Observable, of } from 'rxjs'
+import { combineLatest, iif, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { UIChanges } from '../../../components/AppContext'
-import { mapTokenToFilter } from '../../../helpers/productCards'
+import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
+import { mapTokenToFilter, supportedEarnIlks } from '../../../helpers/productCards'
+import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
-import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
@@ -61,7 +62,12 @@ function productCategoryToAssetAction(
         icon: 'copy',
       }
     case 'earn':
-      throw new Error('not yet')
+      return {
+        path: getProductCategoryUrl('earn'),
+        hash: urlFragment,
+        text: 'Earn',
+        icon: 'increase',
+      }
     default:
       throw new Error(`no asset action for productCategory ${productCategory}`)
   }
@@ -94,9 +100,14 @@ export function createAssetActions$(
     {},
   )
 
+  const earnProductEnabled = useFeatureToggle('EarnProduct')
+
   const assetActions$ = combineLatest(
     mapL(ilkToProductCategory, (productCategories, ilk) => {
-      return combineLatest(ilkToToken$(ilk), of(productCategories))
+      return combineLatest(
+        iif(() => supportedEarnIlks.includes(ilk), of('DAI'), ilkToToken$(ilk)),
+        of(productCategories),
+      )
     }),
   ).pipe(
     map((tokenToProductCategories) => {
@@ -106,6 +117,16 @@ export function createAssetActions$(
           return [...new Set([...acc, ...productCategories])] // dedupe
         }, [])
         .map((productCategory) => productCategoryToAssetAction(productCategory, token))
+    }),
+
+    map((assetActions) => {
+      if (earnProductEnabled && token === 'DAI') {
+        return assetActions.filter((assetAction) => {
+          return assetAction.text !== 'Multiply'
+        })
+      } else {
+        return assetActions
+      }
     }),
     // add swap
     map((assetActions) => {

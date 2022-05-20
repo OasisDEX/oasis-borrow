@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
@@ -16,7 +17,6 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
 import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
-import { useTranslation } from 'next-i18next'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'

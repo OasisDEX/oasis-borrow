@@ -196,6 +196,7 @@ import {
   createProductCardsData$,
   createProductCardsWithBalance$,
   supportedBorrowIlks,
+  supportedEarnIlks,
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
@@ -844,7 +845,7 @@ export function setupAppContext() {
       {
         borrow: supportedBorrowIlks,
         multiply: supportedMultiplyIlks,
-        earn: [],
+        earn: supportedEarnIlks,
       },
       uiChanges,
     ),
