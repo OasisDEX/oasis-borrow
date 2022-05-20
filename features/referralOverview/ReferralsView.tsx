@@ -28,6 +28,9 @@ export function ReferralsView({ address }: Props) {
       clipboardContent.select()
       document.execCommand('copy')
       setCopied(true)
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
     }
   }
 
@@ -43,7 +46,6 @@ export function ReferralsView({ address }: Props) {
           backgroundColor: '#ffffff',
           borderColor: 'border',
           borderWidth: '1px',
-          borderTop: 'none',
           p: 4,
           height: '100%',
           ...fadeInAnimation,
@@ -59,13 +61,12 @@ export function ReferralsView({ address }: Props) {
         >
           <Box>
             <Text variant="text.paragraph2">{t('ref.link')}</Text>
-
             <Flex
               sx={{
                 mt: '12px',
-                py: '16px',
+                py: '4px',
                 pl: '24px',
-                fontWeight: 'bold',
+                fontWeight: 'semiBold',
                 background: 'linear-gradient(90.63deg, #F0F3FD 1.31%, #FCF0FD 99.99%)',
                 borderRadius: '12px',
                 flexWrap: 'wrap',
@@ -74,7 +75,7 @@ export function ReferralsView({ address }: Props) {
             >
               <AppLink
                 href={`https://oasis.app/?ref=${address}`}
-                sx={{ fontSize: 4, flex: '1 1 auto' }}
+                sx={{ fontSize: 4, flex: '1 1 auto', my: '12px' }}
                 variant="inText"
               >
                 {`https://oasis.app/?ref=${formatAddress(address, 6)}`}
@@ -87,18 +88,24 @@ export function ReferralsView({ address }: Props) {
               />
               <Text
                 sx={{
-                  fontSize: 1,
+                  fontSize: 3,
                   pr: '24px',
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
                   color: 'link',
                   cursor: 'pointer',
+                  my: '12px',
                 }}
                 variant="inText"
                 onClick={() => copyToClipboard()}
               >
-                <Icon name="copy" sx={{ mr: '8px' }} /> {copied ? 'Link Copied' : `Copy Link`}
+                {copied ? (
+                  <Icon name="checkmark" sx={{ mr: '8px' }} />
+                ) : (
+                  <Icon name="duplicate" sx={{ mr: '8px' }} />
+                )}{' '}
+                {copied ? t('ref.copied') : t('ref.copy')}
               </Text>
             </Flex>
             <Box sx={{ pt: '12px' }}>

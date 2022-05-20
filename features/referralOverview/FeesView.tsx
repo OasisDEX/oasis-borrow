@@ -59,7 +59,6 @@ export function FeesView({ userReferral }: Props) {
           backgroundColor: '#ffffff',
           borderColor: 'border',
           borderWidth: '1px',
-          borderTop: 'none',
           p: 4,
           height: '100%',
           ...fadeInAnimation,
@@ -119,7 +118,7 @@ export function FeesView({ userReferral }: Props) {
               onClick={() =>
                 userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
               }
-              sx={{ p: '4px' }}
+              sx={{ p: '4px', minWidth: ['100%', '0px', '0px'] }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
@@ -138,19 +137,20 @@ export function FeesView({ userReferral }: Props) {
             </Button>
           </Flex>
         </Grid>{' '}
-        <Divider sx={{ my: '16px' }} />
+        <Divider variant="styles.hrVaultFormTop" sx={{ my: '13px', py: 0 }} />
         <Flex
           sx={{
             flexDirection: 'column',
             justifyContent: 'start',
           }}
         >
-          <Box sx={{ py: '20px' }}>
+          <Box sx={{ py: '13px' }}>
             <Text
               sx={{
                 color: 'text',
                 overflowWrap: 'break-word',
-                fontSize: 4,
+                fontSize: 2,
+                mb: '3px',
               }}
               variant="strong"
             >
@@ -159,27 +159,29 @@ export function FeesView({ userReferral }: Props) {
             {userReferral.referrals &&
               userReferral.referrals.map((item, index) => (
                 <Box key={index}>
-                  <Flex sx={{ pt: '12px', flexWrap: 'wrap', alignItems: 'center' }} key={index}>
-                    <Box sx={{ flex: '1 1 auto' }}>
+                  {index > 0 && <Divider sx={{ my: 0, pt: '16px' }} />}
+                  <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }} key={index}>
+                    <Box sx={{ flex: '1 1 auto', pt: '16px' }}>
                       <Text
                         sx={{
                           color: 'text.subtitle',
                           overflowWrap: 'break-word',
                           fontSize: 2,
+                          ml: ['0px', '8px'],
                         }}
                         variant="subtitle"
                       >
                         {item}{' '}
                       </Text>
                     </Box>
-                    <Box>
+                    <Box sx={{ pt: '16px' }}>
                       <AppLink
                         href={`https://etherscan.com/address/${item}`}
                         sx={{ fontSize: 2 }}
                         variant="inText"
                       >
                         {' '}
-                        Etherscan
+                        {t('ref.etherscan')}
                       </AppLink>
                     </Box>
                   </Flex>
@@ -194,6 +196,7 @@ export function FeesView({ userReferral }: Props) {
                         color: 'text.subtitle',
                         overflowWrap: 'break-word',
                         fontSize: 2,
+                        ml: ['0px', '8px'],
                       }}
                       variant="subtitle"
                     >
@@ -213,12 +216,12 @@ export function FeesView({ userReferral }: Props) {
               </Box>
             )}
           </Box>
-          <Box sx={{ py: '10px' }}>
+          <Box sx={{ pt: '10px' }}>
             <Text
               sx={{
                 color: 'text',
                 overflowWrap: 'break-word',
-                fontSize: 4,
+                fontSize: 2,
               }}
               variant="strong"
             >
@@ -232,6 +235,7 @@ export function FeesView({ userReferral }: Props) {
                     color: 'text.subtitle',
                     overflowWrap: 'break-word',
                     fontSize: 2,
+                    ml: ['0px', '8px'],
                   }}
                   variant="subtitle"
                 >
@@ -259,7 +263,7 @@ export function FeesView({ userReferral }: Props) {
                       variant="inText"
                     >
                       {' '}
-                      Etherscan
+                      {t('ref.etherscan')}
                     </AppLink>
                   )}
                 {userReferral.state === 'currentUser' && userReferral.invitePending && (

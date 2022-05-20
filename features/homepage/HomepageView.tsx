@@ -120,7 +120,6 @@ export function HomepageView() {
   const [userReferral] = useObservable(userReferral$)
 
   const router = useRouter()
-  const handleClose = () => null
 
   useEffect(() => {
     const localStorageReferral = checkReferralLocal?.referrer
@@ -138,8 +137,14 @@ export function HomepageView() {
         flex: 1,
       }}
     >
-      <Flex sx={{ justifyContent: 'center', mt: 4 }}>
-        <ReferralBanner handleClose={handleClose} heading={t('ref.banner')}></ReferralBanner>
+      <Flex
+        sx={{
+          justifyContent: 'center',
+          mt: 4,
+          mb: 0,
+        }}
+      >
+        <ReferralBanner heading={t('ref.banner')}></ReferralBanner>
       </Flex>
       {userReferral?.state === 'newUser' && (
         <WithTermsOfService>
@@ -406,7 +411,8 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        my: 5,
+        mt: '24px',
+        mb: 5,
         flexDirection: 'column',
       }}
     >

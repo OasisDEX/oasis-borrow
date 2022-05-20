@@ -78,35 +78,47 @@ export function ReferralLanding({ context, userReferral }: Props) {
               justifyItems: 'center',
               position: 'relative',
               maxWidth: '688px',
-              gap: 4,
+              gap: '8px',
               margin: '0 auto',
             }}
           >
             <Text variant="text.header2">{t('ref.ref-a-friend')}</Text>
             <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'lavender' }}>
               {t('ref.intro-1')}{' '}
-              <AppLink href={`#`} sx={{ fontSize: 2 }} variant="inText">
+              <AppLink
+                href={`https://kb.oasis.app/help/tbd`}
+                target="_blank"
+                sx={{ fontSize: 3 }}
+                variant="inText"
+              >
                 {' '}
                 {t('ref.intro-link')}
               </AppLink>
             </Text>
-            <Flex sx={{ flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+            <Flex
+              sx={{
+                flexDirection: 'column',
+                alignItems: 'center',
+                textAlign: 'center',
+                mb: '16px',
+              }}
+            >
               <Image
                 src={staticFilesRuntimeUrl('/static/img/referral_landing.svg')}
                 mb="16px"
                 width="240px"
-                py="32px"
+                py="58px"
               />
-              <Text variant="text.headerSettings" py="4px">
+              <Text variant="text.headerSettings" pt="0px" pb="12px">
                 {t('ref.how')}
               </Text>
-              <Text variant="text.subheader" py="12px">
+              <Text variant="text.subheader" pt="12px">
                 {isConnected ? t('ref.how-p1-connected') : t('ref.how-p1-not-connected')}
               </Text>
-              <Text variant="text.subheader" py="12px">
+              <Text variant="text.subheader" pt="12px">
                 {t('ref.how-p2')}
               </Text>
-              <Text variant="text.subheader" py="12px">
+              <Text variant="text.subheader" pt="12px">
                 {t('ref.how-p3')}
               </Text>
             </Flex>
@@ -122,9 +134,11 @@ export function ReferralLanding({ context, userReferral }: Props) {
                     py: 2,
                     color: 'offWhite',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     '&:hover svg': {
                       transform: 'translateX(10px)',
                     },
+                    width: '274px',
                   }}
                   // if new user witohut refereal - write to db on click and redirect to dashboard
                   onClick={
@@ -159,9 +173,11 @@ export function ReferralLanding({ context, userReferral }: Props) {
                     py: 2,
                     color: 'offWhite',
                     alignItems: 'center',
+                    justifyContent: 'center',
                     '&:hover svg': {
                       transform: 'translateX(10px)',
                     },
+                    width: '274px',
                   }}
                 >
                   {t('ref.get-started')}
@@ -205,13 +221,23 @@ export function ReferralLanding({ context, userReferral }: Props) {
               </AppLink>
             )}
 
-            <Text variant="text.headerSettings" pt="12px">
+            <Text variant="text.headerSettings" pt="40px">
               {t('ref.need-help')}
             </Text>
-            <AppLink variant="inText" href="#">
+            <AppLink
+              variant="inText"
+              target="_blank"
+              href="https://kb.oasis.app/help/tbd"
+              sx={{ pt: '8px' }}
+            >
               {t('ref.help-link-1')}
             </AppLink>
-            <AppLink variant="inText" href="#">
+            <AppLink
+              variant="inText"
+              target="_blank"
+              href="https://kb.oasis.app/help/tbd"
+              sx={{ pt: '8px' }}
+            >
               {t('ref.help-link-2')}
             </AppLink>
           </Grid>
