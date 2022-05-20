@@ -635,7 +635,6 @@ const tokensBySymbol = keyBy(tokens, 'symbol')
 
 export function getToken(tokenSymbol: string) {
   if (!tokensBySymbol[tokenSymbol]) {
-    console.log(`No meta information for token: ${tokenSymbol}`)
     throw new Error(`No meta information for token: ${tokenSymbol}`)
   }
   return tokensBySymbol[tokenSymbol]

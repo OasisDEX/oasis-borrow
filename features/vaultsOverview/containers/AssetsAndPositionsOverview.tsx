@@ -16,6 +16,7 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
 import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
+import { useTranslation } from 'next-i18next'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -176,6 +177,7 @@ function Menu(props: {
 }
 
 function RenderPositions(props: TopAssetsAndPositionsViewModal) {
+  const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
   const pieSlices = [
@@ -193,7 +195,7 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
           fontWeight: 'semiBold',
         }}
       >
-        Top {topAssetsAndPositions.length} Assets and Positions
+        {t('vaults-overview.assets-and-positions', { number: topAssetsAndPositions.length })}
       </Text>
       <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
         {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
