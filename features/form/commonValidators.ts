@@ -117,18 +117,10 @@ export function notEnoughETHtoPayForTx({
   }
 
   if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
-    console.log(
-      'ETH balance after deposit (USD)',
-      ethBalance.minus(depositAmount).times(ethPrice).toNumber(),
-    )
-    console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
     return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
   }
-  console.log('Gas estimation (USD)', gasEstimationUsd.toNumber())
-  console.log('ETH balance (USD)', ethBalance.times(ethPrice).toNumber())
 
-  // TODO plus 16974067 to be removed
-  return ethBalance.times(ethPrice).lt(gasEstimationUsd.plus(16974067))
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
 }
 
 export function customAllowanceAmountEmptyValidator({
