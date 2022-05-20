@@ -181,8 +181,6 @@ function SetDownsideProtectionInformation({
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
-  console.log('potentialInsufficientEthFundsForTx', potentialInsufficientEthFundsForTx)
-
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem

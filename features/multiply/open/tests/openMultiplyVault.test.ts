@@ -443,6 +443,31 @@ describe('open multiply vault', () => {
       expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
     })
 
+    it('should add meaningful message when user has insufficient ETH funds to pay for tx', () => {
+      const _proxyAddress$ = new Subject<string>()
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          _proxyAddress$,
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Error).pipe(
+                map((txState) => ({
+                  ...txState,
+                  error: { message: 'insufficient funds for gas * price + value' },
+                })),
+              ),
+          }),
+          balanceInfo: { ethBalance: new BigNumber(0.001) },
+        }),
+      )
+
+      _proxyAddress$.next()
+      state().progress!()
+      state().progress!()
+      expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
+    })
+
     it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
       const depositAmountExceeds = new BigNumber('12')
       const depositAmountAll = new BigNumber('10')
