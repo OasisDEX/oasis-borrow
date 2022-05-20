@@ -1,6 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
+import { SidebarManageBorrowVault } from 'components/vault/sidebar/SidebarManageBorrowVault'
 import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
@@ -68,6 +69,7 @@ export function ManageVaultContainer({
           {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
+          <SidebarManageBorrowVault {...manageVault} />
           <ManageVaultForm
             {...manageVault}
             txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
