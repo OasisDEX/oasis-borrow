@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react'
-import { theme } from 'theme';
+import { theme } from 'theme'
 import { Box } from 'theme-ui'
 
 export interface SidebarSectionContentProps {
   activePanel: string
   content:
-  | JSX.Element
-  | {
-    panel: string
-    content: JSX.Element
-  }[]
+    | JSX.Element
+    | {
+        panel: string
+        content: JSX.Element
+      }[]
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
