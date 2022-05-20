@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
+import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
@@ -112,21 +113,24 @@ function Pills({ sx }: { sx?: SxProps }) {
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
-  const { context$, productCardsData$, checkReferralLocal$ } = useAppContext()
+  const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
+  const [userReferral] = useObservable(userReferral$)
+
   const router = useRouter()
-  const handleClose = () =>
-    void useEffect(() => {
-      const localStorageReferral = checkReferralLocal?.referrer
-      if (!localStorageReferral) {
-        const linkReferral = router.query.ref as string
-        if (linkReferral) {
-          localStorage.setItem(`referral`, linkReferral)
-        }
+  const handleClose = () => null
+
+  useEffect(() => {
+    const localStorageReferral = checkReferralLocal?.referrer
+    if (!localStorageReferral) {
+      const linkReferral = router.query.ref as string
+      if (linkReferral) {
+        localStorage.setItem(`referral`, linkReferral)
       }
-    }, [checkReferralLocal])
+    }
+  }, [checkReferralLocal])
 
   return (
     <Box
@@ -137,6 +141,11 @@ export function HomepageView() {
       <Flex sx={{ justifyContent: 'center', mt: 4 }}>
         <ReferralBanner handleClose={handleClose} heading={t('ref.banner')}></ReferralBanner>
       </Flex>
+      {userReferral?.state === 'newUser' && (
+        <WithTermsOfService>
+          <></>
+        </WithTermsOfService>
+      )}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{

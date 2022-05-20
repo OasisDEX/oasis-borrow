@@ -250,16 +250,18 @@ export function FeesView({ userReferral }: Props) {
                 </Text>
               </Box>
               <Box>
-                {userReferral.state === 'currentUser' && !userReferral.invitePending && userReferral?.referrer?.referrer  && (
-                  <AppLink
-                    href={`https://etherscan.com/address/${userReferral?.referrer?.referrer }`}
-                    sx={{ fontSize: 2 }}
-                    variant="inText"
-                  >
-                    {' '}
-                    Etherscan
-                  </AppLink>
-                )}
+                {userReferral.state === 'currentUser' &&
+                  !userReferral.invitePending &&
+                  userReferral?.referrer?.referrer && (
+                    <AppLink
+                      href={`https://etherscan.com/address/${userReferral?.referrer?.referrer}`}
+                      sx={{ fontSize: 2 }}
+                      variant="inText"
+                    >
+                      {' '}
+                      Etherscan
+                    </AppLink>
+                  )}
                 {userReferral.state === 'currentUser' && userReferral.invitePending && (
                   <>
                     {' '}

@@ -1223,7 +1223,7 @@
     "help-link-2": "Visit Oasis Knowledge Centre ->",
     "modal": {
       "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
-      "body-text": "Oasis.app is the most trusted place to deploy captial into Defi. By joining on our Refer a Friend program you:",
+      "body-text": "Oasis.app is the most trusted place to deploy capital into Defi. By joining our Refer a Friend program you:",
       "p1_1": "Receive 5% of all ",
       "p1_2": "fees you generate on Oasis.app",
       "p2": "Completely free, claim anytime",
@@ -1232,10 +1232,11 @@
       "read": "Read More",
       "accept": "Accept invite ->",
       "later": "Decide later",
-      "joined": "You have sucessfully joined the Oasis.app Refer a Friend program.",
+      "joined": "You have successfully joined the Oasis.app Refer a Friend program.",
       "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
       "go-home": "Go to Oasis.app homepage -> ",
-      "go-dashboard": "Go to referral dashboard ->"
+      "go-dashboard": "Go to referral dashboard ->",
+      "link": "Oasis.app Referral Blog Post, Referral FAQ’s"
     }
   }
 }
