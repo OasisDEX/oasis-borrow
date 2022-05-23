@@ -3,7 +3,7 @@ import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLa
 import { pick } from 'ramda'
 
 export interface GetPrimaryButtonLabelParams {
-  flow: SidebarFlow,
+  flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
   id?: BigNumber
@@ -12,15 +12,5 @@ export interface GetPrimaryButtonLabelParams {
 }
 
 export function extractSidebarButtonLabelParams(state: GetPrimaryButtonLabelParams) {
-  return pick(
-    [ 
-      'flow',
-      'stage',
-      'token',
-      'id',
-      'proxyAddress',
-      'insufficientAllowance',
-    ],
-    state,
-  )
+  return pick(['flow', 'stage', 'token', 'id', 'proxyAddress', 'insufficientAllowance'], state)
 }

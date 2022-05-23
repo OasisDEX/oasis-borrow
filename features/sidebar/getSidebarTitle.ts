@@ -8,7 +8,7 @@ interface GetSidebarTitleParams {
   token: string
 }
 
-function getSidebarTitleEditingTranslationKey({ flow }: {flow: SidebarFlow}) {
+function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
       return 'vault-form.header.edit'
