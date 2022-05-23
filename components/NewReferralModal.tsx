@@ -88,10 +88,30 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
               <>
                 <Button
                   variant="primary"
-                  sx={{ fontSize: 3, width: '100%', py: '10px', my: '12px' }}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 3,
+                    width: '100%',
+                    py: '10px',
+                    my: '12px',
+                    '&:hover svg': {
+                      transform: 'translateX(10px)',
+                    },
+                  }}
                   onClick={() => createUser({ hasAccepted: true, isReferred: true })}
                 >
-                  {userReferral.referrer.referrer ? t('ref.modal.accept') : 'Go to dashboard ->'}
+                  {userReferral.referrer.referrer ? t('ref.modal.accept') : 'Go to dashboard'}{' '}
+                  <Icon
+                    name="arrow_right"
+                    sx={{
+                      ml: 2,
+                      position: 'relative',
+                      left: 2,
+                      transition: '0.2s',
+                    }}
+                  />
                 </Button>
                 <Button
                   variant="textual"

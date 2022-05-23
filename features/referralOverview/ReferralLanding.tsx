@@ -116,13 +116,13 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 {t('ref.how')}
               </Text>
               <Text variant="text.subheader" pt="12px">
-                {isConnected
-                  ? (
-                      <Trans i18nKey="ref.how-p1-connected" values={{ token: 'GUNIV3DAIUSDC' }}>
-                        1. Click <span style={{ fontWeight: 600 }}>‘Get Started’</span> below
-                      </Trans>
-                    )
-                  : t('ref.how-p1-not-connected')}
+                {isConnected ? (
+                  <Trans i18nKey="ref.how-p1-connected">
+                    1. Click <span style={{ fontWeight: 600 }}>‘Get Started’</span> below
+                  </Trans>
+                ) : (
+                  t('ref.how-p1-not-connected')
+                )}
               </Text>
               <Text variant="text.subheader" pt="12px">
                 {t('ref.how-p2')}
