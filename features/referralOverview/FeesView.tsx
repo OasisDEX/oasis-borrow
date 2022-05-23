@@ -51,7 +51,7 @@ export function FeesView({ userReferral }: Props) {
         width: '100%',
         height: '100%',
         mt: '10px',
-        pb: '64px',
+        pb: '48px',
       }}
     >
       <Card

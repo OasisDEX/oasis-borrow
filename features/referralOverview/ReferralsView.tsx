@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Context } from 'blockchain/network'
 import { AppLink } from 'components/Links'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -7,12 +6,9 @@ import React, { useRef, useState } from 'react'
 import { Box, Card, Flex, Text, Textarea } from 'theme-ui'
 
 import { fadeInAnimation } from '../../theme/animations'
-import { UserReferralState } from './user'
 
 interface Props {
-  context: Context
   address: string
-  userReferral: UserReferralState
 }
 
 export function ReferralsView({ address }: Props) {
