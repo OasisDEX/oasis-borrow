@@ -319,7 +319,7 @@
       "gas-fees": "Gas fees",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
       "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
-      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here here)"
     }
   },
   "max": "最多",
