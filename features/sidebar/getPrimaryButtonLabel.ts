@@ -1,4 +1,4 @@
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { GetPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
@@ -8,7 +8,7 @@ export function getPrimaryButtonLabel({
   token,
   proxyAddress,
   insufficientAllowance,
-}: OpenVaultState): string {
+}: GetPrimaryButtonLabelParams): string {
   const { t } = useTranslation()
 
   switch (stage) {
