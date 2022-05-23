@@ -2,38 +2,60 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
-import React from 'react'
+import { useTranslation } from 'next-i18next'
+import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
+  const { t } = useTranslation()
+
   const {
     vault: { token },
     toggle,
     stage,
     // isMultiplyTransitionStage,
   } = props
+  const [forcePanel, setForcePanel] = useState<string>()
+
+  useEffect(() => {
+    switch (stage) {
+      case 'collateralEditing':
+        setForcePanel('collateral')
+        break
+      case 'daiEditing':
+        setForcePanel('dai')
+        break
+      case 'multiplyTransitionEditing':
+        setForcePanel('transition')
+        break
+    }
+  }, [stage])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow: 'manageBorrow', stage, token }),
+    forcePanel,
     dropdown: [
       {
-        label: `Manage collateral (${token})`,
+        label: t('system.actions.borrow.edit-collateral', { token }),
         shortLabel: token,
         icon: getToken(token).iconCircle,
+        panel: 'collateral',
         action: () => {
-          alert('Dropdown action clicked')
+          toggle!('collateralEditing')
         },
       },
       {
-        label: 'Manage DAI',
+        label: t('system.actions.borrow.edit-dai'),
         shortLabel: 'DAI',
         icon: getToken('DAI').iconCircle,
+        panel: 'dai',
         action: () => {
-          alert('Dropdown action clicked')
+          toggle!('daiEditing')
         },
       },
       {
-        label: 'Switch to multiply',
+        label: t('system.actions.borrow.switch-to-multiply'),
+        panel: 'transition',
         action: () => {
           toggle!('multiplyTransitionEditing')
         },

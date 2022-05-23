@@ -662,8 +662,8 @@
         "edit-position": "Edit Position"
       },
       "borrow": {
-        "edit-dai": "Edit DAI",
-        "edit-collateral": "Edit Collateral",
+        "edit-dai": "Manage DAI",
+        "edit-collateral": "Manage collateral {{token}}",
         "switch-to-multiply": "Switch to Multiply"
       }
     },

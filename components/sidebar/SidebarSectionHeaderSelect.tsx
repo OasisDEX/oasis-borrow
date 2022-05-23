@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Text } from 'theme-ui'
 
 export interface SidebarSectionHeaderSelectItem {
@@ -12,17 +12,22 @@ export interface SidebarSectionHeaderSelectItem {
   action?: () => void
 }
 interface SidebarSectionHeaderSelectProps {
+  forcePanel?: string,
   items: SidebarSectionHeaderSelectItem[]
   onSelect: (panel: string) => void
 }
 
-export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHeaderSelectProps) {
-  const [active, setActive] = useState<number>(0)
+export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: SidebarSectionHeaderSelectProps) {
+  const [activeItem, setActiveItem] = useState<SidebarSectionHeaderSelectItem>(items[0])
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
   const clickHandler = (): void => {
     setIsExpanded(!isExpanded)
   }
+
+  useEffect(() => {
+    setActiveItem(items.filter(item => item.panel === forcePanel)[0])
+  }, [forcePanel])
 
   return (
     <Box
@@ -45,9 +50,9 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
           fontSize: 2,
         }}
       >
-        {items[active].icon ? (
+        {activeItem.icon ? (
           <Icon
-            name={items[active].icon as string}
+            name={activeItem.icon as string}
             size="32px"
             sx={{ verticalAlign: 'text-bottom', mr: 1 }}
           />
@@ -62,7 +67,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             }}
           />
         )}
-        {items[active].shortLabel || items[active].label}
+        {activeItem.shortLabel || activeItem.label}
         <ExpandableArrow size={13} direction={isExpanded ? 'up' : 'down'} sx={{ ml: '12px' }} />
       </Button>
       <Box
@@ -90,10 +95,8 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             as="li"
             onClick={() => {
               setIsExpanded(false)
-              if (item.panel) {
-                onSelect(item.panel)
-                setActive(i)
-              }
+              onSelect(item.panel!)
+              if (!forcePanel) setActiveItem(items[i])
               if (item.action) item.action()
             }}
             sx={{
@@ -104,7 +107,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
               fontSize: 1,
               fontWeight: 'semiBold',
               backgroundColor: 'transparent',
-              color: active === i ? 'primary' : 'text.muted',
+              color: item === activeItem ? 'primary' : 'text.muted',
               transition: 'background-color 150ms',
               '&:hover': {
                 backgroundColor: 'border',

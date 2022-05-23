@@ -12,6 +12,7 @@ export interface SidebarSectionProps
 
 export function SidebarSection({
   title,
+  forcePanel,
   dropdown,
   headerButton,
   content,
@@ -35,6 +36,7 @@ export function SidebarSection({
     >
       <SidebarSectionHeader
         title={title}
+        forcePanel={forcePanel}
         dropdown={dropdown}
         headerButton={headerButton}
         onSelect={(panel) => {

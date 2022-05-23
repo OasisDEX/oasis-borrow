@@ -15,6 +15,7 @@ export interface SidebarSectionHeaderButton {
 
 export interface SidebarSectionHeaderProps {
   title: string
+  forcePanel?: string
   dropdown?: SidebarSectionHeaderSelectItem[]
   headerButton?: SidebarSectionHeaderButton
   onSelect: (panel: string) => void
@@ -22,6 +23,7 @@ export interface SidebarSectionHeaderProps {
 
 export function SidebarSectionHeader({
   title,
+  forcePanel,
   dropdown,
   headerButton,
   onSelect,
@@ -49,7 +51,7 @@ export function SidebarSectionHeader({
         </Text>
       </Flex>
       {dropdown ? (
-        <SidebarSectionHeaderSelect items={dropdown} onSelect={onSelect} />
+        <SidebarSectionHeaderSelect forcePanel={forcePanel} items={dropdown} onSelect={onSelect} />
       ) : headerButton ? (
         <Flex
           sx={{

@@ -62,6 +62,11 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     /* manage */
     case 'collateralEditing':
     case 'daiEditing':
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionFailure':
+    case 'multiplyTransitionSuccess':
       return t('vault-form.header.manage')
     case 'manageWaitingForConfirmation':
     case 'manageWaitingForApproval':
@@ -70,13 +75,6 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
       return t('vault-form.header.confirm-manage')
     case 'manageInProgress':
       return t('vault-form.header.modified')
-    case 'multiplyTransitionEditing':
-      return t('vault-form.header.go-to-multiply-summary', { token: token.toUpperCase() })
-    case 'multiplyTransitionWaitingForConfirmation':
-    case 'multiplyTransitionInProgress':
-    case 'multiplyTransitionFailure':
-    case 'multiplyTransitionSuccess':
-      return t('vault-form.header.go-to-multiply-confirm')
     default:
       throw new UnreachableCaseError(stage)
   }
