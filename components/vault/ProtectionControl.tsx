@@ -114,7 +114,7 @@ export function ProtectionControl({
 
   return !vault.debt.isZero() &&
     vault.debt.gt(dustLimit) &&
-    automationTriggersData?.triggers?.length ? (
+    (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}

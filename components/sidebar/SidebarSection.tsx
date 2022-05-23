@@ -5,7 +5,7 @@ import { SidebarSectionContent, SidebarSectionContentProps } from './SidebarSect
 import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
 import { SidebarSectionHeader, SidebarSectionHeaderProps } from './SidebarSectionHeader'
 
-interface SidebarSectionProps
+export interface SidebarSectionProps
   extends Omit<SidebarSectionHeaderProps, 'onSelect'>,
     Omit<SidebarSectionContentProps, 'activePanel'>,
     SidebarSectionFooterProps {}
@@ -19,6 +19,7 @@ export function SidebarSection({
   secondaryButton,
   textButton,
   progress,
+  success,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -46,6 +47,7 @@ export function SidebarSection({
         secondaryButton={secondaryButton}
         textButton={textButton}
         progress={progress}
+        success={success}
       />
     </Card>
   )

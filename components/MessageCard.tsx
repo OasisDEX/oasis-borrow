@@ -1,3 +1,4 @@
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Card, Flex, Grid, Text } from 'theme-ui'
 
@@ -9,6 +10,7 @@ interface NoticeCardProps {
 }
 
 export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const cardColor = type === 'error' ? 'danger' : 'warning'
   const textColor = type === 'error' ? 'onError' : 'onWarning'
 
@@ -17,7 +19,12 @@ export function MessageCard({ messages, type, withBullet = true, handleClick }: 
     <Card
       variant={cardColor}
       onClick={handleClick}
-      sx={{ cursor: handleClick ? 'pointer' : 'auto' }}
+      sx={{
+        ...(newComponentsEnabled && {
+          border: 'none',
+          cursor: handleClick ? 'pointer' : 'auto',
+        }),
+      }}
     >
       <Grid>
         {messages.map((message, idx) => (

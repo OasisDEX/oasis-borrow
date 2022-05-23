@@ -12,6 +12,7 @@ import {
 } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
@@ -447,6 +448,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
 }
 
 function CloseVaultAction(props: ManageMultiplyVaultState) {
+  const { t } = useTranslation()
   const {
     setCloseVaultTo,
     closeVaultTo,
@@ -480,8 +482,7 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
         />
       </Grid>
       <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
-        To close your vault, a part of your position will be sold to payback the outstanding debt.
-        The rest of your collateral will be send to your address.
+        {t('vault-info-messages.closing')}
       </Text>
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
         <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>

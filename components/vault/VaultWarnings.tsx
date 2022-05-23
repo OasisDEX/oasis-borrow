@@ -54,5 +54,5 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'warning' }} />
+  return <MessageCard {...{ messages, type: 'warning', withBullet: messages.length > 1 }} />
 }
