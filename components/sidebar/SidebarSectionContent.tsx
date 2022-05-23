@@ -1,24 +1,25 @@
-import React, { Fragment, useRef, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 
 export interface SidebarSectionContentProps {
   activePanel: string
   content:
-  | JSX.Element
-  | {
-    panel: string
-    content: JSX.Element
-  }[]
+    | JSX.Element
+    | {
+        panel: string
+        content: JSX.Element
+      }[]
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
-  const contanierRef = useRef<HTMLDivElement>(null);
+  const contanierRef = useRef<HTMLDivElement>(null)
   const [overflowedConent, setOverflowedConent] = useState(false)
 
   useEffect(() => {
     if (contanierRef.current) {
-      const hasOverflowingChildren = (contanierRef.current.offsetHeight < contanierRef.current.scrollHeight)
+      const hasOverflowingChildren =
+        contanierRef.current.offsetHeight < contanierRef.current.scrollHeight
       setOverflowedConent(hasOverflowingChildren)
     }
   })
