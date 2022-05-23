@@ -9,7 +9,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useRedirect } from 'helpers/useRedirect'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
@@ -109,11 +109,18 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 width="240px"
                 py="58px"
               />
+
               <Text variant="text.headerSettings" pt="0px" pb="12px">
                 {t('ref.how')}
               </Text>
               <Text variant="text.subheader" pt="12px">
-                {isConnected ? t('ref.how-p1-connected') : t('ref.how-p1-not-connected')}
+                {isConnected
+                  ? (
+                      <Trans i18nKey="ref.how-p1-connected" values={{ token: 'GUNIV3DAIUSDC' }}>
+                        1. Click <span style={{ fontWeight: 600 }}>‘Get Started’</span> below
+                      </Trans>
+                    )
+                  : t('ref.how-p1-not-connected')}
               </Text>
               <Text variant="text.subheader" pt="12px">
                 {t('ref.how-p2')}
