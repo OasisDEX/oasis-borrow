@@ -1,17 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
 import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { AppLink } from './Links'
 import { Modal } from './Modal'
+import { SuccessfulJoinModal } from './SuccessfullJoinModal'
 
 interface NewReferralProps {
   account: string | undefined
-  userReferral: any
+  userReferral: UserReferralState
 }
 
 interface UpsertUser {
@@ -21,6 +23,7 @@ interface UpsertUser {
 
 export function NewReferralModal({ account, userReferral }: NewReferralProps) {
   const { t } = useTranslation()
+  const [success, setSuccess] = useState(false)
 
   // TODO pipe
 
@@ -37,7 +40,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
-            userReferral.trigger && userReferral.trigger()
+            hasAccepted ? setSuccess(true) : userReferral.trigger && userReferral.trigger()
           }
         })
     }
@@ -45,7 +48,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
 
   return (
     <>
-      {userReferral && userReferral.state === 'newUser' && (
+      {!success && userReferral && userReferral.state === 'newUser' && (
         <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={() => null}>
           <Grid p={4} sx={{ py: '24px' }}>
             <Flex sx={{ flexDirection: 'column' }}>
@@ -56,7 +59,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                   width="240px"
                 />
               </Flex>
-              <Heading as="h3" sx={{ mb: '12px' }} variant="text.headerSettings">
+              <Heading as="h3" sx={{ mb: '12px', lineHeight: 1.5 }} variant="text.headerSettings">
                 {userReferral.referrer.referrer
                   ? ` ${t('ref.modal.you-have-been-ref')} ${userReferral.referrer.referrer?.slice(
                       0,
@@ -68,15 +71,35 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                 {t('ref.modal.body-text')}
               </Text>
               <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
-                <Icon name="checkmark" size="auto" width="14px" color="black" />{' '}
-                <span style={{ fontWeight: 'bold', color: 'black' }}> {t('ref.modal.p1_1')}</span>
+                <Icon
+                  name="checkmark"
+                  size="auto"
+                  width="14px"
+                  color="primary"
+                  sx={{ mr: '8px' }}
+                />{' '}
+                <span style={{ fontWeight: 'bold', color: 'primary' }}> {t('ref.modal.p1_1')}</span>
                 {t('ref.modal.p1_2')}
               </Text>
               <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
-                <Icon name="checkmark" size="auto" width="14px" color="black" /> {t('ref.modal.p2')}
+                <Icon
+                  name="checkmark"
+                  size="auto"
+                  width="14px"
+                  color="primary"
+                  sx={{ mr: '8px' }}
+                />{' '}
+                {t('ref.modal.p2')}
               </Text>
               <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
-                <Icon name="checkmark" size="auto" width="14px" color="black" /> {t('ref.modal.p3')}
+                <Icon
+                  name="checkmark"
+                  size="auto"
+                  width="14px"
+                  color="primary"
+                  sx={{ mr: '8px' }}
+                />{' '}
+                {t('ref.modal.p3')}
               </Text>
               <Text variant="paragraph3" sx={{ color: 'lavender', my: '12px' }}>
                 {t('ref.modal.read')}{' '}
@@ -96,6 +119,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                     width: '100%',
                     py: '10px',
                     my: '12px',
+                    boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.25)',
                     '&:hover svg': {
                       transform: 'translateX(10px)',
                     },
@@ -124,6 +148,9 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
             </Flex>
           </Grid>
         </Modal>
+      )}
+      {success && (
+        <SuccessfulJoinModal account={account} userReferral={userReferral}></SuccessfulJoinModal>
       )}{' '}
     </>
   )

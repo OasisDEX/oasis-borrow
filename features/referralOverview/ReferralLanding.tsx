@@ -71,7 +71,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
-      <Flex sx={{ mt: 1, mb: 4, flexDirection: 'column' }}>
+      <Flex sx={{ mt: '48px', mb: 4, flexDirection: 'column' }}>
         <>
           <Grid
             columns={[1, null, 1]}
@@ -90,11 +90,25 @@ export function ReferralLanding({ context, userReferral }: Props) {
               <AppLink
                 href={`https://kb.oasis.app/help/tbd`}
                 target="_blank"
-                sx={{ fontSize: 3 }}
+                sx={{
+                  fontSize: 3,
+                  '&:hover svg': {
+                    transform: 'translateX(10px)',
+                  },
+                }}
                 variant="inText"
               >
                 {' '}
-                {t('ref.intro-link')}
+                {t('ref.intro-link')}{' '}
+                <Icon
+                  name="arrow_right"
+                  size="12px"
+                  sx={{
+                    ml: 2,
+                    position: 'relative',
+                    transition: '0.2s',
+                  }}
+                />
               </AppLink>
             </Text>
             <Flex
@@ -107,7 +121,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
             >
               <Image
                 src={staticFilesRuntimeUrl('/static/img/referral_landing.svg')}
-                mb="16px"
+                mb="8px"
                 width="240px"
                 py="58px"
               />
@@ -230,24 +244,60 @@ export function ReferralLanding({ context, userReferral }: Props) {
               </AppLink>
             )}
 
-            <Text variant="text.headerSettings" pt="40px">
+            <Text variant="text.headerSettings" pt="40px" sx={{ fontSize: 4 }}>
               {t('ref.need-help')}
             </Text>
             <AppLink
               variant="inText"
               target="_blank"
               href="https://kb.oasis.app/help/tbd"
-              sx={{ pt: '8px' }}
+              sx={{
+                pt: '8px',
+                fontSize: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                '&:hover svg': {
+                  transform: 'translateX(10px)',
+                },
+              }}
             >
-              {t('ref.help-link-1')}
+              {t('ref.help-link-1')}{' '}
+              <Icon
+                name="arrow_right"
+                size="12px"
+                sx={{
+                  ml: 2,
+                  position: 'relative',
+                  transition: '0.2s',
+                }}
+              />
             </AppLink>
             <AppLink
               variant="inText"
               target="_blank"
               href="https://kb.oasis.app/help/tbd"
-              sx={{ pt: '8px' }}
+              sx={{
+                pt: '8px',
+                fontSize: 2,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                '&:hover svg': {
+                  transform: 'translateX(10px)',
+                },
+              }}
             >
-              {t('ref.help-link-2')}
+              {t('ref.help-link-2')}{' '}
+              <Icon
+                name="arrow_right"
+                size="12px"
+                sx={{
+                  ml: 2,
+                  position: 'relative',
+                  transition: '0.2s',
+                }}
+              />
             </AppLink>
           </Grid>
         </>

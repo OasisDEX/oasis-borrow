@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
@@ -12,12 +12,11 @@ interface NewReferralProps {
   userReferral: any
 }
 
-export function SuccessfulReferralModal({ userReferral }: NewReferralProps) {
+export function SuccessfulJoinModal({ account, userReferral }: NewReferralProps) {
   const { t } = useTranslation()
-  const referrer = '0x3C44Cd...93BC'
   return (
     <>
-      {userReferral && userReferral.state === 'newUser' && (
+      {userReferral && (
         <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={() => null}>
           <Grid p={4} sx={{ py: '24px' }}>
             <Flex sx={{ flexDirection: 'column' }}>
@@ -30,17 +29,14 @@ export function SuccessfulReferralModal({ userReferral }: NewReferralProps) {
               </Flex>
 
               <Heading as="h3" sx={{ mb: '12px' }} variant="text.headerSettings">
-                <Trans i18nKey="ref.modal.successful-head" values={{ referred: referrer }}>
-                  {' '}
-                  <span style={{ color: '#787A9B' }}>{referrer}</span>{' '}
-                </Trans>
+                {t('ref.modal.successful-join')}
               </Heading>
               <Text variant="paragraph3" sx={{ color: 'lavender', mb: '8px' }}>
                 {t('ref.modal.successful-body')}
               </Text>
 
               <>
-                <AppLink href="#">
+                <AppLink href="/">
                   <Button
                     variant="primary"
                     sx={{
@@ -60,7 +56,7 @@ export function SuccessfulReferralModal({ userReferral }: NewReferralProps) {
                     <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
                   </Button>
                 </AppLink>
-                <AppLink href="#">
+                <AppLink href={`/referrals/${account}`}>
                   <Button
                     variant="textual"
                     sx={{

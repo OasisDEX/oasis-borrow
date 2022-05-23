@@ -140,7 +140,7 @@ export function HomepageView() {
       <Flex
         sx={{
           justifyContent: 'center',
-          mt: 4,
+          mt: '80px',
           mb: 0,
         }}
       >

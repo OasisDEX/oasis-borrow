@@ -51,7 +51,8 @@ export function FeesView({ userReferral }: Props) {
         position: 'relative',
         width: '100%',
         height: '100%',
-        pb: '40px',
+        mt: '10px',
+        pb: '64px',
       }}
     >
       <Card
@@ -118,15 +119,15 @@ export function FeesView({ userReferral }: Props) {
               onClick={() =>
                 userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
               }
-              sx={{ p: '4px', minWidth: ['100%', '0px', '0px'] }}
+              sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
             >
               <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
                 {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
                   <Spinner size={30} color="main" />
                 ) : (
-                  <Icon name="dai_circle_color" size="30px" />
+                  <Icon name="dai_circle_color" size="32px" />
                 )}
-                <Text px="2" sx={{ whiteSpace: 'nowrap' }}>
+                <Text px="2" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
                   {userReferral.claimTxnState !== ClaimTxnState.PENDING
                     ? !userReferral.claims
                       ? t('ref.no-claim')
@@ -177,11 +178,27 @@ export function FeesView({ userReferral }: Props) {
                     <Box sx={{ pt: '16px' }}>
                       <AppLink
                         href={`https://etherscan.com/address/${item}`}
-                        sx={{ fontSize: 2 }}
+                        sx={{
+                          fontSize: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          '&:hover svg': {
+                            transform: 'translateX(10px)',
+                          },
+                        }}
                         variant="inText"
                       >
-                        {' '}
                         {t('ref.etherscan')}
+                        <Icon
+                          name="arrow_right"
+                          size="12px"
+                          sx={{
+                            ml: 2,
+                            position: 'relative',
+                            transition: '0.2s',
+                          }}
+                        />
                       </AppLink>
                     </Box>
                   </Flex>
@@ -228,7 +245,7 @@ export function FeesView({ userReferral }: Props) {
               {t('ref.referred-you')}
             </Text>
 
-            <Flex sx={{ pt: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+            <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
               <Box sx={{ flex: '1 1 auto' }}>
                 <Text
                   sx={{
@@ -236,8 +253,8 @@ export function FeesView({ userReferral }: Props) {
                     overflowWrap: 'break-word',
                     fontSize: 2,
                     ml: ['0px', '8px'],
+                    pt: '16px',
                   }}
-                  variant="subtitle"
                 >
                   {userReferral?.referrer?.referrer &&
                     !userReferral.invitePending &&
@@ -257,35 +274,99 @@ export function FeesView({ userReferral }: Props) {
                 {userReferral.state === 'currentUser' &&
                   !userReferral.invitePending &&
                   userReferral?.referrer?.referrer && (
-                    <AppLink
-                      href={`https://etherscan.com/address/${userReferral?.referrer?.referrer}`}
-                      sx={{ fontSize: 2 }}
-                      variant="inText"
-                    >
-                      {' '}
-                      {t('ref.etherscan')}
-                    </AppLink>
+                    <>
+                      <AppLink
+                        href={`https://etherscan.com/address/${userReferral?.referrer?.referrer}`}
+                        sx={{
+                          fontSize: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          '&:hover svg': {
+                            transform: 'translateX(10px)',
+                          },
+                          pt: '16px',
+                        }}
+                        variant="inText"
+                      >
+                        {t('ref.etherscan')}
+                        <Icon
+                          name="arrow_right"
+                          size="12px"
+                          sx={{
+                            ml: 2,
+                            position: 'relative',
+                            transition: '0.2s',
+                          }}
+                        />
+                      </AppLink>
+                    </>
                   )}
                 {userReferral.state === 'currentUser' && userReferral.invitePending && (
                   <>
                     {' '}
-                    <Button
-                      sx={{ fontSize: 2 }}
-                      variant="textual"
-                      onClick={() => createUser({ hasAccepted: true, isReferred: true })}
-                    >
-                      {' '}
-                      {t(`ref.accept-invite`)}
-                    </Button>
-                    |
-                    <Button
-                      sx={{ fontSize: 2 }}
-                      variant="textual"
-                      onClick={() => createUser({ hasAccepted: false, isReferred: false })}
-                    >
-                      {' '}
-                      {t(`ref.reject-invite`)}
-                    </Button>
+                    <Flex sx={{ pt: '16px' }}>
+                      <Text
+                        sx={{
+                          fontSize: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          '&:hover svg': {
+                            transform: 'translateX(10px)',
+                          },
+                          '&:hover': {
+                            cursor: 'pointer',
+                          },
+                          color: '#585CF5',
+                          mr: '12px',
+                          ml: ['0px', '12px'],
+                          lineHeight: '22px',
+                        }}
+                        onClick={() => createUser({ hasAccepted: true, isReferred: true })}
+                      >
+                        {t('ref.accept-invite')}
+                        <Icon
+                          name="arrow_right"
+                          size="12px"
+                          sx={{
+                            ml: 2,
+                            position: 'relative',
+                            transition: '0.2s',
+                          }}
+                        />
+                      </Text>
+                      <Text color="text.subtitle">|</Text>
+                      <Text
+                        sx={{
+                          fontSize: 2,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          '&:hover svg': {
+                            transform: 'translateX(10px)',
+                          },
+                          '&:hover': {
+                            cursor: 'pointer',
+                          },
+                          color: '#585CF5',
+                          ml: '12px',
+                          lineHeight: '22px',
+                        }}
+                        onClick={() => createUser({ hasAccepted: false, isReferred: false })}
+                      >
+                        {t('ref.reject-invite')}
+                        <Icon
+                          name="arrow_right"
+                          size="12px"
+                          sx={{
+                            ml: 2,
+                            position: 'relative',
+                            transition: '0.2s',
+                          }}
+                        />
+                      </Text>
+                    </Flex>
                   </>
                 )}
               </Box>

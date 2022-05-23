@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -50,7 +51,7 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
-      <Flex sx={{ mt: 1, mb: 4, flexDirection: 'column' }}>
+      <Flex sx={{ mt: '48px', mb: 4, flexDirection: 'column' }}>
         {isConnected && connectedAccount === address && userReferral.state !== 'newUser' && (
           <>
             <Grid
@@ -59,17 +60,35 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
                 justifyItems: 'center',
                 position: 'relative',
                 maxWidth: '688px',
-
-                gap: 4,
+                gap: '8px',
                 margin: '0 auto',
               }}
             >
               <Text variant="text.header2">{t('ref.ref-a-friend')}</Text>
               <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'lavender' }}>
                 {t('ref.intro-1')}{' '}
-                <AppLink href={`#`} sx={{ fontSize: 2 }} variant="inText">
+                <AppLink
+                  href={`https://kb.oasis.app/help/tbd`}
+                  target="_blank"
+                  sx={{
+                    fontSize: 3,
+                    '&:hover svg': {
+                      transform: 'translateX(10px)',
+                    },
+                  }}
+                  variant="inText"
+                >
                   {' '}
-                  {t('ref.intro-link')}
+                  {t('ref.intro-link')}{' '}
+                  <Icon
+                    name="arrow_right"
+                    size="12px"
+                    sx={{
+                      ml: 2,
+                      position: 'relative',
+                      transition: '0.2s',
+                    }}
+                  />
                 </AppLink>
               </Text>
 
@@ -82,14 +101,60 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
                 <FeesView context={context} userReferral={userReferral} />
               </>
 
-              <Text variant="text.headerSettings" pt="12px">
+              <Text variant="text.headerSettings" pt="12px" sx={{ fontSize: 4 }}>
                 {t('ref.need-help')}
               </Text>
-              <AppLink variant="inText" href="#">
-                {t('ref.help-link-1')}
+              <AppLink
+                variant="inText"
+                target="_blank"
+                href="https://kb.oasis.app/help/tbd"
+                sx={{
+                  pt: '8px',
+                  fontSize: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover svg': {
+                    transform: 'translateX(10px)',
+                  },
+                }}
+              >
+                {t('ref.help-link-1')}{' '}
+                <Icon
+                  name="arrow_right"
+                  size="12px"
+                  sx={{
+                    ml: 2,
+                    position: 'relative',
+                    transition: '0.2s',
+                  }}
+                />
               </AppLink>
-              <AppLink variant="inText" href="#">
-                {t('ref.help-link-2')}
+              <AppLink
+                variant="inText"
+                target="_blank"
+                href="https://kb.oasis.app/help/tbd"
+                sx={{
+                  pt: '8px',
+                  fontSize: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover svg': {
+                    transform: 'translateX(10px)',
+                  },
+                }}
+              >
+                {t('ref.help-link-2')}{' '}
+                <Icon
+                  name="arrow_right"
+                  size="12px"
+                  sx={{
+                    ml: 2,
+                    position: 'relative',
+                    transition: '0.2s',
+                  }}
+                />
               </AppLink>
             </Grid>
           </>
