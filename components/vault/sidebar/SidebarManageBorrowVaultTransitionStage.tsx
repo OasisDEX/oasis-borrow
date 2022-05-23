@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-export function SidebarManageBorrowVaultMultiplyTransitionStage({
+export function SidebarManageBorrowVaultTransitionStage({
   stage,
   token,
 }: {

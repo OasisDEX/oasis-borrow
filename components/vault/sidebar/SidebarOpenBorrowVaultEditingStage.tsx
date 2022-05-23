@@ -1,10 +1,9 @@
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { handleNumericInput } from 'helpers/input'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
-
-import { VaultActionInput } from '../VaultActionInput'
 
 export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const {

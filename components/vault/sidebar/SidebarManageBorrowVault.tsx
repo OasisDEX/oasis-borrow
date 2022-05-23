@@ -1,5 +1,7 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useTranslation } from 'next-i18next'
@@ -7,7 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
-import { SidebarManageBorrowVaultMultiplyTransitionStage } from './SidebarManageBorrowVaultMultiplyTransitionStage'
+import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
@@ -67,11 +69,12 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     ],
     content: (
       <Grid gap={3}>
-        stage: {stage}
         {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
         {isMultiplyTransitionStage && (
-          <SidebarManageBorrowVaultMultiplyTransitionStage stage={stage} token={token} />
+          <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
         )}
+        <VaultErrors {...props} />
+        <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {
