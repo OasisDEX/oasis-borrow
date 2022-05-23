@@ -54,7 +54,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle(props),
+    title: getSidebarTitle({ flow: 'openBorrow', stage, token }),
     headerButton: getHeaderButton({
       stage,
       canResetForm: isEditingStage && !inputAmountsEmpty,
