@@ -1,13 +1,30 @@
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
-export function getSidebarTitle({ stage, token }: OpenVaultState): string {
+interface GetSidebarTitleParams {
+  flow: SidebarFlow
+  stage: SidebarVaultStages
+  token: string
+}
+
+function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+      return 'vault-form.header.edit'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
   const { t } = useTranslation()
 
   switch (stage) {
     case 'editing':
-      return t('vault-form.header.edit')
+      const translationKey = getSidebarTitleEditingTranslationKey({ flow })
+
+      return t(translationKey)
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':
