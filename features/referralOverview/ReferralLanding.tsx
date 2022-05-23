@@ -14,6 +14,7 @@ import React from 'react'
 import { Button, Flex, Grid, Image, Text } from 'theme-ui'
 
 import { useModal } from '../../helpers/modalHook'
+import { fadeInAnimation } from '../../theme/animations'
 import { UpsertUser } from './FeesView'
 import { UserReferralState } from './user'
 import { createUserUsingApi$ } from './userApi'
@@ -80,6 +81,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
               maxWidth: '688px',
               gap: '8px',
               margin: '0 auto',
+              ...fadeInAnimation,
             }}
           >
             <Text variant="text.header2">{t('ref.ref-a-friend')}</Text>
