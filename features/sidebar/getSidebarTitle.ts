@@ -1,39 +1,29 @@
-import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
-import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
+import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
-type GetSidebarTitleStage = OpenVaultStage | ManageBorrowVaultStage
-type GetSidebarTitleFlow = 'openBorrow' | 'manageBorrow' | 'openMultiply' | 'manageMultiply'
-
-interface GetSidebarStageTitleParams {
-  flow: GetSidebarTitleFlow
-}
-
-interface GetSidebarTitleProps {
-  flow: GetSidebarTitleFlow
-  stage: GetSidebarTitleStage
+interface GetSidebarTitleParams {
+  flow: SidebarFlow
+  stage: SidebarVaultStages
   token: string
 }
 
-function getSidebarEditingTranslationKey({ flow }: GetSidebarStageTitleParams) {
+function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
       return 'vault-form.header.edit'
-    case 'manageBorrow':
-      return 'vault-form.header.manage'
     default:
       throw new UnreachableCaseError(flow)
   }
 }
 
-export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleProps): string {
+export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
   const { t } = useTranslation()
 
   switch (stage) {
     /* shared */
     case 'editing':
-      const translationKey = getSidebarEditingTranslationKey({ flow })
+      const translationKey = getSidebarTitleEditingTranslationKey({ flow })
 
       return t(translationKey)
     case 'proxyInProgress':

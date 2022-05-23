@@ -14,6 +14,7 @@ import {
   regressTrackingEvent,
 } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
+import { extractSidebarButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -51,6 +52,10 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   } = props
 
   const gasData = extractGasDataFromState(props)
+  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
+    flow: 'openBorrow',
+    ...props,
+  })
   const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -78,7 +83,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(props),
+      label: getPrimaryButtonLabel(sidebarPrimaryButtonLabelParams),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
