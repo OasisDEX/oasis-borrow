@@ -14,7 +14,11 @@ export function MessageCard({ messages, type, withBullet = true, handleClick }: 
 
   if (!messages.length) return null
   return (
-    <Card variant={cardColor} onClick={handleClick} sx={{cursor: handleClick ? 'pointer' : 'auto'}}>
+    <Card
+      variant={cardColor}
+      onClick={handleClick}
+      sx={{ cursor: handleClick ? 'pointer' : 'auto' }}
+    >
       <Grid>
         {messages.map((message, idx) => (
           <Flex key={idx}>

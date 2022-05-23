@@ -167,20 +167,20 @@ function SetDownsideProtectionInformation({
     .decimalPlaces(0)
     .minus(nextCollateralizationPriceAlertRange)
 
-    const { uiChanges } = useAppContext()
+  const { uiChanges } = useAppContext()
 
-    const redirectToDaiPayback = () => {
-      uiChanges.publish(TAB_CHANGE_SUBJECT, {
-        type: 'change-tab',
-        currentMode: VaultViewMode.Overview,
-      })
+  const redirectToDaiPayback = () => {
+    uiChanges.publish(TAB_CHANGE_SUBJECT, {
+      type: 'change-tab',
+      currentMode: VaultViewMode.Overview,
+    })
 
-      uiChanges.publish(BORROW_VAULT_PILL_CHANGE_SUBJECT, {
-        type: 'change-borrow-pill',
-        currentStage: 'daiEditing',
-      })
-      // TODO ŁW allow publish to use array of subjects
-    }
+    uiChanges.publish(BORROW_VAULT_PILL_CHANGE_SUBJECT, {
+      type: 'change-borrow-pill',
+      currentStage: 'daiEditing',
+    })
+    // TODO ŁW allow publish to use array of subjects
+  }
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -231,9 +231,7 @@ function SetDownsideProtectionInformation({
           type="error"
           withBullet={false}
           handleClick={redirectToDaiPayback}
-          
         />
-        
       )}
     </VaultChangesInformationContainer>
   )

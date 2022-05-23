@@ -1,7 +1,12 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
+import {
+  BORROW_VAULT_PILL_CHANGE_SUBJECT,
+  BorrowPillChange,
+} from 'features/automation/protection/common/UITypes/BorrowVaultPillChange'
 import { handleNumericInput } from 'helpers/input'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -156,6 +161,15 @@ export function ManageVaultEditing(
     (depositAmount || generateAmount) && accountIsController
   const showPaybackAndWithdrawOptionButton =
     (paybackAmount || withdrawAmount) && accountIsController
+
+  const [uiState] = useUIChanges<BorrowPillChange>(BORROW_VAULT_PILL_CHANGE_SUBJECT)
+  const effectState = uiState?.currentStage || 'collateralEditing'
+  useEffect(() => {
+    if (effectState === 'daiEditing') {
+      props.toggle?.('daiEditing')
+      props.setMainAction?.('withdrawPayback')
+    }
+  }, [effectState])
 
   return (
     <Grid gap={4}>
