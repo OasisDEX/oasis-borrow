@@ -50,9 +50,9 @@ export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: Side
           fontSize: 2,
         }}
       >
-        {activeItem.icon ? (
+        {activeItem?.icon ? (
           <Icon
-            name={activeItem.icon as string}
+            name={activeItem?.icon as string}
             size="32px"
             sx={{ verticalAlign: 'text-bottom', mr: 1 }}
           />
@@ -67,7 +67,7 @@ export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: Side
             }}
           />
         )}
-        {activeItem.shortLabel || activeItem.label}
+        {activeItem?.shortLabel || activeItem?.label}
         <ExpandableArrow size={13} direction={isExpanded ? 'up' : 'down'} sx={{ ml: '12px' }} />
       </Button>
       <Box

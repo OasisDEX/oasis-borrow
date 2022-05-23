@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarManageBorrowVaultMultiplyTransitionStage } from './SidebarManageBorrowVaultMultiplyTransitionStage'
+
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
 
@@ -13,7 +15,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     vault: { token },
     toggle,
     stage,
-    // isMultiplyTransitionStage,
+    isMultiplyTransitionStage,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
 
@@ -61,7 +63,14 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         },
       },
     ],
-    content: <Grid gap={3}>stage: {stage}</Grid>,
+    content: (
+      <Grid gap={3}>
+        stage: {stage}
+        {isMultiplyTransitionStage && (
+          <SidebarManageBorrowVaultMultiplyTransitionStage stage={stage} token={token} />
+        )}
+      </Grid>
+    ),
     primaryButton: {
       label: 'Button',
     },
