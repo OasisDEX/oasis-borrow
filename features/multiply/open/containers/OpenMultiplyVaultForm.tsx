@@ -15,16 +15,21 @@ import {
 } from '../../../../components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from '../../../../components/vault/commonMultiply/OpenMultiplyVaultTitle'
 import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
+import { SidebarOpenMultiplyVault } from './sidebar/SidebarOpenMultiplyVault'
 
 export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
   const { t } = useTranslation()
   const gasData = extractGasDataFromState(props)
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
-  return (
+  return newComponentsEnabled ? (
+    <SidebarOpenMultiplyVault {...props} />
+  ) : (
     <VaultFormContainer toggleTitle="Open Vault">
       <OpenMultiplyVaultTitle
         {...props}

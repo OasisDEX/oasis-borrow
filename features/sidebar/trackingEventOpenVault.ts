@@ -1,8 +1,17 @@
 import { trackingEvents } from 'analytics/analytics'
+import { BigNumber } from 'bignumber.js'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 
+import { OpenMultiplyVaultStage } from '../multiply/open/pipes/openMultiplyVault'
+
 interface TrackingEventOpenVaultProps {
-  props: OpenVaultState
+  props: {
+    stage: OpenMultiplyVaultStage | OpenVaultState
+    insufficientAllowance: boolean
+    proxyAddress?: string
+    depositAmount?: BigNumber
+    generateAmount?: BigNumber
+  }
   firstCDP?: boolean
 }
 

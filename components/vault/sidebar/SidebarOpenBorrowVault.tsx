@@ -14,16 +14,21 @@ import {
   regressTrackingEvent,
 } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
-import { extractSidebarButtonLabelParams } from 'helpers/extractSidebarHelpers'
+import {
+  extractAllowanceDataFromOpenVaultState,
+  extractSidebarButtonLabelParams,
+  extractSidebarTxData,
+} from 'helpers/extractSidebarHelpers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarOpenBorrowVaultAllowanceStage } from './SidebarOpenBorrowVaultAllowanceStage'
+import { isFirstCdp } from '../../../helpers/isFirstCdp'
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarOpenBorrowVaultProxyStage } from './SidebarOpenBorrowVaultProxyStage'
+import { SidebarOpenVaultAllowanceStage } from './SidebarOpenVaultAllowanceStage'
+import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { t } = useTranslation()
@@ -56,7 +61,9 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     flow: 'openBorrow',
     ...props,
   })
-  const firstCDP = accountData?.numberOfVaults ? accountData.numberOfVaults === 0 : undefined
+  const firstCDP = isFirstCdp(accountData)
+  const allowanceData = extractAllowanceDataFromOpenVaultState(props)
+  const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow: 'openBorrow', stage, token }),
@@ -75,8 +82,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isProxyStage && <SidebarOpenBorrowVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenBorrowVaultAllowanceStage {...props} />}
+        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
@@ -100,8 +107,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
           url: `/vaults/open-multiply/${ilk}`,
         },
       }),
-    progress: getSidebarProgress(props),
-    success: getSidebarSuccess(props),
+    progress: getSidebarProgress(sidebarTxData),
+    success: getSidebarSuccess(sidebarTxData),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

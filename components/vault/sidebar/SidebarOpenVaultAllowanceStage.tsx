@@ -1,11 +1,11 @@
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
+import { HasAllowanceData } from '../../../helpers/extractSidebarHelpers'
 import { VaultAllowance } from '../VaultAllowance'
 
-export function SidebarOpenBorrowVaultAllowanceStage(props: OpenVaultState) {
+export function SidebarOpenVaultAllowanceStage(props: HasAllowanceData) {
   const { t } = useTranslation()
   const { stage } = props
 
