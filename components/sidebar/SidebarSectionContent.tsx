@@ -1,24 +1,35 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef, useEffect, useState } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 
 export interface SidebarSectionContentProps {
   activePanel: string
   content:
-    | JSX.Element
-    | {
-        panel: string
-        content: JSX.Element
-      }[]
+  | JSX.Element
+  | {
+    panel: string
+    content: JSX.Element
+  }[]
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
+  const contanierRef = useRef<HTMLDivElement>(null);
+  const [overflowedConent, setOverflowedConent] = useState(false)
+
+  useEffect(() => {
+    if (contanierRef.current) {
+      const hasOverflowingChildren = (contanierRef.current.offsetHeight < contanierRef.current.scrollHeight)
+      setOverflowedConent(hasOverflowingChildren)
+    }
+  })
+
   return (
     <Box
+      ref={contanierRef}
       sx={{
         '&::-webkit-scrollbar': {
           width: '6px',
-          borderRadius: '18px',
+          borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-thumb': {
           backgroundColor: theme.colors.grey.darker,
@@ -33,21 +44,23 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
         maxHeight: 670,
         overflowY: 'auto',
         overflowX: 'hidden',
-        marginRight: '8px',
+        marginRight: overflowedConent ? '8px' : '0px',
         p: '24px',
-        pr: '16px',
+        paddingRight: overflowedConent ? '10px' : '24px',
         pt: 0,
       }}
     >
-      {Array.isArray(content) ? (
-        <>
-          {content?.map((item, i) => (
-            <Fragment key={i}>{activePanel === item.panel && item.content}</Fragment>
-          ))}
-        </>
-      ) : (
-        content
-      )}
+      <Box>
+        {Array.isArray(content) ? (
+          <>
+            {content?.map((item, i) => (
+              <Fragment key={i}>{activePanel === item.panel && item.content}</Fragment>
+            ))}
+          </>
+        ) : (
+          content
+        )}
+      </Box>
     </Box>
   )
 }
