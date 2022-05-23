@@ -1,4 +1,8 @@
-import { TxStatusCardProgress } from 'components/vault/TxStatusCard'
+import {
+  TxStatusCardProgress,
+  TxStatusCardProgressProps,
+  TxStatusCardSuccess,
+} from 'components/vault/TxStatusCard'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -7,17 +11,14 @@ import {
   SidebarSectionFooterButtonProps,
 } from './SidebarSectionFooterButton'
 
-type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
+export type SidebarSectionFooterButtonSettings = Omit<SidebarSectionFooterButtonProps, 'variant'>
 
 export interface SidebarSectionFooterProps {
   primaryButton: SidebarSectionFooterButtonSettings
   secondaryButton?: SidebarSectionFooterButtonSettings
   textButton?: SidebarSectionFooterButtonSettings
-  progress?: {
-    text: string
-    txHash: string
-    etherscan: string
-  }
+  progress?: TxStatusCardProgressProps
+  success?: TxStatusCardProgressProps
 }
 
 export function SidebarSectionFooter({
@@ -25,6 +26,7 @@ export function SidebarSectionFooter({
   secondaryButton,
   textButton,
   progress,
+  success,
 }: SidebarSectionFooterProps) {
   return (
     <Grid
@@ -37,6 +39,7 @@ export function SidebarSectionFooter({
       {secondaryButton && <SidebarSectionFooterButton variant="secondary" {...secondaryButton} />}
       {textButton && <SidebarSectionFooterButton variant="textual" {...textButton} />}
       {progress && <TxStatusCardProgress {...progress} />}
+      {success && <TxStatusCardSuccess {...success} />}
     </Grid>
   )
 }

@@ -5,6 +5,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
@@ -34,6 +35,7 @@ export function VaultChangesInformationItem({
 
   return (
     <Flex
+      as="li"
       sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -48,11 +50,11 @@ export function VaultChangesInformationItem({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Box>{label}</Box>
+        {label}
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
       {tooltip && tooltipOpen && <Tooltip sx={{ transform: 'translateY(60%)' }}>{tooltip}</Tooltip>}
-      <Box>{value}</Box>
+      <Box sx={{ color: 'primary' }}>{value}</Box>
     </Flex>
   )
 }
@@ -61,11 +63,24 @@ export function VaultChangesInformationContainer({
   title,
   children,
 }: { title: string } & WithChildren) {
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
   return (
-    <Grid>
-      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        {title}
-      </Text>
+    <Grid
+      as="ul"
+      sx={{
+        ...(newComponentsEnabled && {
+          p: 3,
+          backgroundColor: 'secondaryAlt',
+          borderRadius: 'medium',
+        }),
+      }}
+    >
+      <Box as="li" sx={{ listStyle: 'none' }}>
+        <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+          {title}
+        </Text>
+      </Box>
       {children}
     </Grid>
   )
