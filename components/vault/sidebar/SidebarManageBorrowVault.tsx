@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
 import { SidebarManageBorrowVaultMultiplyTransitionStage } from './SidebarManageBorrowVaultMultiplyTransitionStage'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
@@ -15,6 +16,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     vault: { token },
     toggle,
     stage,
+    isEditingStage,
     isMultiplyTransitionStage,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
@@ -66,6 +68,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     content: (
       <Grid gap={3}>
         stage: {stage}
+        {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
         {isMultiplyTransitionStage && (
           <SidebarManageBorrowVaultMultiplyTransitionStage stage={stage} token={token} />
         )}
