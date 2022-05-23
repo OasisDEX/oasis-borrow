@@ -21,10 +21,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 export async function selectClaimsByAddress(address: string): Promise<WeeklyClaim[] | null> {
-  const result = await prisma.weeklyClaim.findMany({
+  return prisma.weeklyClaim.findMany({
     where: { user_address: address, claimed: false },
   })
-  return result
 }
 
 export default withSentry(handler)

@@ -145,77 +145,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
                 {t('ref.how-p3')}
               </Text>
             </Flex>
-
-            {context?.status === 'connected' ? (
-              userReferral.state === 'newUser' ? (
-                <Button
-                  variant="primary"
-                  sx={{
-                    display: 'flex',
-                    margin: '0 auto',
-                    px: '40px',
-                    py: 2,
-                    color: 'offWhite',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '&:hover svg': {
-                      transform: 'translateX(10px)',
-                    },
-                    width: '274px',
-                  }}
-                  // if new user witohut refereal - write to db on click and redirect to dashboard
-                  onClick={
-                    userReferral.referrer.referrer
-                      ? () =>
-                          openModal(NewReferralModal, {
-                            userReferral,
-                            account: connectedAccount,
-                          })
-                      : () => createUser({ hasAccepted: true, isReferred: false })
-                  }
-                >
-                  {t('ref.get-started')}
-                  <Icon
-                    name="arrow_right"
-                    sx={{
-                      ml: 2,
-                      position: 'relative',
-                      left: 2,
-                      transition: '0.2s',
-                    }}
-                  />
-                </Button>
-              ) : (
-                <AppLink
-                  variant="primary"
-                  href={`/referrals/${connectedAccount}`}
-                  sx={{
-                    display: 'flex',
-                    margin: '0 auto',
-                    px: '40px',
-                    py: 2,
-                    color: 'offWhite',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    '&:hover svg': {
-                      transform: 'translateX(10px)',
-                    },
-                    width: '274px',
-                  }}
-                >
-                  {t('ref.get-started')}
-                  <Icon
-                    name="arrow_right"
-                    sx={{
-                      ml: 2,
-                      position: 'relative',
-                      left: 2,
-                      transition: '0.2s',
-                    }}
-                  />
-                </AppLink>
-              )
-            ) : (
+            {context?.status !== 'connected' ? (
               <AppLink
                 variant="primary"
                 href="/connect"
@@ -242,8 +172,76 @@ export function ReferralLanding({ context, userReferral }: Props) {
                   }}
                 />
               </AppLink>
+            ) : null}
+            {userReferral.state === 'newUser' && (
+              <Button
+                variant="primary"
+                sx={{
+                  display: 'flex',
+                  margin: '0 auto',
+                  px: '40px',
+                  py: 2,
+                  color: 'offWhite',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover svg': {
+                    transform: 'translateX(10px)',
+                  },
+                  width: '274px',
+                }}
+                // if new user witohut refereal - write to db on click and redirect to dashboard
+                onClick={
+                  userReferral.referrer.referrer
+                    ? () =>
+                        openModal(NewReferralModal, {
+                          userReferral,
+                          account: connectedAccount,
+                        })
+                    : () => createUser({ hasAccepted: true, isReferred: false })
+                }
+              >
+                {t('ref.get-started')}
+                <Icon
+                  name="arrow_right"
+                  sx={{
+                    ml: 2,
+                    position: 'relative',
+                    left: 2,
+                    transition: '0.2s',
+                  }}
+                />
+              </Button>
+            )}{' '}
+            {userReferral.state === 'currentUser' && (
+              <AppLink
+                variant="primary"
+                href={`/referrals/${connectedAccount}`}
+                sx={{
+                  display: 'flex',
+                  margin: '0 auto',
+                  px: '40px',
+                  py: 2,
+                  color: 'offWhite',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  '&:hover svg': {
+                    transform: 'translateX(10px)',
+                  },
+                  width: '274px',
+                }}
+              >
+                {t('ref.get-started')}
+                <Icon
+                  name="arrow_right"
+                  sx={{
+                    ml: 2,
+                    position: 'relative',
+                    left: 2,
+                    transition: '0.2s',
+                  }}
+                />
+              </AppLink>
             )}
-
             <Text variant="text.headerSettings" pt="40px" sx={{ fontSize: 4 }}>
               {t('ref.need-help')}
             </Text>

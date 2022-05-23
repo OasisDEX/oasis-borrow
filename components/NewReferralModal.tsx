@@ -40,7 +40,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
-            hasAccepted ? setSuccess(true) : userReferral.trigger && userReferral.trigger()
+            hasAccepted ? setSuccess(true) : userReferral.trigger()
           }
         })
     }

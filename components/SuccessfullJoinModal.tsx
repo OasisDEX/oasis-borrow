@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { UserReferralState } from 'features/referralOverview/user'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
@@ -9,7 +10,7 @@ import { Modal } from './Modal'
 
 interface NewReferralProps {
   account: string | undefined
-  userReferral: any
+  userReferral: UserReferralState
 }
 
 export function SuccessfulJoinModal({ account, userReferral }: NewReferralProps) {

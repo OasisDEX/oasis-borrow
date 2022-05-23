@@ -32,7 +32,7 @@ export interface UserReferralState {
   totalClaim?: string
   totalAmount?: string
   referrals?: string[]
-  trigger?: () => void
+  trigger: () => void
   topEarners?: string[]
   invitePending?: boolean
   claimTxnState?: ClaimTxnState

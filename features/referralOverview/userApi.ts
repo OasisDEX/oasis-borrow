@@ -7,7 +7,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
-export function getUserFromApi$(address: String, trigger$: Subject<void>): Observable<User | null> {
+export function getUserFromApi$(address: string, trigger$: Subject<void>): Observable<User | null> {
   return trigger$.pipe(
     startWith(
       ajax({
@@ -18,8 +18,7 @@ export function getUserFromApi$(address: String, trigger$: Subject<void>): Obser
         },
       }).pipe(
         map((resp) => {
-          const user = resp.response as User
-          return user
+          return resp.response as User
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
@@ -38,8 +37,7 @@ export function getUserFromApi$(address: String, trigger$: Subject<void>): Obser
         },
       }).pipe(
         map((resp) => {
-          const user = resp.response as User
-          return user
+          return resp.response as User
         }),
         catchError((err) => {
           if (err.xhr.status === 404) {
@@ -51,7 +49,7 @@ export function getUserFromApi$(address: String, trigger$: Subject<void>): Obser
     }),
   )
 }
-export function getReferralsFromApi$(address: String): Observable<User[] | null> {
+export function getReferralsFromApi$(address: string): Observable<User[] | null> {
   return ajax({
     url: `${basePath}/api/user/referrals/${address}`,
     method: 'GET',
@@ -60,8 +58,7 @@ export function getReferralsFromApi$(address: String): Observable<User[] | null>
     },
   }).pipe(
     map((resp) => {
-      const users = resp.response as User[]
-      return users
+      return resp.response as User[]
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -80,8 +77,7 @@ export function getTopEarnersFromApi$(): Observable<User[] | null> {
     },
   }).pipe(
     map((resp) => {
-      const users = resp.response as User[]
-      return users
+      return resp.response as User[]
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {
@@ -91,7 +87,7 @@ export function getTopEarnersFromApi$(): Observable<User[] | null> {
     }),
   )
 }
-export function getWeeklyClaimsFromApi$(address: String): Observable<WeeklyClaim[] | null> {
+export function getWeeklyClaimsFromApi$(address: string): Observable<WeeklyClaim[] | null> {
   return ajax({
     url: `${basePath}/api/user/claims/${address}`,
     method: 'GET',
@@ -100,8 +96,7 @@ export function getWeeklyClaimsFromApi$(address: String): Observable<WeeklyClaim
     },
   }).pipe(
     map((resp) => {
-      const users = resp.response as WeeklyClaim[]
-      return users
+      return resp.response as WeeklyClaim[]
     }),
     catchError((err) => {
       if (err.xhr.status === 404) {

@@ -16,7 +16,7 @@ const bodySchema = z.object({
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case 'POST':
-      return await create(req, res)
+      return create(req, res)
     default:
       return res.status(405).end()
   }

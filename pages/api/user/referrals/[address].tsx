@@ -19,10 +19,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 export async function selectUsersByReferredAddress(address: string): Promise<User[] | null> {
-  const result = await prisma.user.findMany({
+  return prisma.user.findMany({
     where: { user_that_referred_address: address },
   })
-  return result
 }
 
 export default withSentry(handler)

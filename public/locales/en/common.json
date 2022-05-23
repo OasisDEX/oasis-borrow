@@ -1195,7 +1195,7 @@
     "banner": "Introducing Refer a Friend. Earn DAI today",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
-    "intro-link": "Oasis Refer a Friend ->",
+    "intro-link": "Oasis Refer a Friend",
     "total": "Total DAI fees earned",
     "not-claimed": "DAI not claimed",
     "claim": "Claim DAI",
@@ -1211,8 +1211,8 @@
     "not-referred-yet": "You haven’t referred anyone yet",
     "you-were-not-referred": "No account has referred you to Oasis.app",
     "you-have-been-invited": "You have been invited by ",
-    "accept-invite": "Accept Invite -> ",
-    "reject-invite": "Reject Invite ->",
+    "accept-invite": "Accept Invite",
+    "reject-invite": "Reject Invite",
     "referred-you": "Account that referred you",
     "get-started": "Get started",
     "how": "How it works",
@@ -1221,9 +1221,9 @@
     "how-p2": "2. Share your link with potential Oasis.app users",
     "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
     "need-help": "Need help?",
-    "help-link-1": "Oasis Referrals FAQ’s ->",
-    "help-link-2": "Visit Oasis Knowledge Centre ->",
-    "etherscan": "Etherscan ->",
+    "help-link-1": "Oasis Referrals FAQ’s",
+    "help-link-2": "Visit Oasis Knowledge Centre",
+    "etherscan": "Etherscan",
     "modal": {
       "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
       "body-text": "Oasis.app is the most trusted place to deploy capital into Defi. By joining our Refer a Friend program you:",
@@ -1241,7 +1241,8 @@
       "go-dashboard": "Go to referral dashboard ",
       "link": "Oasis.app Referral Blog Post, Referral FAQ’s",
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
-      "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program."
+      "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
+      "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
     }
   }
 }

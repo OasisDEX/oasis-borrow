@@ -5,8 +5,7 @@ import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { formatAddress } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Divider, Flex, Grid, Text } from 'theme-ui'
-import { Spinner } from 'theme-ui'
+import { Box, Button, Card, Divider, Flex, Grid, Spinner, Text } from 'theme-ui'
 
 import { fadeInAnimation } from '../../theme/animations'
 import { ClaimTxnState, UserReferralState } from './user'
@@ -39,7 +38,7 @@ export function FeesView({ userReferral }: Props) {
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
-            userReferral.trigger && userReferral.trigger()
+            userReferral.trigger()
           }
         })
     }
@@ -128,11 +127,11 @@ export function FeesView({ userReferral }: Props) {
                   <Icon name="dai_circle_color" size="32px" />
                 )}
                 <Text px="2" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
-                  {userReferral.claimTxnState !== ClaimTxnState.PENDING
-                    ? !userReferral.claims
-                      ? t('ref.no-claim')
-                      : t('ref.claim')
-                    : t('ref.claiming')}
+                  {userReferral.claimTxnState === ClaimTxnState.PENDING ? t('ref.claiming') : null}
+                  {!userReferral.claims ? t('ref.no-claim') : null}
+                  {userReferral.claims && userReferral.claimTxnState !== ClaimTxnState.PENDING
+                    ? t('ref.claim')
+                    : null}
                 </Text>
               </Flex>
             </Button>

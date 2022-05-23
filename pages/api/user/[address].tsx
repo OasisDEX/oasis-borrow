@@ -19,10 +19,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 export async function selectUserByAddress(address: string): Promise<User | null> {
-  const result = await prisma.user.findUnique({
+  return prisma.user.findUnique({
     where: { address: address },
   })
-  return result
 }
 
 export default withSentry(handler)
