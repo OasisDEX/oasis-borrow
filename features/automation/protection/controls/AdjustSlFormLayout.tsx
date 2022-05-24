@@ -180,6 +180,10 @@ function SetDownsideProtectionInformation({
       currentStage: 'daiEditing',
     })
     // TODO ŁW allow publish to use array of subjects
+    // TODO ŁW new reducers that:
+    // Change vault to multiply 
+    // select Other tab
+    // in dropdown Close Vault
   }
 
   return (
