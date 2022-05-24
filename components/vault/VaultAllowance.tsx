@@ -1,9 +1,6 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { Radio } from 'components/forms/Radio'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
@@ -12,6 +9,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
+
+import { HasAllowanceData } from '../../helpers/extractSidebarHelpers'
 
 export function VaultAllowance({
   stage,
@@ -23,7 +22,7 @@ export function VaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: OpenVaultState | OpenMultiplyVaultState | OpenGuniVaultState) {
+}: HasAllowanceData) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'

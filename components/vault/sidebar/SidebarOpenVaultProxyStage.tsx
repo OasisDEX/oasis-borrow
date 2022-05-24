@@ -1,8 +1,6 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
-import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
-import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
-import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
@@ -15,15 +13,12 @@ import {
   VaultChangesInformationItem,
 } from '../VaultChangesInformation'
 
-interface SidebarOpenBorrowVaultProxyStageProps {
-  stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
+interface SidebarOpenVaultProxyStageProps {
+  stage: SidebarVaultStages
   gasData: HasGasEstimation
 }
 
-export function SidebarOpenBorrowVaultProxyStage({
-  stage,
-  gasData,
-}: SidebarOpenBorrowVaultProxyStageProps) {
+export function SidebarOpenVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxyStageProps) {
   const { t } = useTranslation()
 
   const isProxyInfoStage = [

@@ -18,7 +18,10 @@ import {
 } from '../../../../components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { TxError } from '../../../../helpers/types'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 import { progressStatuses } from '../common/consts/txStatues'
@@ -26,13 +29,29 @@ import { progressStatuses } from '../common/consts/txStatues'
 interface CancelDownsideProtectionInformationProps {
   gasEstimationText: ReactNode
   liquidationPrice: BigNumber
+  ethPrice: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
+  gasEstimationUsd?: BigNumber
 }
 
 function CancelDownsideProtectionInformation({
   gasEstimationText,
   liquidationPrice,
+  ethPrice,
+  ethBalance,
+  txError,
+  gasEstimationUsd,
 }: CancelDownsideProtectionInformationProps) {
   const { t } = useTranslation()
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
@@ -44,6 +63,20 @@ function CancelDownsideProtectionInformation({
         label={`${t('protection.max-cost')}`}
         value={gasEstimationText}
       />
+      {potentialInsufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-warnings.insufficient-eth-balance')]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
+      {insufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-errors.insufficient-eth-balance')]}
+          type="error"
+          withBullet={false}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -83,9 +116,13 @@ export interface CancelSlFormLayoutProps {
   gasEstimation: HasGasEstimation
   accountIsController: boolean
   etherscan: string
+  ethPrice: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
   actualCancelTxCost?: BigNumber
   txState?: TxStatus
   txHash?: string
+  gasEstimationUsd?: BigNumber
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
@@ -141,6 +178,10 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
             <CancelDownsideProtectionInformation
               gasEstimationText={gasEstimationText}
               liquidationPrice={props.liquidationPrice}
+              ethPrice={props.ethPrice}
+              gasEstimationUsd={props.gasEstimationUsd}
+              ethBalance={props.ethBalance}
+              txError={props.txError}
             />
           </Box>
           <MessageCard
@@ -191,6 +232,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
           }
           txSuccess={(props.txState as TxStatus) === TxStatus.Success}
           type="cancel"
+          txError={props.txState && isTxStatusFailed(props.txState)}
         />
       )}
     </Grid>

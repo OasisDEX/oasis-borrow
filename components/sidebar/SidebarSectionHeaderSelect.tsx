@@ -87,6 +87,7 @@ export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: Side
           transform: isExpanded ? 'translateY(0)' : 'translateY(-5px)',
           pointerEvents: isExpanded ? 'auto' : 'none',
           transition: 'opacity 200ms, transform 200ms',
+          zIndex: 1,
         }}
       >
         {items.map((item, i) => (
