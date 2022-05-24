@@ -558,7 +558,6 @@ export function applyManageVaultConditions(
 
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
-    otherAction !== 'closeVault' &&
     afterCollRatioBelowStopLossRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
