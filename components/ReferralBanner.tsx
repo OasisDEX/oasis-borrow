@@ -7,9 +7,10 @@ import { AppLink } from './Links'
 
 interface ReferralBannerProps {
   heading: string
+  link: string
 }
 const handleClose = () => null
-export function ReferralBanner({ heading }: ReferralBannerProps) {
+export function ReferralBanner({ heading, link }: ReferralBannerProps) {
   return (
     <Banner
       close={() => {
@@ -28,7 +29,7 @@ export function ReferralBanner({ heading }: ReferralBannerProps) {
       }}
       withClose={false}
     >
-      <AppLink href={'/referrals'}>
+      <AppLink href={link}>
         <Flex
           sx={{
             justifySelf: 'center',

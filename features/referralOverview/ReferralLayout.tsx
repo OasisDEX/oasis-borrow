@@ -33,9 +33,6 @@ export function ReferralLayout({ children }: WithChildren) {
                 target="_blank"
                 sx={{
                   fontSize: 3,
-                  '&:hover svg': {
-                    transform: 'translateX(10px)',
-                  },
                 }}
                 variant="inText"
               >
@@ -47,7 +44,6 @@ export function ReferralLayout({ children }: WithChildren) {
                   sx={{
                     ml: 2,
                     position: 'relative',
-                    transition: '0.2s',
                   }}
                 />
               </AppLink>
@@ -66,9 +62,6 @@ export function ReferralLayout({ children }: WithChildren) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(10px)',
-                },
               }}
             >
               {t('ref.help-link-1')}{' '}
@@ -78,7 +71,6 @@ export function ReferralLayout({ children }: WithChildren) {
                 sx={{
                   ml: 2,
                   position: 'relative',
-                  transition: '0.2s',
                 }}
               />
             </AppLink>
@@ -92,9 +84,6 @@ export function ReferralLayout({ children }: WithChildren) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(10px)',
-                },
               }}
             >
               {t('ref.help-link-2')}{' '}
@@ -104,7 +93,6 @@ export function ReferralLayout({ children }: WithChildren) {
                 sx={{
                   ml: 2,
                   position: 'relative',
-                  transition: '0.2s',
                 }}
               />
             </AppLink>

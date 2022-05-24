@@ -150,7 +150,11 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
         </Modal>
       )}
       {success && (
-        <SuccessfulJoinModal account={account} userReferral={userReferral}></SuccessfulJoinModal>
+        <SuccessfulJoinModal
+          account={account}
+          userReferral={userReferral}
+          heading={t('ref.modal.successful-join')}
+        ></SuccessfulJoinModal>
       )}{' '}
     </>
   )

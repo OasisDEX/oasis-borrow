@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -118,6 +118,7 @@ export function HomepageView() {
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)
+  const [landedWithRef, setLandedWithRef] = useState(false)
 
   const router = useRouter()
 
@@ -126,6 +127,7 @@ export function HomepageView() {
     if (!localStorageReferral) {
       const linkReferral = router.query.ref as string
       if (linkReferral) {
+        setLandedWithRef(true)
         localStorage.setItem(`referral`, linkReferral)
       }
     }
@@ -144,13 +146,12 @@ export function HomepageView() {
           mb: 0,
         }}
       >
-        <ReferralBanner heading={t('ref.banner')}></ReferralBanner>
+        <ReferralBanner
+          heading={t('ref.banner')}
+          link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
+        ></ReferralBanner>
       </Flex>
-      {userReferral?.state === 'newUser' && (
-        <WithTermsOfService>
-          <></>
-        </WithTermsOfService>
-      )}
+      {landedWithRef && <TermsOfService />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{

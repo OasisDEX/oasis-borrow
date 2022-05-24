@@ -102,7 +102,8 @@ export function FeesView({ userReferral }: Props) {
                 }}
                 variant="strong"
               >
-               {userReferral.totalClaim}{` `}
+                {userReferral.totalClaim}
+                {` `}
                 <span style={{ fontSize: '18px' }}>DAI</span>
               </Text>
             </Box>
@@ -180,9 +181,6 @@ export function FeesView({ userReferral }: Props) {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          '&:hover svg': {
-                            transform: 'translateX(10px)',
-                          },
                         }}
                         variant="inText"
                       >
@@ -193,7 +191,6 @@ export function FeesView({ userReferral }: Props) {
                           sx={{
                             ml: 2,
                             position: 'relative',
-                            transition: '0.2s',
                           }}
                         />
                       </AppLink>
@@ -279,9 +276,6 @@ export function FeesView({ userReferral }: Props) {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          '&:hover svg': {
-                            transform: 'translateX(10px)',
-                          },
                           pt: '16px',
                         }}
                         variant="inText"
@@ -293,7 +287,6 @@ export function FeesView({ userReferral }: Props) {
                           sx={{
                             ml: 2,
                             position: 'relative',
-                            transition: '0.2s',
                           }}
                         />
                       </AppLink>

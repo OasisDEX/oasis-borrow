@@ -11,9 +11,10 @@ import { Modal } from './Modal'
 interface NewReferralProps {
   account: string | undefined
   userReferral: UserReferralState
+  heading: string
 }
 
-export function SuccessfulJoinModal({ account, userReferral }: NewReferralProps) {
+export function SuccessfulJoinModal({ account, userReferral, heading }: NewReferralProps) {
   const { t } = useTranslation()
   return (
     <>
@@ -29,8 +30,8 @@ export function SuccessfulJoinModal({ account, userReferral }: NewReferralProps)
                 />
               </Flex>
 
-              <Heading as="h3" sx={{ mb: '12px' }} variant="text.headerSettings">
-                {t('ref.modal.successful-join')}
+              <Heading as="h3" sx={{ mb: '12px', lineHeight: 1.5 }} variant="text.headerSettings">
+                {heading}
               </Heading>
               <Text variant="paragraph3" sx={{ color: 'lavender', mb: '8px' }}>
                 {t('ref.modal.successful-body')}
@@ -51,6 +52,7 @@ export function SuccessfulJoinModal({ account, userReferral }: NewReferralProps)
                       '&:hover svg': {
                         transform: 'translateX(10px)',
                       },
+                      boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.25)',
                     }}
                   >
                     {t('ref.modal.go-home')}
