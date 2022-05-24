@@ -45,7 +45,6 @@ function FieldDeposit({
 }
 
 function FieldGenerate({
-  accountIsController,
   generateAmount,
   maxGenerateAmount,
   updateGenerate,
@@ -69,13 +68,12 @@ function FieldGenerate({
       onSetMax={updateGenerateMax}
       onChange={handleNumericInput(updateGenerate!)}
       hasError={false}
-      disabled={!accountIsController || disabled}
+      disabled={disabled}
     />
   )
 }
 
 function FieldWithdraw({
-  accountIsController,
   withdrawAmount,
   withdrawAmountUSD,
   maxWithdrawAmount,
@@ -103,7 +101,7 @@ function FieldWithdraw({
       hasError={false}
       onChange={handleNumericInput(updateWithdraw!)}
       onAuxiliaryChange={handleNumericInput(updateWithdrawUSD!)}
-      disabled={!accountIsController || disabled}
+      disabled={disabled}
     />
   )
 }
@@ -146,10 +144,13 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     showPaybackAndWithdrawOption,
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
+    accountIsConnected,
+    accountIsController,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
 
+  const isOwner = accountIsConnected && accountIsController
   const isCollateralEditing = stage === 'collateralEditing'
   const isDaiEditing = stage === 'daiEditing'
   const isDepositOrGenerate = mainAction === 'depositGenerate'
@@ -200,13 +201,13 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
           {isDepositOrGenerate && (
             <>
               <FieldDeposit {...props} />
-              <FieldGenerate disabled={isSecondaryFieldDisabled} {...props} />
+              {isOwner && <FieldGenerate disabled={isSecondaryFieldDisabled} {...props} />}
             </>
           )}
           {isWithdrawOrPayback && (
             <>
-              <FieldWithdraw {...props} />
-              <FieldPayback disabled={isSecondaryFieldDisabled} {...props} />
+              <FieldWithdraw {...props} disabled={!isOwner} />
+              {isOwner && <FieldPayback disabled={isSecondaryFieldDisabled} {...props} />}
             </>
           )}
         </>
@@ -215,14 +216,14 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
         <>
           {isDepositOrGenerate && (
             <>
-              <FieldGenerate {...props} />
-              <FieldDeposit disabled={isSecondaryFieldDisabled} {...props} />
+              <FieldGenerate {...props} disabled={!isOwner} />
+              {isOwner && <FieldDeposit disabled={isSecondaryFieldDisabled} {...props} />}
             </>
           )}
           {isWithdrawOrPayback && (
             <>
               <FieldPayback {...props} />
-              <FieldWithdraw disabled={isSecondaryFieldDisabled} {...props} />
+              {isOwner && <FieldWithdraw disabled={isSecondaryFieldDisabled} {...props} />}
             </>
           )}
         </>

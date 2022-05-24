@@ -28,6 +28,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     isDaiAllowanceStage,
     isManageStage,
     isMultiplyTransitionStage,
+    accountIsConnected
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
   const gasData = extractGasDataFromState(props)
@@ -93,6 +94,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     ),
     primaryButton: {
       label: 'Button',
+      disabled: !accountIsConnected,
     },
   }
 

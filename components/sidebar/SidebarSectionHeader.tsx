@@ -33,7 +33,6 @@ export function SidebarSectionHeader({
       sx={{
         position: 'relative',
         justifyContent: 'space-between',
-        mb: '24px',
         py: 3,
         px: '24px',
         borderBottom: 'lightMuted',
