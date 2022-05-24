@@ -357,7 +357,7 @@ function AdjustPositionForm(props: ManageMultiplyVaultState) {
 const OTHER_ACTIONS_OPTIONS: { value: OtherAction; label: string }[] = [
   { value: 'depositCollateral', label: 'Deposit Collateral' },
   { value: 'depositDai', label: 'Buy Collateral with Dai' },
-  { value: 'paybackDai', label: 'Reduce Vault\'s Debt' },
+  { value: 'paybackDai', label: "Reduce Vault's Debt" },
   { value: 'withdrawCollateral', label: 'Withdraw Collateral' },
   { value: 'withdrawDai', label: 'Withdraw Dai' },
   { value: 'closeVault', label: 'Close Vault' },
