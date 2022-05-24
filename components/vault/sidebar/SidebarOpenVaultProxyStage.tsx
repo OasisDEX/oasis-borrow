@@ -1,12 +1,12 @@
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
+import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'
 
-import { SidebarVaultStages } from '../../../features/types/vaults/sidebarLabels'
 import {
   getEstimatedGasFeeText,
   VaultChangesInformationContainer,

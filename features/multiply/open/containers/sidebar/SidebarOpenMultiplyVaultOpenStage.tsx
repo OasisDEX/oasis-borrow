@@ -1,9 +1,9 @@
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { VaultChangesWithADelayCard } from '../../../../../components/vault/VaultChangesWithADelayCard'
 import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from '../OpenMultiplyVaultChangesInformation'
 

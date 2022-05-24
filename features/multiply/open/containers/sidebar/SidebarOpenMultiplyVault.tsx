@@ -1,33 +1,30 @@
-import { useTranslation } from 'next-i18next'
-import React from 'react'
-import { Grid } from 'theme-ui'
-
-import { useAppContext } from '../../../../../components/AppContextProvider'
+import { useAppContext } from 'components/AppContextProvider'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/SidebarOpenVaultAllowanceStage'
+import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { getHeaderButton } from 'features/sidebar/getHeaderButton'
+import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
+import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import {
-  SidebarSection,
-  SidebarSectionProps,
-} from '../../../../../components/sidebar/SidebarSection'
-import { SidebarOpenVaultAllowanceStage } from '../../../../../components/vault/sidebar/SidebarOpenVaultAllowanceStage'
-import { SidebarOpenVaultProxyStage } from '../../../../../components/vault/sidebar/SidebarOpenVaultProxyStage'
-import { VaultErrors } from '../../../../../components/vault/VaultErrors'
-import { VaultWarnings } from '../../../../../components/vault/VaultWarnings'
-import { extractGasDataFromState } from '../../../../../helpers/extractGasDataFromState'
+  progressTrackingEvent,
+  regressTrackingEvent,
+} from 'features/sidebar/trackingEventOpenVault'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractAllowanceDataFromOpenVaultState,
   extractSidebarButtonLabelParams,
   extractSidebarTxData,
-} from '../../../../../helpers/extractSidebarHelpers'
-import { isFirstCdp } from '../../../../../helpers/isFirstCdp'
-import { useObservable } from '../../../../../helpers/observableHook'
-import { getHeaderButton } from '../../../../sidebar/getHeaderButton'
-import { getPrimaryButtonLabel } from '../../../../sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from '../../../../sidebar/getSidebarProgress'
-import { getSidebarSuccess } from '../../../../sidebar/getSidebarSuccess'
-import { getSidebarTitle } from '../../../../sidebar/getSidebarTitle'
-import {
-  progressTrackingEvent,
-  regressTrackingEvent,
-} from '../../../../sidebar/trackingEventOpenVault'
+} from 'helpers/extractSidebarHelpers'
+import { isFirstCdp } from 'helpers/isFirstCdp'
+import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
+import { Grid } from 'theme-ui'
+
 import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
 import { SidebarOpenMultiplyVaultEditingState } from './SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from './SidebarOpenMultiplyVaultOpenStage'
