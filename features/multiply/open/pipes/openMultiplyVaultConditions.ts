@@ -115,6 +115,7 @@ export interface OpenMultiplyVaultConditions {
   insufficientAllowance: boolean
 
   isLoadingStage: boolean
+  isSuccessStage: boolean
   canProgress: boolean
   canRegress: boolean
   canAdjustRisk: boolean
@@ -152,6 +153,7 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   insufficientAllowance: false,
 
   isLoadingStage: false,
+  isSuccessStage: false,
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
@@ -275,6 +277,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'txWaitingForApproval',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'txSuccess'
+
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
     allowanceAmount,
@@ -361,6 +365,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     insufficientAllowance,
 
     isLoadingStage,
+    isSuccessStage,
     canProgress,
     canRegress,
     isExchangeLoading,

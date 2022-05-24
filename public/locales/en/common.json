@@ -665,6 +665,9 @@
         "edit-dai": "Edit DAI",
         "edit-collateral": "Edit Collateral",
         "switch-to-multiply": "Switch to Multiply"
+      },
+      "multiply": {
+        "switch-to-borrow": "Switch to Borrow"
       }
     },
     "cards": {

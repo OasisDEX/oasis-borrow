@@ -1,6 +1,7 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
+
+import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 export function getSidebarProgress({
   stage,
@@ -11,7 +12,7 @@ export function getSidebarProgress({
   proxyConfirmations,
   safeConfirmations,
   token,
-}: OpenVaultState): TxStatusCardProgressProps | undefined {
+}: HasSidebarTxData): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {
