@@ -62,7 +62,7 @@ import {
   multiplyVault,
   setAllowance,
 } from './openMultiplyVaultTransactions'
-import { validateErrors, validateWarnings } from './openMultiplyVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './openMultiplyVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -407,6 +407,7 @@ export function createOpenMultiplyVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                      map(finalValidation),
                       map(
                         curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       ),

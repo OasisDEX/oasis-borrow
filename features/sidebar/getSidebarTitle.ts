@@ -11,6 +11,7 @@ interface GetSidebarTitleParams {
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
+    case 'openMultiply':
       return 'vault-form.header.edit'
     default:
       throw new UnreachableCaseError(flow)

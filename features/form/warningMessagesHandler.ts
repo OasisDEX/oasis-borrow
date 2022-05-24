@@ -5,6 +5,7 @@ export type VaultWarningMessage =
   | 'vaultWillBeAtRiskLevelDangerAtNextPrice'
   | 'vaultWillBeAtRiskLevelWarningAtNextPrice'
   | 'debtIsLessThanDebtFloor'
+  | 'potentialInsufficientEthFundsForTx'
   | 'highSlippage'
   | 'customSlippageOverridden'
   | 'vaultIsCurrentlyUnderMinActiveColRatio'
@@ -17,6 +18,7 @@ interface WarningMessagesHandler {
   vaultWillBeAtRiskLevelWarning?: boolean
   vaultWillBeAtRiskLevelWarningAtNextPrice?: boolean
   debtIsLessThanDebtFloor?: boolean
+  potentialInsufficientEthFundsForTx?: boolean
   highSlippage?: boolean
   customSlippageOverridden?: boolean
 }
@@ -28,6 +30,7 @@ export function warningMessagesHandler({
   vaultWillBeAtRiskLevelWarning,
   vaultWillBeAtRiskLevelWarningAtNextPrice,
   debtIsLessThanDebtFloor,
+  potentialInsufficientEthFundsForTx,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -53,6 +56,10 @@ export function warningMessagesHandler({
 
   if (debtIsLessThanDebtFloor) {
     warningMessages.push('debtIsLessThanDebtFloor')
+  }
+
+  if (potentialInsufficientEthFundsForTx) {
+    warningMessages.push('potentialInsufficientEthFundsForTx')
   }
 
   // if (highSlippage) {

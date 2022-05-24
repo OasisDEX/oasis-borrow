@@ -1,9 +1,9 @@
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/SidebarOpenVaultAllowanceStage'
+import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { getHeaderButton } from 'features/sidebar/getHeaderButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
@@ -19,18 +19,17 @@ import {
   extractSidebarButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
+import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { isFirstCdp } from '../../../helpers/isFirstCdp'
-import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
-import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarOpenVaultAllowanceStage } from './SidebarOpenVaultAllowanceStage'
-import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
+import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
+import { SidebarOpenMultiplyVaultEditingState } from './SidebarOpenMultiplyVaultEditingState'
+import { SidebarOpenMultiplyVaultOpenStage } from './SidebarOpenMultiplyVaultOpenStage'
 
-export function SidebarOpenBorrowVault(props: OpenVaultState) {
+export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
@@ -57,16 +56,16 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   } = props
 
   const gasData = extractGasDataFromState(props)
-  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
-    flow: 'openBorrow',
-    ...props,
-  })
   const firstCDP = isFirstCdp(accountData)
   const allowanceData = extractAllowanceDataFromOpenVaultState(props)
+  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
+    flow: 'openMultiply',
+    ...props,
+  })
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow: 'openBorrow', stage, token }),
+    title: getSidebarTitle({ flow: 'openMultiply', stage, token }),
     headerButton: getHeaderButton({
       stage,
       canResetForm: isEditingStage && !inputAmountsEmpty,
@@ -81,10 +80,10 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     }),
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
+        {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} />}
-        {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
+        {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -100,13 +99,12 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
       url: isSuccessStage ? `/${id}` : undefined,
     },
-    ...(isEditingStage &&
-      ALLOWED_MULTIPLY_TOKENS.includes(token) && {
-        textButton: {
-          label: t('system.actions.borrow.switch-to-multiply'),
-          url: `/vaults/open-multiply/${ilk}`,
-        },
-      }),
+    ...(isEditingStage && {
+      textButton: {
+        label: t('system.actions.multiply.switch-to-borrow'),
+        url: `/vaults/open/${ilk}`,
+      },
+    }),
     progress: getSidebarProgress(sidebarTxData),
     success: getSidebarSuccess(sidebarTxData),
   }

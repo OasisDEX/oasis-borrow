@@ -56,6 +56,7 @@ export interface MockManageMultiplyVaultProps {
   account?: string
   status?: 'connected'
   exchangeQuote?: MockExchangeQuote
+  gasEstimationUsd?: BigNumber
 }
 
 export function mockManageMultiplyVault$({
@@ -82,6 +83,7 @@ export function mockManageMultiplyVault$({
   account = '0xVaultController',
   status = 'connected',
   exchangeQuote,
+  gasEstimationUsd,
 }: MockManageMultiplyVaultProps = {}): Observable<ManageMultiplyVaultState> {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
@@ -152,6 +154,10 @@ export function mockManageMultiplyVault$({
     return _saveVaultType$ || of(undefined)
   }
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   return createManageMultiplyVault$(
     context$ as Observable<Context>,
     txHelpers$,
@@ -162,7 +168,7 @@ export function mockManageMultiplyVault$({
     ilkData$,
     vault$,
     mockExchangeQuote$(exchangeQuote),
-    addGasEstimationMock,
+    gasEstimationMock$,
     slippageLimitMock(),
     vaultHistory$,
     saveVaultType$,

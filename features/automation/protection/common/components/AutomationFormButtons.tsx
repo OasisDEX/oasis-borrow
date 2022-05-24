@@ -21,6 +21,7 @@ interface AutomationFormButtonsProps {
   toggleForms: () => void
   toggleKey: string
   txSuccess: boolean
+  txError?: boolean
   type?: 'adjust' | 'cancel'
 }
 
@@ -29,6 +30,7 @@ export function AutomationFormButtons({
   toggleForms,
   toggleKey,
   txSuccess,
+  txError,
   type,
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
@@ -51,7 +53,7 @@ export function AutomationFormButtons({
       {((!stopLossWriteEnabled && !txSuccess && type === 'cancel') ||
         (stopLossWriteEnabled && !txSuccess)) && (
         <Box>
-          <RetryableLoadingButton {...triggerConfig} />
+          <RetryableLoadingButton {...triggerConfig} error={!!txError} />
         </Box>
       )}
       {txSuccess && (
