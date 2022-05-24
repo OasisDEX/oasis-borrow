@@ -119,13 +119,13 @@ export function FeesView({ userReferral }: Props) {
               }
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
             >
-              <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+              <Flex sx={{ justifyContent: ['center','flex-start'], alignItems: 'center' }}>
                 {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
                   <Spinner size={30} color="main" />
                 ) : (
                   <Icon name="dai_circle_color" size="32px" />
                 )}
-                <Text px="2" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
+                <Text pl="12px" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
                   {userReferral.claimTxnState === ClaimTxnState.PENDING ? t('ref.claiming') : null}
                   {!userReferral.claims ? t('ref.no-claim') : null}
                   {userReferral.claims && userReferral.claimTxnState !== ClaimTxnState.PENDING
@@ -181,6 +181,7 @@ export function FeesView({ userReferral }: Props) {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
+                          lineHeight: '22px',
                         }}
                         variant="inText"
                       >
@@ -277,6 +278,7 @@ export function FeesView({ userReferral }: Props) {
                           alignItems: 'center',
                           justifyContent: 'center',
                           pt: '16px',
+                          lineHeight: '22px',
                         }}
                         variant="inText"
                       >
@@ -326,7 +328,9 @@ export function FeesView({ userReferral }: Props) {
                           }}
                         />
                       </Text>
-                      <Text color="text.subtitle">|</Text>
+                      <Text color="text.subtitle" sx={{ lineHeight: '22px' }}>
+                        |
+                      </Text>
                       <Text
                         sx={{
                           fontSize: 2,
