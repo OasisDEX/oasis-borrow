@@ -34,6 +34,7 @@ export function GeneralManageLayout({
     account,
     priceInfo,
     collateralizationRatioAtNextPrice,
+    balanceInfo,
   } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
@@ -73,6 +74,7 @@ export function GeneralManageLayout({
             vault={vault}
             ilkData={ilkData}
             account={account}
+            balanceInfo={balanceInfo}
             collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
           />
         }

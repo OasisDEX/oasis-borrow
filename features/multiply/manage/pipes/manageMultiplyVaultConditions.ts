@@ -19,6 +19,7 @@ import {
   debtIsLessThanDebtFloorValidator,
   depositAndWithdrawAmountsEmptyValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   generateAndPaybackAmountsEmptyValidator,
   insufficientCollateralAllowanceValidator,
   insufficientDaiAllowanceValidator,
@@ -226,6 +227,8 @@ export interface ManageVaultConditions {
   invalidSlippage: boolean
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
@@ -288,6 +291,9 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   invalidSlippage: false,
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
+
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyManageVaultConditions(
@@ -635,6 +641,8 @@ export function applyManageVaultConditions(
   const stopLossTriggered =
     !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     canProgress,
@@ -692,5 +700,7 @@ export function applyManageVaultConditions(
     highSlippage,
     stopLossTriggered,
     afterCollRatioBelowStopLossRatio,
+
+    insufficientEthFundsForTx,
   }
 }

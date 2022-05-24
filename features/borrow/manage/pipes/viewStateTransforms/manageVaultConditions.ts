@@ -17,6 +17,7 @@ import {
   debtIsLessThanDebtFloorValidator,
   depositAndWithdrawAmountsEmptyValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   generateAndPaybackAmountsEmptyValidator,
   insufficientCollateralAllowanceValidator,
   insufficientDaiAllowanceValidator,
@@ -211,6 +212,9 @@ export interface ManageVaultConditions {
 
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -265,6 +269,9 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
+
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
@@ -561,6 +568,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const stopLossTriggered =
     !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     canProgress,
@@ -578,6 +587,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     vaultWillBeUnderCollateralizedAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
     debtIsLessThanDebtFloor,
+    insufficientEthFundsForTx,
 
     accountIsConnected,
     accountIsController,

@@ -39,6 +39,7 @@ import {
 import { applyManageVaultTransaction } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransactions'
 import { applyManageVaultTransition } from '../../../../multiply/manage/pipes/manageMultiplyVaultTransitions'
 import {
+  finalValidation,
   validateErrors,
   validateWarnings,
 } from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
@@ -321,6 +322,7 @@ export function createManageGuniVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyGuniManageEstimateGas)(addGasEstimation$)),
+                    map(finalValidation),
                     map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
                     tap((state) => stateSubject$.next(state)),
                   )

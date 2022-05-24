@@ -13,6 +13,7 @@ import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHan
 import { useObservable } from '../../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../../collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from '../../../form/commonValidators'
+import { BalanceInfo } from '../../../shared/balanceInfo'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
@@ -27,8 +28,9 @@ interface Props {
   automationTriggersData: TriggersData
   collateralPrices: CollateralPricesWithFilters
   vault: Vault
-  account?: string
   collateralizationRatioAtNextPrice: BigNumber
+  balanceInfo: BalanceInfo
+  account?: string
 }
 
 export function ProtectionFormControl({
@@ -38,6 +40,7 @@ export function ProtectionFormControl({
   vault,
   account,
   collateralizationRatioAtNextPrice,
+  balanceInfo,
 }: Props) {
   const { txHelpers$, context$, uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -83,12 +86,13 @@ export function ProtectionFormControl({
                     type: 'change-mode',
                   })
                 }}
-                collateralPrice={collateralPrices}
+                collateralPrices={collateralPrices}
+                balanceInfo={balanceInfo}
               />
             ) : (
               <AdjustSlFormControl
                 vault={vault}
-                collateralPrice={collateralPrices}
+                collateralPrices={collateralPrices}
                 ilkData={ilkData}
                 triggerData={automationTriggersData}
                 tx={txHelpers}
@@ -101,6 +105,7 @@ export function ProtectionFormControl({
                     currentMode: AutomationFromKind.CANCEL,
                   })
                 }}
+                balanceInfo={balanceInfo}
               />
             )}
           </VaultFormContainer>
