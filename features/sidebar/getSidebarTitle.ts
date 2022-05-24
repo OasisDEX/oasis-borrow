@@ -22,7 +22,6 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
   const { t } = useTranslation()
 
   switch (stage) {
-    /* shared */
     case 'editing':
       const translationKey = getSidebarTitleEditingTranslationKey({ flow })
 
@@ -59,8 +58,6 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
       return t('vault-form.header.confirm')
     case 'txSuccess':
       return t('vault-form.header.success')
-
-    /* manage */
     case 'collateralEditing':
     case 'daiEditing':
     case 'multiplyTransitionEditing':
@@ -69,13 +66,14 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'multiplyTransitionFailure':
     case 'multiplyTransitionSuccess':
       return t('vault-form.header.manage')
+    case 'manageInProgress':
+      return t('vault-form.header.modified')
     case 'manageWaitingForConfirmation':
     case 'manageWaitingForApproval':
     case 'manageFailure':
-    case 'manageSuccess':
       return t('vault-form.header.confirm-manage')
-    case 'manageInProgress':
-      return t('vault-form.header.modified')
+    case 'manageSuccess':
+      return t('vault-form.header.success-manage')
     default:
       throw new UnreachableCaseError(stage)
   }

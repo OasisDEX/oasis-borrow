@@ -882,13 +882,14 @@
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
       "confirm-in-progress": "Vault being created",
-      "modified": "Vault is being Modified",
+      "modified": "Vault is being modified",
       "manage": "Manage your vault",
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
       "multiply-transition": "Multiply your exposure on {{token}} in your vault",
       "go-to-multiply": "Great, now you will go to the new Multiply interface",
-      "success": "All done! You now have a vault"
+      "success": "All done! You now have a vault",
+      "success-manage": "All done! Your vault has been updated"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",

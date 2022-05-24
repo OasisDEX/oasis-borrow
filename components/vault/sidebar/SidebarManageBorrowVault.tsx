@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
+import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
 import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
@@ -25,6 +26,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isManageStage,
     isMultiplyTransitionStage,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
@@ -84,6 +86,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         {isMultiplyTransitionStage && (
           <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
         )}
+        {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>

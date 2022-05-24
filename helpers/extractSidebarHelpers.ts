@@ -61,6 +61,7 @@ export interface HasSidebarTxData {
 export function extractSidebarTxData(state: HasSidebarTxData) {
   return pick(
     [
+      'id',
       'stage',
       'proxyTxHash',
       'allowanceTxHash',
