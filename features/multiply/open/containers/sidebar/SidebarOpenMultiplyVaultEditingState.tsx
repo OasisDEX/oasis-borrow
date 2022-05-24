@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
 import { VaultActionInput } from '../../../../../components/vault/VaultActionInput'
 import { getCollRatioColor } from '../../../../../components/vault/VaultDetails'
@@ -36,7 +36,6 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
 
     ilkData: { liquidationRatio },
     maxCollRatio,
-    inputAmountsEmpty,
   } = props
 
   const slider = requiredCollRatio
@@ -56,7 +55,6 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
   return (
     <Grid gap={4}>
       <Grid gap={2}>
-        <Text variant="strong">Deposit your {token}</Text>
         <VaultActionInput
           action="Deposit"
           token={token}
@@ -75,9 +73,6 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
         />
       </Grid>
       <Grid gap={2}>
-        <Text variant="strong" mb={2}>
-          {t('slider.adjust-multiply.introduction-header')}
-        </Text>
         <Box>
           <Flex
             sx={{
@@ -88,7 +83,7 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
             }}
           >
             <Grid gap={2}>
-              <Text>Liquidation Price</Text>
+              <Text>{t('system.liquidation-price')}</Text>
               <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
                 ${formatAmount(afterLiquidationPrice, 'USD')}
               </Text>
@@ -136,7 +131,6 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
           </Flex>
         </Box>
       </Grid>
-      {!inputAmountsEmpty && <Divider />}
       <OpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
