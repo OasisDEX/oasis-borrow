@@ -48,7 +48,10 @@ export function createUserReferral$(
   getUserFromApi$: (address: string, trigger$: Subject<void>) => Observable<User | null>,
   getReferralsFromApi$: (address: string) => Observable<User[] | null>,
   getTopEarnersFromApi$: () => Observable<User[] | null>,
-  getWeeklyClaimsFromApi$: (address: string) => Observable<WeeklyClaim[] | null>,
+  getWeeklyClaimsFromApi$: (
+    address: string,
+    trigger$: Subject<void>,
+  ) => Observable<WeeklyClaim[] | null>,
   checkReferralLocalStorage$: () => Observable<Referrer>,
 ): Observable<UserReferralState> {
   return web3Context$.pipe(
@@ -60,7 +63,7 @@ export function createUserReferral$(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
         getTopEarnersFromApi$(),
-        getWeeklyClaimsFromApi$(web3Context.account),
+        getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
         txHelpers$,
       ).pipe(
@@ -103,8 +106,11 @@ export function createUserReferral$(
                       txnState.account,
                       claimsOut.weeks.map((week: ethers.BigNumber) => Number(week)),
                       jwtToken,
-                    ).subscribe()
-                    trigger()
+                    ).subscribe((res) => {
+                      if (res === 200) {
+                        trigger()
+                      }
+                    })
                   }
 
                   switch (txnState.status) {
@@ -130,11 +136,7 @@ export function createUserReferral$(
           }
           const performClaimMultiple$: Observable<
             (() => Observable<ClaimTxnState>) | undefined
-          > = combineLatest(getWeeklyClaimsFromApi$(web3Context.account)).pipe(
-            map(([weeklyClaims]) => {
-              return weeklyClaims ? performClaimMultiple : undefined
-            }),
-          )
+          > = of(weeklyClaims ? performClaimMultiple : undefined)
 
           const ClaimTxnState$: Observable<ClaimTxnState | undefined> = combineLatest(
             claimClick$,
@@ -180,5 +182,6 @@ export function createUserReferral$(
         }),
       )
     }),
+    share(),
   )
 }

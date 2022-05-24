@@ -13,7 +13,7 @@ const handler = async (_req: NextApiRequest, res: NextApiResponse) => {
   }
 }
 export async function selectUsersByTotalEarnings(): Promise<User[] | null> {
-  const result = await prisma.user.findMany({
+  return await prisma.user.findMany({
     take: 10,
     orderBy: [
       {
@@ -21,7 +21,6 @@ export async function selectUsersByTotalEarnings(): Promise<User[] | null> {
       },
     ],
   })
-  return result
 }
 
 export default withSentry(handler)

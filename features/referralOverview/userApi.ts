@@ -87,22 +87,48 @@ export function getTopEarnersFromApi$(): Observable<User[] | null> {
     }),
   )
 }
-export function getWeeklyClaimsFromApi$(address: string): Observable<WeeklyClaim[] | null> {
-  return ajax({
-    url: `${basePath}/api/user/claims/${address}`,
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).pipe(
-    map((resp) => {
-      return resp.response as WeeklyClaim[]
-    }),
-    catchError((err) => {
-      if (err.xhr.status === 404) {
-        return of(null)
-      }
-      throw err
+export function getWeeklyClaimsFromApi$(
+  address: string,
+  trigger$: Subject<void>,
+): Observable<WeeklyClaim[] | null> {
+  return trigger$.pipe(
+    startWith(
+      ajax({
+        url: `${basePath}/api/user/claims/${address}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).pipe(
+        map((resp) => {
+          return resp.response as WeeklyClaim[]
+        }),
+        catchError((err) => {
+          if (err.xhr.status === 404) {
+            return of(null)
+          }
+          throw err
+        }),
+      ),
+    ),
+    switchMap((_) => {
+      return ajax({
+        url: `${basePath}/api/user/claims/${address}`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).pipe(
+        map((resp) => {
+          return resp.response as WeeklyClaim[]
+        }),
+        catchError((err) => {
+          if (err.xhr.status === 404) {
+            return of(null)
+          }
+          throw err
+        }),
+      )
     }),
   )
 }
@@ -129,9 +155,9 @@ export function createUserUsingApi$(
 
 export function updateClaimsUsingApi$(
   user_address: string,
-  week_number: Number[],
+  week_number: number[],
   token: string,
-): Observable<void> {
+): Observable<number> {
   return ajax({
     url: `${basePath}/api/user/claims/update`,
     method: 'POST',
@@ -143,5 +169,5 @@ export function updateClaimsUsingApi$(
       user_address,
       week_number,
     },
-  }).pipe(map((_) => {}))
+  }).pipe(map((resp) => resp.status))
 }
