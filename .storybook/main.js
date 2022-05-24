@@ -44,14 +44,13 @@ module.exports = {
         Buffer: ['buffer', 'Buffer'],
       }),
     )
+
     return {
       ...nextConfig.webpack,
       ...config,
       resolve: {
         extensions: ['.ts', '.tsx', '.js'],
-        ...config.resolve,
         alias: {
-          ...config.resolve.alias,
           'next-i18next': 'react-i18next',
         },
         plugins: [new TsconfigPathsPlugin()],

@@ -4,7 +4,7 @@ import { ThemeProvider } from 'theme-ui'
 import { theme } from '../theme'
 import { RouterContext } from 'next/dist/shared/lib/router-context'
 import { setConfig } from 'next/config'
-import { publicRuntimeConfig } from '../runtimeConfig.js'
+import { publicRuntimeConfig } from '../runtime.config.js'
 import { I18nextProvider } from 'react-i18next'
 import i18n from './i18.js'
 

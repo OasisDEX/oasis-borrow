@@ -13,7 +13,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const MomentLocalesPlugin = require('moment-locales-webpack-plugin')
 const { i18n } = require('./next-i18next.config')
 const { withSentryConfig } = require('@sentry/nextjs')
-const { publicRuntimeConfig } = require('./runtimeConfig.js')
+const { publicRuntimeConfig } = require('./runtime.config.js')
 
 const isProduction = process.env.NODE_ENV === 'production'
 const basePath = ''
