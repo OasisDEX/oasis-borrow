@@ -11,6 +11,9 @@ export interface GetPrimaryButtonLabelParams {
   id?: BigNumber
   proxyAddress?: string
   insufficientAllowance?: boolean
+  insufficientCollateralAllowance?: boolean
+  insufficientDaiAllowance?: boolean
+  canTransition?: boolean
 }
 
 export function extractSidebarButtonLabelParams(state: GetPrimaryButtonLabelParams) {

@@ -1,8 +1,9 @@
-import { getToken } from 'blockchain/tokensMetadata'
+import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useTranslation } from 'next-i18next'
@@ -19,7 +20,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   const { t } = useTranslation()
 
   const {
-    vault: { token },
+    vault: { id, token },
+    canProgress,
     toggle,
     stage,
     isEditingStage,
@@ -28,10 +30,16 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     isDaiAllowanceStage,
     isManageStage,
     isMultiplyTransitionStage,
-    accountIsConnected
+    accountIsConnected,
+    accountIsController,
+    proxyAddress,
+    insufficientCollateralAllowance,
+    insufficientDaiAllowance,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
   const gasData = extractGasDataFromState(props)
+  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
+  const isOwner = accountIsConnected && accountIsController
 
   useEffect(() => {
     switch (stage) {
@@ -93,8 +101,17 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       </Grid>
     ),
     primaryButton: {
-      label: 'Button',
-      disabled: !accountIsConnected,
+      label: getPrimaryButtonLabel({
+        flow: 'manageBorrow',
+        stage,
+        id,
+        token,
+        proxyAddress,
+        insufficientCollateralAllowance,
+        insufficientDaiAllowance,
+        canTransition,
+      }),
+      disabled: !canProgress || !isOwner,
     },
   }
 
