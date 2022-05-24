@@ -4,12 +4,15 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
+import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
+import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
@@ -19,9 +22,13 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     toggle,
     stage,
     isEditingStage,
+    isProxyStage,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
     isMultiplyTransitionStage,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
+  const gasData = extractGasDataFromState(props)
 
   useEffect(() => {
     switch (stage) {
@@ -70,6 +77,10 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
+        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
+          <SidebarManageVaultAllowanceStage {...props} />
+        )}
         {isMultiplyTransitionStage && (
           <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
         )}
