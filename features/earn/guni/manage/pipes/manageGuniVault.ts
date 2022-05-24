@@ -14,7 +14,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
 import { getToken } from '../../../../../blockchain/tokensMetadata'
-import { one } from '../../../../../helpers/zero'
+import { one, zero } from '../../../../../helpers/zero'
 import { applyExchange } from '../../../../multiply/manage/pipes/manageMultiplyQuote'
 import {
   ManageMultiplyVaultChange,
@@ -43,7 +43,6 @@ import {
   validateWarnings,
 } from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../../../../shared/balanceInfo'
-import { slippageChange$, UserSettingsState } from '../../../../userSettings/userSettings'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
@@ -193,7 +192,6 @@ export function createManageGuniVault$(
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  slippageLimit$: Observable<UserSettingsState>,
   id: BigNumber,
 ): Observable<ManageMultiplyVaultState> {
   return context$.pipe(
@@ -207,10 +205,9 @@ export function createManageGuniVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
-            slippageLimit$,
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress, { slippage }]) => {
+            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
               const collateralAllowance$ =
                 account && proxyAddress
                   ? allowance$(vault.token, account, proxyAddress)
@@ -257,7 +254,7 @@ export function createManageGuniVault$(
                     errorMessages: [],
                     warningMessages: [],
                     summary: defaultManageVaultSummary,
-                    slippage,
+                    slippage: zero,
                     exchangeError: false,
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
@@ -273,7 +270,6 @@ export function createManageGuniVault$(
                   const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
 
                   const environmentChanges$ = merge(
-                    slippageChange$(slippageLimit$),
                     priceInfoChange$(priceInfo$, vault.token),
                     balanceInfoChange$(balanceInfo$, vault.token, account),
                     createIlkDataChange$(ilkData$, vault.ilk),
