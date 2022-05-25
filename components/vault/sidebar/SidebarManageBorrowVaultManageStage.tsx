@@ -13,9 +13,7 @@ export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowV
   const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
 
   useEffect(() => {
-    if (props.stage !== 'manageSuccess') {
-      setVaultChanges(props)
-    }
+    if (props.stage !== 'manageSuccess') setVaultChanges(props)
   }, [props])
 
   switch (stage) {

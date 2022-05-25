@@ -10,10 +10,7 @@ import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import {
-  progressTrackingEvent,
-  regressTrackingEvent,
-} from 'features/sidebar/trackingEventOpenVault'
+import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
