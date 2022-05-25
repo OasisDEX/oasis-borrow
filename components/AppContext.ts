@@ -187,6 +187,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { MultiplyPillChange, MultiplyPillChangeAction, multiplyPillChangeReducer, MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 
 export type TxData =
   | OpenData
@@ -247,14 +248,14 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
-  | BorrowPillChange
+  | MultiplyPillChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
-  BorrowPillChange: BorrowPillChangeAction
+  MultiplyPillChange: MultiplyPillChangeAction
 }
 
 export type UIChanges = {
@@ -338,7 +339,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
-  uiChangesSubject.configureSubject(BORROW_VAULT_PILL_CHANGE_SUBJECT, borrowPillChangeReducer)
+  uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
 
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
 

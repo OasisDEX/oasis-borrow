@@ -1,3 +1,5 @@
+import { MultiplyPillChange, MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 import { ManageVaultForm } from '../../features/borrow/manage/containers/ManageVaultForm'
@@ -11,12 +13,16 @@ interface GeneralVaultFormControlProps {
 }
 
 export function GeneralVaultFormControl({ generalManageVault }: GeneralVaultFormControlProps) {
+
+  const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
+  const isCloseVault = !!uiState && uiState.currentStage === 'closeVault'
+  
   switch (generalManageVault.type) {
     case VaultType.Borrow:
       return <ManageVaultForm {...generalManageVault.state} />
     case VaultType.Multiply:
       const vaultIlk = generalManageVault.state.ilkData.ilk
-
+      
       return ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
         <GuniManageMultiplyVaultForm {...generalManageVault.state} />
       ) : (

@@ -6,6 +6,9 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { VaultViewMode } from 'components/VaultTabSwitch'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
+import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -32,6 +35,7 @@ import { OpenVaultAnimation } from '../../../../theme/animations'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 import { BORROW_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/BorrowVaultPillChange'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface AdjustSlFormInformationProps {
@@ -169,21 +173,34 @@ function SetDownsideProtectionInformation({
 
   const { uiChanges } = useAppContext()
 
-  const redirectToDaiPayback = () => {
+  const redirectToCloseVault = () => {
     uiChanges.publish(TAB_CHANGE_SUBJECT, {
       type: 'change-tab',
       currentMode: VaultViewMode.Overview,
     })
 
-    uiChanges.publish(BORROW_VAULT_PILL_CHANGE_SUBJECT, {
-      type: 'change-borrow-pill',
-      currentStage: 'daiEditing',
+    uiChanges.publish(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, {
+      type: 'change-multiply-pill',
+      currentStage: 'closeVault',
     })
+
     // TODO ŁW allow publish to use array of subjects
     // TODO ŁW new reducers that:
     // Change vault to multiply 
     // select Other tab
     // in dropdown Close Vault
+
+    // const jwtToken = jwtAuthGetToken(vault.owner)
+    // console.log(vault.id)
+    // console.log(jwtAuthGetToken)
+    // if (vault.id && jwtToken) {
+    //   saveVaultUsingApi$(
+    //     vault.id,
+    //     jwtToken,
+    //     VaultType.Multiply,
+    //     vault.chainId, //Make sure if chainId matches networkId but I guess so ~ŁW
+    //   ).subscribe()
+    // }
   }
 
   return (
@@ -234,7 +251,7 @@ function SetDownsideProtectionInformation({
           messages={[t('protection.coll-ratio-liquidation')]}
           type="error"
           withBullet={false}
-          handleClick={redirectToDaiPayback}
+          handleClick={redirectToCloseVault}
         />
       )}
     </VaultChangesInformationContainer>
