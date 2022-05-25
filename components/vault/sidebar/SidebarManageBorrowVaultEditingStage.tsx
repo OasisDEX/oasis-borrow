@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarResetButton } from './SidebarResetButton'
+
 interface FieldProps extends ManageStandardBorrowVaultState {
   disabled?: boolean
 }
@@ -146,6 +148,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     togglePaybackAndWithdrawOption,
     accountIsConnected,
     accountIsController,
+    clear,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
@@ -155,17 +158,18 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
   const isDaiEditing = stage === 'daiEditing'
   const isDepositOrGenerate = mainAction === 'depositGenerate'
   const isWithdrawOrPayback = mainAction === 'withdrawPayback'
-  const hasDeposit = !depositAmount || depositAmount.isZero()
-  const hasWithdraw = !withdrawAmount || withdrawAmount.isZero()
-  const hasGenerate = !generateAmount || generateAmount.isZero()
-  const hasPayback = !paybackAmount || paybackAmount.isZero()
+  const noDeposit = !depositAmount || depositAmount.isZero()
+  const noWithdraw = !withdrawAmount || withdrawAmount.isZero()
+  const noGenerate = !generateAmount || generateAmount.isZero()
+  const noPayback = !paybackAmount || paybackAmount.isZero()
+  const hasValues = !noDeposit || !noWithdraw || !noGenerate || !noPayback
 
   useEffect(() => {
     if (
       (isCollateralEditing &&
-        ((isDepositOrGenerate && hasDeposit) || (isWithdrawOrPayback && hasWithdraw))) ||
+        ((isDepositOrGenerate && noDeposit) || (isWithdrawOrPayback && noWithdraw))) ||
       (isDaiEditing &&
-        ((isDepositOrGenerate && hasGenerate) || (isWithdrawOrPayback && hasPayback)))
+        ((isDepositOrGenerate && noGenerate) || (isWithdrawOrPayback && noPayback)))
     ) {
       setIsSecondaryFieldDisabled(true)
     } else {
@@ -228,6 +232,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
           )}
         </>
       )}
+      {hasValues && <SidebarResetButton clear={clear} />}
       <ManageVaultChangesInformation {...props} />
     </Grid>
   )
