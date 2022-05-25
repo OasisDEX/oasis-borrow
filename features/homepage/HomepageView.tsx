@@ -2,6 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
@@ -119,20 +120,20 @@ export function HomepageView() {
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)
-  const [landedWithRef, setLandedWithRef] = useState(false)
+  const [landedWithRef, setLandedWithRef] = useState('')
+  const [localReferral, setLocalReferral] = useLocalStorage('referral',null)
 
   const router = useRouter()
 
   useEffect(() => {
-    const localStorageReferral = checkReferralLocal?.referrer
-    if (!localStorageReferral && referralsEnabled) {
+    if (!localReferral && referralsEnabled) {
       const linkReferral = router.query.ref as string
       if (linkReferral) {
-        setLandedWithRef(true)
-        localStorage.setItem(`referral`, linkReferral)
+        setLocalReferral(linkReferral)
+        setLandedWithRef(linkReferral)
       }
     }
-  }, [checkReferralLocal])
+  }, [checkReferralLocal,userReferral])
 
   return (
     <Box

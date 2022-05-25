@@ -180,9 +180,10 @@ export function TermsOfService() {
   function disconnectHandler() {
     disconnect(web3Context)
   }
+
   if (
     userReferral?.state === 'newUser' &&
-    userReferral?.referrer.referrer &&
+    userReferral?.referrer &&
     web3Context?.status === 'connected' &&
     termsAcceptance?.stage === 'acceptanceAccepted'
   )

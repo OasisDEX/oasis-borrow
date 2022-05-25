@@ -119,7 +119,7 @@ export function FeesView({ userReferral }: Props) {
               }
               sx={{ p: '4px', minWidth: ['100%', '138px', '138px'] }}
             >
-              <Flex sx={{ justifyContent: ['center','flex-start'], alignItems: 'center' }}>
+              <Flex sx={{ justifyContent: ['center', 'flex-start'], alignItems: 'center' }}>
                 {userReferral.claimTxnState === ClaimTxnState.PENDING ? (
                   <Spinner size={30} color="main" />
                 ) : (
@@ -251,27 +251,22 @@ export function FeesView({ userReferral }: Props) {
                     pt: '16px',
                   }}
                 >
-                  {userReferral?.referrer?.referrer &&
-                    !userReferral.invitePending &&
-                    userReferral.referrer.referrer}{' '}
-                  {!userReferral?.referrer?.referrer &&
+                  {userReferral?.referrer && !userReferral.invitePending && userReferral.referrer}{' '}
+                  {!userReferral?.referrer &&
                     !userReferral.invitePending &&
                     t(`ref.you-were-not-referred`)}
-                  {userReferral?.referrer?.referrer &&
+                  {userReferral?.referrer &&
                     userReferral.invitePending &&
-                    `${t('ref.you-have-been-invited')} ${formatAddress(
-                      userReferral.referrer.referrer,
-                      6,
-                    )}`}
+                    `${t('ref.you-have-been-invited')} ${formatAddress(userReferral.referrer, 6)}`}
                 </Text>
               </Box>
               <Box>
                 {userReferral.state === 'currentUser' &&
                   !userReferral.invitePending &&
-                  userReferral?.referrer?.referrer && (
+                  userReferral?.referrer && (
                     <>
                       <AppLink
-                        href={`https://etherscan.com/address/${userReferral?.referrer?.referrer}`}
+                        href={`https://etherscan.com/address/${userReferral?.referrer}`}
                         sx={{
                           fontSize: 2,
                           display: 'flex',

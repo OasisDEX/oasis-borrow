@@ -33,7 +33,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,
-          isReferred ? userReferral.referrer.referrer : null,
+          isReferred ? userReferral.referrer : null,
           account,
           jwtToken,
         ).subscribe((res) => {
@@ -58,11 +58,11 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                 />
               </Flex>
               <Heading as="h3" sx={{ mb: '12px', lineHeight: 1.5 }} variant="text.headerSettings">
-                {userReferral.referrer.referrer
-                  ? ` ${t('ref.modal.you-have-been-ref')} ${userReferral.referrer.referrer?.slice(
+                {userReferral.referrer
+                  ? ` ${t('ref.modal.you-have-been-ref')} ${userReferral.referrer?.slice(
                       0,
                       4,
-                    )}...${userReferral.referrer.referrer?.slice(-5)}`
+                    )}...${userReferral.referrer?.slice(-5)}`
                   : 'Welcome to the Oasis.app Referral Program'}
               </Heading>
               <Text variant="paragraph3" sx={{ color: 'lavender', mb: '8px' }}>
@@ -124,7 +124,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                   }}
                   onClick={() => createUser({ hasAccepted: true, isReferred: true })}
                 >
-                  {userReferral.referrer.referrer ? t('ref.modal.accept') : 'Go to dashboard'}{' '}
+                  {userReferral.referrer ? t('ref.modal.accept') : 'Go to dashboard'}{' '}
                   <Icon
                     name="arrow_right"
                     sx={{
@@ -140,7 +140,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
                   sx={{ fontSize: 3, width: '100%', mt: '12px', py: 0 }}
                   onClick={() => createUser({ hasAccepted: false, isReferred: true })}
                 >
-                  {userReferral.referrer.referrer ? t('ref.modal.later') : "I'll check later"}
+                  {userReferral.referrer ? t('ref.modal.later') : "I'll check later"}
                 </Button>
               </>
             </Flex>

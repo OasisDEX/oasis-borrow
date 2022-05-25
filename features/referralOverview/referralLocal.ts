@@ -1,7 +1,10 @@
 import { Observable, of } from 'rxjs'
 import { delay } from 'rxjs/operators'
 
-export function checkReferralLocalStorage$(): Observable<{ referrer: string }> {
-  const referrer = localStorage.getItem(`referral`)
-  return of({ referrer }).pipe(delay(500))
+export function checkReferralLocalStorage$(): Observable<string | null> {
+  let referrer = localStorage.getItem(`referral`)
+  if (referrer === 'null') {
+    referrer = null
+  }
+  return of(referrer).pipe(delay(1000))
 }

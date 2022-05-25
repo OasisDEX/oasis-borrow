@@ -58,7 +58,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
       if (jwtToken)
         createUserUsingApi$(
           hasAccepted,
-          isReferred ? userReferral.referrer.referrer : null,
+          isReferred ? userReferral.referrer : null,
           connectedAccount,
           jwtToken,
         ).subscribe((res) => {
@@ -151,7 +151,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           }}
           // if new user witohut refereal - write to db on click and redirect to dashboard
           onClick={
-            userReferral.referrer.referrer
+            userReferral.referrer
               ? () =>
                   openModal(NewReferralModal, {
                     userReferral,

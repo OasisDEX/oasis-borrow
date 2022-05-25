@@ -20,15 +20,11 @@ export enum ClaimTxnState {
 
 export type UserState = 'newUser' | 'currentUser' | 'walletConnectionInProgress'
 
-interface Referrer {
-  referrer: string | null
-}
-
 export interface UserReferralState {
   user?: User
   claims?: boolean
   state: UserState
-  referrer: Referrer
+  referrer: string | null
   totalClaim?: string
   totalAmount?: string
   referrals?: string[]
@@ -52,7 +48,7 @@ export function createUserReferral$(
     address: string,
     trigger$: Subject<void>,
   ) => Observable<WeeklyClaim[] | null>,
-  checkReferralLocalStorage$: () => Observable<Referrer>,
+  checkReferralLocalStorage$: () => Observable<string | null>,
 ): Observable<UserReferralState> {
   return web3Context$.pipe(
     switchMap((web3Context) => {
@@ -72,7 +68,7 @@ export function createUserReferral$(
           if (!user) {
             return of({
               state: 'newUser',
-              referrer,
+              referrer: referrer ? referrer.slice(1, -1) : null,
               trigger: trigger,
             })
           }
@@ -155,7 +151,7 @@ export function createUserReferral$(
             of({
               state: 'currentUser',
               user,
-              referrer: { referrer: user.user_that_referred_address },
+              referrer: user.user_that_referred_address,
               referrals: referralsOut,
               trigger: trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
