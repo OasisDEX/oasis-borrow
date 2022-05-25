@@ -16,7 +16,7 @@ export interface SidebarSectionHeaderButton {
 export interface SidebarSectionHeaderProps {
   title: string
   dropdown?: {
-    disabled?: boolean,
+    disabled?: boolean
     forcePanel?: string
     items: SidebarSectionHeaderSelectItem[]
   }

@@ -1,3 +1,4 @@
+import { trackingEvents } from 'analytics/analytics'
 import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultErrors } from 'components/vault/VaultErrors'
@@ -9,7 +10,11 @@ import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
+import {
+  progressTrackingEvent,
+  regressTrackingEvent,
+} from 'features/sidebar/trackingEventOpenVault'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
@@ -47,9 +52,11 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     currentStep,
     totalSteps,
     accountIsConnected,
+    accountIsController,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
+  const flow: SidebarFlow = 'manageBorrow'
   const canTransition =
     ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
@@ -74,7 +81,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   }, [stage])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow: 'manageBorrow', stage, token }),
+    title: getSidebarTitle({ flow, stage, token }),
     dropdown: {
       forcePanel,
       disabled: isDropdownDisabled({ stage }),
@@ -86,6 +93,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           panel: 'collateral',
           action: () => {
             toggle!('collateralEditing')
+            trackingEvents.switchToCollateral(accountIsController)
           },
         },
         {
@@ -95,6 +103,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           panel: 'dai',
           action: () => {
             toggle!('daiEditing')
+            trackingEvents.switchToDai(accountIsController)
           },
         },
         {
@@ -132,10 +141,11 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       },
     },
     textButton: {
-      label: getTextButtonLabel({ stage, token }),
+      label: getTextButtonLabel({ flow, stage, token }),
       hidden: !canRegress || isMultiplyTransitionStage,
       action: () => {
         regress!()
+        regressTrackingEvent({ props })
       },
     },
     progress: getSidebarProgress(sidebarTxData),

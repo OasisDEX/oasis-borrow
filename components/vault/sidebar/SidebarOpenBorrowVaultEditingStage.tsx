@@ -5,6 +5,8 @@ import { handleNumericInput } from 'helpers/input'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarResetButton } from './SidebarResetButton'
+
 export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const {
     token,
@@ -22,6 +24,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
     showGenerateOption,
     toggleGenerateOption,
     ilkData: { debtFloor },
+    clear,
     priceInfo: { currentCollateralPrice },
   } = props
 
@@ -71,6 +74,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
         hasError={false}
         disabled={isGenerateDaiDisabled}
       />
+      {depositAmount && <SidebarResetButton clear={clear} />}
       <OpenVaultChangesInformation {...props} />
     </Grid>
   )

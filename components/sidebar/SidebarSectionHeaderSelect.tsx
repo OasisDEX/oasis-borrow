@@ -57,7 +57,7 @@ export function SidebarSectionHeaderSelect({
           alignItems: 'center',
           p: '3px 10px 3px 3px',
           fontSize: 2,
-          pointerEvents: !disabled ? 'auto' : 'none'
+          pointerEvents: !disabled ? 'auto' : 'none',
         }}
       >
         {activeItem?.icon ? (

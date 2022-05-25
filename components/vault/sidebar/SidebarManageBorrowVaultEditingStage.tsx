@@ -168,8 +168,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     if (
       (isCollateralEditing &&
         ((isDepositOrGenerate && noDeposit) || (isWithdrawOrPayback && noWithdraw))) ||
-      (isDaiEditing &&
-        ((isDepositOrGenerate && noGenerate) || (isWithdrawOrPayback && noPayback)))
+      (isDaiEditing && ((isDepositOrGenerate && noGenerate) || (isWithdrawOrPayback && noPayback)))
     ) {
       setIsSecondaryFieldDisabled(true)
     } else {

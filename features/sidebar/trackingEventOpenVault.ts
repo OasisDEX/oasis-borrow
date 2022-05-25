@@ -23,6 +23,10 @@ export function regressTrackingEvent({ props, firstCDP }: TrackingEventOpenVault
     case 'allowanceFailure':
       trackingEvents.confirmVaultEdit(firstCDP)
       break
+    case 'daiAllowanceFailure':
+    case 'collateralAllowanceFailure':
+      trackingEvents.manageVaultConfirmVaultEdit()
+      break
   }
 }
 
