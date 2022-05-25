@@ -8,6 +8,7 @@ export function getSidebarProgress({
   proxyTxHash,
   allowanceTxHash,
   openTxHash,
+  manageTxHash,
   etherscan,
   proxyConfirmations,
   safeConfirmations,
@@ -25,6 +26,8 @@ export function getSidebarProgress({
         txHash: proxyTxHash!,
         etherscan: etherscan!,
       }
+    case 'collateralAllowanceInProgress':
+    case 'daiAllowanceInProgress':
     case 'allowanceInProgress':
       return {
         text: t('setting-allowance-for', { token }),
@@ -35,6 +38,12 @@ export function getSidebarProgress({
       return {
         text: t('creating-your-vault'),
         txHash: openTxHash!,
+        etherscan: etherscan!,
+      }
+    case 'manageInProgress':
+      return {
+        text: t('changing-vault'),
+        txHash: manageTxHash!,
         etherscan: etherscan!,
       }
     default:

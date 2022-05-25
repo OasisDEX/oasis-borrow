@@ -56,12 +56,12 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     inputAmountsEmpty,
   } = props
 
-  const gasData = extractGasDataFromState(props)
+  const firstCDP = isFirstCdp(accountData)
   const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
     flow: 'openBorrow',
     ...props,
   })
-  const firstCDP = isFirstCdp(accountData)
+  const gasData = extractGasDataFromState(props)
   const allowanceData = extractAllowanceDataFromOpenVaultState(props)
   const sidebarTxData = extractSidebarTxData(props)
 

@@ -4,6 +4,14 @@ import { pick } from 'ramda'
 
 import { AllowanceOption } from '../features/allowance/allowance'
 
+interface SharedStateExtractions {
+  stage: SidebarVaultStages
+  token?: string
+  vault?: {
+    token: string
+  }
+}
+
 export interface GetPrimaryButtonLabelParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
@@ -49,31 +57,33 @@ export function extractAllowanceDataFromOpenVaultState(state: HasAllowanceData) 
   )
 }
 
-export interface HasSidebarTxData {
-  stage: SidebarVaultStages
-  token: string
-  safeConfirmations: number
+export interface HasSidebarTxData extends SharedStateExtractions {
+  id?: BigNumber
   proxyTxHash?: string
   allowanceTxHash?: string
   openTxHash?: string
-  etherscan?: string
+  manageTxHash?: string
   proxyConfirmations?: number
-  id?: BigNumber
+  safeConfirmations?: number
+  etherscan?: string
 }
 
 export function extractSidebarTxData(state: HasSidebarTxData) {
-  return pick(
-    [
-      'id',
-      'stage',
-      'proxyTxHash',
-      'allowanceTxHash',
-      'openTxHash',
-      'etherscan',
-      'proxyConfirmations',
-      'safeConfirmations',
-      'token',
-    ],
-    state,
-  )
+  return {
+    ...pick(
+      [
+        'stage',
+        'id',
+        'proxyTxHash',
+        'allowanceTxHash',
+        'openTxHash',
+        'manageTxHash',
+        'proxyConfirmations',
+        'safeConfirmations',
+        'etherscan',
+      ],
+      state,
+    ),
+    token: state.token || state.vault?.token,
+  }
 }

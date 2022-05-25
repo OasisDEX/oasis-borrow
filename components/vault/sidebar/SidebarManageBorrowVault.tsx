@@ -4,9 +4,12 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
+import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
+import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -43,6 +46,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
   const gasData = extractGasDataFromState(props)
+  const sidebarTxData = extractSidebarTxData(props)
   const canTransition =
     ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
 
@@ -124,6 +128,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         progressTrackingEvent({ props })
       },
     },
+    progress: getSidebarProgress(sidebarTxData),
+    success: getSidebarSuccess(sidebarTxData),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
