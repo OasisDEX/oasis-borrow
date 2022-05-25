@@ -102,6 +102,7 @@ export const supportedMultiplyIlks = [
   'WBTC-B',
   'WBTC-C',
   'RENBTC-A',
+  'GUNIV3DAIUSDC1-A',
   'GUNIV3DAIUSDC2-A',
   'LINK-A',
   'UNI-A',
