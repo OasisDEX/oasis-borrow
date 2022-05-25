@@ -5,6 +5,7 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -22,6 +23,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   const {
     vault: { id, token },
     canProgress,
+    progress,
     toggle,
     stage,
     isEditingStage,
@@ -30,16 +32,19 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     isDaiAllowanceStage,
     isManageStage,
     isMultiplyTransitionStage,
+    isLoadingStage,
+    isSuccessStage,
+    currentStep,
+    totalSteps,
     accountIsConnected,
-    accountIsController,
     proxyAddress,
     insufficientCollateralAllowance,
     insufficientDaiAllowance,
   } = props
   const [forcePanel, setForcePanel] = useState<string>()
   const gasData = extractGasDataFromState(props)
-  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
-  const isOwner = accountIsConnected && accountIsController
+  const canTransition =
+    ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
 
   useEffect(() => {
     switch (stage) {
@@ -111,7 +116,13 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         insufficientDaiAllowance,
         canTransition,
       }),
-      disabled: !canProgress || !isOwner,
+      disabled: !canProgress || !accountIsConnected,
+      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
+      isLoading: isLoadingStage,
+      action: () => {
+        progress!()
+        progressTrackingEvent({ props })
+      },
     },
   }
 

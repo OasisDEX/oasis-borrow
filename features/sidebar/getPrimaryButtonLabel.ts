@@ -1,4 +1,3 @@
-import { ALLOWED_MULTIPLY_TOKENS, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { GetPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
