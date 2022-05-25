@@ -30,6 +30,7 @@ export function ManageVaultContainer({
   } = manageVault
   const { t } = useTranslation()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -69,11 +70,14 @@ export function ManageVaultContainer({
           {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
-          <SidebarManageBorrowVault {...manageVault} />
-          <ManageVaultForm
-            {...manageVault}
-            txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
-          />
+          {newComponentsEnabled ? (
+            <SidebarManageBorrowVault {...manageVault} />
+          ) : (
+            <ManageVaultForm
+              {...manageVault}
+              txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
+            />
+          )}
         </Box>
       </Grid>
     </>
