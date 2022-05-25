@@ -7,6 +7,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
@@ -71,34 +72,37 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow: 'manageBorrow', stage, token }),
-    forcePanel,
-    dropdown: [
-      {
-        label: t('system.actions.borrow.edit-collateral', { token }),
-        shortLabel: token,
-        icon: getToken(token).iconCircle,
-        panel: 'collateral',
-        action: () => {
-          toggle!('collateralEditing')
+    dropdown: {
+      forcePanel,
+      disabled: isDropdownDisabled({ stage }),
+      items: [
+        {
+          label: t('system.actions.borrow.edit-collateral', { token }),
+          shortLabel: token,
+          icon: getToken(token).iconCircle,
+          panel: 'collateral',
+          action: () => {
+            toggle!('collateralEditing')
+          },
         },
-      },
-      {
-        label: t('system.actions.borrow.edit-dai'),
-        shortLabel: 'DAI',
-        icon: getToken('DAI').iconCircle,
-        panel: 'dai',
-        action: () => {
-          toggle!('daiEditing')
+        {
+          label: t('system.actions.borrow.edit-dai'),
+          shortLabel: 'DAI',
+          icon: getToken('DAI').iconCircle,
+          panel: 'dai',
+          action: () => {
+            toggle!('daiEditing')
+          },
         },
-      },
-      {
-        label: t('system.actions.borrow.switch-to-multiply'),
-        panel: 'transition',
-        action: () => {
-          toggle!('multiplyTransitionEditing')
+        {
+          label: t('system.actions.borrow.switch-to-multiply'),
+          panel: 'transition',
+          action: () => {
+            toggle!('multiplyTransitionEditing')
+          },
         },
-      },
-    ],
+      ],
+    },
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}

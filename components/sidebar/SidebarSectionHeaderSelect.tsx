@@ -12,12 +12,14 @@ export interface SidebarSectionHeaderSelectItem {
   action?: () => void
 }
 interface SidebarSectionHeaderSelectProps {
+  disabled?: boolean
   forcePanel?: string
   items: SidebarSectionHeaderSelectItem[]
   onSelect: (panel: string) => void
 }
 
 export function SidebarSectionHeaderSelect({
+  disabled,
   forcePanel,
   items,
   onSelect,
@@ -42,6 +44,9 @@ export function SidebarSectionHeaderSelect({
         '&:first-child': {
           ml: 0,
         },
+        opacity: !disabled ? 1 : 0.5,
+        cursor: !disabled ? 'default' : 'not-allowed',
+        transition: 'opacity 200ms',
       }}
     >
       <Button
@@ -52,6 +57,7 @@ export function SidebarSectionHeaderSelect({
           alignItems: 'center',
           p: '3px 10px 3px 3px',
           fontSize: 2,
+          pointerEvents: !disabled ? 'auto' : 'none'
         }}
       >
         {activeItem?.icon ? (
@@ -89,7 +95,7 @@ export function SidebarSectionHeaderSelect({
           boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
           opacity: isExpanded ? 1 : 0,
           transform: isExpanded ? 'translateY(0)' : 'translateY(-5px)',
-          pointerEvents: isExpanded ? 'auto' : 'none',
+          pointerEvents: !disabled && isExpanded ? 'auto' : 'none',
           transition: 'opacity 200ms, transform 200ms',
           zIndex: 1,
         }}

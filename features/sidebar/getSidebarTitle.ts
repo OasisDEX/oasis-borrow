@@ -44,12 +44,13 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'collateralAllowanceInProgress':
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
+      return t('vault-form.header.allowance', { token: token.toUpperCase() })
     case 'daiAllowanceWaitingForConfirmation':
     case 'daiAllowanceWaitingForApproval':
     case 'daiAllowanceInProgress':
     case 'daiAllowanceFailure':
     case 'daiAllowanceSuccess':
-      return t('vault-form.header.allowance', { token: token.toUpperCase() })
+      return t('vault-form.header.allowance', { token: 'DAI' })
     case 'txInProgress':
       return t('vault-form.header.confirm-in-progress')
     case 'txWaitingForConfirmation':
