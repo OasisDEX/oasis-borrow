@@ -1,7 +1,7 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 
-import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
+import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 export function getSidebarProgress({
   stage,
@@ -13,7 +13,7 @@ export function getSidebarProgress({
   proxyConfirmations,
   safeConfirmations,
   token,
-}: HasSidebarTxData): TxStatusCardProgressProps | undefined {
+}: SidebarTxData): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {

@@ -15,8 +15,8 @@ import {
 } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
-  extractAllowanceDataFromOpenVaultState,
-  extractSidebarButtonLabelParams,
+  extractPrimaryButtonLabelParams,
+  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useObservable } from 'helpers/observableHook'
@@ -57,12 +57,9 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   } = props
 
   const firstCDP = isFirstCdp(accountData)
-  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
-    flow: 'openBorrow',
-    ...props,
-  })
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractAllowanceDataFromOpenVaultState(props)
+  const allowanceData = extractSidebarAllowanceData(props)
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -90,7 +87,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(sidebarPrimaryButtonLabelParams),
+      label: getPrimaryButtonLabel(primaryButtonLabelParams),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,

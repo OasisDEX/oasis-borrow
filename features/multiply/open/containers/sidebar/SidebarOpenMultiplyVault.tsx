@@ -15,8 +15,8 @@ import {
 } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
-  extractAllowanceDataFromOpenVaultState,
-  extractSidebarButtonLabelParams,
+  extractPrimaryButtonLabelParams,
+  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
@@ -55,13 +55,10 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     inputAmountsEmpty,
   } = props
 
-  const gasData = extractGasDataFromState(props)
   const firstCDP = isFirstCdp(accountData)
-  const allowanceData = extractAllowanceDataFromOpenVaultState(props)
-  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
-    flow: 'openMultiply',
-    ...props,
-  })
+  const gasData = extractGasDataFromState(props)
+  const allowanceData = extractSidebarAllowanceData(props)
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -89,7 +86,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(sidebarPrimaryButtonLabelParams),
+      label: getPrimaryButtonLabel(primaryButtonLabelParams),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,

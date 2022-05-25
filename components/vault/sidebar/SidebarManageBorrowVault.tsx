@@ -9,7 +9,10 @@ import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
-import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
+import {
+  extractPrimaryButtonLabelParams,
+  extractSidebarTxData,
+} from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -24,7 +27,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   const { t } = useTranslation()
 
   const {
-    vault: { id, token },
+    vault: { token },
     canProgress,
     progress,
     toggle,
@@ -40,15 +43,17 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     currentStep,
     totalSteps,
     accountIsConnected,
-    proxyAddress,
-    insufficientCollateralAllowance,
-    insufficientDaiAllowance,
   } = props
+
   const [forcePanel, setForcePanel] = useState<string>()
-  const gasData = extractGasDataFromState(props)
-  const sidebarTxData = extractSidebarTxData(props)
   const canTransition =
     ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
+  const gasData = extractGasDataFromState(props)
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams({
+    canTransition,
+    ...props,
+  })
+  const sidebarTxData = extractSidebarTxData(props)
 
   useEffect(() => {
     switch (stage) {
@@ -110,16 +115,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({
-        flow: 'manageBorrow',
-        stage,
-        id,
-        token,
-        proxyAddress,
-        insufficientCollateralAllowance,
-        insufficientDaiAllowance,
-        canTransition,
-      }),
+      label: getPrimaryButtonLabel(primaryButtonLabelParams),
       disabled: !canProgress || !accountIsConnected,
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,

@@ -12,12 +12,16 @@ export interface SidebarSectionHeaderSelectItem {
   action?: () => void
 }
 interface SidebarSectionHeaderSelectProps {
-  forcePanel?: string,
+  forcePanel?: string
   items: SidebarSectionHeaderSelectItem[]
   onSelect: (panel: string) => void
 }
 
-export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: SidebarSectionHeaderSelectProps) {
+export function SidebarSectionHeaderSelect({
+  forcePanel,
+  items,
+  onSelect,
+}: SidebarSectionHeaderSelectProps) {
   const [activeItem, setActiveItem] = useState<SidebarSectionHeaderSelectItem>(items[0])
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
@@ -26,7 +30,7 @@ export function SidebarSectionHeaderSelect({ forcePanel, items, onSelect }: Side
   }
 
   useEffect(() => {
-    setActiveItem(items.filter(item => item.panel === forcePanel)[0])
+    setActiveItem(items.filter((item) => item.panel === forcePanel)[0])
   }, [forcePanel])
 
   return (

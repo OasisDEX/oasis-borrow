@@ -10,7 +10,7 @@ import React from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Grid, Text } from 'theme-ui'
 
-import { HasAllowanceData } from '../../helpers/extractSidebarHelpers'
+import { SidebarAllowanceData } from '../../helpers/extractSidebarHelpers'
 
 export function VaultAllowance({
   stage,
@@ -22,7 +22,7 @@ export function VaultAllowance({
   setAllowanceAmountToDepositAmount,
   setAllowanceAmountCustom,
   selectedAllowanceRadio,
-}: HasAllowanceData) {
+}: SidebarAllowanceData) {
   const canSelectRadio = stage === 'allowanceWaitingForConfirmation'
 
   const isUnlimited = selectedAllowanceRadio === 'unlimited'

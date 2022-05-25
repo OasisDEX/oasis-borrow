@@ -1,4 +1,4 @@
-import { GetPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
+import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
@@ -28,7 +28,7 @@ export function getPrimaryButtonLabel({
   insufficientDaiAllowance,
   insufficientAllowance,
   canTransition,
-}: GetPrimaryButtonLabelParams): string {
+}: PrimaryButtonLabelParams): string {
   const { t } = useTranslation()
   const allowanceToken = insufficientDaiAllowance ? 'DAI' : token
 
