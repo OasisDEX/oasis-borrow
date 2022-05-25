@@ -778,7 +778,6 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        userSettings$,
         id,
       ),
     bigNumberTostring,

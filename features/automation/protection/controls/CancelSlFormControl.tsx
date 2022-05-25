@@ -19,6 +19,7 @@ import { RetryableLoadingButtonProps } from '../../../../components/dumb/Retryab
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { useObservable } from '../../../../helpers/observableHook'
 import { CollateralPricesWithFilters } from '../../../collateralPrices/collateralPricesWithFilters'
+import { BalanceInfo } from '../../../shared/balanceInfo'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
@@ -47,7 +48,8 @@ interface CancelSlFormControlProps {
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
-  collateralPrice: CollateralPricesWithFilters
+  collateralPrices: CollateralPricesWithFilters
+  balanceInfo: BalanceInfo
   tx?: TxHelpers
 }
 
@@ -57,7 +59,8 @@ export function CancelSlFormControl({
   ctx,
   toggleForms,
   accountIsController,
-  collateralPrice,
+  collateralPrices,
+  balanceInfo,
   tx,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
@@ -110,6 +113,8 @@ export function CancelSlFormControl({
               txDetails: {
                 txHash: (transactionState as any).txHash,
                 txStatus: transactionState.status,
+                txError:
+                  transactionState.status === TxStatus.Error ? transactionState.error : undefined,
                 totalCost,
               },
             })
@@ -123,6 +128,7 @@ export function CancelSlFormControl({
         finishLoader(false)
       }
 
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(removeAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
@@ -134,8 +140,12 @@ export function CancelSlFormControl({
   }
 
   const { token } = vault
-  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
   const etherscan = ctx.etherscan.url
+
+  const gasEstimationUsd =
+    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
@@ -143,11 +153,15 @@ export function CancelSlFormControl({
     removeTriggerConfig: removeTriggerConfig,
     txState: lastUIState?.txDetails?.txStatus,
     txHash: lastUIState?.txDetails?.txHash,
+    txError: lastUIState?.txDetails?.txError,
     gasEstimation: gasEstimationData as HasGasEstimation,
+    gasEstimationUsd: gasEstimationUsd,
     accountIsController,
     actualCancelTxCost: lastUIState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
+    ethPrice,
+    ethBalance: balanceInfo.ethBalance,
   }
 
   return <CancelSlFormLayout {...props} />

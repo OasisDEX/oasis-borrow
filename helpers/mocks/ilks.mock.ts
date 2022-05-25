@@ -26,6 +26,7 @@ export interface MockIlkDataProps {
   ilkDebt?: BigNumber
   liquidationRatio?: BigNumber
   currentCollateralPrice?: BigNumber
+  ilkDebtAvailable?: BigNumber
   ilk?: string
   token?: string
 }

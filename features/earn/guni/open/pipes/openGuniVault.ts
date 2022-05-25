@@ -48,6 +48,7 @@ import { combineTransitions } from '../../../../../helpers/pipelines/combineTran
 import { TxError } from '../../../../../helpers/types'
 import { VaultErrorMessage } from '../../../../form/errorMessagesHandler'
 import { VaultWarningMessage } from '../../../../form/warningMessagesHandler'
+import { finalValidation } from '../../../../multiply/open/pipes/openMultiplyVaultValidations'
 import { slippageChange$, UserSettingsState } from '../../../../userSettings/userSettings'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
@@ -549,6 +550,7 @@ export function createOpenGuniVault$(
                       map(validateGuniErrors),
                       map(validateGuniWarnings),
                       switchMap(curry(applyGuniEstimateGas)(addGasEstimation$)),
+                      map(finalValidation),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),

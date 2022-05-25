@@ -49,7 +49,18 @@ export const BigNumberInput = ({
       guide={false}
       defaultValue=""
       pipe={maskPipe}
-      render={(ref, xprops) => <Input ref={ref} {...xprops} sx={sx} />}
+      render={(ref, xprops) => (
+        <Input
+          ref={ref}
+          {...xprops}
+          sx={{
+            color: 'primary',
+            fontWeight: 'semiBold',
+            '&::placeholder': { color: 'text.subtitle' },
+            ...sx,
+          }}
+        />
+      )}
     />
   )
 }

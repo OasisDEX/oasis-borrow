@@ -76,7 +76,7 @@ import {
   ManageVaultTransitionChange,
   progressAdjust,
 } from './manageMultiplyVaultTransitions'
-import { validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -585,6 +585,7 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    map(finalValidation),
                     map((state) =>
                       addTransitions(
                         txHelpers$,

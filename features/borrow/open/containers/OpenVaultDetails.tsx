@@ -134,11 +134,11 @@ export function OpenVaultDetails(props: OpenVaultState) {
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const inputAmountWasChanged = useHasChangedSinceFirstRender(inputAmountsEmpty)
   const daiYieldFromTotalCollateral = maxGenerateAmountCurrentPrice.minus(generateAmount || zero)
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice

@@ -1,9 +1,10 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { PickCloseStateProps } from 'components/dumb/PickCloseState'
-import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
@@ -24,8 +25,11 @@ import {
   formatPercent,
 } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { TxError } from '../../../../helpers/types'
 import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
@@ -106,9 +110,11 @@ interface SetDownsideProtectionInformationProps {
   isCollateralActive: boolean
   collateralizationRatioAtNextPrice: BigNumber
   selectedSLValue: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
+  gasEstimationUsd?: BigNumber
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function SetDownsideProtectionInformation({
   vault,
   ilkData,
@@ -120,6 +126,9 @@ function SetDownsideProtectionInformation({
   isCollateralActive,
   collateralizationRatioAtNextPrice,
   selectedSLValue,
+  gasEstimationUsd,
+  ethBalance,
+  txError,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -163,6 +172,15 @@ function SetDownsideProtectionInformation({
     .decimalPlaces(0)
     .minus(nextCollateralizationPriceAlertRange)
 
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -199,10 +217,31 @@ function SetDownsideProtectionInformation({
           </AppLink>
         </Text>
       </Box>
-      {selectedSLValue.isGreaterThanOrEqualTo(nextCollateralizationPriceFloor) && (
+      {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
         <MessageCard
           messages={[t('protection.coll-ratio-close-to-current')]}
           type="warning"
+          withBullet={false}
+        />
+      )}
+      {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+        <MessageCard
+          messages={[t('protection.coll-ratio-liquidation')]}
+          type="error"
+          withBullet={false}
+        />
+      )}
+      {potentialInsufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-warnings.insufficient-eth-balance')]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
+      {insufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-errors.insufficient-eth-balance')]}
+          type="error"
           withBullet={false}
         />
       )}
@@ -220,6 +259,7 @@ export interface AdjustSlFormLayoutProps {
   txProgressing: boolean
   txState?: TxStatus
   txHash?: string
+  txError?: TxError
   txCost?: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
@@ -233,6 +273,13 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  ethBalance: BigNumber
+}
+
+export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
+  const margin = 5
+  return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
 export function AdjustSlFormLayout({
@@ -240,24 +287,28 @@ export function AdjustSlFormLayout({
   txProgressing,
   txState,
   txHash,
+  txError,
   txCost,
-  // slValuePickerConfig,
+  slValuePickerConfig,
   closePickerConfig,
   accountIsController,
   addTriggerConfig,
   tokenPrice,
-  // ethPrice,
+  ethPrice,
   vault,
   ilkData,
-  // gasEstimation,
+  gasEstimation,
   etherscan,
   toggleForms,
   selectedSLValue,
   firstStopLossSetup,
-}: // isEditing,
-// collateralizationRatioAtNextPrice,
-AdjustSlFormLayoutProps) {
+  isEditing,
+  collateralizationRatioAtNextPrice,
+  ethBalance,
+  gasEstimationUsd,
+}: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   return (
     <Grid columns={[1]}>
@@ -267,8 +318,16 @@ AdjustSlFormLayoutProps) {
         translations={{
           editing: {
             header: t('protection.set-downside-protection'),
-            description:
-              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now.",
+            description: stopLossWriteEnabled ? (
+              <>
+                {t('protection.set-downside-protection-desc')}{' '}
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </>
+            ) : (
+              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+            ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -292,7 +351,7 @@ AdjustSlFormLayoutProps) {
         }}
       />
       {txProgressing && <OpenVaultAnimation />}
-      {/* {!txProgressing && txState !== TxStatus.Success && (
+      {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
           <Box mt={3}>
             <SliderValuePicker {...slValuePickerConfig} />
@@ -311,18 +370,21 @@ AdjustSlFormLayoutProps) {
                   vault={vault}
                   ilkData={ilkData}
                   gasEstimation={gasEstimation}
+                  gasEstimationUsd={gasEstimationUsd}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
                   collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   selectedSLValue={selectedSLValue}
+                  ethBalance={ethBalance}
+                  txError={txError}
                 />
               </Box>
             </>
           )}
         </>
-      )} */}
+      )}
 
       {txState === TxStatus.Success && (
         <>
@@ -356,6 +418,7 @@ AdjustSlFormLayoutProps) {
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
           txSuccess={txState === TxStatus.Success}
+          txError={txState && isTxStatusFailed(txState)}
         />
       )}
     </Grid>

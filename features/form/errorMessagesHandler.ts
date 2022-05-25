@@ -10,6 +10,7 @@ export type VaultErrorMessage =
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
+  | 'insufficientEthFundsForTx'
   | 'exchangeError'
   | 'withdrawAmountExceedsFreeCollateral'
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
@@ -36,6 +37,7 @@ interface ErrorMessagesHandler {
   exchangeError?: boolean
   generateAmountMoreThanMaxFlashAmount?: boolean
   ledgerWalletContractDataDisabled?: boolean
+  insufficientEthFundsForTx?: boolean
   depositingAllEthBalance?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateral?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice?: boolean
@@ -68,6 +70,7 @@ export function errorMessagesHandler({
   exchangeError,
   generateAmountMoreThanMaxFlashAmount,
   ledgerWalletContractDataDisabled,
+  insufficientEthFundsForTx,
   depositingAllEthBalance,
   generateAmountExceedsDaiYieldFromDepositingCollateral,
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
@@ -209,6 +212,10 @@ export function errorMessagesHandler({
 
   if (afterCollRatioBelowStopLossRatio) {
     errorMessages.push('afterCollRatioBelowStopLossRatio')
+  }
+
+  if (insufficientEthFundsForTx) {
+    errorMessages.push('insufficientEthFundsForTx')
   }
 
   return errorMessages
