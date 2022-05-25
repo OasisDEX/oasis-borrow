@@ -25,8 +25,6 @@ export function NewReferralModal({ account, userReferral }: NewReferralProps) {
   const { t } = useTranslation()
   const [success, setSuccess] = useState(false)
 
-  // TODO pipe
-
   const createUser = async (upsertUser: UpsertUser) => {
     const { hasAccepted, isReferred } = upsertUser
 

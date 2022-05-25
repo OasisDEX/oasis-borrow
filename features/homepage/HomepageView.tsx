@@ -113,6 +113,7 @@ function Pills({ sx }: { sx?: SxProps }) {
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
+  const referralsEnabled = useFeatureToggle('Referrals')
   const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
@@ -124,7 +125,7 @@ export function HomepageView() {
 
   useEffect(() => {
     const localStorageReferral = checkReferralLocal?.referrer
-    if (!localStorageReferral) {
+    if (!localStorageReferral && referralsEnabled) {
       const linkReferral = router.query.ref as string
       if (linkReferral) {
         setLandedWithRef(true)
@@ -139,19 +140,21 @@ export function HomepageView() {
         flex: 1,
       }}
     >
-      <Flex
-        sx={{
-          justifyContent: 'center',
-          mt: '80px',
-          mb: 0,
-        }}
-      >
-        <ReferralBanner
-          heading={t('ref.banner')}
-          link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
-        ></ReferralBanner>
-      </Flex>
-      {landedWithRef && <TermsOfService />}
+      {referralsEnabled && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '80px',
+            mb: 0,
+          }}
+        >
+          <ReferralBanner
+            heading={t('ref.banner')}
+            link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
+          ></ReferralBanner>
+        </Flex>
+      )}
+      {referralsEnabled && landedWithRef && <TermsOfService />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
@@ -402,7 +405,7 @@ export function HomepageView() {
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
-
+  const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
   return (
@@ -412,7 +415,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        mt: '24px',
+        mt: referralsEnabled ? '24px' : '64px',
         mb: 5,
         flexDirection: 'column',
       }}

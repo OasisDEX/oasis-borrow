@@ -36,7 +36,7 @@ export function ReferralsView({ address }: Props) {
         position: 'relative',
         width: '100%',
         mt: '38px',
-        mb: '10px',
+        mb: '4px',
       }}
     >
       <Card

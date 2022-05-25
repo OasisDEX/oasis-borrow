@@ -2,6 +2,7 @@ import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
@@ -17,11 +18,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 }
 
 export default function ReferralsPage({ address }: { address: string }) {
+  const referralsEnabled = useFeatureToggle('Referrals')
   return address ? (
     <WithConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        <ReferralsSummary address={address} />
+        {referralsEnabled ? <ReferralsSummary address={address} /> : null}
       </WithTermsOfService>
     </WithConnection>
   ) : null

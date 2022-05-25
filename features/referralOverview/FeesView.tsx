@@ -50,7 +50,7 @@ export function FeesView({ userReferral }: Props) {
         position: 'relative',
         width: '100%',
         height: '100%',
-        mt: '10px',
+        mt: '4px',
         pb: '48px',
       }}
     >
@@ -190,7 +190,7 @@ export function FeesView({ userReferral }: Props) {
                           name="arrow_right"
                           size="12px"
                           sx={{
-                            ml: 2,
+                            ml: 1,
                             position: 'relative',
                           }}
                         />
@@ -287,7 +287,7 @@ export function FeesView({ userReferral }: Props) {
                           name="arrow_right"
                           size="12px"
                           sx={{
-                            ml: 2,
+                            ml: 1,
                             position: 'relative',
                           }}
                         />
@@ -322,7 +322,7 @@ export function FeesView({ userReferral }: Props) {
                           name="arrow_right"
                           size="12px"
                           sx={{
-                            ml: 2,
+                            ml: 1,
                             position: 'relative',
                             transition: '0.2s',
                           }}
@@ -354,7 +354,7 @@ export function FeesView({ userReferral }: Props) {
                           name="arrow_right"
                           size="12px"
                           sx={{
-                            ml: 2,
+                            ml: 1,
                             position: 'relative',
                             transition: '0.2s',
                           }}

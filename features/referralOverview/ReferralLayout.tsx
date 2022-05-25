@@ -12,7 +12,7 @@ export function ReferralLayout({ children }: WithChildren) {
 
   return (
     <Grid sx={{ flex: 1, zIndex: 1 }}>
-      <Flex sx={{ mt: '48px', mb: 4, flexDirection: 'column' }}>
+      <Flex sx={{ mt: '48px', mb: '98px', flexDirection: 'column' }}>
         <>
           <Grid
             columns={[1, null, 1]}
@@ -42,7 +42,6 @@ export function ReferralLayout({ children }: WithChildren) {
                   name="arrow_right"
                   size="12px"
                   sx={{
-                    ml: 2,
                     position: 'relative',
                   }}
                 />
@@ -69,7 +68,7 @@ export function ReferralLayout({ children }: WithChildren) {
                 name="arrow_right"
                 size="12px"
                 sx={{
-                  ml: 2,
+                  ml: 1,
                   position: 'relative',
                 }}
               />
@@ -91,7 +90,7 @@ export function ReferralLayout({ children }: WithChildren) {
                 name="arrow_right"
                 size="12px"
                 sx={{
-                  ml: 2,
+                  ml: 1,
                   position: 'relative',
                 }}
               />
