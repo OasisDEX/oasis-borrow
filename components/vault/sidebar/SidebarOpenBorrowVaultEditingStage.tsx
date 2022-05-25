@@ -23,6 +23,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
     updateGenerateMax,
     showGenerateOption,
     toggleGenerateOption,
+    inputAmountsEmpty,
     ilkData: { debtFloor },
     clear,
     priceInfo: { currentCollateralPrice },
@@ -31,7 +32,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const [isGenerateDaiDisabled, setIsGenerateDaiDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!depositAmount || depositAmount.isZero()) {
+    if (inputAmountsEmpty) {
       setIsGenerateDaiDisabled(true)
     } else {
       if (!showGenerateOption) toggleGenerateOption!()
@@ -74,7 +75,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
         hasError={false}
         disabled={isGenerateDaiDisabled}
       />
-      {depositAmount && <SidebarResetButton clear={clear} />}
+      {!inputAmountsEmpty && <SidebarResetButton clear={clear} />}
       <OpenVaultChangesInformation {...props} />
     </Grid>
   )

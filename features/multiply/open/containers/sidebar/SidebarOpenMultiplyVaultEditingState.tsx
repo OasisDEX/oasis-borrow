@@ -35,7 +35,7 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
     afterCollateralizationRatio,
     requiredCollRatio,
     clear,
-
+    inputAmountsEmpty,
     ilkData: { liquidationRatio },
     maxCollRatio,
   } = props
@@ -127,7 +127,7 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
           <Text>{t('slider.adjust-multiply.right-footer')}</Text>
         </Flex>
       </Grid>
-      {depositAmount && <SidebarResetButton clear={clear} />}
+      {!inputAmountsEmpty && <SidebarResetButton clear={clear} />}
       <OpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

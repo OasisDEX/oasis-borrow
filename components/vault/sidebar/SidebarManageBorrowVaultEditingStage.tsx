@@ -32,7 +32,7 @@ function FieldDeposit({
       tokenUsdPrice={currentCollateralPrice}
       showMax={true}
       hasAuxiliary={true}
-      onSetMax={updateDepositMax!}
+      onSetMax={updateDepositMax}
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       onChange={handleNumericInput(updateDeposit!)}
@@ -139,16 +139,20 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     setMainAction,
     mainAction,
     depositAmount,
+    updateDeposit,
     withdrawAmount,
+    updateWithdraw,
     generateAmount,
+    updateGenerate,
     paybackAmount,
+    updatePayback,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
-    accountIsConnected,
     accountIsController,
-    clear,
+    accountIsConnected,
+    inputAmountsEmpty,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
@@ -158,20 +162,10 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
   const isDaiEditing = stage === 'daiEditing'
   const isDepositOrGenerate = mainAction === 'depositGenerate'
   const isWithdrawOrPayback = mainAction === 'withdrawPayback'
-  const noDeposit = !depositAmount || depositAmount.isZero()
-  const noWithdraw = !withdrawAmount || withdrawAmount.isZero()
-  const noGenerate = !generateAmount || generateAmount.isZero()
-  const noPayback = !paybackAmount || paybackAmount.isZero()
-  const hasValues = !noDeposit || !noWithdraw || !noGenerate || !noPayback
 
   useEffect(() => {
-    if (
-      (isCollateralEditing &&
-        ((isDepositOrGenerate && noDeposit) || (isWithdrawOrPayback && noWithdraw))) ||
-      (isDaiEditing && ((isDepositOrGenerate && noGenerate) || (isWithdrawOrPayback && noPayback)))
-    ) {
-      setIsSecondaryFieldDisabled(true)
-    } else {
+    if (inputAmountsEmpty) setIsSecondaryFieldDisabled(true)
+    else {
       if (!showDepositAndGenerateOption) toggleDepositAndGenerateOption!()
       if (!showPaybackAndWithdrawOption) togglePaybackAndWithdrawOption!()
       setIsSecondaryFieldDisabled(false)
@@ -204,13 +198,13 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
           {isDepositOrGenerate && (
             <>
               <FieldDeposit {...props} />
-              {isOwner && <FieldGenerate disabled={isSecondaryFieldDisabled} {...props} />}
+              <FieldGenerate disabled={isSecondaryFieldDisabled || !isOwner} {...props} />
             </>
           )}
           {isWithdrawOrPayback && (
             <>
               <FieldWithdraw {...props} disabled={!isOwner} />
-              {isOwner && <FieldPayback disabled={isSecondaryFieldDisabled} {...props} />}
+              <FieldPayback disabled={isSecondaryFieldDisabled} {...props} />
             </>
           )}
         </>
@@ -220,18 +214,27 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
           {isDepositOrGenerate && (
             <>
               <FieldGenerate {...props} disabled={!isOwner} />
-              {isOwner && <FieldDeposit disabled={isSecondaryFieldDisabled} {...props} />}
+              <FieldDeposit disabled={isSecondaryFieldDisabled} {...props} />
             </>
           )}
           {isWithdrawOrPayback && (
             <>
               <FieldPayback {...props} />
-              {isOwner && <FieldWithdraw disabled={isSecondaryFieldDisabled} {...props} />}
+              <FieldWithdraw disabled={isSecondaryFieldDisabled || !isOwner} {...props} />
             </>
           )}
         </>
       )}
-      {hasValues && <SidebarResetButton clear={clear} />}
+      {!inputAmountsEmpty && (
+        <SidebarResetButton
+          clear={() => {
+            updateDeposit!()
+            updateWithdraw!()
+            updateGenerate!()
+            updatePayback!()
+          }}
+        />
+      )}
       <ManageVaultChangesInformation {...props} />
     </Grid>
   )

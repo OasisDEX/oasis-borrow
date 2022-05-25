@@ -86,7 +86,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       label: getTextButtonLabel({ flow, stage, token }),
       hidden: !canRegress && !isEditingStage,
       action: () => {
-        if (regress) regress!()
+        if (canRegress) regress!()
         regressTrackingEvent({ props })
       },
       url: !canRegress ? `/vaults/open/${ilk}` : undefined,
