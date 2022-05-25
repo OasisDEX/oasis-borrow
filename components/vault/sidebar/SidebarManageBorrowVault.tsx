@@ -7,6 +7,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { progressTrackingEvent } from 'features/sidebar/trackingEventOpenVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
@@ -31,6 +32,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     vault: { token },
     canProgress,
     progress,
+    regress,
+    canRegress,
     toggle,
     stage,
     isEditingStage,
@@ -126,6 +129,13 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       action: () => {
         progress!()
         progressTrackingEvent({ props })
+      },
+    },
+    textButton: {
+      label: getTextButtonLabel({ stage, token }),
+      hidden: !canRegress || isMultiplyTransitionStage,
+      action: () => {
+        regress!()
       },
     },
     progress: getSidebarProgress(sidebarTxData),
