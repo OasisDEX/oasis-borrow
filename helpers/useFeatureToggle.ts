@@ -10,6 +10,9 @@ type Features =
   | 'Automation'
   | 'Exchange'
   | 'AutomationBasicBuyAndSell'
+  | 'NewComponents'
+  | 'StopLossRead'
+  | 'StopLossWrite'
   | 'Referrals'
 
 const configuredFeatures: Record<Features, boolean> = {
@@ -19,7 +22,10 @@ const configuredFeatures: Record<Features, boolean> = {
   Automation: true,
   Exchange: true,
   AutomationBasicBuyAndSell: false,
-  Referrals: false
+  NewComponents: false,
+  StopLossRead: true,
+  StopLossWrite: false,
+  Referrals: true
   // your feature here....
 }
 
