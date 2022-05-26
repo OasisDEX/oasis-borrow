@@ -6,9 +6,6 @@ import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseSt
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
 import { VaultViewMode } from 'components/VaultTabSwitch'
-import { VaultType } from 'features/generalManageVault/vaultType'
-import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -37,7 +34,6 @@ import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/co
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
-import { BORROW_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/BorrowVaultPillChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
@@ -195,7 +191,7 @@ function SetDownsideProtectionInformation({
 
     // TODO ŁW allow publish to use array of subjects
     // TODO ŁW new reducers that:
-    // Change vault to multiply 
+    // Change vault to multiply
     // select Other tab
     // in dropdown Close Vault
 

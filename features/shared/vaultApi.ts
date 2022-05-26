@@ -1,14 +1,13 @@
 import { Vault, VaultType as VaultTypeDB } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { SupportedUIChangeType, UIChanges } from 'components/AppContext'
 import { MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import getConfig from 'next/config'
 import { of } from 'ramda'
 import { combineLatest, Observable } from 'rxjs'
 import { ajax } from 'rxjs/ajax'
-import { catchError, map, switchMap } from 'rxjs/operators'
+import { catchError, map, startWith, switchMap } from 'rxjs/operators'
 
 const basePath = getConfig()?.publicRuntimeConfig?.basePath || ''
 
@@ -17,12 +16,14 @@ export function checkVaultTypeUsingApi$(
   pillChange: Observable<MultiplyPillChange>,
   id: BigNumber,
 ): Observable<VaultType> {
-  
-  return combineLatest(context$, pillChange).pipe(
+  const pillChange$ = pillChange.pipe(
+    startWith(({ currentChange: '' } as unknown) as MultiplyPillChange),
+  )
+
+  return combineLatest(context$, pillChange$).pipe(
     switchMap(([context, pillState]) => {
-      
-      if(pillState.currentStage === 'closeVault'){
-        return of(VaultType.Multiply);
+      if (pillState.currentStage === 'closeVault') {
+        return of(VaultType.Multiply)
       }
       const vaultType = getVaultFromApi$(id, new BigNumber(context.chainId)).pipe(
         map((resp) => {

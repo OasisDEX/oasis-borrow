@@ -1,12 +1,7 @@
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
-import {
-  BORROW_VAULT_PILL_CHANGE_SUBJECT,
-  BorrowPillChange,
-} from 'features/automation/protection/common/UITypes/BorrowVaultPillChange'
 import { handleNumericInput } from 'helpers/input'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode } from 'react'
 import { Box, Button, Divider, Grid, Text } from 'theme-ui'
 
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'

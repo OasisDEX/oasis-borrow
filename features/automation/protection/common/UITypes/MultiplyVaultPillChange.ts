@@ -1,4 +1,4 @@
-import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
+
 import { OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
 export const MULTIPLY_VAULT_PILL_CHANGE_SUBJECT = 'MultiplyPillChange'
