@@ -157,15 +157,6 @@ export function ManageVaultEditing(
   const showPaybackAndWithdrawOptionButton =
     (paybackAmount || withdrawAmount) && accountIsController
 
-  // const [uiState] = useUIChanges<BorrowPillChange>(BORROW_VAULT_PILL_CHANGE_SUBJECT)
-  // const effectState = uiState?.currentStage || 'collateralEditing'
-  // useEffect(() => {
-  //   if (effectState === 'daiEditing') {
-  //     props.toggle?.('daiEditing')
-  //     props.setMainAction?.('withdrawPayback')
-  //   }
-  // }, [effectState])
-
   return (
     <Grid gap={4}>
       {showDepositAndGenerateInput && (

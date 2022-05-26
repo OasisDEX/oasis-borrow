@@ -191,7 +191,6 @@ function SetDownsideProtectionInformation({
           </Flex>
         }
       />
-      ``
       <VaultChangesInformationItem
         label={`${t('protection.saving-comp-to-liquidation')}`}
         value={

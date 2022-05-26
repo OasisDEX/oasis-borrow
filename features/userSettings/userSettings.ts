@@ -33,7 +33,6 @@ const SLIPPAGE_HIGH = new BigNumber(0.02)
 export const SLIPPAGE_WARNING_THRESHOLD = new BigNumber(0.05)
 const SLIPPAGE_LIMIT_MAX = new BigNumber(0.2)
 const SLIPPAGE_LIMIT_MIN = new BigNumber(0.001)
-export const DEFAULT_SLIDER_BOUNDRY = 5
 
 export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
 

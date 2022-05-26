@@ -14,7 +14,6 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { DEFAULT_SLIDER_BOUNDRY } from 'features/userSettings/userSettings'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
@@ -29,6 +28,7 @@ import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChange
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
 import { BalanceInfo } from '../../../shared/balanceInfo'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
+import { DEFAULT_SL_SLIDER_BOUNDRY } from '../common/consts/automationDefaults'
 import { progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
@@ -154,7 +154,7 @@ export function AdjustSlFormControl({
 
   const maxBoundry =
     nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
-      ? new BigNumber(DEFAULT_SLIDER_BOUNDRY)
+      ? new BigNumber(DEFAULT_SL_SLIDER_BOUNDRY)
       : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
