@@ -83,7 +83,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: !canRegress && !canTransition && !isEditingStage,
+      hidden: (!canRegress || isSuccessStage) && (!isEditingStage || !canTransition),
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })

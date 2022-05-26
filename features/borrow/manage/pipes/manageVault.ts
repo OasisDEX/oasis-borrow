@@ -118,7 +118,7 @@ export interface ManageVaultEnvironment<V extends Vault> {
 interface ManageVaultFunctions {
   progress?: () => void
   regress?: () => void
-  toggle: (stage: ManageVaultEditingStage) => void
+  toggle?: (stage: ManageVaultEditingStage) => void
   setMainAction?: (action: MainAction) => void
   toggleDepositAndGenerateOption?: () => void
   togglePaybackAndWithdrawOption?: () => void

@@ -89,7 +89,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           icon: getToken(token).iconCircle,
           panel: 'collateral',
           action: () => {
-            toggle('collateralEditing')
+            toggle!('collateralEditing')
             trackingEvents.switchToCollateral(accountIsController)
           },
         },
@@ -99,7 +99,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           icon: getToken('DAI').iconCircle,
           panel: 'dai',
           action: () => {
-            toggle('daiEditing')
+            toggle!('daiEditing')
             trackingEvents.switchToDai(accountIsController)
           },
         },
@@ -107,7 +107,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           label: t('system.actions.borrow.switch-to-multiply'),
           panel: 'transition',
           action: () => {
-            toggle('multiplyTransitionEditing')
+            toggle!('multiplyTransitionEditing')
           },
         },
       ],

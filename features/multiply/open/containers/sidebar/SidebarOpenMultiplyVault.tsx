@@ -81,12 +81,12 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: !canRegress && !isEditingStage,
+      hidden: (!canRegress || isSuccessStage) && !isEditingStage,
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })
       },
-      url: !canRegress ? `/vaults/open/${ilk}` : undefined,
+      url: !canRegress && isEditingStage ? `/vaults/open/${ilk}` : undefined,
     },
     progress: getSidebarProgress(sidebarTxData),
     success: getSidebarSuccess(sidebarTxData),
