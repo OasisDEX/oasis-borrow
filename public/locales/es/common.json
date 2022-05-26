@@ -98,7 +98,7 @@
   "creating-proxy": "Creando Proxy",
   "creating-vault": "Creando Vault",
   "proxy-advantages": {
-    "0": "Sólo es necesario un proxy por cuenta",
+    "0": "<strong>Solo se</strong> necesita un proxy por cuenta",
     "1": "Le permite a su cartera interactuar con el protocolo Maker",
     "2": "Más eficiente en consumo de gas"
   },
