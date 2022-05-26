@@ -785,10 +785,12 @@ export function setupAppContext() {
       ),
     bigNumberTostring,
   )
+  
+  const uiChanges = initializeUIChanges()
 
   const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
     createCheckOasisCDPType$,
-  )(curry(checkVaultTypeUsingApi$)(context$), cdpManagerIlks$, charterIlks)
+  )(curry(checkVaultTypeUsingApi$)(context$, uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)), cdpManagerIlks$, charterIlks)
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
@@ -834,7 +836,6 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const uiChanges = initializeUIChanges()
 
   return {
     web3Context$,
