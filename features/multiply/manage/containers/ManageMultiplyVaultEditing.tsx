@@ -4,7 +4,10 @@ import { ChevronUpDown } from 'components/ChevronUpDown'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import {
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
+  MultiplyPillChange,
+} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
   formatAmount,
   formatCryptoBalance,
@@ -663,7 +666,7 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { stage, inputAmountsEmpty } = props
   const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
-  
+
   const effectiveStage = uiState?.currentStage || stage
   useEffect(() => {
     if (effectiveStage === 'closeVault') {

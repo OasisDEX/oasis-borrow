@@ -1,5 +1,3 @@
-import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
 import { ManageVaultForm } from '../../features/borrow/manage/containers/ManageVaultForm'
@@ -13,10 +11,6 @@ interface GeneralVaultFormControlProps {
 }
 
 export function GeneralVaultFormControl({ generalManageVault }: GeneralVaultFormControlProps) {
-
-  const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
-  const isCloseVault = !!uiState && uiState.currentStage === 'closeVault'
-
   switch (generalManageVault.type) {
     case VaultType.Borrow:
       return <ManageVaultForm {...generalManageVault.state} />

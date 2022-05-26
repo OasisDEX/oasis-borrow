@@ -1,11 +1,9 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
-import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { MessageCard } from 'components/MessageCard'
-import { VaultViewMode } from 'components/VaultTabSwitch'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -34,8 +32,6 @@ import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/co
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
-import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
-import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface AdjustSlFormInformationProps {
   tokenPrice: BigNumber
@@ -176,37 +172,6 @@ function SetDownsideProtectionInformation({
     .decimalPlaces(0)
     .minus(nextCollateralizationPriceAlertRange)
 
-  const { uiChanges } = useAppContext()
-
-  const redirectToCloseVault = () => {
-    uiChanges.publish(TAB_CHANGE_SUBJECT, {
-      type: 'change-tab',
-      currentMode: VaultViewMode.Overview,
-    })
-
-    uiChanges.publish(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, {
-      type: 'change-multiply-pill',
-      currentStage: 'closeVault',
-    })
-
-    // TODO ŁW allow publish to use array of subjects
-    // TODO ŁW new reducers that:
-    // Change vault to multiply
-    // select Other tab
-    // in dropdown Close Vault
-
-    // const jwtToken = jwtAuthGetToken(vault.owner)
-    // console.log(vault.id)
-    // console.log(jwtAuthGetToken)
-    // if (vault.id && jwtToken) {
-    //   saveVaultUsingApi$(
-    //     vault.id,
-    //     jwtToken,
-    //     VaultType.Multiply,
-    //     vault.chainId, //Make sure if chainId matches networkId but I guess so ~ŁW
-    //   ).subscribe()
-    // }
-  }
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
     gasEstimationUsd,
@@ -226,6 +191,7 @@ function SetDownsideProtectionInformation({
           </Flex>
         }
       />
+      ``
       <VaultChangesInformationItem
         label={`${t('protection.saving-comp-to-liquidation')}`}
         value={
@@ -264,7 +230,6 @@ function SetDownsideProtectionInformation({
           messages={[t('protection.coll-ratio-liquidation')]}
           type="error"
           withBullet={false}
-          handleClick={redirectToCloseVault}
         />
       )}
       {potentialInsufficientEthFundsForTx && (
@@ -317,7 +282,6 @@ export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkD
   const margin = 5
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
-
 
 export function AdjustSlFormLayout({
   token,
