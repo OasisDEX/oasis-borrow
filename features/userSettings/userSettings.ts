@@ -35,7 +35,6 @@ const SLIPPAGE_LIMIT_MAX = new BigNumber(0.2)
 const SLIPPAGE_LIMIT_MIN = new BigNumber(0.001)
 export const DEFAULT_SLIDER_BOUNDRY = 5
 
-
 export const SLIPPAGE_OPTIONS = [SLIPPAGE_LOW, SLIPPAGE_MEDIUM, SLIPPAGE_HIGH]
 
 export type SaveUserSettingsFunction = (slippageInput: BigNumber) => Observable<boolean>
