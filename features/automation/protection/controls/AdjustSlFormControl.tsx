@@ -24,7 +24,8 @@ import { Context } from '../../../../blockchain/network'
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
 import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
-import { GasEstimationStatus } from '../../../../helpers/form'
+import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
+import { BalanceInfo } from '../../../shared/balanceInfo'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
@@ -54,19 +55,20 @@ function prepareAddTriggerData(
 
 interface AdjustSlFormControlProps {
   vault: Vault
-  collateralPrice: CollateralPricesWithFilters
+  collateralPrices: CollateralPricesWithFilters
   ilkData: IlkData
   triggerData: TriggersData
   ctx: Context
   accountIsController: boolean
   collateralizationRatioAtNextPrice: BigNumber
   toggleForms: () => void
+  balanceInfo: BalanceInfo
   tx?: TxHelpers
 }
 
 export function AdjustSlFormControl({
   vault,
-  collateralPrice,
+  collateralPrices,
   ilkData,
   triggerData,
   ctx,
@@ -74,6 +76,7 @@ export function AdjustSlFormControl({
   collateralizationRatioAtNextPrice,
   toggleForms,
   tx,
+  balanceInfo,
 }: AdjustSlFormControlProps) {
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
     triggerData,
@@ -87,12 +90,11 @@ export function AdjustSlFormControl({
 
   const token = vault.token
   const tokenData = getToken(token)
-  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
-  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
-  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
+  const currentCollateralData = collateralPrices.data.find((x) => x.token === vault.token)
+  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
-
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
@@ -230,6 +232,7 @@ export function AdjustSlFormControl({
               txDetails: {
                 txHash: (txState as any).txHash,
                 txStatus: txState.status,
+                txError: txState.status === TxStatus.Error ? txState.error : undefined,
                 txCost: totalCost,
               },
             })
@@ -244,6 +247,7 @@ export function AdjustSlFormControl({
         finishLoader(false)
       }
 
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(addAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
@@ -272,6 +276,9 @@ export function AdjustSlFormControl({
     !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const gasEstimationUsd =
+    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
+
   const etherscan = ctx.etherscan.url
 
   const props: AdjustSlFormLayoutProps = {
@@ -283,7 +290,9 @@ export function AdjustSlFormControl({
     txProgressing,
     txCost: uiState?.txDetails?.txCost,
     txHash: uiState?.txDetails?.txHash,
+    txError: uiState?.txDetails?.txError,
     gasEstimation,
+    gasEstimationUsd,
     accountIsController,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
@@ -297,6 +306,7 @@ export function AdjustSlFormControl({
     firstStopLossSetup,
     isEditing,
     collateralizationRatioAtNextPrice,
+    ethBalance: balanceInfo.ethBalance,
   }
 
   return <AdjustSlFormLayout {...props} />

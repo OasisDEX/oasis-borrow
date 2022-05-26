@@ -44,6 +44,8 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('vault-is-currently-under-min-active-col-ratio')
       case 'vaultWillRemainUnderMinActiveColRatio':
         return translate('vault-will-remain-under-min-active-col-ratio')
+      case 'potentialInsufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
       default:
         throw new UnreachableCaseError(message)
     }

@@ -30,8 +30,11 @@ import {
   formatPercent,
 } from '../../../../helpers/formatters/format'
 import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
+import { TxError } from '../../../../helpers/types'
 import { one } from '../../../../helpers/zero'
 import { OpenVaultAnimation } from '../../../../theme/animations'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 import { BORROW_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/BorrowVaultPillChange'
@@ -115,6 +118,9 @@ interface SetDownsideProtectionInformationProps {
   isCollateralActive: boolean
   collateralizationRatioAtNextPrice: BigNumber
   selectedSLValue: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
+  gasEstimationUsd?: BigNumber
 }
 
 function SetDownsideProtectionInformation({
@@ -128,6 +134,9 @@ function SetDownsideProtectionInformation({
   isCollateralActive,
   collateralizationRatioAtNextPrice,
   selectedSLValue,
+  gasEstimationUsd,
+  ethBalance,
+  txError,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -202,6 +211,14 @@ function SetDownsideProtectionInformation({
     //   ).subscribe()
     // }
   }
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -254,6 +271,20 @@ function SetDownsideProtectionInformation({
           handleClick={redirectToCloseVault}
         />
       )}
+      {potentialInsufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-warnings.insufficient-eth-balance')]}
+          type="warning"
+          withBullet={false}
+        />
+      )}
+      {insufficientEthFundsForTx && (
+        <MessageCard
+          messages={[t('vault-errors.insufficient-eth-balance')]}
+          type="error"
+          withBullet={false}
+        />
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -268,6 +299,7 @@ export interface AdjustSlFormLayoutProps {
   txProgressing: boolean
   txState?: TxStatus
   txHash?: string
+  txError?: TxError
   txCost?: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
@@ -281,6 +313,8 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  ethBalance: BigNumber
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
@@ -288,11 +322,13 @@ export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkD
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
+
 export function AdjustSlFormLayout({
   token,
   txProgressing,
   txState,
   txHash,
+  txError,
   txCost,
   slValuePickerConfig,
   closePickerConfig,
@@ -309,6 +345,8 @@ export function AdjustSlFormLayout({
   firstStopLossSetup,
   isEditing,
   collateralizationRatioAtNextPrice,
+  ethBalance,
+  gasEstimationUsd,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
@@ -373,12 +411,15 @@ export function AdjustSlFormLayout({
                   vault={vault}
                   ilkData={ilkData}
                   gasEstimation={gasEstimation}
+                  gasEstimationUsd={gasEstimationUsd}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
                   collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   selectedSLValue={selectedSLValue}
+                  ethBalance={ethBalance}
+                  txError={txError}
                 />
               </Box>
             </>
@@ -418,6 +459,7 @@ export function AdjustSlFormLayout({
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
           txSuccess={txState === TxStatus.Success}
+          txError={txState && isTxStatusFailed(txState)}
         />
       )}
     </Grid>

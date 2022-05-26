@@ -665,6 +665,9 @@
         "edit-dai": "Edit DAI",
         "edit-collateral": "Edit Collateral",
         "switch-to-multiply": "Switch to Multiply"
+      },
+      "multiply": {
+        "switch-to-borrow": "Switch to Borrow"
       }
     },
     "cards": {
@@ -731,6 +734,7 @@
     "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
     "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
+    "insufficient-eth-balance": "Your ETH balance is too low to pay for transaction",
     "exchange-error": "Could not fetch exchange prices for doing this multiply action.",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
@@ -757,7 +761,8 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
-    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio."
+    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
+    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction"
   },
   "vault-info-messages": {
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
@@ -993,7 +998,7 @@
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
-    "coll-ratio-liquidation": "With the chosen collateralisation ratio, the stop loss would immediately stop loss you, as the collateralisation ratio on the next price update is below your set stop loss trigger. If you would like to close your vault, you will need to repay your DAI Debt and withdraw your collateral. You can this <0>here</0> "
+    "coll-ratio-liquidation": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1059,15 +1064,15 @@
     "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
   },
   "product-card-title": {
-    "ETH-A": "Standard ETH",
-    "ETH-B": "High multiple ETH",
-    "ETH-C": "Low cost ETH",
-    "WBTC-A": "Standard wBTC",
-    "WBTC-B": "High multiple wBTC",
-    "WBTC-C": "Low cost wBTC",
+    "ETH-A": "ETH with medium cost and multiple",
+    "ETH-B": "Highest ETH multiple option",
+    "ETH-C": "Lowest ETH borrowing cost",
+    "WBTC-A": "wBTC with medium cost and multiple",
+    "WBTC-B": "Highest wBTC multiple option",
+    "WBTC-C": "Lowest wBTC borrowing cost",
     "RENBTC-A": "Ren Bitcoin (RenBTC)",
-    "WSTETH-A": "Standard staked ETH",
-    "WSTETH-B": "Low cost staked ETH",
+    "WSTETH-A": "StETH with medium cost and multiple",
+    "WSTETH-B": "Lowest stETH borrowing cost",
     "UNI-A": "Uniswap (UNI)",
     "MANA-A": "Decentraland (MANA)",
     "MATIC-A": "Polygon (MATIC)",

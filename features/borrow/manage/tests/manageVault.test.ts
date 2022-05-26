@@ -887,6 +887,34 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
     state().progress!()
     expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
   })
+
+  it('should add meaningful message when user has insufficient ETH funds to pay for tx', () => {
+    const state = getStateUnpacker(
+      mockManageVault$({
+        _txHelpers$: of({
+          ...protoTxHelpers,
+          sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+            mockTxState(meta, TxStatus.Error).pipe(
+              map((txState) => ({
+                ...txState,
+                error: { message: 'insufficient funds for gas * price + value' },
+              })),
+            ),
+        }),
+        vault: {
+          collateral: new BigNumber('400'),
+          debt: new BigNumber('3000'),
+        },
+        balanceInfo: { ethBalance: new BigNumber(0.001) },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+      }),
+    )
+
+    state().progress!()
+    state().progress!()
+
+    expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
+  })
 }
 
 describe('manageVault', () => {

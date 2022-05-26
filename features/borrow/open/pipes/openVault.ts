@@ -53,7 +53,7 @@ import {
   OpenVaultSummary,
 } from './openVaultSummary'
 import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
-import { validateErrors, validateWarnings } from './openVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -383,6 +383,7 @@ export function createOpenVault$(
                       map(validateErrors),
                       map(validateWarnings),
                       switchMap(curry(applyEstimateGas)(addGasEstimation$, vaultActions)),
+                      map(finalValidation),
                       map(
                         curry(addTransitions)(
                           txHelpers,
