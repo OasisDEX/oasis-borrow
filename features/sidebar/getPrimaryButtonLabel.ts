@@ -1,9 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { GetPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-
-import { SidebarFlow } from '../types/vaults/sidebarLabels'
 
 function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {

@@ -1,19 +1,16 @@
+import { useAppContext } from 'components/AppContextProvider'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { VaultViewMode } from 'components/VaultTabSwitch'
+import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
+import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { useAppContext } from '../../../../../components/AppContextProvider'
-import {
-  SidebarSection,
-  SidebarSectionProps,
-} from '../../../../../components/sidebar/SidebarSection'
-import { VaultErrors } from '../../../../../components/vault/VaultErrors'
-import { VaultWarnings } from '../../../../../components/vault/VaultWarnings'
-import { VaultViewMode } from '../../../../../components/VaultTabSwitch'
-import { getPrimaryButtonLabel } from '../../../../sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from '../../../../sidebar/getSidebarProgress'
-import { getSidebarSuccess } from '../../../../sidebar/getSidebarSuccess'
-import { getSidebarTitle } from '../../../../sidebar/getSidebarTitle'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,

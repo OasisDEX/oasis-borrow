@@ -1,9 +1,8 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { HasSidebarTxData } from 'helpers/extractSidebarHelpers'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-
-import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
-import { UnreachableCaseError } from '../../helpers/UnreachableCaseError'
-import { SidebarFlow } from '../types/vaults/sidebarLabels'
 
 function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {

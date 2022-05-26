@@ -1,12 +1,12 @@
 import { Box } from '@theme-ui/components'
+import { PickCloseState } from 'components/dumb/PickCloseState'
+import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
+import { AppLink } from 'components/Links'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-import { PickCloseState } from '../../../../../components/dumb/PickCloseState'
-import { SliderValuePicker } from '../../../../../components/dumb/SliderValuePicker'
-import { AppLink } from '../../../../../components/Links'
-import { useFeatureToggle } from '../../../../../helpers/useFeatureToggle'
 import { AdjustSlFormLayoutProps, SetDownsideProtectionInformation } from '../AdjustSlFormLayout'
 
 export function SidebarAdjustStopLossEditingStage({

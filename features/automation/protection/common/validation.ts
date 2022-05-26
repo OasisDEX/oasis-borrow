@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
+import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
+import { TxError } from 'helpers/types'
 
-import { IlkData } from '../../../../blockchain/ilks'
-import { TxError } from '../../../../helpers/types'
-import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
-import { errorMessagesHandler } from '../../../form/errorMessagesHandler'
-import { warningMessagesHandler } from '../../../form/warningMessagesHandler'
 import { slCollRatioNearLiquidationRatio } from '../controls/AdjustSlFormLayout'
 
 export function warningsValidation({

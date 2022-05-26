@@ -1,12 +1,12 @@
 import { Box } from '@theme-ui/components'
+import { AppLink } from 'components/Links'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-import { AppLink } from '../../../../../components/Links'
-import { VaultChangesWithADelayCard } from '../../../../../components/vault/VaultChangesWithADelayCard'
-import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 import { AdjustSlFormLayoutProps, ProtectionCompleteInformation } from '../AdjustSlFormLayout'
 
 export function SidebarAdjustStopLossAddStage(props: AdjustSlFormLayoutProps) {

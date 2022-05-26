@@ -1,11 +1,11 @@
 import { Grid } from '@theme-ui/components'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { FixedSizeArray } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
 
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { ActionPills } from '../ActionPills'
 
 export interface PickCloseStateProps {
