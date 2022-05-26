@@ -860,6 +860,17 @@ function genericManageVaultTests(mockManageVault$: typeof createManageVault$) {
       _saveVaultType$.next()
       expect(state().stage).to.be.equal('multiplyTransitionSuccess')
     })
+
+    it('should allow to toggle stage on any point', () => {
+      const state = getStateUnpacker(mockManageVault$())
+
+      state().toggle!('collateralEditing')
+      expect(state().stage).to.be.equal('collateralEditing')
+      state().toggle!('daiEditing')
+      expect(state().stage).to.be.equal('daiEditing')
+      state().toggle!('multiplyTransitionEditing')
+      expect(state().stage).to.be.equal('multiplyTransitionEditing')
+    })
   })
 
   it('should add meaningful message when ledger throws error with disabled contract data', () => {
