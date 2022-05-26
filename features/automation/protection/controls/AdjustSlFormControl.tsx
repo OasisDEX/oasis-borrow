@@ -25,9 +25,10 @@ import { useAppContext } from '../../../../components/AppContextProvider'
 import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
 import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { BalanceInfo } from '../../../shared/balanceInfo'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { progressStatuses } from '../common/consts/txStatues'
+import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
@@ -37,6 +38,7 @@ import {
   AdjustSlFormLayoutProps,
   slCollRatioNearLiquidationRatio,
 } from './AdjustSlFormLayout'
+import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -167,9 +169,9 @@ export function AdjustSlFormControl({
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
     lastValue: uiState.selectedSLValue,
-    leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
+    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-    rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
+    rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
@@ -200,6 +202,25 @@ export function AdjustSlFormControl({
       })
     },
   }
+
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
+  const isProgressDisabled =
+    !isOwner ||
+    (!isEditing && txStatus !== TxStatus.Success) ||
+    isProgressStage ||
+    slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss',
@@ -286,7 +307,7 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: uiState?.txDetails?.txStatus,
+    txState: txStatus,
     txProgressing,
     txCost: uiState?.txDetails?.txCost,
     txHash: uiState?.txDetails?.txHash,
@@ -307,7 +328,15 @@ export function AdjustSlFormControl({
     isEditing,
     collateralizationRatioAtNextPrice,
     ethBalance: balanceInfo.ethBalance,
+    stage,
+    isProgressDisabled,
   }
 
-  return <AdjustSlFormLayout {...props} />
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  return newComponentsEnabled ? (
+    <SidebarAdjustStopLoss {...props} />
+  ) : (
+    <AdjustSlFormLayout {...props} />
+  )
 }

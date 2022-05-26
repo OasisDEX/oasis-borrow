@@ -5,3 +5,5 @@ export const progressStatuses = [
   TxStatus.WaitingForApproval,
   TxStatus.Propagating,
 ]
+
+export const failedStatuses = [TxStatus.Failure, TxStatus.CancelledByTheUser, TxStatus.Error]

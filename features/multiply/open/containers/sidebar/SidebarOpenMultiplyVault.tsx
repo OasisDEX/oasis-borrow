@@ -105,8 +105,8 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
         url: `/vaults/open/${ilk}`,
       },
     }),
-    progress: getSidebarProgress(sidebarTxData),
-    success: getSidebarSuccess(sidebarTxData),
+    progress: getSidebarProgress({ ...sidebarTxData, flow: 'openMultiply' }),
+    success: getSidebarSuccess({ ...sidebarTxData, flow: 'openMultiply' }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

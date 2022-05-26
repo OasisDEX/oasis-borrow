@@ -2,6 +2,21 @@ import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 
 import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
+import { UnreachableCaseError } from '../../helpers/UnreachableCaseError'
+import { SidebarFlow } from '../types/vaults/sidebarLabels'
+
+function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'creating-your-vault'
+    case 'addSl':
+    case 'adjustSl':
+      return 'protection.setting-downside-protection'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
 
 export function getSidebarProgress({
   stage,
@@ -12,7 +27,8 @@ export function getSidebarProgress({
   proxyConfirmations,
   safeConfirmations,
   token,
-}: HasSidebarTxData): TxStatusCardProgressProps | undefined {
+  flow,
+}: HasSidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -32,8 +48,9 @@ export function getSidebarProgress({
         etherscan: etherscan!,
       }
     case 'txInProgress':
+      const txInProgressKey = getSidebarProgressTxInProgressKey({ flow })
       return {
-        text: t('creating-your-vault'),
+        text: t(txInProgressKey),
         txHash: openTxHash!,
         etherscan: etherscan!,
       }

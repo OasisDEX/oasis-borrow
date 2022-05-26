@@ -107,8 +107,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
           url: `/vaults/open-multiply/${ilk}`,
         },
       }),
-    progress: getSidebarProgress(sidebarTxData),
-    success: getSidebarSuccess(sidebarTxData),
+    progress: getSidebarProgress({ ...sidebarTxData, flow: 'openBorrow' }),
+    success: getSidebarSuccess({ ...sidebarTxData, flow: 'openBorrow' }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

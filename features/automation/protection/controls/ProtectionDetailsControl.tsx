@@ -5,11 +5,8 @@ import { CollateralPricesWithFilters } from 'features/collateralPrices/collatera
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 
-import {
-  getInitialVaultCollRatio,
-  getIsEditingProtection,
-  getStartingSlRatio,
-} from '../common/helpers'
+import { zero } from '../../../../helpers/zero'
+import { getIsEditingProtection, getStartingSlRatio } from '../common/helpers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
@@ -24,10 +21,7 @@ function renderLayout(
 ) {
   const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
 
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: ilkData.liquidationRatio,
-    collateralizationRatio: vaultData.collateralizationRatio,
-  })
+  const initialVaultCollRatio = zero
 
   const startingSlRatio = getStartingSlRatio({
     stopLossLevel: triggersData.stopLossLevel,

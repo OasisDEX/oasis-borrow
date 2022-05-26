@@ -11,6 +11,7 @@ import { VaultFormContainer } from '../../../../components/vault/VaultFormContai
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../../../helpers/observableHook'
+import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { CollateralPricesWithFilters } from '../../../collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from '../../../form/commonValidators'
 import { BalanceInfo } from '../../../shared/balanceInfo'
@@ -46,6 +47,7 @@ export function ProtectionFormControl({
   const { t } = useTranslation()
   const { setVaultFormOpened } = useSharedUI()
   const isTouchDevice = window && 'ontouchstart' in window
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   useEffect(() => {
     if (isTouchDevice && !automationTriggersData.isAutomationEnabled) {
@@ -64,15 +66,60 @@ export function ProtectionFormControl({
   return (
     <WithErrorHandler error={[contextError, txHelpersError]}>
       <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
-        {([context]) => (
-          <VaultFormContainer
-            toggleTitle={
-              automationTriggersData.isAutomationEnabled
-                ? t('protection.set-downside-protection')
-                : t('protection.edit-vault-protection')
-            }
-          >
-            {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
+        {([context]) =>
+          !newComponentsEnabled ? (
+            <VaultFormContainer
+              toggleTitle={
+                automationTriggersData.isAutomationEnabled
+                  ? t('protection.set-downside-protection')
+                  : t('protection.edit-vault-protection')
+              }
+            >
+              {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
+                <CancelSlFormControl
+                  vault={vault}
+                  ilkData={ilkData}
+                  triggerData={automationTriggersData}
+                  tx={txHelpers}
+                  ctx={context}
+                  accountIsController={accountIsController}
+                  toggleForms={() => {
+                    uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+                      currentMode: AutomationFromKind.ADJUST,
+                      type: 'change-mode',
+                    })
+                  }}
+                  collateralPrices={collateralPrices}
+                  balanceInfo={balanceInfo}
+                />
+              ) : (
+                <AdjustSlFormControl
+                  vault={vault}
+                  collateralPrices={collateralPrices}
+                  ilkData={ilkData}
+                  triggerData={automationTriggersData}
+                  tx={txHelpers}
+                  ctx={context}
+                  accountIsController={accountIsController}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  toggleForms={() => {
+                    uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+                      type: 'change-mode',
+                      currentMode: AutomationFromKind.CANCEL,
+                    })
+                  }}
+                  balanceInfo={balanceInfo}
+                />
+              )}
+            </VaultFormContainer>
+          ) : currentForm?.currentMode === AutomationFromKind.CANCEL ? (
+            <VaultFormContainer
+              toggleTitle={
+                automationTriggersData.isAutomationEnabled
+                  ? t('protection.set-downside-protection')
+                  : t('protection.edit-vault-protection')
+              }
+            >
               <CancelSlFormControl
                 vault={vault}
                 ilkData={ilkData}
@@ -89,27 +136,27 @@ export function ProtectionFormControl({
                 collateralPrices={collateralPrices}
                 balanceInfo={balanceInfo}
               />
-            ) : (
-              <AdjustSlFormControl
-                vault={vault}
-                collateralPrices={collateralPrices}
-                ilkData={ilkData}
-                triggerData={automationTriggersData}
-                tx={txHelpers}
-                ctx={context}
-                accountIsController={accountIsController}
-                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-                toggleForms={() => {
-                  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    type: 'change-mode',
-                    currentMode: AutomationFromKind.CANCEL,
-                  })
-                }}
-                balanceInfo={balanceInfo}
-              />
-            )}
-          </VaultFormContainer>
-        )}
+            </VaultFormContainer>
+          ) : (
+            <AdjustSlFormControl
+              vault={vault}
+              collateralPrices={collateralPrices}
+              ilkData={ilkData}
+              triggerData={automationTriggersData}
+              tx={txHelpers}
+              ctx={context}
+              accountIsController={accountIsController}
+              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+              toggleForms={() => {
+                uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+                  type: 'change-mode',
+                  currentMode: AutomationFromKind.CANCEL,
+                })
+              }}
+              balanceInfo={balanceInfo}
+            />
+          )
+        }
       </WithLoadingIndicator>
     </WithErrorHandler>
   )

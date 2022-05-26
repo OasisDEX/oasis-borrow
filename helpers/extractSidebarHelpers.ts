@@ -49,7 +49,7 @@ export function extractAllowanceDataFromOpenVaultState(state: HasAllowanceData) 
 export interface HasSidebarTxData {
   stage: SidebarVaultStages
   token: string
-  safeConfirmations: number
+  safeConfirmations?: number
   proxyTxHash?: string
   allowanceTxHash?: string
   openTxHash?: string

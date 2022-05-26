@@ -1,6 +1,52 @@
+import BigNumber from 'bignumber.js'
 import { GetPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
+
+import { SidebarFlow } from '../types/vaults/sidebarLabels'
+
+function getPrimaryButtonLabelEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'confirm'
+    case 'addSl':
+      return 'add-stop-loss'
+    case 'adjustSl':
+      return 'update-stop-loss'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'creating-vault'
+    case 'addSl':
+      return 'add-stop-loss'
+    case 'adjustSl':
+      return 'update-stop-loss'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+function getPrimaryButtonLabelTxSuccessData({ flow, id }: { flow: SidebarFlow; id?: BigNumber }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return { key: 'go-to-vault', id }
+    case 'addSl':
+    case 'adjustSl':
+      return { key: 'back-to-vault-overview' }
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+const flowsWithoutProxy = ['adjustSl', 'addSl']
 
 export function getPrimaryButtonLabel({
   stage,
@@ -8,14 +54,18 @@ export function getPrimaryButtonLabel({
   token,
   proxyAddress,
   insufficientAllowance,
+  flow,
 }: GetPrimaryButtonLabelParams): string {
   const { t } = useTranslation()
 
   switch (stage) {
     case 'editing':
-      if (!proxyAddress) return t('setup-proxy')
-      else if (insufficientAllowance) return t('set-token-allowance', { token })
-      else return t('confirm')
+      if (!proxyAddress && !flowsWithoutProxy.includes(flow)) return t('setup-proxy')
+      if (insufficientAllowance) return t('set-token-allowance', { token })
+
+      const editingKey = getPrimaryButtonLabelEditingTranslationKey({ flow })
+
+      return t(editingKey)
     case 'proxyWaitingForConfirmation':
       return t('create-proxy-btn')
     case 'proxyWaitingForApproval':
@@ -37,9 +87,13 @@ export function getPrimaryButtonLabel({
     case 'txFailure':
       return t('retry')
     case 'txInProgress':
-      return t('creating-vault')
+      const txInProgressKey = getPrimaryButtonLabelTxInProgressTranslationKey({ flow })
+
+      return t(txInProgressKey)
     case 'txSuccess':
-      return t('go-to-vault', { id })
+      const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow, id })
+
+      return t(txSuccessKey.key, txSuccessKey.id && { id: txSuccessKey.id.toString() })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')

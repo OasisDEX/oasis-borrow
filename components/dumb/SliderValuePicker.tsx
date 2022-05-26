@@ -70,7 +70,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
           step={props.step}
           min={props.minBoundry?.toNumber()}
           max={props.maxBoundry?.toNumber()}
-          value={props.lastValue?.toNumber() || props.maxBoundry?.toNumber()}
+          value={props.lastValue?.toNumber()}
           onChange={(e) => {
             props.onChange(new BigNumber(e.target.value))
           }}
