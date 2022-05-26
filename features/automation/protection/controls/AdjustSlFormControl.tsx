@@ -14,6 +14,7 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { DEFAULT_SLIDER_BOUNDRY } from 'features/userSettings/userSettings'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
@@ -153,7 +154,7 @@ export function AdjustSlFormControl({
 
   const maxBoundry =
     nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
-      ? new BigNumber(5)
+      ? new BigNumber(DEFAULT_SLIDER_BOUNDRY)
       : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
