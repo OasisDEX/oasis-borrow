@@ -7,9 +7,10 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 import {
   AutomationFromKind,
@@ -24,6 +25,7 @@ import { SidebarAdjustStopLossEditingStage } from './SidebarAdjustStopLossEditin
 export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
     token,
@@ -71,13 +73,19 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {(stage === 'editing' || stage === 'txFailure') && (
+        {(stage === 'editing' || stage === 'txFailure') && stopLossWriteEnabled ? (
           <SidebarAdjustStopLossEditingStage {...props} />
+        ) : (
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            Due to extreme adversarial market conditions we have currently disabled setting up new
+            stop loss triggers, as they might not result in the expected outcome for our users.
+            Please use the 'close vault' option if you want to close your vault right now.
+          </Text>
         )}
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarAdjustStopLossAddStage {...props} />
         )}
-        {stage === 'editing' && !selectedSLValue.isZero() && (
+        {stage === 'editing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
           <>
             <VaultErrors errorMessages={errors} ilkData={ilkData} />
             <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
