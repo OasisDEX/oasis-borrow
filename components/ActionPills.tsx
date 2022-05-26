@@ -14,7 +14,7 @@ export function ActionPills({ active, items }: ActionPillsProps) {
   return (
     <Flex sx={{ justifyContent: 'center' }}>
       {items.map((item, k) => (
-        <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+        <Box key={k} as="li" sx={{ listStyle: 'none', m: 0, p: 0 }}>
           <Button
             key={k}
             onClick={item.action}

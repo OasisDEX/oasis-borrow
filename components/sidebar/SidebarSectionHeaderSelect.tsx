@@ -32,7 +32,7 @@ export function SidebarSectionHeaderSelect({
   }
 
   useEffect(() => {
-    setActiveItem(items.filter((item) => item.panel === forcePanel)[0])
+    setActiveItem(items.find((item) => item.panel === forcePanel) || items[0])
   }, [forcePanel])
 
   return (

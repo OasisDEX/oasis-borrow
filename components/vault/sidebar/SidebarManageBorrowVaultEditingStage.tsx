@@ -25,6 +25,8 @@ function FieldDeposit({
   priceInfo: { currentCollateralPrice },
   disabled = false,
 }: FieldProps) {
+  const { t } = useTranslation()
+
   return (
     <VaultActionInput
       action="Deposit"
@@ -39,7 +41,7 @@ function FieldDeposit({
       onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
       maxAmount={maxDepositAmount}
       maxAuxiliaryAmount={maxDepositAmountUSD}
-      maxAmountLabel={'Balance'}
+      maxAmountLabel={t('Balance')}
       hasError={false}
       disabled={disabled}
     />
@@ -54,14 +56,16 @@ function FieldGenerate({
   ilkData: { debtFloor },
   disabled = false,
 }: FieldProps) {
+  const { t } = useTranslation()
+
   return (
     <VaultActionInput
       action="Generate"
       amount={generateAmount}
-      token={'DAI'}
+      token="DAI"
       showMin={true}
       minAmount={debtFloor}
-      minAmountLabel={'From'}
+      minAmountLabel={t('from')}
       onSetMin={() => {
         updateGenerate!(debtFloor)
       }}
@@ -87,6 +91,8 @@ function FieldWithdraw({
   priceInfo: { currentCollateralPrice },
   disabled = false,
 }: FieldProps) {
+  const { t } = useTranslation()
+
   return (
     <VaultActionInput
       action="Withdraw"
@@ -97,7 +103,7 @@ function FieldWithdraw({
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       maxAmount={maxWithdrawAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel={t('max')}
       maxAuxiliaryAmount={maxWithdrawAmountUSD}
       token={token}
       hasError={false}
@@ -115,14 +121,16 @@ function FieldPayback({
   updatePaybackMax,
   disabled = false,
 }: FieldProps) {
+  const { t } = useTranslation()
+
   return (
     <VaultActionInput
       action="Payback"
       amount={paybackAmount}
-      token={'DAI'}
+      token="DAI"
       showMax={true}
       maxAmount={maxPaybackAmount}
-      maxAmountLabel={'Max'}
+      maxAmountLabel={t('max')}
       onSetMax={updatePaybackMax}
       onChange={handleNumericInput(updatePayback!)}
       hasError={false}

@@ -81,15 +81,16 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
             color: 'text.subtitle',
           }}
         >
-          <Grid gap={2}>
-            <Text>{t('system.liquidation-price')}</Text>
-            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+          <Grid as="p" gap={2}>
+            <Text as="span">{t('system.liquidation-price')}</Text>
+            <Text as="span" variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
               ${formatAmount(afterLiquidationPrice, 'USD')}
             </Text>
           </Grid>
-          <Grid gap={2}>
-            <Text>{t('system.collateral-ratio')}</Text>
+          <Grid as="p" gap={2}>
+            <Text as="span">{t('system.collateral-ratio')}</Text>
             <Text
+              as="span"
               variant="paragraph1"
               sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
             >
@@ -123,8 +124,8 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
             color: 'text.subtitle',
           }}
         >
-          <Text>{t('slider.adjust-multiply.left-footer')}</Text>
-          <Text>{t('slider.adjust-multiply.right-footer')}</Text>
+          <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
+          <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
         </Flex>
       </Grid>
       {!inputAmountsEmpty && <SidebarResetButton clear={clear} />}
