@@ -4,7 +4,7 @@ import { ChevronUpDown } from 'components/ChevronUpDown'
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
-import { MultiplyPillChange, MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,MultiplyPillChange } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
   formatAmount,
   formatCryptoBalance,

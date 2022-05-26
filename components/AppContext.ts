@@ -63,11 +63,11 @@ import {
   formChangeReducer,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
-  BORROW_VAULT_PILL_CHANGE_SUBJECT,
-  BorrowPillChange,
-  BorrowPillChangeAction,
-  borrowPillChangeReducer,
-} from 'features/automation/protection/common/UITypes/BorrowVaultPillChange'
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
+  MultiplyPillChange,
+  MultiplyPillChangeAction,
+  multiplyPillChangeReducer,
+} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
@@ -117,7 +117,14 @@ import {
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  filter,
+  map,
+  mergeMap,
+  shareReplay,
+  switchMap,
+} from 'rxjs/operators'
 
 import {
   cropperBonusTokenAddress,
@@ -187,7 +194,6 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { MultiplyPillChange, MultiplyPillChangeAction, multiplyPillChangeReducer, MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 
 export type TxData =
   | OpenData
@@ -785,12 +791,19 @@ export function setupAppContext() {
       ),
     bigNumberTostring,
   )
-  
+
   const uiChanges = initializeUIChanges()
 
   const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
     createCheckOasisCDPType$,
-  )(curry(checkVaultTypeUsingApi$)(context$, uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)), cdpManagerIlks$, charterIlks)
+  )(
+    curry(checkVaultTypeUsingApi$)(
+      context$,
+      uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
+    ),
+    cdpManagerIlks$,
+    charterIlks,
+  )
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
@@ -835,7 +848,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
-
 
   return {
     web3Context$,
