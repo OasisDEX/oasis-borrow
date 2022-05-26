@@ -8,7 +8,7 @@ interface IListWithIconProps {
   icon?: string
   iconSize?: number | string | number[]
   textVariant?: string
-  iconColor?: string;
+  iconColor?: string
   listStyle?: SxStyleProp
   itemStyle?: SxStyleProp
   iconStyle?: SxStyleProp
@@ -33,13 +33,13 @@ export function ListWithIcon({
             key={k}
             variant={textVariant}
             sx={{
-              position: 'relative', 
-              pl: 4, 
-              color: 'text.subtitle', 
-              'strong': {
-                color: theme.colors.primary
+              position: 'relative',
+              pl: 4,
+              color: 'text.subtitle',
+              strong: {
+                color: theme.colors.primary,
               },
-              ...itemStyle
+              ...itemStyle,
             }}
           >
             <Icon
