@@ -28,7 +28,7 @@ export function getSidebarProgress({
   proxyConfirmations,
   safeConfirmations,
   token,
-  flow
+  flow,
 }: SidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 

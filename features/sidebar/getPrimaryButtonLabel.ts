@@ -1,10 +1,10 @@
-import BigNumber from 'bignumber.js'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
 const flowsWithoutProxy = ['adjustSl', 'addSl']
+const UNREACHABLE_CASE_MESSAGE = ''
 
 function getPrimaryButtonLabelEditingTranslationKey({
   flow,
@@ -27,11 +27,14 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'openBorrow':
     case 'openMultiply':
     case 'manageBorrow':
+    case 'manageMultiply':
       return 'confirm'
     case 'addSl':
       return 'add-stop-loss'
     case 'adjustSl':
       return 'update-stop-loss'
+    case 'cancelSl':
+      return 'cancel-stop-loss'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -46,24 +49,25 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
       return 'add-stop-loss'
     case 'adjustSl':
       return 'update-stop-loss'
+    case 'cancelSl':
+      return 'cancel-stop-loss'
     default:
-      throw new UnreachableCaseError(flow)
+      return UNREACHABLE_CASE_MESSAGE
   }
 }
 
-function getPrimaryButtonLabelTxSuccessData({ flow, id }: { flow: SidebarFlow; id?: BigNumber }) {
+function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
-      return { key: 'go-to-vault', id }
+      return 'go-to-vault'
     case 'addSl':
     case 'adjustSl':
-      return { key: 'back-to-vault-overview' }
+      return 'back-to-vault-overview'
     default:
-      throw new UnreachableCaseError(flow)
+      return UNREACHABLE_CASE_MESSAGE
   }
 }
-
 
 export function getPrimaryButtonLabel({
   stage,
@@ -74,8 +78,8 @@ export function getPrimaryButtonLabel({
   insufficientDaiAllowance,
   insufficientAllowance,
   flow,
-                                        canTransition,
-}: PrimaryButtonLabelParams): string {
+  canTransition,
+}: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
   const allowanceToken = insufficientDaiAllowance ? 'DAI' : token
 
@@ -89,7 +93,7 @@ export function getPrimaryButtonLabel({
         insufficientCollateralAllowance,
         insufficientDaiAllowance,
         insufficientAllowance,
-        flow
+        flow,
       })
 
       return t(translationKey, { token: allowanceToken })
@@ -136,9 +140,9 @@ export function getPrimaryButtonLabel({
 
       return t(txInProgressKey)
     case 'txSuccess':
-      const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow, id })
+      const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
 
-      return t(txSuccessKey.key, txSuccessKey.id && { id: txSuccessKey.id.toString() })
+      return t(txSuccessKey, { id })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')

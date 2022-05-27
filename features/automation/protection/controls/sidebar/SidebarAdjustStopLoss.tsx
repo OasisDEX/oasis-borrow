@@ -73,8 +73,12 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {(stage === 'editing' || stage === 'txFailure') && stopLossWriteEnabled ? (
-          <SidebarAdjustStopLossEditingStage {...props} />
+        {stopLossWriteEnabled ? (
+          <>
+            {(stage === 'editing' || stage === 'txFailure') && (
+              <SidebarAdjustStopLossEditingStage {...props} />
+            )}
+          </>
         ) : (
           <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
             Due to extreme adversarial market conditions we have currently disabled setting up new

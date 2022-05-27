@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
@@ -6,14 +5,14 @@ import { useTranslation } from 'next-i18next'
 
 import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
-function getSidebarSuccessTxSuccessData({ flow, id }: { flow: SidebarFlow; id?: BigNumber }) {
+function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
-      return { key: 'creating-your-vault', id }
+      return 'creating-your-vault'
     case 'addSl':
     case 'adjustSl':
-      return { key: 'vault-changed' }
+      return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -29,7 +28,6 @@ export function getSidebarSuccess({
   etherscan,
   safeConfirmations,
   token,
-  id,
   flow,
 }: SidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
@@ -53,10 +51,10 @@ export function getSidebarSuccess({
         etherscan: etherscan!,
       }
     case 'txSuccess':
-      const txSuccessData = getSidebarSuccessTxSuccessData({ flow, id })
+      const txSuccessKey = getSidebarSuccessTxSuccessData({ flow })
 
       return {
-        text: t(txSuccessData.key, txSuccessData.id && { id: txSuccessData.id.toString() }),
+        text: t(txSuccessKey, { id }),
         txHash: openTxHash!,
         etherscan: etherscan!,
       }

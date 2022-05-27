@@ -71,7 +71,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(primaryButtonLabelParams),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow: 'openBorrow' }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,

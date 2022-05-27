@@ -69,7 +69,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(primaryButtonLabelParams),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow: 'openMultiply' }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
