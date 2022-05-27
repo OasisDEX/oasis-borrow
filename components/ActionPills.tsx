@@ -14,9 +14,8 @@ export function ActionPills({ active, items }: ActionPillsProps) {
   return (
     <Flex sx={{ justifyContent: 'center' }}>
       {items.map((item, k) => (
-        <Box key={k} as="li" sx={{ listStyle: 'none', m: 0, p: 0 }}>
+        <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0 }} key={k}>
           <Button
-            key={k}
             onClick={item.action}
             variant={active === item.id ? 'pillActive' : 'pill'}
             sx={{

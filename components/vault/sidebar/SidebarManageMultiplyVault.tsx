@@ -136,7 +136,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(primaryButtonLabelParams),
+      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
       disabled: !canProgress || !accountIsConnected,
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
@@ -153,8 +153,8 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         // regressTrackingEvent({ props })
       },
     },
-    progress: getSidebarProgress(sidebarTxData),
-    success: getSidebarSuccess(sidebarTxData),
+    progress: getSidebarProgress({ flow, ...sidebarTxData }),
+    success: getSidebarSuccess({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

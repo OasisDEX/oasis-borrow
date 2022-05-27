@@ -9,7 +9,7 @@ import { ManageStandardBorrowVaultState } from '../borrow/manage/pipes/manageVau
 import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
-type WithToggle<T> = T & { toggleVaultType: () => void }
+export type WithToggle<T> = T & { toggleVaultType: () => void }
 
 export type GeneralManageVaultState =
   | {
