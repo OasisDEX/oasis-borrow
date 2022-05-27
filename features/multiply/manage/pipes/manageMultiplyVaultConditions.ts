@@ -205,6 +205,7 @@ export interface ManageVaultConditions {
   generateAmountMoreThanMaxFlashAmount: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isSuccessStage: boolean
   exchangeDataRequired: boolean
   shouldShowExchangeError: boolean
   isExchangeLoading: boolean
@@ -268,6 +269,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isSuccessStage: false,
   exchangeDataRequired: false,
   shouldShowExchangeError: false,
   isExchangeLoading: false,
@@ -553,6 +555,8 @@ export function applyManageVaultConditions(
     'borrowTransitionInProgress',
     'borrowTransitionSuccess',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
+  
+  const isSuccessStage = stage === 'manageSuccess'
 
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
@@ -689,6 +693,7 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isSuccessStage,
     exchangeDataRequired,
     shouldShowExchangeError,
     isExchangeLoading,
