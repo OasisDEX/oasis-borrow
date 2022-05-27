@@ -9,6 +9,7 @@ import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
   customAllowanceAmountLessThanDepositAmountValidator,
+  ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
 } from '../../../../form/commonValidators'
 import { SLIPPAGE_DEFAULT, SLIPPAGE_WARNING_THRESHOLD } from '../../../../userSettings/userSettings'
@@ -108,6 +109,8 @@ export interface GuniOpenMultiplyVaultConditions {
   highSlippage: boolean
   customSlippageOverridden: boolean
   customSlippage: BigNumber
+
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultConditions = {
@@ -134,6 +137,8 @@ export const defaultGuniOpenMultiplyVaultConditions: GuniOpenMultiplyVaultCondit
   highSlippage: false,
   customSlippageOverridden: false,
   customSlippage: SLIPPAGE_DEFAULT,
+
+  insufficientEthFundsForTx: false,
 }
 
 export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGuniVaultState {
@@ -240,6 +245,8 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     'txFailure',
   ] as Stage[]).some((s) => s === stage)
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -264,5 +271,7 @@ export function applyGuniOpenVaultConditions(state: OpenGuniVaultState): OpenGun
     highSlippage,
     invalidSlippage,
     customSlippageOverridden,
+
+    insufficientEthFundsForTx,
   }
 }

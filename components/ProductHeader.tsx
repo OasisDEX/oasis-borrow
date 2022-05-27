@@ -7,9 +7,10 @@ interface ProductHeaderProps {
   title: string
   description: string
   link: { href: string; text: string }
+  scrollToId?: string
 }
 
-export function ProductHeader({ title, description, link }: ProductHeaderProps) {
+export function ProductHeader({ title, description, link, scrollToId }: ProductHeaderProps) {
   return (
     <Flex
       sx={{
@@ -20,6 +21,7 @@ export function ProductHeader({ title, description, link }: ProductHeaderProps) 
         mb: 4,
         flexDirection: 'column',
       }}
+      id={scrollToId}
     >
       <Heading
         as="h1"

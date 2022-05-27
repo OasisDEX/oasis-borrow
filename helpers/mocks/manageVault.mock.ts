@@ -96,6 +96,7 @@ export interface MockManageVaultProps {
   daiAllowance?: BigNumber
   account?: string
   status?: 'connected'
+  gasEstimationUsd?: BigNumber
 }
 
 function buildMockDependencies({
@@ -121,6 +122,7 @@ function buildMockDependencies({
   daiAllowance,
   account = '0xVaultController',
   status = 'connected',
+  gasEstimationUsd,
 }: MockManageVaultProps = {}) {
   const token = vault && vault.ilk ? vault.ilk.split('-')[0] : 'WBTC'
 
@@ -191,6 +193,10 @@ function buildMockDependencies({
     return _saveVaultType$ || of(undefined)
   }
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   return {
     token,
     context$,
@@ -204,6 +210,7 @@ function buildMockDependencies({
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   }
 }
 
@@ -222,6 +229,7 @@ export function mockManageVault$(
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   } = buildMockDependencies(args)
 
   return createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -234,7 +242,7 @@ export function mockManageVault$(
     ilkData$,
     vault$,
     saveVaultType$,
-    addGasEstimationMock,
+    gasEstimationMock$,
     vaultHistory$,
     () => of(StandardDssProxyActionsContractAdapter),
     StandardBorrowManageAdapter,
@@ -261,6 +269,7 @@ export function mockManageInstiVault$(
     saveVaultType$,
     vaultHistory$,
     automationTriggersData$,
+    gasEstimationMock$,
   } = buildMockDependencies(args)
 
   function instiVault$(): Observable<InstiVault> {
@@ -279,7 +288,7 @@ export function mockManageInstiVault$(
     ilkData$,
     instiVault$,
     saveVaultType$,
-    addGasEstimationMock,
+    gasEstimationMock$,
     vaultHistory$,
     () => of(new CharteredDssProxyActionsContractAdapter()),
     InstitutionalBorrowManageAdapter,

@@ -7,32 +7,42 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultViewMode } from 'components/VaultTabSwitch'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
-import { Context } from '../../../../blockchain/network'
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
-import { GasEstimationStatus } from '../../../../helpers/form'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { STOP_LOSS_LIQUIDATION_OFFSET } from '../common/consts/calculations'
-import { progressStatuses } from '../common/consts/txStatues'
+import { DEFAULT_SL_SLIDER_BOUNDRY } from '../common/consts/automationDefaults'
+import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
+import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
+import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import {
+  AdjustSlFormLayout,
+  AdjustSlFormLayoutProps,
+  slCollRatioNearLiquidationRatio,
+} from './AdjustSlFormLayout'
+import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -51,19 +61,20 @@ function prepareAddTriggerData(
 
 interface AdjustSlFormControlProps {
   vault: Vault
-  collateralPrice: CollateralPricesWithFilters
+  collateralPrices: CollateralPricesWithFilters
   ilkData: IlkData
   triggerData: TriggersData
   ctx: Context
   accountIsController: boolean
   collateralizationRatioAtNextPrice: BigNumber
   toggleForms: () => void
+  balanceInfo: BalanceInfo
   tx?: TxHelpers
 }
 
 export function AdjustSlFormControl({
   vault,
-  collateralPrice,
+  collateralPrices,
   ilkData,
   triggerData,
   ctx,
@@ -71,6 +82,7 @@ export function AdjustSlFormControl({
   collateralizationRatioAtNextPrice,
   toggleForms,
   tx,
+  balanceInfo,
 }: AdjustSlFormControlProps) {
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
     triggerData,
@@ -84,9 +96,9 @@ export function AdjustSlFormControl({
 
   const token = vault.token
   const tokenData = getToken(token)
-  const currentCollateralData = collateralPrice.data.find((x) => x.token === vault.token)
-  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
-  const ethPrice = collateralPrice.data.find((x) => x.token === 'ETH')?.currentPrice!
+  const currentCollateralData = collateralPrices.data.find((x) => x.token === vault.token)
+  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
@@ -106,6 +118,18 @@ export function AdjustSlFormControl({
     )
   }, [txData])
 
+  const redirectToCloseVault = () => {
+    uiChanges.publish(TAB_CHANGE_SUBJECT, {
+      type: 'change-tab',
+      currentMode: VaultViewMode.Overview,
+    })
+
+    uiChanges.publish(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, {
+      type: 'change-multiply-pill',
+      currentStage: 'closeVault',
+    })
+  }
+
   const [gasEstimationData] = useObservable(gasEstimationData$)
 
   const isEditing = getIsEditingProtection({
@@ -117,25 +141,25 @@ export function AdjustSlFormControl({
     isToCollateral,
   })
 
-  const currentCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.currentPrice)
+  const nextPriceCollRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
-  const startingAfterNewLiquidationPrice = currentCollateralData!.currentPrice
+  const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
-    .dividedBy(currentCollRatio)
+    .dividedBy(nextPriceCollRatio)
 
   const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
   const maxBoundry =
-    currentCollRatio.isNaN() || !currentCollRatio.isFinite() ? new BigNumber(5) : currentCollRatio
+    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
+      ? new BigNumber(DEFAULT_SL_SLIDER_BOUNDRY)
+      : nextPriceCollRatio
 
   const liqRatio = ilkData.liquidationRatio
-  const liqRatioWithOffset = liqRatio.plus(STOP_LOSS_LIQUIDATION_OFFSET)
-  const minSliderBoundary = liqRatioWithOffset.times(100)
 
   const closeProps: PickCloseStateProps = {
     optionNames: validOptions,
@@ -151,8 +175,8 @@ export function AdjustSlFormControl({
   }
 
   const sliderPercentageFill = uiState.selectedSLValue
-    .minus(minSliderBoundary)
-    .div(currentCollRatio.minus(liqRatioWithOffset))
+    .minus(liqRatio.times(100))
+    .div(nextPriceCollRatio.minus(liqRatio))
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -161,13 +185,13 @@ export function AdjustSlFormControl({
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
     lastValue: uiState.selectedSLValue,
-    leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
+    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-    rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
+    rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: minSliderBoundary,
+    minBoundry: liqRatio.multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
@@ -195,55 +219,86 @@ export function AdjustSlFormControl({
     },
   }
 
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
+  const isProgressDisabled = !!(
+    !isOwner ||
+    (!isEditing && txStatus !== TxStatus.Success) ||
+    isProgressStage
+  )
+
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss',
-    onClick: (finishLoader: (succeded: boolean) => void) => {
-      if (tx === undefined) {
-        return
-      }
-      const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
-        transactionStateHandler(
-          (txState) => {
-            /** TODO: This is not right place for it, this should be encapsulated,
-             * probably in similar fashion as addGasEstimation$
-             */
-            const gasUsed =
-              txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
+    translationKey: isStopLossEnabled
+      ? 'update-stop-loss'
+      : slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+      ? 'close-vault'
+      : 'add-stop-loss',
+    onClick: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+      ? redirectToCloseVault
+      : (finishLoader: (succeded: boolean) => void) => {
+          if (tx === undefined) {
+            return
+          }
+          const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
+            transactionStateHandler(
+              (txState) => {
+                /** TODO: This is not right place for it, this should be encapsulated,
+                 * probably in similar fashion as addGasEstimation$
+                 */
+                const gasUsed =
+                  txState.status === TxStatus.Success
+                    ? new BigNumber(txState.receipt.gasUsed)
+                    : zero
 
-            const effectiveGasPrice =
-              txState.status ===
-              TxStatus.Success /* Is this even correct? failed tx also have cost */
-                ? new BigNumber(txState.receipt.effectiveGasPrice)
-                : zero
+                const effectiveGasPrice =
+                  txState.status ===
+                  TxStatus.Success /* Is this even correct? failed tx also have cost */
+                    ? new BigNumber(txState.receipt.effectiveGasPrice)
+                    : zero
 
-            const totalCost =
-              !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
-                : zero
+                const totalCost =
+                  !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+                    ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
+                        tokenPrice,
+                      )
+                    : zero
 
-            uiChanges.publish(ADD_FORM_CHANGE, {
-              type: 'tx-details',
-              txDetails: {
-                txHash: (txState as any).txHash,
-                txStatus: txState.status,
-                txCost: totalCost,
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'tx-details',
+                  txDetails: {
+                    txHash: (txState as any).txHash,
+                    txStatus: txState.status,
+                    txError: txState.status === TxStatus.Error ? txState.error : undefined,
+                    txCost: totalCost,
+                  },
+                })
               },
-            })
-          },
-          transactionState,
-          finishLoader,
-          waitForTx,
-        )
-      }
+              transactionState,
+              finishLoader,
+              waitForTx,
+            )
+          }
 
-      const sendTxErrorHandler = () => {
-        finishLoader(false)
-      }
+          const sendTxErrorHandler = () => {
+            finishLoader(false)
+          }
 
-      const waitForTx = tx
-        .sendWithGasEstimation(addAutomationBotTrigger, txData)
-        .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-    },
+          // TODO circular dependency waitForTx <-> txSendSuccessHandler
+          const waitForTx = tx
+            .sendWithGasEstimation(addAutomationBotTrigger, txData)
+            .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+        },
     isStopLossEnabled,
     isLoading: false,
     isRetry: false,
@@ -267,6 +322,9 @@ export function AdjustSlFormControl({
     !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
   const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const gasEstimationUsd =
+    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
+
   const etherscan = ctx.etherscan.url
 
   const props: AdjustSlFormLayoutProps = {
@@ -274,11 +332,13 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: uiState?.txDetails?.txStatus,
+    txState: txStatus,
     txProgressing,
     txCost: uiState?.txDetails?.txCost,
     txHash: uiState?.txDetails?.txHash,
+    txError: uiState?.txDetails?.txError,
     gasEstimation,
+    gasEstimationUsd,
     accountIsController,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
@@ -292,7 +352,17 @@ export function AdjustSlFormControl({
     firstStopLossSetup,
     isEditing,
     collateralizationRatioAtNextPrice,
+    ethBalance: balanceInfo.ethBalance,
+    stage,
+    isProgressDisabled,
+    redirectToCloseVault,
   }
 
-  return <AdjustSlFormLayout {...props} />
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  return newComponentsEnabled ? (
+    <SidebarAdjustStopLoss {...props} />
+  ) : (
+    <AdjustSlFormLayout {...props} />
+  )
 }

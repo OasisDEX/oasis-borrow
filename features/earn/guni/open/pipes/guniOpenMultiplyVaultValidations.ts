@@ -18,6 +18,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     ledgerWalletContractDataDisabled,
     depositAmountExceedsCollateralBalance,
     invalidSlippage,
+    insufficientEthFundsForTx,
   } = state
   const errorMessages: VaultErrorMessage[] = []
 
@@ -47,6 +48,7 @@ export function validateGuniErrors(state: OpenGuniVaultState): OpenGuniVaultStat
     errorMessages.push(
       ...errorMessagesHandler({
         ledgerWalletContractDataDisabled,
+        insufficientEthFundsForTx,
       }),
     )
   }

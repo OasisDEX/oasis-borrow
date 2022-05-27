@@ -39,6 +39,7 @@ export interface MockOpenMultiplyVaultProps {
   ilks?: string[]
   ilk?: string
   exchangeQuote?: MockExchangeQuote
+  gasEstimationUsd?: BigNumber
 }
 
 export function mockOpenMultiplyVault({
@@ -59,6 +60,7 @@ export function mockOpenMultiplyVault({
   ilks = ['ETH-A', 'WBTC-A'],
   ilk = 'WBTC-A',
   exchangeQuote,
+  gasEstimationUsd,
 }: MockOpenMultiplyVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -91,6 +93,10 @@ export function mockOpenMultiplyVault({
     return _allowance$ || of(allowance)
   }
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   return createOpenMultiplyVault$(
@@ -103,7 +109,7 @@ export function mockOpenMultiplyVault({
     ilks$,
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
-    addGasEstimationMock,
+    gasEstimationMock$,
     slippageLimitMock(),
     ilk,
   )

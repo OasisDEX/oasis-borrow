@@ -5,7 +5,8 @@ import { InstiVault } from '../../../blockchain/instiVault'
 import { Vault } from '../../../blockchain/vaults'
 import { useAppContext } from '../../../components/AppContextProvider'
 import { useUIChanges } from '../../../helpers/uiChangesHook'
-import { getInitialVaultCollRatio, getStartingSlRatio } from './common/helpers'
+import { zero } from '../../../helpers/zero'
+import { getStartingSlRatio } from './common/helpers'
 import { extractStopLossData } from './common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
@@ -24,10 +25,7 @@ export function useStopLossStateInitializator(
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: ilkData.liquidationRatio,
-    collateralizationRatio: vault.collateralizationRatio,
-  })
+  const initialVaultCollRatio = zero
 
   const startingSlRatio = getStartingSlRatio({
     stopLossLevel,

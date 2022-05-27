@@ -19,7 +19,7 @@ const KbLink = (
 
 interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
-  maxGenerateAmount: BigNumber
+  maxGenerateAmount?: BigNumber
   ilkData: IlkData
   vault?: Vault
   maxWithdrawAmount?: BigNumber
@@ -27,7 +27,7 @@ interface VaultErrorsProps {
 
 export function VaultErrors({
   errorMessages,
-  maxGenerateAmount,
+  maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
   ilkData: { debtFloor },
   vault,
@@ -72,6 +72,8 @@ export function VaultErrors({
         return translate('depositing-all-eth-balance')
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
+      case 'insufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
       case 'exchangeError':
         return translate('exchange-error')
       case 'withdrawAmountExceedsFreeCollateral':
@@ -130,6 +132,8 @@ export function VaultErrors({
         return translate('after-coll-ratio-below-stop-loss-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
+      case 'stopLossOnNearLiquidationRatio':
+        return translate('stop-loss-near-liquidation-ratio')
       default:
         throw new UnreachableCaseError(message)
     }
@@ -140,5 +144,5 @@ export function VaultErrors({
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'error' }} />
+  return <MessageCard {...{ messages, type: 'error', withBullet: messages.length > 1 }} />
 }

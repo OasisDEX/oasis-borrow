@@ -10,6 +10,7 @@ export type VaultErrorMessage =
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
+  | 'insufficientEthFundsForTx'
   | 'exchangeError'
   | 'withdrawAmountExceedsFreeCollateral'
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
@@ -29,6 +30,7 @@ export type VaultErrorMessage =
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
+  | 'stopLossOnNearLiquidationRatio'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -36,6 +38,7 @@ interface ErrorMessagesHandler {
   exchangeError?: boolean
   generateAmountMoreThanMaxFlashAmount?: boolean
   ledgerWalletContractDataDisabled?: boolean
+  insufficientEthFundsForTx?: boolean
   depositingAllEthBalance?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateral?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice?: boolean
@@ -60,6 +63,7 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
+  stopLossOnNearLiquidationRatio?: boolean
 }
 
 export function errorMessagesHandler({
@@ -68,6 +72,7 @@ export function errorMessagesHandler({
   exchangeError,
   generateAmountMoreThanMaxFlashAmount,
   ledgerWalletContractDataDisabled,
+  insufficientEthFundsForTx,
   depositingAllEthBalance,
   generateAmountExceedsDaiYieldFromDepositingCollateral,
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
@@ -92,6 +97,7 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
+  stopLossOnNearLiquidationRatio,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -209,6 +215,14 @@ export function errorMessagesHandler({
 
   if (afterCollRatioBelowStopLossRatio) {
     errorMessages.push('afterCollRatioBelowStopLossRatio')
+  }
+
+  if (insufficientEthFundsForTx) {
+    errorMessages.push('insufficientEthFundsForTx')
+  }
+
+  if (stopLossOnNearLiquidationRatio) {
+    errorMessages.push('stopLossOnNearLiquidationRatio')
   }
 
   return errorMessages

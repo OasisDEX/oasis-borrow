@@ -17,6 +17,7 @@ export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
+  const tab = window.location.hash.replace(/^#/, '')
 
   const earnEnabled = useFeatureToggle('EarnProduct')
 
@@ -35,8 +36,8 @@ export function MultiplyView() {
           href: 'https://kb.oasis.app/help/what-is-multiply',
           text: t('product-page.multiply.link'),
         }}
+        scrollToId={tab}
       />
-
       <WithErrorHandler error={[productCardsDataError]}>
         <WithLoadingIndicator
           value={[productCardsDataValue]}
@@ -51,6 +52,7 @@ export function MultiplyView() {
               filters={productCardsConfig.multiply.cardsFilters.filter(
                 (f) => !(earnEnabled && f.name === 'UNI LP'),
               )}
+              selectedFilter={tab}
             >
               {(cardsFilter) => {
                 const filteredCards = multiplyPageCardsData({

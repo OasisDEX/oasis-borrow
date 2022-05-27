@@ -8,6 +8,7 @@ import {
   customAllowanceAmountExceedsMaxUint256Validator,
   customAllowanceAmountLessThanDepositAmountValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
@@ -133,8 +134,12 @@ export interface OpenVaultConditions {
   insufficientAllowance: boolean
 
   isLoadingStage: boolean
+  isSuccessStage: boolean
   canProgress: boolean
   canRegress: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultOpenVaultConditions: OpenVaultConditions = {
@@ -164,8 +169,12 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
   insufficientAllowance: false,
 
   isLoadingStage: false,
+  isSuccessStage: false,
   canProgress: false,
   canRegress: false,
+
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState {
@@ -276,6 +285,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'txWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'txSuccess'
+
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
     allowanceAmount,
@@ -324,6 +335,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'txFailure',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -335,6 +348,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     vaultWillBeUnderCollateralized,
     vaultWillBeUnderCollateralizedAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
+    insufficientEthFundsForTx,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,
@@ -350,6 +364,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     insufficientAllowance,
 
     isLoadingStage,
+    isSuccessStage,
     canProgress,
     canRegress,
   }

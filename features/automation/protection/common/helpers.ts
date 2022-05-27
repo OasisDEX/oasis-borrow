@@ -1,23 +1,5 @@
 import BigNumber from 'bignumber.js'
 
-import { STOP_LOSS_LIQUIDATION_OFFSET } from './consts/calculations'
-
-export function getInitialVaultCollRatio({
-  liquidationRatio,
-  collateralizationRatio,
-}: {
-  liquidationRatio: BigNumber
-  collateralizationRatio: BigNumber
-}) {
-  return new BigNumber(
-    liquidationRatio
-      .plus(collateralizationRatio)
-      .plus(STOP_LOSS_LIQUIDATION_OFFSET)
-      .dividedBy(2)
-      .toFixed(2, BigNumber.ROUND_CEIL),
-  )
-}
-
 export function getIsEditingProtection({
   isStopLossEnabled,
   selectedSLValue,
@@ -30,9 +12,16 @@ export function getIsEditingProtection({
   selectedSLValue: BigNumber
   startingSlRatio: BigNumber
   stopLossLevel: BigNumber
-  collateralActive: boolean
-  isToCollateral: boolean
+  collateralActive?: boolean
+  isToCollateral?: boolean
 }) {
+  if (
+    (collateralActive === undefined && isToCollateral === undefined) ||
+    selectedSLValue.isZero()
+  ) {
+    return false
+  }
+
   return (
     (!isStopLossEnabled && !selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
