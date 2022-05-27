@@ -134,9 +134,6 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     },
     content: (
       <Grid gap={3}>
-        stage: {stage}
-        <br />
-        other: {otherAction}
         {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (

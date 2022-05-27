@@ -31,6 +31,7 @@
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
   "after": "After",
+  "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
