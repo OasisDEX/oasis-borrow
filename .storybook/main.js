@@ -19,12 +19,7 @@ module.exports = {
     '../features/**/*.stories.tsx',
     '../components/**/*.stories.tsx',
   ],
-  addons: [
-    '@storybook/addon-links',
-    '@storybook/addon-essentials',
-    // '@storybook/addon-postcss',
-    'storybook-addon-next-router',
-  ],
+  addons: ['@storybook/addon-links', '@storybook/addon-essentials', 'storybook-addon-next-router'],
   babel: async (options) => ({
     ...options,
     // any extra options you want to set
