@@ -34,6 +34,9 @@ const oasisBaseTheme = {
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
+    grey: {
+      darker: '#E6E9EB',
+    },
 
     text: {
       focused: '#272940',
@@ -417,7 +420,7 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
-      transition: 'background 0.2s ease-in',
+      transition: 'background 200ms',
       '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },
@@ -631,7 +634,7 @@ const oasisBaseTheme = {
       color: 'link',
       cursor: 'pointer',
       background: 'none',
-      transition: 'opacity ease-in 0.2s',
+      transition: 'opacity 200ms',
       '&:hover, &:focus-visible': {
         opacity: 0.7,
       },
@@ -796,6 +799,31 @@ const oasisBaseTheme = {
       border: 'none',
       bg: 'onSuccess',
       color: 'onPrimary',
+    },
+    pill: {
+      px: 4,
+      py: '12px',
+      color: 'text.subtitle',
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'heading',
+      border: 'none',
+      borderRadius: 'round',
+      backgroundColor: 'transparent',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: 'border',
+      },
+      transition: 'color 200ms, background-color 200ms',
+    },
+    pillActive: {
+      variant: 'buttons.pill',
+      color: 'background',
+      backgroundColor: 'link',
+      '&:hover': {
+        backgroundColor: 'link',
+      },
     },
   },
   links: {

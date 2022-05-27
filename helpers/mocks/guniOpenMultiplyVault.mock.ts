@@ -34,6 +34,7 @@ export function mockGuniOpenMultiplyVault({
   ilks = ['GUNIV3DAIUSDC1-A'],
   ilk = 'GUNIV3DAIUSDC1-A',
   exchangeQuote,
+  gasEstimationUsd,
 }: MockOpenMultiplyVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -84,6 +85,10 @@ export function mockGuniOpenMultiplyVault({
 
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
+  function gasEstimationMock$<T>(state: T) {
+    return addGasEstimationMock(state, gasEstimationUsd)
+  }
+
   return createOpenGuniVault$(
     of(mockContextConnected),
     txHelpers$,
@@ -95,7 +100,7 @@ export function mockGuniOpenMultiplyVault({
     ilkData$,
     mockExchangeQuote$(exchangeQuote),
     mockOnEveryBlock,
-    addGasEstimationMock,
+    gasEstimationMock$,
     ilk,
     token1Balance$,
     getGuniMintAmount$,

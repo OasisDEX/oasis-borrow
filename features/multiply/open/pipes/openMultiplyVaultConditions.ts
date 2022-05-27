@@ -9,6 +9,7 @@ import {
   customAllowanceAmountExceedsMaxUint256Validator,
   customAllowanceAmountLessThanDepositAmountValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
@@ -115,12 +116,16 @@ export interface OpenMultiplyVaultConditions {
   insufficientAllowance: boolean
 
   isLoadingStage: boolean
+  isSuccessStage: boolean
   canProgress: boolean
   canRegress: boolean
   canAdjustRisk: boolean
   isExchangeLoading: boolean
 
   highSlippage: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
@@ -152,11 +157,14 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   insufficientAllowance: false,
 
   isLoadingStage: false,
+  isSuccessStage: false,
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
 
   highSlippage: false,
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -275,6 +283,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'txWaitingForApproval',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'txSuccess'
+
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
     allowanceAmount,
@@ -333,6 +343,8 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'txFailure',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -361,10 +373,13 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     insufficientAllowance,
 
     isLoadingStage,
+    isSuccessStage,
     canProgress,
     canRegress,
     isExchangeLoading,
 
     highSlippage,
+
+    insufficientEthFundsForTx,
   }
 }

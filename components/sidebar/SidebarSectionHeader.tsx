@@ -7,14 +7,20 @@ import {
   SidebarSectionHeaderSelectItem,
 } from './SidebarSectionHeaderSelect'
 
+export interface SidebarSectionHeaderButton {
+  label: string
+  icon?: string
+  action: () => void
+}
+
 export interface SidebarSectionHeaderProps {
   title: string
-  dropdown?: SidebarSectionHeaderSelectItem[]
-  headerButton?: {
-    label: string
-    icon?: string
-    action: () => void
+  dropdown?: {
+    disabled?: boolean
+    forcePanel?: string
+    items: SidebarSectionHeaderSelectItem[]
   }
+  headerButton?: SidebarSectionHeaderButton
   onSelect: (panel: string) => void
 }
 
@@ -27,11 +33,12 @@ export function SidebarSectionHeader({
   return (
     <Flex
       sx={{
+        position: 'relative',
         justifyContent: 'space-between',
-        mb: '24px',
         py: 3,
         px: '24px',
         borderBottom: 'lightMuted',
+        zIndex: 1,
       }}
     >
       <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
@@ -47,7 +54,7 @@ export function SidebarSectionHeader({
         </Text>
       </Flex>
       {dropdown ? (
-        <SidebarSectionHeaderSelect items={dropdown} onSelect={onSelect} />
+        <SidebarSectionHeaderSelect onSelect={onSelect} {...dropdown} />
       ) : headerButton ? (
         <Flex
           sx={{

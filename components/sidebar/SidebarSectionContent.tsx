@@ -1,4 +1,5 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
+import { theme } from 'theme'
 import { Box } from 'theme-ui'
 
 export interface SidebarSectionContentProps {
@@ -12,22 +13,54 @@ export interface SidebarSectionContentProps {
 }
 
 export function SidebarSectionContent({ activePanel, content }: SidebarSectionContentProps) {
+  const contanierRef = useRef<HTMLDivElement>(null)
+  const [overflowedConent, setOverflowedConent] = useState(false)
+
+  useEffect(() => {
+    if (contanierRef.current) {
+      const hasOverflowingChildren =
+        contanierRef.current.offsetHeight < contanierRef.current.scrollHeight
+      setOverflowedConent(hasOverflowingChildren)
+    }
+  })
+
   return (
     <Box
+      ref={contanierRef}
       sx={{
+        '&::-webkit-scrollbar': {
+          width: '6px',
+          borderRadius: theme.radii.large,
+        },
+        '&::-webkit-scrollbar-thumb': {
+          backgroundColor: theme.colors.grey.darker,
+          borderRadius: theme.radii.large,
+        },
+        '&::-webkit-scrollbar-track': {
+          my: '24px',
+          mr: '10px',
+          backgroundColor: theme.colors.backgroundAlt,
+          borderRadius: theme.radii.large,
+        },
+        maxHeight: 490,
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        mr: overflowedConent ? '8px' : '0px',
         p: '24px',
-        pt: 0,
+        pr: overflowedConent ? '10px' : '24px',
       }}
     >
-      {Array.isArray(content) ? (
-        <>
-          {content?.map((item, i) => (
-            <Fragment key={i}>{activePanel === item.panel && item.content}</Fragment>
-          ))}
-        </>
-      ) : (
-        content
-      )}
+      <Box>
+        {Array.isArray(content) ? (
+          <>
+            {content?.map((item, i) => (
+              <Fragment key={i}>{activePanel === item.panel && item.content}</Fragment>
+            ))}
+          </>
+        ) : (
+          content
+        )}
+      </Box>
     </Box>
   )
 }

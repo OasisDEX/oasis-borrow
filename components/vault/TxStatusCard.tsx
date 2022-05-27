@@ -3,15 +3,13 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Flex, Grid, Link, Spinner, Text } from 'theme-ui'
 
-export function TxStatusCardProgress({
-  text,
-  txHash,
-  etherscan,
-}: {
+export interface TxStatusCardProgressProps {
   text: string
   txHash: string
   etherscan: string
-}) {
+}
+
+export function TxStatusCardProgress({ text, txHash, etherscan }: TxStatusCardProgressProps) {
   const { t } = useTranslation()
   return (
     <Card sx={{ backgroundColor: 'warning', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>

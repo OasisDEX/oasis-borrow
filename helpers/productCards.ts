@@ -111,6 +111,7 @@ export const supportedMultiplyIlks = [
   'WBTC-C',
   'RENBTC-A',
   'GUNIV3DAIUSDC2-A', // remove this when removing EarnProduct feature toggle
+  'GUNIV3DAIUSDC1-A',
   'LINK-A',
   'UNI-A',
   'YFI-A',
