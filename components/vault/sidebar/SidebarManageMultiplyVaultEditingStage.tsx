@@ -69,6 +69,26 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
   )
 }
 
+function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
+  return <>depositCollateral</>
+}
+
+function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageMultiplyVaultState) {
+  return <>withdrawCollateral</>
+}
+
+function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyVaultState) {
+  return <>depositDai</>
+}
+
+function SidebarManageMultiplyVaultEditingStagePaybackDai(props: ManageMultiplyVaultState) {
+  return <>paybackDai</>
+}
+
+function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiplyVaultState) {
+  return <>withdrawDai</>
+}
+
 export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
@@ -105,38 +125,51 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
                   },
                 ]}
               />
+              {otherAction === 'depositCollateral' && (
+                <SidebarManageMultiplyVaultEditingStageDepositCollateral {...props} />
+              )}
+              {otherAction === 'withdrawCollateral' && (
+                <SidebarManageMultiplyVaultEditingStageWithdrawCollateral {...props} />
+              )}
             </>
           )}
           {otherActionsDaiPanel.includes(otherAction) && (
             <>
-              <>
-                <ActionPills
-                  active={otherAction}
-                  items={[
-                    {
-                      id: 'depositDai',
-                      label: t('system.actions.multiply.buy-coll'),
-                      action: () => {
-                        setOtherAction!('depositDai')
-                      },
+              <ActionPills
+                active={otherAction}
+                items={[
+                  {
+                    id: 'depositDai',
+                    label: t('system.actions.multiply.buy-coll'),
+                    action: () => {
+                      setOtherAction!('depositDai')
                     },
-                    {
-                      id: 'paybackDai',
-                      label: t('system.actions.multiply.reduce-debt'),
-                      action: () => {
-                        setOtherAction!('paybackDai')
-                      },
+                  },
+                  {
+                    id: 'paybackDai',
+                    label: t('system.actions.multiply.reduce-debt'),
+                    action: () => {
+                      setOtherAction!('paybackDai')
                     },
-                    {
-                      id: 'withdrawDai',
-                      label: t('withdraw'),
-                      action: () => {
-                        setOtherAction!('withdrawDai')
-                      },
+                  },
+                  {
+                    id: 'withdrawDai',
+                    label: t('withdraw'),
+                    action: () => {
+                      setOtherAction!('withdrawDai')
                     },
-                  ]}
-                />
-              </>
+                  },
+                ]}
+              />
+              {otherAction === 'depositDai' && (
+                <SidebarManageMultiplyVaultEditingStageDepositDai {...props} />
+              )}
+              {otherAction === 'paybackDai' && (
+                <SidebarManageMultiplyVaultEditingStagePaybackDai {...props} />
+              )}
+              {otherAction === 'withdrawDai' && (
+                <SidebarManageMultiplyVaultEditingStageWithdrawDai {...props} />
+              )}
             </>
           )}
           {otherAction === 'closeVault' && debt.isGreaterThan(zero) && debt && (
