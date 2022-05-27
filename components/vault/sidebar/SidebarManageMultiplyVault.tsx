@@ -10,6 +10,7 @@ import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
@@ -17,6 +18,9 @@ import {
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
+
+import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
+import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
 export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -30,6 +34,9 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     progress,
     canRegress,
     regress,
+    isProxyStage,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
     isLoadingStage,
     isSuccessStage,
     isBorrowTransitionStage,
@@ -41,6 +48,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
 
   const [forcePanel, setForcePanel] = useState<string>()
   const flow: SidebarFlow = 'manageMultiply'
+  const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
@@ -123,10 +131,10 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         <br />
         other: {otherAction}
         {/* {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />} */}
-        {/* {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />} */}
-        {/* {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
+        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarManageVaultAllowanceStage {...props} />
-        )} */}
+        )}
         {/* {isMultiplyTransitionStage && (
           <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
         )} */}
