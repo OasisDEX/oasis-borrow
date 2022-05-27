@@ -820,7 +820,8 @@
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults"
+    "your-vaults": "Your Vaults",
+    "assets-and-positions": "Top {{number}} assets and positions"
   },
   "vault-banners": {
     "ownership": {

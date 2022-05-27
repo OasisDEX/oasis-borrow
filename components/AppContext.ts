@@ -42,10 +42,13 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
+  coinbaseOrderBook$,
+  coinGeckoTicker$,
+  coinPaprikaTicker$,
   createGasPrice$,
   createOraclePriceData$,
+  createTokenPriceInUSD$,
   GasPriceParams,
-  tokenPricesInUSD$,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -154,8 +157,15 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
+  every10Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+  SwapWidgetState,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { createBonusPipe$ } from '../features/bonus/bonusPipe'
 import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
@@ -178,8 +188,17 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
+import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { createProductCardsData$, createProductCardsWithBalance$ } from '../helpers/productCards'
+import {
+  createProductCardsData$,
+  createProductCardsWithBalance$,
+  supportedBorrowIlks,
+  supportedEarnIlks,
+  supportedMultiplyIlks,
+} from '../helpers/productCards'
 import curry from 'ramda/src/curry'
 
 export type TxData =
@@ -241,12 +260,14 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
+  | SwapWidgetState
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
+  SwapWidgetChange: SwapWidgetChangeAction
 }
 
 export type UIChanges = {
@@ -331,6 +352,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+  uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
 
   return uiChangesSubject
 }
@@ -388,11 +410,20 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const tokenPriceUSD$ = memoize(
+    curry(createTokenPriceInUSD$)(
+      every10Seconds$,
+      coinbaseOrderBook$,
+      coinPaprikaTicker$,
+      coinGeckoTicker$,
+    ),
+  )
+
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPricesInUSD$, txHelpers$, state, call)
+    return doGasEstimation(gasPrice$, tokenPriceUSD$(['DAI', 'ETH']), txHelpers$, state, call)
   }
 
   // base
@@ -565,6 +596,8 @@ export function setupAppContext() {
       standardCdps$,
     ]),
   )
+
+  const positions$ = memoize(curry(createPositions$)(vaults$))
 
   const ilks$ = createIlks$(context$)
 
@@ -803,6 +836,25 @@ export function setupAppContext() {
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
   )
 
+  const uiChanges = initializeUIChanges()
+
+  const assetActions$ = memoize(
+    curry(createAssetActions$)(
+      connectedContext$,
+      ilkToToken$,
+      {
+        borrow: supportedBorrowIlks,
+        multiply: supportedMultiplyIlks,
+        earn: supportedEarnIlks,
+      },
+      uiChanges,
+    ),
+  )
+
+  const positionsOverviewSummary$ = memoize(
+    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$, assetActions$),
+  )
+
   const termsAcceptance$ = createTermsAcceptance$(
     web3Context$,
     currentContent.tos.version,
@@ -821,8 +873,6 @@ export function setupAppContext() {
     bigNumberTostring,
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
-
-  const uiChanges = initializeUIChanges()
 
   return {
     web3Context$,
@@ -866,6 +916,7 @@ export function setupAppContext() {
     instiVault$,
     ilkToToken$,
     bonus$,
+    positionsOverviewSummary$,
   }
 }
 
