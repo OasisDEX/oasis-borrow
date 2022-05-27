@@ -1,18 +1,19 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { useTranslation } from 'next-i18next'
 
-import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
+import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 export function getSidebarSuccess({
   stage,
+  id,
   proxyTxHash,
   allowanceTxHash,
   openTxHash,
+  manageTxHash,
   etherscan,
   safeConfirmations,
   token,
-  id,
-}: HasSidebarTxData): TxStatusCardProgressProps | undefined {
+}: SidebarTxData): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -25,6 +26,8 @@ export function getSidebarSuccess({
         txHash: proxyTxHash!,
         etherscan: etherscan!,
       }
+    case 'collateralAllowanceSuccess':
+    case 'daiAllowanceSuccess':
     case 'allowanceSuccess':
       return {
         text: t('setting-allowance-for', { token }),
@@ -35,6 +38,12 @@ export function getSidebarSuccess({
       return {
         text: t('vault-created', { id: id?.toString() }),
         txHash: openTxHash!,
+        etherscan: etherscan!,
+      }
+    case 'manageSuccess':
+      return {
+        text: t('vault-changed'),
+        txHash: manageTxHash!,
         etherscan: etherscan!,
       }
     default:

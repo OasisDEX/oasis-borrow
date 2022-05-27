@@ -440,6 +440,10 @@ export function afterCollRatioBelowStopLossRatioValidator({
   afterCollateralizationRatioAtNextPrice: BigNumber
   stopLossRatio: BigNumber
 }) {
+  if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
+    return false
+  }
+
   return (
     afterCollateralizationRatio.lt(stopLossRatio) ||
     afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)

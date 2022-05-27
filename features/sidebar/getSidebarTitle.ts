@@ -39,7 +39,18 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'allowanceInProgress':
     case 'allowanceFailure':
     case 'allowanceSuccess':
+    case 'collateralAllowanceWaitingForConfirmation':
+    case 'collateralAllowanceWaitingForApproval':
+    case 'collateralAllowanceInProgress':
+    case 'collateralAllowanceFailure':
+    case 'collateralAllowanceSuccess':
       return t('vault-form.header.allowance', { token: token.toUpperCase() })
+    case 'daiAllowanceWaitingForConfirmation':
+    case 'daiAllowanceWaitingForApproval':
+    case 'daiAllowanceInProgress':
+    case 'daiAllowanceFailure':
+    case 'daiAllowanceSuccess':
+      return t('vault-form.header.allowance', { token: 'DAI' })
     case 'txInProgress':
       return t('vault-form.header.confirm-in-progress')
     case 'txWaitingForConfirmation':
@@ -48,6 +59,22 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
       return t('vault-form.header.confirm')
     case 'txSuccess':
       return t('vault-form.header.success')
+    case 'collateralEditing':
+    case 'daiEditing':
+    case 'multiplyTransitionEditing':
+    case 'multiplyTransitionWaitingForConfirmation':
+    case 'multiplyTransitionInProgress':
+    case 'multiplyTransitionFailure':
+    case 'multiplyTransitionSuccess':
+      return t('vault-form.header.manage')
+    case 'manageInProgress':
+      return t('vault-form.header.modified')
+    case 'manageWaitingForConfirmation':
+    case 'manageWaitingForApproval':
+    case 'manageFailure':
+      return t('vault-form.header.confirm-manage')
+    case 'manageSuccess':
+      return t('vault-form.header.success-manage')
     default:
       throw new UnreachableCaseError(stage)
   }

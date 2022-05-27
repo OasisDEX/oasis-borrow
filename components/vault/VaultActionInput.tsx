@@ -147,7 +147,7 @@ export function VaultActionInput({
                 <Text
                   as="span"
                   sx={{
-                    cursor: 'pointer',
+                    cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
                   onClick={!disabled ? onSetMin : () => null}
                 >
@@ -166,7 +166,7 @@ export function VaultActionInput({
                 <Text
                   as="span"
                   sx={{
-                    cursor: 'pointer',
+                    cursor: disabled ? 'not-allowed' : 'pointer',
                   }}
                   onClick={!disabled ? onSetMax : () => null}
                 >
@@ -178,7 +178,7 @@ export function VaultActionInput({
                 </Text>
               </>
             )}{' '}
-            {tokenSymbol}
+            {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) && tokenSymbol}
           </Text>
         )}
       </Grid>

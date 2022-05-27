@@ -1,11 +1,11 @@
-import { HasAllowanceData } from 'helpers/extractSidebarHelpers'
+import { SidebarAllowanceData } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
 import { VaultAllowance } from '../VaultAllowance'
 
-export function SidebarOpenVaultAllowanceStage(props: HasAllowanceData) {
+export function SidebarOpenVaultAllowanceStage(props: SidebarAllowanceData) {
   const { t } = useTranslation()
   const { stage } = props
 
