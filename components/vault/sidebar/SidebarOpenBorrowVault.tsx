@@ -4,23 +4,20 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { getHeaderButton } from 'features/sidebar/getHeaderButton'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
-import {
-  progressTrackingEvent,
-  regressTrackingEvent,
-} from 'features/sidebar/trackingEventOpenVault'
+import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
+import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
-  extractAllowanceDataFromOpenVaultState,
-  extractSidebarButtonLabelParams,
+  extractPrimaryButtonLabelParams,
+  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -31,7 +28,6 @@ import { SidebarOpenVaultAllowanceStage } from './SidebarOpenVaultAllowanceStage
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
-  const { t } = useTranslation()
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
@@ -52,33 +48,18 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     totalSteps,
     currentStep,
     ilk,
-    updateDeposit,
-    inputAmountsEmpty,
   } = props
 
-  const gasData = extractGasDataFromState(props)
-  const sidebarPrimaryButtonLabelParams = extractSidebarButtonLabelParams({
-    flow: 'openBorrow',
-    ...props,
-  })
+  const flow: SidebarFlow = 'openBorrow'
   const firstCDP = isFirstCdp(accountData)
-  const allowanceData = extractAllowanceDataFromOpenVaultState(props)
+  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
+  const gasData = extractGasDataFromState(props)
+  const allowanceData = extractSidebarAllowanceData(props)
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow: 'openBorrow', stage, token }),
-    headerButton: getHeaderButton({
-      stage,
-      canResetForm: isEditingStage && !inputAmountsEmpty,
-      resetForm: () => {
-        updateDeposit!(undefined)
-      },
-      canRegress,
-      regress,
-      regressCallback: () => {
-        regressTrackingEvent({ props, firstCDP })
-      },
-    }),
+    title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
@@ -90,7 +71,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel(sidebarPrimaryButtonLabelParams),
+      label: getPrimaryButtonLabel(primaryButtonLabelParams),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
@@ -100,13 +81,15 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
       url: isSuccessStage ? `/${id}` : undefined,
     },
-    ...(isEditingStage &&
-      ALLOWED_MULTIPLY_TOKENS.includes(token) && {
-        textButton: {
-          label: t('system.actions.borrow.switch-to-multiply'),
-          url: `/vaults/open-multiply/${ilk}`,
-        },
-      }),
+    textButton: {
+      label: getTextButtonLabel({ flow, stage, token }),
+      hidden: (!canRegress || isSuccessStage) && (!isEditingStage || !canTransition),
+      action: () => {
+        if (canRegress) regress!()
+        regressTrackingEvent({ props })
+      },
+      url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
+    },
     progress: getSidebarProgress(sidebarTxData),
     success: getSidebarSuccess(sidebarTxData),
   }

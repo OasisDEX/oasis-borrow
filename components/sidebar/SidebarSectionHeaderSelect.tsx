@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Button, Text } from 'theme-ui'
 
 export interface SidebarSectionHeaderSelectItem {
@@ -12,17 +12,28 @@ export interface SidebarSectionHeaderSelectItem {
   action?: () => void
 }
 interface SidebarSectionHeaderSelectProps {
+  disabled?: boolean
+  forcePanel?: string
   items: SidebarSectionHeaderSelectItem[]
   onSelect: (panel: string) => void
 }
 
-export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHeaderSelectProps) {
-  const [active, setActive] = useState<number>(0)
+export function SidebarSectionHeaderSelect({
+  disabled,
+  forcePanel,
+  items,
+  onSelect,
+}: SidebarSectionHeaderSelectProps) {
+  const [activeItem, setActiveItem] = useState<SidebarSectionHeaderSelectItem>(items[0])
   const [isExpanded, setIsExpanded] = useState(false)
   const componentRef = useOutsideElementClickHandler(() => setIsExpanded(false))
   const clickHandler = (): void => {
     setIsExpanded(!isExpanded)
   }
+
+  useEffect(() => {
+    setActiveItem(items.find((item) => item.panel === forcePanel) || items[0])
+  }, [forcePanel])
 
   return (
     <Box
@@ -33,6 +44,9 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
         '&:first-child': {
           ml: 0,
         },
+        opacity: !disabled ? 1 : 0.5,
+        cursor: !disabled ? 'default' : 'not-allowed',
+        transition: 'opacity 200ms',
       }}
     >
       <Button
@@ -43,11 +57,12 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
           alignItems: 'center',
           p: '3px 10px 3px 3px',
           fontSize: 2,
+          pointerEvents: !disabled ? 'auto' : 'none',
         }}
       >
-        {items[active].icon ? (
+        {activeItem?.icon ? (
           <Icon
-            name={items[active].icon as string}
+            name={activeItem?.icon as string}
             size="32px"
             sx={{ verticalAlign: 'text-bottom', mr: 1 }}
           />
@@ -62,7 +77,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             }}
           />
         )}
-        {items[active].shortLabel || items[active].label}
+        {activeItem?.shortLabel || activeItem?.label}
         <ExpandableArrow size={13} direction={isExpanded ? 'up' : 'down'} sx={{ ml: '12px' }} />
       </Button>
       <Box
@@ -80,7 +95,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
           boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
           opacity: isExpanded ? 1 : 0,
           transform: isExpanded ? 'translateY(0)' : 'translateY(-5px)',
-          pointerEvents: isExpanded ? 'auto' : 'none',
+          pointerEvents: !disabled && isExpanded ? 'auto' : 'none',
           transition: 'opacity 200ms, transform 200ms',
           zIndex: 1,
         }}
@@ -91,10 +106,8 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
             as="li"
             onClick={() => {
               setIsExpanded(false)
-              if (item.panel) {
-                onSelect(item.panel)
-                setActive(i)
-              }
+              onSelect(item.panel!)
+              if (!forcePanel) setActiveItem(items[i])
               if (item.action) item.action()
             }}
             sx={{
@@ -105,7 +118,7 @@ export function SidebarSectionHeaderSelect({ items, onSelect }: SidebarSectionHe
               fontSize: 1,
               fontWeight: 'semiBold',
               backgroundColor: 'transparent',
-              color: active === i ? 'primary' : 'text.muted',
+              color: item === activeItem ? 'primary' : 'text.muted',
               transition: 'background-color 150ms',
               '&:hover': {
                 backgroundColor: 'border',

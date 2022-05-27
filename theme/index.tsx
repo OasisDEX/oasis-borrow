@@ -791,6 +791,31 @@ const oasisBaseTheme = {
       bg: 'onSuccess',
       color: 'onPrimary',
     },
+    pill: {
+      px: 4,
+      py: '12px',
+      color: 'text.subtitle',
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'heading',
+      border: 'none',
+      borderRadius: 'round',
+      backgroundColor: 'transparent',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: 'border',
+      },
+      transition: 'color 200ms, background-color 200ms',
+    },
+    pillActive: {
+      variant: 'buttons.pill',
+      color: 'background',
+      backgroundColor: 'link',
+      '&:hover': {
+        backgroundColor: 'link',
+      },
+    },
   },
   links: {
     unStyled: {

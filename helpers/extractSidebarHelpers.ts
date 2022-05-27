@@ -1,23 +1,18 @@
 import BigNumber from 'bignumber.js'
-import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { pick } from 'ramda'
 
 import { AllowanceOption } from '../features/allowance/allowance'
 
-export interface GetPrimaryButtonLabelParams {
-  flow: SidebarFlow
+interface SharedStateExtractions {
   stage: SidebarVaultStages
-  token: string
-  id?: BigNumber
-  proxyAddress?: string
-  insufficientAllowance?: boolean
+  token?: string
+  vault?: {
+    token: string
+  }
 }
 
-export function extractSidebarButtonLabelParams(state: GetPrimaryButtonLabelParams) {
-  return pick(['flow', 'stage', 'token', 'id', 'proxyAddress', 'insufficientAllowance'], state)
-}
-
-export interface HasAllowanceData {
+export interface SidebarAllowanceData {
   stage: SidebarVaultStages
   token: string
   selectedAllowanceRadio: AllowanceOption
@@ -29,7 +24,27 @@ export interface HasAllowanceData {
   setAllowanceAmountCustom?: () => void
 }
 
-export function extractAllowanceDataFromOpenVaultState(state: HasAllowanceData) {
+export interface PrimaryButtonLabelParams extends SharedStateExtractions {
+  id?: BigNumber
+  proxyAddress?: string
+  insufficientCollateralAllowance?: boolean
+  insufficientDaiAllowance?: boolean
+  insufficientAllowance?: boolean
+  canTransition?: boolean
+}
+
+export interface SidebarTxData extends SharedStateExtractions {
+  id?: BigNumber
+  proxyTxHash?: string
+  allowanceTxHash?: string
+  openTxHash?: string
+  manageTxHash?: string
+  proxyConfirmations?: number
+  safeConfirmations?: number
+  etherscan?: string
+}
+
+export function extractSidebarAllowanceData(state: SidebarAllowanceData) {
   return pick(
     [
       'stage',
@@ -46,30 +61,40 @@ export function extractAllowanceDataFromOpenVaultState(state: HasAllowanceData) 
   )
 }
 
-export interface HasSidebarTxData {
-  stage: SidebarVaultStages
-  token: string
-  safeConfirmations: number
-  proxyTxHash?: string
-  allowanceTxHash?: string
-  openTxHash?: string
-  etherscan?: string
-  proxyConfirmations?: number
-  id?: BigNumber
+export function extractPrimaryButtonLabelParams(state: PrimaryButtonLabelParams) {
+  return {
+    ...pick(
+      [
+        'stage',
+        'id',
+        'proxyAddress',
+        'insufficientCollateralAllowance',
+        'insufficientDaiAllowance',
+        'insufficientAllowance',
+        'canTransition',
+      ],
+      state,
+    ),
+    token: state.token || state.vault?.token,
+  }
 }
 
-export function extractSidebarTxData(state: HasSidebarTxData) {
-  return pick(
-    [
-      'stage',
-      'proxyTxHash',
-      'allowanceTxHash',
-      'openTxHash',
-      'etherscan',
-      'proxyConfirmations',
-      'safeConfirmations',
-      'token',
-    ],
-    state,
-  )
+export function extractSidebarTxData(state: SidebarTxData) {
+  return {
+    ...pick(
+      [
+        'stage',
+        'id',
+        'proxyTxHash',
+        'allowanceTxHash',
+        'openTxHash',
+        'manageTxHash',
+        'proxyConfirmations',
+        'safeConfirmations',
+        'etherscan',
+      ],
+      state,
+    ),
+    token: state.token || state.vault?.token,
+  }
 }
