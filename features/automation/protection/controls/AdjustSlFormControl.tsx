@@ -7,29 +7,30 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { FixedSizeArray } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
-import { Context } from '../../../../blockchain/network'
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { getEstimatedGasFeeText } from '../../../../components/vault/VaultChangesInformation'
-import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
-import { BalanceInfo } from '../../../shared/balanceInfo'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { DEFAULT_SL_SLIDER_BOUNDRY } from '../common/consts/automationDefaults'
-import { progressStatuses } from '../common/consts/txStatues'
+import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
@@ -41,6 +42,7 @@ import {
   AdjustSlFormLayoutProps,
   slCollRatioNearLiquidationRatio,
 } from './AdjustSlFormLayout'
+import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
 function prepareAddTriggerData(
   vaultData: Vault,
@@ -183,9 +185,9 @@ export function AdjustSlFormControl({
     rightBoundry: afterNewLiquidationPrice,
     sliderKey: 'set-stoploss',
     lastValue: uiState.selectedSLValue,
-    leftBoundryFormatter: (x: BigNumber) => formatPercent(x),
+    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
     leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-    rightBoundryFormatter: (x: BigNumber) => '$ ' + formatAmount(x, 'USD'),
+    rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
@@ -216,6 +218,25 @@ export function AdjustSlFormControl({
       })
     },
   }
+
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
+  const isProgressDisabled = !!(
+    !isOwner ||
+    (!isEditing && txStatus !== TxStatus.Success) ||
+    isProgressStage
+  )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: isStopLossEnabled
@@ -311,7 +332,7 @@ export function AdjustSlFormControl({
     closePickerConfig: closeProps,
     slValuePickerConfig: sliderProps,
     addTriggerConfig: addTriggerConfig,
-    txState: uiState?.txDetails?.txStatus,
+    txState: txStatus,
     txProgressing,
     txCost: uiState?.txDetails?.txCost,
     txHash: uiState?.txDetails?.txHash,
@@ -332,7 +353,16 @@ export function AdjustSlFormControl({
     isEditing,
     collateralizationRatioAtNextPrice,
     ethBalance: balanceInfo.ethBalance,
+    stage,
+    isProgressDisabled,
+    redirectToCloseVault,
   }
 
-  return <AdjustSlFormLayout {...props} />
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  return newComponentsEnabled ? (
+    <SidebarAdjustStopLoss {...props} />
+  ) : (
+    <AdjustSlFormLayout {...props} />
+  )
 }

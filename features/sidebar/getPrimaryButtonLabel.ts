@@ -1,22 +1,72 @@
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
+const flowsWithoutProxy = ['adjustSl', 'addSl']
+const UNREACHABLE_CASE_MESSAGE = ''
+
 function getPrimaryButtonLabelEditingTranslationKey({
+  flow,
   proxyAddress,
   insufficientCollateralAllowance,
   insufficientDaiAllowance,
   insufficientAllowance,
 }: {
+  flow: SidebarFlow
   proxyAddress?: string
   insufficientCollateralAllowance?: boolean
   insufficientDaiAllowance?: boolean
   insufficientAllowance?: boolean
 }) {
-  if (!proxyAddress) return 'setup-proxy'
+  if (!proxyAddress && !flowsWithoutProxy.includes(flow)) return 'setup-proxy'
   else if (insufficientCollateralAllowance || insufficientDaiAllowance || insufficientAllowance)
     return 'set-token-allowance'
-  else return 'confirm'
+
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+    case 'manageBorrow':
+    case 'manageMultiply':
+      return 'confirm'
+    case 'addSl':
+      return 'add-stop-loss'
+    case 'adjustSl':
+      return 'update-stop-loss'
+    case 'cancelSl':
+      return 'cancel-stop-loss'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'creating-vault'
+    case 'addSl':
+      return 'add-stop-loss'
+    case 'adjustSl':
+      return 'update-stop-loss'
+    case 'cancelSl':
+      return 'cancel-stop-loss'
+    default:
+      return UNREACHABLE_CASE_MESSAGE
+  }
+}
+
+function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'go-to-vault'
+    case 'addSl':
+    case 'adjustSl':
+      return 'back-to-vault-overview'
+    default:
+      return UNREACHABLE_CASE_MESSAGE
+  }
 }
 
 export function getPrimaryButtonLabel({
@@ -27,8 +77,9 @@ export function getPrimaryButtonLabel({
   insufficientCollateralAllowance,
   insufficientDaiAllowance,
   insufficientAllowance,
+  flow,
   canTransition,
-}: PrimaryButtonLabelParams): string {
+}: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
   const allowanceToken = insufficientDaiAllowance ? 'DAI' : token
 
@@ -42,6 +93,7 @@ export function getPrimaryButtonLabel({
         insufficientCollateralAllowance,
         insufficientDaiAllowance,
         insufficientAllowance,
+        flow,
       })
 
       return t(translationKey, { token: allowanceToken })
@@ -84,9 +136,13 @@ export function getPrimaryButtonLabel({
     case 'manageSuccess':
       return t('ok')
     case 'txInProgress':
-      return t('creating-vault')
+      const txInProgressKey = getPrimaryButtonLabelTxInProgressTranslationKey({ flow })
+
+      return t(txInProgressKey)
     case 'txSuccess':
-      return t('go-to-vault', { id })
+      const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
+
+      return t(txSuccessKey, { id })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')
