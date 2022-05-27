@@ -1,9 +1,11 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { extractPrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -16,11 +18,14 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     otherAction,
     toggle,
     setOtherAction,
+    canProgress,
+    accountIsConnected,
     vault: { token },
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
   const flow: SidebarFlow = 'manageMultiply'
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
 
   useEffect(() => {
     switch (stage) {
@@ -95,9 +100,10 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         },
       ],
     },
-    content: <Grid gap={3}>stage: {stage}</Grid>,
+    content: <Grid gap={3}>stage: {stage}<br />other: {otherAction}</Grid>,
     primaryButton: {
-      label: 'Button',
+      label: getPrimaryButtonLabel(primaryButtonLabelParams),
+      disabled: !canProgress || !accountIsConnected,
       action: () => {},
     },
   }

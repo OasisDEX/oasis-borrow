@@ -325,6 +325,7 @@ export function applyManageVaultConditions(
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isBorrowTransitionStage,
 
     buyAmount,
     sellAmount,
@@ -594,6 +595,12 @@ export function applyManageVaultConditions(
       invalidSlippage ||
       afterCollRatioBelowStopLossRatio)
 
+  const editingProgressionDisabledForUncontrolled =
+    !accountIsController &&
+    (stage === 'adjustPosition' ||
+      (stage === 'otherActions' &&
+        ['depositDai', 'withdrawDai', 'withdrawCollateral', 'closeVault'].includes(otherAction)))
+
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
     customCollateralAllowanceAmountEmpty,
@@ -615,12 +622,16 @@ export function applyManageVaultConditions(
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
+  const borrowTransitionDisabled = isBorrowTransitionStage && !accountIsController
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
+    editingProgressionDisabledForUncontrolled ||
     collateralAllowanceProgressionDisabled ||
     daiAllowanceProgressionDisabled ||
-    isExchangeLoading
+    isExchangeLoading ||
+    borrowTransitionDisabled
   )
 
   const canRegress = ([
