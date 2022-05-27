@@ -196,6 +196,7 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isSuccessStage: boolean
 
   insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
@@ -252,6 +253,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isSuccessStage: false,
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -480,6 +482,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     'multiplyTransitionSuccess',
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'manageSuccess'
+
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
     debt,
@@ -605,6 +609,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isSuccessStage,
 
     insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,

@@ -1,10 +1,11 @@
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { handleNumericInput } from 'helpers/input'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
-import { VaultActionInput } from '../VaultActionInput'
+import { SidebarResetButton } from './SidebarResetButton'
 
 export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const {
@@ -22,14 +23,16 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
     updateGenerateMax,
     showGenerateOption,
     toggleGenerateOption,
+    inputAmountsEmpty,
     ilkData: { debtFloor },
+    clear,
     priceInfo: { currentCollateralPrice },
   } = props
 
   const [isGenerateDaiDisabled, setIsGenerateDaiDisabled] = useState<boolean>(true)
 
   useEffect(() => {
-    if (!depositAmount || depositAmount.isZero()) {
+    if (inputAmountsEmpty) {
       setIsGenerateDaiDisabled(true)
     } else {
       if (!showGenerateOption) toggleGenerateOption!()
@@ -72,6 +75,7 @@ export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
         hasError={false}
         disabled={isGenerateDaiDisabled}
       />
+      {!inputAmountsEmpty && <SidebarResetButton clear={clear} />}
       <OpenVaultChangesInformation {...props} />
     </Grid>
   )

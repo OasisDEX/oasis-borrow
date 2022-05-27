@@ -1,8 +1,9 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { HasSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
+
+import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
@@ -22,12 +23,13 @@ export function getSidebarProgress({
   proxyTxHash,
   allowanceTxHash,
   openTxHash,
+  manageTxHash,
   etherscan,
   proxyConfirmations,
   safeConfirmations,
   token,
-  flow,
-}: HasSidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
+  flow
+}: SidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -40,6 +42,8 @@ export function getSidebarProgress({
         txHash: proxyTxHash!,
         etherscan: etherscan!,
       }
+    case 'collateralAllowanceInProgress':
+    case 'daiAllowanceInProgress':
     case 'allowanceInProgress':
       return {
         text: t('setting-allowance-for', { token }),
@@ -51,6 +55,12 @@ export function getSidebarProgress({
       return {
         text: t(txInProgressKey),
         txHash: openTxHash!,
+        etherscan: etherscan!,
+      }
+    case 'manageInProgress':
+      return {
+        text: t('changing-vault'),
+        txHash: manageTxHash!,
         etherscan: etherscan!,
       }
     default:
