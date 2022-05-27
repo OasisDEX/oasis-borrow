@@ -41,6 +41,7 @@ import { Dictionary } from 'ts-essentials'
 
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
+import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Filters } from './Filters'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
@@ -608,6 +609,7 @@ export function VaultsOverviewView({
   ensName,
   productCardsData,
 }: Props) {
+  const earnEnabled = useFeatureToggle('EarnProduct')
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
 
@@ -629,7 +631,9 @@ export function VaultsOverviewView({
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
+
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+        {earnEnabled && <AssetsAndPositionsOverview address={address} />}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

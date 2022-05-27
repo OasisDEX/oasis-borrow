@@ -5,15 +5,20 @@ import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import {
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
+  MultiplyPillChange,
+} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import {
   formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Card, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
@@ -660,7 +665,15 @@ function OtherActionsForm(props: ManageMultiplyVaultState) {
 
 export function ManageMultiplyVaultEditing(props: ManageMultiplyVaultState) {
   const { stage, inputAmountsEmpty } = props
+  const [uiState] = useUIChanges<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT)
 
+  const effectiveStage = uiState?.currentStage || stage
+  useEffect(() => {
+    if (effectiveStage === 'closeVault') {
+      props.toggle?.('otherActions')
+      props.setOtherAction?.('closeVault')
+    }
+  }, [effectiveStage])
   return (
     <Grid gap={4}>
       {stage === 'adjustPosition' && <AdjustPositionForm {...props} />}
