@@ -1,3 +1,4 @@
+import { SidebarManageMultiplyVault } from 'components/vault/sidebar/SidebarManageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
@@ -74,6 +75,7 @@ export function ManageMultiplyVaultContainer({
           {!stopLossReadEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
+          <SidebarManageMultiplyVault {...manageVault} />
           <Form {...manageVault} />
         </Box>
       </Grid>
