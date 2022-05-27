@@ -128,7 +128,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow: 'manageBorrow' }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       disabled: !canProgress || !accountIsConnected,
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
@@ -145,8 +145,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         regressTrackingEvent({ props })
       },
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow: 'manageBorrow' }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow: 'manageBorrow' }),
+    progress: getSidebarProgress({ ...sidebarTxData, flow }),
+    success: getSidebarSuccess({ ...sidebarTxData, flow }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

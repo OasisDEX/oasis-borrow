@@ -71,7 +71,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow: 'openBorrow' }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
@@ -90,8 +90,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
       url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow: 'openBorrow' }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow: 'openBorrow' }),
+    progress: getSidebarProgress({ ...sidebarTxData, flow }),
+    success: getSidebarSuccess({ ...sidebarTxData, flow }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

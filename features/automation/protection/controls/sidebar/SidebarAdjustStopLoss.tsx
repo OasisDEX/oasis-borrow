@@ -3,6 +3,16 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { VaultViewMode } from 'components/VaultTabSwitch'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import {
+  errorsValidation,
+  warningsValidation,
+} from 'features/automation/protection/common/validation'
+import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
@@ -12,13 +22,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-import {
-  AutomationFromKind,
-  PROTECTION_MODE_CHANGE_SUBJECT,
-} from '../../common/UITypes/ProtectionFormModeChange'
-import { TAB_CHANGE_SUBJECT } from '../../common/UITypes/TabChange'
-import { errorsValidation, warningsValidation } from '../../common/validation'
-import { AdjustSlFormLayoutProps } from '../AdjustSlFormLayout'
 import { SidebarAdjustStopLossAddStage } from './SidebarAdjustStopLossAddStage'
 import { SidebarAdjustStopLossEditingStage } from './SidebarAdjustStopLossEditingStage'
 
