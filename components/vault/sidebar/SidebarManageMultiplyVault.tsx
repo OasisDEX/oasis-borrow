@@ -19,6 +19,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarManageMultiplyVaultTransitionStage } from './SidebarManageMultiplyVaultTransitionStage'
 import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
@@ -135,9 +136,9 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarManageVaultAllowanceStage {...props} />
         )}
-        {/* {isMultiplyTransitionStage && (
-          <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
-        )} */}
+        {isBorrowTransitionStage && (
+          <SidebarManageMultiplyVaultTransitionStage stage={stage} />
+        )}
         {/* {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />} */}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
