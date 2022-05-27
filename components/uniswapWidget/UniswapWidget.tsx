@@ -317,7 +317,7 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
           position: 'absolute',
           top: 'auto',
           left: 'auto',
-          right: 0,
+          right: '240px',
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',
