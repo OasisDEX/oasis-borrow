@@ -659,15 +659,16 @@
     "vault-info": "Vault Info",
     "actions": {
       "common": {
-        "close-vault": "Close Vault",
+        "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
       "borrow": {
         "edit-dai": "Manage DAI",
-        "edit-collateral": "Manage collateral {{token}}",
+        "edit-collateral": "Manage collateral ({{token}})",
         "switch-to-multiply": "Switch to Multiply"
       },
       "multiply": {
+        "adjust": "Adjust",
         "switch-to-borrow": "Switch to Borrow"
       }
     },
