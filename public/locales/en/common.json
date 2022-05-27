@@ -670,6 +670,8 @@
       },
       "multiply": {
         "adjust": "Adjust",
+        "buy-coll": "Buy Coll.",
+        "reduce-debt": "Reduce Debt",
         "switch-to-borrow": "Switch to Borrow"
       }
     },

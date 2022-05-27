@@ -12,7 +12,7 @@ interface ActionPillsProps {
 
 export function ActionPills({ active, items }: ActionPillsProps) {
   return (
-    <Flex sx={{ justifyContent: 'center' }}>
+    <Flex as="ul" sx={{ justifyContent: 'center', p: 0 }}>
       {items.map((item, k) => (
         <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0 }} key={k}>
           <Button

@@ -19,10 +19,14 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 import { SidebarManageMultiplyVaultManageStage } from './SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from './SidebarManageMultiplyVaultTransitionStage'
 import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
+
+export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
+export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
 
 export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
@@ -39,6 +43,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isEditingStage,
     isManageStage,
     isLoadingStage,
     isSuccessStage,
@@ -61,9 +66,8 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         setForcePanel('adjust')
         break
       case 'otherActions':
-        if (['depositDai', 'paybackDai', 'withdrawDai'].includes(otherAction)) setForcePanel('dai')
-        else if (['depositCollateral', 'withdrawCollateral'].includes(otherAction))
-          setForcePanel('collateral')
+        if (otherActionsCollateralPanel.includes(otherAction)) setForcePanel('collateral')
+        else if (otherActionsDaiPanel.includes(otherAction)) setForcePanel('dai')
         else if (otherAction === 'closeVault') setForcePanel('close')
         break
       case 'borrowTransitionEditing':
@@ -133,7 +137,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         stage: {stage}
         <br />
         other: {otherAction}
-        {/* {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />} */}
+        {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarManageVaultAllowanceStage {...props} />
