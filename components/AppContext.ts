@@ -66,6 +66,12 @@ import {
   formChangeReducer,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
+  MultiplyPillChange,
+  MultiplyPillChangeAction,
+  multiplyPillChangeReducer,
+} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
+import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
   ProtectionModeChangeAction,
@@ -260,6 +266,7 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
+  | MultiplyPillChange
   | SwapWidgetState
 
 export type LegalUiChanges = {
@@ -267,6 +274,7 @@ export type LegalUiChanges = {
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
+  MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
 }
 
@@ -351,6 +359,8 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
+  uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
+
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
 
@@ -807,9 +817,18 @@ export function setupAppContext() {
     bigNumberTostring,
   )
 
+  const uiChanges = initializeUIChanges()
+
   const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
     createCheckOasisCDPType$,
-  )(curry(checkVaultTypeUsingApi$)(context$), cdpManagerIlks$, charterIlks)
+  )(
+    curry(checkVaultTypeUsingApi$)(
+      context$,
+      uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
+    ),
+    cdpManagerIlks$,
+    charterIlks,
+  )
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
@@ -835,8 +854,6 @@ export function setupAppContext() {
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
   )
-
-  const uiChanges = initializeUIChanges()
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
