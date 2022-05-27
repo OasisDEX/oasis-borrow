@@ -69,7 +69,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow: 'openMultiply' }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
@@ -88,8 +88,8 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       },
       url: !canRegress && isEditingStage ? `/vaults/open/${ilk}` : undefined,
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow: 'openMultiply' }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow: 'openMultiply' }),
+    progress: getSidebarProgress({ ...sidebarTxData, flow }),
+    success: getSidebarSuccess({ ...sidebarTxData, flow }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
