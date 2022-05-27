@@ -229,7 +229,7 @@ export function SetDownsideProtectionInformation({
           )}
           {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
             <MessageCard
-              messages={[t('protection.coll-ratio-liquidation')]}
+              messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
               type="error"
               withBullet={false}
             />
@@ -282,6 +282,7 @@ export interface AdjustSlFormLayoutProps {
   ethBalance: BigNumber
   stage: 'editing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
+  redirectToCloseVault: () => void
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {

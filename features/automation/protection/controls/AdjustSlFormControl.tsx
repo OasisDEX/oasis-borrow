@@ -232,11 +232,11 @@ export function AdjustSlFormControl({
     ? 'txFailure'
     : 'editing'
 
-  const isProgressDisabled =
+  const isProgressDisabled = !!(
     !isOwner ||
     (!isEditing && txStatus !== TxStatus.Success) ||
-    isProgressStage ||
-    slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+    isProgressStage
+  )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: isStopLossEnabled
@@ -355,6 +355,7 @@ export function AdjustSlFormControl({
     ethBalance: balanceInfo.ethBalance,
     stage,
     isProgressDisabled,
+    redirectToCloseVault,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

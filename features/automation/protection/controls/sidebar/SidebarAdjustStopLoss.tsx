@@ -12,7 +12,10 @@ import {
   errorsValidation,
   warningsValidation,
 } from 'features/automation/protection/common/validation'
-import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
+import {
+  AdjustSlFormLayoutProps,
+  slCollRatioNearLiquidationRatio,
+} from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
@@ -46,6 +49,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     ethBalance,
     stage,
     isProgressDisabled,
+    redirectToCloseVault,
   } = props
 
   function backToVaultOverview() {
@@ -71,6 +75,8 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   })
 
   const progress = getSidebarProgress({ stage, openTxHash: txHash, token, etherscan, flow })
+  const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
+  const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -101,10 +107,14 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ stage, token, flow }),
+      label: shouldRedirectToCloseVault ? t('close-vault') : primaryButtonLabel,
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
+        if (shouldRedirectToCloseVault) {
+          redirectToCloseVault()
+          return
+        }
         if (stage !== 'txSuccess') {
           addTriggerConfig.onClick(() => null)
         } else {
