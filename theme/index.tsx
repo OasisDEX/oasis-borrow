@@ -668,6 +668,7 @@ const oasisBaseTheme = {
       '&:hover': {
         bg: 'actionInputHover',
       },
+      transition: 'background-color 200ms',
     },
     actionOptionOpened: {
       variant: 'buttons.actionOption',
