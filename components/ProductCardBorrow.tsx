@@ -5,7 +5,7 @@ import React from 'react'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
-import { one } from '../helpers/zero'
+import { one, zero } from '../helpers/zero'
 import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
 function personaliseCardData({
@@ -65,9 +65,10 @@ function makeCardData(singleTokenMaxBorrow: BigNumber) {
 
 function bannerValues(props: ProductCardData) {
   const { liquidationRatio, currentCollateralPrice, balance } = props
+
   const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
 
-  if (balance) {
+  if (balance?.gt(zero)) {
     return personaliseCardData({ productCardData: props, singleTokenMaxBorrow })
   }
 
