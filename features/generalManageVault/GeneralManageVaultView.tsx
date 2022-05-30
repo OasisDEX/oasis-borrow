@@ -63,9 +63,7 @@ export function GeneralManageVaultViewAutomation({
               manageVault={generalManageVault.state}
               header={DefaultVaultHeader}
               details={ManageMultiplyVaultDetails}
-              form={
-                !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
-              }
+              form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
               history={VaultHistoryView}
             />
           )}
