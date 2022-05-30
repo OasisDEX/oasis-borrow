@@ -16,6 +16,8 @@ function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
     case 'addSl':
     case 'adjustSl':
       return 'protection.set-downside-protection'
+    case 'cancelSl':
+      return 'protection.cancel-downside-protection'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -30,6 +32,8 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarFlow })
       return 'protection.downside-protection-complete'
     case 'adjustSl':
       return 'protection.downside-protection-updated'
+    case 'cancelSl':
+      return 'protection.cancel-protection-complete'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -43,6 +47,23 @@ function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarFlow
     case 'addSl':
     case 'adjustSl':
       return 'protection.setting-downside-protection'
+    case 'cancelSl':
+      return 'protection.cancelling-downside-protection'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
+
+function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'vault-form.header.confirm'
+    case 'addSl':
+    case 'adjustSl':
+      return 'protection.set-downside-protection'
+    case 'cancelSl':
+      return 'protection.cancel-downside-protection'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -88,7 +109,9 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'txWaitingForConfirmation':
     case 'txWaitingForApproval':
     case 'txFailure':
-      return t('vault-form.header.confirm')
+      const txFailureKey = getSidebarTitleTxFailureTranslationKey({ flow })
+
+      return t(txFailureKey)
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 

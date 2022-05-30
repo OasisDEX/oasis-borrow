@@ -1,8 +1,7 @@
 import { BigNumber } from 'bignumber.js'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-
-import { zero } from '../../helpers/zero'
 
 export interface BalanceInfo {
   collateralBalance: BigNumber

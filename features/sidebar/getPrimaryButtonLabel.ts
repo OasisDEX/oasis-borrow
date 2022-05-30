@@ -3,7 +3,7 @@ import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
-const flowsWithoutProxy = ['adjustSl', 'addSl']
+const flowsWithoutProxy = ['adjustSl', 'addSl', 'cancelSl']
 const UNREACHABLE_CASE_MESSAGE = ''
 
 function getPrimaryButtonLabelEditingTranslationKey({
@@ -63,6 +63,7 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
       return 'go-to-vault'
     case 'addSl':
     case 'adjustSl':
+    case 'cancelSl':
       return 'back-to-vault-overview'
     default:
       return UNREACHABLE_CASE_MESSAGE

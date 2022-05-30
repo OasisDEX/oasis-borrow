@@ -92,7 +92,7 @@ export function AdjustSlFormControl({
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
 
-  const [firstStopLossSetup] = useState(!isStopLossEnabled)
+  const [firstStopLossSetup, setFirstStopLossSetup] = useState(!isStopLossEnabled)
 
   const token = vault.token
   const tokenData = getToken(token)
@@ -239,10 +239,10 @@ export function AdjustSlFormControl({
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: isStopLossEnabled
-      ? 'update-stop-loss'
-      : slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+    translationKey: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
       ? 'close-vault'
+      : isStopLossEnabled
+      ? 'update-stop-loss'
       : 'add-stop-loss',
     onClick: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
       ? redirectToCloseVault
@@ -273,6 +273,10 @@ export function AdjustSlFormControl({
                         tokenPrice,
                       )
                     : zero
+
+                if (txState.status === TxStatus.Success) {
+                  setFirstStopLossSetup(false)
+                }
 
                 uiChanges.publish(ADD_FORM_CHANGE, {
                   type: 'tx-details',
