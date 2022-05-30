@@ -1,4 +1,3 @@
-import { SidebarManageMultiplyVault } from 'components/vault/sidebar/SidebarManageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
