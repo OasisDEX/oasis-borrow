@@ -1,8 +1,9 @@
 import { Box } from '@theme-ui/components'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import { Flex, Image, Link, Text } from 'theme-ui'
 
-export function SmartProxyStageTwo () {
+export function SmartProxyStageTwo() {
   const { t } = useTranslation()
 
   return (
@@ -22,7 +23,10 @@ export function SmartProxyStageTwo () {
           pb: '38px',
         }}
       >
-        <Image src="/static/img/proxy/process-setup.svg" alt="setup process" />
+        <Image
+          src={staticFilesRuntimeUrl('/static/img/proxy/process-setup.svg')}
+          alt="setup process"
+        />
       </Flex>
     </Box>
   )
