@@ -555,7 +555,7 @@ export function applyManageVaultConditions(
     'borrowTransitionInProgress',
     'borrowTransitionSuccess',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
-  
+
   const isSuccessStage = stage === 'manageSuccess'
 
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({

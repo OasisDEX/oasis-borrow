@@ -8,7 +8,7 @@ export interface SidebarSectionHeaderSelectItem {
   label: string
   shortLabel?: string
   icon?: string
-  iconShrink?: number,
+  iconShrink?: number
   panel?: string
   action?: () => void
 }
