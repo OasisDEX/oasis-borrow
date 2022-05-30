@@ -1,16 +1,17 @@
 import { trackingEvents } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-
-import { OpenMultiplyVaultStage } from '../multiply/open/pipes/openMultiplyVault'
+import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { zero } from 'helpers/zero'
 
 interface TrackingEventOpenVaultProps {
   props: {
-    stage: OpenMultiplyVaultStage | OpenVaultState
-    insufficientAllowance: boolean
+    stage: SidebarVaultStages
+    insufficientAllowance?: boolean
     proxyAddress?: string
     depositAmount?: BigNumber
     generateAmount?: BigNumber
+    paybackAmount?: BigNumber
+    withdrawAmount?: BigNumber
   }
   firstCDP?: boolean
 }
@@ -22,11 +23,23 @@ export function regressTrackingEvent({ props, firstCDP }: TrackingEventOpenVault
     case 'allowanceFailure':
       trackingEvents.confirmVaultEdit(firstCDP)
       break
+    case 'daiAllowanceFailure':
+    case 'collateralAllowanceFailure':
+      trackingEvents.manageVaultConfirmVaultEdit()
+      break
   }
 }
 
 export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaultProps): void {
-  const { stage, proxyAddress, insufficientAllowance, depositAmount, generateAmount } = props
+  const {
+    stage,
+    proxyAddress,
+    insufficientAllowance,
+    depositAmount,
+    generateAmount,
+    paybackAmount,
+    withdrawAmount,
+  } = props
 
   switch (stage) {
     case 'editing':
@@ -39,12 +52,25 @@ export function progressTrackingEvent({ props, firstCDP }: TrackingEventOpenVaul
       else if (insufficientAllowance) trackingEvents.setTokenAllowance(firstCDP)
       else trackingEvents.createVaultConfirm(firstCDP)
       break
+    case 'daiEditing':
+      if (generateAmount?.gt(zero)) trackingEvents.manageDaiGenerateConfirm()
+      else if (paybackAmount?.gt(zero)) trackingEvents.manageDaiPaybackConfirm()
+      break
+    case 'collateralEditing':
+      if (depositAmount?.gt(zero)) trackingEvents.manageCollateralDepositConfirm()
+      else if (withdrawAmount?.gt(zero)) trackingEvents.manageCollateralWithdrawConfirm()
+      break
     case 'proxyWaitingForConfirmation':
       trackingEvents.createProxy(firstCDP)
       break
     case 'allowanceWaitingForConfirmation':
-    case 'allowanceFailure':
       trackingEvents.approveAllowance(firstCDP)
+      break
+    case 'collateralAllowanceWaitingForConfirmation':
+      trackingEvents.manageCollateralApproveAllowance()
+      break
+    case 'daiAllowanceWaitingForConfirmation':
+      trackingEvents.manageDaiApproveAllowance()
       break
   }
 }

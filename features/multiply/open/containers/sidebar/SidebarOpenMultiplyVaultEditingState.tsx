@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
@@ -33,7 +34,8 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
     afterLiquidationPrice,
     afterCollateralizationRatio,
     requiredCollRatio,
-
+    clear,
+    inputAmountsEmpty,
     ilkData: { liquidationRatio },
     maxCollRatio,
   } = props
@@ -53,55 +55,52 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
       : 'primaryAlt'
 
   return (
-    <Grid gap={4}>
+    <Grid gap={3}>
+      <VaultActionInput
+        action="Deposit"
+        token={token}
+        tokenUsdPrice={currentCollateralPrice}
+        showMax={true}
+        hasAuxiliary={true}
+        onSetMax={updateDepositMax!}
+        amount={depositAmount}
+        auxiliaryAmount={depositAmountUSD}
+        onChange={handleNumericInput(updateDeposit!)}
+        onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
+        maxAmount={maxDepositAmount}
+        maxAuxiliaryAmount={maxDepositAmountUSD}
+        maxAmountLabel={t('balance')}
+        hasError={false}
+      />
       <Grid gap={2}>
-        <VaultActionInput
-          action="Deposit"
-          token={token}
-          tokenUsdPrice={currentCollateralPrice}
-          showMax={true}
-          hasAuxiliary={true}
-          onSetMax={updateDepositMax!}
-          amount={depositAmount}
-          auxiliaryAmount={depositAmountUSD}
-          onChange={handleNumericInput(updateDeposit!)}
-          onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
-          maxAmount={maxDepositAmount}
-          maxAuxiliaryAmount={maxDepositAmountUSD}
-          maxAmountLabel={t('balance')}
-          hasError={false}
-        />
-      </Grid>
-      <Grid gap={2}>
-        <Box>
-          <Flex
-            sx={{
-              variant: 'text.paragraph4',
-              justifyContent: 'space-between',
-              fontWeight: 'semiBold',
-              color: 'text.subtitle',
-            }}
-          >
-            <Grid gap={2}>
-              <Text>{t('system.liquidation-price')}</Text>
-              <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-                ${formatAmount(afterLiquidationPrice, 'USD')}
-              </Text>
-            </Grid>
-            <Grid gap={2}>
-              <Text>{t('system.collateral-ratio')}</Text>
-              <Text
-                variant="paragraph1"
-                sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
-              >
-                {formatPercent(afterCollateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                })}
-              </Text>
-            </Grid>
-          </Flex>
-        </Box>
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            fontWeight: 'semiBold',
+            color: 'text.subtitle',
+          }}
+        >
+          <Grid as="p" gap={2}>
+            <Text as="span">{t('system.liquidation-price')}</Text>
+            <Text as="span" variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
+              ${formatAmount(afterLiquidationPrice, 'USD')}
+            </Text>
+          </Grid>
+          <Grid as="p" gap={2}>
+            <Text as="span">{t('system.collateral-ratio')}</Text>
+            <Text
+              as="span"
+              variant="paragraph1"
+              sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
+            >
+              {formatPercent(afterCollateralizationRatio.times(100), {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </Text>
+          </Grid>
+        </Flex>
         <Box my={1}>
           <Slider
             sx={{
@@ -118,19 +117,18 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
             }}
           />
         </Box>
-        <Box>
-          <Flex
-            sx={{
-              variant: 'text.paragraph4',
-              justifyContent: 'space-between',
-              color: 'text.subtitle',
-            }}
-          >
-            <Text>{t('slider.adjust-multiply.left-footer')}</Text>
-            <Text>{t('slider.adjust-multiply.right-footer')}</Text>
-          </Flex>
-        </Box>
+        <Flex
+          sx={{
+            variant: 'text.paragraph4',
+            justifyContent: 'space-between',
+            color: 'text.subtitle',
+          }}
+        >
+          <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
+          <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
+        </Flex>
       </Grid>
+      {!inputAmountsEmpty && <SidebarResetButton clear={clear} />}
       <OpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

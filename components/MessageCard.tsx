@@ -6,9 +6,10 @@ interface NoticeCardProps {
   messages: (string | JSX.Element)[]
   type: 'error' | 'warning'
   withBullet?: boolean
+  handleClick?: () => void
 }
 
-export function MessageCard({ messages, type, withBullet = true }: NoticeCardProps) {
+export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const cardColor = type === 'error' ? 'danger' : 'warning'
   const textColor = type === 'error' ? 'onError' : 'onWarning'
@@ -17,9 +18,11 @@ export function MessageCard({ messages, type, withBullet = true }: NoticeCardPro
   return (
     <Card
       variant={cardColor}
+      onClick={handleClick}
       sx={{
         ...(newComponentsEnabled && {
           border: 'none',
+          cursor: handleClick ? 'pointer' : 'auto',
         }),
       }}
     >

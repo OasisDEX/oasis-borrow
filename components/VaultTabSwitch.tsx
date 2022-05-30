@@ -162,10 +162,12 @@ export function VaultTabSwitch({
           withTag: Object.keys(tagMap).includes(value.toString()),
           isTagEnabled: tagMap[value as VaultViewMode],
         })) as VaultTabSwitchOptionNewComponentDesignEnabled[])
-      : (vaultViewModeTuples.map(([label, value]) => ({
-          value,
-          label,
-        })) as VaultTabSwitchOption[])
+      : (vaultViewModeTuples
+          .map(([label, value]) => ({
+            value,
+            label,
+          }))
+          .filter((item) => item.value !== VaultViewMode.VaultInfo) as VaultTabSwitchOption[])
   }, [])
 
   const value = useMemo(
