@@ -75,7 +75,6 @@ export function ManageMultiplyVaultContainer({
           {!stopLossReadEnabled && <History vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
-          <SidebarManageMultiplyVault {...manageVault} />
           <Form {...manageVault} />
         </Box>
       </Grid>
