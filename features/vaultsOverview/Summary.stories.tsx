@@ -5,7 +5,7 @@ import React from 'react'
 import { Container, Heading } from 'theme-ui'
 import { InjectTokenIconsDefs } from 'theme/tokenIcons'
 
-import { Summary } from './VaultsOverviewView'
+import { Summary } from './Summary'
 import { VaultSummary } from './vaultSummary'
 
 const stories = storiesOf('Vault summary', module)
