@@ -559,6 +559,9 @@ export function createManageMultiplyVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+                    setOtherAction: (otherAction: OtherAction) =>
+                      change({ kind: 'otherAction', otherAction }),
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
