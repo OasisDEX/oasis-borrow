@@ -1,6 +1,7 @@
 import { Box } from '@theme-ui/components'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Flex, Image, Link, Text } from 'theme-ui'
 
 export function SmartProxyStageTwo() {

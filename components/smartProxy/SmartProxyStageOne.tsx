@@ -1,6 +1,7 @@
 import { Box } from '@theme-ui/components'
 import { NewListWithIcon } from 'components/NewListWithIcon'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 export const smartProxyHeaderConfig = {
