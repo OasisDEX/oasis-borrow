@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box } from '@theme-ui/components'
 import { NewListWithIcon } from 'components/NewListWithIcon'
 import { useTranslation } from 'next-i18next'
