@@ -1,9 +1,8 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { SidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-
-import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
@@ -12,6 +11,7 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
       return 'creating-your-vault'
     case 'addSl':
     case 'adjustSl':
+    case 'cancelSl':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)

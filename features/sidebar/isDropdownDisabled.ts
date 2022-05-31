@@ -18,6 +18,8 @@ export function isDropdownDisabled({ stage }: IsDropdownDisabledParams) {
     case 'txWaitingForApproval':
     case 'multiplyTransitionInProgress':
     case 'multiplyTransitionSuccess':
+    case 'borrowTransitionInProgress':
+    case 'borrowTransitionSuccess':
     case 'manageInProgress':
     case 'manageWaitingForApproval':
       return true
