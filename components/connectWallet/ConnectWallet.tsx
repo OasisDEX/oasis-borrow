@@ -324,7 +324,9 @@ const connectionDetails: Record<WalletKind, ConnectionDetail> = {
     friendlyName: 'MagicLink',
   },
   imtoken: {
-    friendlyName: 'IMToken',
+    friendlyName: 'imToken',
+    connectIcon: 'imtoken',
+    userIcon: 'imtoken_user',
   },
   metamask: {
     friendlyName: 'MetaMask',
