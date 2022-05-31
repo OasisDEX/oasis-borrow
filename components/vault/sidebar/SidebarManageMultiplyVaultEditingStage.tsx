@@ -554,7 +554,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
           )}
         </>
       )}
-      {!inputAmountsEmpty && (
+      {!inputAmountsEmpty && otherAction !== 'closeVault' && (
         <SidebarResetButton
           clear={() => {
             updateDepositAmount!()
