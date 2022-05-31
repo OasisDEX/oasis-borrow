@@ -79,7 +79,7 @@ export function getPrimaryButtonLabel({
   insufficientDaiAllowance,
   insufficientAllowance,
   flow,
-  canTransition,
+  canTransition = true,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
   const allowanceToken = insufficientDaiAllowance ? 'DAI' : token
@@ -88,6 +88,8 @@ export function getPrimaryButtonLabel({
     case 'editing':
     case 'collateralEditing':
     case 'daiEditing':
+    case 'adjustPosition':
+    case 'otherActions':
     case 'manageWaitingForConfirmation':
       const translationKey = getPrimaryButtonLabelEditingTranslationKey({
         proxyAddress,
@@ -162,6 +164,18 @@ export function getPrimaryButtonLabel({
       return t('borrow-to-multiply.button-failure')
     case 'multiplyTransitionSuccess':
       return t('borrow-to-multiply.button-success')
+    case 'borrowTransitionEditing':
+      return canTransition
+        ? t('multiply-to-borrow.button-start')
+        : t('multiply-to-borrow.button-not-supported', { token })
+    case 'borrowTransitionWaitingForConfirmation':
+      return t('multiply-to-borrow.button-confirm')
+    case 'borrowTransitionInProgress':
+      return t('multiply-to-borrow.button-progress')
+    case 'borrowTransitionFailure':
+      return t('multiply-to-borrow.button-failure')
+    case 'borrowTransitionSuccess':
+      return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(stage)
   }

@@ -8,6 +8,7 @@ export interface SidebarSectionHeaderSelectItem {
   label: string
   shortLabel?: string
   icon?: string
+  iconShrink?: number
   panel?: string
   action?: () => void
 }
@@ -63,8 +64,12 @@ export function SidebarSectionHeaderSelect({
         {activeItem?.icon ? (
           <Icon
             name={activeItem?.icon as string}
-            size="32px"
-            sx={{ verticalAlign: 'text-bottom', mr: 1 }}
+            size={!activeItem?.iconShrink ? '32px' : `${32 - activeItem.iconShrink * 2}px`}
+            sx={{
+              verticalAlign: 'text-bottom',
+              m: !activeItem?.iconShrink ? 0 : `${activeItem.iconShrink}px`,
+              mr: !activeItem?.iconShrink ? 1 : `${4 + activeItem.iconShrink}px`,
+            }}
           />
         ) : (
           <Box

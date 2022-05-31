@@ -205,6 +205,7 @@ export interface ManageVaultConditions {
   generateAmountMoreThanMaxFlashAmount: boolean
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isSuccessStage: boolean
   exchangeDataRequired: boolean
   shouldShowExchangeError: boolean
   isExchangeLoading: boolean
@@ -268,6 +269,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isSuccessStage: false,
   exchangeDataRequired: false,
   shouldShowExchangeError: false,
   isExchangeLoading: false,
@@ -325,6 +327,7 @@ export function applyManageVaultConditions(
     isEditingStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isBorrowTransitionStage,
 
     buyAmount,
     sellAmount,
@@ -553,6 +556,8 @@ export function applyManageVaultConditions(
     'borrowTransitionSuccess',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'manageSuccess'
+
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
     debt,
@@ -594,6 +599,12 @@ export function applyManageVaultConditions(
       invalidSlippage ||
       afterCollRatioBelowStopLossRatio)
 
+  const editingProgressionDisabledForUncontrolled =
+    !accountIsController &&
+    (stage === 'adjustPosition' ||
+      (stage === 'otherActions' &&
+        ['depositDai', 'withdrawDai', 'withdrawCollateral', 'closeVault'].includes(otherAction)))
+
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
     customCollateralAllowanceAmountEmpty,
@@ -615,12 +626,16 @@ export function applyManageVaultConditions(
 
   const debtIsLessThanDebtFloor = debtIsLessThanDebtFloorValidator({ debtFloor, debt })
 
+  const borrowTransitionDisabled = isBorrowTransitionStage && !accountIsController
+
   const canProgress = !(
     isLoadingStage ||
     editingProgressionDisabled ||
+    editingProgressionDisabledForUncontrolled ||
     collateralAllowanceProgressionDisabled ||
     daiAllowanceProgressionDisabled ||
-    isExchangeLoading
+    isExchangeLoading ||
+    borrowTransitionDisabled
   )
 
   const canRegress = ([
@@ -678,6 +693,7 @@ export function applyManageVaultConditions(
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isSuccessStage,
     exchangeDataRequired,
     shouldShowExchangeError,
     isExchangeLoading,

@@ -30,7 +30,9 @@
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
+  "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
+  "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
@@ -658,17 +660,22 @@
     "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
+    "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
+    "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
       "common": {
-        "close-vault": "Close Vault",
+        "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
       "borrow": {
         "edit-dai": "Manage DAI",
-        "edit-collateral": "Manage collateral {{token}}",
+        "edit-collateral": "Manage collateral ({{token}})",
         "switch-to-multiply": "Switch to Multiply"
       },
       "multiply": {
+        "adjust": "Adjust",
+        "buy-coll": "Buy Coll.",
+        "reduce-debt": "Reduce Debt",
         "switch-to-borrow": "Switch to Borrow"
       }
     },

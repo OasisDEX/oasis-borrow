@@ -118,11 +118,18 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
       return t(txSuccessKey)
     case 'collateralEditing':
     case 'daiEditing':
+    case 'adjustPosition':
+    case 'otherActions':
     case 'multiplyTransitionEditing':
     case 'multiplyTransitionWaitingForConfirmation':
     case 'multiplyTransitionInProgress':
     case 'multiplyTransitionFailure':
     case 'multiplyTransitionSuccess':
+    case 'borrowTransitionEditing':
+    case 'borrowTransitionWaitingForConfirmation':
+    case 'borrowTransitionInProgress':
+    case 'borrowTransitionFailure':
+    case 'borrowTransitionSuccess':
       return t('vault-form.header.manage')
     case 'manageInProgress':
       return t('vault-form.header.modified')

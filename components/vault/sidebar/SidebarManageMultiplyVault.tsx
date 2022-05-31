@@ -1,9 +1,8 @@
-import { trackingEvents } from 'analytics/analytics'
-import { ALLOWED_MULTIPLY_TOKENS, getToken, ONLY_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
+import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
@@ -21,61 +20,62 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
-import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
-import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
+import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
+import { SidebarManageMultiplyVaultManageStage } from './SidebarManageMultiplyVaultManageStage'
+import { SidebarManageMultiplyVaultTransitionStage } from './SidebarManageMultiplyVaultTransitionStage'
 import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
-export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
+export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
+export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
+
+export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
   const {
-    vault: { token },
+    stage,
+    otherAction,
+    toggle,
+    setOtherAction,
     canProgress,
     progress,
-    regress,
     canRegress,
-    toggle,
-    stage,
-    isEditingStage,
+    regress,
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isEditingStage,
     isManageStage,
-    isMultiplyTransitionStage,
     isLoadingStage,
     isSuccessStage,
+    isBorrowTransitionStage,
+    accountIsConnected,
     currentStep,
     totalSteps,
-    accountIsConnected,
-    accountIsController,
+    vault: { token },
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
-  const flow: SidebarFlow = 'manageBorrow'
-  const canTransition =
-    ALLOWED_MULTIPLY_TOKENS.includes(token) || ONLY_MULTIPLY_TOKENS.includes(token)
+  const flow: SidebarFlow = 'manageMultiply'
   const gasData = extractGasDataFromState(props)
-  const primaryButtonLabelParams = extractPrimaryButtonLabelParams({
-    canTransition,
-    ...props,
-  })
+  const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
   useEffect(() => {
     switch (stage) {
-      case 'collateralEditing':
-        setForcePanel('collateral')
+      case 'adjustPosition':
+        setForcePanel('adjust')
         break
-      case 'daiEditing':
-        setForcePanel('dai')
+      case 'otherActions':
+        if (otherActionsCollateralPanel.includes(otherAction)) setForcePanel('collateral')
+        else if (otherActionsDaiPanel.includes(otherAction)) setForcePanel('dai')
+        else if (otherAction === 'closeVault') setForcePanel('close')
         break
-      case 'multiplyTransitionEditing':
+      case 'borrowTransitionEditing':
         setForcePanel('transition')
         break
     }
-  }, [stage])
+  }, [stage, otherAction])
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -84,13 +84,22 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       disabled: isDropdownDisabled({ stage }),
       items: [
         {
+          label: t('system.actions.multiply.adjust'),
+          icon: 'circle_slider',
+          iconShrink: 2,
+          panel: 'adjust',
+          action: () => {
+            toggle!('adjustPosition')
+          },
+        },
+        {
           label: t('system.actions.borrow.edit-collateral', { token }),
           shortLabel: token,
           icon: getToken(token).iconCircle,
           panel: 'collateral',
           action: () => {
-            toggle!('collateralEditing')
-            trackingEvents.switchToCollateral(accountIsController)
+            toggle!('otherActions')
+            setOtherAction!('depositCollateral')
           },
         },
         {
@@ -99,38 +108,46 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
           icon: getToken('DAI').iconCircle,
           panel: 'dai',
           action: () => {
-            toggle!('daiEditing')
-            trackingEvents.switchToDai(accountIsController)
+            toggle!('otherActions')
+            setOtherAction!('depositDai')
           },
         },
         {
-          label: t('system.actions.borrow.switch-to-multiply'),
+          label: t('system.actions.multiply.switch-to-borrow'),
           icon: 'circle_exchange',
           iconShrink: 2,
           panel: 'transition',
           action: () => {
-            toggle!('multiplyTransitionEditing')
+            toggle!('borrowTransitionEditing')
+          },
+        },
+        {
+          label: t('system.actions.common.close-vault'),
+          icon: 'circle_close',
+          iconShrink: 2,
+          panel: 'close',
+          action: () => {
+            toggle!('otherActions')
+            setOtherAction!('closeVault')
           },
         },
       ],
     },
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
+        {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarManageVaultAllowanceStage {...props} />
         )}
-        {isMultiplyTransitionStage && (
-          <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
-        )}
-        {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
+        {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
+        {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
+      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
       disabled: !canProgress || !accountIsConnected,
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
@@ -141,14 +158,14 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: !canRegress || isMultiplyTransitionStage,
+      hidden: !canRegress || isBorrowTransitionStage,
       action: () => {
         regress!()
         regressTrackingEvent({ props })
       },
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow }),
+    progress: getSidebarProgress({ flow, ...sidebarTxData }),
+    success: getSidebarSuccess({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
