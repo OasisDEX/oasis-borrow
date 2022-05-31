@@ -1,9 +1,8 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { SidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
-
-import { SidebarTxData } from '../../helpers/extractSidebarHelpers'
 
 function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
@@ -13,6 +12,8 @@ function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
     case 'addSl':
     case 'adjustSl':
       return 'protection.setting-downside-protection'
+    case 'cancelSl':
+      return 'protection.cancelling-downside-protection'
     default:
       throw new UnreachableCaseError(flow)
   }
