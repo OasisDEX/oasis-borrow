@@ -9,6 +9,7 @@ import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
+import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
@@ -152,7 +153,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       isLoading: isLoadingStage,
       action: () => {
         progress!()
-        // progressTrackingEvent({ props })
+        progressTrackingEvent({ props })
       },
     },
     textButton: {
@@ -160,7 +161,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
       hidden: !canRegress || isBorrowTransitionStage,
       action: () => {
         regress!()
-        // regressTrackingEvent({ props })
+        regressTrackingEvent({ props })
       },
     },
     progress: getSidebarProgress({ flow, ...sidebarTxData }),
