@@ -5,8 +5,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
@@ -147,8 +146,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         regressTrackingEvent({ props })
       },
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow }),
+    status: getSidebarStatus({ flow, ...sidebarTxData, }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

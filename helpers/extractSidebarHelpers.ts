@@ -35,6 +35,7 @@ export interface PrimaryButtonLabelParams extends SharedStateExtractions {
 
 export interface SidebarTxData extends SharedStateExtractions {
   id?: BigNumber
+  txHash?: string
   proxyTxHash?: string
   allowanceTxHash?: string
   openTxHash?: string
@@ -85,6 +86,7 @@ export function extractSidebarTxData(state: SidebarTxData) {
       [
         'stage',
         'id',
+        'txHash',
         'proxyTxHash',
         'allowanceTxHash',
         'openTxHash',

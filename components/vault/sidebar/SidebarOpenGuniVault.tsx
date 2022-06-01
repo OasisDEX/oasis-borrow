@@ -6,8 +6,7 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
@@ -94,8 +93,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       url: isSuccessStage ? `/${id}` : undefined,
     },
     ...((proxyOrAllowanceStage || isOpenStage) && textButton),
-    progress: getSidebarProgress({ ...sidebarTxData, flow, token: 'DAI' }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow, token: 'DAI' }),
+    status: getSidebarStatus({ flow, ...sidebarTxData, }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

@@ -12,9 +12,9 @@ import {
   slCollRatioNearLiquidationRatio,
 } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -30,11 +30,9 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const {
     token,
-    txHash,
     addTriggerConfig,
     ethPrice,
     ilkData,
-    etherscan,
     toggleForms,
     selectedSLValue,
     firstStopLossSetup,
@@ -58,9 +56,9 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     collateralizationRatioAtNextPrice,
   })
 
-  const progress = getSidebarProgress({ stage, openTxHash: txHash, token, etherscan, flow })
   const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
   const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+  const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -113,10 +111,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
           action: () => toggleForms(),
         },
       }),
-    ...(txHash && {
-      progress,
-    }),
-    success: getSidebarSuccess({ stage, openTxHash: txHash, token, flow, etherscan }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

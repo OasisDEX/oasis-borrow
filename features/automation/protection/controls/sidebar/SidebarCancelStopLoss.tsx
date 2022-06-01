@@ -11,10 +11,10 @@ import { CancelSlFormLayoutProps } from 'features/automation/protection/controls
 import { SidebarCancelStopLossCancelStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossCancelStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossEditingStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -27,11 +27,9 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
 
   const {
     token,
-    txHash,
     removeTriggerConfig,
     ethPrice,
     ilkData,
-    etherscan,
     toggleForms,
     selectedSLValue,
     collateralizationRatioAtNextPrice,
@@ -53,7 +51,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     collateralizationRatioAtNextPrice,
   })
 
-  const progress = getSidebarProgress({ stage, openTxHash: txHash, token, etherscan, flow })
+  const sidebarTxData = extractSidebarTxData(props)
   const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -92,10 +90,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
         action: () => toggleForms(),
       },
     }),
-    ...(txHash && {
-      progress,
-    }),
-    success: getSidebarSuccess({ stage, openTxHash: txHash, token, flow, etherscan }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

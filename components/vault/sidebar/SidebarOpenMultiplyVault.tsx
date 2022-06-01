@@ -5,8 +5,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
@@ -86,8 +85,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       },
       url: !canRegress && isEditingStage ? `/vaults/open/${ilk}` : undefined,
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow }),
+    status: getSidebarStatus({ flow, ...sidebarTxData, }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
