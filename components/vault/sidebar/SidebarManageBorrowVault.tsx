@@ -30,25 +30,25 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   const { t } = useTranslation()
 
   const {
-    vault: { token },
-    canProgress,
-    progress,
-    regress,
-    canRegress,
-    toggle,
-    stage,
-    isEditingStage,
-    isProxyStage,
-    isCollateralAllowanceStage,
-    isDaiAllowanceStage,
-    isManageStage,
-    isMultiplyTransitionStage,
-    isLoadingStage,
-    isSuccessStage,
-    currentStep,
-    totalSteps,
     accountIsConnected,
     accountIsController,
+    canProgress,
+    canRegress,
+    currentStep,
+    isCollateralAllowanceStage,
+    isDaiAllowanceStage,
+    isEditingStage,
+    isLoadingStage,
+    isManageStage,
+    isMultiplyTransitionStage,
+    isProxyStage,
+    isSuccessStage,
+    progress,
+    regress,
+    stage,
+    toggle,
+    totalSteps,
+    vault: { token },
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -129,7 +129,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
+      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
       disabled: !canProgress || !accountIsConnected,
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
@@ -146,7 +146,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         regressTrackingEvent({ props })
       },
     },
-    status: getSidebarStatus({ flow, ...sidebarTxData, }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

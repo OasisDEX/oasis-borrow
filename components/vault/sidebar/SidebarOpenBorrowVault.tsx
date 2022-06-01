@@ -30,22 +30,22 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const [accountData] = useObservable(accountData$)
 
   const {
-    id,
-    stage,
     canProgress,
-    progress,
     canRegress,
-    regress,
-    isEditingStage,
-    isProxyStage,
+    currentStep,
+    id,
+    ilk,
     isAllowanceStage,
-    isOpenStage,
+    isEditingStage,
     isLoadingStage,
+    isOpenStage,
+    isProxyStage,
     isSuccessStage,
+    progress,
+    regress,
+    stage,
     token,
     totalSteps,
-    currentStep,
-    ilk,
   } = props
 
   const flow: SidebarFlow = 'openBorrow'

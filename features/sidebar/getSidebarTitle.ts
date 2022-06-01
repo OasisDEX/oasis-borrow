@@ -76,12 +76,13 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
 
 export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
   const { t } = useTranslation()
+  const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
 
   switch (stage) {
     case 'editing':
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
-      return t(editingKey, { token })
+      return t(editingKey, { token: token.toUpperCase() })
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':
@@ -100,7 +101,7 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'collateralAllowanceInProgress':
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
-      return t('vault-form.header.allowance', { token: token.toUpperCase() })
+      return t('vault-form.header.allowance', { token: allowanceToken })
     case 'daiAllowanceWaitingForConfirmation':
     case 'daiAllowanceWaitingForApproval':
     case 'daiAllowanceInProgress':

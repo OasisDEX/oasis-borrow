@@ -29,20 +29,20 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    token,
     addTriggerConfig,
-    ethPrice,
-    ilkData,
-    toggleForms,
-    selectedSLValue,
-    firstStopLossSetup,
     collateralizationRatioAtNextPrice,
-    txError,
-    gasEstimationUsd,
     ethBalance,
-    stage,
+    ethPrice,
+    firstStopLossSetup,
+    gasEstimationUsd,
+    ilkData,
     isProgressDisabled,
     redirectToCloseVault,
+    selectedSLValue,
+    stage,
+    toggleForms,
+    token,
+    txError,
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
@@ -55,10 +55,8 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     selectedSLValue,
     collateralizationRatioAtNextPrice,
   })
-
-  const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
-  const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
   const sidebarTxData = extractSidebarTxData(props)
+  const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -89,7 +87,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: shouldRedirectToCloseVault ? t('close-vault') : primaryButtonLabel,
+      label: shouldRedirectToCloseVault ? t('close-vault') : getPrimaryButtonLabel({ flow, stage, token }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
@@ -97,17 +95,15 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
           redirectToCloseVault()
           return
         }
-        if (stage !== 'txSuccess') {
-          addTriggerConfig.onClick(() => null)
-        } else {
-          backToVaultOverview(uiChanges)
-        }
+        if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
+        else backToVaultOverview(uiChanges)
       },
     },
     ...(!firstStopLossSetup &&
       stage !== 'txInProgress' && {
         textButton: {
           label: t('protection.navigate-cancel'),
+          hidden: firstStopLossSetup,
           action: () => toggleForms(),
         },
       }),

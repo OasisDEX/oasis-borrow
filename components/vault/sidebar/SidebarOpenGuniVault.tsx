@@ -29,21 +29,21 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const [accountData] = useObservable(accountData$)
 
   const {
-    id,
-    stage,
     canProgress,
-    progress,
     canRegress,
-    regress,
-    isEditingStage,
-    isProxyStage,
+    currentStep,
+    id,
     isAllowanceStage,
-    isOpenStage,
+    isEditingStage,
     isLoadingStage,
+    isOpenStage,
+    isProxyStage,
     isSuccessStage,
+    progress,
+    regress,
+    stage,
     token,
     totalSteps,
-    currentStep,
   } = props
 
   const flow: SidebarFlow = 'openGuni'
@@ -52,21 +52,8 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
-  const textButton = {
-    textButton: {
-      label: getTextButtonLabel({ flow, stage, token }),
-      hidden: (!canRegress || isSuccessStage) && !isEditingStage,
-      action: () => {
-        if (canRegress) regress!()
-        regressTrackingEvent({ props })
-      },
-    },
-  }
-
-  const proxyOrAllowanceStage = isProxyStage || isAllowanceStage
-
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token: !proxyOrAllowanceStage ? token : 'DAI' }),
+    title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
@@ -78,11 +65,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({
-        ...primaryButtonLabelParams,
-        flow,
-        token: 'DAI',
-      }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
@@ -92,8 +75,15 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       },
       url: isSuccessStage ? `/${id}` : undefined,
     },
-    ...((proxyOrAllowanceStage || isOpenStage) && textButton),
-    status: getSidebarStatus({ flow, ...sidebarTxData, }),
+    textButton: {
+      label: getTextButtonLabel({ flow, stage, token }),
+      hidden: !canRegress || isSuccessStage,
+      action: () => {
+        if (canRegress) regress!()
+        regressTrackingEvent({ props })
+      },
+    },
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

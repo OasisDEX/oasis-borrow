@@ -26,18 +26,18 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    token,
-    removeTriggerConfig,
-    ethPrice,
-    ilkData,
-    toggleForms,
-    selectedSLValue,
     collateralizationRatioAtNextPrice,
-    txError,
-    gasEstimationUsd,
     ethBalance,
-    stage,
+    ethPrice,
+    gasEstimationUsd,
+    ilkData,
     isProgressDisabled,
+    removeTriggerConfig,
+    selectedSLValue,
+    stage,
+    toggleForms,
+    token,
+    txError,
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
@@ -50,9 +50,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     selectedSLValue,
     collateralizationRatioAtNextPrice,
   })
-
   const sidebarTxData = extractSidebarTxData(props)
-  const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -73,15 +71,12 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: primaryButtonLabel,
+      label: getPrimaryButtonLabel({ flow, stage, token }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
-        if (stage !== 'txSuccess') {
-          removeTriggerConfig.onClick(() => null)
-        } else {
-          backToVaultOverview(uiChanges)
-        }
+        if (stage !== 'txSuccess') removeTriggerConfig.onClick(() => null)
+        else backToVaultOverview(uiChanges)
       },
     },
     ...(stage !== 'txInProgress' && {
