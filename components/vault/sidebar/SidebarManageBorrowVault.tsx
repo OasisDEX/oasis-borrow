@@ -24,8 +24,8 @@ import { Grid } from 'theme-ui'
 import { SidebarManageBorrowVaultEditingStage } from './SidebarManageBorrowVaultEditingStage'
 import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultManageStage'
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
-import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
+import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
@@ -119,7 +119,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
         {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
-          <SidebarManageVaultAllowanceStage {...props} />
+          <SidebarVaultAllowanceStage {...props} />
         )}
         {isMultiplyTransitionStage && (
           <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />

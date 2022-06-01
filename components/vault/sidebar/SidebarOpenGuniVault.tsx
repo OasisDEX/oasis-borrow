@@ -1,6 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/SidebarOpenVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -16,7 +15,6 @@ import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
-  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
@@ -25,6 +23,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarOpenGuniVaultOpenStage } from './SidebarOpenGuniVaultOpenStage'
+import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
 
 export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const { accountData$ } = useAppContext()
@@ -51,7 +50,6 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const flow: SidebarFlow = 'openGuni'
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractSidebarAllowanceData(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
@@ -74,7 +72,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       <Grid gap={3}>
         {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} token="DAI" />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
         {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />

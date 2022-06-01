@@ -1,6 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/SidebarOpenVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -15,7 +14,6 @@ import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
-  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
@@ -25,6 +23,7 @@ import { Grid } from 'theme-ui'
 
 import { SidebarOpenMultiplyVaultEditingState } from './SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from './SidebarOpenMultiplyVaultOpenStage'
+import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
 
 export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const { accountData$ } = useAppContext()
@@ -52,7 +51,6 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const flow: SidebarFlow = 'openMultiply'
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractSidebarAllowanceData(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
@@ -62,7 +60,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />

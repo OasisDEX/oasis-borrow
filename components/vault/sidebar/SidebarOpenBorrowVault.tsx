@@ -14,7 +14,6 @@ import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
-  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useObservable } from 'helpers/observableHook'
@@ -24,8 +23,8 @@ import { Grid } from 'theme-ui'
 import { isFirstCdp } from '../../../helpers/isFirstCdp'
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarOpenVaultAllowanceStage } from './SidebarOpenVaultAllowanceStage'
 import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
+import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { accountData$ } = useAppContext()
@@ -54,7 +53,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const firstCDP = isFirstCdp(accountData)
   const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractSidebarAllowanceData(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
@@ -64,7 +62,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
