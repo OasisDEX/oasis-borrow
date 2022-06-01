@@ -30,7 +30,9 @@
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
+  "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
+  "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
@@ -54,6 +56,7 @@
   },
   "change-your-vault": "Change your vault",
   "close": "Close",
+  "close-to": "Close to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
   "completed": "Completed",
@@ -98,15 +101,18 @@
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
+  "smart-proxy-desc": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
   "create-vault": "Create Vault",
   "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
-    "Just one proxy needed per account",
+    "<1>Just one</1> proxy needed per account",
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
   ],
+  "proxy-waiting-text": "Read more on smart proxy in the",
+  "proxy-waiting-text-link": "Knowledge Base",
   "creating-proxy-contract": "Creating your smart proxy contract",
   "currency": "Currency",
   "custom": "Custom",
@@ -203,6 +209,7 @@
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
+  "from:": "from",
   "full": "Full",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
@@ -656,17 +663,22 @@
     "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
+    "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
+    "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
       "common": {
-        "close-vault": "Close Vault",
+        "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
       "borrow": {
-        "edit-dai": "Edit DAI",
-        "edit-collateral": "Edit Collateral",
+        "edit-dai": "Manage DAI",
+        "edit-collateral": "Manage collateral ({{token}})",
         "switch-to-multiply": "Switch to Multiply"
       },
       "multiply": {
+        "adjust": "Adjust",
+        "buy-coll": "Buy Coll.",
+        "reduce-debt": "Reduce Debt",
         "switch-to-borrow": "Switch to Borrow"
       }
     },
@@ -751,7 +763,8 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
-    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price."
+    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price.",
+    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -762,7 +775,8 @@
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction"
+    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction",
+    "next-coll-ratio-close-to-current-stop-loss": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
@@ -819,7 +833,8 @@
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults"
+    "your-vaults": "Your Vaults",
+    "assets-and-positions": "Top {{number}} assets and positions"
   },
   "vault-banners": {
     "ownership": {
@@ -882,12 +897,14 @@
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
       "confirm-in-progress": "Vault being created",
-      "modified": "Vault is being Modified",
+      "modified": "Vault is being modified",
+      "manage": "Manage your vault",
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
       "multiply-transition": "Multiply your exposure on {{token}} in your vault",
       "go-to-multiply": "Great, now you will go to the new Multiply interface",
-      "success": "All done! You now have a vault"
+      "success": "All done! You now have a vault",
+      "success-manage": "All done! Your vault has been updated"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
@@ -997,8 +1014,7 @@
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
-    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
-    "coll-ratio-liquidation": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

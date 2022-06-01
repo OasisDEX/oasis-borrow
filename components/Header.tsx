@@ -19,11 +19,16 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
-import { UniswapWidget } from './uniswapWidget/UniswapWidget'
+import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -211,7 +216,7 @@ function ButtonDropdown({
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
           bg: 'background',
-          boxShadow: 'userSettingsCardDropdown',
+          boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
           overflowX: 'visible',
@@ -228,15 +233,21 @@ function ButtonDropdown({
 }
 
 function UserDesktopMenu() {
-  const exchangeEnabled = useFeatureToggle('Exchange')
   const { t } = useTranslation()
-  const { accountData$, context$, web3Context$ } = useAppContext()
+  const { accountData$, context$, web3Context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const vaultCount = useVaultCount()
   const [exchangeOnboarded] = useOnboarding('Exchange')
   const [exchangeOpened, setExchangeOpened] = useState(false)
+  const [widgetUiChanges] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+
+  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
+
+  const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
   const shouldHideSettings =
     !context ||
@@ -264,19 +275,48 @@ function UserDesktopMenu() {
           {t('my-positions')} {vaultCount && `(${vaultCount})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        {exchangeEnabled && (
-          <ButtonDropdown
-            ButtonContents={({ active }) => (
-              <Icon name="exchange" size="auto" width="20" color={active ? 'primary' : 'inherit'} />
-            )}
-            round={true}
-            showNewBeacon={!exchangeOnboarded && !exchangeOpened}
-            onOpen={() => setExchangeOpened(true)}
-            sx={{ mr: 3 }}
+        <Box>
+          <Button
+            variant="menuButtonRound"
+            onClick={() => {
+              setExchangeOpened(true)
+              uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                type: 'open',
+              })
+            }}
+            sx={{
+              mr: 3,
+              position: 'relative',
+              '&, :focus': {
+                outline: widgetOpen ? '1px solid' : null,
+                outlineColor: 'primary',
+              },
+              color: 'lavender',
+              ':hover': { color: 'primary' },
+            }}
           >
-            <UniswapWidget />
-          </ButtonDropdown>
-        )}
+            {showNewUniswapWidgetBeacon && (
+              <Icon
+                name="new_beacon"
+                sx={{
+                  position: 'absolute',
+                  top: '-3px',
+                  right: '-3px',
+                }}
+                size="auto"
+                width={22}
+              />
+            )}
+            <Icon
+              name="exchange"
+              size="auto"
+              width="20"
+              color={widgetOpen ? 'primary' : 'inherit'}
+            />
+          </Button>
+          <UniswapWidgetShowHide />
+        </Box>
+
         {!shouldHideSettings && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
@@ -393,11 +433,16 @@ const LINKS = {
 }
 
 function ConnectedHeader() {
+  const { uiChanges } = useAppContext()
   const { pathname } = useRouter()
   const { t } = useTranslation()
   const earnEnabled = useFeatureToggle('EarnProduct')
-  const exchangeEnabled = useFeatureToggle('Exchange')
   const onMobile = useOnMobile()
+  const [widgetUiChanges] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+
+  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   return (
     <React.Fragment>
@@ -461,30 +506,40 @@ function ConnectedHeader() {
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               <PositionsButton sx={{ mr: 2 }} />
-              {exchangeEnabled && (
-                <ButtonDropdown
-                  ButtonContents={({ active }) => (
-                    <Icon
-                      name="exchange"
-                      size="auto"
-                      width="20"
-                      color={active ? 'primary' : 'inherit'}
-                    />
-                  )}
-                  round={true}
-                  sx={{ mr: 2 }}
-                  dropdownSx={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    right: 'unset',
-                    bottom: 'unset',
-                    transform: 'translateX(-50%) translateY(-50%)',
-                  }}
-                >
-                  <UniswapWidget />
-                </ButtonDropdown>
-              )}
+              <Button
+                variant="menuButtonRound"
+                onClick={() => {
+                  uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                    type: 'open',
+                  })
+                }}
+                sx={{
+                  mr: 2,
+                  '&, :focus': {
+                    outline: widgetOpen ? '1px solid' : null,
+                    outlineColor: 'primary',
+                  },
+                  color: 'lavender',
+                  ':hover': { color: 'primary' },
+                }}
+              >
+                <Icon
+                  name="exchange"
+                  size="auto"
+                  width="20"
+                  color={widgetOpen ? 'primary' : 'inherit'}
+                />
+              </Button>
+              <UniswapWidgetShowHide
+                sxWrapper={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  right: 'unset',
+                  bottom: 'unset',
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }}
+              />
               <MobileMenu />
             </Flex>
             <MobileSettings />

@@ -34,7 +34,7 @@ export function ListWithIcon({
             <Icon
               name={icon}
               size={iconSize}
-              sx={{ position: 'absolute', top: 0, left: 0, ...iconStyle }}
+              sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}
             />
             {item}
           </Text>

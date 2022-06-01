@@ -38,6 +38,7 @@ export function PieChart({ items, size = 258 }: { items: PieChartItem[]; size?: 
 
   const renderSlice = (length: number, angle: number, stroke: string) => (
     <circle
+      key={`${length}${angle}${stroke}`}
       cx="50%"
       cy="50%"
       r={radius}

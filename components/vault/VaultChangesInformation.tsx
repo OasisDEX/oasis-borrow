@@ -69,6 +69,7 @@ export function VaultChangesInformationContainer({
     <Grid
       as="ul"
       sx={{
+        p: 0,
         ...(newComponentsEnabled && {
           p: 3,
           backgroundColor: 'secondaryAlt',

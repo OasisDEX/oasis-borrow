@@ -1,18 +1,36 @@
 import { TxStatusCardProgressProps } from 'components/vault/TxStatusCard'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { SidebarTxData } from 'helpers/extractSidebarHelpers'
+import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
-import { HasSidebarTxData } from '../../helpers/extractSidebarHelpers'
+function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
+  switch (flow) {
+    case 'openBorrow':
+    case 'openMultiply':
+      return 'creating-your-vault'
+    case 'addSl':
+    case 'adjustSl':
+      return 'protection.setting-downside-protection'
+    case 'cancelSl':
+      return 'protection.cancelling-downside-protection'
+    default:
+      throw new UnreachableCaseError(flow)
+  }
+}
 
 export function getSidebarProgress({
   stage,
   proxyTxHash,
   allowanceTxHash,
   openTxHash,
+  manageTxHash,
   etherscan,
   proxyConfirmations,
   safeConfirmations,
   token,
-}: HasSidebarTxData): TxStatusCardProgressProps | undefined {
+  flow,
+}: SidebarTxData & { flow: SidebarFlow }): TxStatusCardProgressProps | undefined {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -25,6 +43,8 @@ export function getSidebarProgress({
         txHash: proxyTxHash!,
         etherscan: etherscan!,
       }
+    case 'collateralAllowanceInProgress':
+    case 'daiAllowanceInProgress':
     case 'allowanceInProgress':
       return {
         text: t('setting-allowance-for', { token }),
@@ -32,9 +52,16 @@ export function getSidebarProgress({
         etherscan: etherscan!,
       }
     case 'txInProgress':
+      const txInProgressKey = getSidebarProgressTxInProgressKey({ flow })
       return {
-        text: t('creating-your-vault'),
+        text: t(txInProgressKey),
         txHash: openTxHash!,
+        etherscan: etherscan!,
+      }
+    case 'manageInProgress':
+      return {
+        text: t('changing-vault'),
+        txHash: manageTxHash!,
         etherscan: etherscan!,
       }
     default:

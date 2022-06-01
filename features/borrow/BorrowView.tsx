@@ -20,6 +20,7 @@ export function BorrowView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const tab = window.location.hash.replace(/^#/, '')
 
   return (
     <Grid
@@ -36,6 +37,7 @@ export function BorrowView() {
           href: 'https://kb.oasis.app/help/what-is-oasis-borrow ',
           text: t('product-page.borrow.link'),
         }}
+        scrollToId={tab}
       />
 
       <WithErrorHandler error={[productCardsDataError]}>
@@ -48,7 +50,10 @@ export function BorrowView() {
           }
         >
           {([productCardsData]) => (
-            <ProductCardsFilter filters={productCardsConfig.borrow.cardsFilters}>
+            <ProductCardsFilter
+              filters={productCardsConfig.borrow.cardsFilters}
+              selectedFilter={tab}
+            >
               {(cardsFilter: ProductLandingPagesFiltersKeys) => {
                 const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
 

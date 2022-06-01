@@ -37,18 +37,17 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
           borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-track': {
-          marginRight: '10px',
-          marginBottom: '24px',
+          my: '24px',
+          mr: '10px',
           backgroundColor: theme.colors.backgroundAlt,
           borderRadius: theme.radii.large,
         },
-        maxHeight: 670,
+        maxHeight: 490,
         overflowY: 'auto',
         overflowX: 'hidden',
-        marginRight: overflowedConent ? '8px' : '0px',
+        mr: overflowedConent ? '8px' : '0px',
         p: '24px',
-        paddingRight: overflowedConent ? '10px' : '24px',
-        pt: 0,
+        pr: overflowedConent ? '10px' : '24px',
       }}
     >
       <Box>
