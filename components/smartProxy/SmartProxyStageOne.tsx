@@ -20,7 +20,9 @@ export function SmartProxyStageOne() {
       <Text variant="paragraph3" sx={{ position: 'relative', color: 'text.subtitle', mb: 4 }}>
         {t('smart-proxy-desc')}
       </Text>
-      <NewListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+      <NewListWithIcon
+        items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
+      />
     </Box>
   )
 }

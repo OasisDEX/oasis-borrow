@@ -107,6 +107,11 @@
   "creating-proxy": "Creating Proxy",
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
+    "Just one proxy needed per account",
+    "Enables your wallet to interact with the Maker protocol",
+    "More gas efficient"
+  ],
+  "proxy-advantages-new": [
     "<1>Just one</1> proxy needed per account",
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
