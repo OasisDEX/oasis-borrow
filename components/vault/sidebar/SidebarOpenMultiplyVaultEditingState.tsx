@@ -2,15 +2,14 @@ import BigNumber from 'bignumber.js'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
-
-import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
-import { OpenMultiplyVaultChangesInformation } from '../OpenMultiplyVaultChangesInformation'
 
 export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultState) {
   const {

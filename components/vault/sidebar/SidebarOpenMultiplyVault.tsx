@@ -4,6 +4,7 @@ import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/Sidebar
 import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
 import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
@@ -22,7 +23,6 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
 import { SidebarOpenMultiplyVaultEditingState } from './SidebarOpenMultiplyVaultEditingState'
 import { SidebarOpenMultiplyVaultOpenStage } from './SidebarOpenMultiplyVaultOpenStage'
 

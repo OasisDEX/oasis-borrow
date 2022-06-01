@@ -4,6 +4,7 @@ import {
   OpenMultiplyVaultStatus,
 } from 'components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
 import { OpenMultiplyVaultTitle } from 'components/vault/commonMultiply/OpenMultiplyVaultTitle'
+import { SidebarOpenMultiplyVault } from 'components/vault/sidebar/SidebarOpenMultiplyVault'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
@@ -19,7 +20,6 @@ import React from 'react'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
-import { SidebarOpenMultiplyVault } from './sidebar/SidebarOpenMultiplyVault'
 
 export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props
