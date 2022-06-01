@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -68,20 +69,22 @@ function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
   isVaultDebtBelowDustLumit,
+  vaultHasNoProtection
 }: {
   stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
   isVaultDebtBelowDustLumit: boolean
+  vaultHasNoProtection: boolean | undefined
 }): ZeroDebtProtectionBannerProps {
   if (stopLossWriteEnabled) {
-    if (isVaultDebtZero) {
+    if (isVaultDebtZero && vaultHasNoProtection) {
       return {
         header: 'protection.zero-debt-heading',
         description: 'protection.zero-debt-description',
       }
     } else if (isVaultDebtBelowDustLumit) {
       return {
-        header: 'protection.below-dust-limit',
+        header: 'protection.below-dust-limit-heading',
         description: 'protection.zero-debt-description',
       }
     } else
@@ -115,9 +118,20 @@ export function ProtectionControl({
   const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
+
+  const stopLossData = automationTriggersData ? extractStopLossData(automationTriggersData) : undefined
+  console.log(stopLossData)
+  const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled
+  console.log(vaultHasActiveTrigger)
+
+  console.log('condition:')
+  console.log(vaultHasActiveTrigger || (!vault.debt.isZero() &&
+  vault.debt.gt(dustLimit) &&
+  (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ))
+
   return !vault.debt.isZero() &&
     vault.debt.gt(dustLimit) &&
-    (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ? (
+    (automationTriggersData?.triggers?.length || stopLossWriteEnabled || vaultHasActiveTrigger) ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
@@ -157,6 +171,7 @@ export function ProtectionControl({
           stopLossWriteEnabled,
           isVaultDebtZero: vault.debt.isZero(),
           isVaultDebtBelowDustLumit: vault.debt <= dustLimit,
+          vaultHasNoProtection: !vaultHasActiveTrigger
         })}
       />
     </Container>
