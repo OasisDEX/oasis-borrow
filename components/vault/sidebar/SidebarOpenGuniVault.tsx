@@ -5,7 +5,6 @@ import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpen
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
-import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/containers/sidebar/SidebarOpenGuniVaultOpenStage'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
@@ -24,6 +23,8 @@ import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { SidebarOpenGuniVaultOpenStage } from './SidebarOpenGuniVaultOpenStage'
 
 export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const { accountData$ } = useAppContext()
