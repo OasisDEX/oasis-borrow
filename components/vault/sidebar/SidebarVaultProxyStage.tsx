@@ -5,6 +5,7 @@ import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
+import { theme } from 'theme'
 import { Image, Text } from 'theme-ui'
 
 import {
@@ -18,7 +19,7 @@ interface SidebarOpenVaultProxyStageProps {
   gasData: HasGasEstimation
 }
 
-export function SidebarOpenVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxyStageProps) {
+export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxyStageProps) {
   const { t } = useTranslation()
 
   const isProxyInfoStage = [
@@ -49,7 +50,10 @@ export function SidebarOpenVaultProxyStage({ stage, gasData }: SidebarOpenVaultP
       {isProxyInfoStage ? (
         <>
           <ListWithIcon
-            items={t<string, string[]>('proxy-advantages', { returnObjects: true })}
+            icon="checkmark"
+            iconSize="14px"
+            iconColor={theme.colors.primary}
+            items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
             listStyle={{ my: 2 }}
           />
           <VaultChangesInformationContainer title={t('creating-proxy-contract')}>

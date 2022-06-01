@@ -23,8 +23,8 @@ import { Grid } from 'theme-ui'
 import { isFirstCdp } from '../../../helpers/isFirstCdp'
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from './SidebarVaultProxyStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { accountData$ } = useAppContext()
@@ -61,7 +61,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />

@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
@@ -71,7 +71,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
         {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
         <VaultErrors {...props} />

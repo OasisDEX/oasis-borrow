@@ -23,8 +23,8 @@ import { Grid } from 'theme-ui'
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
 import { SidebarManageMultiplyVaultManageStage } from './SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from './SidebarManageMultiplyVaultTransitionStage'
-import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from './SidebarVaultProxyStage'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
@@ -136,7 +136,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
+        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarVaultAllowanceStage {...props} />
         )}
