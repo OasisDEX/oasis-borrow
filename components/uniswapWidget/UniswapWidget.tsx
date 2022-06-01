@@ -3,22 +3,21 @@ import '@uniswap/widgets/fonts.css'
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { tokenList } from 'components/uniswapWidget/tokenList'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { keyBy } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Button, Flex, Image, SxStyleProp, Text } from 'theme-ui'
-
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  SwapWidgetState,
-} from '../../features/automation/protection/common/UITypes/SwapWidgetChange'
-import { useOutsideElementClickHandler } from '../../helpers/useOutsideElementClickHandler'
-import tokenList from './tokenList.json'
 
 const { colors, radii } = theme
 
