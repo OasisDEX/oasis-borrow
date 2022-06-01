@@ -14,7 +14,6 @@ export type Feature =
   | 'StopLossWrite'
   | 'Referrals'
 
-
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit sssssssssssssssssssssssssssstests
@@ -24,7 +23,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   NewComponents: false,
   StopLossRead: true,
   StopLossWrite: false,
-  Referrals: true
+  Referrals: true,
   // your feature here....
 }
 

@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { NewReferralModal } from 'components/NewReferralModal'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
@@ -121,7 +122,7 @@ export function HomepageView() {
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)
   const [landedWithRef, setLandedWithRef] = useState('')
-  const [localReferral, setLocalReferral] = useLocalStorage('referral',null)
+  const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
 
   const router = useRouter()
 
@@ -133,7 +134,7 @@ export function HomepageView() {
         setLandedWithRef(linkReferral)
       }
     }
-  }, [checkReferralLocal,userReferral])
+  }, [checkReferralLocal, userReferral])
 
   return (
     <Box
@@ -155,7 +156,10 @@ export function HomepageView() {
           ></ReferralBanner>
         </Flex>
       )}
-      {referralsEnabled && landedWithRef && <TermsOfService />}
+      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
+        <NewReferralModal />
+      )}
+      {referralsEnabled && userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{

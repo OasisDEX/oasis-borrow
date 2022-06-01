@@ -4,6 +4,7 @@ import { disconnect } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
 import { Modal, ModalErrorMessage } from 'components/Modal'
 import { NewReferralModal } from 'components/NewReferralModal'
+import { UserReferralState } from 'features/referralOverview/user'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
@@ -171,11 +172,10 @@ const hiddenStages: TermsAcceptanceStage[] = [
   'acceptanceCheckInProgress',
 ]
 
-export function TermsOfService() {
-  const { web3Context$, termsAcceptance$, userReferral$ } = useAppContext()
+export function TermsOfService({ userReferral }: { userReferral?: UserReferralState }) {
+  const { web3Context$, termsAcceptance$ } = useAppContext()
   const [termsAcceptance] = useObservable(termsAcceptance$)
   const [web3Context] = useObservable(web3Context$)
-  const [userReferral] = useObservable(userReferral$)
 
   function disconnectHandler() {
     disconnect(web3Context)
