@@ -26,8 +26,10 @@ function getPrimaryButtonLabelEditingTranslationKey({
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
     case 'manageBorrow':
     case 'manageMultiply':
+    case 'manageGuni':
       return 'confirm'
     case 'addSl':
       return 'add-stop-loss'
@@ -44,6 +46,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'creating-vault'
     case 'addSl':
       return 'add-stop-loss'
@@ -60,6 +63,7 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'go-to-vault'
     case 'addSl':
     case 'adjustSl':

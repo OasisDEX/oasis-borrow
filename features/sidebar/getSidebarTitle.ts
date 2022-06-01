@@ -13,6 +13,8 @@ function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
     case 'openBorrow':
     case 'openMultiply':
       return 'vault-form.header.edit'
+    case 'openGuni':
+      return 'vault-form.header.editWithToken'
     case 'addSl':
     case 'adjustSl':
       return 'protection.set-downside-protection'
@@ -27,6 +29,7 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarFlow })
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'vault-form.header.success'
     case 'addSl':
       return 'protection.downside-protection-complete'
@@ -43,6 +46,7 @@ function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarFlow
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'vault-form.header.confirm-in-progress'
     case 'addSl':
     case 'adjustSl':
@@ -58,6 +62,7 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'vault-form.header.confirm'
     case 'addSl':
     case 'adjustSl':
@@ -76,7 +81,7 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'editing':
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
-      return t(editingKey)
+      return t(editingKey, { token })
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':

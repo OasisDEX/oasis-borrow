@@ -1,19 +1,21 @@
+import { OpenMultiplyVaultButton } from 'components/vault/commonMultiply/OpenMultiplyVaultButton'
+import {
+  OpenMultiplyVaultConfirmation,
+  OpenMultiplyVaultStatus,
+} from 'components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
+import { OpenMultiplyVaultTitle } from 'components/vault/commonMultiply/OpenMultiplyVaultTitle'
 import { VaultAllowance, VaultAllowanceStatus } from 'components/vault/VaultAllowance'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { SidebarOpenGuniVault } from 'features/earn/guni/open/containers/sidebar/SidebarOpenGuniVault'
+import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { OpenMultiplyVaultButton } from '../../../../../components/vault/commonMultiply/OpenMultiplyVaultButton'
-import {
-  OpenMultiplyVaultConfirmation,
-  OpenMultiplyVaultStatus,
-} from '../../../../../components/vault/commonMultiply/OpenMultiplyVaultConfirmation'
-import { OpenMultiplyVaultTitle } from '../../../../../components/vault/commonMultiply/OpenMultiplyVaultTitle'
-import { extractGasDataFromState } from '../../../../../helpers/extractGasDataFromState'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
 import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVaultChangesInformation'
 import { GuniOpenMultiplyVaultEditing } from './GuniOpenMultiplyVaultEditing'
@@ -22,8 +24,11 @@ export function GuniOpenMultiplyVaultForm(props: OpenGuniVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, stage } = props
   const { t } = useTranslation()
   const gasData = extractGasDataFromState(props)
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
-  return (
+  return newComponentsEnabled ? (
+    <SidebarOpenGuniVault {...props} />
+  ) : (
     <VaultFormContainer toggleTitle={t('open-vault.title')}>
       <OpenMultiplyVaultTitle
         {...props}
