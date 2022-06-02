@@ -6,6 +6,7 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
+  isSLPanelVisible?: boolean
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -74,9 +75,16 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
   }
 }
 
-export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
+export function getSidebarTitle({
+  flow,
+  stage,
+  token,
+  isSLPanelVisible = false,
+}: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
+
+  if (isSLPanelVisible) return t('protection.your-stop-loss-triggered')
 
   switch (stage) {
     case 'editing':

@@ -31,6 +31,7 @@ export interface PrimaryButtonLabelParams extends SharedStateExtractions {
   insufficientDaiAllowance?: boolean
   insufficientAllowance?: boolean
   canTransition?: boolean
+  isSLPanelVisible?: boolean
 }
 
 export interface SidebarTxData extends SharedStateExtractions {

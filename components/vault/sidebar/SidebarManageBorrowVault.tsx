@@ -16,6 +16,7 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -25,9 +26,11 @@ import { SidebarManageBorrowVaultManageStage } from './SidebarManageBorrowVaultM
 import { SidebarManageBorrowVaultTransitionStage } from './SidebarManageBorrowVaultTransitionStage'
 import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from './SidebarVaultProxyStage'
+import { SidebarVaultSLTriggered } from './SidebarVaultSLTriggered'
 
 export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const {
     accountIsConnected,
@@ -46,9 +49,11 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     progress,
     regress,
     stage,
+    stopLossTriggered,
     toggle,
     totalSteps,
     vault: { token },
+    vaultHistory,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -61,6 +66,13 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     ...props,
   })
   const sidebarTxData = extractSidebarTxData(props)
+  const mostRecentEvent = vaultHistory[0]
+  const isVaultClosed =
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+  const [isSLPanelVisible, setIsSLPanelVisible] = useState<boolean>(
+    stopLossTriggered && stopLossReadEnabled && isVaultClosed,
+  )
 
   useEffect(() => {
     switch (stage) {
@@ -77,10 +89,10 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
   }, [stage])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, isSLPanelVisible }),
     dropdown: {
       forcePanel,
-      disabled: isDropdownDisabled({ stage }),
+      disabled: isDropdownDisabled({ stage, isSLPanelVisible }),
       items: [
         {
           label: t('system.actions.borrow.edit-collateral', { token }),
@@ -115,27 +127,35 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     },
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
-        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
-        {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
-          <SidebarVaultAllowanceStage {...props} />
+        {!isSLPanelVisible ? (
+          <>
+            {isEditingStage && <SidebarManageBorrowVaultEditingStage {...props} />}
+            {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
+            {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
+              <SidebarVaultAllowanceStage {...props} />
+            )}
+            {isMultiplyTransitionStage && (
+              <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
+            )}
+            {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
+            <VaultErrors {...props} />
+            <VaultWarnings {...props} />
+          </>
+        ) : (
+          <SidebarVaultSLTriggered closeEvent={mostRecentEvent} />
         )}
-        {isMultiplyTransitionStage && (
-          <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
-        )}
-        {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
-        <VaultErrors {...props} />
-        <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
-      disabled: !canProgress || !accountIsConnected,
-      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
+      label: getPrimaryButtonLabel({ flow, isSLPanelVisible, ...primaryButtonLabelParams }),
+      disabled: (!canProgress || !accountIsConnected) && !isSLPanelVisible,
+      steps: !isSuccessStage && !isSLPanelVisible ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
       action: () => {
-        progress!()
-        progressTrackingEvent({ props })
+        if (!isSLPanelVisible) {
+          progress!()
+          progressTrackingEvent({ props })
+        } else setIsSLPanelVisible(false)
       },
     },
     textButton: {
