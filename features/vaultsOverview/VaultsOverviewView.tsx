@@ -667,14 +667,20 @@ export function VaultsOverviewView({
       )}
 
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        {earnEnabled && (<WithErrorHandler error={err}>
-          <WithLoadingIndicator value={positionsOverviewSummary}>
-            {(positionsOverviewSummary) => <>
-              <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
-              {positionsOverviewSummary.assetsAndPositions.length > 0 && <AssetsAndPositionsOverview {...positionsOverviewSummary} />}
-            </>}
-          </WithLoadingIndicator>
-        </WithErrorHandler>)}
+        {earnEnabled && (
+          <WithErrorHandler error={err}>
+            <WithLoadingIndicator value={positionsOverviewSummary}>
+              {(positionsOverviewSummary) => (
+                <>
+                  <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
+                  {positionsOverviewSummary.assetsAndPositions.length > 0 && (
+                    <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                  )}
+                </>
+              )}
+            </WithLoadingIndicator>
+          </WithErrorHandler>
+        )}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

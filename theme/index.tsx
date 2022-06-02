@@ -144,7 +144,8 @@ const oasisBaseTheme = {
       fontSize: 4,
       color: 'primary',
     },
-    headerSettings: { // deprecated, use header4
+    headerSettings: {
+      // deprecated, use header4
       variant: 'text.header4',
     },
     paragraph1: {
