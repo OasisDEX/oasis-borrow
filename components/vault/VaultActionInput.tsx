@@ -178,7 +178,8 @@ export function VaultActionInput({
                 </Text>
               </>
             )}{' '}
-            {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) && tokenSymbol}
+            {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) &&
+              (auxiliaryFlag ? auxiliarySymbol : tokenSymbol)}
           </Text>
         )}
       </Grid>

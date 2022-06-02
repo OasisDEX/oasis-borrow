@@ -87,7 +87,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
       },
       url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
     },
-    status: getSidebarStatus({ flow, ...sidebarTxData, }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

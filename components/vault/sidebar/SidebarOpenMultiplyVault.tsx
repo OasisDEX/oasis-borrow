@@ -85,7 +85,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
       },
       url: !canRegress && isEditingStage ? `/vaults/open/${ilk}` : undefined,
     },
-    status: getSidebarStatus({ flow, ...sidebarTxData, }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

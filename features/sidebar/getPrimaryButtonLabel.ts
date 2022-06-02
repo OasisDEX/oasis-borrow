@@ -87,8 +87,9 @@ export function getPrimaryButtonLabel({
   isSLPanelVisible = false,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
-  const allowanceToken = insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
-  
+  const allowanceToken =
+    insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
+
   if (isSLPanelVisible) return t('protection.reopen-position')
 
   switch (stage) {

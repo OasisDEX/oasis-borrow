@@ -1,166 +1,45 @@
 import { ActionPills } from 'components/ActionPills'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { handleNumericInput } from 'helpers/input'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
+import {
+  extractFieldDepositCollateralData,
+  extractFieldGenerateDaiData,
+  extractFieldPaybackDaiData,
+  extractFieldWithdrawCollateralData,
+  FieldDepositCollateral,
+  FieldGenerateDai,
+  FieldPaybackDai,
+  FieldWithdrawCollateral,
+} from './SidebarFields'
 import { SidebarResetButton } from './SidebarResetButton'
-
-interface FieldProps extends ManageStandardBorrowVaultState {
-  disabled?: boolean
-}
-
-function FieldDeposit({
-  maxDepositAmount,
-  maxDepositAmountUSD,
-  vault: { token },
-  depositAmount,
-  depositAmountUSD,
-  updateDeposit,
-  updateDepositUSD,
-  updateDepositMax,
-  priceInfo: { currentCollateralPrice },
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      token={token}
-      tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
-      onSetMax={updateDepositMax}
-      amount={depositAmount}
-      auxiliaryAmount={depositAmountUSD}
-      onChange={handleNumericInput(updateDeposit!)}
-      onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
-      maxAmount={maxDepositAmount}
-      maxAuxiliaryAmount={maxDepositAmountUSD}
-      maxAmountLabel={t('Balance')}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldGenerate({
-  generateAmount,
-  maxGenerateAmount,
-  updateGenerate,
-  updateGenerateMax,
-  ilkData: { debtFloor },
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Generate"
-      amount={generateAmount}
-      token="DAI"
-      showMin={true}
-      minAmount={debtFloor}
-      minAmountLabel={t('from')}
-      onSetMin={() => {
-        updateGenerate!(debtFloor)
-      }}
-      showMax={true}
-      maxAmount={maxGenerateAmount}
-      onSetMax={updateGenerateMax}
-      onChange={handleNumericInput(updateGenerate!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldWithdraw({
-  withdrawAmount,
-  withdrawAmountUSD,
-  maxWithdrawAmount,
-  maxWithdrawAmountUSD,
-  vault: { token },
-  updateWithdraw,
-  updateWithdrawUSD,
-  updateWithdrawMax,
-  priceInfo: { currentCollateralPrice },
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Withdraw"
-      showMax={true}
-      hasAuxiliary={true}
-      tokenUsdPrice={currentCollateralPrice}
-      onSetMax={updateWithdrawMax}
-      amount={withdrawAmount}
-      auxiliaryAmount={withdrawAmountUSD}
-      maxAmount={maxWithdrawAmount}
-      maxAmountLabel={t('max')}
-      maxAuxiliaryAmount={maxWithdrawAmountUSD}
-      token={token}
-      hasError={false}
-      onChange={handleNumericInput(updateWithdraw!)}
-      onAuxiliaryChange={handleNumericInput(updateWithdrawUSD!)}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldPayback({
-  paybackAmount,
-  maxPaybackAmount,
-  updatePayback,
-  updatePaybackMax,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Payback"
-      amount={paybackAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxPaybackAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updatePaybackMax}
-      onChange={handleNumericInput(updatePayback!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
 
 export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()
 
   const {
-    stage,
-    setMainAction,
-    mainAction,
+    accountIsConnected,
+    accountIsController,
     depositAmount,
-    updateDeposit,
-    withdrawAmount,
-    updateWithdraw,
     generateAmount,
-    updateGenerate,
+    inputAmountsEmpty,
+    mainAction,
     paybackAmount,
-    updatePayback,
+    setMainAction,
     showDepositAndGenerateOption,
     showPaybackAndWithdrawOption,
+    stage,
     toggleDepositAndGenerateOption,
     togglePaybackAndWithdrawOption,
-    accountIsController,
-    accountIsConnected,
-    inputAmountsEmpty,
+    updateDeposit,
+    updateGenerate,
+    updatePayback,
+    updateWithdraw,
+    vault: { token },
+    withdrawAmount,
   } = props
 
   const [isSecondaryFieldDisabled, setIsSecondaryFieldDisabled] = useState<boolean>(true)
@@ -205,14 +84,24 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
         <>
           {isDepositOrGenerate && (
             <>
-              <FieldDeposit {...props} />
-              <FieldGenerate disabled={isSecondaryFieldDisabled || !isOwner} {...props} />
+              <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
+              <FieldGenerateDai
+                disabled={isSecondaryFieldDisabled}
+                {...extractFieldGenerateDaiData(props)}
+              />
             </>
           )}
           {isWithdrawOrPayback && (
             <>
-              <FieldWithdraw {...props} disabled={!isOwner} />
-              <FieldPayback disabled={isSecondaryFieldDisabled} {...props} />
+              <FieldWithdrawCollateral
+                token={token}
+                disabled={!isOwner}
+                {...extractFieldWithdrawCollateralData(props)}
+              />
+              <FieldPaybackDai
+                disabled={isSecondaryFieldDisabled}
+                {...extractFieldPaybackDaiData(props)}
+              />
             </>
           )}
         </>
@@ -221,14 +110,22 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
         <>
           {isDepositOrGenerate && (
             <>
-              <FieldGenerate {...props} disabled={!isOwner} />
-              <FieldDeposit disabled={isSecondaryFieldDisabled} {...props} />
+              <FieldGenerateDai disabled={!isOwner} {...extractFieldGenerateDaiData(props)} />
+              <FieldDepositCollateral
+                token={token}
+                disabled={isSecondaryFieldDisabled}
+                {...extractFieldDepositCollateralData(props)}
+              />
             </>
           )}
           {isWithdrawOrPayback && (
             <>
-              <FieldPayback {...props} />
-              <FieldWithdraw disabled={isSecondaryFieldDisabled || !isOwner} {...props} />
+              <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
+              <FieldWithdrawCollateral
+                token={token}
+                disabled={isSecondaryFieldDisabled || !isOwner}
+                {...extractFieldWithdrawCollateralData(props)}
+              />
             </>
           )}
         </>
