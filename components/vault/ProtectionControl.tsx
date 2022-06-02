@@ -69,7 +69,7 @@ function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
   isVaultDebtBelowDustLumit,
-  vaultHasNoProtection
+  vaultHasNoProtection,
 }: {
   stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
@@ -118,20 +118,15 @@ export function ProtectionControl({
   const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
-
-  const stopLossData = automationTriggersData ? extractStopLossData(automationTriggersData) : undefined
-  console.log(stopLossData)
+  const stopLossData = automationTriggersData
+    ? extractStopLossData(automationTriggersData)
+    : undefined
   const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled
-  console.log(vaultHasActiveTrigger)
 
-  console.log('condition:')
-  console.log(vaultHasActiveTrigger || (!vault.debt.isZero() &&
-  vault.debt.gt(dustLimit) &&
-  (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ))
-
-  return !vault.debt.isZero() &&
-    vault.debt.gt(dustLimit) &&
-    (automationTriggersData?.triggers?.length || stopLossWriteEnabled || vaultHasActiveTrigger) ? (
+  return vaultHasActiveTrigger ||
+    (!vault.debt.isZero() &&
+      vault.debt.gt(dustLimit) &&
+      (automationTriggersData?.triggers?.length || stopLossWriteEnabled)) ? (
     <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, collateralPrices]}
@@ -171,7 +166,7 @@ export function ProtectionControl({
           stopLossWriteEnabled,
           isVaultDebtZero: vault.debt.isZero(),
           isVaultDebtBelowDustLumit: vault.debt <= dustLimit,
-          vaultHasNoProtection: !vaultHasActiveTrigger
+          vaultHasNoProtection: !vaultHasActiveTrigger,
         })}
       />
     </Container>
