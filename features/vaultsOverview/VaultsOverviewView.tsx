@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardEarn } from 'components/ProductCardEarn'
@@ -12,12 +13,16 @@ import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { TabSwitcher } from 'components/TabSwitcher'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
+  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import {
   borrowPageCardsData,
   cardFiltersFromBalances,
@@ -602,6 +607,40 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[]; address:
   )
 }
 
+function TotalAssets({ address }: { address: string }) {
+  const { positionsOverviewSummary$ } = useAppContext()
+  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
+  const { t } = useTranslation()
+  return (
+    <WithErrorHandler error={err}>
+      <WithLoadingIndicator value={positionsOverviewSummary}>
+        {(positionsOverviewSummary) => (
+          <Box sx={{ mb: 4 }}>
+            <Text variant="header4" sx={{ mb: 1 }}>
+              {t('vaults-overview.total-assets')}
+            </Text>
+            <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
+              <Trans
+                i18nKey="vaults-overview.total-assets-subheader"
+                components={[
+                  <AppLink
+                    href="https://kb.oasis.app/help/curated-token-list"
+                    target="_blank"
+                    sx={{ fontWeight: 'body' }}
+                  />,
+                ]}
+              />
+            </Text>
+            <Text variant="display" sx={{ fontWeight: 'body' }}>
+              ${formatAmount(positionsOverviewSummary.totalValueUsd, 'USD')}
+            </Text>
+          </Box>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
+  )
+}
+
 export function VaultsOverviewView({
   vaultsOverview,
   context,
@@ -633,7 +672,10 @@ export function VaultsOverviewView({
       )}
 
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        {earnEnabled && <AssetsAndPositionsOverview address={address} />}
+        {earnEnabled && <>
+          <TotalAssets address={address} />
+          <AssetsAndPositionsOverview address={address} />
+        </>}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}
