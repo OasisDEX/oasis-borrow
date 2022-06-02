@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { NewReferralModal } from 'components/NewReferralModal'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { LANDING_PILLS } from 'content/landing'
+import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'

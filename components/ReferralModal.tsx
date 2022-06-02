@@ -1,63 +1,28 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { UserReferralState } from 'features/referralOverview/user'
-import { createUserUsingApi$ } from 'features/referralOverview/userApi'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
-import { useRedirect } from 'helpers/useRedirect'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
 
-import { staticFilesRuntimeUrl } from '../helpers/staticPaths'
 import { AppLink } from './Links'
 import { Modal } from './Modal'
-import { SuccessfulJoinModal } from './SuccessfullJoinModal'
 
-interface ReferralProps {
-  account?: string | null
-  userReferral?: UserReferralState | null
+interface ReferralModaProps {
+  heading: string
+  topButtonText: string
+  bottomButtonText?: string
+  topButtonFunc: () => void
+  bottomButtonFunc?: () => void
 }
 
-interface UpsertUser {
-  hasAccepted: boolean
-  isReferred: boolean
-}
-
-export function NewReferralModal({ account, userReferral }: ReferralProps) {
+export function ReferralModal({
+  heading,
+  topButtonText,
+  bottomButtonText,
+  topButtonFunc,
+  bottomButtonFunc,
+}: ReferralModaProps) {
   const { t } = useTranslation()
-  const [success, setSuccess] = useState(false)
-  const { push } = useRedirect()
-  const createUser = async (upsertUser: UpsertUser) => {
-    const { hasAccepted, isReferred } = upsertUser
-
-    if (userReferral && account) {
-      const jwtToken = jwtAuthGetToken(account)
-      if (jwtToken)
-        createUserUsingApi$(
-          hasAccepted,
-          isReferred ? userReferral.referrer : null,
-          account,
-          jwtToken,
-        ).subscribe((res) => {
-          if (res === 200) {
-            hasAccepted ? setSuccess(true) : userReferral.trigger()
-          }
-        })
-    }
-  }
-
-  const ReferralModal = ({
-    heading,
-    topButtonText,
-    bottomButtonText,
-    topButtonFunc,
-    bottomButtonFunc,
-  }: {
-    heading: string
-    topButtonText: string
-    bottomButtonText?: string
-    topButtonFunc: () => void
-    bottomButtonFunc?: () => void
-  }) => (
+  return (
     <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
       <Grid p={4} sx={{ py: '24px' }}>
         <Flex sx={{ flexDirection: 'column' }}>
@@ -136,33 +101,5 @@ export function NewReferralModal({ account, userReferral }: ReferralProps) {
         </Flex>
       </Grid>
     </Modal>
-  )
-
-  return (
-    <>
-      {!success && !userReferral && (
-        <ReferralModal
-          heading="Welcome to the Oasis.app Referral Program"
-          topButtonText={t('connect-wallet')}
-          topButtonFunc={() => push('/connect')}
-        />
-      )}
-      {!success && userReferral && userReferral.state === 'newUser' && (
-        <ReferralModal
-          heading="Welcome to the Oasis.app Referral Program"
-          topButtonText={t('ref.modal.accept')}
-          bottomButtonText={t('ref.modal.later')}
-          topButtonFunc={() => createUser({ hasAccepted: true, isReferred: true })}
-          bottomButtonFunc={() => createUser({ hasAccepted: false, isReferred: true })}
-        />
-      )}
-      {success && userReferral && account && (
-        <SuccessfulJoinModal
-          account={account}
-          userReferral={userReferral}
-          heading={t('ref.modal.successful-join')}
-        ></SuccessfulJoinModal>
-      )}{' '}
-    </>
   )
 }
