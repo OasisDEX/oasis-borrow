@@ -302,7 +302,10 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
             <Box sx={{ pt: 1 }} key={`${index}-${type}`}>
               <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
               {positions.map((position, index) => (
-                <Grid sx={{ gap: 4, mb: 4, pt: 3, pb: 2 }} key={`grid-${index}-${position.ilk}-${position.type}`}>
+                <Grid
+                  sx={{ gap: 4, mb: 4, pt: 3, pb: 2 }}
+                  key={`grid-${index}-${position.ilk}-${position.type}`}
+                >
                   <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start', gap: 4 }}>
                     {getPositionInfoItems(position).map(({ header, info }, index) => (
                       <Grid sx={{ gap: 2 }} key={`inner-grip-${index}`}>

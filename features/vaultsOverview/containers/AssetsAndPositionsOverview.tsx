@@ -179,7 +179,7 @@ function Menu(props: {
     >
       <Grid columns={1} gap={20}>
         {props.assetActions.map((aa, index) => (
-          <MenuRow {...aa} key={ `${index}-${aa.text}`} close={props.close} />
+          <MenuRow {...aa} key={`${index}-${aa.text}`} close={props.close} />
         ))}
       </Grid>
     </Card>
