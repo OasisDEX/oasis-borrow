@@ -74,7 +74,7 @@ function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
   isVaultDebtBelowDustLumit: boolean
-  vaultHasNoProtection: boolean | undefined
+  vaultHasNoProtection?: boolean
 }): ZeroDebtProtectionBannerProps {
   if (stopLossWriteEnabled) {
     if (isVaultDebtZero && vaultHasNoProtection) {
