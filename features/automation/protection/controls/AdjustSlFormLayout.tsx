@@ -14,11 +14,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import {
-  formatAmount,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
