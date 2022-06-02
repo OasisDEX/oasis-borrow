@@ -276,8 +276,8 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                 {positions.map((position, index) => (
                   <React.Fragment key={`value-fragment-${index}-${position.ilk}`}>
                     {pad(
-                      getPositionInfoItems(position).map((infoItem, index) => (
-                        <Cell key={index}>{infoItem.info}</Cell>
+                      getPositionInfoItems(position).map((infoItem, i) => (
+                        <Cell key={`${index}-${i}`}>{infoItem.info}</Cell>
                       )),
                       columnCount - 1,
                     )}
