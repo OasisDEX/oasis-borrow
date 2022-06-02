@@ -1,23 +1,26 @@
+import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { maxUint256 } from 'blockchain/calls/erc20'
+import { ProxyActionsSmartContractAdapterInterface } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import {
+  vaultActionsLogic,
+  VaultActionsLogicInterface,
+} from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { ContextConnected } from 'blockchain/network'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { setAllowance } from 'features/allowance/setAllowance'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { TxError } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
 
-import { ProxyActionsSmartContractAdapterInterface } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import {
-  vaultActionsLogic,
-  VaultActionsLogicInterface,
-} from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
-import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
-import { TxError } from '../../../../helpers/types'
 import {
   AllowanceChanges,
   AllowanceOption,
@@ -94,6 +97,7 @@ export type OpenVaultStage =
   | 'allowanceSuccess'
   | 'txWaitingForConfirmation'
   | 'txWaitingForApproval'
+  | 'stopLossEditing'
   | 'txInProgress'
   | 'txFailure'
   | 'txSuccess'
@@ -106,12 +110,14 @@ export interface MutableOpenVaultState {
   showGenerateOption: boolean
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
+  stopLossSkipped: false
   id?: BigNumber
 }
 
 interface OpenVaultFunctions {
   progress?: () => void
   regress?: () => void
+  skipStopLoss?: () => void
   toggleGenerateOption?: () => void
   updateDeposit?: (depositAmount?: BigNumber) => void
   updateDepositUSD?: (depositAmountUSD?: BigNumber) => void
@@ -158,6 +164,7 @@ export type OpenVaultState = MutableOpenVaultState &
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
+    withStopLossStage: boolean
   } & HasGasEstimation
 
 function addTransitions(
@@ -182,6 +189,15 @@ function addTransitions(
       updateGenerateMax: () => change({ kind: 'generateMax' }),
       toggleGenerateOption: () => change({ kind: 'toggleGenerateOption' }),
       progress: () => change({ kind: 'progressEditing' }),
+    }
+  }
+
+  if (state.stage === 'stopLossEditing') {
+    return {
+      ...state,
+      progress: () => change({ kind: 'progressStopLossEditing' }),
+      regress: () => change({ kind: 'backToEditing' }),
+      skipStopLoss: () => change({ kind: 'skipStopLoss' }),
     }
   }
 
@@ -264,6 +280,7 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   depositAmount: undefined,
   depositAmountUSD: undefined,
   generateAmount: undefined,
+  stopLossSkipped: false,
 }
 
 export function createOpenVault$(
@@ -320,12 +337,25 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+                    const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
+
+                    const network = getNetworkName()
+                    const withStopLossStage = stopLossOpenFlowEnabled
+                      ? isSupportedAutomationIlk(network, ilk)
+                      : false
+
+                    const totalSteps = calculateInitialTotalSteps(
+                      proxyAddress,
+                      token,
+                      allowance,
+                      withStopLossStage,
+                    )
 
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
                       ...defaultOpenVaultConditions,
+                      withStopLossStage,
                       priceInfo,
                       balanceInfo,
                       ilkData,

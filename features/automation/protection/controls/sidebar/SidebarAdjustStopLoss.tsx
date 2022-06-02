@@ -68,7 +68,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       <Grid gap={3}>
         {stopLossWriteEnabled ? (
           <>
-            {(stage === 'editing' || stage === 'txFailure') && (
+            {(stage === 'stopLossEditing' || stage === 'txFailure') && (
               <SidebarAdjustStopLossEditingStage {...props} />
             )}
           </>
@@ -82,7 +82,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarAdjustStopLossAddStage {...props} />
         )}
-        {stage === 'editing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
+        {stage === 'stopLossEditing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
           <>
             <VaultErrors errorMessages={errors} ilkData={ilkData} />
             <VaultWarnings warningMessages={warnings} ilkData={ilkData} />

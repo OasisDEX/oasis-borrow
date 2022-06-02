@@ -82,6 +82,8 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
       return t(editingKey, { token })
+    case 'stopLossEditing':
+      return t('protection.enable-stop-loss')
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':

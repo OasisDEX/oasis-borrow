@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
+import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { isNullish } from '../../../../helpers/functions'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -19,6 +19,7 @@ import { OpenVaultStage, OpenVaultState } from './openVault'
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,
+  isStopLossEditingStage: false,
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
@@ -28,6 +29,7 @@ export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
   token: string,
   allowance: BigNumber | undefined | 'skip',
+  withStopLoss: boolean = false,
 ) {
   let totalSteps = 2
 
@@ -39,6 +41,10 @@ export function calculateInitialTotalSteps(
     if (token !== 'ETH' && (!allowance || allowance.lte(zero))) {
       totalSteps += 1
     }
+  }
+
+  if (withStopLoss) {
+    totalSteps += 1
   }
 
   return totalSteps
@@ -86,6 +92,14 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         totalSteps,
         currentStep: totalSteps - 1,
       }
+    case 'stopLossEditing':
+      return {
+        ...state,
+        ...defaultOpenVaultStageCategories,
+        isStopLossEditingStage: true,
+        totalSteps,
+        currentStep: totalSteps - 1,
+      }
     case 'txWaitingForConfirmation':
     case 'txWaitingForApproval':
     case 'txInProgress':
@@ -105,6 +119,7 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
 
 export interface OpenVaultConditions {
   isEditingStage: boolean
+  isStopLossEditingStage: boolean
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
@@ -331,6 +346,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'proxyFailure',
     'allowanceWaitingForConfirmation',
     'allowanceFailure',
+    'stopLossEditing',
     'txWaitingForConfirmation',
     'txFailure',
   ] as OpenVaultStage[]).some((s) => s === stage)
