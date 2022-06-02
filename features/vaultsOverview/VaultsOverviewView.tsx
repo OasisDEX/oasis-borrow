@@ -607,37 +607,30 @@ function VaultSuggestions(props: { productCardsData: ProductCardData[]; address:
   )
 }
 
-function TotalAssets({ address }: { address: string }) {
-  const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
+function TotalAssets({ totalValueUsd }: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
+
   return (
-    <WithErrorHandler error={err}>
-      <WithLoadingIndicator value={positionsOverviewSummary}>
-        {(positionsOverviewSummary) => (
-          <Box sx={{ mb: 4 }}>
-            <Text variant="header4" sx={{ mb: 1 }}>
-              {t('vaults-overview.total-assets')}
-            </Text>
-            <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
-              <Trans
-                i18nKey="vaults-overview.total-assets-subheader"
-                components={[
-                  <AppLink
-                    href="https://kb.oasis.app/help/curated-token-list"
-                    target="_blank"
-                    sx={{ fontWeight: 'body' }}
-                  />,
-                ]}
-              />
-            </Text>
-            <Text variant="display" sx={{ fontWeight: 'body' }}>
-              ${formatAmount(positionsOverviewSummary.totalValueUsd, 'USD')}
-            </Text>
-          </Box>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <Box sx={{ mb: 4 }}>
+      <Text variant="header4" sx={{ mb: 1 }}>
+        {t('vaults-overview.total-assets')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
+        <Trans
+          i18nKey="vaults-overview.total-assets-subheader"
+          components={[
+            <AppLink
+              href="https://kb.oasis.app/help/curated-token-list"
+              target="_blank"
+              sx={{ fontWeight: 'body' }}
+            />,
+          ]}
+        />
+      </Text>
+      <Text variant="display" sx={{ fontWeight: 'body' }}>
+        ${formatAmount(totalValueUsd, 'USD')}
+      </Text>
+    </Box>
   )
 }
 
@@ -651,6 +644,8 @@ export function VaultsOverviewView({
   const earnEnabled = useFeatureToggle('EarnProduct')
   const { vaults, vaultSummary } = vaultsOverview
   const { t } = useTranslation()
+  const { positionsOverviewSummary$ } = useAppContext()
+  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
 
   if (vaultSummary === undefined) {
     return null
@@ -672,10 +667,14 @@ export function VaultsOverviewView({
       )}
 
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        {earnEnabled && <>
-          <TotalAssets address={address} />
-          <AssetsAndPositionsOverview address={address} />
-        </>}
+        {earnEnabled && (<WithErrorHandler error={err}>
+          <WithLoadingIndicator value={positionsOverviewSummary}>
+            {(positionsOverviewSummary) => <>
+              <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
+              {positionsOverviewSummary.assetsAndPositions.length > 0 && <AssetsAndPositionsOverview {...positionsOverviewSummary} />}
+            </>}
+          </WithLoadingIndicator>
+        </WithErrorHandler>)}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

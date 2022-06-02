@@ -186,7 +186,7 @@ function Menu(props: {
   )
 }
 
-function RenderPositions(props: TopAssetsAndPositionsViewModal) {
+export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
@@ -217,23 +217,5 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
         </Box>
       </Flex>
     </Card>
-  )
-}
-
-export function AssetsAndPositionsOverview(props: { address: string }) {
-  const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(props.address))
-  return (
-    <WithErrorHandler error={err}>
-      <WithLoadingIndicator value={positionsOverviewSummary}>
-        {(positionsOverviewSummary) => {
-          if (positionsOverviewSummary.assetsAndPositions.length > 0) {
-            return <RenderPositions {...positionsOverviewSummary} />
-          } else {
-            return <></>
-          }
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
   )
 }
