@@ -188,6 +188,7 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -892,6 +893,8 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
+  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -935,6 +938,7 @@ export function setupAppContext() {
     ilkToToken$,
     bonus$,
     positionsOverviewSummary$,
+    yields$,
   }
 }
 
