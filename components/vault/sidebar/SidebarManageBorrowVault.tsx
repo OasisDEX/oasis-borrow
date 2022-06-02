@@ -66,10 +66,9 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
     ...props,
   })
   const sidebarTxData = extractSidebarTxData(props)
-  const mostRecentEvent = vaultHistory[0]
   const isVaultClosed =
-    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_DAI' ||
-    mostRecentEvent?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+    vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
   const [isSLPanelVisible, setIsSLPanelVisible] = useState<boolean>(
     stopLossTriggered && stopLossReadEnabled && isVaultClosed,
   )
@@ -142,7 +141,7 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
             <VaultWarnings {...props} />
           </>
         ) : (
-          <SidebarVaultSLTriggered closeEvent={mostRecentEvent} />
+          <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />
         )}
       </Grid>
     ),
