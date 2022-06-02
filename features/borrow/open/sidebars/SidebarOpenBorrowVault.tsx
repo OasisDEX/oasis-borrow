@@ -1,10 +1,11 @@
+import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
-import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -21,10 +22,10 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarOpenGuniVaultOpenStage } from './SidebarOpenGuniVaultOpenStage'
-import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
+import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
+import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
 
-export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
+export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
@@ -33,6 +34,7 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     canRegress,
     currentStep,
     id,
+    ilk,
     isAllowanceStage,
     isEditingStage,
     isLoadingStage,
@@ -46,8 +48,9 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     totalSteps,
   } = props
 
-  const flow: SidebarFlow = 'openGuni'
+  const flow: SidebarFlow = 'openBorrow'
   const firstCDP = isFirstCdp(accountData)
+  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
@@ -56,10 +59,10 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
+        {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
-        {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
+        {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -77,11 +80,12 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: !canRegress || isSuccessStage,
+      hidden: (!canRegress || isSuccessStage) && (!isEditingStage || !canTransition),
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })
       },
+      url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
     },
     status: getSidebarStatus({ flow, ...sidebarTxData }),
   }

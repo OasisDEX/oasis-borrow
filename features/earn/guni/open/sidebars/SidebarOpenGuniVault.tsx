@@ -1,9 +1,12 @@
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -15,17 +18,12 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
+import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { isFirstCdp } from '../../../helpers/isFirstCdp'
-import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
-import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarVaultAllowanceStage } from './SidebarVaultAllowanceStage'
-import { SidebarVaultProxyStage } from './SidebarVaultProxyStage'
-
-export function SidebarOpenBorrowVault(props: OpenVaultState) {
+export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
@@ -34,7 +32,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     canRegress,
     currentStep,
     id,
-    ilk,
     isAllowanceStage,
     isEditingStage,
     isLoadingStage,
@@ -48,9 +45,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     totalSteps,
   } = props
 
-  const flow: SidebarFlow = 'openBorrow'
+  const flow: SidebarFlow = 'openGuni'
   const firstCDP = isFirstCdp(accountData)
-  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
@@ -59,10 +55,10 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
+        {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
-        {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
+        {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -80,12 +76,11 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: (!canRegress || isSuccessStage) && (!isEditingStage || !canTransition),
+      hidden: !canRegress || isSuccessStage,
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })
       },
-      url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
     },
     status: getSidebarStatus({ flow, ...sidebarTxData }),
   }

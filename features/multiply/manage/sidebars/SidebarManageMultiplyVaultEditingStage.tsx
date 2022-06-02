@@ -19,14 +19,16 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  otherActionsCollateralPanel,
+  otherActionsDaiPanel,
+} from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
-
-import { otherActionsCollateralPanel, otherActionsDaiPanel } from './SidebarManageMultiplyVault'
 
 interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {
   collapsed?: boolean
