@@ -6,6 +6,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
 
+import { AppLink, AppLinkProps } from '../Links'
+
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
@@ -47,10 +49,10 @@ type PositionCommonProps = {
   icon: string
   ilk: string
   vaultID: string
-  onEditClick: Function
+  editLinkProps: AppLinkProps
 }
 
-type BorrowPositionVM = {
+export type BorrowPositionVM = {
   type: 'borrow'
   collateralRatio: string
   inDanger: boolean
@@ -59,20 +61,20 @@ type BorrowPositionVM = {
   variable: string
   automationEnabled: boolean
   protectionAmount?: string
-  onAutomationClick: Function
+  automationLinkProps: AppLinkProps
 } & PositionCommonProps
 
-type MultiplyPositionVM = {
+export type MultiplyPositionVM = {
   type: 'multiply'
   netValue: string
   multiple: string
   liquidationPrice: string
   fundingCost: string
   automationEnabled: boolean
-  onAutomationClick: Function
+  automationLinkProps: AppLinkProps
 } & PositionCommonProps
 
-type EarnPositionVM = {
+export type EarnPositionVM = {
   type: 'earn'
   netValue: string
   pnl: string
@@ -80,7 +82,7 @@ type EarnPositionVM = {
   liquidity: string
 } & PositionCommonProps
 
-type PositionVM = BorrowPositionVM | MultiplyPositionVM | EarnPositionVM
+export type PositionVM = BorrowPositionVM | MultiplyPositionVM | EarnPositionVM
 
 interface InfoItem {
   header: JSX.Element
@@ -90,14 +92,18 @@ interface InfoItem {
 function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyPositionVM }) {
   const { t } = useTranslation()
 
+  const { automationLinkProps } = position
+
   return position.automationEnabled ? (
-    <Button variant="actionActiveGreen" onClick={() => position.onAutomationClick()}>
-      {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
-    </Button>
+    <AppLink {...automationLinkProps}>
+      <Button variant="actionActiveGreen">
+        {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+      </Button>
+    </AppLink>
   ) : (
-    <Button variant="action" onClick={() => position.onAutomationClick()}>
-      {t('earn.automation-button-off')}
-    </Button>
+    <AppLink {...automationLinkProps}>
+      <Button variant="action">{t('earn.automation-button-off')}</Button>
+    </AppLink>
   )
 }
 
@@ -106,7 +112,11 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
     header: <Header name="asset" />,
     info: (
       <Flex
-        sx={{ alignItems: 'center', wordBreak: ['break-word', null], whiteSpace: [null, 'nowrap'] }}
+        sx={{
+          alignItems: 'center',
+          wordBreak: ['break-word', null],
+          whiteSpace: [null, 'nowrap'],
+        }}
       >
         <Icon name={position.icon} size={[26, 42]} sx={{ mr: 2, flexShrink: 0 }} />{' '}
         <Text>{position.ilk}</Text>
@@ -222,11 +232,15 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
   const fillRowSx = { gridColumn: `1 / span ${columnCount}` }
 
   function pad(items: any[], count: number) {
-    return items.concat(new Array(count - items.length).fill(<div />))
+    return items.concat(
+      new Array(count - items.length).fill(0).map((_, index) => {
+        return <div key={index} />
+      }),
+    )
   }
 
   return (
-    <Box sx={{ color: 'primary' }}>
+    <Box sx={{ color: 'primary', zIndex: 1 }}>
       <Text variant="paragraph2" sx={{ fontWeight: 'medium', my: 3 }}>
         {t('earn.your-positions')} ({positions.length})
       </Text>
@@ -245,37 +259,37 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
         >
           {Object.entries(positionsByType).map(([type, positions], index, array) => {
             const headers = pad(
-              getPositionInfoItems(positions[0]).map((infoItem) => infoItem.header),
+              getPositionInfoItems(positions[0]).map((infoItem, index) => (
+                <React.Fragment key={`h-${index}`}>{infoItem.header}</React.Fragment>
+              )),
               columnCount,
             )
             return (
-              <>
-                <Box sx={fillRowSx}>
+              <React.Fragment key={`line-${index}-${type}`}>
+                <Box sx={fillRowSx} key={`box-${index}-${type}`}>
                   <ProductHeading
                     title={t(`product-page.${type}.title`)}
                     count={positions.length}
                   />
                 </Box>
                 {headers}
-                {positions.map((position) => (
-                  <>
+                {positions.map((position, index) => (
+                  <React.Fragment key={`value-fragment-${index}-${position.ilk}`}>
                     {pad(
-                      getPositionInfoItems(position).map((infoItem) => (
-                        <Cell>{infoItem.info}</Cell>
+                      getPositionInfoItems(position).map((infoItem, i) => (
+                        <Cell key={`${index}-${i}`}>{infoItem.info}</Cell>
                       )),
                       columnCount - 1,
                     )}
-                    <Button
-                      variant="secondary"
-                      sx={{ fontSize: 1 }}
-                      onClick={() => position.onEditClick()}
-                    >
-                      {t('earn.edit-vault')}
-                    </Button>
-                  </>
+                    <AppLink {...position.editLinkProps}>
+                      <Button variant="secondary" sx={{ fontSize: 1 }}>
+                        {t('earn.edit-vault')}
+                      </Button>
+                    </AppLink>
+                  </React.Fragment>
                 ))}
                 {index < array.length - 1 && <Separator sx={{ mb: 2, ...fillRowSx }} />}
-              </>
+              </React.Fragment>
             )
           })}
         </Grid>
@@ -285,25 +299,26 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
       <Box sx={{ display: ['block', 'none'] }}>
         {Object.entries(positionsByType).map(([type, positions], index, array) => {
           return (
-            <Box sx={{ pt: 1 }}>
+            <Box sx={{ pt: 1 }} key={`${index}-${type}`}>
               <ProductHeading title={t(`product-page.${type}.title`)} count={positions.length} />
-              {positions.map((position) => (
-                <Grid sx={{ gap: 4, mb: 4, pt: 3, pb: 2 }}>
+              {positions.map((position, index) => (
+                <Grid
+                  sx={{ gap: 4, mb: 4, pt: 3, pb: 2 }}
+                  key={`grid-${index}-${position.ilk}-${position.type}`}
+                >
                   <Grid sx={{ gridTemplateColumns: '1fr 1fr', justifyItems: 'start', gap: 4 }}>
-                    {getPositionInfoItems(position).map(({ header, info }) => (
-                      <Grid sx={{ gap: 2 }}>
+                    {getPositionInfoItems(position).map(({ header, info }, index) => (
+                      <Grid sx={{ gap: 2 }} key={`inner-grip-${index}`}>
                         {header}
                         {info}
                       </Grid>
                     ))}
                   </Grid>
-                  <Button
-                    variant="secondary"
-                    sx={{ fontSize: 1 }}
-                    onClick={() => position.onEditClick()}
-                  >
-                    {t('earn.edit-vault')}
-                  </Button>
+                  <AppLink {...position.editLinkProps}>
+                    <Button variant="secondary" sx={{ fontSize: 1 }}>
+                      {t('earn.edit-vault')}
+                    </Button>
+                  </AppLink>
                 </Grid>
               ))}
               {index < array.length - 1 && <Separator sx={{ my: 4 }} />}
