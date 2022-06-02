@@ -182,7 +182,7 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
 
   const multiplyVM: MultiplyPositionVM[] = multiply.map((value) => ({
     type: 'multiply' as const,
-    icon: getToken(value.token).icon,
+    icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
     vaultID: value.id.toString(),
     multiple: `${calculateMultiply({ ...value }).toFixed(2)}x`,
