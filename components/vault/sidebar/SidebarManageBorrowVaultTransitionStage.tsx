@@ -22,6 +22,9 @@ export function SidebarManageBorrowVaultTransitionStage({
             {t('vault-form.header.multiply-transition', { token })}
           </Text>
           <ListWithIcon
+            icon="checkmark"
+            iconSize="14px"
+            iconColor="primary"
             items={[
               t('borrow-to-multiply.checkmark1', { token }),
               t('borrow-to-multiply.checkmark2'),

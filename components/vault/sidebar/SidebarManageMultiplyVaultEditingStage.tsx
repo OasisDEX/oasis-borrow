@@ -16,7 +16,7 @@ import {
 } from 'components/vault/sidebar/SidebarFields'
 import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSlider'
+import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'

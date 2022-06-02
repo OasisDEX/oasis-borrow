@@ -4,7 +4,7 @@ import {
   FieldDepositCollateral,
 } from 'components/vault/sidebar/SidebarFields'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSlider'
+import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
 import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import React from 'react'

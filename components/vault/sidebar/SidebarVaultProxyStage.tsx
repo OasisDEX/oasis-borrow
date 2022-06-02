@@ -5,7 +5,6 @@ import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { theme } from 'theme'
 import { Image, Text } from 'theme-ui'
 
 import {
@@ -52,7 +51,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
           <ListWithIcon
             icon="checkmark"
             iconSize="14px"
-            iconColor={theme.colors.primary}
+            iconColor="primary"
             items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
             listStyle={{ my: 2 }}
           />
