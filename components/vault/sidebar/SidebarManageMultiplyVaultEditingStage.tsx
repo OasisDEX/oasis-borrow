@@ -4,62 +4,33 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
 import {
   extractFieldDepositCollateralData,
+  extractFieldDepositDaiData,
+  extractFieldGenerateDaiData,
+  extractFieldPaybackDaiData,
   extractFieldWithdrawCollateralData,
   FieldDepositCollateral,
+  FieldDepositDai,
+  FieldGenerateDai,
+  FieldPaybackDai,
   FieldWithdrawCollateral,
 } from 'components/vault/sidebar/SidebarFields'
+import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSlider'
-import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
-import { handleNumericInput } from 'helpers/input'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactChild } from 'react'
-import { Box, Button, Grid, Text } from 'theme-ui'
+import React from 'react'
+import { Grid, Text } from 'theme-ui'
 
 import { otherActionsCollateralPanel, otherActionsDaiPanel } from './SidebarManageMultiplyVault'
-
-interface FieldProps extends ManageMultiplyVaultState {
-  disabled?: boolean
-}
 
 interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {
   collapsed?: boolean
   disabled?: boolean
-}
-
-interface OptionalAdjustProps {
-  label: string
-  isVisible?: boolean
-  isExpanded: boolean
-  clickHandler?: () => void
-  children: ReactChild
-}
-
-function OptionalAdjust({
-  label,
-  isVisible,
-  isExpanded,
-  clickHandler,
-  children,
-}: OptionalAdjustProps) {
-  return (
-    <>
-      {isVisible && (
-        <Box>
-          <Button variant={`actionOption${isExpanded ? 'Opened' : ''}`} onClick={clickHandler}>
-            {isExpanded ? <MinusIcon /> : <PlusIcon />}
-            {label}
-          </Button>
-          {isExpanded && <Box>{children}</Box>}
-        </Box>
-      )}
-    </>
-  )
 }
 
 function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMultiplyParams) {
@@ -87,81 +58,6 @@ function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMul
       }}
       collapsed={collapsed}
       disabled={hasToDepositCollateralOnEmptyVault || disabled}
-    />
-  )
-}
-
-function FieldDepositDai({
-  depositDaiAmount,
-  updateDepositDaiAmount,
-  updateDepositDaiAmountMax,
-  maxDepositDaiAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      amount={depositDaiAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxDepositDaiAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updateDepositDaiAmountMax}
-      onChange={handleNumericInput(updateDepositDaiAmount!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldPaybackDai({
-  paybackAmount,
-  updatePaybackAmount,
-  updatePaybackAmountMax,
-  maxPaybackAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      amount={paybackAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxPaybackAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updatePaybackAmountMax}
-      onChange={handleNumericInput(updatePaybackAmount!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldGenerateDai({
-  generateAmount,
-  updateGenerateAmount,
-  updateGenerateAmountMax,
-  maxGenerateAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Withdraw"
-      amount={generateAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxGenerateAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updateGenerateAmountMax}
-      onChange={handleNumericInput(updateGenerateAmount!)}
-      hasError={false}
-      disabled={disabled}
     />
   )
 }
@@ -226,6 +122,7 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
 
 function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const {
     depositAmount,
     showSliderController,
@@ -250,6 +147,7 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
 
 function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const {
     withdrawAmount,
     vault: { debt, token },
@@ -274,6 +172,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageM
 
 function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const {
     depositDaiAmount,
     vault: { token },
@@ -284,7 +183,7 @@ function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyV
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('system.multiply-buy-coll', { token })}
       </Text>
-      <FieldDepositDai {...props} />
+      <FieldDepositDai {...extractFieldDepositDaiData(props)} />
       <SliderAdjustMultiply {...props} disabled={!depositDaiAmount} />
     </>
   )
@@ -298,7 +197,7 @@ function SidebarManageMultiplyVaultEditingStagePaybackDai(props: ManageMultiplyV
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('system.multiply-reduce-debt')}
       </Text>
-      <FieldPaybackDai {...props} />
+      <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
     </>
   )
 }
@@ -314,7 +213,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
 
   return (
     <>
-      <FieldGenerateDai {...props} />
+      <FieldGenerateDai action="Withdraw" {...extractFieldGenerateDaiData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={generateAmount?.gt(zero) && debt.gt(zero)}

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultAction, VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -16,6 +16,7 @@ type VaultState =
   | ManageMultiplyVaultState
 
 interface FieldProps {
+  action?: VaultAction
   disabled?: boolean
 }
 
@@ -49,6 +50,15 @@ interface FieldWithdrawCollateralProps extends FieldProps {
   withdrawAmountUSD?: BigNumber
 }
 
+interface FieldDepositDaiProps extends FieldProps {
+  depositDaiAmount?: BigNumber
+  maxDepositDaiAmount?: BigNumber
+  updateDepositDai?: () => void
+  updateDepositDaiAmount?: () => void
+  updateDepositDaiAmountMax?: () => void
+  updateDepositDaiMax?: () => void
+}
+
 interface FieldGenerateDaiProps extends FieldProps {
   debtFloor?: BigNumber
   generateAmount?: BigNumber
@@ -63,6 +73,8 @@ interface FieldPaybackDaiProps extends FieldProps {
   maxPaybackAmount?: BigNumber
   paybackAmount?: BigNumber
   updatePayback?: () => void
+  updatePaybackAmount?: () => void
+  updatePaybackAmountMax?: () => void
   updatePaybackMax?: () => void
 }
 
@@ -110,6 +122,22 @@ export function extractFieldWithdrawCollateralData(state: VaultState) {
   }
 }
 
+export function extractFieldDepositDaiData(state: VaultState) {
+  return {
+    ...pick(
+      [
+        'depositDaiAmount',
+        'maxDepositDaiAmount',
+        'updateDepositDai',
+        'updateDepositDaiAmount',
+        'updateDepositDaiAmountMax',
+        'updateDepositDaiMax',
+      ],
+      state,
+    ),
+  }
+}
+
 export function extractFieldGenerateDaiData(state: VaultState) {
   return {
     ...pick(
@@ -130,11 +158,22 @@ export function extractFieldGenerateDaiData(state: VaultState) {
 
 export function extractFieldPaybackDaiData(state: VaultState) {
   return {
-    ...pick(['maxPaybackAmount', 'paybackAmount', 'updatePayback', 'updatePaybackMax'], state),
+    ...pick(
+      [
+        'maxPaybackAmount',
+        'paybackAmount',
+        'updatePayback',
+        'updatePaybackAmount',
+        'updatePaybackAmountMax',
+        'updatePaybackMax',
+      ],
+      state,
+    ),
   }
 }
 
 export function FieldDepositCollateral({
+  action = 'Deposit',
   currentCollateralPrice,
   depositAmount,
   depositAmountUSD,
@@ -153,7 +192,7 @@ export function FieldDepositCollateral({
 
   return (
     <VaultActionInput
-      action="Deposit"
+      action={action}
       amount={depositAmount}
       auxiliaryAmount={depositAmountUSD}
       hasAuxiliary={true}
@@ -173,6 +212,7 @@ export function FieldDepositCollateral({
 }
 
 export function FieldWithdrawCollateral({
+  action = 'Withdraw',
   currentCollateralPrice,
   maxWithdrawAmount,
   maxWithdrawAmountUSD,
@@ -191,7 +231,7 @@ export function FieldWithdrawCollateral({
 
   return (
     <VaultActionInput
-      action="Withdraw"
+      action={action}
       amount={withdrawAmount}
       auxiliaryAmount={withdrawAmountUSD}
       disabled={disabled}
@@ -210,11 +250,42 @@ export function FieldWithdrawCollateral({
   )
 }
 
+export function FieldDepositDai({
+  action = 'Deposit',
+  depositDaiAmount,
+  maxDepositDaiAmount,
+  updateDepositDai,
+  updateDepositDaiAmount,
+  updateDepositDaiAmountMax,
+  updateDepositDaiMax,
+  disabled = false,
+}: FieldDepositDaiProps) {
+  const { t } = useTranslation()
+
+  return (
+    <VaultActionInput
+      action={action}
+      amount={depositDaiAmount}
+      token="DAI"
+      showMax={true}
+      maxAmount={maxDepositDaiAmount}
+      maxAmountLabel={t('max')}
+      onSetMax={updateDepositDaiMax! || updateDepositDaiAmountMax!}
+      onChange={handleNumericInput(updateDepositDai! || updateDepositDaiAmount!)}
+      hasError={false}
+      disabled={disabled}
+    />
+  )
+}
+
 export function FieldGenerateDai({
+  action = 'Generate',
   debtFloor,
   generateAmount,
   maxGenerateAmount,
   updateGenerate,
+  updateGenerateAmount,
+  updateGenerateAmountMax,
   updateGenerateMax,
   disabled = false,
 }: FieldGenerateDaiProps) {
@@ -222,18 +293,19 @@ export function FieldGenerateDai({
 
   return (
     <VaultActionInput
-      action="Generate"
+      action={action}
       amount={generateAmount}
       disabled={disabled}
       hasError={false}
       maxAmount={maxGenerateAmount}
       minAmount={debtFloor}
       minAmountLabel={t('from')}
-      onChange={handleNumericInput(updateGenerate!)}
+      onChange={handleNumericInput(updateGenerate! || updateGenerateAmount!)}
       onSetMin={() => {
-        updateGenerate!(debtFloor)
+        if (updateGenerate) updateGenerate(debtFloor)
+        if (updateGenerateAmount) updateGenerateAmount(debtFloor)
       }}
-      onSetMax={updateGenerateMax!}
+      onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
       showMax={true}
       showMin={true}
       token={'DAI'}
@@ -242,9 +314,12 @@ export function FieldGenerateDai({
 }
 
 export function FieldPaybackDai({
+  action = 'Payback',
   maxPaybackAmount,
   paybackAmount,
   updatePayback,
+  updatePaybackAmount,
+  updatePaybackAmountMax,
   updatePaybackMax,
   disabled = false,
 }: FieldPaybackDaiProps) {
@@ -252,14 +327,14 @@ export function FieldPaybackDai({
 
   return (
     <VaultActionInput
-      action="Payback"
+      action={action}
       amount={paybackAmount}
       disabled={disabled}
       hasError={false}
       maxAmount={maxPaybackAmount}
       maxAmountLabel={t('max')}
-      onChange={handleNumericInput(updatePayback!)}
-      onSetMax={updatePaybackMax}
+      onChange={handleNumericInput(updatePayback! || updatePaybackAmount!)}
+      onSetMax={updatePaybackMax! || updatePaybackAmountMax!}
       showMax={true}
       token="DAI"
     />
