@@ -1,15 +1,14 @@
-import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import React, { useEffect, useState } from 'react'
-import { Grid } from 'theme-ui'
-
 import {
   extractFieldDepositCollateralData,
   extractFieldGenerateDaiData,
   FieldDepositCollateral,
   FieldGenerateDai,
-} from './SidebarFields'
-import { SidebarResetButton } from './SidebarResetButton'
+} from 'components/vault/sidebar/SidebarFields'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
+import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import React, { useEffect, useState } from 'react'
+import { Grid } from 'theme-ui'
 
 export function SidebarOpenBorrowVaultEditingStage(props: OpenVaultState) {
   const {

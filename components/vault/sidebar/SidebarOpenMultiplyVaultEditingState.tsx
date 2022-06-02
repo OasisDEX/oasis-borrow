@@ -1,12 +1,14 @@
 import BigNumber from 'bignumber.js'
+import {
+  extractFieldDepositCollateralData,
+  FieldDepositCollateral,
+} from 'components/vault/sidebar/SidebarFields'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSlider'
 import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import React from 'react'
 import { Grid } from 'theme-ui'
-
-import { extractFieldDepositCollateralData, FieldDepositCollateral } from './SidebarFields'
-import { SidebarSliderAdjustMultiply } from './SidebarSlider'
 
 export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultState) {
   const {

@@ -1,10 +1,4 @@
 import { ActionPills } from 'components/ActionPills'
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
-import { useTranslation } from 'next-i18next'
-import React, { useEffect, useState } from 'react'
-import { Grid } from 'theme-ui'
-
 import {
   extractFieldDepositCollateralData,
   extractFieldGenerateDaiData,
@@ -14,8 +8,13 @@ import {
   FieldGenerateDai,
   FieldPaybackDai,
   FieldWithdrawCollateral,
-} from './SidebarFields'
-import { SidebarResetButton } from './SidebarResetButton'
+} from 'components/vault/sidebar/SidebarFields'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
+import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { useTranslation } from 'next-i18next'
+import React, { useEffect, useState } from 'react'
+import { Grid } from 'theme-ui'
 
 export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrowVaultState) {
   const { t } = useTranslation()

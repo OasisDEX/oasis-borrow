@@ -2,6 +2,14 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
+import {
+  extractFieldDepositCollateralData,
+  extractFieldWithdrawCollateralData,
+  FieldDepositCollateral,
+  FieldWithdrawCollateral,
+} from 'components/vault/sidebar/SidebarFields'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSlider'
 import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -13,15 +21,7 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactChild } from 'react'
 import { Box, Button, Grid, Text } from 'theme-ui'
 
-import {
-  extractFieldDepositCollateralData,
-  extractFieldWithdrawCollateralData,
-  FieldDepositCollateral,
-  FieldWithdrawCollateral,
-} from './SidebarFields'
 import { otherActionsCollateralPanel, otherActionsDaiPanel } from './SidebarManageMultiplyVault'
-import { SidebarResetButton } from './SidebarResetButton'
-import { SidebarSliderAdjustMultiply } from './SidebarSlider'
 
 interface FieldProps extends ManageMultiplyVaultState {
   disabled?: boolean
