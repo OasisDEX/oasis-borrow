@@ -87,9 +87,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: shouldRedirectToCloseVault
-        ? t('close-vault')
-        : getPrimaryButtonLabel({ flow, stage, token }),
+      label: getPrimaryButtonLabel({ flow, stage, token, shouldRedirectToCloseVault }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
