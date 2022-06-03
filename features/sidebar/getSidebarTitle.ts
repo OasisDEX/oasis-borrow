@@ -6,6 +6,7 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
+  isSLPanelVisible?: boolean
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -74,14 +75,22 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
   }
 }
 
-export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
+export function getSidebarTitle({
+  flow,
+  stage,
+  token,
+  isSLPanelVisible = false,
+}: GetSidebarTitleParams) {
   const { t } = useTranslation()
+  const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
+
+  if (isSLPanelVisible) return t('protection.your-stop-loss-triggered')
 
   switch (stage) {
     case 'editing':
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
-      return t(editingKey, { token })
+      return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
       return t('protection.enable-stop-loss')
     case 'proxyInProgress':
@@ -102,7 +111,7 @@ export function getSidebarTitle({ flow, stage, token }: GetSidebarTitleParams) {
     case 'collateralAllowanceInProgress':
     case 'collateralAllowanceFailure':
     case 'collateralAllowanceSuccess':
-      return t('vault-form.header.allowance', { token: token.toUpperCase() })
+      return t('vault-form.header.allowance', { token: allowanceToken })
     case 'daiAllowanceWaitingForConfirmation':
     case 'daiAllowanceWaitingForApproval':
     case 'daiAllowanceInProgress':

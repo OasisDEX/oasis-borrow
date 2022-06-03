@@ -1,12 +1,14 @@
-import { ALLOWED_MULTIPLY_TOKENS } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
+import { SidebarOpenMultiplyVaultEditingState } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultEditingState'
+import { SidebarOpenMultiplyVaultOpenStage } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
@@ -14,51 +16,39 @@ import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
-  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'
-import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
-import { SidebarOpenVaultAllowanceStage } from './SidebarOpenVaultAllowanceStage'
-import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
-
-export function SidebarOpenBorrowVault(props: OpenVaultState) {
-  const { t } = useTranslation()
+export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
   const {
-    id,
-    stage,
     canProgress,
-    progress,
     canRegress,
-    regress,
-    isEditingStage,
-    isStopLossEditingStage,
-    isProxyStage,
+    currentStep,
+    id,
+    ilk,
     isAllowanceStage,
-    isOpenStage,
+    isEditingStage,
     isLoadingStage,
+    isOpenStage,
+    isProxyStage,
     isSuccessStage,
+    progress,
+    regress,
+    stage,
     token,
     totalSteps,
-    currentStep,
-    ilk,
-    skipStopLoss,
   } = props
 
-  const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
+  const flow: SidebarFlow = 'openMultiply'
   const firstCDP = isFirstCdp(accountData)
-  const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractSidebarAllowanceData(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
@@ -66,21 +56,14 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isStopLossEditingStage && <>STOP LOSS BRO</>}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} />}
-        {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
+        {isEditingStage && <SidebarOpenMultiplyVaultEditingState {...props} />}
+        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
+        {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
     ),
-    ...(isStopLossEditingStage && {
-      headerButton: {
-        label: t('protection.continue-without-stop-loss'),
-        action: () => skipStopLoss!(),
-      },
-    }),
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
@@ -94,17 +77,14 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden:
-        (!canRegress || isSuccessStage) &&
-        (!isEditingStage || !canTransition || !isStopLossEditingStage),
+      hidden: (!canRegress || isSuccessStage) && !isEditingStage,
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })
       },
-      url: !canRegress && isEditingStage ? `/vaults/open-multiply/${ilk}` : undefined,
+      url: !canRegress && isEditingStage ? `/vaults/open/${ilk}` : undefined,
     },
-    progress: getSidebarProgress({ ...sidebarTxData, flow }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

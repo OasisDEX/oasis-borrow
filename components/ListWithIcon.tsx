@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { Trans } from 'next-i18next'
 import React from 'react'
 import { Box, Grid, SxStyleProp, Text } from 'theme-ui'
 
@@ -7,6 +8,7 @@ interface IListWithIconProps {
   icon?: string
   iconSize?: number | string | number[]
   textVariant?: string
+  iconColor?: string
   listStyle?: SxStyleProp
   itemStyle?: SxStyleProp
   iconStyle?: SxStyleProp
@@ -17,6 +19,7 @@ export function ListWithIcon({
   icon = 'checkbox',
   iconSize = '20px',
   textVariant = 'paragraph3',
+  iconColor,
   listStyle,
   itemStyle,
   iconStyle,
@@ -29,14 +32,25 @@ export function ListWithIcon({
             as="li"
             key={k}
             variant={textVariant}
-            sx={{ position: 'relative', pl: 4, color: 'text.subtitle', ...itemStyle }}
+            sx={{
+              position: 'relative',
+              pl: 4,
+              color: 'text.subtitle',
+              ...itemStyle,
+            }}
           >
             <Icon
               name={icon}
               size={iconSize}
+              color={iconColor}
               sx={{ position: 'absolute', top: '3px', left: 0, ...iconStyle }}
             />
-            {item}
+            <Trans
+              defaults={item}
+              components={{
+                1: <Text as="strong" sx={{ color: 'primary' }} />,
+              }}
+            />
           </Text>
         ))}
       </Grid>

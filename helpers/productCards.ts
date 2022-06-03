@@ -471,7 +471,9 @@ function sortCards(
 }
 
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
-  return productCardsData.filter((data) => ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk))
+  return productCardsData.filter((data) =>
+    ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
+  )
 }
 
 export function multiplyPageCardsData({
@@ -495,7 +497,9 @@ export function multiplyPageCardsData({
 
   // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
   if (cardsFilter === 'UNI LP') {
-    return productCardsData.filter((data) => ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk))
+    return productCardsData.filter((data) =>
+      ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
+    )
   }
 
   if (cardsFilter === 'BTC') {
