@@ -1,4 +1,5 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarManageGuniVaultEditingState } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultEditingState'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -16,6 +17,7 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
   const {
     canProgress,
     stage,
+    isEditingStage,
     accountIsConnected,
     canRegress,
     regress,
@@ -35,7 +37,12 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
-    content: <Grid gap={3}>{stage}</Grid>,
+    content: (
+      <Grid gap={3}>
+        {stage}
+        {isEditingStage && <SidebarManageGuniVaultEditingState {...props} />}
+      </Grid>
+    ),
     primaryButton: {
       label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
       disabled: !canProgress || !accountIsConnected,

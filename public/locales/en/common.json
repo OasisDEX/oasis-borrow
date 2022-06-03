@@ -483,6 +483,7 @@
   },
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
+  "minimum": "Minimum",
   "moving-into-vault": "Moving into Vault",
   "moving-out-vault": "Moving out of Vault",
   "multiple": "Multiple",
