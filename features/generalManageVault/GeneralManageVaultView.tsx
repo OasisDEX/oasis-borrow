@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
-import { SidebarManageMultiplyVault } from 'components/vault/sidebar/SidebarManageMultiplyVault'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { Survey } from 'features/survey'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'

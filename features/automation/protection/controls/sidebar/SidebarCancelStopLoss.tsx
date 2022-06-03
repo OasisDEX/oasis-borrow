@@ -11,10 +11,10 @@ import { CancelSlFormLayoutProps } from 'features/automation/protection/controls
 import { SidebarCancelStopLossCancelStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossCancelStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossEditingStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -26,20 +26,18 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    token,
-    txHash,
-    removeTriggerConfig,
-    ethPrice,
-    ilkData,
-    etherscan,
-    toggleForms,
-    selectedSLValue,
     collateralizationRatioAtNextPrice,
-    txError,
-    gasEstimationUsd,
     ethBalance,
-    stage,
+    ethPrice,
+    gasEstimationUsd,
+    ilkData,
     isProgressDisabled,
+    removeTriggerConfig,
+    selectedSLValue,
+    stage,
+    toggleForms,
+    token,
+    txError,
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
@@ -52,9 +50,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     selectedSLValue,
     collateralizationRatioAtNextPrice,
   })
-
-  const progress = getSidebarProgress({ stage, openTxHash: txHash, token, etherscan, flow })
-  const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
+  const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -75,15 +71,12 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: primaryButtonLabel,
+      label: getPrimaryButtonLabel({ flow, stage, token }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
-        if (stage !== 'txSuccess') {
-          removeTriggerConfig.onClick(() => null)
-        } else {
-          backToVaultOverview(uiChanges)
-        }
+        if (stage !== 'txSuccess') removeTriggerConfig.onClick(() => null)
+        else backToVaultOverview(uiChanges)
       },
     },
     ...(stage !== 'txInProgress' && {
@@ -92,10 +85,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
         action: () => toggleForms(),
       },
     }),
-    ...(txHash && {
-      progress,
-    }),
-    success: getSidebarSuccess({ stage, openTxHash: txHash, token, flow, etherscan }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

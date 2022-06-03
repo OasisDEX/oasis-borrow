@@ -11,6 +11,7 @@ import { VaultFormVaultTypeSwitch } from 'components/vault/VaultForm'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { VaultProxyContentBox, VaultProxyStatusCard } from 'components/vault/VaultProxy'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { SidebarOpenMultiplyVault } from 'features/multiply/open/sidebars/SidebarOpenMultiplyVault'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -19,7 +20,6 @@ import React from 'react'
 import { OpenMultiplyVaultState } from '../pipes/openMultiplyVault'
 import { OpenMultiplyVaultChangesInformation } from './OpenMultiplyVaultChangesInformation'
 import { OpenMultiplyVaultEditing } from './OpenMultiplyVaultEditing'
-import { SidebarOpenMultiplyVault } from './sidebar/SidebarOpenMultiplyVault'
 
 export function OpenMultiplyVaultForm(props: OpenMultiplyVaultState) {
   const { isEditingStage, isProxyStage, isAllowanceStage, isOpenStage, ilk, stage } = props

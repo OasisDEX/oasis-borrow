@@ -1,11 +1,10 @@
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
-
-import { VaultChangesWithADelayCard } from '../VaultChangesWithADelayCard'
 
 export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
   const { t } = useTranslation()

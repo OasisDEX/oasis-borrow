@@ -29,7 +29,7 @@ export const ASSETS_PAGES = [
     icon: 'uni_circle_color',
     descriptionKey: 'assets.lp-token.description',
     link: 'assets.lp-token.link',
-    multiplyIlks: ['GUNIV3DAIUSDC2-A'],
+    multiplyIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
     borrowIlks: [
       'UNIV2DAIUSDC-A',
       'UNIV2USDCETH-A',
@@ -56,7 +56,7 @@ export const ASSETS_PAGES = [
     icon: 'dai_circle_color',
     descriptionKey: 'assets.dai.description',
     link: 'assets.dai.link',
-    earnIlks: ['GUNIV3DAIUSDC2-A'],
+    earnIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
   },
   {
     slug: 'uni',

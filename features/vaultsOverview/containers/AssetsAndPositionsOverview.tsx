@@ -178,8 +178,8 @@ function Menu(props: {
       }}
     >
       <Grid columns={1} gap={20}>
-        {props.assetActions.map((aa) => (
-          <MenuRow {...aa} key={aa.text} close={props.close} />
+        {props.assetActions.map((aa, index) => (
+          <MenuRow {...aa} key={`${index}-${aa.text}`} close={props.close} />
         ))}
       </Grid>
     </Card>
@@ -211,8 +211,8 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
         {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
 
         <Box sx={{ flex: 1, ml: [null, '53px'] }}>
-          {topAssetsAndPositions.map((row) => (
-            <LinkedRow key={row.token + row.title} {...row} />
+          {topAssetsAndPositions.map((row, index) => (
+            <LinkedRow key={`${index}-${row.token}`} {...row} />
           ))}
         </Box>
       </Flex>

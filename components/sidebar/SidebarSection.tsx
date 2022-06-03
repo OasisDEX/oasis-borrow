@@ -18,8 +18,7 @@ export function SidebarSection({
   primaryButton,
   secondaryButton,
   textButton,
-  progress,
-  success,
+  status,
 }: SidebarSectionProps) {
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
@@ -46,8 +45,7 @@ export function SidebarSection({
         primaryButton={primaryButton}
         secondaryButton={secondaryButton}
         textButton={textButton}
-        progress={progress}
-        success={success}
+        status={status}
       />
     </Card>
   )

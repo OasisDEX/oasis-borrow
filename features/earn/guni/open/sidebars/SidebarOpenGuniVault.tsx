@@ -1,15 +1,14 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { SidebarOpenVaultAllowanceStage } from 'components/vault/sidebar/SidebarOpenVaultAllowanceStage'
-import { SidebarOpenVaultProxyStage } from 'components/vault/sidebar/SidebarOpenVaultProxyStage'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultEditing } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultEditing'
-import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/containers/sidebar/SidebarOpenGuniVaultOpenStage'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import { SidebarOpenGuniVaultOpenStage } from 'features/earn/guni/open/sidebars/SidebarOpenGuniVaultOpenStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { progressTrackingEvent, regressTrackingEvent } from 'features/sidebar/trackingEvents'
@@ -17,7 +16,6 @@ import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractGasDataFromState } from 'helpers/extractGasDataFromState'
 import {
   extractPrimaryButtonLabelParams,
-  extractSidebarAllowanceData,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
@@ -30,61 +28,43 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
   const [accountData] = useObservable(accountData$)
 
   const {
-    id,
-    stage,
     canProgress,
-    progress,
     canRegress,
-    regress,
-    isEditingStage,
-    isProxyStage,
+    currentStep,
+    id,
     isAllowanceStage,
-    isOpenStage,
+    isEditingStage,
     isLoadingStage,
+    isOpenStage,
+    isProxyStage,
     isSuccessStage,
+    progress,
+    regress,
+    stage,
     token,
     totalSteps,
-    currentStep,
   } = props
 
   const flow: SidebarFlow = 'openGuni'
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
-  const allowanceData = extractSidebarAllowanceData(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
 
-  const textButton = {
-    textButton: {
-      label: getTextButtonLabel({ flow, stage, token }),
-      hidden: (!canRegress || isSuccessStage) && !isEditingStage,
-      action: () => {
-        if (canRegress) regress!()
-        regressTrackingEvent({ props })
-      },
-    },
-  }
-
-  const proxyOrAllowanceStage = isProxyStage || isAllowanceStage
-
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token: !proxyOrAllowanceStage ? token : 'DAI' }),
+    title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <GuniOpenMultiplyVaultEditing {...props} />}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {isAllowanceStage && <SidebarOpenVaultAllowanceStage {...allowanceData} token="DAI" />}
+        {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
+        {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
         {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({
-        ...primaryButtonLabelParams,
-        flow,
-        token: 'DAI',
-      }),
+      label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress,
       isLoading: isLoadingStage,
@@ -94,9 +74,15 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
       },
       url: isSuccessStage ? `/${id}` : undefined,
     },
-    ...((proxyOrAllowanceStage || isOpenStage) && textButton),
-    progress: getSidebarProgress({ ...sidebarTxData, flow, token: 'DAI' }),
-    success: getSidebarSuccess({ ...sidebarTxData, flow, token: 'DAI' }),
+    textButton: {
+      label: getTextButtonLabel({ flow, stage, token }),
+      hidden: !canRegress || isSuccessStage,
+      action: () => {
+        if (canRegress) regress!()
+        regressTrackingEvent({ props })
+      },
+    },
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
