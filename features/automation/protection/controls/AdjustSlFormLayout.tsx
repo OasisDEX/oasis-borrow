@@ -1,33 +1,29 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { TxStatusSection } from 'components/dumb/TxStatusSection'
+import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
-
-import { IlkData } from '../../../../blockchain/ilks'
-import { Vault } from '../../../../blockchain/vaults'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { TxStatusSection } from '../../../../components/dumb/TxStatusSection'
-import { AppLink } from '../../../../components/Links'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../../components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
-import {
-  formatAmount,
-  formatFiatBalance,
-  formatPercent,
-} from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { TxError } from '../../../../helpers/types'
-import { one } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
+} from 'components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TxError } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { one } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
+import { Divider, Flex, Image, Text } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
+
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
@@ -280,7 +276,7 @@ export interface AdjustSlFormLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
   gasEstimationUsd?: BigNumber
   ethBalance: BigNumber
-  stage: 'editing' | 'txInProgress' | 'txSuccess' | 'txFailure'
+  stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
 }
