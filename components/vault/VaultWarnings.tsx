@@ -44,6 +44,10 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('vault-is-currently-under-min-active-col-ratio')
       case 'vaultWillRemainUnderMinActiveColRatio':
         return translate('vault-will-remain-under-min-active-col-ratio')
+      case 'potentialInsufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
+      case 'nextCollRatioCloseToCurrentSl':
+        return translate('next-coll-ratio-close-to-current-stop-loss')
       default:
         throw new UnreachableCaseError(message)
     }
@@ -54,5 +58,5 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'warning' }} />
+  return <MessageCard {...{ messages, type: 'warning', withBullet: messages.length > 1 }} />
 }

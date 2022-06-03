@@ -43,13 +43,13 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   } = props
 
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
       (!accountIsController &&
         stage !== 'adjustPosition' &&
-        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
+        (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
 
   const gasData = extractGasDataFromState(props)
   const mostRecentEvent = vaultHistory[0]
@@ -60,7 +60,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => {

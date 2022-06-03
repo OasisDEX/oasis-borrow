@@ -21,6 +21,7 @@ import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as guniToken from './abi/guni-token.json'
+import * as lidoCrvLiquidityFarmingReward from './abi/lido-crv-liquidity-farming-reward.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
@@ -98,10 +99,10 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
-
+  'WSTETH-B',
   ...charterIlks,
   ...cropJoinIlks,
-]
+] as const
 
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
@@ -109,6 +110,12 @@ const tokensMainnet = {
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+  LDO: contractDesc(erc20, '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'),
+  MKR: contractDesc(erc20, mainnetAddresses['MCD_GOV']),
+  STETH: contractDesc(erc20, mainnetAddresses['STETH']),
+  USDP: contractDesc(erc20, '0x8E870D67F660D95d5be530380D0eC0bd388289E1'),
+  WSTETH: contractDesc(erc20, mainnetAddresses['WSTETH']),
+  RENBTC: contractDesc(erc20, mainnetAddresses['RENBTC']),
 } as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
@@ -176,6 +183,11 @@ const protoMain = {
     apiKey: '',
   },
   cacheApi: mainnetCacheUrl,
+  lidoCrvLiquidityFarmingReward: contractDesc(
+    lidoCrvLiquidityFarmingReward,
+    // address from here: https://docs.lido.fi/deployed-contracts
+    '0x99ac10631f69c753ddb595d074422a0922d9056b',
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -195,6 +207,8 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+    MKR: contractDesc(erc20, kovanAddresses['MCD_GOV']),
+    stETH: contractDesc(erc20, '0x00'),
   },
   joins: {
     ...getCollateralJoinContracts(kovanAddresses, supportedIlks),
@@ -249,6 +263,7 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const goerli: NetworkConfig = {
@@ -264,6 +279,8 @@ const goerli: NetworkConfig = {
     ...getCollateralTokens(goerliAddresses, supportedIlks),
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
+    MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
+    stETH: contractDesc(erc20, goerliAddresses['STETH']),
   },
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
@@ -323,6 +340,7 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const hardhat: NetworkConfig = {

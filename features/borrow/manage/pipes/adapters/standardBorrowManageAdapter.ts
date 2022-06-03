@@ -96,6 +96,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       initialTotalSteps,
       totalSteps: initialTotalSteps,
       currentStep: 1,
+      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
       clear: () => change({ kind: 'clear' }),
       gasEstimationStatus: GasEstimationStatus.unset,
       vaultHistory: [],

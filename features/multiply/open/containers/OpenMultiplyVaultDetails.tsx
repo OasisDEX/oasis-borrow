@@ -119,11 +119,11 @@ export function OpenMultiplyVaultDetails(props: OpenMultiplyVaultState) {
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
   const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
-  return !automationBasicBuyAndSellEnabled ? (
+  return !newComponentsEnabled ? (
     <>
       <Grid variant="vaultDetailsCardsContainer">
         <VaultDetailsCardLiquidationPrice

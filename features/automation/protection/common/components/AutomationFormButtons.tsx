@@ -1,4 +1,5 @@
 import { Box, Button } from '@theme-ui/components'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex } from 'theme-ui'
@@ -20,6 +21,7 @@ interface AutomationFormButtonsProps {
   toggleForms: () => void
   toggleKey: string
   txSuccess: boolean
+  txError?: boolean
   type?: 'adjust' | 'cancel'
 }
 
@@ -28,10 +30,12 @@ export function AutomationFormButtons({
   toggleForms,
   toggleKey,
   txSuccess,
+  txError,
   type,
 }: AutomationFormButtonsProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   function backToVaultOverview() {
     uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -46,9 +50,10 @@ export function AutomationFormButtons({
 
   return (
     <>
-      {!txSuccess && (
+      {((!stopLossWriteEnabled && !txSuccess && type === 'cancel') ||
+        (stopLossWriteEnabled && !txSuccess)) && (
         <Box>
-          <RetryableLoadingButton {...triggerConfig} />
+          <RetryableLoadingButton {...triggerConfig} error={!!txError} />
         </Box>
       )}
       {txSuccess && (

@@ -34,6 +34,9 @@ const oasisBaseTheme = {
     borderSelected: '#A8A9B1',
     offBlue: '#CAD6DB',
     offWhite: '#F6F8F9',
+    grey: {
+      darker: '#E6E9EB',
+    },
 
     text: {
       focused: '#272940',
@@ -134,39 +137,43 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
-    headerSettings: {
+    header4: {
       fontFamily: 'body',
       fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
     },
+    headerSettings: {
+      // deprecated, use header4
+      variant: 'text.header4',
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 4,
+      fontSize: 4, // 18px
       color: 'primary',
     },
     paragraph2: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 3,
+      fontSize: 3, // 16px
       color: 'primary',
     },
     paragraph3: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 2,
+      fontSize: 2, // 14px
       color: 'primary',
     },
     paragraph4: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 1,
+      fontSize: 1, // 12px
       color: 'primary',
     },
     subheader: {
@@ -248,7 +255,7 @@ const oasisBaseTheme = {
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
     actionCard: '0px 2px 6px rgba(37, 39, 61, 0.25)',
-    userSettingsCardDropdown: '0px 4px 28px rgba(37, 39, 61, 0.36)',
+    elevation: '0px 4px 28px rgba(37, 39, 61, 0.36)',
     userSettingsOptionButton: '0px 2px 4px rgba(0, 0, 0, 0.25)',
     bottomSheet: '0px 4px 28px rgba(37, 39, 61, 0.3)',
   },
@@ -387,6 +394,15 @@ const oasisBaseTheme = {
       padding: '24px',
       pb: 3,
     },
+    positionsOverview: {
+      boxSizing: 'border-box',
+      maxWidth: '789px',
+      backgroundColor: 'background',
+      opacity: '0.8',
+      boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
+      borderRadius: 'large',
+      padding: '32px',
+    },
   },
   badges: {
     dsr: {
@@ -408,7 +424,7 @@ const oasisBaseTheme = {
       borderRadius: 'round',
       lineHeight: 'buttons',
       color: 'text.contrast',
-      transition: 'background 0.2s ease-in',
+      transition: 'background 200ms',
       '&:hover, &:focus-visible': {
         bg: 'primaryEmphasis',
       },
@@ -622,7 +638,7 @@ const oasisBaseTheme = {
       color: 'link',
       cursor: 'pointer',
       background: 'none',
-      transition: 'opacity ease-in 0.2s',
+      transition: 'opacity 200ms',
       '&:hover, &:focus-visible': {
         opacity: 0.7,
       },
@@ -656,6 +672,7 @@ const oasisBaseTheme = {
       '&:hover': {
         bg: 'actionInputHover',
       },
+      transition: 'background-color 200ms',
     },
     actionOptionOpened: {
       variant: 'buttons.actionOption',
@@ -781,6 +798,37 @@ const oasisBaseTheme = {
     actionActive: {
       variant: 'buttons.action',
       borderColor: 'primary',
+    },
+    actionActiveGreen: {
+      variant: 'buttons.action',
+      border: 'none',
+      bg: 'onSuccess',
+      color: 'onPrimary',
+    },
+    pill: {
+      px: '24px',
+      py: '12px',
+      color: 'text.subtitle',
+      fontFamily: 'body',
+      fontSize: 3,
+      fontWeight: 'semiBold',
+      lineHeight: 'heading',
+      border: 'none',
+      borderRadius: 'round',
+      backgroundColor: 'transparent',
+      cursor: 'pointer',
+      '&:hover': {
+        backgroundColor: 'border',
+      },
+      transition: 'color 200ms, background-color 200ms',
+    },
+    pillActive: {
+      variant: 'buttons.pill',
+      color: 'background',
+      backgroundColor: 'link',
+      '&:hover': {
+        backgroundColor: 'link',
+      },
     },
   },
   links: {

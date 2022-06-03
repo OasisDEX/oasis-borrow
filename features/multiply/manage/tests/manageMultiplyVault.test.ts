@@ -181,7 +181,7 @@ describe('manageMultiplyVault', () => {
 
         expect(state().generateAmount).to.deep.equal(state().maxGenerateAmount)
 
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         expect(state().generateAmount!).to.be.undefined
       })
 
@@ -198,8 +198,8 @@ describe('manageMultiplyVault', () => {
         )
 
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
-        expect(state().otherAction).to.deep.equal('depositDai')
+        state().setOtherAction!('paybackDai')
+        expect(state().otherAction).to.deep.equal('paybackDai')
 
         state().updatePaybackAmount!(paybackAmount)
         expect(state().paybackAmount!).to.deep.equal(paybackAmount)
@@ -270,6 +270,50 @@ describe('manageMultiplyVault', () => {
         expect(state().stage).to.deep.equal('manageWaitingForConfirmation')
       })
 
+      it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+        const depositAlmostAll = new BigNumber(10.9999)
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            vault: {
+              ilk: 'ETH-A',
+              collateral: new BigNumber('400'),
+              debt: new BigNumber('3000'),
+            },
+            balanceInfo: {
+              ethBalance: new BigNumber(11),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            gasEstimationUsd: new BigNumber(30),
+          }),
+        )
+
+        state().updateDepositAmount!(depositAlmostAll)
+        expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+      })
+
+      it('validates if deposit amount leads to potential insufficient ETH funds for tx (other ilk case)', () => {
+        const depositAmount = new BigNumber(10)
+
+        const state = getStateUnpacker(
+          mockManageMultiplyVault$({
+            vault: {
+              ilk: 'WBTC-A',
+              collateral: new BigNumber('40'),
+              debt: new BigNumber('3000'),
+            },
+            balanceInfo: {
+              ethBalance: new BigNumber(0.001),
+            },
+            proxyAddress: DEFAULT_PROXY_ADDRESS,
+            gasEstimationUsd: new BigNumber(30),
+          }),
+        )
+
+        state().updateDepositAmount!(depositAmount)
+        expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+      })
+
       it('should progress from editing to proxyWaitingForConfirmation if no proxy exists', () => {
         const state = getStateUnpacker(
           mockManageMultiplyVault$({
@@ -324,7 +368,7 @@ describe('manageMultiplyVault', () => {
         )
 
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()
         expect(state().stage).to.deep.equal('daiAllowanceWaitingForConfirmation')
@@ -360,7 +404,7 @@ describe('manageMultiplyVault', () => {
         state().updateWithdrawAmount!(withdrawAmount)
         expect(state().totalSteps).to.deep.equal(2)
 
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
         expect(state().totalSteps).to.deep.equal(3)
 
@@ -516,7 +560,7 @@ describe('manageMultiplyVault', () => {
         _proxyAddress$.next()
         expect(state().proxyAddress).to.be.undefined
         legacyToggle(state())
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
         state().updatePaybackAmount!(paybackAmount)
 
         state().progress!()
@@ -682,7 +726,7 @@ describe('manageMultiplyVault', () => {
 
         legacyToggle(state())
         expect(state().stage).to.deep.equal('otherActions')
-        state().setOtherAction!('depositDai')
+        state().setOtherAction!('paybackDai')
 
         state().updatePaybackAmount!(paybackAmount)
         state().progress!()
@@ -804,5 +848,34 @@ describe('manageMultiplyVault', () => {
     state().progress!()
     state().progress!()
     expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
+  })
+
+  it('should add meaningful message when user has insufficient ETH funds to pay for tx', () => {
+    const state = getStateUnpacker(
+      mockManageMultiplyVault$({
+        _txHelpers$: of({
+          ...protoTxHelpers,
+          sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+            mockTxState(meta, TxStatus.Error).pipe(
+              map((txState) => ({
+                ...txState,
+                error: { message: 'insufficient funds for gas * price + value' },
+              })),
+            ),
+        }),
+        vault: {
+          collateral: new BigNumber('400'),
+          debt: new BigNumber('3000'),
+          ilk: 'WBTC-A',
+        },
+        proxyAddress: DEFAULT_PROXY_ADDRESS,
+        balanceInfo: { ethBalance: new BigNumber(0.001) },
+      }),
+    )
+
+    state().updateRequiredCollRatio!(new BigNumber('2'))
+    state().progress!()
+    state().progress!()
+    expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
   })
 })

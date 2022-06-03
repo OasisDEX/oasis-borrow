@@ -1,30 +1,31 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
-
-import { IlkData } from '../../../../blockchain/ilks'
-import { Vault } from '../../../../blockchain/vaults'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { TxStatusSection } from '../../../../components/dumb/TxStatusSection'
-import { AppLink } from '../../../../components/Links'
+import { TxStatusSection } from 'components/dumb/TxStatusSection'
+import { AppLink } from 'components/Links'
+import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../../components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
-import {
-  formatAmount,
-  formatFiatBalance,
-  formatPercent,
-} from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { one } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
+} from 'components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TxError } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { one } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
+import { Divider, Flex, Image, Text } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
+
+import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
 
@@ -39,7 +40,7 @@ interface AdjustSlFormInformationProps {
   txCost: BigNumber
 }
 
-function ProtectionCompleteInformation({
+export function ProtectionCompleteInformation({
   afterStopLossRatio,
   vault,
   ilkData,
@@ -103,9 +104,14 @@ interface SetDownsideProtectionInformationProps {
   tokenPrice: BigNumber
   ethPrice: BigNumber
   isCollateralActive: boolean
+  collateralizationRatioAtNextPrice: BigNumber
+  selectedSLValue: BigNumber
+  ethBalance: BigNumber
+  txError?: TxError
+  gasEstimationUsd?: BigNumber
 }
 
-function SetDownsideProtectionInformation({
+export function SetDownsideProtectionInformation({
   vault,
   ilkData,
   token,
@@ -114,8 +120,16 @@ function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
+  collateralizationRatioAtNextPrice,
+  selectedSLValue,
+  gasEstimationUsd,
+  ethBalance,
+  txError,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  const nextCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -150,6 +164,20 @@ function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
+  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
+    .times(100)
+    .decimalPlaces(0)
+    .minus(nextCollateralizationPriceAlertRange)
+
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -174,15 +202,50 @@ function SetDownsideProtectionInformation({
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
       <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
-      <Box sx={{ fontSize: 2 }}>
-        <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
-        <Text sx={{ mb: 3 }}>
-          {t('protection.guarantee-factors')}{' '}
-          <AppLink href="https://kb.oasis.app/help" sx={{ fontWeight: 'body' }}>
-            {t('protection.learn-more-about-automation')}
-          </AppLink>
-        </Text>
-      </Box>
+      {!newComponentsEnabled && (
+        <>
+          <Box sx={{ fontSize: 2 }}>
+            <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
+            <Text sx={{ mb: 3 }}>
+              {t('protection.guarantee-factors')}{' '}
+              <AppLink
+                href="https://kb.oasis.app/help/stop-loss-protection"
+                sx={{ fontWeight: 'body' }}
+              >
+                {t('protection.learn-more-about-automation')}
+              </AppLink>
+            </Text>
+          </Box>
+          {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
+            <MessageCard
+              messages={[t('protection.coll-ratio-close-to-current')]}
+              type="warning"
+              withBullet={false}
+            />
+          )}
+          {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+            <MessageCard
+              messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
+              type="error"
+              withBullet={false}
+            />
+          )}
+          {potentialInsufficientEthFundsForTx && (
+            <MessageCard
+              messages={[t('vault-warnings.insufficient-eth-balance')]}
+              type="warning"
+              withBullet={false}
+            />
+          )}
+          {insufficientEthFundsForTx && (
+            <MessageCard
+              messages={[t('vault-errors.insufficient-eth-balance')]}
+              type="error"
+              withBullet={false}
+            />
+          )}
+        </>
+      )}
     </VaultChangesInformationContainer>
   )
 }
@@ -197,6 +260,7 @@ export interface AdjustSlFormLayoutProps {
   txProgressing: boolean
   txState?: TxStatus
   txHash?: string
+  txError?: TxError
   txCost?: BigNumber
   dynamicStopLossPrice: BigNumber
   amountOnStopLossTrigger: BigNumber
@@ -209,6 +273,17 @@ export interface AdjustSlFormLayoutProps {
   selectedSLValue: BigNumber
   firstStopLossSetup: boolean
   isEditing: boolean
+  collateralizationRatioAtNextPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  ethBalance: BigNumber
+  stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
+  isProgressDisabled: boolean
+  redirectToCloseVault: () => void
+}
+
+export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
+  const margin = 5
+  return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
 export function AdjustSlFormLayout({
@@ -216,6 +291,7 @@ export function AdjustSlFormLayout({
   txProgressing,
   txState,
   txHash,
+  txError,
   txCost,
   slValuePickerConfig,
   closePickerConfig,
@@ -231,8 +307,12 @@ export function AdjustSlFormLayout({
   selectedSLValue,
   firstStopLossSetup,
   isEditing,
+  collateralizationRatioAtNextPrice,
+  ethBalance,
+  gasEstimationUsd,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   return (
     <Grid columns={[1]}>
@@ -242,13 +322,15 @@ export function AdjustSlFormLayout({
         translations={{
           editing: {
             header: t('protection.set-downside-protection'),
-            description: (
+            description: stopLossWriteEnabled ? (
               <>
                 {t('protection.set-downside-protection-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
               </>
+            ) : (
+              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
             ),
           },
           progressing: {
@@ -264,7 +346,7 @@ export function AdjustSlFormLayout({
             description: (
               <>
                 {t('protection.downside-protection-complete-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
               </>
@@ -273,7 +355,7 @@ export function AdjustSlFormLayout({
         }}
       />
       {txProgressing && <OpenVaultAnimation />}
-      {!txProgressing && txState !== TxStatus.Success && (
+      {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
           <Box mt={3}>
             <SliderValuePicker {...slValuePickerConfig} />
@@ -292,10 +374,15 @@ export function AdjustSlFormLayout({
                   vault={vault}
                   ilkData={ilkData}
                   gasEstimation={gasEstimation}
+                  gasEstimationUsd={gasEstimationUsd}
                   afterStopLossRatio={selectedSLValue}
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  selectedSLValue={selectedSLValue}
+                  ethBalance={ethBalance}
+                  txError={txError}
                 />
               </Box>
             </>
@@ -335,6 +422,7 @@ export function AdjustSlFormLayout({
           toggleForms={toggleForms}
           toggleKey="protection.navigate-cancel"
           txSuccess={txState === TxStatus.Success}
+          txError={txState && isTxStatusFailed(txState)}
         />
       )}
     </Grid>

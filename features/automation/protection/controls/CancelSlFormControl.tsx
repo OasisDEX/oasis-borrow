@@ -7,18 +7,29 @@ import {
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useAppContext } from 'components/AppContextProvider'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import {
+  failedStatuses,
+  progressStatuses,
+} from 'features/automation/protection/common/consts/txStatues'
+import {
+  ADD_FORM_CHANGE,
+  AddFormChange,
+} from 'features/automation/protection/common/UITypes/AddFormChange'
+import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
+import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
-import { Context } from '../../../../blockchain/network'
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { GasEstimationStatus, HasGasEstimation } from '../../../../helpers/form'
-import { useObservable } from '../../../../helpers/observableHook'
-import { CollateralPricesWithFilters } from '../../../collateralPrices/collateralPricesWithFilters'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
@@ -47,7 +58,9 @@ interface CancelSlFormControlProps {
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
-  collateralPrice: CollateralPricesWithFilters
+  collateralPrices: CollateralPricesWithFilters
+  balanceInfo: BalanceInfo
+  collateralizationRatioAtNextPrice: BigNumber
   tx?: TxHelpers
 }
 
@@ -57,13 +70,16 @@ export function CancelSlFormControl({
   ctx,
   toggleForms,
   accountIsController,
-  collateralPrice,
+  collateralPrices,
+  balanceInfo,
+  ilkData,
+  collateralizationRatioAtNextPrice,
   tx,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
   const { addGasEstimation$, uiChanges } = useAppContext()
-  const [lastUIState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
-
+  const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
+  const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
   const txData = useMemo(() => prepareRemoveTriggerData(vault, triggerId, removeAllowance), [
@@ -79,7 +95,7 @@ export function CancelSlFormControl({
 
   const [gasEstimationData] = useObservable(gasEstimationData$)
 
-  const isOwner = ctx.status === 'connected' && ctx.account !== vault.controller
+  const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
 
   const removeTriggerConfig: RetryableLoadingButtonProps = {
     translationKey: 'cancel-stop-loss',
@@ -110,6 +126,8 @@ export function CancelSlFormControl({
               txDetails: {
                 txHash: (transactionState as any).txHash,
                 txStatus: transactionState.status,
+                txError:
+                  transactionState.status === TxStatus.Error ? transactionState.error : undefined,
                 totalCost,
               },
             })
@@ -123,32 +141,68 @@ export function CancelSlFormControl({
         finishLoader(false)
       }
 
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(removeAutomationBotTrigger, txData)
         .subscribe(txSendSuccessHandler, sendTxErrorHandler)
     },
     isLoading: false,
     isRetry: false,
-    disabled: isOwner,
+    disabled: !isOwner,
     isStopLossEnabled,
   }
 
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
+  const isProgressDisabled = !!(!isOwner || isProgressStage)
+
   const { token } = vault
-  const tokenPrice = collateralPrice.data.find((x) => x.token === token)?.currentPrice!
+  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
+  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
   const etherscan = ctx.etherscan.url
+
+  const gasEstimationUsd =
+    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     tokenPrice,
     removeTriggerConfig: removeTriggerConfig,
-    txState: lastUIState?.txDetails?.txStatus,
-    txHash: lastUIState?.txDetails?.txHash,
+    txState: uiState?.txDetails?.txStatus,
+    txHash: uiState?.txDetails?.txHash,
+    txError: uiState?.txDetails?.txError,
     gasEstimation: gasEstimationData as HasGasEstimation,
+    gasEstimationUsd: gasEstimationUsd,
     accountIsController,
-    actualCancelTxCost: lastUIState?.txDetails?.totalCost,
+    actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
+    ethPrice,
+    ethBalance: balanceInfo.ethBalance,
+    stage,
+    token,
+    ilkData,
+    collateralizationRatioAtNextPrice,
+    selectedSLValue: addSlUiState.selectedSLValue,
+    isProgressDisabled,
   }
 
-  return <CancelSlFormLayout {...props} />
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  return newComponentsEnabled ? (
+    <SidebarCancelStopLoss {...props} />
+  ) : (
+    <CancelSlFormLayout {...props} />
+  )
 }

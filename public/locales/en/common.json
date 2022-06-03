@@ -30,7 +30,9 @@
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop Loss",
   "adjust-your-position": "Adjust your position",
+  "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
+  "after-closing": "{{token}} after closing",
   "after-next": "After + Next",
   "all-assets": "All Assets",
   "amount": "Amount",
@@ -54,6 +56,7 @@
   },
   "change-your-vault": "Change your vault",
   "close": "Close",
+  "close-to": "Close to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
   "completed": "Completed",
@@ -92,9 +95,13 @@
   "copy-address": "Copy address",
   "country": "Country",
   "configure-your-vault": "Configure your vault",
+  "edit-vault": "Edit vault",
+  "edit-allowance": "Edit allowance",
+  "reset": "Reset",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
+  "smart-proxy-desc": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be send to your address.",
   "create-vault": "Create Vault",
   "create-your-vault": "Create your vault",
   "creating-proxy": "Creating Proxy",
@@ -104,11 +111,19 @@
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
   ],
+  "proxy-advantages-new": [
+    "<1>Just one</1> proxy needed per account",
+    "Enables your wallet to interact with the Maker protocol",
+    "More gas efficient"
+  ],
+  "proxy-waiting-text": "Read more on smart proxy in the",
+  "proxy-waiting-text-link": "Knowledge Base",
   "creating-proxy-contract": "Creating your smart proxy contract",
   "currency": "Currency",
   "custom": "Custom",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
+  "dai-depositing": "Dai depositing ({{amount}})",
   "dai-paying-back-label": "Dai paying back",
   "dai-savings-rate": "Dai Savings Rate",
   "decide-later": "Decide later",
@@ -199,6 +214,7 @@
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
+  "from:": "From",
   "full": "Full",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
@@ -207,6 +223,7 @@
     "bought": "Bought",
     "deposit": "Deposited <0>{{collateralAmount}} {{token}}</0> into Vault",
     "deposited": "Deposited",
+    "withdrawn": "Withdrawn",
     "generate": "Generated <0>{{daiAmount}}</0> Dai from Vault",
     "exit-collateral": "Exit collateral",
     "exit-dai": "Exit Dai",
@@ -349,6 +366,7 @@
     "liquidation-fee": "Liquidation Fee",
     "min-collat-ratio": "Min. collateral ratio",
     "or": "OR",
+    "variable-annual-fee": "Variable Annual Fee",
     "stability-fee": "Stability Fee",
     "title": "Manage Vault",
     "action": "Manage Vault",
@@ -366,7 +384,6 @@
   },
   "manage-insti-vault": {
     "origination-fee": "Origination Fee",
-
     "tooltip": {
       "origination-fee": "Institutional Vault Origination Fee"
     },
@@ -564,7 +581,6 @@
       "description": "Borrow Dai, a USD pegged Stablecoin, or multiply your exposure using crypto as your collateral",
       "title": "Oasis.app"
     },
-
     "support": {
       "description": "All the answers to the most common questions.",
       "title": "FAQs"
@@ -639,6 +655,8 @@
     "minimum-coll-ratio": "Minimum collateral ratio",
     "origination-fee": "Origination Fee",
     "stability-fee": "Stability Fee",
+    "liquidity-available": "Current Liquidity Available",
+    "protocol": "Protocol",
     "type": "Type",
     "vault-dai-debt": "Vault Dai Debt",
     "vault-id": "Vault ID",
@@ -647,21 +665,31 @@
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
     "seven-day-average": "7 day average",
+    "ninety-day-average": "90 day average",
     "vault-protection": "Vault Protection",
     "date": "Date",
     "overview": "Overview",
     "protection": "Protection",
+    "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
+    "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
+    "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
       "common": {
-        "close-vault": "Close Vault",
+        "close-vault": "Close vault",
         "edit-position": "Edit Position"
       },
       "borrow": {
-        "edit-dai": "Edit DAI",
-        "edit-collateral": "Edit Collateral",
+        "edit-dai": "Manage DAI",
+        "edit-collateral": "Manage collateral ({{token}})",
         "switch-to-multiply": "Switch to Multiply"
+      },
+      "multiply": {
+        "adjust": "Adjust",
+        "buy-coll": "Buy Coll.",
+        "reduce-debt": "Reduce Debt",
+        "switch-to-borrow": "Switch to Borrow"
       }
     },
     "cards": {
@@ -676,6 +704,9 @@
       },
       "collateralization-ratio": {
         "footnote": "{{amount}} on next price"
+      },
+      "stop-loss-collateral-ratio": {
+        "footnote": "{{amount}} Current Collateral Ratio"
       }
     }
   },
@@ -714,6 +745,7 @@
   },
   "vault-errors": {
     "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
+    "deposit-dai-amount-exceeds-dai-balance": "You cannot deposit more Dai than the amount in your wallet",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral": "The collateralization ratio for this Maker Vault will be too low. Please generate less Dai",
     "generate-amount-exceeds-dai-yield-from-depositing-collateral-at-next-price": "The collateralization ratio for this Maker Vault will be too low at the next price update. Please generate less Dai",
     "generate-amount-exceeds-debt-ceiling": "You are trying to generate more than the current debt ceiling allows. The amount of Dai that can be generated is {{maxGenerateAmount}}",
@@ -724,6 +756,7 @@
     "custom-allowance-amount-less-than-deposit-amount": "You need at least an allowance of your deposit amount to continue",
     "depositing-all-eth-balance": "You need some ETH to pay for the gas fees. Lower your deposit amount",
     "ledger-enable-contract-data": "Please enable Contract data on the Ledgers Ethereum app Settings",
+    "insufficient-eth-balance": "Your ETH balance is too low to pay for transaction",
     "exchange-error": "Could not fetch exchange prices for doing this multiply action.",
     "withdraw-amount-exceeds-free-collateral": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
     "withdraw-amount-exceeds-free-collateral-at-next-price": "You cannot withdraw more than {{maxWithdrawAmount}} {{token}}",
@@ -740,7 +773,8 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
-    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price."
+    "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price.",
+    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -750,7 +784,12 @@
     "vault-will-be-at-risk-level-warning": "With this action your vault will be at a collateralization ratio near the minimum required",
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
-    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio."
+    "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
+    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction",
+    "next-coll-ratio-close-to-current-stop-loss": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+  },
+  "vault-info-messages": {
+    "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
     "order-information": "Order information",
@@ -794,15 +833,20 @@
       "connected-viewer-noVaults": "{{address}} currently has no Maker Vaults",
       "connected-viewer-withVaults": "Maker Vaults overview of {{address}}",
       "notConnected-noVaults": "{{address}} currently has no Maker Vaults.<0/> Connect your wallet and open a vault.",
-      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet."
+      "notConnected-withVaults": "Maker Vaults overview of {{address}}.<0/> Connect your wallet.",
+      "vault-suggestions": "{{address}}, do more on Oasis.app"
     },
     "number-of-vaults": "No. of Vaults",
     "subheader-no-vaults": "Open a Maker Vault, deposit your collateral, and borrow Dai or buy additional collateral against it.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Total debt",
     "total-locked": "Total locked",
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
-    "your-vaults": "Your Vaults"
+    "your-vaults": "Your Vaults",
+    "assets-and-positions": "Top {{number}} assets and positions",
+    "total-assets": "Total Assets",
+    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>"
   },
   "vault-banners": {
     "ownership": {
@@ -859,16 +903,20 @@
       "edit": "Configure your Vault",
       "editWithToken": "Configure your {{token}} Vault",
       "proxy": "Create your smart Proxy",
+      "proxy-in-progress": "Smart proxy being created",
       "proxy-success": "Smart Proxy successfully created",
       "allowance": "Set {{token}} allowance",
       "daiAllowance": "Set DAI allowance",
       "confirm": "Confirm vault creation",
       "confirm-in-progress": "Vault being created",
-      "modified": "Vault is being Modified",
+      "modified": "Vault is being modified",
+      "manage": "Manage your vault",
       "confirm-manage": "Confirm vault changes",
       "review-manage": "Review vault changes",
       "multiply-transition": "Multiply your exposure on {{token}} in your vault",
-      "go-to-multiply": "Great, now you will go to the new Multiply interface"
+      "go-to-multiply": "Great, now you will go to the new Multiply interface",
+      "success": "All done! You now have a vault",
+      "success-manage": "All done! Your vault has been updated"
     },
     "subtext": {
       "collateral": "Deposit or withdraw from your Vault. Save gas by combining transactions.",
@@ -877,7 +925,9 @@
       "edit-multiply": "Simulate your vault by configuring the amount of collateral to deposit, and slide your multiply factor.",
       "edit-multiply-dai": "This vault can be created by simply <1>depositing DAI</1>. The transaction will create the {{token}} position for you based on this DAI deposit.",
       "proxy": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once. Read more in the <1><2>Knowledge Base</2></1>",
+      "proxy-start": "With your smart proxy multiple actions can be performed in one transaction for your Vault. This proxy only needs to be set up once. Read more in the <1>Knowledge Base</1>.",
       "proxy-success": "Your smart Proxy has been successfully set up. Read more in the <1>Knowledge Base →</1>",
+      "proxy-progress": "Read more on smart proxy in the <1>Knowledge Base</1>.",
       "allowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "daiAllowance": "Specify an allowance to set a maximum on the amount of tokens the vault contracts can interact with.",
       "confirm": "This will update your vault to a multiply vault. It does not require a transaction. You will be able to switch it back to the Borrow view.",
@@ -951,6 +1001,7 @@
     "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
     "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
     "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
+    "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
     "estimated-to-receive": "Estimated to receive",
@@ -974,7 +1025,11 @@
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
-    "stop-loss-on": "Stop-Loss On"
+    "stop-loss-on": "Stop-Loss On",
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
+    "enable-stop-loss": "Enable Stop-Loss",
+    "continue-without-stop-loss": "Continue without Stop-Loss",
+    "stop-loss-information": "Stop Loss Information"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1021,6 +1076,7 @@
     "medium-exposure-medium-cost": "Medium exposure, medium cost. Great for Borrowing or Multiplying",
     "biggest-multiply": "The biggest possible Multiple to maximize your exposure to {{token}}",
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
+    "lowest-annual-fee-cheapest-vault": "The lowest Annual Fee and cheapest Vault for borrowing using staked ETH",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
     "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
@@ -1037,6 +1093,32 @@
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
     "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+  },
+  "product-card-title": {
+    "ETH-A": "ETH with medium cost and multiple",
+    "ETH-B": "Highest ETH multiple option",
+    "ETH-C": "Lowest ETH borrowing cost",
+    "WBTC-A": "wBTC with medium cost and multiple",
+    "WBTC-B": "Highest wBTC multiple option",
+    "WBTC-C": "Lowest wBTC borrowing cost",
+    "RENBTC-A": "Ren Bitcoin (RenBTC)",
+    "WSTETH-A": "StETH with medium cost and multiple",
+    "WSTETH-B": "Lowest stETH borrowing cost",
+    "UNI-A": "Uniswap (UNI)",
+    "MANA-A": "Decentraland (MANA)",
+    "MATIC-A": "Polygon (MATIC)",
+    "YFI-A": "Yearn (YFI)",
+    "LINK-A": "Chainlink (LINK)",
+    "GUSD-A": "Gemini USD (GUSD)",
+    "GUNIV3DAIUSDC2-A": "50x UNI V3 DAI / USDC 0.01% tier",
+    "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
+    "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
+    "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
+    "UNIV2WBTCETH-A": "UNI V2 WBTC / ETH LP",
+    "UNIV2WBTCDAI-A": "UNI V2 WBTC /DAI LP",
+    "UNIV2DAIETH-A": "UNI V2 ETH / DAI  LP",
+    "UNIV2UNIETH-A": "UNI V2 UNI / ETH LP",
+    "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
   },
   "product-page": {
     "multiply": {
@@ -1101,5 +1183,88 @@
   "guni-slippage-overridden": "Your custom slippage has been overridden for this vault. GUNI vaults can only be opened with a slippage at 0.1%.",
   "temporary-guni-message": "The max multiple for your GUNI position has been increased by Maker governance from 20x to 50x. To take advantage of this you will need to close this vault, and open a new GUNI position. Read more in ",
   "below": "below",
-  "above": "above"
+  "above": "above",
+  "earn": {
+    "your-positions": "Your Positions",
+    "positions-of-type": "{{type}} Positions",
+    "edit-vault": "Edit Vault",
+    "automation-button-on": "On",
+    "automation-button-off": "Activate",
+    "position-headers": {
+      "asset": {
+        "label": "Asset",
+        "tooltip": "The Asset"
+      },
+      "vault-id": {
+        "label": "Vault ID",
+        "tooltip": "The Vault ID"
+      },
+      "collateral-ratio": {
+        "label": "Collateral Ratio",
+        "tooltip": "The Collateral Ratio"
+      },
+      "dai-debt": {
+        "label": "Dai Debt",
+        "tooltip": "The Dai Debt"
+      },
+      "collateral-locked": {
+        "label": "Collateral Locked",
+        "tooltip": "Collateral Locked"
+      },
+      "variable-perc": {
+        "label": "Variable %",
+        "tooltip": "Variable Percentage"
+      },
+      "automation": {
+        "label": "Automation",
+        "tooltip": "Protection features"
+      },
+      "net-value": {
+        "label": "Net Value",
+        "tooltip": "The Net Value"
+      },
+      "multiple": {
+        "label": "Multiple",
+        "tooltip": "The Multiple"
+      },
+      "liquidation-price": {
+        "label": "Liquidation Price",
+        "tooltip": "The Liquidation Price"
+      },
+      "funding-cost": {
+        "label": "Funding Cost",
+        "tooltip": "The Funding Cost"
+      },
+      "pnl": {
+        "label": "PnL",
+        "tooltip": "Profit and loss"
+      },
+      "seven-day-yield": {
+        "label": "7 Day Yield",
+        "tooltip": "The 7 Day Yield"
+      },
+      "liquidity": {
+        "label": "Liquidity",
+        "tooltip": "The Liquidity "
+      }
+    }
+  },
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} position rewards",
+
+    "for-this-position": "For this position you are currently earning {{ name }} rewards.",
+    "instructions": {
+      "tokens-to-claim": "Press the button to claim {{ readableAmount }}.",
+      "claim-succeeded": "You have claimed {{ readableAmount }}. It may take a few minutes for your position to update.",
+      "nothing-to-claim": "You currently have no {{ name }} rewards to claim."
+    },
+    "more-info": {
+      "text1": "More information about these rewards",
+      "link-text": "here",
+      "text2": "."
+    },
+    "claim-button": {
+      "claim-rewards": "Claim Rewards"
+    }
+  }
 }

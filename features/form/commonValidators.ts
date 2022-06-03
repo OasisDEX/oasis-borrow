@@ -7,7 +7,7 @@ import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
-type DaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
+type DaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'
 
 export function vaultWillBeAtRiskLevelDangerValidator({
   inputAmountsEmpty,
@@ -99,6 +99,30 @@ export function depositingAllEthBalanceValidator({
   return token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 }
 
+export function notEnoughETHtoPayForTx({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  depositAmount,
+}: {
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  token?: string
+  gasEstimationUsd?: BigNumber
+  depositAmount?: BigNumber
+}) {
+  if (!gasEstimationUsd) {
+    return false
+  }
+
+  if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
+    return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
+  }
+
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
+}
+
 export function customAllowanceAmountEmptyValidator({
   selectedAllowanceRadio,
   allowanceAmount,
@@ -138,6 +162,10 @@ export function customAllowanceAmountLessThanDepositAmountValidator({
 
 export function ledgerWalletContractDataDisabledValidator({ txError }: { txError?: TxError }) {
   return txError?.name === 'EthAppPleaseEnableContractData'
+}
+
+export function ethFundsForTxValidator({ txError }: { txError?: TxError }) {
+  return txError?.message === 'insufficient funds for gas * price + value'
 }
 
 export function debtIsLessThanDebtFloorValidator({
@@ -323,17 +351,25 @@ export function insufficientCollateralAllowanceValidator({
 
 export function insufficientDaiAllowanceValidator({
   paybackAmount,
+  depositDaiAmount,
   daiAllowance,
   debtOffset,
 }: {
   paybackAmount?: BigNumber
+  depositDaiAmount?: BigNumber
   daiAllowance?: BigNumber
   debtOffset: BigNumber
 }) {
+  const amountToValidate = paybackAmount?.gt(zero)
+    ? paybackAmount
+    : depositDaiAmount?.gt(zero)
+    ? depositDaiAmount
+    : zero
+
   return !!(
-    paybackAmount &&
-    !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.plus(debtOffset).gt(daiAllowance))
+    amountToValidate &&
+    !amountToValidate.isZero() &&
+    (!daiAllowance || amountToValidate.plus(debtOffset).gt(daiAllowance))
   )
 }
 
@@ -404,6 +440,10 @@ export function afterCollRatioBelowStopLossRatioValidator({
   afterCollateralizationRatioAtNextPrice: BigNumber
   stopLossRatio: BigNumber
 }) {
+  if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
+    return false
+  }
+
   return (
     afterCollateralizationRatio.lt(stopLossRatio) ||
     afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)

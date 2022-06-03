@@ -17,6 +17,7 @@ import {
   debtIsLessThanDebtFloorValidator,
   depositAndWithdrawAmountsEmptyValidator,
   depositingAllEthBalanceValidator,
+  ethFundsForTxValidator,
   generateAndPaybackAmountsEmptyValidator,
   insufficientCollateralAllowanceValidator,
   insufficientDaiAllowanceValidator,
@@ -195,6 +196,7 @@ export interface ManageVaultConditions {
 
   debtWillBeLessThanDebtFloor: boolean
   isLoadingStage: boolean
+  isSuccessStage: boolean
 
   insufficientCollateralAllowance: boolean
   customCollateralAllowanceAmountEmpty: boolean
@@ -211,6 +213,9 @@ export interface ManageVaultConditions {
 
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
+
+  potentialInsufficientEthFundsForTx: boolean
+  insufficientEthFundsForTx: boolean
 }
 
 export const defaultManageVaultConditions: ManageVaultConditions = {
@@ -248,6 +253,7 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   debtWillBeLessThanDebtFloor: false,
   isLoadingStage: false,
+  isSuccessStage: false,
 
   insufficientCollateralAllowance: false,
   customCollateralAllowanceAmountEmpty: false,
@@ -265,6 +271,9 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
+
+  potentialInsufficientEthFundsForTx: false,
+  insufficientEthFundsForTx: false,
 }
 
 export function applyManageVaultConditions<VaultState extends ManageStandardBorrowVaultState>(
@@ -473,6 +482,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     'multiplyTransitionSuccess',
   ] as ManageBorrowVaultStage[]).some((s) => s === stage)
 
+  const isSuccessStage = stage === 'manageSuccess'
+
   const withdrawCollateralOnVaultUnderDebtFloor = withdrawCollateralOnVaultUnderDebtFloorValidator({
     debtFloor,
     debt,
@@ -561,6 +572,8 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
   const stopLossTriggered =
     !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
 
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   return {
     ...state,
     canProgress,
@@ -578,6 +591,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     vaultWillBeUnderCollateralizedAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
     debtIsLessThanDebtFloor,
+    insufficientEthFundsForTx,
 
     accountIsConnected,
     accountIsController,
@@ -595,6 +609,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     shouldPaybackAll,
     debtWillBeLessThanDebtFloor,
     isLoadingStage,
+    isSuccessStage,
 
     insufficientCollateralAllowance,
     customCollateralAllowanceAmountEmpty,

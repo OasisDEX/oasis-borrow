@@ -1,7 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { GenericAnnouncement } from 'components/Announcement'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { Survey } from 'features/survey'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Container } from 'theme-ui'
 
@@ -29,6 +30,7 @@ export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
   const vaultType = generalManageVault.type
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   switch (vaultType) {
     case VaultType.Borrow:
@@ -61,7 +63,7 @@ export function GeneralManageVaultViewAutomation({
               manageVault={generalManageVault.state}
               header={DefaultVaultHeader}
               details={ManageMultiplyVaultDetails}
-              form={ManageMultiplyVaultForm}
+              form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
               history={VaultHistoryView}
             />
           )}
@@ -79,19 +81,10 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const [manageVault, manageVaultError] = useObservable(manageVaultWithId$)
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
-      {manageVault?.state.vault.ilk === 'CRVV1ETHSTETH-A' && (
-        <Container variant="announcement">
-          <GenericAnnouncement
-            text="Generating DAI against CRVV1ETHSTETH-A and withdrawing collateral (unless the debt is fully paid back) isn't possible at Oasis.app at the moment. Users can add collateral and pay back DAI."
-            link="https://forum.makerdao.com/t/14th-april-emergency-executive/14642"
-            linkText="Visit Maker Forum for details"
-            disableClosing={true}
-          />
-        </Container>
-      )}
       <WithLoadingIndicator value={[manageVault]} customLoader={<VaultContainerSpinner />}>
         {([generalManageVault]) => {
           switch (generalManageVault.type) {
@@ -126,7 +119,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       manageVault={generalManageVault.state}
                       header={DefaultVaultHeader}
                       details={ManageMultiplyVaultDetails}
-                      form={ManageMultiplyVaultForm}
+                      form={
+                        !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
+                      }
                       history={VaultHistoryView}
                     />
                   )}
