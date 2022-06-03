@@ -56,6 +56,7 @@ export function ProtectionDetailsLayout({
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
 
+  if (!liquidationPrice.isNaN()) {
   return (
     <Box>
       {!newComponentsEnabled ? (
@@ -140,5 +141,8 @@ export function ProtectionDetailsLayout({
         />
       )}
     </Box>
-  )
+  )}
+  else {
+    return (<></>)
+  }
 }
