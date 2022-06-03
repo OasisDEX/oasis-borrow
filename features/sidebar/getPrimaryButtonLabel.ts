@@ -96,6 +96,7 @@ export function getPrimaryButtonLabel({
 
   switch (stage) {
     case 'editing':
+    case 'stopLossEditing':
     case 'collateralEditing':
     case 'daiEditing':
     case 'adjustPosition':

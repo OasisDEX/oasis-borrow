@@ -1019,7 +1019,10 @@
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
-    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
+    "enable-stop-loss": "Enable Stop-Loss",
+    "continue-without-stop-loss": "Continue without Stop-Loss",
+    "stop-loss-information": "Stop Loss Information"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1242,13 +1245,13 @@
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
 
-    "for-this-position":"For this position you are currently earning {{ name }} rewards.",
+    "for-this-position": "For this position you are currently earning {{ name }} rewards.",
     "instructions": {
       "tokens-to-claim": "Press the button to claim {{ readableAmount }}.",
       "claim-succeeded": "You have claimed {{ readableAmount }}. It may take a few minutes for your position to update.",
       "nothing-to-claim": "You currently have no {{ name }} rewards to claim."
     },
-    "more-info" : {
+    "more-info": {
       "text1": "More information about these rewards",
       "link-text": "here",
       "text2": "."

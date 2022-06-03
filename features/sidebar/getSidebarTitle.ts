@@ -91,6 +91,8 @@ export function getSidebarTitle({
       const editingKey = getSidebarTitleEditingTranslationKey({ flow })
 
       return t(editingKey, { token: token.toUpperCase() })
+    case 'stopLossEditing':
+      return t('protection.enable-stop-loss')
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':

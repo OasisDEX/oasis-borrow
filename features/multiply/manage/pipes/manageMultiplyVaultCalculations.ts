@@ -402,7 +402,7 @@ function calculateMaxGenerateAmount({
   })
 }
 
-function calculateMultiply({
+export function calculateMultiply({
   debt,
   lockedCollateralUSD,
 }: {

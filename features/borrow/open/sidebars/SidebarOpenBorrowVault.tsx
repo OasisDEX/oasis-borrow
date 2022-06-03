@@ -19,6 +19,7 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -26,6 +27,7 @@ import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEdit
 import { SidebarOpenBorrowVaultOpenStage } from './SidebarOpenBorrowVaultOpenStage'
 
 export function SidebarOpenBorrowVault(props: OpenVaultState) {
+  const { t } = useTranslation()
   const { accountData$ } = useAppContext()
   const [accountData] = useObservable(accountData$)
 
@@ -40,15 +42,17 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     isLoadingStage,
     isOpenStage,
     isProxyStage,
+    isStopLossEditingStage,
     isSuccessStage,
     progress,
     regress,
+    skipStopLoss,
     stage,
     token,
     totalSteps,
   } = props
 
-  const flow: SidebarFlow = 'openBorrow'
+  const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
   const firstCDP = isFirstCdp(accountData)
   const canTransition = ALLOWED_MULTIPLY_TOKENS.includes(token)
   const gasData = extractGasDataFromState(props)
@@ -60,6 +64,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
+        {isStopLossEditingStage && <>STOP LOSS BRO</>}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
@@ -67,6 +72,12 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         <VaultWarnings {...props} />
       </Grid>
     ),
+    ...(isStopLossEditingStage && {
+      headerButton: {
+        label: t('protection.continue-without-stop-loss'),
+        action: () => skipStopLoss!(),
+      },
+    }),
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
@@ -80,7 +91,9 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
-      hidden: (!canRegress || isSuccessStage) && (!isEditingStage || !canTransition),
+      hidden:
+        (!canRegress || isSuccessStage) &&
+        (!isEditingStage || !canTransition || !isStopLossEditingStage),
       action: () => {
         if (canRegress) regress!()
         regressTrackingEvent({ props })

@@ -230,7 +230,7 @@ export function AdjustSlFormControl({
     ? 'txInProgress'
     : isFailureStage
     ? 'txFailure'
-    : 'editing'
+    : 'stopLossEditing'
 
   const isProgressDisabled = !!(
     !isOwner ||
