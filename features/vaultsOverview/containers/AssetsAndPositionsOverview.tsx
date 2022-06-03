@@ -5,13 +5,9 @@ import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
-import { useAppContext } from '../../../components/AppContextProvider'
 import { PieChart } from '../../../components/dumb/PieChart'
 import { AppLink } from '../../../components/Links'
-import { WithLoadingIndicator } from '../../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { useObservable } from '../../../helpers/observableHook'
 import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
 import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
@@ -186,7 +182,7 @@ function Menu(props: {
   )
 }
 
-function RenderPositions(props: TopAssetsAndPositionsViewModal) {
+export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
@@ -217,23 +213,5 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
         </Box>
       </Flex>
     </Card>
-  )
-}
-
-export function AssetsAndPositionsOverview(props: { address: string }) {
-  const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(props.address))
-  return (
-    <WithErrorHandler error={err}>
-      <WithLoadingIndicator value={positionsOverviewSummary}>
-        {(positionsOverviewSummary) => {
-          if (positionsOverviewSummary.assetsAndPositions.length > 0) {
-            return <RenderPositions {...positionsOverviewSummary} />
-          } else {
-            return <></>
-          }
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
   )
 }
