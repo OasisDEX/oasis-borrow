@@ -19,6 +19,7 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
+import { pickCommonErrors, pickCommonWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -137,8 +138,8 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
               <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
             )}
             {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
-            <VaultErrors {...props} />
-            <VaultWarnings {...props} />
+            <VaultErrors {...props} errorMessages={pickCommonErrors(props.errorMessages)} />
+            <VaultWarnings {...props} warningMessages={pickCommonWarnings(props.warningMessages)} />
           </>
         ) : (
           <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />

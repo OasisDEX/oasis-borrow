@@ -1,5 +1,8 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { handleNumericInput } from 'helpers/input'
+import { pickDepositErrors, pickGenerateErrors, pickGenerateWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,6 +23,9 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
     updateDepositMax,
     inputAmountsEmpty,
     maxMultiple,
+    errorMessages,
+    warningMessages,
+    ilkData,
   } = props
 
   return (
@@ -48,6 +54,21 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
           maxAmountLabel={t('balance')}
           hasError={false}
         />
+        {newComponentsEnabled && (
+          <>
+            <VaultErrors
+              errorMessages={[
+                ...pickDepositErrors(errorMessages),
+                ...pickGenerateErrors(errorMessages),
+              ]}
+              ilkData={ilkData}
+            />
+            <VaultWarnings
+              warningMessages={pickGenerateWarnings(warningMessages)}
+              ilkData={ilkData}
+            />
+          </>
+        )}
         <Flex
           sx={{
             border: '1px solid',
