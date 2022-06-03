@@ -7,12 +7,12 @@ import { Grid, Text } from 'theme-ui'
 
 export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
   const {
-    token,
-    depositAmount,
-    updateDepositMax,
-    maxMultiple,
-    updateDeposit,
     balanceInfo: { daiBalance },
+    depositAmount,
+    maxMultiple,
+    token,
+    updateDeposit,
+    updateDepositMax,
   } = props
 
   return (
