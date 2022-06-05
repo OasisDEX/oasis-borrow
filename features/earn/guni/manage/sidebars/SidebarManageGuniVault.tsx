@@ -1,7 +1,10 @@
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarManageGuniVaultEditingState } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultEditingState'
+import { SidebarManageGuniVaultManageStage } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultManageStage'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -30,6 +33,7 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
     isProxyStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
+    isManageStage,
     vault: { token },
   } = props
 
@@ -46,13 +50,14 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
-        {stage}
         {isEditingStage && <SidebarManageGuniVaultEditingState {...props} />}
-
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
           <SidebarVaultAllowanceStage {...props} />
         )}
+        {isManageStage && <SidebarManageGuniVaultManageStage {...props} />}
+        <VaultErrors {...props} />
+        <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {

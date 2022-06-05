@@ -10,25 +10,35 @@ import { Grid, Text } from 'theme-ui'
 export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
 
-  const { afterCloseToDai } = props
+  const {
+    afterCloseToDai,
+    vault: { debt },
+  } = props
 
   return (
     <Grid gap={3}>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
+      <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('vault-info-messages.closing')}
       </Text>
-      <Text
-        as="p"
-        variant="paragraph3"
-        sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, fontWeight: 'semiBold' }}
-      >
-        <Text as="span" sx={{ display: 'flex', alignItems: 'flex-end', color: 'text.subtitle' }}>
-          <Icon name={getToken('DAI').iconCircle} size="20px" sx={{ mr: 1 }} />
-          {t('minimum')} {t('after-closing', { token: 'DAI' })}
-        </Text>
-        <Text as="span">{formatCryptoBalance(afterCloseToDai)} DAI</Text>
-      </Text>
-      <GuniManageMultiplyVaultChangesInformation {...props} />
+      {!debt.isZero() && (
+        <>
+          <Text
+            as="p"
+            variant="paragraph3"
+            sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, fontWeight: 'semiBold' }}
+          >
+            <Text
+              as="span"
+              sx={{ display: 'flex', alignItems: 'flex-end', color: 'text.subtitle' }}
+            >
+              <Icon name={getToken('DAI').iconCircle} size="20px" sx={{ mr: 1 }} />
+              {t('minimum')} {t('after-closing', { token: 'DAI' })}
+            </Text>
+            <Text as="span">{formatCryptoBalance(afterCloseToDai)} DAI</Text>
+          </Text>
+          <GuniManageMultiplyVaultChangesInformation {...props} />
+        </>
+      )}
     </Grid>
   )
 }
