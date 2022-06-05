@@ -1,4 +1,3 @@
-import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 import { Observable } from 'rxjs'
@@ -76,7 +75,6 @@ export function ManageMultiplyVaultContainer({
         </Grid>
         <Box>
           <Form {...manageVault} />
-          <SidebarManageGuniVault {...manageVault} />
         </Box>
       </Grid>
     </>
