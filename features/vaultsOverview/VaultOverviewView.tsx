@@ -1,37 +1,53 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Pages, trackingEvents } from 'analytics/analytics'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
-import { CoinTag, getToken } from 'blockchain/tokensMetadata'
-import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ColumnDef, Table, TableSortHeader } from 'components/Table'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
+  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { useRedirect } from 'helpers/useRedirect'
-import { zero } from 'helpers/zero'
+import { useObservable } from 'helpers/observableHook'
+import { ProductCardData } from 'helpers/productCards'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
-import { Dictionary } from 'ts-essentials'
 
+import { Pages, trackingEvents } from '../../analytics/analytics'
+import { CoinTag, getToken } from '../../blockchain/tokensMetadata'
+import { Vault } from '../../blockchain/vaults'
+import { PositionList } from '../../components/dumb/PositionList'
+import { ColumnDef, Table, TableSortHeader } from '../../components/Table'
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
+import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { useRedirect } from '../../helpers/useRedirect'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
+import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Filters } from './Filters'
+import { Summary } from './Summary'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
-import { VaultSummary } from './vaultSummary'
+import { VaultSuggestions } from './VaultSuggestions'
+
+interface Props {
+  vaultsOverview: VaultsOverview
+  context: Context
+  address: string
+  ensName: string | null | undefined
+  productCardsData: ProductCardData[]
+}
 
 const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
   {
     headerLabel: 'system.asset',
     header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ ilk, token, isStopLossEnabled }) => {
+    cell: ({ ilk, token, isStopLossEnabled, debt }) => {
       const tokenInfo = getToken(token)
       const { t } = useTranslation()
 
@@ -39,7 +55,7 @@ const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[]
         <Flex>
           <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
           <Box sx={{ whiteSpace: 'nowrap' }}>{ilk}</Box>
-          {isStopLossEnabled && (
+          {isStopLossEnabled && !debt.isZero() && (
             <Box ml={2}>
               <VaultDetailsAfterPill
                 afterPillColors={{ color: 'onSuccess', bg: 'success' }}
@@ -130,206 +146,6 @@ const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[]
     },
   },
 ]
-function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
-  const { data, filters } = vaults
-  const { t } = useTranslation()
-  const { push } = useRedirect()
-
-  return (
-    <Table
-      data={data}
-      primaryKey="address"
-      state={filters}
-      columns={vaultsColumns}
-      noResults={<Box>{t('no-results')}</Box>}
-      deriveRowProps={(row) => {
-        return {
-          onClick: () => {
-            trackingEvents.overviewManage(row.id.toString(), row.ilk)
-            push(`/${row.id}`)
-          },
-        }
-      }}
-    />
-  )
-}
-
-export function Summary({ summary }: { summary: VaultSummary }) {
-  const { t } = useTranslation()
-  return (
-    <Card variant="surface" sx={{ mb: 5, px: 4 }}>
-      <Grid sx={{ pt: 3 }} columns={['1fr', 'repeat(4, 1fr)', 'repeat(4, 1fr)']}>
-        <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
-            {t('vaults-overview.number-of-vaults')}
-          </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>
-            {summary.numberOfVaults}
-          </Text>
-        </Box>
-        <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
-            {t('vaults-overview.total-locked')}
-          </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>
-            ${formatCryptoBalance(summary.totalCollateralPrice)}
-          </Text>
-        </Box>
-        <Box
-          sx={{ gridRow: ['initial', '2/3', 'auto'], gridColumn: ['initial', 'span 2', 'initial'] }}
-        >
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
-            {t('vaults-overview.total-debt')}
-          </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>
-            {formatCryptoBalance(summary.totalDaiDebt)}
-            <Text sx={{ fontSize: '20px', display: 'inline', ml: 2 }}>DAI</Text>
-          </Text>
-        </Box>
-        <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
-            {t('vaults-overview.vaults-at-risk')}
-          </Text>
-          <Text variant="header2" sx={{ mt: 2 }}>
-            {summary.vaultsAtRisk}
-          </Text>
-        </Box>
-        <Graph assetRatio={summary.depositedAssetRatio} />
-      </Grid>
-    </Card>
-  )
-}
-
-function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
-  const assets = Object.entries(assetRatio).sort(([, ratioA], [, ratioB]) =>
-    ratioB.comparedTo(ratioA),
-  )
-
-  const totalRatio = assets.reduce(
-    (acc, [_, ratio]) => (ratio.isNaN() ? acc : acc.plus(ratio)),
-    zero,
-  )
-
-  return (
-    <Box sx={{ gridColumn: ['1/2', '1/5', '1/5'], my: 3 }}>
-      <Box
-        sx={{
-          position: 'relative',
-          borderRadius: 'small',
-          display: ['none', 'flex', 'flex'],
-        }}
-      >
-        {totalRatio.gt(zero) &&
-          assets.map(([token, ratio]) => (
-            <Box
-              key={token}
-              sx={{
-                position: 'relative',
-                flex: ratio.toString(),
-                height: 4,
-                '&:before': {
-                  boxShadow: 'medium',
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  content: `''`,
-                  height: 2,
-                  background: getToken(token).color || 'lightGray',
-                },
-                '&:first-of-type:before': {
-                  borderTopLeftRadius: 'small',
-                  borderBottomLeftRadius: 'small',
-                },
-                '&:last-of-type:before': {
-                  borderTopRightRadius: 'small',
-                  borderBottomRightRadius: 'small',
-                },
-                ...(ratio.lt(0.08)
-                  ? {
-                      '&:hover:after': {
-                        opacity: 1,
-                        transform: 'translate(-50%, -40px)',
-                      },
-                      '&:after': {
-                        transition: 'ease-in-out 0.2s',
-                        opacity: 0,
-                        whiteSpace: 'nowrap',
-                        content: `'${token}: ${formatPercent(ratio.times(100), { precision: 2 })}'`,
-                        position: 'absolute',
-                        left: '50%',
-                        background: 'white',
-                        padding: 2,
-                        borderRadius: 'small',
-                        transform: 'translate(-50%, 0)',
-                        boxShadow: 'surface',
-                        fontFamily: 'body',
-                        fontWeight: 'body',
-                        lineHeight: 'body',
-                        fontSize: 1,
-                        color: 'white',
-                        bg: 'primary',
-                      },
-                    }
-                  : {}),
-              }}
-            />
-          ))}
-      </Box>
-      <Box sx={{ display: 'flex', flexDirection: ['column', 'row', 'row'] }}>
-        <Box
-          as="hr"
-          sx={{
-            display: ['block', 'none', 'none'],
-            borderColor: 'border',
-            borderWidth: '1px',
-            borderTop: 'none',
-            mb: 3,
-          }}
-        />
-        {assets.map(([token, ratio]) => (
-          <Box key={token} sx={{ mb: 3, flex: ratio.toString() }}>
-            <Box
-              sx={{
-                position: 'relative',
-                top: '-14px',
-                alignItems: 'center',
-                display: ['flex', ...(ratio.gt(0.08) ? ['flex', 'flex'] : ['none', 'none'])],
-              }}
-            >
-              <Box sx={{ mr: 1 }}>
-                <Icon
-                  name={getToken(token).iconCircle}
-                  size="32px"
-                  sx={{ verticalAlign: 'sub', mr: 2 }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  flexDirection: ['row', 'column', 'column'],
-                }}
-              >
-                <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
-                  {token}
-                </Text>
-                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
-                  {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
-                </Text>
-              </Box>
-            </Box>
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  )
-}
-
-interface Props {
-  vaultsOverview: VaultsOverview
-  context: Context
-  address: string
-}
 
 function getHeaderTranslationKey(
   connectedAccount: string | undefined,
@@ -354,7 +170,31 @@ function getHeaderTranslationKey(
     : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
 
-function VaultsOverwiewPerType({
+function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
+  const { data, filters } = vaults
+  const { t } = useTranslation()
+  const { push } = useRedirect()
+
+  return (
+    <Table
+      data={data}
+      primaryKey="address"
+      state={filters}
+      columns={vaultsColumns}
+      noResults={<Box>{t('no-results')}</Box>}
+      deriveRowProps={(row) => {
+        return {
+          onClick: () => {
+            trackingEvents.overviewManage(row.id.toString(), row.ilk)
+            push(`/${row.id}`)
+          },
+        }
+      }}
+    />
+  )
+}
+
+function VaultsOverviewPerType({
   vaults,
   heading,
   multiply,
@@ -399,21 +239,54 @@ function VaultsOverwiewPerType({
   )
 }
 
-export function VaultsOverviewView({ vaultsOverview, context, address }: Props) {
-  const { vaults, vaultSummary } = vaultsOverview
+function TotalAssets({ totalValueUsd }: { totalValueUsd: BigNumber }) {
   const { t } = useTranslation()
+
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Text variant="header4" sx={{ mb: 1 }}>
+        {t('vaults-overview.total-assets')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
+        <Trans
+          i18nKey="vaults-overview.total-assets-subheader"
+          components={[
+            <AppLink
+              href="https://kb.oasis.app/help/curated-token-list"
+              target="_blank"
+              sx={{ fontWeight: 'body' }}
+            />,
+          ]}
+        />
+      </Text>
+      <Text variant="display" sx={{ fontWeight: 'body' }}>
+        ${formatAmount(totalValueUsd, 'USD')}
+      </Text>
+    </Box>
+  )
+}
+
+export function VaultsOverviewView({
+  vaultsOverview,
+  context,
+  address,
+  ensName,
+  productCardsData,
+}: Props) {
+  const { t } = useTranslation()
+
+  const earnEnabled = useFeatureToggle('EarnProduct')
+  const { positionsOverviewSummary$ } = useAppContext()
+  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
+  const { positions, vaults, vaultSummary } = vaultsOverview
+  const numberOfVaults = positions.length
 
   if (vaultSummary === undefined) {
     return null
   }
 
   const connectedAccount = context?.status === 'connected' ? context.account : undefined
-
-  const headerTranslationKey = getHeaderTranslationKey(
-    connectedAccount,
-    address,
-    vaultSummary.numberOfVaults,
-  )
+  const headerTranslationKey = getHeaderTranslationKey(connectedAccount, address, numberOfVaults)
 
   const isOwnerViewing = !!connectedAccount && address === connectedAccount
 
@@ -423,6 +296,20 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+        {earnEnabled && (
+          <WithErrorHandler error={err}>
+            <WithLoadingIndicator value={positionsOverviewSummary}>
+              {(positionsOverviewSummary) => (
+                <>
+                  <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
+                  {positionsOverviewSummary.assetsAndPositions.length > 0 && (
+                    <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                  )}
+                </>
+              )}
+            </WithLoadingIndicator>
+          </WithErrorHandler>
+        )}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}
@@ -430,7 +317,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             components={[<br />]}
           />
         </Heading>
-        {isOwnerViewing && vaultSummary.numberOfVaults === 0 && (
+        {isOwnerViewing && numberOfVaults === 0 && (
           <>
             <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
               <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
@@ -464,7 +351,7 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
             </AppLink>
           </>
         )}
-        {context.status === 'connectedReadonly' && vaultSummary.numberOfVaults === 0 && (
+        {context.status === 'connectedReadonly' && numberOfVaults === 0 && (
           <>
             <AppLink
               href="/connect"
@@ -495,14 +382,24 @@ export function VaultsOverviewView({ vaultsOverview, context, address }: Props) 
           </>
         )}
       </Flex>
-      {vaultSummary.numberOfVaults !== 0 && (
+      {numberOfVaults !== 0 && (
         <>
           <Summary summary={vaultSummary} />
-          <Grid gap={5}>
-            <VaultsOverwiewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
-            <VaultsOverwiewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
-          </Grid>
+          {!earnEnabled && (
+            <Grid gap={5}>
+              <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
+              <VaultsOverviewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
+            </Grid>
+          )}
+          {earnEnabled && (
+            <Card variant="surface" sx={{ mb: 5, px: 3 }}>
+              <PositionList positions={positions} />
+            </Card>
+          )}
         </>
+      )}
+      {isOwnerViewing && (
+        <VaultSuggestions productCardsData={productCardsData} address={ensName || address} />
       )}
     </Grid>
   )

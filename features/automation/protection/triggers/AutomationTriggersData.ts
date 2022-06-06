@@ -59,9 +59,9 @@ export function createStopLossDataChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
-  return automationEnabled
+  return stopLossReadEnabled
     ? automationTriggersData$(id).pipe(
         map((triggers) => ({
           kind: 'stopLossData',

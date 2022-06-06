@@ -20,15 +20,17 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+// import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
+import { BonusContainer } from '../../../bonus/BonusContainer'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 
 export function ManageVaultDetailsSummary({
@@ -138,16 +140,17 @@ export function ManageVaultDetails(
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const automationEnabled = useFeatureToggle('Automation')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <Box>
-      {automationEnabled && (
+      {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && (
-            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+          {!newComponentsEnabled && stopLossWriteEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
           )}
           <StopLossBannerControl
             vaultId={id}
@@ -158,7 +161,7 @@ export function ManageVaultDetails(
           />
         </>
       )}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice
@@ -236,11 +239,12 @@ export function ManageVaultDetails(
           }
         />
       )}
-      {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
       )}
+      <BonusContainer cdpId={props.vault.id} />
     </Box>
   )
 }

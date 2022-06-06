@@ -9,6 +9,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useModal } from 'helpers/modalHook'
 import { zero } from 'helpers/zero'
@@ -28,7 +29,7 @@ import { ContentCardBuyingPower } from '../../../../components/vault/detailsSect
 import { ContentCardLiquidationPrice } from '../../../../components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentCardNetValue } from '../../../../components/vault/detailsSection/ContentCardNetValue'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
-import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+// import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
 import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
@@ -121,18 +122,19 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
-  const automationEnabled = useFeatureToggle('Automation')
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
+  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const oraclePrice = priceInfo.currentCollateralPrice
 
   return (
     <Box>
-      {automationEnabled && (
+      {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
-          {!automationBasicBuyAndSellEnabled && (
-            <GetProtectionBannerControl vaultId={id} ilk={ilk} />
+          {!newComponentsEnabled && stopLossWriteEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
           )}
           <StopLossBannerControl
             vaultId={id}
@@ -143,7 +145,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           />
         </>
       )}
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <>
           <Grid variant="vaultDetailsCardsContainer">
             <VaultDetailsCardLiquidationPrice
@@ -240,9 +242,9 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
           }
         />
       )}
-      {automationEnabled && automationBasicBuyAndSellEnabled && (
+      {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
         <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} />
+          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
         </Box>
       )}
     </Box>

@@ -3,15 +3,21 @@ import '@uniswap/widgets/fonts.css'
 import { SwapWidget } from '@uniswap/widgets'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
+import { tokenList } from 'components/uniswapWidget/tokenList'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useOnboarding } from 'helpers/useOnboarding'
+import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
+import { keyBy } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { theme } from 'theme'
-import { Box, Button, Flex, Image, Text } from 'theme-ui'
-
-import tokenList from './tokenList.json'
+import { Box, Button, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
 const { colors, radii } = theme
 
@@ -290,8 +296,55 @@ const OnboardingGraphic = () => (
   </Box>
 )
 
-export function UniswapWidget() {
+export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
+  const { uiChanges } = useAppContext()
+
+  const clickawayRef = useOutsideElementClickHandler(() =>
+    uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, { type: 'close' }),
+  )
+
+  const [swapWidgetChange] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+
+  if (swapWidgetChange && swapWidgetChange.isOpen) {
+    return (
+      <Box
+        ref={clickawayRef}
+        sx={{
+          p: 0,
+          position: 'absolute',
+          top: 'auto',
+          left: 'auto',
+          right: '240px',
+          bottom: 0,
+          transform: 'translateY(calc(100% + 10px))',
+          bg: 'background',
+          boxShadow: 'elevation',
+          borderRadius: 'mediumLarge',
+          border: 'none',
+          overflowX: 'visible',
+          zIndex: 0,
+          minWidth: 7,
+          minHeight: 7,
+          ...props.sxWrapper,
+        }}
+      >
+        <UniswapWidget token={swapWidgetChange.token} />
+      </Box>
+    )
+  }
+
+  return <></>
+}
+
+const tokenToTokenAddress = keyBy(tokenList.tokens, 'symbol')
+
+export function UniswapWidget(props: { token?: string }) {
   const { web3ContextConnected$ } = useAppContext()
+
+  const requestTokenAddress = props.token && tokenToTokenAddress[props.token]?.address
+
   const [web3Context] = useObservable(web3ContextConnected$)
   const [isOnboarded, setAsOnboarded] = useOnboarding('Exchange')
   const { t } = useTranslation()
@@ -397,6 +450,7 @@ export function UniswapWidget() {
         tokenList={tokenList.tokens}
         convenienceFee={20}
         convenienceFeeRecipient="0xC7b548AD9Cf38721810246C079b2d8083aba8909"
+        defaultInputTokenAddress={requestTokenAddress}
       />
     </Box>
   )

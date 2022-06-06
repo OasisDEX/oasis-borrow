@@ -98,7 +98,12 @@
   "creating-proxy": "Creando Proxy",
   "creating-vault": "Creando Vault",
   "proxy-advantages": {
-    "0": "Sólo es necesario un proxy por cuenta",
+    "0": "Solo se necesita un proxy por cuenta",
+    "1": "Le permite a su cartera interactuar con el protocolo Maker",
+    "2": "Más eficiente en consumo de gas"
+  },
+  "proxy-advantages-new": {
+    "0": "<0>Solo se</0> necesita un proxy por cuenta",
     "1": "Le permite a su cartera interactuar con el protocolo Maker",
     "2": "Más eficiente en consumo de gas"
   },
@@ -780,10 +785,12 @@
       "connected-viewer-noVaults": "{{address}} actualmente no tiene Vaults Maker.",
       "connected-viewer-withVaults": "Resumen de Vaults de Maker de {{address}}",
       "notConnected-noVaults": "{{address}} actualmente no tiene Vaults de Maker.<0/> Conecte su cartera y abra un Vault",
-      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera"
+      "notConnected-withVaults": "Resumen de Vaults de Maker de {{address}}.<0/> Conecte su cartera",
+      "vault-suggestions": "{{address}}, hacer más en Oasis.app"
     },
     "number-of-vaults": "Número de Vaults",
     "subheader-no-vaults": "Abra un Vault de Maker, deposite su colateral, y tome prestado Dai o compre más colateral con su préstamo.",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "Deuda Total",
     "total-locked": "Total bloqueado",
     "vaults": "Vaults",
@@ -1207,5 +1214,14 @@
     }
   },
   "guni-slippage-overridden": "El deslizamiento personalizado fue modificado para este Vault. Los Vaults GUNI sólo pueden ser abiertos con un deslizamiento de 0.1%.",
-  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en"
+  "temporary-guni-message": "El máximo múltiplo para su posición en GUNI fue incrementado por el gobierno de Maker de 20x a 50x. Para aprovechar esto, deberá cerrar su vault y abrir una nueva posición GUNI. Más información en",
+  "claim-rewards": {
+    "title": "Recompensas por su posición en {{ bonusTokenName }}",
+    "text1": "Esta posición otorga recompensas en {{ bonusTokenName }}. Presione el botón para obtener {{ bonusAmount }}. Puede ver más información sobre estas recompensas",
+    "link-text": "aquí",
+    "text2": ".",
+    "claim-button": {
+      "claim-rewards": "Reclamar recompensas"
+    }
+  }
 }

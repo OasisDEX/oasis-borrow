@@ -1,4 +1,3 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
@@ -16,6 +15,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
+import { ChevronUpDown } from '../../../../components/ChevronUpDown'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ManageInstiVaultState } from '../../../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageInstiVaultDetails } from './ManageInstiVaultDetails'
@@ -33,7 +33,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   const { t } = useTranslation()
   const [showFees, setShowFees] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -50,7 +50,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
 
   return (
     <>
-      {!automationEnabled && (
+      {!stopLossReadEnabled && (
         <DefaultVaultHeader
           header={t('vault.insti-header', { ilk, id })}
           ilkData={ilkData}
@@ -74,7 +74,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <ManageInstiVaultDetails {...manageVault} />
-          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
+          {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
           <ManageVaultForm
@@ -90,12 +90,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
                       ) : (
                         <EstimationError withBrackets={false} />
                       )}
-                      <Icon
-                        name={`chevron_${showFees ? 'up' : 'down'}`}
-                        size="auto"
-                        width="12px"
-                        sx={{ ml: 2 }}
-                      />
+                      <ChevronUpDown isUp={showFees} size="auto" width="12px" sx={{ ml: 2 }} />
                     </Flex>
                   }
                 />

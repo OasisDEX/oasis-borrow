@@ -319,7 +319,7 @@
       "gas-fees": "Gas fees",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
       "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
-      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here here)"
     }
   },
   "max": "最多",
@@ -536,10 +536,12 @@
       "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
       "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
-      "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。"
+      "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
+      "vault-suggestions": "{{address}}, 在 Oasis.app 上做更多事情"
     },
     "number-of-vaults": "金库数量",
     "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "总债务",
     "total-locked": "总锁定",
     "vaults": "所有金库",
@@ -696,6 +698,15 @@
       "title": "Oasis Earn",
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
       "link": "Learn more about Earn ->"
+    }
+  },
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} 仓位奖励",
+    "text1": "当前你在这个仓位赚取{{ bonusTokenName }}奖励。按下按钮来认领{{ bonusAmount }}。 在",
+    "link-text": "这里",
+    "text2": "可以获取更多关于奖励的信息。",
+    "claim-button": {
+      "claim-rewards": "领取奖励"
     }
   }
 }

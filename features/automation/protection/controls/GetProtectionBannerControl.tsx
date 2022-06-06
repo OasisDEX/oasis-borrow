@@ -1,10 +1,11 @@
+import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
+import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
-import { ALLOWED_AUTOMATION_ILKS } from '../../../../blockchain/tokensMetadata'
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { useObservable } from '../../../../helpers/observableHook'
@@ -16,25 +17,35 @@ import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 interface GetProtectionBannerProps {
   vaultId: BigNumber
   ilk: string
+  debt: BigNumber
   token?: string
 }
 
-export function GetProtectionBannerControl({ vaultId, token, ilk }: GetProtectionBannerProps) {
+export function GetProtectionBannerControl({
+  vaultId,
+  token,
+  ilk,
+  debt,
+}: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
   const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
-  const automationBasicBuyAndSellEnabled = useFeatureToggle('AutomationBasicBuyAndSell')
-  const isAllowedForAutomation = ALLOWED_AUTOMATION_ILKS.includes(ilk)
+
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+  const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   const handleClose = useCallback(() => setIsBannerClosed(true), [])
 
-  return !slData?.isStopLossEnabled && !isBannerClosed && isAllowedForAutomation ? (
+  return !slData?.isStopLossEnabled &&
+    !isBannerClosed &&
+    isAllowedForAutomation &&
+    !debt.isZero() ? (
     <>
-      {!automationBasicBuyAndSellEnabled ? (
+      {!newComponentsEnabled ? (
         <GetProtectionBannerLayout
           handleClick={() => {
             uiChanges.publish(TAB_CHANGE_SUBJECT, {

@@ -11,18 +11,83 @@ export interface TokenConfig {
   icon: string
   iconCircle: string
   iconColor: string
-  ticker: string
+  coinpaprikaTicker: string
   tags: CoinTag[]
   color: string
   bannerIcon: string
+  bannerGif?: string
   token0?: string
   token1?: string
+  coinbaseTicker?: string
+  background?: string
+  digitsInstant?: number
 }
 
 export const COIN_TAGS = ['stablecoin', 'lp-token'] as const
 export type CoinTag = ElementOf<typeof COIN_TAGS>
 
 export const tokens = [
+  {
+    symbol: 'USDP',
+    precision: 18,
+    digits: 5,
+    name: 'Pax Dollar',
+    icon: 'usdp_circle_color',
+    iconCircle: 'usdp_circle_color',
+    iconColor: 'ether_color',
+    coinpaprikaTicker: 'usdp-paxos-standard-token',
+    color: '#0B9F74',
+    background: 'linear-gradient(143.13deg, #0B9F74 12.24%, #64DFBB 85.9%) #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
+    tags: [],
+  },
+  {
+    symbol: 'STETH',
+    precision: 18,
+    digits: 5,
+    name: 'Lido Staked ETH',
+    icon: 'steth_circle_color',
+    iconCircle: 'steth_circle_color',
+    iconColor: 'ether_color',
+    coinpaprikaTicker: 'steth-lido-staked-ether',
+    color: '#0B91DD',
+    background: 'linear-gradient(143.37deg, #00A3FF 15.97%, #0B91DD 81.1%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
+    tags: [],
+  },
+  {
+    symbol: 'MKR',
+    precision: 18,
+    digits: 5,
+    name: 'Maker',
+    icon: 'mkr_circle_color',
+    iconCircle: 'mkr_circle_color',
+    iconColor: 'ether_color',
+    coinpaprikaTicker: 'mkr-maker',
+    coinbaseTicker: 'mkr-usd',
+    color: '#1AAB9B',
+    background: 'linear-gradient(133.41deg, #1AAB9B 17.25%, #22CAB7 86.54%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
+    tags: [],
+  },
+  {
+    symbol: 'WETH',
+    precision: 18,
+    digits: 5,
+    name: 'Wrapped Ether',
+    icon: 'weth_circle_color',
+    iconCircle: 'weth_circle_color',
+    iconColor: 'ether_color',
+    coinpaprikaTicker: 'weth-weth',
+    color: '#1AAB9B',
+    background: 'linear-gradient(133.41deg, #1AAB9B 17.25%, #22CAB7 86.54%), #FFFFFF',
+    bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/eth.png'),
+    bannerGif: staticFilesRuntimeUrl('/static/img/tokens/eth.gif'),
+    tags: [],
+  },
   {
     symbol: 'ETH',
     precision: 18,
@@ -32,7 +97,7 @@ export const tokens = [
     icon: 'ether',
     iconCircle: 'ether_circle_color',
     iconColor: 'ether_color',
-    ticker: 'eth-ethereum',
+    coinpaprikaTicker: 'eth-ethereum',
     coinbaseTicker: 'eth-usdc',
     color: '#667FE3',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
@@ -65,7 +130,7 @@ export const tokens = [
     icon: 'wbtc',
     iconCircle: 'wbtc_circle_color',
     iconColor: 'wbtc_circle_color',
-    ticker: 'wbtc-wrapped-bitcoin',
+    coinpaprikaTicker: 'wbtc-wrapped-bitcoin',
     color: '#f09242',
     background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wbtc.png'),
@@ -84,7 +149,7 @@ export const tokens = [
     icon: 'renbtc',
     iconCircle: 'renbtc_circle_color',
     iconColor: 'renbtc_circle_color',
-    ticker: 'renbtc-renbtc',
+    coinpaprikaTicker: 'renbtc-renbtc',
     color: '#838489',
     background: 'linear-gradient(160.47deg, #F1F5F5 0.35%, #E5E7E8 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/renBTC.png'),
@@ -129,6 +194,7 @@ export const tokens = [
     iconCircle: 'mana_circle_color',
     iconColor: 'mana_color',
     color: '#f05',
+    coinbaseTicker: 'MANA-USD',
     background: 'linear-gradient(160.26deg, #FFEAEA 5.25%, #FFF5EA 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/mana.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/mana.gif'),
@@ -199,6 +265,7 @@ export const tokens = [
     iconCircle: 'chainlink_circle_color',
     iconColor: 'chainlink_color',
     color: '#375bd2',
+    coinbaseTicker: 'LINK-USD',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/link.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/link.gif'),
@@ -213,6 +280,7 @@ export const tokens = [
     iconCircle: 'gemini_circle_color',
     iconColor: 'gemini_color',
     color: '#25ddfb',
+    coinpaprikaTicker: 'gusd-gemini-dollar',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/gusd.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/gusd.gif'),
@@ -242,7 +310,7 @@ export const tokens = [
     icon: 'usdc',
     iconCircle: 'usdc_circle_color',
     iconColor: 'usdc_circle_color',
-    ticker: 'usdc-usd-coin',
+    coinpaprikaTicker: 'usdc-usd-coin',
     color: '#2775ca',
     background: 'linear-gradient(152.45deg, #0666CE 8.53%, #61A9F8 91.7%)',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/usdc.png'),
@@ -273,6 +341,7 @@ export const tokens = [
     icon: 'usdc',
     iconCircle: 'yfi_circle_color',
     iconColor: 'yfi_circle_color',
+    coinbaseTicker: 'YFI-USD',
     color: '#0657f9',
     background: 'linear-gradient(160.47deg, #E0E8F5 0.35%, #F0FBFD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/yfi.png'),
@@ -289,6 +358,7 @@ export const tokens = [
     iconCircle: 'uni_circle_color',
     iconColor: 'uni_circle_color',
     color: '#ff077d',
+    coinbaseTicker: 'UNI-USD',
     background: 'linear-gradient(160.65deg, #FDEEF3 2.52%, #FFE6F5 101.43%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/uni_old.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/uni_old.gif'),
@@ -503,6 +573,7 @@ export const tokens = [
     iconCircle: 'matic_circle_color',
     iconColor: 'matic_circle_color',
     color: '#ff077d',
+    coinbaseTicker: 'MATIC-USD',
     background: 'linear-gradient(160.47deg, #F0F3FD 0.35%, #FCF0FD 99.18%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/matic.png'),
     bannerGif: staticFilesRuntimeUrl('/static/img/tokens/matic.gif'),
@@ -517,6 +588,7 @@ export const tokens = [
     icon: 'wsteth_circle_color',
     iconCircle: 'wsteth_circle_color',
     iconColor: 'wsteth_circle_color',
+    coinGeckoTicker: 'wrapped-steth',
     color: '#ff077d',
     background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
     bannerIcon: staticFilesRuntimeUrl('/static/img/tokens/wstETH.png'),
@@ -533,7 +605,7 @@ export const tokens = [
     icon: 'dai',
     iconCircle: 'dai_circle_color',
     iconColor: 'dai_color',
-    ticker: 'dai-dai',
+    coinpaprikaTicker: 'dai-dai',
     coinbaseTicker: 'dai-usdc',
     color: '#fdc134',
     bannerIcon: '',
@@ -588,18 +660,26 @@ export const ETH_TOKENS = tokens
 
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
-export const ALLOWED_AUTOMATION_ILKS = [
-  'ETH-A',
-  'ETH-B',
-  'ETH-C',
-  'WBTC-A',
-  'WBTC-B',
-  'WBTC-C',
-  'WSTETH-A',
-  'WSTETH-C',
-  'RENBTC-A',
-  'YFI-A',
-  'UNI-A',
-  'LINK-A',
-  'MANA-A',
-]
+const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {
+  main: [
+    'ETH-A',
+    'ETH-B',
+    'ETH-C',
+    'WBTC-A',
+    'WBTC-B',
+    'WBTC-C',
+    'WSTETH-A',
+    'WSTETH-C',
+    'RENBTC-A',
+    'YFI-A',
+    'UNI-A',
+    'LINK-A',
+    'MANA-A',
+  ],
+  goerli: ['ETH-A', 'ETH-B', 'ETH-C', 'WSTETH-A', 'WBTC-A', 'WBTC-B', 'WBTC-C'],
+}
+
+export function isSupportedAutomationIlk(network: string, ilk: string) {
+  const key = network in ALLOWED_AUTOMATION_ILKS ? network : 'main'
+  return ALLOWED_AUTOMATION_ILKS[key].includes(ilk)
+}

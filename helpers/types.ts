@@ -51,8 +51,10 @@ export type FixedSizeArray<T, N extends number> = N extends 0
   : N extends 1
   ? [T]
   : GrowExp<[T, T], N, [[T]]>
+
 export type TxError = {
   name: string
+  message?: string
 }
 
 export type Abi = Omit<AbiItem, 'type' | 'stateMutability' | 'inputs'> & {

@@ -1,5 +1,6 @@
 export type VaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
+  | 'depositDaiAmountExceedsDaiBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
@@ -9,6 +10,7 @@ export type VaultErrorMessage =
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
+  | 'insufficientEthFundsForTx'
   | 'exchangeError'
   | 'withdrawAmountExceedsFreeCollateral'
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
@@ -28,6 +30,7 @@ export type VaultErrorMessage =
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
+  | 'stopLossOnNearLiquidationRatio'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -35,6 +38,7 @@ interface ErrorMessagesHandler {
   exchangeError?: boolean
   generateAmountMoreThanMaxFlashAmount?: boolean
   ledgerWalletContractDataDisabled?: boolean
+  insufficientEthFundsForTx?: boolean
   depositingAllEthBalance?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateral?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice?: boolean
@@ -50,6 +54,7 @@ interface ErrorMessagesHandler {
   customDaiAllowanceAmountExceedsMaxUint256?: boolean
   customDaiAllowanceAmountLessThanPaybackAmount?: boolean
   depositAmountExceedsCollateralBalance?: boolean
+  depositDaiAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsVaultDebt?: boolean
   withdrawCollateralOnVaultUnderDebtFloor?: boolean
@@ -58,6 +63,7 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
+  stopLossOnNearLiquidationRatio?: boolean
 }
 
 export function errorMessagesHandler({
@@ -66,6 +72,7 @@ export function errorMessagesHandler({
   exchangeError,
   generateAmountMoreThanMaxFlashAmount,
   ledgerWalletContractDataDisabled,
+  insufficientEthFundsForTx,
   depositingAllEthBalance,
   generateAmountExceedsDaiYieldFromDepositingCollateral,
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
@@ -81,6 +88,7 @@ export function errorMessagesHandler({
   customDaiAllowanceAmountExceedsMaxUint256,
   customDaiAllowanceAmountLessThanPaybackAmount,
   depositAmountExceedsCollateralBalance,
+  depositDaiAmountExceedsDaiBalance,
   paybackAmountExceedsDaiBalance,
   paybackAmountExceedsVaultDebt,
   withdrawCollateralOnVaultUnderDebtFloor,
@@ -89,11 +97,16 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
+  stopLossOnNearLiquidationRatio,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
   if (depositAmountExceedsCollateralBalance) {
     errorMessages.push('depositAmountExceedsCollateralBalance')
+  }
+
+  if (depositDaiAmountExceedsDaiBalance) {
+    errorMessages.push('depositDaiAmountExceedsDaiBalance')
   }
 
   if (generateAmountLessThanDebtFloor) {
@@ -202,6 +215,14 @@ export function errorMessagesHandler({
 
   if (afterCollRatioBelowStopLossRatio) {
     errorMessages.push('afterCollRatioBelowStopLossRatio')
+  }
+
+  if (insufficientEthFundsForTx) {
+    errorMessages.push('insufficientEthFundsForTx')
+  }
+
+  if (stopLossOnNearLiquidationRatio) {
+    errorMessages.push('stopLossOnNearLiquidationRatio')
   }
 
   return errorMessages

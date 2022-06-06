@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
-import { Context, every10Seconds$ } from 'blockchain/network'
+import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
 import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
-import { ajax } from 'rxjs/ajax'
+import { ajax, AjaxResponse } from 'rxjs/ajax'
 import {
   catchError,
   distinctUntilChanged,
@@ -82,37 +82,98 @@ export function createGasPrice$(
   )
 }
 
-const tradingTokens = ['DAI', 'ETH']
+type CoinbaseOrderBook = {
+  bids: [string][]
+  asks: [string][]
+}
 
-export const tokenPricesInUSD$: Observable<Ticker> = every10Seconds$.pipe(
-  switchMap(() =>
-    forkJoin(
-      tradingTokens.map((token) =>
-        ajax({
-          url: `https://api.pro.coinbase.com/products/${getToken(token).coinbaseTicker}/book`,
-          method: 'GET',
-          headers: {
-            Accept: 'application/json',
-          },
-        }).pipe(
-          map(({ response }) => {
-            const bid = new BigNumber(response.bids[0][0])
-            const ask = new BigNumber(response.asks[0][0])
-            return {
-              [token]: bid.plus(ask).div(2),
-            }
-          }),
-          catchError((error) => {
-            console.log(error)
+export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['response']> {
+  return ajax({
+    url: `https://api.pro.coinbase.com/products/${ticker}/book`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(map(({ response }) => response))
+}
+
+export function coinPaprikaTicker$(ticker: string): Observable<BigNumber> {
+  return ajax({
+    url: `https://api.coinpaprika.com/v1/tickers/${ticker}`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(map(({ response }) => new BigNumber(response.quotes.USD.price)))
+}
+
+export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
+  return ajax({
+    url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  }).pipe(map(({ response }) => new BigNumber(response[ticker].usd)))
+}
+
+export function createTokenPriceInUSD$(
+  every10Seconds$: Observable<any>,
+  coinbaseOrderBook$: (ticker: string) => Observable<CoinbaseOrderBook>,
+  coinpaprikaTicker$: (ticker: string) => Observable<BigNumber>,
+  coinGeckoTicker$: (ticker: string) => Observable<BigNumber>,
+  tokens: Array<string>,
+): Observable<Ticker> {
+  return every10Seconds$.pipe(
+    switchMap(() =>
+      forkJoin(
+        tokens.map((token) => {
+          const { coinbaseTicker, coinpaprikaTicker, coinGeckoTicker } = getToken(token)
+          if (coinbaseTicker) {
+            return coinbaseOrderBook$(coinbaseTicker).pipe(
+              map((response) => {
+                const bid = new BigNumber(response.bids[0][0])
+                const ask = new BigNumber(response.asks[0][0])
+                return {
+                  [token]: bid.plus(ask).div(2),
+                }
+              }),
+              catchError((error) => {
+                console.log(error)
+                return of({})
+              }),
+            )
+          } else if (coinpaprikaTicker) {
+            return coinpaprikaTicker$(coinpaprikaTicker).pipe(
+              map((price) => ({
+                [token]: price,
+              })),
+              catchError((error) => {
+                console.log(error)
+                return of({})
+              }),
+            )
+          } else if (coinGeckoTicker) {
+            return coinGeckoTicker$(coinGeckoTicker).pipe(
+              map((price) => ({
+                [token]: price,
+              })),
+              catchError((error) => {
+                console.log(error)
+                return of({})
+              }),
+            )
+          } else {
+            console.log(`could not find price for ${token} - no ticker configured`)
             return of({})
-          }),
-        ),
+          }
+        }),
       ),
     ),
-  ),
-  map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
-  shareReplay(1),
-)
+    map((prices) => prices.reduce((a, e) => ({ ...a, ...e }))),
+    shareReplay(1),
+  )
+}
 
 export interface OraclePriceData {
   currentPrice: BigNumber

@@ -1,4 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
+import { formatCryptoBalance } from 'helpers/formatters/format'
+import { ProductCardData, productCardsConfig } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Button, Card, Flex, Heading, Image, Spinner, Text } from 'theme-ui'
@@ -7,6 +10,7 @@ import { useWindowSize } from '../helpers/useWindowSize'
 import { fadeInAnimation } from '../theme/animations'
 import { FloatingLabel } from './FloatingLabel'
 import { AppLink } from './Links'
+import { WithArrow } from './WithArrow'
 
 function InactiveCard() {
   return (
@@ -70,6 +74,22 @@ interface ProductCardBannerProps {
   description: string
 }
 
+export function ProductCardProtocolLink({ ilk }: Partial<ProductCardData>) {
+  const { link, name } = productCardsConfig.descriptionLinks[ilk!] ?? {
+    link: `https://makerburn.com/#/collateral/${ilk}`,
+    ilk,
+  }
+  return (
+    <Box sx={{ paddingRight: '10px' }}>
+      <AppLink href={link}>
+        <WithArrow variant="styles.a" gap="1">
+          {name}
+        </WithArrow>
+      </AppLink>
+    </Box>
+  )
+}
+
 function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   const dataContainer = useRef<HTMLDivElement>(null)
   const [contentHeight, setContentHeight] = useState(0)
@@ -82,13 +102,13 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   }, [size, description])
 
   return (
-    <Box sx={{ position: 'relative', pb: '24px' }}>
+    <Box sx={{ position: 'relative' }}>
       <Card
         opacity={0.7}
         sx={{
           mixBlendMode: 'overlay',
           backgroundColor: 'black',
-          minHeight: contentHeight > 100 ? '140px' : contentHeight > 75 ? '116px' : '88px',
+          minHeight: contentHeight > 100 ? '140px' : '116px',
           border: 'unset',
         }}
       />
@@ -97,7 +117,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           zIndex: 2,
           position: 'absolute',
           mixBlendMode: 'normal',
-          top: '19px',
+          top: `calc(50% - ${contentHeight / 2}px)`,
           left: '50%',
           transform: 'translateX(-50%)',
           width: 'calc(100% - 32px)',
@@ -116,19 +136,73 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
   )
 }
 
+interface ProductCardHeadingProps {
+  title: string
+  description: string
+  tokenImage: string
+  tokenGif: string
+  isHover: boolean
+}
+
+function ProductCardHeading({
+  title,
+  description,
+  tokenImage,
+  tokenGif,
+  isHover,
+}: ProductCardHeadingProps) {
+  const dataContainer = useRef<HTMLDivElement>(null)
+  const [contentHeight, setContentHeight] = useState(0)
+  const size = useWindowSize()
+
+  useEffect(() => {
+    if (dataContainer.current) {
+      const height = dataContainer.current.getBoundingClientRect().height
+      setContentHeight(height)
+    }
+  }, [size, description])
+
+  return (
+    <Box sx={{ minHeight: contentHeight > 170 ? '200px' : '164px' }}>
+      <Flex
+        sx={{
+          flexDirection: 'row',
+          pb: 2,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Flex sx={{ flexDirection: 'column', gap: 1 }} ref={dataContainer}>
+          <Heading variant="paragraph1" as="h3" sx={{ textAlign: 'left', fontWeight: 'semiBold' }}>
+            {title}
+          </Heading>
+          <Text
+            sx={{ color: 'text.subtitle', pb: '12px', fontSize: '14px', textAlign: 'left' }}
+            variant="paragraph3"
+          >
+            {description}
+          </Text>
+        </Flex>
+        <Box sx={{ minWidth: '146px', flexGrow: 1 }}>
+          <Image src={isHover ? tokenGif : tokenImage} sx={{ height: '146px', width: '146px' }} />
+        </Box>
+      </Flex>
+    </Box>
+  )
+}
+
 export interface ProductCardProps {
   tokenImage: string
   tokenGif: string
   title: string
   description: string
   banner: { title: string; description: string }
-  leftSlot: { title: string; value: ReactNode }
-  rightSlot: { title: string; value: ReactNode }
   button: { link: string; text: string }
   background: string
   isFull: boolean
   floatingLabelText?: string
   inactive?: boolean
+  labels?: { title: string; value: ReactNode }[]
 }
 
 export function ProductCard({
@@ -137,13 +211,12 @@ export function ProductCard({
   title,
   description,
   banner,
-  leftSlot,
-  rightSlot,
   button,
   background,
   isFull,
   floatingLabelText,
   inactive,
+  labels,
 }: ProductCardProps) {
   const [hover, setHover] = useState(false)
   const [clicked, setClicked] = useState(false)
@@ -175,92 +248,109 @@ export function ProductCard({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Flex sx={{ flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+        <Flex
+          sx={{ flexDirection: 'column', justifyContent: 'flex-start', gap: 4, height: '100%' }}
+        >
           <Box>
             {floatingLabelText && (
               <FloatingLabel text={floatingLabelText} flexSx={{ top: 4, right: '-16px' }} />
             )}
-            <Flex sx={{ flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-              <Image src={hover ? tokenGif : tokenImage} sx={{ height: '200px' }} />
-              <Heading
-                variant="header2"
-                as="h3"
-                sx={{ fontSize: '28px', pb: 3, textAlign: 'center', fontWeight: 'semiBold' }}
-              >
-                {title}
-              </Heading>
-              <Text
-                sx={{ color: 'text.subtitle', pb: '12px', fontSize: '15px', textAlign: 'center' }}
-                variant="paragraph3"
-              >
-                {description}
-              </Text>
-            </Flex>
+            <ProductCardHeading
+              tokenImage={tokenImage}
+              tokenGif={tokenGif}
+              title={title}
+              description={description}
+              isHover={hover}
+            />
             <ProductCardBanner {...banner} />
           </Box>
-          <Box>
-            <Flex sx={{ flexDirection: 'row', justifyContent: 'space-between', pb: '24px' }}>
-              <div>
-                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                  {leftSlot.title}
-                </Text>
-                <Text variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-                  {leftSlot.value}
-                </Text>
-              </div>
-              <div>
-                <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
-                  {rightSlot.title}
-                </Text>
-                <Text variant="paragraph1" sx={{ textAlign: 'right', fontWeight: 'semiBold' }}>
-                  {rightSlot.value}
-                </Text>
-              </div>
-            </Flex>
-            <Flex>
-              <AppLink
-                href={button.link}
-                disabled={isFull}
-                sx={{ width: '100%' }}
-                onClick={handleClick}
-              >
-                <Button
-                  variant="primary"
+          <Flex sx={{ flexDirection: 'column', justifyContent: 'space-around' }}>
+            {labels?.map(({ title, value }, index) => {
+              return (
+                <Flex
+                  key={`${index}-${title}`}
                   sx={{
-                    width: '100%',
-                    height: '54px',
-                    fontWeight: 'semiBold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                    backgroundColor: inactive || isFull ? '#80818A' : 'primary',
-                    '&:hover': {
-                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
-                      transition: '0.2s ease-in',
-                      backgroundColor: isFull ? '#80818A' : 'primary',
-                      cursor: isFull ? 'default' : 'pointer',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    lineHeight: '22px',
+                    pb: 2,
+                    fontSize: '14px',
+                    ':last-child': {
+                      pb: '0',
                     },
                   }}
                 >
-                  {isFull ? t('full') : !clicked ? button.text : ''}
-                  {clicked && (
-                    <Spinner
-                      variant="styles.spinner.medium"
-                      size={20}
-                      sx={{
-                        color: 'white',
-                        boxSizing: 'content-box',
-                      }}
-                    />
-                  )}
-                </Button>
-              </AppLink>
-            </Flex>
-          </Box>
+                  <Text sx={{ color: 'text.subtitle', pb: 1 }} variant="paragraph3">
+                    {title}
+                  </Text>
+                  <Text variant="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
+                    {value}
+                  </Text>
+                </Flex>
+              )
+            })}
+          </Flex>
+          <Flex>
+            <AppLink
+              href={button.link}
+              disabled={isFull}
+              sx={{ width: '100%' }}
+              onClick={handleClick}
+            >
+              <Button
+                variant="primary"
+                sx={{
+                  width: '100%',
+                  height: '54px',
+                  fontWeight: 'semiBold',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
+                  backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                  '&:hover': {
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
+                    transition: '0.2s ease-in',
+                    backgroundColor: isFull ? '#80818A' : 'primary',
+                    cursor: isFull ? 'default' : 'pointer',
+                  },
+                }}
+              >
+                {isFull ? t('full') : !clicked ? button.text : ''}
+                {clicked && (
+                  <Spinner
+                    variant="styles.spinner.medium"
+                    size={20}
+                    sx={{
+                      color: 'white',
+                      boxSizing: 'content-box',
+                    }}
+                  />
+                )}
+              </Button>
+            </AppLink>
+          </Flex>
         </Flex>
       </Card>
       {inactive && <InactiveCard />}
     </Box>
   )
+}
+
+export function calculateTokenAmount(productCardData: ProductCardData) {
+  const { currentCollateralPrice, balance, debtFloor } = productCardData
+
+  const balanceAboveDebtFloor = balance?.gt(debtFloor.div(currentCollateralPrice))
+
+  let roundedTokenAmount: BigNumber
+  if (balanceAboveDebtFloor && balance) {
+    roundedTokenAmount = new BigNumber(balance.toFixed(0, 3))
+  } else {
+    roundedTokenAmount = new BigNumber(debtFloor.div(currentCollateralPrice).toFixed(0, 3))
+  }
+
+  return {
+    tokenAmount: formatCryptoBalance(roundedTokenAmount),
+    roundedTokenAmount,
+  }
 }

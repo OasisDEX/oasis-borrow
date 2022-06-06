@@ -15,7 +15,10 @@ import {
   defaultAllowanceState,
 } from 'features/allowance/allowance'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { TxStage } from 'features/multiply/open/pipes/openMultiplyVault' // TODO: remove
+import { finalValidation } from 'features/multiply/open/pipes/openMultiplyVaultValidations'
 import {
   addProxyTransitions,
   applyIsProxyStage,
@@ -27,8 +30,12 @@ import {
 } from 'features/proxy/proxy'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
+import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { GUNI_SLIPPAGE, OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { combineTransitions } from 'helpers/pipelines/combineTransitions'
+import { TxError } from 'helpers/types'
 import { one, zero } from 'helpers/zero'
 import { combineLatest, EMPTY, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import {
@@ -43,12 +50,6 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import { combineApplyChanges } from '../../../../../helpers/pipelines/combineApply'
-import { combineTransitions } from '../../../../../helpers/pipelines/combineTransitions'
-import { TxError } from '../../../../../helpers/types'
-import { VaultErrorMessage } from '../../../../form/errorMessagesHandler'
-import { VaultWarningMessage } from '../../../../form/warningMessagesHandler'
-import { slippageChange$, UserSettingsState } from '../../../../userSettings/userSettings'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
@@ -197,6 +198,7 @@ export type OpenGuniVaultState = OverrideHelper &
     requiredDebt?: BigNumber
     currentPnL: BigNumber
     totalGasSpentUSD: BigNumber
+    id?: BigNumber
   } & HasGasEstimation
 
 interface GuniCalculations {
@@ -549,6 +551,7 @@ export function createOpenGuniVault$(
                       map(validateGuniErrors),
                       map(validateGuniWarnings),
                       switchMap(curry(applyGuniEstimateGas)(addGasEstimation$)),
+                      map(finalValidation),
                       //   map(
                       //     curry(addTransitions)(txHelpers, context, connectedProxyAddress$, change),
                       //   ),

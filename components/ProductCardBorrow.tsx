@@ -5,14 +5,29 @@ import React from 'react'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
 import { ProductCardData, productCardsConfig } from '../helpers/productCards'
 import { roundToThousand } from '../helpers/roundToThousand'
-import { one } from '../helpers/zero'
-import { ProductCard } from './ProductCard'
+import { one, zero } from '../helpers/zero'
+import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
 
-function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNumber) {
+function personaliseCardData({
+  productCardData,
+  singleTokenMaxBorrow,
+}: {
+  productCardData: ProductCardData
+  singleTokenMaxBorrow: BigNumber
+}) {
+  const { roundedTokenAmount } = calculateTokenAmount(productCardData)
+
+  return {
+    ...calculateTokenAmount(productCardData),
+    maxBorrow: formatCryptoBalance(
+      roundToThousand(roundedTokenAmount.multipliedBy(singleTokenMaxBorrow)),
+    ),
+  }
+}
+
+function makeCardData(singleTokenMaxBorrow: BigNumber) {
   const maxBorrowDisplayAmount = new BigNumber(250000)
   const minBorrowDisplayAmount = new BigNumber(150000)
-
-  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
 
   if (singleTokenMaxBorrow.gt(maxBorrowDisplayAmount)) {
     const tokenAmount = maxBorrowDisplayAmount.div(singleTokenMaxBorrow)
@@ -48,23 +63,34 @@ function bannerValues(liquidationRatio: BigNumber, currentCollateralPrice: BigNu
   }
 }
 
+function bannerValues(props: ProductCardData) {
+  const { liquidationRatio, currentCollateralPrice, balance } = props
+
+  const singleTokenMaxBorrow = one.div(liquidationRatio).multipliedBy(currentCollateralPrice)
+
+  if (balance?.gt(zero)) {
+    return personaliseCardData({ productCardData: props, singleTokenMaxBorrow })
+  }
+
+  return makeCardData(singleTokenMaxBorrow)
+}
+
 export function ProductCardBorrow(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const { maxBorrow, tokenAmount } = bannerValues(
-    cardData.liquidationRatio,
-    cardData.currentCollateralPrice,
-  )
+  const { maxBorrow, tokenAmount } = bannerValues(cardData)
 
   const tagKey = productCardsConfig.borrow.tags[cardData.ilk]
+
+  const title = t(`product-card-title.${cardData.ilk}`)
 
   return (
     <ProductCard
       key={cardData.ilk}
       tokenImage={cardData.bannerIcon}
       tokenGif={cardData.bannerGif}
-      title={cardData.ilk}
+      title={title}
       description={t(`product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`, {
         token: cardData.token,
       })}
@@ -77,16 +103,26 @@ export function ProductCardBorrow(props: { cardData: ProductCardData }) {
           value: maxBorrow,
         }),
       }}
-      leftSlot={{
-        title: t('system.min-coll-ratio'),
-        value: `${formatPercent(cardData.liquidationRatio.times(100), {
-          precision: 2,
-        })}`,
-      }}
-      rightSlot={{
-        title: t(t('system.variable-annual-fee')),
-        value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
-      }}
+      labels={[
+        {
+          title: t('system.min-coll-ratio'),
+          value: `${formatPercent(cardData.liquidationRatio.times(100), {
+            precision: 2,
+          })}`,
+        },
+        {
+          title: t('system.liquidity-available'),
+          value: `${formatCryptoBalance(cardData.liquidityAvailable)}`,
+        },
+        {
+          title: t('system.variable-annual-fee'),
+          value: formatPercent(cardData.stabilityFee.times(100), { precision: 2 }),
+        },
+        {
+          title: t('system.protocol'),
+          value: <ProductCardProtocolLink {...cardData}></ProductCardProtocolLink>,
+        },
+      ]}
       button={{ link: `/vaults/open/${cardData.ilk}`, text: t('nav.borrow') }}
       background={cardData.background}
       inactive={productCardsConfig.borrow.inactiveIlks.includes(cardData.ilk)}

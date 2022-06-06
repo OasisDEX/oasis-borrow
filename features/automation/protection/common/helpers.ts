@@ -1,16 +1,11 @@
 import BigNumber from 'bignumber.js'
-
-export function getInitialVaultCollRatio({
-  liquidationRatio,
-  collateralizationRatio,
-}: {
-  liquidationRatio: BigNumber
-  collateralizationRatio: BigNumber
-}) {
-  return new BigNumber(
-    liquidationRatio.plus(collateralizationRatio).dividedBy(2).toFixed(2, BigNumber.ROUND_CEIL),
-  )
-}
+import { UIChanges } from 'components/AppContext'
+import { VaultViewMode } from 'components/VaultTabSwitch'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
@@ -24,9 +19,16 @@ export function getIsEditingProtection({
   selectedSLValue: BigNumber
   startingSlRatio: BigNumber
   stopLossLevel: BigNumber
-  collateralActive: boolean
-  isToCollateral: boolean
+  collateralActive?: boolean
+  isToCollateral?: boolean
 }) {
+  if (
+    (collateralActive === undefined && isToCollateral === undefined) ||
+    selectedSLValue.isZero()
+  ) {
+    return false
+  }
+
   return (
     (!isStopLossEnabled && !selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
@@ -44,4 +46,15 @@ export function getStartingSlRatio({
   initialVaultCollRatio: BigNumber
 }) {
   return isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
+}
+
+export function backToVaultOverview(uiChanges: UIChanges) {
+  uiChanges.publish(TAB_CHANGE_SUBJECT, {
+    type: 'change-tab',
+    currentMode: VaultViewMode.Overview,
+  })
+  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+    currentMode: AutomationFromKind.ADJUST,
+    type: 'change-mode',
+  })
 }

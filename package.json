@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "3.16.0",
+  "version": "4.4.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
@@ -30,7 +30,7 @@
     "typechain:generate:web3": "typechain --target=web3-v1 'blockchain/abi/*.json'",
     "typechain:generate:ethers": "typechain --target=ethers-v5 'blockchain/abi/*.json'",
     "postinstall": "rm -f node_modules/web3/index.d.ts && yarn prisma:generate && yarn patch-package && yarn typechain:generate",
-    "storybook": "start-storybook -p 6006 -s ./public",
+    "storybook": "start-storybook -p 6006",
     "build:storybook": "build-storybook",
     "publish:storybook": "storybook-to-aws-s3",
     "release": "release-it"
@@ -47,11 +47,11 @@
     "@next/mdx": "^12.0.4",
     "@oasisdex/automation": "^1.0.6",
     "@oasisdex/connectors": "^0.1.0",
-    "@oasisdex/multiply": "0.2.5-alpha.6",
+    "@oasisdex/multiply": "^0.2.8",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
-    "@prisma/client": "^3.9.1",
+    "@prisma/client": "^3.14.0",
     "@sentry/nextjs": "^6.17.7",
     "@storybook/storybook-deployer": "^2.8.10",
     "@theme-ui/style-guide": "^0.3.5",
@@ -212,7 +212,7 @@
     "node-sass": "^6.0.1",
     "patch-package": "^6.2.2",
     "prettier": "^2.0.1",
-    "prisma": "^3.9.1",
+    "prisma": "^3.14.0",
     "react-i18next": "^11.16.2",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",

@@ -21,6 +21,10 @@ interface DaiAllowancePaybackChange {
   kind: 'daiAllowanceAsPaybackAmount'
 }
 
+interface DaiAllowanceDaiAmountChange {
+  kind: 'daiAllowanceAsDepositDaiAmount'
+}
+
 interface DaiAllowanceReset {
   kind: 'daiAllowanceReset'
 }
@@ -46,6 +50,7 @@ export type ManageVaultAllowanceChange =
   | DaiAllowanceChange
   | DaiAllowanceUnlimitedChange
   | DaiAllowancePaybackChange
+  | DaiAllowanceDaiAmountChange
   | DaiAllowanceReset
   | CollateralAllowanceChange
   | CollateralAllowanceUnlimitedChange
@@ -104,8 +109,20 @@ export function applyManageVaultAllowance(
     } = state
     return {
       ...state,
-      selectedDaiAllowanceRadio: 'paybackAmount',
+      selectedDaiAllowanceRadio: 'actionAmount',
       daiAllowanceAmount: paybackAmount!.plus(debtOffset),
+    }
+  }
+
+  if (change.kind === 'daiAllowanceAsDepositDaiAmount') {
+    const {
+      depositDaiAmount,
+      vault: { debtOffset },
+    } = state
+    return {
+      ...state,
+      selectedDaiAllowanceRadio: 'actionAmount',
+      daiAllowanceAmount: depositDaiAmount!.plus(debtOffset),
     }
   }
 
