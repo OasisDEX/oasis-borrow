@@ -314,12 +314,9 @@ export function AdjustSlFormLayout({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
-  dynamicStopLossPrice,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-  console.log('vault.debt')
-  console.log(vault.debt.toFixed())
 
   return (
     <Grid columns={[1]}>
@@ -328,22 +325,27 @@ export function AdjustSlFormLayout({
         txSuccess={txState === TxStatus.Success}
         translations={{
           editing: {
-            header: !vault.debt.isZero() ? t('protection.set-downside-protection') : t('protection.closed-vault-existing-sl-header'),
-            description: stopLossWriteEnabled || vault.debt.isZero() ? (
-              !vault.debt.isZero() ? (
-              <>
-                {t('protection.set-downside-protection-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-                  {t('here')}.
-                </AppLink>
-              </>
-              ) :
-              <>
-              {t('protection.closed-vault-existing-sl-description')}
-              </>
-            ) : (
-              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
-            ),
+            header: !vault.debt.isZero()
+              ? t('protection.set-downside-protection')
+              : t('protection.closed-vault-existing-sl-header'),
+            description:
+              stopLossWriteEnabled || vault.debt.isZero() ? (
+                !vault.debt.isZero() ? (
+                  <>
+                    {t('protection.set-downside-protection-desc')}{' '}
+                    <AppLink
+                      href="https://kb.oasis.app/help/stop-loss-protection"
+                      sx={{ fontSize: 2 }}
+                    >
+                      {t('here')}.
+                    </AppLink>
+                  </>
+                ) : (
+                  <>{t('protection.closed-vault-existing-sl-description')}</>
+                )
+              ) : (
+                "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+              ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -363,7 +365,7 @@ export function AdjustSlFormLayout({
                 </AppLink>
               </>
             ),
-          }
+          },
         }}
       />
       {txProgressing && <OpenVaultAnimation />}
