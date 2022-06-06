@@ -8,6 +8,24 @@ import { Text } from 'theme-ui'
 
 import { AdjustSlFormLayoutProps, SetDownsideProtectionInformation } from '../AdjustSlFormLayout'
 
+export type SidebarAdjustStopLossEditingStageProps = Pick<
+  AdjustSlFormLayoutProps,
+  | 'token'
+  | 'txError'
+  | 'slValuePickerConfig'
+  | 'closePickerConfig'
+  | 'tokenPrice'
+  | 'ethPrice'
+  | 'vault'
+  | 'ilkData'
+  | 'gasEstimation'
+  | 'selectedSLValue'
+  | 'isEditing'
+  | 'collateralizationRatioAtNextPrice'
+  | 'ethBalance'
+  | 'gasEstimationUsd'
+>
+
 export function SidebarAdjustStopLossEditingStage({
   token,
   txError,
@@ -23,7 +41,7 @@ export function SidebarAdjustStopLossEditingStage({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
-}: AdjustSlFormLayoutProps) {
+}: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
   return (

@@ -5,7 +5,9 @@ import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaul
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { getDataForStopLoss } from 'features/borrow/open/pipes/openVaultStopLoss'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -50,6 +52,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     stage,
     token,
     totalSteps,
+    stopLossLevel,
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
@@ -58,13 +61,14 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
+  const stopLossData = getDataForStopLoss(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isStopLossEditingStage && <>STOP LOSS BRO</>}
+        {isStopLossEditingStage && <SidebarAdjustStopLossEditingStage {...stopLossData} />}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
@@ -81,7 +85,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
-      disabled: !canProgress,
+      disabled: !canProgress || (isStopLossEditingStage && stopLossLevel.isZero()),
       isLoading: isLoadingStage,
       action: () => {
         if (!isSuccessStage) progress!()

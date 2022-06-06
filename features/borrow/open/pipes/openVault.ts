@@ -11,12 +11,18 @@ import { ContextConnected } from 'blockchain/network'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { setAllowance } from 'features/allowance/setAllowance'
+import {
+  applyOpenVaultStopLoss,
+  OpenVaultStopLossChanges,
+} from 'features/borrow/open/pipes/openVaultStopLoss'
+import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { combineApplyChanges } from 'helpers/pipelines/combineApply'
 import { TxError } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap } from 'rxjs/operators'
@@ -82,6 +88,7 @@ export type OpenVaultChange =
   | ProxyChanges
   | OpenVaultEnvironmentChange
   | OpenVaultInjectedOverrideChange
+  | OpenVaultStopLossChanges
 
 export type OpenVaultStage =
   | 'editing'
@@ -153,6 +160,14 @@ interface OpenVaultTxInfo {
   safeConfirmations: number
 }
 
+interface OpenVaultStopLossSetup {
+  withStopLossStage: boolean
+  setStopLossCloseType: (type: CloseVaultTo) => void
+  setStopLossLevel: (level: BigNumber) => void
+  stopLossCloseType: CloseVaultTo
+  stopLossLevel: BigNumber
+}
+
 export type OpenVaultState = MutableOpenVaultState &
   OpenVaultCalculations &
   OpenVaultFunctions &
@@ -164,8 +179,8 @@ export type OpenVaultState = MutableOpenVaultState &
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
-    withStopLossStage: boolean
-  } & HasGasEstimation
+  } & OpenVaultStopLossSetup &
+  HasGasEstimation
 
 function addTransitions(
   txHelpers: TxHelpers,
@@ -344,18 +359,19 @@ export function createOpenVault$(
                       ? isSupportedAutomationIlk(network, ilk)
                       : false
 
-                    const totalSteps = calculateInitialTotalSteps(
-                      proxyAddress,
-                      token,
-                      allowance,
-                      withStopLossStage,
-                    )
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
 
                     const initialState: OpenVaultState = {
                       ...defaultMutableOpenVaultState,
                       ...defaultOpenVaultStateCalculations,
                       ...defaultOpenVaultConditions,
                       withStopLossStage,
+                      setStopLossCloseType: (type: 'collateral' | 'dai') =>
+                        change({ kind: 'stopLossCloseType', type }),
+                      setStopLossLevel: (level: BigNumber) =>
+                        change({ kind: 'stopLossLevel', level }),
+                      stopLossCloseType: 'dai',
+                      stopLossLevel: zero,
                       priceInfo,
                       balanceInfo,
                       ilkData,
@@ -379,6 +395,7 @@ export function createOpenVault$(
                     const apply = combineApplyChanges<OpenVaultState, OpenVaultChange>(
                       applyOpenVaultInput,
                       applyOpenVaultForm,
+                      applyOpenVaultStopLoss,
                       createApplyOpenVaultTransition<
                         OpenVaultState,
                         MutableOpenVaultState,

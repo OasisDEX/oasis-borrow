@@ -10,14 +10,12 @@ import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UIType
 export function getIsEditingProtection({
   isStopLossEnabled,
   selectedSLValue,
-  startingSlRatio,
   stopLossLevel,
   collateralActive,
   isToCollateral,
 }: {
   isStopLossEnabled: boolean
   selectedSLValue: BigNumber
-  startingSlRatio: BigNumber
   stopLossLevel: BigNumber
   collateralActive?: boolean
   isToCollateral?: boolean
@@ -30,7 +28,6 @@ export function getIsEditingProtection({
   }
 
   return (
-    (!isStopLossEnabled && !selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
     collateralActive !== isToCollateral
   )

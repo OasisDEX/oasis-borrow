@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 
 import {
@@ -29,7 +30,6 @@ export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
   token: string,
   allowance: BigNumber | undefined | 'skip',
-  withStopLoss: boolean = false,
 ) {
   let totalSteps = 2
 
@@ -43,21 +43,39 @@ export function calculateInitialTotalSteps(
     }
   }
 
-  if (withStopLoss) {
-    totalSteps += 1
-  }
-
   return totalSteps
 }
 
 export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
-  const { stage, token, depositAmount, allowance } = state
+  const {
+    stage,
+    token,
+    depositAmount,
+    allowance,
+    generateAmount,
+    withStopLossStage,
+    proxyAddress,
+  } = state
   const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
   const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
 
   const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+  const checkIfStopLossAndGenerate = !!(withStopLossStage && generateAmount?.gt(zero))
 
-  const totalSteps = !hasAllowance && state.totalSteps === 2 ? 3 : state.totalSteps
+  const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
+
+  const totalSteps = !stopLossOpenFlowEnabled
+    ? !hasAllowance && state.totalSteps === 2
+      ? 3
+      : state.totalSteps
+    : (!hasAllowance && state.totalSteps === 2) ||
+      (checkIfStopLossAndGenerate && state.totalSteps === 2)
+    ? 3
+    : !checkIfStopLossAndGenerate && state.totalSteps === 3
+    ? 2
+    : proxyAddress && hasAllowance && state.totalSteps === 4
+    ? 2
+    : state.totalSteps
 
   switch (stage) {
     case 'editing':

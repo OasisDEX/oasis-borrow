@@ -21,8 +21,8 @@ import {
   AddFormChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -58,7 +58,7 @@ interface CancelSlFormControlProps {
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   collateralizationRatioAtNextPrice: BigNumber
   tx?: TxHelpers
@@ -70,7 +70,7 @@ export function CancelSlFormControl({
   ctx,
   toggleForms,
   accountIsController,
-  collateralPrices,
+  priceInfo,
   balanceInfo,
   ilkData,
   collateralizationRatioAtNextPrice,
@@ -118,7 +118,9 @@ export function CancelSlFormControl({
               : zero
             const totalCost =
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
+                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
+                    priceInfo.currentCollateralPrice,
+                  )
                 : zero
 
             uiChanges.publish(REMOVE_FORM_CHANGE, {
@@ -168,8 +170,6 @@ export function CancelSlFormControl({
   const isProgressDisabled = !!(!isOwner || isProgressStage)
 
   const { token } = vault
-  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
-  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
   const etherscan = ctx.etherscan.url
 
   const gasEstimationUsd =
@@ -177,7 +177,7 @@ export function CancelSlFormControl({
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
-    tokenPrice,
+    tokenPrice: priceInfo.currentCollateralPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: uiState?.txDetails?.txStatus,
     txHash: uiState?.txDetails?.txHash,
@@ -188,7 +188,7 @@ export function CancelSlFormControl({
     actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
-    ethPrice,
+    ethPrice: priceInfo.currentEthPrice,
     ethBalance: balanceInfo.ethBalance,
     stage,
     token,
