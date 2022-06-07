@@ -17,8 +17,14 @@ export const Positions = () => {
       variable: '1.1%',
       automationEnabled: true,
       protectionAmount: '155%',
-      onEditClick: () => alert('Editing vault 3290'),
-      onAutomationClick: () => alert('Disabling automation for vault 3290'),
+      editLinkProps: {
+        href: '',
+        onClick: () => alert('Editing vault 3290'),
+      },
+      automationLinkProps: {
+        href: '',
+        onClick: () => alert('Disabling automation for vault 3290'),
+      },
     },
     {
       type: 'borrow' as const,
@@ -31,8 +37,14 @@ export const Positions = () => {
       collateralLocked: '754.33 GUI...',
       variable: '1.1%',
       automationEnabled: false,
-      onEditClick: () => alert('Editing vault 3291'),
-      onAutomationClick: () => alert('Enabling automation for vault 3291'),
+      editLinkProps: {
+        href: '',
+        onClick: () => alert('Editing vault 3291'),
+      },
+      automationLinkProps: {
+        href: '',
+        onClick: () => alert('Enabling automation for vault 3291'),
+      },
     },
     {
       type: 'multiply' as const,
@@ -44,8 +56,14 @@ export const Positions = () => {
       liquidationPrice: '1888.29 ETH',
       fundingCost: '1.1%',
       automationEnabled: true,
-      onEditClick: () => alert('Editing vault 3292'),
-      onAutomationClick: () => alert('Disabling automation for vault 3292'),
+      editLinkProps: {
+        href: '',
+        onClick: () => alert('Editing vault 3292'),
+      },
+      automationLinkProps: {
+        href: '',
+        onClick: () => alert('Enabling automation for vault 3292'),
+      },
     },
     {
       type: 'earn' as const,
@@ -56,7 +74,10 @@ export const Positions = () => {
       pnl: '+ $100k',
       sevenDayYield: '11.29%',
       liquidity: '11.2m DAI',
-      onEditClick: () => alert('Editing vault 3293'),
+      editLinkProps: {
+        href: '',
+        onClick: () => alert('Editing vault 3293'),
+      },
     },
   ]
 

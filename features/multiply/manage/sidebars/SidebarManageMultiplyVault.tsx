@@ -1,11 +1,15 @@
 import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
+import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
+import { SidebarVaultSLTriggered } from 'components/vault/sidebar/SidebarVaultSLTriggered'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
+import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { getTextButtonLabel } from 'features/sidebar/getTextButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
@@ -16,43 +20,43 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarManageMultiplyVaultEditingStage } from './SidebarManageMultiplyVaultEditingStage'
-import { SidebarManageMultiplyVaultManageStage } from './SidebarManageMultiplyVaultManageStage'
-import { SidebarManageMultiplyVaultTransitionStage } from './SidebarManageMultiplyVaultTransitionStage'
-import { SidebarManageVaultAllowanceStage } from './SidebarManageVaultAllowanceStage'
-import { SidebarOpenVaultProxyStage } from './SidebarOpenVaultProxyStage'
 
 export const otherActionsCollateralPanel = ['depositCollateral', 'withdrawCollateral']
 export const otherActionsDaiPanel = ['depositDai', 'paybackDai', 'withdrawDai']
 
 export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   const {
-    stage,
-    otherAction,
-    toggle,
-    setOtherAction,
+    accountIsConnected,
     canProgress,
-    progress,
     canRegress,
-    regress,
-    isProxyStage,
+    currentStep,
+    isBorrowTransitionStage,
     isCollateralAllowanceStage,
     isDaiAllowanceStage,
     isEditingStage,
-    isManageStage,
     isLoadingStage,
+    isManageStage,
+    isProxyStage,
     isSuccessStage,
-    isBorrowTransitionStage,
-    accountIsConnected,
-    currentStep,
+    otherAction,
+    progress,
+    regress,
+    setOtherAction,
+    stage,
+    stopLossTriggered,
+    toggle,
     totalSteps,
     vault: { token },
+    vaultHistory,
   } = props
 
   const [forcePanel, setForcePanel] = useState<string>()
@@ -60,6 +64,12 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
+  const isVaultClosed =
+    vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_DAI' ||
+    vaultHistory[0]?.kind === 'CLOSE_VAULT_TO_COLLATERAL'
+  const [isSLPanelVisible, setIsSLPanelVisible] = useState<boolean>(
+    stopLossTriggered && stopLossReadEnabled && isVaultClosed,
+  )
 
   useEffect(() => {
     switch (stage) {
@@ -78,10 +88,10 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
   }, [stage, otherAction])
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, isSLPanelVisible }),
     dropdown: {
       forcePanel,
-      disabled: isDropdownDisabled({ stage }),
+      disabled: isDropdownDisabled({ stage, isSLPanelVisible }),
       items: [
         {
           label: t('system.actions.multiply.adjust'),
@@ -135,25 +145,33 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
     },
     content: (
       <Grid gap={3}>
-        {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
-        {isProxyStage && <SidebarOpenVaultProxyStage stage={stage} gasData={gasData} />}
-        {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
-          <SidebarManageVaultAllowanceStage {...props} />
+        {!isSLPanelVisible ? (
+          <>
+            {isEditingStage && <SidebarManageMultiplyVaultEditingStage {...props} />}
+            {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
+            {(isCollateralAllowanceStage || isDaiAllowanceStage) && (
+              <SidebarVaultAllowanceStage {...props} />
+            )}
+            {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
+            {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
+            <VaultErrors {...props} />
+            <VaultWarnings {...props} />
+          </>
+        ) : (
+          <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />
         )}
-        {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
-        {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
-        <VaultErrors {...props} />
-        <VaultWarnings {...props} />
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, ...primaryButtonLabelParams }),
-      disabled: !canProgress || !accountIsConnected,
-      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
+      label: getPrimaryButtonLabel({ flow, isSLPanelVisible, ...primaryButtonLabelParams }),
+      disabled: (!canProgress || !accountIsConnected) && !isSLPanelVisible,
+      steps: !isSuccessStage && isSLPanelVisible ? [currentStep, totalSteps] : undefined,
       isLoading: isLoadingStage,
       action: () => {
-        progress!()
-        progressTrackingEvent({ props })
+        if (!isSLPanelVisible) {
+          progress!()
+          progressTrackingEvent({ props })
+        } else setIsSLPanelVisible(false)
       },
     },
     textButton: {
@@ -164,8 +182,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
         regressTrackingEvent({ props })
       },
     },
-    progress: getSidebarProgress({ flow, ...sidebarTxData }),
-    success: getSidebarSuccess({ flow, ...sidebarTxData }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />

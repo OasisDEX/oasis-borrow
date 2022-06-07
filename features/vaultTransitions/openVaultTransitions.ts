@@ -7,6 +7,8 @@ export type OpenVaultTransitionChange =
   | {
       kind: 'progressEditing'
     }
+  | { kind: 'progressStopLossEditing' }
+  | { kind: 'skipStopLoss' }
   | {
       kind: 'backToEditing'
     }
@@ -15,6 +17,7 @@ export type OpenVaultTransitionChange =
     }
 
 type GenericOpenVaultState = {
+  withStopLossStage: boolean
   errorMessages: VaultErrorMessage[]
   proxyAddress?: any
   depositAmount?: BigNumber
@@ -49,7 +52,10 @@ export function createApplyOpenVaultTransition<
         ? 'proxyWaitingForConfirmation'
         : !hasAllowance
         ? 'allowanceWaitingForConfirmation'
+        : state.withStopLossStage
+        ? 'stopLossEditing'
         : 'txWaitingForConfirmation'
+
       if (canProgress) {
         return {
           ...state,
@@ -58,9 +64,34 @@ export function createApplyOpenVaultTransition<
       }
     }
 
+    if (change.kind === 'progressStopLossEditing') {
+      const { errorMessages } = state
+      const canProgress = !errorMessages.length
+
+      const stage = 'txWaitingForConfirmation'
+
+      if (canProgress) {
+        return {
+          ...state,
+          stage,
+        }
+      }
+    }
+
+    if (change.kind === 'skipStopLoss') {
+      const stage = 'txWaitingForConfirmation'
+
+      return {
+        ...state,
+        stopLossSkipped: true,
+        stage,
+      }
+    }
+
     if (change.kind === 'backToEditing') {
       return {
         ...state,
+        stopLossSkipped: false,
         stage: 'editing',
       }
     }

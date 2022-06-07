@@ -1,16 +1,15 @@
-import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
+import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { VaultChangesWithADelayCard } from '../VaultChangesWithADelayCard'
-
-export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowVaultState) {
+export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const { stage } = props
-  const [vaultChange, setVaultChanges] = useState<ManageStandardBorrowVaultState>(props)
+  const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
   useEffect(() => {
     if (props.stage !== 'manageSuccess') setVaultChanges(props)
@@ -22,7 +21,7 @@ export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowV
     case 'manageSuccess':
       return (
         <>
-          <ManageVaultChangesInformation {...vaultChange} />
+          <ManageMultiplyVaultChangesInformation {...vaultChange} />
           <VaultChangesWithADelayCard />
         </>
       )
@@ -32,7 +31,7 @@ export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowV
           <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          <ManageVaultChangesInformation {...props} />
+          <ManageMultiplyVaultChangesInformation {...props} />
         </>
       )
   }

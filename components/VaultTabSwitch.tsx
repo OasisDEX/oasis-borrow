@@ -9,16 +9,17 @@ import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-sel
 import { Flex, Heading } from 'theme-ui'
 
 import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import { useHash } from '../helpers/useHash'
 import { fadeInAnimation } from '../theme/animations'
 import { useAppContext } from './AppContextProvider'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 import { VaultTabTag } from './vault/VaultTabTag'
 
 export enum VaultViewMode {
-  Overview,
-  Protection,
-  History,
-  VaultInfo,
+  Overview = 'Overview',
+  Protection = 'Protection',
+  History = 'History',
+  VaultInfo = 'VaultInfo',
 }
 
 interface VaultTabButtonProps {
@@ -122,7 +123,8 @@ export function VaultTabSwitch({
   showProtectionTab: boolean
   protectionEnabled: boolean
 }): JSX.Element {
-  const [mode, setMode] = useState<VaultViewMode>(defaultMode)
+  const [hash, setHash] = useHash<VaultViewMode>()
+  const [mode, setMode] = useState<VaultViewMode>(hash || defaultMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
@@ -136,6 +138,10 @@ export function VaultTabSwitch({
       subscription.unsubscribe()
     }
   }, [])
+
+  useEffect(() => {
+    setHash(mode)
+  }, [mode])
 
   function getVariant(currentMode: VaultViewMode, activeMode: VaultViewMode) {
     if (newComponentsEnabled) {

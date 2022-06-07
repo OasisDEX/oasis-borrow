@@ -13,7 +13,6 @@ export type Feature =
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
-  | 'Referrals'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -25,7 +24,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossRead: true,
   StopLossWrite: true,
   StopLossOpenFlow: false,
-  Referrals: true,
   // your feature here....
 }
 

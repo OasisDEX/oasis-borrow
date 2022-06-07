@@ -8,6 +8,7 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'creating-your-vault'
     case 'addSl':
     case 'adjustSl':

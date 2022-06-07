@@ -9,6 +9,7 @@ interface GetTextButtonLabelParams {
 
 export function getTextButtonLabel({ flow, stage, token }: GetTextButtonLabelParams): string {
   const { t } = useTranslation()
+  const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
 
   switch (stage) {
     case 'editing':
@@ -17,7 +18,7 @@ export function getTextButtonLabel({ flow, stage, token }: GetTextButtonLabelPar
       else return t('edit-vault-details')
     case 'allowanceFailure':
     case 'collateralAllowanceFailure':
-      return t('edit-token-allowance', { token })
+      return t('edit-token-allowance', { token: allowanceToken })
     case 'daiAllowanceFailure':
       return t('edit-token-allowance', { token: 'DAI' })
     default:

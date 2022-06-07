@@ -107,6 +107,11 @@
   "creating-proxy": "Creating Proxy",
   "creating-vault": "Creating Vault",
   "proxy-advantages": [
+    "Just one proxy needed per account",
+    "Enables your wallet to interact with the Maker protocol",
+    "More gas efficient"
+  ],
+  "proxy-advantages-new": [
     "<1>Just one</1> proxy needed per account",
     "Enables your wallet to interact with the Maker protocol",
     "More gas efficient"
@@ -209,7 +214,7 @@
   "get-started": "Get Started",
   "go-to-vault": "Go to Vault #{{id}}",
   "here": "here",
-  "from:": "from",
+  "from:": "From",
   "full": "Full",
   "history": {
     "auction_finished_v2": "Auction <0>#{{auctionId}}</0> finished, <0>{{remainingCollateral}} {{token}}</0> remained",
@@ -835,7 +840,9 @@
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
     "your-vaults": "Your Vaults",
-    "assets-and-positions": "Top {{number}} assets and positions"
+    "assets-and-positions": "Top {{number}} assets and positions",
+    "total-assets": "Total Assets",
+    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>"
   },
   "vault-banners": {
     "ownership": {
@@ -1015,7 +1022,10 @@
     "set-stop-loss-again": "Set up Stop-Loss again",
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
-    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
+    "enable-stop-loss": "Enable Stop-Loss",
+    "continue-without-stop-loss": "Continue without Stop-Loss",
+    "stop-loss-information": "Stop Loss Information"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",

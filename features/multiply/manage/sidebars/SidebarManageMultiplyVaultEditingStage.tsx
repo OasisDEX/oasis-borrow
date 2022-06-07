@@ -2,304 +2,64 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { ActionPills } from 'components/ActionPills'
-import { MinusIcon, PlusIcon, VaultActionInput } from 'components/vault/VaultActionInput'
-import { getCollRatioColor } from 'components/vault/VaultDetails'
+import {
+  extractFieldDepositCollateralData,
+  extractFieldDepositDaiData,
+  extractFieldGenerateDaiData,
+  extractFieldPaybackDaiData,
+  extractFieldWithdrawCollateralData,
+  FieldDepositCollateral,
+  FieldDepositDai,
+  FieldGenerateDai,
+  FieldPaybackDai,
+  FieldWithdrawCollateral,
+} from 'components/vault/sidebar/SidebarFields'
+import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import {
+  otherActionsCollateralPanel,
+  otherActionsDaiPanel,
+} from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
-import { handleNumericInput } from 'helpers/input'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactChild } from 'react'
-import { Box, Button, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
+import React from 'react'
+import { Grid, Text } from 'theme-ui'
 
-import { otherActionsCollateralPanel, otherActionsDaiPanel } from './SidebarManageMultiplyVault'
-import { SidebarResetButton } from './SidebarResetButton'
-
-interface FieldProps extends ManageMultiplyVaultState {
+interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {
+  collapsed?: boolean
   disabled?: boolean
 }
 
-interface OptionalAdjustProps {
-  label: string
-  isVisible?: boolean
-  isExpanded: boolean
-  clickHandler?: () => void
-  children: ReactChild
-}
-
-function OptionalAdjust({
-  label,
-  isVisible,
-  isExpanded,
-  clickHandler,
-  children,
-}: OptionalAdjustProps) {
-  return (
-    <>
-      {isVisible && (
-        <Box>
-          <Button variant={`actionOption${isExpanded ? 'Opened' : ''}`} onClick={clickHandler}>
-            {isExpanded ? <MinusIcon /> : <PlusIcon />}
-            {label}
-          </Button>
-          {isExpanded && <Box>{children}</Box>}
-        </Box>
-      )}
-    </>
-  )
-}
-
-function SliderAdjustMultiply(props: FieldProps & { collapsed?: boolean }) {
-  const { t } = useTranslation()
-
-  const {
-    theme: { colors },
-  } = useThemeUI()
-
+function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMultiplyParams) {
   const {
     vault: { collateralizationRatio },
-    afterCollateralizationRatio,
-    afterLiquidationPrice,
     ilkData: { liquidationRatio },
     requiredCollRatio,
     updateRequiredCollRatio,
     maxCollRatio,
     minCollRatio,
-    multiply,
     hasToDepositCollateralOnEmptyVault,
-    disabled = false,
-    collapsed,
   } = props
 
-  const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const sliderValue = requiredCollRatio || collateralizationRatio || maxCollRatio
   const sliderMax = maxCollRatio || MAX_COLL_RATIO
   const sliderMin = minCollRatio || liquidationRatio
-  const slider = new BigNumber(100).minus(
-    sliderValue.minus(sliderMin).div(sliderMax.minus(sliderMin)).times(100) || zero,
-  )
-
-  const sliderBackground =
-    multiply && !multiply.isNaN() && slider
-      ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
-          slider.toNumber() || 0
-        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-      : 'primaryAlt'
 
   return (
-    <Grid
-      gap={2}
-      sx={
-        collapsed
-          ? {
-              px: 3,
-              py: 2,
-              border: 'lightMuted',
-              borderTop: 'none',
-              borderBottomLeftRadius: 'mediumLarge',
-              borderBottomRightRadius: 'mediumLarge',
-            }
-          : {}
-      }
-    >
-      <Flex
-        sx={{
-          variant: 'text.paragraph4',
-          justifyContent: 'space-between',
-          fontWeight: 'semiBold',
-          color: 'text.subtitle',
-        }}
-      >
-        <Grid as="p" gap={2}>
-          <Text as="span">{t('system.liquidation-price')}</Text>
-          <Text as="span" variant="paragraph1" sx={{ fontWeight: 'semiBold' }}>
-            ${formatAmount(afterLiquidationPrice, 'USD')}
-          </Text>
-        </Grid>
-        <Grid as="p" gap={2}>
-          <Text as="span">{t('system.collateral-ratio')}</Text>
-          <Text
-            as="span"
-            variant="paragraph1"
-            sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
-          >
-            {formatPercent(afterCollateralizationRatio.times(100))}
-          </Text>
-        </Grid>
-      </Flex>
-      <Box my={1}>
-        <Slider
-          sx={{
-            background: sliderBackground,
-            direction: 'rtl',
-          }}
-          disabled={hasToDepositCollateralOnEmptyVault || disabled}
-          step={0.05}
-          min={sliderMin.toNumber()}
-          max={sliderMax.toNumber()}
-          value={requiredCollRatio?.toNumber() || collateralizationRatio.toNumber()}
-          onChange={(e) => {
-            updateRequiredCollRatio!(new BigNumber(e.target.value))
-          }}
-        />
-      </Box>
-      <Flex
-        sx={{
-          variant: 'text.paragraph4',
-          justifyContent: 'space-between',
-          color: 'text.subtitle',
-        }}
-      >
-        <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
-        <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
-      </Flex>
-    </Grid>
-  )
-}
-
-function FieldDepositCollateral({
-  maxDepositAmount,
-  maxDepositAmountUSD,
-  vault: { token },
-  depositAmount,
-  depositAmountUSD,
-  updateDepositAmount,
-  updateDepositAmountUSD,
-  updateDepositAmountMax,
-  priceInfo: { currentCollateralPrice },
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      token={token}
-      tokenUsdPrice={currentCollateralPrice}
-      showMax={true}
-      hasAuxiliary={true}
-      onSetMax={updateDepositAmountMax}
-      amount={depositAmount}
-      auxiliaryAmount={depositAmountUSD}
-      onChange={handleNumericInput(updateDepositAmount!)}
-      onAuxiliaryChange={handleNumericInput(updateDepositAmountUSD!)}
-      maxAmount={maxDepositAmount}
-      maxAuxiliaryAmount={maxDepositAmountUSD}
-      maxAmountLabel={t('balance')}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldDepositDai({
-  depositDaiAmount,
-  updateDepositDaiAmount,
-  updateDepositDaiAmountMax,
-  maxDepositDaiAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      amount={depositDaiAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxDepositDaiAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updateDepositDaiAmountMax}
-      onChange={handleNumericInput(updateDepositDaiAmount!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldWithdrawCollateral({
-  withdrawAmount,
-  withdrawAmountUSD,
-  maxWithdrawAmount,
-  maxWithdrawAmountUSD,
-  vault: { token },
-  updateWithdrawAmount,
-  updateWithdrawAmountUSD,
-  updateWithdrawAmountMax,
-  priceInfo: { currentCollateralPrice },
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Withdraw"
-      showMax={true}
-      hasAuxiliary={true}
-      tokenUsdPrice={currentCollateralPrice}
-      onSetMax={updateWithdrawAmountMax}
-      amount={withdrawAmount}
-      auxiliaryAmount={withdrawAmountUSD}
-      maxAmount={maxWithdrawAmount}
-      maxAmountLabel={t('max')}
-      maxAuxiliaryAmount={maxWithdrawAmountUSD}
-      token={token}
-      hasError={false}
-      onChange={handleNumericInput(updateWithdrawAmount!)}
-      onAuxiliaryChange={handleNumericInput(updateWithdrawAmountUSD!)}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldPaybackDai({
-  paybackAmount,
-  updatePaybackAmount,
-  updatePaybackAmountMax,
-  maxPaybackAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Deposit"
-      amount={paybackAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxPaybackAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updatePaybackAmountMax}
-      onChange={handleNumericInput(updatePaybackAmount!)}
-      hasError={false}
-      disabled={disabled}
-    />
-  )
-}
-
-function FieldGenerateDai({
-  generateAmount,
-  updateGenerateAmount,
-  updateGenerateAmountMax,
-  maxGenerateAmount,
-  disabled = false,
-}: FieldProps) {
-  const { t } = useTranslation()
-
-  return (
-    <VaultActionInput
-      action="Withdraw"
-      amount={generateAmount}
-      token="DAI"
-      showMax={true}
-      maxAmount={maxGenerateAmount}
-      maxAmountLabel={t('max')}
-      onSetMax={updateGenerateAmountMax}
-      onChange={handleNumericInput(updateGenerateAmount!)}
-      hasError={false}
-      disabled={disabled}
+    <SidebarSliderAdjustMultiply
+      state={props}
+      min={sliderMin.toNumber()}
+      max={sliderMax.toNumber()}
+      value={requiredCollRatio?.toNumber() || collateralizationRatio.toNumber()}
+      onChange={(e) => {
+        updateRequiredCollRatio!(new BigNumber(e.target.value))
+      }}
+      collapsed={collapsed}
+      disabled={hasToDepositCollateralOnEmptyVault || disabled}
     />
   )
 }
@@ -364,11 +124,17 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
 
 function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
-  const { depositAmount, showSliderController, toggleSliderController } = props
+
+  const {
+    depositAmount,
+    showSliderController,
+    toggleSliderController,
+    vault: { token },
+  } = props
 
   return (
     <>
-      <FieldDepositCollateral {...props} />
+      <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={depositAmount?.gt(zero)}
@@ -383,16 +149,17 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
 
 function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const {
     withdrawAmount,
-    vault: { debt },
+    vault: { debt, token },
     showSliderController,
     toggleSliderController,
   } = props
 
   return (
     <>
-      <FieldWithdrawCollateral {...props} />
+      <FieldWithdrawCollateral token={token} {...extractFieldWithdrawCollateralData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={withdrawAmount?.gt(zero) && debt.gt(zero)}
@@ -407,6 +174,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawCollateral(props: ManageM
 
 function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const {
     depositDaiAmount,
     vault: { token },
@@ -417,7 +185,7 @@ function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyV
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('system.multiply-buy-coll', { token })}
       </Text>
-      <FieldDepositDai {...props} />
+      <FieldDepositDai {...extractFieldDepositDaiData(props)} />
       <SliderAdjustMultiply {...props} disabled={!depositDaiAmount} />
     </>
   )
@@ -431,7 +199,7 @@ function SidebarManageMultiplyVaultEditingStagePaybackDai(props: ManageMultiplyV
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('system.multiply-reduce-debt')}
       </Text>
-      <FieldPaybackDai {...props} />
+      <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />
     </>
   )
 }
@@ -447,7 +215,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
 
   return (
     <>
-      <FieldGenerateDai {...props} />
+      <FieldGenerateDai action="Withdraw" {...extractFieldGenerateDaiData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={generateAmount?.gt(zero) && debt.gt(zero)}
@@ -464,15 +232,15 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
   const { t } = useTranslation()
 
   const {
-    stage,
+    inputAmountsEmpty,
     otherAction,
     setOtherAction,
-    inputAmountsEmpty,
+    stage,
     updateDepositAmount,
     updateDepositDaiAmount,
-    updateWithdrawAmount,
-    updatePaybackAmount,
     updateGenerateAmount,
+    updatePaybackAmount,
+    updateWithdrawAmount,
     vault: { debt },
   } = props
 
