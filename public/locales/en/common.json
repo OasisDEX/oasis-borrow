@@ -839,7 +839,9 @@
     "vaults": "Vaults",
     "vaults-at-risk": "Vaults at risk",
     "your-vaults": "Your Vaults",
-    "assets-and-positions": "Top {{number}} assets and positions"
+    "assets-and-positions": "Top {{number}} assets and positions",
+    "total-assets": "Total Assets",
+    "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>"
   },
   "vault-banners": {
     "ownership": {

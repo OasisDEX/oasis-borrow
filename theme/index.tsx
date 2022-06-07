@@ -137,12 +137,16 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
-    headerSettings: {
+    header4: {
       fontFamily: 'body',
       fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
+    },
+    headerSettings: {
+      // deprecated, use header4
+      variant: 'text.header4',
     },
     paragraph1: {
       fontFamily: 'body',

@@ -1,13 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
+import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
+  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import { ProductCardData } from 'helpers/productCards'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
@@ -233,6 +239,33 @@ function VaultsOverviewPerType({
   )
 }
 
+function TotalAssets({ totalValueUsd }: { totalValueUsd: BigNumber }) {
+  const { t } = useTranslation()
+
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Text variant="header4" sx={{ mb: 1 }}>
+        {t('vaults-overview.total-assets')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
+        <Trans
+          i18nKey="vaults-overview.total-assets-subheader"
+          components={[
+            <AppLink
+              href="https://kb.oasis.app/help/curated-token-list"
+              target="_blank"
+              sx={{ fontWeight: 'body' }}
+            />,
+          ]}
+        />
+      </Text>
+      <Text variant="display" sx={{ fontWeight: 'body' }}>
+        ${formatAmount(totalValueUsd, 'USD')}
+      </Text>
+    </Box>
+  )
+}
+
 export function VaultsOverviewView({
   vaultsOverview,
   context,
@@ -243,6 +276,8 @@ export function VaultsOverviewView({
   const { t } = useTranslation()
 
   const earnEnabled = useFeatureToggle('EarnProduct')
+  const { positionsOverviewSummary$ } = useAppContext()
+  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
   const { positions, vaults, vaultSummary } = vaultsOverview
   const numberOfVaults = positions.length
 
@@ -261,7 +296,20 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
-        {earnEnabled && <AssetsAndPositionsOverview address={address} />}
+        {earnEnabled && (
+          <WithErrorHandler error={err}>
+            <WithLoadingIndicator value={positionsOverviewSummary}>
+              {(positionsOverviewSummary) => (
+                <>
+                  <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
+                  {positionsOverviewSummary.assetsAndPositions.length > 0 && (
+                    <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                  )}
+                </>
+              )}
+            </WithLoadingIndicator>
+          </WithErrorHandler>
+        )}
         <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
           <Trans
             i18nKey={headerTranslationKey}

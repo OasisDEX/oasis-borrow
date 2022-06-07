@@ -288,7 +288,7 @@ const connectionDetails: Record<WalletKind, ConnectionDetail> = {
     userIcon: 'walletConnect_user',
   },
   walletLink: {
-    friendlyName: 'Coinbase wallet',
+    friendlyName: 'Coinbase Wallet',
     connectIcon: 'coinbase_color',
     userIcon: 'walletLink_user',
   },

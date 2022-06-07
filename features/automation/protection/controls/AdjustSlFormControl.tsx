@@ -156,7 +156,9 @@ export function AdjustSlFormControl({
 
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
-    .div(collateralizationRatioAtNextPrice.minus(liqRatio))
+    .div(
+      collateralizationRatioAtNextPrice.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
+    )
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)
