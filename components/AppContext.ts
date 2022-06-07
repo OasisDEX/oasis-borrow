@@ -429,11 +429,12 @@ export function setupAppContext() {
     ),
   )
 
+  const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPriceUSD$(['DAI', 'ETH']), txHelpers$, state, call)
+    return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
 
   // base
