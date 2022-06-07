@@ -197,10 +197,6 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.pnl,
         },
         {
-          header: <Header name="seven-day-yield" />,
-          info: position.sevenDayYield,
-        },
-        {
           header: <Header name="liquidity" />,
           info: position.liquidity,
         },

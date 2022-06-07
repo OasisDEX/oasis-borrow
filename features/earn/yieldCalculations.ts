@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { catchError, map, switchMap } from 'rxjs/operators'
+import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { IlkData } from '../../blockchain/ilks'
 import { Context } from '../../blockchain/network'
@@ -38,11 +38,17 @@ export interface Yield {
   }
 }
 
+export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
+
 export function getYields$(
   context$: Observable<Context>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
 ): Observable<Yield> {
+  if (!SupportedIlkForYieldsCalculations.includes(ilk)) {
+    return of({ ilk: ilk, yields: { } })
+  }
+
   const createClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
@@ -81,6 +87,7 @@ export function getYields$(
         )
     }),
     catchError(() => of({ ilk: ilk, yields: {} })),
+    distinctUntilChanged(isEqual)
   )
 }
 
