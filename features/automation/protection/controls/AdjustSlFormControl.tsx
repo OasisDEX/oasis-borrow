@@ -176,7 +176,9 @@ export function AdjustSlFormControl({
 
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
-    .div(nextPriceCollRatio.minus(liqRatio))
+    .div(
+      nextPriceCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
+    )
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
