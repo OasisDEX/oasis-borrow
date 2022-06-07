@@ -46,7 +46,12 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
-  const errors = errorsValidation({ txError, selectedSLValue, ilkData })
+  const errors = errorsValidation({
+    txError,
+    selectedSLValue,
+    ilkData,
+    collateralizationRatioAtNextPrice,
+  })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,

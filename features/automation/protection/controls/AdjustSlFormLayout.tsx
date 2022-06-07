@@ -286,6 +286,13 @@ export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkD
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
+export function slPriceHigherThanNext(
+  selectedSLValue: BigNumber,
+  collateralizationRatioAtNextPrice: BigNumber,
+) {
+  return selectedSLValue.gte(collateralizationRatioAtNextPrice)
+}
+
 export function AdjustSlFormLayout({
   token,
   txProgressing,
