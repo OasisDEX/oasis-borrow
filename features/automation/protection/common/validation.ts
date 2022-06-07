@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import {
   slCollRatioNearLiquidationRatio,
-  slPriceHigherThanNext,
+  slRatioHigherThanCurrentOrNext,
 } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -50,17 +50,23 @@ export function errorsValidation({
   selectedSLValue,
   ilkData,
   collateralizationRatioAtNextPrice,
+  currentCollateralRatio,
 }: {
   selectedSLValue: BigNumber
   ilkData: IlkData
   txError?: TxError
   collateralizationRatioAtNextPrice: BigNumber
+  currentCollateralRatio: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   const stopLossOnNearLiquidationRatio =
     slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
-    slPriceHigherThanNext(selectedSLValue, collateralizationRatioAtNextPrice)
+    slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      collateralizationRatioAtNextPrice,
+      currentCollateralRatio,
+    )
 
   return errorMessagesHandler({ insufficientEthFundsForTx, stopLossOnNearLiquidationRatio })
 }

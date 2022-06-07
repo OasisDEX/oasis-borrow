@@ -145,6 +145,10 @@ export function AdjustSlFormControl({
     .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
+  const currentCollateralRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.currentPrice)
+    .dividedBy(vault.debt)
+
   const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
@@ -360,6 +364,7 @@ export function AdjustSlFormControl({
     stage,
     isProgressDisabled,
     redirectToCloseVault,
+    currentCollateralRatio,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

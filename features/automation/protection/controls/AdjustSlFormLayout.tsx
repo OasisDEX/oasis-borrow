@@ -276,6 +276,7 @@ export interface AdjustSlFormLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
   gasEstimationUsd?: BigNumber
   ethBalance: BigNumber
+  currentCollateralRatio: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
@@ -286,11 +287,15 @@ export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkD
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
 }
 
-export function slPriceHigherThanNext(
+export function slRatioHigherThanCurrentOrNext(
   selectedSLValue: BigNumber,
   collateralizationRatioAtNextPrice: BigNumber,
+  currentCollateralRatio: BigNumber,
 ) {
-  return selectedSLValue.gte(collateralizationRatioAtNextPrice)
+  return (
+    selectedSLValue.gte(collateralizationRatioAtNextPrice) &&
+    currentCollateralRatio.gte(selectedSLValue)
+  )
 }
 
 export function AdjustSlFormLayout({
