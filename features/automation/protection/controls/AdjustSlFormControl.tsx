@@ -73,7 +73,7 @@ interface AdjustSlFormControlProps {
 
 export function AdjustSlFormControl({
   vault,
-  priceInfo,
+  priceInfo: { currentEthPrice, currentCollateralPrice, nextCollateralPrice },
   ilkData,
   triggerData,
   ctx,
@@ -157,12 +157,16 @@ export function AdjustSlFormControl({
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
     .div(
-      collateralizationRatioAtNextPrice.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
+      collateralizationRatioAtNextPrice
+        .times(100)
+        .decimalPlaces(0, BigNumber.ROUND_DOWN)
+        .div(100)
+        .minus(liqRatio),
     )
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)
-    .multipliedBy(priceInfo.nextCollateralPrice)
+    .multipliedBy(nextCollateralPrice)
     .dividedBy(collateralizationRatioAtNextPrice)
 
   const sliderProps: SliderValuePickerProps = {
@@ -241,7 +245,7 @@ export function AdjustSlFormControl({
                 const totalCost =
                   !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                     ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                        priceInfo.currentEthPrice,
+                        currentEthPrice,
                       )
                     : zero
 
@@ -317,8 +321,8 @@ export function AdjustSlFormControl({
     accountIsController,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
-    tokenPrice: priceInfo.currentCollateralPrice,
-    ethPrice: priceInfo.currentEthPrice,
+    tokenPrice: currentCollateralPrice,
+    ethPrice: currentEthPrice,
     vault,
     ilkData,
     etherscan,

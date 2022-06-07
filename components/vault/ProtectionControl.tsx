@@ -112,7 +112,7 @@ export function ProtectionControl({
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
-  const [priceInfo, priceInfoError] = useObservable(priceInfoObs$)
+  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
   const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
@@ -121,16 +121,16 @@ export function ProtectionControl({
     (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ? (
     <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfo]}
+        value={[automationTriggersData, priceInfoData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggersData, priceInfo]) => {
+        {([automationTriggers, priceInfo]) => {
           return (
             <DefaultVaultLayout
               detailsViewControl={
                 <ProtectionDetailsControl
                   vault={vault}
-                  automationTriggersData={automationTriggersData}
+                  automationTriggersData={automationTriggers}
                   priceInfo={priceInfo}
                   ilkData={ilkData}
                 />
@@ -138,7 +138,7 @@ export function ProtectionControl({
               editForm={
                 <ProtectionFormControl
                   ilkData={ilkData}
-                  automationTriggersData={automationTriggersData}
+                  automationTriggersData={automationTriggers}
                   priceInfo={priceInfo}
                   vault={vault}
                   account={account}

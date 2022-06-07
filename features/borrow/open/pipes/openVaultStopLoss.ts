@@ -96,7 +96,7 @@ export function getDataForStopLoss(props: OpenVaultState) {
     vault: {
       liquidationPrice: afterLiquidationPrice,
       lockedCollateral: depositAmount,
-      debt: generateAmount!,
+      debt: generateAmount,
     } as Vault,
     ilkData,
     selectedSLValue: stopLossLevel,
