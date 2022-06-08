@@ -326,7 +326,7 @@ export function AdjustSlFormLayout({
   selectedSLValue,
   firstStopLossSetup,
   isEditing,
-  collateralizationRatioAtNextPrice,
+  // collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
   currentCollateralRatio,
@@ -399,7 +399,7 @@ export function AdjustSlFormLayout({
                   tokenPrice={tokenPrice}
                   ethPrice={ethPrice}
                   isCollateralActive={closePickerConfig.isCollateralActive}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  collateralizationRatioAtNextPrice={new BigNumber(500)}
                   selectedSLValue={selectedSLValue}
                   ethBalance={ethBalance}
                   txError={txError}
