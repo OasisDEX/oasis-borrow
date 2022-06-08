@@ -79,7 +79,6 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
         {([{ yields }]) => {
           const sevenDayAverage = yields[YieldPeriod.Yield7Days]?.value || zero
           const ninetyDayAverage = yields[YieldPeriod.Yield90Days]?.value || zero
-          const unprofitable = sevenDayAverage.div(7) < ninetyDayAverage.div(90)
 
           const yieldSevenDayAsPercentage = formatPercent(sevenDayAverage.times(100), {
             precision: 2,
@@ -113,7 +112,7 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
               labels={[
                 {
                   title: t('system.seven-day-average'),
-                  value: unprofitable ? (
+                  value: sevenDayAverage.lt(0) ? (
                     <UnprofitableSlot value={yieldSevenDayAsPercentage} variant="left" />
                   ) : (
                     yieldSevenDayAsPercentage
@@ -121,7 +120,11 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
                 },
                 {
                   title: t('system.ninety-day-average'),
-                  value: yieldNinetyDayAsPercentage,
+                  value: ninetyDayAverage.lt(0) ? (
+                    <UnprofitableSlot value={yieldNinetyDayAsPercentage} variant="left" />
+                  ) : (
+                    yieldNinetyDayAsPercentage
+                  ),
                 },
                 {
                   title: t('system.liquidity-available'),
