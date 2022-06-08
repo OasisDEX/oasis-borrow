@@ -72,16 +72,16 @@ export function ReferralsView({ address }: Props) {
               }}
             >
               <AppLink
-                href={`https://oasis.app/?ref=${address}`}
+                href={`${window.origin}/?ref=${address}`}
                 sx={{ fontSize: 4, flex: '1 1 auto', my: '12px' }}
                 variant="inText"
               >
-                {`https://oasis.app/?ref=${formatAddress(address, 6)}`}
+                {`${window.origin}/?ref=${formatAddress(address, 6)}`}
               </AppLink>
               <Textarea
                 ref={clipboardContentRef}
                 sx={{ position: 'absolute', top: '-1000px', left: '-1000px' }}
-                value={`https://oasis.app/?ref=${address}`}
+                value={`${window.origin}/?ref=${address}`}
                 readOnly
               />
               <Text
