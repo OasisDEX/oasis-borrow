@@ -299,10 +299,6 @@ export function slRatioHigherThanCurrentOrNext(
   collateralizationRatioAtNextPrice: BigNumber,
   currentCollateralRatio: BigNumber,
 ) {
-  console.log('collateralizationRatioAtNextPrice')
-  console.log(collateralizationRatioAtNextPrice.toFixed(2))
-  console.log('currentCollateralRatio')
-  console.log(currentCollateralRatio.toFixed(2))
   return (
     selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
     selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))
