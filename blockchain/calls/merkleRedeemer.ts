@@ -12,7 +12,7 @@ export interface CanClaimArgs {
 }
 
 export type ClaimMultipleData = {
-  kind: TxMetaKind.claim
+  kind: TxMetaKind.claimReferralFees
   weeks: any
   amounts: any
   proofs: any

@@ -88,7 +88,7 @@ export function createUserReferral$(
               first(),
               switchMap(({ sendWithGasEstimation }) => {
                 return sendWithGasEstimation(claimMultiple, {
-                  kind: TxMetaKind.claim,
+                  kind: TxMetaKind.claimReferralFees,
                   weeks: claimsOut.weeks,
                   amounts: claimsOut.amounts,
                   proofs: claimsOut.proofs,
