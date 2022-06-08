@@ -46,24 +46,14 @@ export function errorsValidation({
   txError,
   selectedSLValue,
   ilkData,
-}: // collateralizationRatioAtNextPrice,
-// currentCollateralRatio,
-{
+}: {
   selectedSLValue: BigNumber
   ilkData: IlkData
   txError?: TxError
-  collateralizationRatioAtNextPrice: BigNumber
-  currentCollateralRatio: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-  // TODO - ŁW commennted out slRatioHigherThanCurrentOrNext for new component to not damge it, bring it back later
+
   const stopLossOnNearLiquidationRatio = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
-  //  ||
-  // slRatioHigherThanCurrentOrNext(
-  //   selectedSLValue,
-  //   collateralizationRatioAtNextPrice,
-  //   currentCollateralRatio,
-  // )
 
   return errorMessagesHandler({ insufficientEthFundsForTx, stopLossOnNearLiquidationRatio })
 }
