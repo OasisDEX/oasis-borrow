@@ -131,7 +131,7 @@ export function SetDownsideProtectionInformation({
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
-  const nextCollateralizationPriceAlertRange = 3
+  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -166,10 +166,10 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
+  const currentCollateralizationPriceFloor = currentCollateralRatio
     .times(100)
     .decimalPlaces(0)
-    .minus(nextCollateralizationPriceAlertRange)
+    .minus(currentCollateralizationPriceAlertRange)
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -218,7 +218,7 @@ export function SetDownsideProtectionInformation({
               </AppLink>
             </Text>
           </Box>
-          {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
+          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
             <MessageCard
               messages={[t('protection.coll-ratio-close-to-current')]}
               type="warning"
@@ -299,6 +299,10 @@ export function slRatioHigherThanCurrentOrNext(
   collateralizationRatioAtNextPrice: BigNumber,
   currentCollateralRatio: BigNumber,
 ) {
+  console.log('collateralizationRatioAtNextPrice')
+  console.log(collateralizationRatioAtNextPrice.toFixed(2))
+  console.log('currentCollateralRatio')
+  console.log(currentCollateralRatio.toFixed(2))
   return (
     selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
     selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))

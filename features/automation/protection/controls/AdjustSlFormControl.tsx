@@ -200,13 +200,13 @@ export function AdjustSlFormControl({
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
-      const currentCollRatio = vault.lockedCollateral
-        .multipliedBy(currentCollateralData!.currentPrice)
-        .dividedBy(vault.debt)
+      // const currentCollRatio = vault.lockedCollateral
+      //   .multipliedBy(currentCollateralData!.currentPrice)
+      //   .dividedBy(vault.debt)
       const computedAfterLiqPrice = slCollRatio
         .dividedBy(100)
-        .multipliedBy(currentCollateralData!.currentPrice)
-        .dividedBy(currentCollRatio)
+        .multipliedBy(currentCollateralData!.nextPrice)
+        .dividedBy(nextPriceCollRatio)
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
 
