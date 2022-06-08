@@ -5,7 +5,7 @@ import { isEqual } from 'lodash'
 import { iif, Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, startWith, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, switchMap, startWith } from 'rxjs/operators'
 
 import { getToken } from '../../blockchain/tokensMetadata'
 import {
@@ -64,7 +64,7 @@ export function createVaultsOverview$(
       )
       return combineLatest(vaultsWithHistory)
     }),
-    startWith([]),
+    startWith<VaultWithType[]>([]),
   )
   const vaultsAddressWithIlksBalances$: Observable<VaultWithIlkBalance[]> = combineLatest(
     vaultsWithHistory$,

@@ -589,7 +589,7 @@ export function createProductCardsWithBalance$(
           }),
       ),
     ),
-    startWith([]),
+    startWith<ProductCardData[]>([]),
   )
 }
 
