@@ -179,16 +179,7 @@ export function SetDownsideProtectionInformation({
   })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-  console.log('currentCollateralRatio')
-  console.log(currentCollateralRatio.toFixed(2))
-  console.log('slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)')
-  console.log(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData))
-  console.log('slRatioHigherThanCurrentOrNext')
-    console.log(slRatioHigherThanCurrentOrNext(
-    selectedSLValue,
-    collateralizationRatioAtNextPrice,
-    currentCollateralRatio,
-  ))
+
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -234,7 +225,8 @@ export function SetDownsideProtectionInformation({
               withBullet={false}
             />
           )}
-          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) || slRatioHigherThanCurrentOrNext(
+          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
+            slRatioHigherThanCurrentOrNext(
               selectedSLValue,
               collateralizationRatioAtNextPrice,
               currentCollateralRatio,
@@ -308,8 +300,8 @@ export function slRatioHigherThanCurrentOrNext(
   currentCollateralRatio: BigNumber,
 ) {
   return (
-    selectedSLValue.gte(collateralizationRatioAtNextPrice) &&
-    currentCollateralRatio.gte(selectedSLValue)
+    selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
+    selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))
   )
 }
 

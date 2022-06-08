@@ -244,15 +244,17 @@ export function AdjustSlFormControl({
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||   slRatioHigherThanCurrentOrNext(
-      selectedSLValue,
-      new BigNumber(250),
-      currentCollateralRatio,
-    )
-      ? 'close-vault'
-      : isStopLossEnabled
-      ? 'update-stop-loss'
-      : 'add-stop-loss',
+    translationKey:
+      slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
+      slRatioHigherThanCurrentOrNext(
+        selectedSLValue,
+        collateralizationRatioAtNextPrice,
+        currentCollateralRatio,
+      )
+        ? 'close-vault'
+        : isStopLossEnabled
+        ? 'update-stop-loss'
+        : 'add-stop-loss',
     onClick: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
       ? redirectToCloseVault
       : (finishLoader: (succeded: boolean) => void) => {

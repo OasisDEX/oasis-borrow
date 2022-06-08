@@ -1,9 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import {
-  slCollRatioNearLiquidationRatio,
-  slRatioHigherThanCurrentOrNext,
-} from 'features/automation/protection/controls/AdjustSlFormLayout'
+import { slCollRatioNearLiquidationRatio } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -49,9 +46,9 @@ export function errorsValidation({
   txError,
   selectedSLValue,
   ilkData,
-  collateralizationRatioAtNextPrice,
-  currentCollateralRatio,
-}: {
+}: // collateralizationRatioAtNextPrice,
+// currentCollateralRatio,
+{
   selectedSLValue: BigNumber
   ilkData: IlkData
   txError?: TxError
@@ -59,14 +56,14 @@ export function errorsValidation({
   currentCollateralRatio: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-
-  const stopLossOnNearLiquidationRatio =
-    slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
-    slRatioHigherThanCurrentOrNext(
-      selectedSLValue,
-      collateralizationRatioAtNextPrice,
-      currentCollateralRatio,
-    )
+  // TODO - ŁW commennted out slRatioHigherThanCurrentOrNext for new component to not damge it, bring it back later
+  const stopLossOnNearLiquidationRatio = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+  //  ||
+  // slRatioHigherThanCurrentOrNext(
+  //   selectedSLValue,
+  //   collateralizationRatioAtNextPrice,
+  //   currentCollateralRatio,
+  // )
 
   return errorMessagesHandler({ insufficientEthFundsForTx, stopLossOnNearLiquidationRatio })
 }
