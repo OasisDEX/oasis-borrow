@@ -41,6 +41,7 @@ import {
   AdjustSlFormLayout,
   AdjustSlFormLayoutProps,
   slCollRatioNearLiquidationRatio,
+  slRatioHigherThanCurrentOrNext,
 } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
@@ -243,7 +244,11 @@ export function AdjustSlFormControl({
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+    translationKey: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||   slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      new BigNumber(250),
+      currentCollateralRatio,
+    )
       ? 'close-vault'
       : isStopLossEnabled
       ? 'update-stop-loss'

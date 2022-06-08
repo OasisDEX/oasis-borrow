@@ -109,6 +109,7 @@ interface SetDownsideProtectionInformationProps {
   ethBalance: BigNumber
   txError?: TxError
   gasEstimationUsd?: BigNumber
+  currentCollateralRatio: BigNumber
 }
 
 export function SetDownsideProtectionInformation({
@@ -125,6 +126,7 @@ export function SetDownsideProtectionInformation({
   gasEstimationUsd,
   ethBalance,
   txError,
+  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
@@ -177,7 +179,16 @@ export function SetDownsideProtectionInformation({
   })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-
+  console.log('currentCollateralRatio')
+  console.log(currentCollateralRatio.toFixed(2))
+  console.log('slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)')
+  console.log(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData))
+  console.log('slRatioHigherThanCurrentOrNext')
+    console.log(slRatioHigherThanCurrentOrNext(
+    selectedSLValue,
+    collateralizationRatioAtNextPrice,
+    currentCollateralRatio,
+  ))
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -223,7 +234,11 @@ export function SetDownsideProtectionInformation({
               withBullet={false}
             />
           )}
-          {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) || slRatioHigherThanCurrentOrNext(
+              selectedSLValue,
+              collateralizationRatioAtNextPrice,
+              currentCollateralRatio,
+            )) && (
             <MessageCard
               messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
               type="error"
@@ -322,6 +337,7 @@ export function AdjustSlFormLayout({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
+  currentCollateralRatio,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
@@ -395,6 +411,7 @@ export function AdjustSlFormLayout({
                   selectedSLValue={selectedSLValue}
                   ethBalance={ethBalance}
                   txError={txError}
+                  currentCollateralRatio={currentCollateralRatio}
                 />
               </Box>
             </>
