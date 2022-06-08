@@ -1,8 +1,6 @@
 import { WeeklyClaim } from '@prisma/client'
 import { withSentry } from '@sentry/nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
-// import { userInfo } from 'os'
-// @ts-ignore
 import { prisma } from 'server/prisma'
 
 type paramsSchema = {
