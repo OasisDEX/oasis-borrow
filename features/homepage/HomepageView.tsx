@@ -134,7 +134,7 @@ export function HomepageView() {
         setLandedWithRef(linkReferral)
       }
     }
-  }, [checkReferralLocal, userReferral])
+  }, [checkReferralLocal, router.isReady])
 
   return (
     <Box
