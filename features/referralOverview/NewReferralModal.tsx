@@ -1,6 +1,7 @@
 import { UserReferralState } from 'features/referralOverview/user'
 import { createUserUsingApi$ } from 'features/referralOverview/userApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { formatAddress } from 'helpers/formatters/format'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -52,7 +53,7 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
       )}
       {!success && userReferral && userReferral.state === 'newUser' && (
         <ReferralModal
-          heading="Welcome to the Oasis.app Referral Program"
+          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(userReferral.referrer!, 6)}`}
           topButtonText={t('ref.modal.accept')}
           bottomButtonText={t('ref.modal.later')}
           topButtonFunc={() => createUser({ hasAccepted: true, isReferred: true })}
