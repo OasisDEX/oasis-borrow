@@ -62,10 +62,10 @@ export function createUserReferral$(
         getReferralsFromApi$(web3Context.account),
         getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
-        getClaimedWeeks(new GraphQLClient(cacheApi), web3Context.account),
+        getClaimedClaims(new GraphQLClient(cacheApi), web3Context.account),
         txHelpers$,
       ).pipe(
-        switchMap(([user, referrals, weeklyClaims, referrer, claimedWeeks]) => {
+        switchMap(([user, referrals, weeklyClaims, referrer, claimedClaims]) => {
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user) {
             return of({
@@ -77,8 +77,9 @@ export function createUserReferral$(
 
           const referralsOut = referrals?.map((r) => r.address)
 
+          const claimedWeeks = claimedClaims.map((item) => item.week)
           const filteredWeeklyClaims = weeklyClaims?.filter(
-            (item) => !claimedWeeks.weeks.includes(item.week_number),
+            (item) => !claimedWeeks.includes(item.week_number),
           )
 
           const claimsOut = {
@@ -187,28 +188,28 @@ export function createUserReferral$(
   )
 }
 
-const claimedWeeksQuery = gql`
-  query claimedWeeks($address: String!) {
+const claimedClaimsQuery = gql`
+  query allClaimedWeeks($address: String!) {
     allClaimedWeeks(filter: { address: { equalTo: $address } }) {
       nodes {
         address
-        weeks {
-          number
-        }
+        week
+        amount
+        timestamp
+        txHash
       }
     }
   }
 `
-
-interface ClaimedWeeksApiResponse {
+interface Claim {
   address: string
-  weeks: number[]
+  week: number
+  amount: number
+  timestamp: Date
+  txHash: string
 }
 
-async function getClaimedWeeks(
-  client: GraphQLClient,
-  address: string,
-): Promise<ClaimedWeeksApiResponse> {
-  const data = await client.request(claimedWeeksQuery, { address: address })
-  return data.allHistoricTokenPrices.nodes[0]
+async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
+  const data = await client.request(claimedClaimsQuery, { address: address })
+  return data.allClaimedWeeks.nodes
 }
