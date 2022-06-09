@@ -44,7 +44,7 @@ export function ProductCardMultiply(props: { cardData: ProductCardData }) {
   const { t } = useTranslation()
   const { cardData } = props
 
-  const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2'
+  const isGuniToken = cardData.token === 'GUNIV3DAIUSDC2' || cardData.token === 'GUNIV3DAIUSDC1'
   const maxMultiple = !isGuniToken
     ? one.plus(one.div(cardData.liquidationRatio.minus(one)))
     : one.div(cardData.liquidationRatio.minus(one))
