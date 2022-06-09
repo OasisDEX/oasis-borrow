@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { startWith, switchMap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
@@ -589,6 +589,7 @@ export function createProductCardsWithBalance$(
           }),
       ),
     ),
+    startWith<ProductCardData[]>([]),
   )
 }
 
