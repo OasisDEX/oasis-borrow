@@ -1,4 +1,5 @@
 import snowflake from 'snowflake-sdk'
+
 import { config } from './config'
 
 function getSnowflakeConnection(): snowflake.Connection {

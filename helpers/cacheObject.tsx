@@ -9,11 +9,10 @@ export function cacheObject<R>(fetchFunction: () => Promise<R>, stdTTL: number):
     return JSON.stringify(response)
   }
 
-  statsCache.on('expired', async (key, value) => {
-    cacheFreshData()
+  statsCache.on('expired', async () => {
+    return cacheFreshData()
   })
 
-  cacheFreshData()
   return async () => {
     let storedData: string | undefined = statsCache.get('data')
 
