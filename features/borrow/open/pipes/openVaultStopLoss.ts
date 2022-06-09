@@ -50,6 +50,7 @@ export function getDataForStopLoss(props: OpenVaultState) {
     ilkData,
     balanceInfo: { ethBalance },
     afterCollateralizationRatioAtNextPrice,
+    afterCollateralizationRatio,
     afterLiquidationPrice,
     depositAmount,
     generateAmount,
@@ -104,6 +105,7 @@ export function getDataForStopLoss(props: OpenVaultState) {
     collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
     ethBalance,
     gasEstimation: null,
+    currentCollateralRatio: afterCollateralizationRatio,
   }
 
   return sidebarProps
