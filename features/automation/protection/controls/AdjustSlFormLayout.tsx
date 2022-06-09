@@ -225,12 +225,11 @@ export function SetDownsideProtectionInformation({
               withBullet={false}
             />
           )}
-          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
-            slRatioHigherThanCurrentOrNext(
-              selectedSLValue,
-              collateralizationRatioAtNextPrice,
-              currentCollateralRatio,
-            )) && (
+          {slRatioHigherThanCurrentOrNext(
+            selectedSLValue,
+            collateralizationRatioAtNextPrice,
+            currentCollateralRatio,
+          ) && (
             <MessageCard
               messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
               type="error"

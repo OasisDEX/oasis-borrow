@@ -40,7 +40,6 @@ import { TriggersData } from '../triggers/AutomationTriggersData'
 import {
   AdjustSlFormLayout,
   AdjustSlFormLayoutProps,
-  slCollRatioNearLiquidationRatio,
   slRatioHigherThanCurrentOrNext,
 } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
@@ -198,7 +197,7 @@ export function AdjustSlFormControl({
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: liqRatio.multipliedBy(100),
+    minBoundry: liqRatio.multipliedBy(100).plus(DEFAULT_SL_SLIDER_BOUNDRY),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
@@ -246,84 +245,78 @@ export function AdjustSlFormControl({
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey:
-      slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
-      slRatioHigherThanCurrentOrNext(
-        selectedSLValue,
-        collateralizationRatioAtNextPrice,
-        currentCollateralRatio,
-      )
-        ? 'close-vault'
-        : isStopLossEnabled
-        ? 'update-stop-loss'
-        : 'add-stop-loss',
-    onClick:
-      slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
-      slRatioHigherThanCurrentOrNext(
-        selectedSLValue,
-        collateralizationRatioAtNextPrice,
-        currentCollateralRatio,
-      )
-        ? redirectToCloseVault
-        : (finishLoader: (succeded: boolean) => void) => {
-            if (tx === undefined) {
-              return
-            }
-            const txSendSuccessHandler = (
-              transactionState: TxState<AutomationBotAddTriggerData>,
-            ) => {
-              transactionStateHandler(
-                (txState) => {
-                  /** TODO: This is not right place for it, this should be encapsulated,
-                   * probably in similar fashion as addGasEstimation$
-                   */
-                  const gasUsed =
-                    txState.status === TxStatus.Success
-                      ? new BigNumber(txState.receipt.gasUsed)
-                      : zero
+    translationKey: slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      collateralizationRatioAtNextPrice,
+      currentCollateralRatio,
+    )
+      ? 'close-vault'
+      : isStopLossEnabled
+      ? 'update-stop-loss'
+      : 'add-stop-loss',
+    onClick: slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      collateralizationRatioAtNextPrice,
+      currentCollateralRatio,
+    )
+      ? redirectToCloseVault
+      : (finishLoader: (succeded: boolean) => void) => {
+          if (tx === undefined) {
+            return
+          }
+          const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
+            transactionStateHandler(
+              (txState) => {
+                /** TODO: This is not right place for it, this should be encapsulated,
+                 * probably in similar fashion as addGasEstimation$
+                 */
+                const gasUsed =
+                  txState.status === TxStatus.Success
+                    ? new BigNumber(txState.receipt.gasUsed)
+                    : zero
 
-                  const effectiveGasPrice =
-                    txState.status ===
-                    TxStatus.Success /* Is this even correct? failed tx also have cost */
-                      ? new BigNumber(txState.receipt.effectiveGasPrice)
-                      : zero
+                const effectiveGasPrice =
+                  txState.status ===
+                  TxStatus.Success /* Is this even correct? failed tx also have cost */
+                    ? new BigNumber(txState.receipt.effectiveGasPrice)
+                    : zero
 
-                  const totalCost =
-                    !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-                      ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                          tokenPrice,
-                        )
-                      : zero
+                const totalCost =
+                  !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+                    ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
+                        tokenPrice,
+                      )
+                    : zero
 
-                  if (txState.status === TxStatus.Success) {
-                    setFirstStopLossSetup(false)
-                  }
+                if (txState.status === TxStatus.Success) {
+                  setFirstStopLossSetup(false)
+                }
 
-                  uiChanges.publish(ADD_FORM_CHANGE, {
-                    type: 'tx-details',
-                    txDetails: {
-                      txHash: (txState as any).txHash,
-                      txStatus: txState.status,
-                      txError: txState.status === TxStatus.Error ? txState.error : undefined,
-                      txCost: totalCost,
-                    },
-                  })
-                },
-                transactionState,
-                finishLoader,
-                waitForTx,
-              )
-            }
+                uiChanges.publish(ADD_FORM_CHANGE, {
+                  type: 'tx-details',
+                  txDetails: {
+                    txHash: (txState as any).txHash,
+                    txStatus: txState.status,
+                    txError: txState.status === TxStatus.Error ? txState.error : undefined,
+                    txCost: totalCost,
+                  },
+                })
+              },
+              transactionState,
+              finishLoader,
+              waitForTx,
+            )
+          }
 
-            const sendTxErrorHandler = () => {
-              finishLoader(false)
-            }
+          const sendTxErrorHandler = () => {
+            finishLoader(false)
+          }
 
-            // TODO circular dependency waitForTx <-> txSendSuccessHandler
-            const waitForTx = tx
-              .sendWithGasEstimation(addAutomationBotTrigger, txData)
-              .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-          },
+          // TODO circular dependency waitForTx <-> txSendSuccessHandler
+          const waitForTx = tx
+            .sendWithGasEstimation(addAutomationBotTrigger, txData)
+            .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+        },
     isStopLossEnabled,
     isLoading: false,
     isRetry: false,
