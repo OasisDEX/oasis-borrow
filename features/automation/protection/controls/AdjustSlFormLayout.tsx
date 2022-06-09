@@ -109,6 +109,7 @@ interface SetDownsideProtectionInformationProps {
   ethBalance: BigNumber
   txError?: TxError
   gasEstimationUsd?: BigNumber
+  currentCollateralRatio: BigNumber
 }
 
 export function SetDownsideProtectionInformation({
@@ -125,11 +126,12 @@ export function SetDownsideProtectionInformation({
   gasEstimationUsd,
   ethBalance,
   txError,
+  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
-  const nextCollateralizationPriceAlertRange = 3
+  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -164,10 +166,10 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
+  const currentCollateralizationPriceFloor = currentCollateralRatio
     .times(100)
     .decimalPlaces(0)
-    .minus(nextCollateralizationPriceAlertRange)
+    .minus(currentCollateralizationPriceAlertRange)
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -216,14 +218,19 @@ export function SetDownsideProtectionInformation({
               </AppLink>
             </Text>
           </Box>
-          {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
+          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
             <MessageCard
               messages={[t('protection.coll-ratio-close-to-current')]}
               type="warning"
               withBullet={false}
             />
           )}
-          {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
+            slRatioHigherThanCurrentOrNext(
+              selectedSLValue,
+              collateralizationRatioAtNextPrice,
+              currentCollateralRatio,
+            )) && (
             <MessageCard
               messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
               type="error"
@@ -276,6 +283,7 @@ export interface AdjustSlFormLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
   gasEstimationUsd?: BigNumber
   ethBalance: BigNumber
+  currentCollateralRatio: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
@@ -284,6 +292,17 @@ export interface AdjustSlFormLayoutProps {
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
   const margin = 5
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
+}
+
+export function slRatioHigherThanCurrentOrNext(
+  selectedSLValue: BigNumber,
+  collateralizationRatioAtNextPrice: BigNumber,
+  currentCollateralRatio: BigNumber,
+) {
+  return (
+    selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
+    selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))
+  )
 }
 
 export function AdjustSlFormLayout({
@@ -310,6 +329,7 @@ export function AdjustSlFormLayout({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
+  currentCollateralRatio,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
@@ -383,6 +403,7 @@ export function AdjustSlFormLayout({
                   selectedSLValue={selectedSLValue}
                   ethBalance={ethBalance}
                   txError={txError}
+                  currentCollateralRatio={currentCollateralRatio}
                 />
               </Box>
             </>
