@@ -22,6 +22,7 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'selectedSLValue'
   | 'isEditing'
   | 'collateralizationRatioAtNextPrice'
+  | 'currentCollateralRatio'
   | 'ethBalance'
   | 'gasEstimationUsd'
 >
@@ -41,6 +42,7 @@ export function SidebarAdjustStopLossEditingStage({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
+  currentCollateralRatio,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
@@ -76,6 +78,7 @@ export function SidebarAdjustStopLossEditingStage({
               selectedSLValue={selectedSLValue}
               ethBalance={ethBalance}
               txError={txError}
+              currentCollateralRatio={currentCollateralRatio}
             />
           </Box>
           <Box sx={{ fontSize: 2 }}>

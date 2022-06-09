@@ -39,11 +39,11 @@ export interface TriggersData {
 export function createAutomationTriggersData(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
-  vauit$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
   return every5Seconds$.pipe(
-    withLatestFrom(context$, vauit$(id)),
+    withLatestFrom(context$, vault$(id)),
     mergeMap(([, , vault]) => {
       const networkConfig = networksById[vault.chainId]
       return loadTriggerDataFromCache(vault.id.toNumber(), networkConfig.cacheApi)
