@@ -110,7 +110,6 @@ import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLo
 import { createUserReferral$ } from 'features/referralOverview/user'
 import {
   getReferralsFromApi$,
-  getTopEarnersFromApi$,
   getUserFromApi$,
   getWeeklyClaimsFromApi$,
 } from 'features/referralOverview/userApi'
@@ -894,7 +893,6 @@ export function setupAppContext() {
     txHelpers$,
     getUserFromApi$,
     getReferralsFromApi$,
-    getTopEarnersFromApi$,
     getWeeklyClaimsFromApi$,
     checkReferralLocalStorage$,
   )

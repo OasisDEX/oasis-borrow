@@ -29,7 +29,6 @@ export interface UserReferralState {
   totalAmount?: string
   referrals?: string[]
   trigger: () => void
-  topEarners?: string[]
   invitePending?: boolean
   claimTxnState?: ClaimTxnState
   performClaimMultiple?: () => void
@@ -43,7 +42,6 @@ export function createUserReferral$(
   txHelpers$: Observable<TxHelpers>,
   getUserFromApi$: (address: string, trigger$: Subject<void>) => Observable<User | null>,
   getReferralsFromApi$: (address: string) => Observable<User[] | null>,
-  getTopEarnersFromApi$: () => Observable<User[] | null>,
   getWeeklyClaimsFromApi$: (
     address: string,
     trigger$: Subject<void>,
@@ -58,12 +56,11 @@ export function createUserReferral$(
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
-        getTopEarnersFromApi$(),
         getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
         txHelpers$,
       ).pipe(
-        switchMap(([user, referrals, topEarners, weeklyClaims, referrer]) => {
+        switchMap(([user, referrals, weeklyClaims, referrer]) => {
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user) {
             return of({
@@ -79,7 +76,6 @@ export function createUserReferral$(
             amounts: weeklyClaims?.map((item) => ethers.BigNumber.from(item.amount)),
             proofs: weeklyClaims?.map((item) => item.proof),
           }
-          const topEarnersOut = topEarners?.map((r) => r.address)
 
           const claimClick$ = new Subject<void>()
 
@@ -156,7 +152,6 @@ export function createUserReferral$(
               trigger: trigger,
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
-              topEarners: topEarnersOut,
               performClaimMultiple: claimAllFunction,
               totalAmount: new BigNumber(
                 ethers.utils.formatEther(ethers.BigNumber.from(user.total_amount)),
