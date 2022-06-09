@@ -310,13 +310,15 @@ export function VaultsOverviewView({
             </WithLoadingIndicator>
           </WithErrorHandler>
         )}
-        <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
-          <Trans
-            i18nKey={headerTranslationKey}
-            values={{ address: formatAddress(address) }}
-            components={[<br />]}
-          />
-        </Heading>
+        {!earnEnabled && (
+          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+            <Trans
+              i18nKey={headerTranslationKey}
+              values={{ address: formatAddress(address) }}
+              components={[<br />]}
+            />
+          </Heading>
+        )}
         {isOwnerViewing && numberOfVaults === 0 && (
           <>
             <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
@@ -384,12 +386,18 @@ export function VaultsOverviewView({
       </Flex>
       {numberOfVaults !== 0 && (
         <>
-          <Summary summary={vaultSummary} />
           {!earnEnabled && (
-            <Grid gap={5}>
-              <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
-              <VaultsOverviewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
-            </Grid>
+            <>
+              <Summary summary={vaultSummary} />
+              <Grid gap={5}>
+                <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
+                <VaultsOverviewPerType
+                  vaults={vaults.multiply}
+                  heading="Multiply Vaults"
+                  multiply
+                />
+              </Grid>
+            </>
           )}
           {earnEnabled && (
             <Card variant="surface" sx={{ mb: 5, px: 3 }}>
