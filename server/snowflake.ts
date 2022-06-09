@@ -9,9 +9,6 @@ function getSnowflakeConnection(): snowflake.Connection {
     application: 'Oasis.app',
   })
 }
-
-export const snowFlakeConnection = config.enableSnowflake ? getSnowflakeConnection() : undefined
-
 export interface OasisStats {
   monthlyVolume: number
   managedOnOasis: number
@@ -26,6 +23,8 @@ interface StatsResponse {
 
 export function getOasisStats(): Promise<OasisStats> {
   return new Promise((resolve, reject) => {
+    const snowFlakeConnection = config.enableSnowflake ? getSnowflakeConnection() : undefined
+
     if (!snowFlakeConnection) {
       return resolve({
         monthlyVolume: 10_000_000_000,
@@ -33,20 +32,25 @@ export function getOasisStats(): Promise<OasisStats> {
         medianVaultSize: 21_370_000,
       })
     }
-    snowFlakeConnection.execute({
-      sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."FE_test";',
-      streamResult: false, // prevent rows from being returned inline in the complete callback
-      complete: function (err, stmt, rows: StatsResponse[] | undefined) {
-        if (err || !rows) {
-          return reject(err)
-        }
+    snowFlakeConnection.connect((err, connection) => {
+      if (err) {
+        return reject(err)
+      }
+      connection.execute({
+        sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."FE_test";',
+        streamResult: false, // prevent rows from being returned inline in the complete callback
+        complete: function (err, stmt, rows: StatsResponse[] | undefined) {
+          if (err || !rows) {
+            return reject(err)
+          }
 
-        resolve({
-          monthlyVolume: rows[0]['SUM_Locked_collateral_USD'],
-          managedOnOasis: rows[0].AVG_Locked_collateral_USD,
-          medianVaultSize: rows[0].SUM_Locked_collateral_USD,
-        })
-      },
+          resolve({
+            monthlyVolume: rows[0]['SUM_ABS(Collateral_USD)'],
+            managedOnOasis: rows[0].SUM_Locked_collateral_USD,
+            medianVaultSize: rows[0].AVG_Locked_collateral_USD,
+          })
+        },
+      })
     })
   })
 }
