@@ -9,19 +9,11 @@ import { Modal } from './Modal'
 
 interface ReferralModaProps {
   heading: string
-  topButtonText: string
-  bottomButtonText?: string
-  topButtonFunc: () => void
-  bottomButtonFunc?: () => void
+  topButton: { text: string; func: () => void }
+  bottomButton?: { text: string; func: () => void }
 }
 
-export function ReferralModal({
-  heading,
-  topButtonText,
-  bottomButtonText,
-  topButtonFunc,
-  bottomButtonFunc,
-}: ReferralModaProps) {
+export function ReferralModal({ heading, topButton, bottomButton }: ReferralModaProps) {
   const { t } = useTranslation()
   return (
     <Modal sx={{ maxWidth: '445px', margin: '0 auto' }} close={close}>
@@ -76,9 +68,9 @@ export function ReferralModal({
                   transform: 'translateX(10px)',
                 },
               }}
-              onClick={topButtonFunc}
+              onClick={topButton.func}
             >
-              {topButtonText}
+              {topButton.text}
               <Icon
                 name="arrow_right"
                 sx={{
@@ -89,13 +81,13 @@ export function ReferralModal({
                 }}
               />
             </Button>
-            {bottomButtonText && (
+            {bottomButton && (
               <Button
                 variant="textual"
                 sx={{ fontSize: 3, width: '100%', mt: '12px', py: 0 }}
-                onClick={bottomButtonFunc}
+                onClick={bottomButton.func}
               >
-                {bottomButtonText}
+                {bottomButton.text}
               </Button>
             )}
           </>

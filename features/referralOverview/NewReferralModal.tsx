@@ -47,17 +47,23 @@ export function NewReferralModal({ account, userReferral }: NewReferralModalProp
       {!success && !userReferral && (
         <ReferralModal
           heading="Welcome to the Oasis.app Referral Program"
-          topButtonText={t('connect-wallet')}
-          topButtonFunc={() => push('/connect')}
+          topButton={{ text: t('connect-wallet'), func: () => push('/connect') }}
         />
       )}
       {!success && userReferral && userReferral.state === 'newUser' && (
         <ReferralModal
-          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(userReferral.referrer!, 6)}`}
-          topButtonText={t('ref.modal.accept')}
-          bottomButtonText={t('ref.modal.later')}
-          topButtonFunc={() => createUser({ hasAccepted: true, isReferred: true })}
-          bottomButtonFunc={() => createUser({ hasAccepted: false, isReferred: true })}
+          heading={`${t('ref.modal.you-have-been-ref')} ${formatAddress(
+            userReferral.referrer!,
+            6,
+          )}`}
+          topButton={{
+            text: t('ref.modal.accept'),
+            func: () => createUser({ hasAccepted: true, isReferred: true }),
+          }}
+          bottomButton={{
+            text: t('ref.modal.later'),
+            func: () => createUser({ hasAccepted: false, isReferred: true }),
+          }}
         />
       )}
       {success && userReferral && account && (
