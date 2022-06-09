@@ -29,8 +29,9 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'openGuni':
     case 'manageBorrow':
     case 'manageMultiply':
-    case 'manageGuni':
       return 'confirm'
+    case 'manageGuni':
+      return 'close-vault'
     case 'addSl':
       return 'add-stop-loss'
     case 'adjustSl':

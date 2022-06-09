@@ -40,7 +40,7 @@ import { TriggersData } from '../triggers/AutomationTriggersData'
 import {
   AdjustSlFormLayout,
   AdjustSlFormLayoutProps,
-  slCollRatioNearLiquidationRatio,
+  slRatioHigherThanCurrentOrNext,
 } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
@@ -145,6 +145,10 @@ export function AdjustSlFormControl({
     .multipliedBy(currentCollateralData!.nextPrice)
     .dividedBy(vault.debt)
 
+  const currentCollateralRatio = vault.lockedCollateral
+    .multipliedBy(currentCollateralData!.currentPrice)
+    .dividedBy(vault.debt)
+
   const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
     .multipliedBy(uiState.selectedSLValue)
     .dividedBy(100)
@@ -176,7 +180,9 @@ export function AdjustSlFormControl({
 
   const sliderPercentageFill = uiState.selectedSLValue
     .minus(liqRatio.times(100))
-    .div(nextPriceCollRatio.minus(liqRatio))
+    .div(
+      nextPriceCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
+    )
 
   const sliderProps: SliderValuePickerProps = {
     disabled: false,
@@ -191,17 +197,17 @@ export function AdjustSlFormControl({
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
     maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: liqRatio.multipliedBy(100),
+    minBoundry: liqRatio.multipliedBy(100).plus(DEFAULT_SL_SLIDER_BOUNDRY),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
-      const currentCollRatio = vault.lockedCollateral
-        .multipliedBy(currentCollateralData!.currentPrice)
-        .dividedBy(vault.debt)
+      // const currentCollRatio = vault.lockedCollateral
+      //   .multipliedBy(currentCollateralData!.currentPrice)
+      //   .dividedBy(vault.debt)
       const computedAfterLiqPrice = slCollRatio
         .dividedBy(100)
-        .multipliedBy(currentCollateralData!.currentPrice)
-        .dividedBy(currentCollRatio)
+        .multipliedBy(currentCollateralData!.nextPrice)
+        .dividedBy(nextPriceCollRatio)
       /* END OF DUPLICATION */
       setAfterLiqPrice(computedAfterLiqPrice)
 
@@ -239,12 +245,20 @@ export function AdjustSlFormControl({
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+    translationKey: slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      collateralizationRatioAtNextPrice,
+      currentCollateralRatio,
+    )
       ? 'close-vault'
       : isStopLossEnabled
       ? 'update-stop-loss'
       : 'add-stop-loss',
-    onClick: slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+    onClick: slRatioHigherThanCurrentOrNext(
+      selectedSLValue,
+      collateralizationRatioAtNextPrice,
+      currentCollateralRatio,
+    )
       ? redirectToCloseVault
       : (finishLoader: (succeded: boolean) => void) => {
           if (tx === undefined) {
@@ -360,6 +374,7 @@ export function AdjustSlFormControl({
     stage,
     isProgressDisabled,
     redirectToCloseVault,
+    currentCollateralRatio,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

@@ -52,6 +52,7 @@ interface FieldWithdrawCollateralProps extends FieldProps {
 
 interface FieldDepositDaiProps extends FieldProps {
   depositDaiAmount?: BigNumber
+  maxAmountLabelKey?: string
   maxDepositDaiAmount?: BigNumber
   updateDepositDai?: () => void
   updateDepositDaiAmount?: () => void
@@ -253,6 +254,7 @@ export function FieldWithdrawCollateral({
 export function FieldDepositDai({
   action = 'Deposit',
   depositDaiAmount,
+  maxAmountLabelKey = 'max',
   maxDepositDaiAmount,
   updateDepositDai,
   updateDepositDaiAmount,
@@ -269,7 +271,7 @@ export function FieldDepositDai({
       token="DAI"
       showMax={true}
       maxAmount={maxDepositDaiAmount}
-      maxAmountLabel={t('max')}
+      maxAmountLabel={t(maxAmountLabelKey)}
       onSetMax={updateDepositDaiMax! || updateDepositDaiAmountMax!}
       onChange={handleNumericInput(updateDepositDai! || updateDepositDaiAmount!)}
       hasError={false}

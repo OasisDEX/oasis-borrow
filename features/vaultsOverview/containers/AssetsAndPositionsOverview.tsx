@@ -99,10 +99,10 @@ function LinkedRow(props: PositionView) {
           if (breakpointIndex <= 1) {
             setMenuPosition({
               right: `${window.innerWidth - rect.right - 20}px`,
-              top: `${rect.top}px`,
+              top: `${window.scrollY + rect.top}px`,
             })
           } else {
-            setMenuPosition({ left: rect.right, top: rect.top })
+            setMenuPosition({ left: rect.right, top: rect.top + window.scrollY })
           }
         }}
       >
