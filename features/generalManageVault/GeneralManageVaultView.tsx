@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
 import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { Survey } from 'features/survey'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -55,7 +56,7 @@ export function GeneralManageVaultViewAutomation({
               manageVault={generalManageVault.state}
               details={GuniManageMultiplyVaultDetails}
               header={GuniVaultHeader}
-              form={GuniManageMultiplyVaultForm}
+              form={!newComponentsEnabled ? GuniManageMultiplyVaultForm : SidebarManageGuniVault}
               history={VaultHistoryView}
             />
           ) : (
