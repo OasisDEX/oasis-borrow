@@ -1,13 +1,19 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { getOasisStats } from '../../server/snowflake'
+import { cacheObject } from '../../helpers/cacheObject'
 
-const STATIC_OASIS_STATS = {
-  monthlyVolume: 3900000000,
-  managedOnOasis: 1440000000,
-  medianVaultSize: 212000,
-}
+const getStats = cacheObject(getOasisStats, 24 * 60 * 60)
 
-export type OasisStats = typeof STATIC_OASIS_STATS
-
-export default async function oasisStatsHandler(_: NextApiRequest, res: NextApiResponse) {
-  res.status(200).json(STATIC_OASIS_STATS)
+export default async function oasisStatsHandler(req: NextApiRequest, res: NextApiResponse) {
+  switch (req.method) {
+    case 'GET':
+      const stats = await getStats()
+      if (stats) {
+        res.status(200).json(stats)
+      } else {
+        res.status(404).json('Oasis stats unavailable')
+      }
+    default:
+      return res.status(405).end()
+  }
 }
