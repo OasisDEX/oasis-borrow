@@ -30,7 +30,7 @@ import React, { useMemo, useState } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
-import { getIsEditingProtection } from '../common/helpers'
+import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
@@ -44,7 +44,7 @@ import {
 } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
-function prepareAddTriggerData(
+export function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
@@ -155,15 +155,11 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const sliderPercentageFill = uiState.selectedSLValue
-    .minus(liqRatio.times(100))
-    .div(
-      collateralizationRatioAtNextPrice
-        .times(100)
-        .decimalPlaces(0, BigNumber.ROUND_DOWN)
-        .div(100)
-        .minus(liqRatio),
-    )
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: uiState.selectedSLValue,
+    min: ilkData.liquidationRatio,
+    max: collateralizationRatioAtNextPrice,
+  })
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)

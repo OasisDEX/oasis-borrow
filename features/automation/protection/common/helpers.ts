@@ -55,3 +55,17 @@ export function backToVaultOverview(uiChanges: UIChanges) {
     type: 'change-mode',
   })
 }
+
+export function getSliderPercentageFill({
+  value,
+  min,
+  max,
+}: {
+  value: BigNumber
+  min: BigNumber
+  max: BigNumber
+}) {
+  return value
+    .minus(min.times(100))
+    .div(max.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(min))
+}

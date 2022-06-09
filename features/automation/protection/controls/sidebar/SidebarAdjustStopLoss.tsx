@@ -30,7 +30,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const {
     addTriggerConfig,
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio,
     ethBalance,
     ethPrice,
     firstStopLossSetup,
@@ -53,7 +53,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     ethBalance,
     ethPrice,
     selectedSLValue,
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio,
   })
   const sidebarTxData = extractSidebarTxData(props)
   const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)

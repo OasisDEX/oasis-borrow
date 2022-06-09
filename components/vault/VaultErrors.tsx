@@ -1,17 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
-
-import { IlkData } from '../../blockchain/ilks'
-import { Vault } from '../../blockchain/vaults'
-import { VaultErrorMessage } from '../../features/form/errorMessagesHandler'
-import { zero } from '../../helpers/zero'
 
 const KbLink = (
   <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
@@ -133,6 +132,8 @@ export function VaultErrors({
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':
+        return translate('stop-loss-near-liquidation-ratio')
+      case 'stopLossHigherThanCurrentOrNext':
         return translate('stop-loss-near-liquidation-ratio')
       default:
         throw new UnreachableCaseError(message)

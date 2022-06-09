@@ -1,9 +1,9 @@
 import { ContractDesc } from '@oasisdex/web3-context'
+import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
-import { Abi } from '../helpers/types'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
 import * as eth from './abi/ds-eth-token.json'
@@ -124,6 +124,7 @@ const protoMain = {
   infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
   collaterals: getCollaterals(mainnetAddresses, supportedIlks),
   tokens: tokensMainnet,
@@ -200,6 +201,7 @@ const kovan: NetworkConfig = {
   infuraUrl: `https://kovan.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
   collaterals: getCollaterals(kovanAddresses, supportedIlks),
   tokens: {
@@ -273,6 +275,7 @@ const goerli: NetworkConfig = {
   infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
   collaterals: getCollaterals(goerliAddresses, supportedIlks),
   tokens: {

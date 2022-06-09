@@ -3,6 +3,7 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
+import { getSliderPercentageFill } from 'features/automation/protection/common/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 
@@ -62,9 +63,11 @@ export function getDataForStopLoss(props: OpenVaultState) {
 
   const tokenData = getToken(token)
 
-  const sliderPercentageFill = stopLossLevel
-    .minus(ilkData.liquidationRatio.times(100))
-    .div(afterCollateralizationRatioAtNextPrice.minus(ilkData.liquidationRatio))
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: stopLossLevel,
+    min: ilkData.liquidationRatio,
+    max: afterCollateralizationRatioAtNextPrice,
+  })
 
   const afterNewLiquidationPrice = stopLossLevel
     .dividedBy(100)

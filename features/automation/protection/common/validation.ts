@@ -1,7 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { slCollRatioNearLiquidationRatio } from 'features/automation/protection/controls/AdjustSlFormLayout'
-import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
+import {
+  ethFundsForTxValidator,
+  notEnoughETHtoPayForTx,
+  stopLossCloseToCollRatioValidator,
+} from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
@@ -12,13 +16,13 @@ export function warningsValidation({
   ethBalance,
   ethPrice,
   selectedSLValue,
-  collateralizationRatioAtNextPrice,
+  currentCollateralRatio,
 }: {
   token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   selectedSLValue: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  currentCollateralRatio: BigNumber
   gasEstimationUsd?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -28,17 +32,14 @@ export function warningsValidation({
     ethPrice,
   })
 
-  const nextCollateralizationPriceAlertRange = 3
-  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
-    .times(100)
-    .decimalPlaces(0)
-    .minus(nextCollateralizationPriceAlertRange)
-
-  const nextCollRatioCloseToCurrentSl = selectedSLValue.gte(nextCollateralizationPriceFloor)
+  const currentCollRatioCloseToStopLoss = stopLossCloseToCollRatioValidator({
+    stopLossLevel: selectedSLValue,
+    currentCollRatio: currentCollateralRatio,
+  })
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
-    nextCollRatioCloseToCurrentSl,
+    currentCollRatioCloseToStopLoss,
   })
 }
 

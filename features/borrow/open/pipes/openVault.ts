@@ -61,7 +61,12 @@ import {
   defaultOpenVaultSummary,
   OpenVaultSummary,
 } from './openVaultSummary'
-import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
+import {
+  addStopLossTrigger,
+  applyEstimateGas,
+  applyOpenVaultTransaction,
+  openVault,
+} from './openVaultTransactions'
 import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -108,6 +113,11 @@ export type OpenVaultStage =
   | 'txInProgress'
   | 'txFailure'
   | 'txSuccess'
+  | 'stopLossTxWaitingForConfirmation'
+  | 'stopLossTxWaitingForApproval'
+  | 'stopLossTxInProgress'
+  | 'stopLossTxFailure'
+  | 'stopLossTxSuccess'
 
 export interface MutableOpenVaultState {
   stage: OpenVaultStage
@@ -154,10 +164,13 @@ interface OpenVaultTxInfo {
   allowanceTxHash?: string
   proxyTxHash?: string
   openTxHash?: string
+  stopLossTxHash?: string
   txError?: TxError
   etherscan?: string
   proxyConfirmations?: number
+  openVaultConfirmations?: number
   safeConfirmations: number
+  openVaultSafeConfirmations: number
 }
 
 interface OpenVaultStopLossSetup {
@@ -284,6 +297,14 @@ function addTransitions(
     }
   }
 
+  if (state.stage === 'stopLossTxWaitingForConfirmation' || state.stage === 'stopLossTxFailure') {
+    return {
+      ...state,
+      progress: () => addStopLossTrigger(txHelpers, vaultActions, change, state),
+      regress: () => change({ kind: 'backToEditing' }),
+    }
+  }
+
   return state
 }
 
@@ -381,6 +402,7 @@ export function createOpenVault$(
                       proxyAddress,
                       allowance,
                       safeConfirmations: context.safeConfirmations,
+                      openVaultSafeConfirmations: context.openVaultSafeConfirmations,
                       etherscan: context.etherscan.url,
                       errorMessages: [],
                       warningMessages: [],

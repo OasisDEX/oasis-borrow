@@ -26,7 +26,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio,
     ethBalance,
     ethPrice,
     gasEstimationUsd,
@@ -48,7 +48,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     ethBalance,
     ethPrice,
     selectedSLValue,
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio,
   })
   const sidebarTxData = extractSidebarTxData(props)
 

@@ -91,7 +91,6 @@ export function ProtectionFormControl({
                   }}
                   priceInfo={priceInfo}
                   balanceInfo={balanceInfo}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
               ) : (
                 <AdjustSlFormControl
@@ -129,7 +128,6 @@ export function ProtectionFormControl({
               }}
               priceInfo={priceInfo}
               balanceInfo={balanceInfo}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
             />
           ) : (
             <AdjustSlFormControl

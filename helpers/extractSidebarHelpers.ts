@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { AllowanceOption } from 'features/allowance/allowance'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { pick } from 'ramda'
-
-import { AllowanceOption } from '../features/allowance/allowance'
 
 interface SharedStateExtractions {
   stage: SidebarVaultStages
@@ -42,9 +41,13 @@ export interface SidebarTxData extends SharedStateExtractions {
   allowanceTxHash?: string
   openTxHash?: string
   manageTxHash?: string
+  stopLossTxHash?: string
   proxyConfirmations?: number
+  openVaultConfirmations?: number
   safeConfirmations?: number
+  openVaultSafeConfirmations?: number
   etherscan?: string
+  openFlowWithStopLoss?: boolean
 }
 
 export function extractSidebarAllowanceData(state: SidebarAllowanceData) {
@@ -93,8 +96,12 @@ export function extractSidebarTxData(state: SidebarTxData) {
         'allowanceTxHash',
         'openTxHash',
         'manageTxHash',
+        'stopLossTxHash',
         'proxyConfirmations',
+        'openVaultConfirmations',
         'safeConfirmations',
+        'openVaultSafeConfirmations',
+        'openFlowWithStopLoss',
         'etherscan',
       ],
       state,

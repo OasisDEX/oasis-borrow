@@ -1,4 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import {
+  slCollRatioNearLiquidationRatio,
+  slRatioHigherThanCurrentOrNext,
+} from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -11,6 +16,7 @@ import {
   depositingAllEthBalanceValidator,
   ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
+  stopLossCloseToCollRatioValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -24,6 +30,7 @@ const defaultOpenVaultStageCategories = {
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
+  isAddStopLossStage: false,
 }
 
 export function calculateInitialTotalSteps(
@@ -97,6 +104,7 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         isProxyStage: true,
         totalSteps,
         currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
+        proxyAddress,
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -130,6 +138,18 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         totalSteps,
         currentStep: totalSteps,
       }
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxInProgress':
+    case 'stopLossTxFailure':
+    case 'stopLossTxSuccess':
+      return {
+        ...state,
+        ...defaultOpenVaultStageCategories,
+        isAddStopLossStage: true,
+        totalSteps,
+        currentStep: totalSteps,
+      }
     default:
       throw new UnreachableCaseError(stage)
   }
@@ -141,6 +161,7 @@ export interface OpenVaultConditions {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+  isAddStopLossStage: boolean
 
   inputAmountsEmpty: boolean
 
@@ -168,11 +189,16 @@ export interface OpenVaultConditions {
 
   isLoadingStage: boolean
   isSuccessStage: boolean
+  isStopLossSuccessStage: boolean
+  openFlowWithStopLoss: boolean
   canProgress: boolean
   canRegress: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
+  stopLossOnNearLiquidationRatio: boolean
+  stopLossHigherThanCurrentOrNext: boolean
+  currentCollRatioCloseToStopLoss: boolean
 }
 
 export const defaultOpenVaultConditions: OpenVaultConditions = {
@@ -203,11 +229,16 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
 
   isLoadingStage: false,
   isSuccessStage: false,
+  isStopLossSuccessStage: false,
+  openFlowWithStopLoss: false,
   canProgress: false,
   canRegress: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
+  stopLossOnNearLiquidationRatio: false,
+  stopLossHigherThanCurrentOrNext: false,
+  currentCollRatioCloseToStopLoss: false,
 }
 
 export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState {
@@ -232,6 +263,9 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowanceAmount,
     allowance,
     txError,
+    withStopLossStage,
+    stopLossLevel,
+    stopLossSkipped,
   } = state
 
   const inputAmountsEmpty = !depositAmount && !generateAmount
@@ -316,9 +350,12 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'allowanceWaitingForApproval',
     'txInProgress',
     'txWaitingForApproval',
+    'stopLossTxInProgress',
+    'stopLossTxWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
+  const isStopLossSuccessStage = stage === 'stopLossTxSuccess'
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -371,6 +408,25 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
+  const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
+
+  const stopLossOnNearLiquidationRatio =
+    stopLossLevel.gt(zero) &&
+    slCollRatioNearLiquidationRatio(stopLossLevel, {
+      liquidationRatio,
+    } as IlkData)
+
+  const stopLossHigherThanCurrentOrNext = slRatioHigherThanCurrentOrNext(
+    stopLossLevel,
+    afterCollateralizationRatioAtNextPrice,
+    afterCollateralizationRatio,
+  )
+
+  const currentCollRatioCloseToStopLoss = stopLossCloseToCollRatioValidator({
+    stopLossLevel: stopLossLevel,
+    currentCollRatio: afterCollateralizationRatio,
+  })
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -383,6 +439,9 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     vaultWillBeUnderCollateralizedAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
     insufficientEthFundsForTx,
+    stopLossOnNearLiquidationRatio,
+    stopLossHigherThanCurrentOrNext,
+    currentCollRatioCloseToStopLoss,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,
@@ -399,6 +458,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
     isLoadingStage,
     isSuccessStage,
+    isStopLossSuccessStage,
+    openFlowWithStopLoss,
     canProgress,
     canRegress,
   }

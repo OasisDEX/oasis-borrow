@@ -60,7 +60,6 @@ interface CancelSlFormControlProps {
   accountIsController: boolean
   priceInfo: PriceInfo
   balanceInfo: BalanceInfo
-  collateralizationRatioAtNextPrice: BigNumber
   tx?: TxHelpers
 }
 
@@ -73,7 +72,6 @@ export function CancelSlFormControl({
   priceInfo,
   balanceInfo,
   ilkData,
-  collateralizationRatioAtNextPrice,
   tx,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
@@ -193,7 +191,7 @@ export function CancelSlFormControl({
     stage,
     token,
     ilkData,
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio: vault.collateralizationRatio,
     selectedSLValue: addSlUiState.selectedSLValue,
     isProgressDisabled,
   }

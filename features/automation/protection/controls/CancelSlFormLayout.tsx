@@ -128,7 +128,7 @@ export interface CancelSlFormLayoutProps {
   isProgressDisabled: boolean
   token: string
   ilkData: IlkData
-  collateralizationRatioAtNextPrice: BigNumber
+  currentCollateralRatio: BigNumber
   selectedSLValue: BigNumber
 }
 

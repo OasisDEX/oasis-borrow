@@ -145,6 +145,7 @@ export function getPrimaryButtonLabel({
     case 'allowanceSuccess':
       return t('continue')
     case 'txFailure':
+    case 'stopLossTxFailure':
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
@@ -154,12 +155,17 @@ export function getPrimaryButtonLabel({
 
       return t(txInProgressKey)
     case 'txSuccess':
+    case 'stopLossTxSuccess':
       const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
 
       return t(txSuccessKey, { id })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxInProgress':
+      return t('set-up-stop-loss-tx')
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')

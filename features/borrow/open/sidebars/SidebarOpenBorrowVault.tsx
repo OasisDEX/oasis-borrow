@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
+import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
@@ -53,6 +54,9 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     token,
     totalSteps,
     stopLossLevel,
+    isStopLossSuccessStage,
+    openFlowWithStopLoss,
+    isAddStopLossStage,
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
@@ -64,7 +68,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const stopLossData = getDataForStopLoss(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
@@ -72,6 +76,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
+        {isAddStopLossStage && <SidebarVaultStopLossStage {...props} />}
         <VaultErrors {...props} />
         <VaultWarnings {...props} />
       </Grid>
@@ -84,14 +89,15 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     }),
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
-      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
+      steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
       disabled: !canProgress || (isStopLossEditingStage && stopLossLevel.isZero()),
       isLoading: isLoadingStage,
       action: () => {
-        if (!isSuccessStage) progress!()
+        if (!isSuccessStage && !isStopLossSuccessStage) progress!()
         progressTrackingEvent({ props, firstCDP })
       },
-      url: isSuccessStage ? `/${id}` : undefined,
+      url:
+        (isSuccessStage && !openFlowWithStopLoss) || isStopLossSuccessStage ? `/${id}` : undefined,
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),
