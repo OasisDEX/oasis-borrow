@@ -152,22 +152,3 @@ export function createUserUsingApi$(
     },
   }).pipe(map((resp) => resp.status))
 }
-
-export function updateClaimsUsingApi$(
-  user_address: string,
-  week_number: number[],
-  token: string,
-): Observable<number> {
-  return ajax({
-    url: `${basePath}/api/user/claims/update`,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: 'Bearer ' + token,
-    },
-    body: {
-      user_address,
-      week_number,
-    },
-  }).pipe(map((resp) => resp.status))
-}

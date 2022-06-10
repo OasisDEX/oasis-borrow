@@ -102,7 +102,10 @@ export function FeesView({ userReferral }: Props) {
                 }}
                 variant="strong"
               >
-                {userReferral.totalClaim}
+               {/*  // leave this or delay querying the cache ? */}
+                {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
+                  ? '0.0'
+                  : userReferral.totalClaim}
                 {` `}
                 <span style={{ fontSize: '18px' }}>DAI</span>
               </Text>

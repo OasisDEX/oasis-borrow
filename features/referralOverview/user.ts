@@ -4,13 +4,13 @@ import { User, WeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { networksById } from 'blockchain/config'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { gql, GraphQLClient } from 'graphql-request'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
-
-import { updateClaimsUsingApi$ } from './userApi'
 
 export enum ClaimTxnState {
   PENDING = 'PENDING',
@@ -53,14 +53,17 @@ export function createUserReferral$(
       if (web3Context.status !== 'connected') {
         return of({ state: 'walletConnectionInProgress' } as UserReferralState)
       }
+      const { cacheApi } = networksById[web3Context.chainId]
+
       return combineLatest(
         getUserFromApi$(web3Context.account, trigger$),
         getReferralsFromApi$(web3Context.account),
         getWeeklyClaimsFromApi$(web3Context.account, trigger$),
         checkReferralLocalStorage$(),
+        getClaimedClaims(new GraphQLClient(cacheApi), web3Context.account),
         txHelpers$,
       ).pipe(
-        switchMap(([user, referrals, weeklyClaims, referrer]) => {
+        switchMap(([user, referrals, weeklyClaims, referrer, claimedClaims]) => {
           // newUser gets referrer address from local storage, currentUser from the db
           if (!user) {
             return of({
@@ -71,10 +74,16 @@ export function createUserReferral$(
           }
 
           const referralsOut = referrals?.map((r) => r.address)
+
+          const claimedWeeks = claimedClaims.map((item) => Number(item.week)) as number[]
+          const filteredWeeklyClaims = weeklyClaims?.filter(
+            (item) => !claimedWeeks.includes(item.week_number),
+          )
+
           const claimsOut = {
-            weeks: weeklyClaims?.map((item) => ethers.BigNumber.from(item.week_number)),
-            amounts: weeklyClaims?.map((item) => ethers.BigNumber.from(item.amount)),
-            proofs: weeklyClaims?.map((item) => item.proof),
+            weeks: filteredWeeklyClaims?.map((item) => ethers.BigNumber.from(item.week_number)),
+            amounts: filteredWeeklyClaims?.map((item) => ethers.BigNumber.from(item.amount)),
+            proofs: filteredWeeklyClaims?.map((item) => item.proof),
           }
 
           const claimClick$ = new Subject<void>()
@@ -94,15 +103,7 @@ export function createUserReferral$(
                 (txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
                   const jwtToken = jwtAuthGetToken(txnState.account)
                   if (txnState.status === TxStatus.Success && jwtToken && claimsOut.weeks) {
-                    updateClaimsUsingApi$(
-                      txnState.account,
-                      claimsOut.weeks.map((week: ethers.BigNumber) => Number(week)),
-                      jwtToken,
-                    ).subscribe((res) => {
-                      if (res === 200) {
-                        trigger()
-                      }
-                    })
+                    trigger()
                   }
 
                   switch (txnState.status) {
@@ -175,4 +176,30 @@ export function createUserReferral$(
     }),
     share(),
   )
+}
+
+const claimedClaimsQuery = gql`
+  query allClaimedWeeks($address: String!) {
+    allClaims(filter: { address: { equalTo: $address } }) {
+      nodes {
+        address
+        week
+        amount
+        timestamp
+        txHash
+      }
+    }
+  }
+`
+interface Claim {
+  address: string
+  week: number
+  amount: number
+  timestamp: Date
+  txHash: string
+}
+
+async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
+  const data = await client.request(claimedClaimsQuery, { address: address.toLocaleLowerCase() })
+  return data.allClaims.nodes
 }
