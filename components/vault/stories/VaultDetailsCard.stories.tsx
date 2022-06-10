@@ -44,7 +44,7 @@ export const StopLossCollRatioCard = ({ hasAfter, isProtected }: CardsControl) =
       <VaultDetailsCardStopLossCollRatio
         slRatio={new BigNumber(160)}
         afterSlRatio={new BigNumber(180)}
-        collateralizationRatio={new BigNumber(200)}
+        collateralizationRatioAtNextPrice={new BigNumber(200)}
         showAfterPill={hasAfter}
         isProtected={isProtected}
       />
