@@ -27,6 +27,7 @@ import { ColumnDef, Table, TableSortHeader } from '../../components/Table'
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { useRedirect } from '../../helpers/useRedirect'
+import { zero } from '../../helpers/zero'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Filters } from './Filters'
@@ -34,7 +35,6 @@ import { Summary } from './Summary'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSuggestions } from './VaultSuggestions'
-import { zero } from '../../helpers/zero'
 
 interface Props {
   vaultsOverview: VaultsOverview
