@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import {
+  DEFAULT_SL_SLIDER_BOUNDARY,
+  MAX_SL_SLIDER_VALUE_OFFSET,
+} from 'features/automation/protection/common/consts/automationDefaults'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
 import { getSliderPercentageFill } from 'features/automation/protection/common/helpers'
@@ -65,8 +69,8 @@ export function getDataForStopLoss(props: OpenVaultState) {
 
   const sliderPercentageFill = getSliderPercentageFill({
     value: stopLossLevel,
-    min: ilkData.liquidationRatio,
-    max: afterCollateralizationRatioAtNextPrice,
+    min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
+    max: afterCollateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
   })
 
   const afterNewLiquidationPrice = stopLossLevel
@@ -90,9 +94,12 @@ export function getDataForStopLoss(props: OpenVaultState) {
       rightBoundry: afterNewLiquidationPrice,
       lastValue: stopLossLevel,
       maxBoundry: new BigNumber(
-        afterCollateralizationRatioAtNextPrice.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN),
+        afterCollateralizationRatioAtNextPrice
+          .minus(MAX_SL_SLIDER_VALUE_OFFSET)
+          .multipliedBy(100)
+          .toFixed(0, BigNumber.ROUND_DOWN),
       ),
-      minBoundry: ilkData.liquidationRatio.multipliedBy(100),
+      minBoundry: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
       onChange: (level) => setStopLossLevel(level),
     },
     tokenPrice: nextCollateralPrice,

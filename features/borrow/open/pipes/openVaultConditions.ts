@@ -1,9 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import {
-  slCollRatioNearLiquidationRatio,
-  slRatioHigherThanCurrentOrNext,
-} from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -16,7 +11,6 @@ import {
   depositingAllEthBalanceValidator,
   ethFundsForTxValidator,
   ledgerWalletContractDataDisabledValidator,
-  stopLossCloseToCollRatioValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -410,23 +404,6 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
   const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
 
-  const stopLossOnNearLiquidationRatio =
-    stopLossLevel.gt(zero) &&
-    slCollRatioNearLiquidationRatio(stopLossLevel, {
-      liquidationRatio,
-    } as IlkData)
-
-  const stopLossHigherThanCurrentOrNext = slRatioHigherThanCurrentOrNext(
-    stopLossLevel,
-    afterCollateralizationRatioAtNextPrice,
-    afterCollateralizationRatio,
-  )
-
-  const currentCollRatioCloseToStopLoss = stopLossCloseToCollRatioValidator({
-    stopLossLevel: stopLossLevel,
-    currentCollRatio: afterCollateralizationRatio,
-  })
-
   return {
     ...state,
     inputAmountsEmpty,
@@ -439,9 +416,6 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     vaultWillBeUnderCollateralizedAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
     insufficientEthFundsForTx,
-    stopLossOnNearLiquidationRatio,
-    stopLossHigherThanCurrentOrNext,
-    currentCollRatioCloseToStopLoss,
 
     depositingAllEthBalance,
     depositAmountExceedsCollateralBalance,

@@ -86,14 +86,12 @@ export function getPrimaryButtonLabel({
   flow,
   canTransition = true,
   isSLPanelVisible = false,
-  shouldRedirectToCloseVault = false,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
   const allowanceToken =
     insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
 
   if (isSLPanelVisible) return t('protection.reopen-position')
-  else if (shouldRedirectToCloseVault) return t('close-vault')
 
   switch (stage) {
     case 'editing':

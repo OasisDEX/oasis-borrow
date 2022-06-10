@@ -156,13 +156,13 @@ export function AdjustSlFormControl({
   const sliderPercentageFill = getSliderPercentageFill({
     value: uiState.selectedSLValue,
     min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
-    max: collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
+    max: vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
   })
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)
     .multipliedBy(nextCollateralPrice)
-    .dividedBy(collateralizationRatioAtNextPrice)
+    .dividedBy(vault.collateralizationRatioAtNextPrice)
 
   const sliderProps: SliderValuePickerProps = {
     ...stopLossSliderBasicConfig,
@@ -171,9 +171,12 @@ export function AdjustSlFormControl({
     rightBoundry: afterNewLiquidationPrice,
     lastValue: uiState.selectedSLValue,
     maxBoundry: new BigNumber(
-      collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET).multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN),
+      vault.collateralizationRatioAtNextPrice
+        .minus(MAX_SL_SLIDER_VALUE_OFFSET)
+        .multipliedBy(100)
+        .toFixed(0, BigNumber.ROUND_DOWN),
     ),
-    minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDRY).multipliedBy(100),
+    minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
     onChange: (slCollRatio) => {
       if (uiState.collateralActive === undefined) {
         uiChanges.publish(ADD_FORM_CHANGE, {
