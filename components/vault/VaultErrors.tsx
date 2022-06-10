@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
@@ -20,8 +19,6 @@ interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
   maxGenerateAmount?: BigNumber
   ilkData: IlkData
-  vault?: Vault
-  token?: string
   maxWithdrawAmount?: BigNumber
 }
 
@@ -29,9 +26,7 @@ export function VaultErrors({
   errorMessages,
   maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
-  ilkData: { debtFloor },
-  vault,
-  token,
+  ilkData: { debtFloor, token },
 }: VaultErrorsProps) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -80,12 +75,12 @@ export function VaultErrors({
       case 'withdrawAmountExceedsFreeCollateral':
         return translate('withdraw-amount-exceeds-free-collateral', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token || token,
+          token: token,
         })
       case 'withdrawAmountExceedsFreeCollateralAtNextPrice':
         return translate('withdraw-amount-exceeds-free-collateral-at-next-price', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token || token,
+          token: token,
         })
       case 'generateAmountExceedsDaiYieldFromTotalCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-total-collateral')

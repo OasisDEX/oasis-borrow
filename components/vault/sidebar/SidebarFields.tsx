@@ -292,7 +292,6 @@ export function FieldWithdrawCollateral({
         errorMessages={pickWithdrawErrors(errorMessages)}
         ilkData={ilkData}
         maxWithdrawAmount={maxWithdrawAmount}
-        token={token}
       />
     </>
   )
