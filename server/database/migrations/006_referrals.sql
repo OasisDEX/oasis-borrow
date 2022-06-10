@@ -14,7 +14,6 @@ CREATE TABLE "weekly_claim" (
     "user_address" TEXT NOT NULL,
     "proof" TEXT[],
     "amount" TEXT NOT NULL,
-    "claimed" BOOLEAN NOT NULL,
 
     CONSTRAINT "weekly_claim_pkey" PRIMARY KEY ("id")
 );
