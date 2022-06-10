@@ -11,6 +11,7 @@ import {
   landingPageCardsData,
   multiplyPageCardsData,
 } from './productCards'
+import { configureLocalStorageForTests } from './useFeatureToggle'
 
 const wbtcA = mockIlkData({
   token: 'WTBC',
@@ -109,6 +110,12 @@ const crv = mockIlkData({
 })()
 
 describe('createProductCardsData$', () => {
+  beforeEach(() => {
+    configureLocalStorageForTests({ EarnProduct: true })
+  })
+  afterEach(() => {
+    localStorage.clear()
+  })
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
 
