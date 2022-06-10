@@ -324,6 +324,15 @@ export function VaultsOverviewView({
             />
           </Heading>
         )}
+        {earnEnabled && !isOwnerViewing && numberOfVaults === 0 && (
+          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+            <Trans
+              i18nKey={headerTranslationKey}
+              values={{ address: formatAddress(address) }}
+              components={[<br />]}
+            />
+          </Heading>
+        )}
         {!earnEnabled && isOwnerViewing && numberOfVaults === 0 && (
           <>
             <Text
