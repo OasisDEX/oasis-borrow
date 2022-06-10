@@ -15,7 +15,6 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
-import { Feature } from './useFeatureToggle'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -96,11 +95,6 @@ export const supportedBorrowIlks = [
   'WSTETH-B',
 ]
 
-// TODO: remove 'GUNIV3DAIUSDC2-A' from supportedMultiplyIlks when EarnProduct feature removed
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _thisConstJustProvidesCompileTimeError: Feature = 'EarnProduct'
-// the above line just to remind me
-
 export const supportedMultiplyIlks = [
   'ETH-A',
   'ETH-B',
@@ -110,8 +104,6 @@ export const supportedMultiplyIlks = [
   'WBTC-B',
   'WBTC-C',
   'RENBTC-A',
-  'GUNIV3DAIUSDC2-A', // remove this when removing EarnProduct feature toggle
-  'GUNIV3DAIUSDC1-A',
   'LINK-A',
   'UNI-A',
   'YFI-A',
@@ -218,7 +210,7 @@ export const productCardsConfig: {
       genericFilters.mana,
       genericFilters.matic,
     ],
-    featuredCards: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
+    featuredCards: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
@@ -245,7 +237,7 @@ export const productCardsConfig: {
         // 'CRVV1ETHSTETH-A',
         'WSTETH-B',
       ],
-      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
       earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
     },
   },

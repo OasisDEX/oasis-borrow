@@ -25,6 +25,7 @@ function renderLayout(
     currentOraclePrice: priceInfo.currentCollateralPrice,
     nextOraclePrice: priceInfo.nextCollateralPrice,
     lockedCollateral: vaultData.lockedCollateral,
+    collateralizationRatioAtNextPrice: vaultData.collateralizationRatioAtNextPrice,
 
     liquidationRatio: ilkData.liquidationRatio,
     liquidationPenalty: ilkData.liquidationPenalty,

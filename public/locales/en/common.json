@@ -444,6 +444,7 @@
       "max-token-on-stop-loss-trigger": "Est. {{token}} on stop loss trigger",
       "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on stop loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
       "current-coll-ratio": "Current coll ratio",
+      "next-coll-ratio": "Next Coll Ratio",
       "saving-comp-to-liquidation": "Saving compared to liquidation",
       "above-liquidation-price": "above liquidation price",
       "on-next-price": "on next price",
@@ -702,7 +703,7 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} Current Collateral Ratio"
+        "footnote": "{{amount}} Next Collateral Ratio"
       }
     }
   },
