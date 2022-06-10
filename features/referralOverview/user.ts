@@ -190,7 +190,7 @@ export function createUserReferral$(
 
 const claimedClaimsQuery = gql`
   query allClaimedWeeks($address: String!) {
-    allClaimedWeeks(filter: { address: { equalTo: $address } }) {
+    allClaims(filter: { address: { equalTo: $address } }) {
       nodes {
         address
         week
@@ -211,5 +211,5 @@ interface Claim {
 
 async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
   const data = await client.request(claimedClaimsQuery, { address: address })
-  return data.allClaimedWeeks.nodes
+  return data.allClaims.nodes
 }
