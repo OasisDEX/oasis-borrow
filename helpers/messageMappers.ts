@@ -8,7 +8,7 @@ const depositErrors = [
   'depositCollateralOnVaultUnderDebtFloor',
 ]
 
-export function pickDepositErrors(errorMessages: VaultErrorMessage[]) {
+export function extractDepositErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => depositErrors.includes(message))
 }
 
@@ -22,7 +22,7 @@ const generateErrors = [
   'generateAmountExceedsDaiYieldFromTotalCollateralAtNextPrice',
 ]
 
-export function pickGenerateErrors(errorMessages: VaultErrorMessage[]) {
+export function extractGenerateErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => generateErrors.includes(message))
 }
 
@@ -32,13 +32,13 @@ const withdrawErrors = [
   'withdrawCollateralOnVaultUnderDebtFloor',
 ]
 
-export function pickWithdrawErrors(errorMessages: VaultErrorMessage[]) {
+export function extractWithdrawErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => withdrawErrors.includes(message))
 }
 
 const paybackErrors = ['paybackAmountExceedsDaiBalance', 'paybackAmountExceedsVaultDebt']
 
-export function pickPaybackErrors(errorMessages: VaultErrorMessage[]) {
+export function extractPaybackErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => paybackErrors.includes(message))
 }
 
@@ -62,13 +62,13 @@ const commonErrors = [
   'customCollateralAllowanceAmountLessThanDepositAmount',
 ]
 
-export function pickCommonErrors(errorMessages: VaultErrorMessage[]) {
+export function extractCommonErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => commonErrors.includes(message))
 }
 
 const generateWarnings = ['potentialGenerateAmountLessThanDebtFloor']
 
-export function pickGenerateWarnings(warningMessages: VaultWarningMessage[]) {
+export function extractGenerateWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => generateWarnings.includes(message))
 }
 
@@ -86,6 +86,6 @@ const commonWarnings = [
   'nextCollRatioCloseToCurrentSl',
 ]
 
-export function pickCommonWarnings(warningMessages: VaultWarningMessage[]) {
+export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => commonWarnings.includes(message))
 }

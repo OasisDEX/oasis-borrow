@@ -11,11 +11,11 @@ import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageM
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { handleNumericInput } from 'helpers/input'
 import {
-  pickDepositErrors,
-  pickGenerateErrors,
-  pickGenerateWarnings,
-  pickPaybackErrors,
-  pickWithdrawErrors,
+  extractDepositErrors,
+  extractGenerateErrors,
+  extractGenerateWarnings,
+  extractPaybackErrors,
+  extractWithdrawErrors,
 } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import { pick } from 'ramda'
@@ -243,8 +243,8 @@ export function FieldDepositCollateral({
         tokenUsdPrice={currentCollateralPrice}
         disabled={disabled}
       />
-      <VaultErrors errorMessages={pickDepositErrors(errorMessages)} ilkData={ilkData} />
-      <VaultWarnings warningMessages={pickGenerateWarnings(warningMessages)} ilkData={ilkData} />
+      <VaultErrors errorMessages={extractDepositErrors(errorMessages)} ilkData={ilkData} />
+      <VaultWarnings warningMessages={extractGenerateWarnings(warningMessages)} ilkData={ilkData} />
     </>
   )
 }
@@ -289,7 +289,7 @@ export function FieldWithdrawCollateral({
         tokenUsdPrice={currentCollateralPrice}
       />
       <VaultErrors
-        errorMessages={pickWithdrawErrors(errorMessages)}
+        errorMessages={extractWithdrawErrors(errorMessages)}
         ilkData={ilkData}
         maxWithdrawAmount={maxWithdrawAmount}
       />
@@ -327,8 +327,8 @@ export function FieldDepositDai({
         hasError={false}
         disabled={disabled}
       />
-      <VaultErrors errorMessages={pickDepositErrors(errorMessages)} ilkData={ilkData} />
-      <VaultWarnings warningMessages={pickGenerateWarnings(warningMessages)} ilkData={ilkData} />
+      <VaultErrors errorMessages={extractDepositErrors(errorMessages)} ilkData={ilkData} />
+      <VaultWarnings warningMessages={extractGenerateWarnings(warningMessages)} ilkData={ilkData} />
     </>
   )
 }
@@ -369,7 +369,7 @@ export function FieldGenerateDai({
         token={'DAI'}
       />
       <VaultErrors
-        errorMessages={pickGenerateErrors(errorMessages)}
+        errorMessages={extractGenerateErrors(errorMessages)}
         ilkData={ilkData}
         maxGenerateAmount={maxGenerateAmount}
       />
@@ -405,7 +405,7 @@ export function FieldPaybackDai({
         showMax={true}
         token="DAI"
       />
-      <VaultErrors errorMessages={pickPaybackErrors(errorMessages)} ilkData={ilkData} />
+      <VaultErrors errorMessages={extractPaybackErrors(errorMessages)} ilkData={ilkData} />
     </>
   )
 }

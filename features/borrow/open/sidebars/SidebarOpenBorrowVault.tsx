@@ -18,7 +18,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
-import { pickCommonErrors, pickCommonWarnings } from 'helpers/messageMappers'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -69,8 +69,8 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
-        <VaultErrors {...props} errorMessages={pickCommonErrors(props.errorMessages)} />
-        <VaultWarnings {...props} warningMessages={pickCommonWarnings(props.warningMessages)} />
+        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
+        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     ...(isStopLossEditingStage && {

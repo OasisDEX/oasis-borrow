@@ -3,7 +3,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { pickGenerateErrors } from 'helpers/messageMappers'
+import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
@@ -124,7 +124,7 @@ export function SidebarSliderAdjustMultiply({
         <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
       </Flex>
       <VaultErrors
-        errorMessages={pickGenerateErrors(state.errorMessages)}
+        errorMessages={extractGenerateErrors(state.errorMessages)}
         ilkData={state.ilkData}
         maxGenerateAmount={state.maxGenerateAmount}
       />

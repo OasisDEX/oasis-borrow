@@ -16,7 +16,7 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
-import { pickCommonErrors, pickCommonWarnings } from 'helpers/messageMappers'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import React, { useEffect } from 'react'
 import { Grid } from 'theme-ui'
 
@@ -57,8 +57,8 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
           <SidebarVaultAllowanceStage {...props} />
         )}
         {isManageStage && <SidebarManageGuniVaultManageStage {...props} />}
-        <VaultErrors {...props} errorMessages={pickCommonErrors(props.errorMessages)} />
-        <VaultWarnings {...props} warningMessages={pickCommonWarnings(props.warningMessages)} />
+        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
+        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     primaryButton: {

@@ -20,7 +20,7 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
-import { pickCommonErrors, pickCommonWarnings } from 'helpers/messageMappers'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -155,8 +155,11 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             )}
             {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
             {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
-            <VaultErrors {...props} errorMessages={pickCommonErrors(props.errorMessages)} />
-            <VaultWarnings {...props} warningMessages={pickCommonWarnings(props.warningMessages)} />
+            <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
+            <VaultWarnings
+              {...props}
+              warningMessages={extractCommonWarnings(props.warningMessages)}
+            />
           </>
         ) : (
           <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />
