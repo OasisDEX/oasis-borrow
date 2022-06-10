@@ -11,15 +11,19 @@ export function slugify(name: string) {
   return name.replace(/\.mdx$/, '')
 }
 
-export function getCareerFileNames() {
-  const allFiles = fs.readdirSync(join(process.cwd(), 'features/careers/listings'))
+export function getFaqFileNames() {
+  const allFiles = fs.readdirSync(join(process.cwd(), 'features/earn/faq'))
   return allFiles.filter((file) => file.endsWith('.mdx'))
 }
 
-export async function getCareerByFileName(fileName: string): Promise<Career> {
-  const { meta } = await import(`features/careers/listings/${fileName}`)
+export async function getFaqByFileName(fileName: string): Promise<Career> {
+  const { meta } = await import(`features/earn/listings/${fileName}`)
   return {
     ...meta,
     slug: slugify(fileName),
   }
+}
+
+export function EarnFaq({ faqName } : { faqName: string }) {
+
 }
