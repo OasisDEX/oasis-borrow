@@ -145,14 +145,12 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
     earn: VaultPosition[]
   }>(
     (acc, vault) => {
-      if (vault.type === 'borrow') {
+      if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
+        acc.earn.push(vault)
+      } else if (vault.type === 'borrow') {
         acc.borrow.push(vault)
       } else if (vault.type === 'multiply') {
-        if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
-          acc.earn.push(vault)
-        } else {
-          acc.multiply.push(vault)
-        }
+        acc.multiply.push(vault)
       }
       return acc
     },
