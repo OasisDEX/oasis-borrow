@@ -10,7 +10,7 @@ import React, { ChangeEvent, useState } from 'react'
 import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 
-type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy'
+export type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy'
 
 export const PlusIcon = () => (
   <Icon
@@ -178,7 +178,8 @@ export function VaultActionInput({
                 </Text>
               </>
             )}{' '}
-            {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) && tokenSymbol}
+            {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) &&
+              (auxiliaryFlag ? auxiliarySymbol : tokenSymbol)}
           </Text>
         )}
       </Grid>

@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap } from 'rxjs/operators'
+import { startWith, switchMap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
@@ -245,8 +245,8 @@ export const productCardsConfig: {
         // 'CRVV1ETHSTETH-A',
         'WSTETH-B',
       ],
-      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
-      earn: ['GUNIV3DAIUSDC2-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
     },
   },
   descriptionCustomKeys: {
@@ -259,6 +259,7 @@ export const productCardsConfig: {
     'WBTC-B': 'biggest-multiply',
     'WBTC-C': 'lowest-stabilityFee-and-cheapest',
     'RENBTC-A': 'great-borrowing-and-multiplying',
+    'GUNIV3DAIUSDC1-A': 'guni',
     'GUNIV3DAIUSDC2-A': 'guni',
 
     'GUSD-A': 'borrow',
@@ -351,6 +352,11 @@ export const productCardsConfig: {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_5813529831231652792943692',
       name: 'Maker (UNI-A)',
+    },
+    'GUNIV3DAIUSDC1-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Gelato/Uniswap',
     },
     'GUNIV3DAIUSDC2-A': {
       link:
@@ -465,7 +471,9 @@ function sortCards(
 }
 
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
-  return productCardsData.filter((data) => data.ilk === 'GUNIV3DAIUSDC2-A')
+  return productCardsData.filter((data) =>
+    ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
+  )
 }
 
 export function multiplyPageCardsData({
@@ -489,7 +497,9 @@ export function multiplyPageCardsData({
 
   // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
   if (cardsFilter === 'UNI LP') {
-    return productCardsData.filter((data) => data.ilk === 'GUNIV3DAIUSDC2-A')
+    return productCardsData.filter((data) =>
+      ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
+    )
   }
 
   if (cardsFilter === 'BTC') {
@@ -579,6 +589,7 @@ export function createProductCardsWithBalance$(
           }),
       ),
     ),
+    startWith<ProductCardData[]>([]),
   )
 }
 

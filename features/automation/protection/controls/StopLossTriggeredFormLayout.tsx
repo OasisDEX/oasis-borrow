@@ -32,7 +32,7 @@ interface StopLossSummaryInformationProps {
   slippage: BigNumber
 }
 
-function StopLossSummaryInformation({
+export function StopLossSummaryInformation({
   date,
   token,
   tokenPrice,

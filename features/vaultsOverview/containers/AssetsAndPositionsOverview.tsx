@@ -5,13 +5,9 @@ import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
-import { useAppContext } from '../../../components/AppContextProvider'
 import { PieChart } from '../../../components/dumb/PieChart'
 import { AppLink } from '../../../components/Links'
-import { WithLoadingIndicator } from '../../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../../helpers/errorHandlers/WithErrorHandler'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
-import { useObservable } from '../../../helpers/observableHook'
 import { useOutsideElementClickHandler } from '../../../helpers/useOutsideElementClickHandler'
 import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
@@ -103,10 +99,10 @@ function LinkedRow(props: PositionView) {
           if (breakpointIndex <= 1) {
             setMenuPosition({
               right: `${window.innerWidth - rect.right - 20}px`,
-              top: `${rect.top}px`,
+              top: `${window.scrollY + rect.top}px`,
             })
           } else {
-            setMenuPosition({ left: rect.right, top: rect.top })
+            setMenuPosition({ left: rect.right, top: rect.top + window.scrollY })
           }
         }}
       >
@@ -178,15 +174,15 @@ function Menu(props: {
       }}
     >
       <Grid columns={1} gap={20}>
-        {props.assetActions.map((aa) => (
-          <MenuRow {...aa} key={aa.text} close={props.close} />
+        {props.assetActions.map((aa, index) => (
+          <MenuRow {...aa} key={`${index}-${aa.text}`} close={props.close} />
         ))}
       </Grid>
     </Card>
   )
 }
 
-function RenderPositions(props: TopAssetsAndPositionsViewModal) {
+export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
@@ -211,29 +207,11 @@ function RenderPositions(props: TopAssetsAndPositionsViewModal) {
         {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
 
         <Box sx={{ flex: 1, ml: [null, '53px'] }}>
-          {topAssetsAndPositions.map((row) => (
-            <LinkedRow key={row.token + row.title} {...row} />
+          {topAssetsAndPositions.map((row, index) => (
+            <LinkedRow key={`${index}-${row.token}`} {...row} />
           ))}
         </Box>
       </Flex>
     </Card>
-  )
-}
-
-export function AssetsAndPositionsOverview(props: { address: string }) {
-  const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(props.address))
-  return (
-    <WithErrorHandler error={err}>
-      <WithLoadingIndicator value={positionsOverviewSummary}>
-        {(positionsOverviewSummary) => {
-          if (positionsOverviewSummary.assetsAndPositions.length > 0) {
-            return <RenderPositions {...positionsOverviewSummary} />
-          } else {
-            return <></>
-          }
-        }}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
   )
 }

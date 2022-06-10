@@ -1,33 +1,29 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { TxStatusSection } from 'components/dumb/TxStatusSection'
+import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
-
-import { IlkData } from '../../../../blockchain/ilks'
-import { Vault } from '../../../../blockchain/vaults'
-import { RetryableLoadingButtonProps } from '../../../../components/dumb/RetryableLoadingButton'
-import { TxStatusSection } from '../../../../components/dumb/TxStatusSection'
-import { AppLink } from '../../../../components/Links'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
-} from '../../../../components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from '../../../../components/vault/VaultChangesWithADelayCard'
-import {
-  formatAmount,
-  formatFiatBalance,
-  formatPercent,
-} from '../../../../helpers/formatters/format'
-import { staticFilesRuntimeUrl } from '../../../../helpers/staticPaths'
-import { TxError } from '../../../../helpers/types'
-import { one } from '../../../../helpers/zero'
-import { OpenVaultAnimation } from '../../../../theme/animations'
+} from 'components/vault/VaultChangesInformation'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
+import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
+import { TxError } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { one } from 'helpers/zero'
+import { useTranslation } from 'next-i18next'
+import React, { ReactNode } from 'react'
+import { Divider, Flex, Image, Text } from 'theme-ui'
+import { OpenVaultAnimation } from 'theme/animations'
+
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
@@ -113,6 +109,7 @@ interface SetDownsideProtectionInformationProps {
   ethBalance: BigNumber
   txError?: TxError
   gasEstimationUsd?: BigNumber
+  currentCollateralRatio: BigNumber
 }
 
 export function SetDownsideProtectionInformation({
@@ -129,11 +126,12 @@ export function SetDownsideProtectionInformation({
   gasEstimationUsd,
   ethBalance,
   txError,
+  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
-  const nextCollateralizationPriceAlertRange = 3
+  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -168,10 +166,10 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
+  const currentCollateralizationPriceFloor = currentCollateralRatio
     .times(100)
     .decimalPlaces(0)
-    .minus(nextCollateralizationPriceAlertRange)
+    .minus(currentCollateralizationPriceAlertRange)
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -220,14 +218,19 @@ export function SetDownsideProtectionInformation({
               </AppLink>
             </Text>
           </Box>
-          {selectedSLValue.gte(nextCollateralizationPriceFloor) && (
+          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
             <MessageCard
               messages={[t('protection.coll-ratio-close-to-current')]}
               type="warning"
               withBullet={false}
             />
           )}
-          {slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) && (
+          {(slCollRatioNearLiquidationRatio(selectedSLValue, ilkData) ||
+            slRatioHigherThanCurrentOrNext(
+              selectedSLValue,
+              collateralizationRatioAtNextPrice,
+              currentCollateralRatio,
+            )) && (
             <MessageCard
               messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
               type="error"
@@ -280,7 +283,8 @@ export interface AdjustSlFormLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
   gasEstimationUsd?: BigNumber
   ethBalance: BigNumber
-  stage: 'editing' | 'txInProgress' | 'txSuccess' | 'txFailure'
+  currentCollateralRatio: BigNumber
+  stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
 }
@@ -288,6 +292,17 @@ export interface AdjustSlFormLayoutProps {
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
   const margin = 5
   return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
+}
+
+export function slRatioHigherThanCurrentOrNext(
+  selectedSLValue: BigNumber,
+  collateralizationRatioAtNextPrice: BigNumber,
+  currentCollateralRatio: BigNumber,
+) {
+  return (
+    selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
+    selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))
+  )
 }
 
 export function AdjustSlFormLayout({
@@ -314,6 +329,7 @@ export function AdjustSlFormLayout({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
+  currentCollateralRatio,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
@@ -397,6 +413,7 @@ export function AdjustSlFormLayout({
                   selectedSLValue={selectedSLValue}
                   ethBalance={ethBalance}
                   txError={txError}
+                  currentCollateralRatio={currentCollateralRatio}
                 />
               </Box>
             </>

@@ -7,9 +7,8 @@ import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
 import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
-import { last } from 'lodash'
 
-import { TriggersData } from '../triggers/AutomationTriggersData'
+import { TriggerRecord, TriggersData } from '../triggers/AutomationTriggersData'
 import { TriggerType } from './enums/TriggersTypes'
 
 export interface StopLossTriggerData {
@@ -19,28 +18,33 @@ export interface StopLossTriggerData {
   triggerId: number
 }
 
-export function extractStopLossData(data: TriggersData): StopLossTriggerData {
-  if (data.triggers && data.triggers.length > 0) {
-    // TODO: Johnnie, you shouldn't take the last one here, but rather the one that's sooner to be executed (with the highest stop loss level)
-    const stopLossRecord = last(data.triggers)!
+function pickTriggerWithHighestStopLossLevel(triggers: TriggerRecord[]) {
+  const MAINNET_ID = 1
+  const GOERLI_ID = 5
 
-    const MAINNET_ID = 1
-    const GOERLI_ID = 5
+  const networkId = getNetworkId() === GOERLI_ID ? GOERLI_ID : MAINNET_ID
 
-    const networkId = getNetworkId() === GOERLI_ID ? GOERLI_ID : MAINNET_ID
-
+  const decodedTriggers = triggers.map((trigger) => {
     const [, triggerType, stopLossLevel] = decodeTriggerData(
-      stopLossRecord.commandAddress,
+      trigger.commandAddress,
       networkId,
-      stopLossRecord.executionParams,
+      trigger.executionParams,
     )
     return {
-      triggerId: stopLossRecord.triggerId,
+      triggerId: trigger.triggerId,
       isStopLossEnabled: true,
       stopLossLevel: new BigNumber(stopLossLevel.toString()).div(100),
       isToCollateral:
         new BigNumber(triggerType.toString()).toNumber() === TriggerType.StopLossToCollateral,
     }
+  })
+
+  return decodedTriggers.reduce((max, obj) => (max.stopLossLevel.gt(obj.stopLossLevel) ? max : obj))
+}
+
+export function extractStopLossData(data: TriggersData): StopLossTriggerData {
+  if (data.triggers && data.triggers.length > 0) {
+    return pickTriggerWithHighestStopLossLevel(data.triggers)
   }
 
   return {
