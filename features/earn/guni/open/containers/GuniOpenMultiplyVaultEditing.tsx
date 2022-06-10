@@ -1,10 +1,6 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { handleNumericInput } from 'helpers/input'
-import { pickDepositErrors, pickGenerateErrors, pickGenerateWarnings } from 'helpers/messageMappers'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
 
@@ -13,7 +9,6 @@ import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVault
 
 export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   const { t } = useTranslation()
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const {
     token,
@@ -23,25 +18,11 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
     updateDepositMax,
     inputAmountsEmpty,
     maxMultiple,
-    errorMessages,
-    warningMessages,
-    ilkData,
   } = props
 
   return (
     <Grid gap={4}>
       <Grid gap={4}>
-        {newComponentsEnabled && (
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-            <Trans
-              i18nKey="vault-form.subtext.edit-multiply-dai"
-              values={{ token: 'GUNIV3DAIUSDC' }}
-            >
-              This vault can be created by simply <strong>depositing DAI</strong>. The transaction
-              will create the GUNIV3DAIUSDC position for you based on this DAI deposit
-            </Trans>
-          </Text>
-        )}
         <VaultActionInput
           action="Deposit"
           token="DAI"
@@ -54,21 +35,6 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
           maxAmountLabel={t('balance')}
           hasError={false}
         />
-        {newComponentsEnabled && (
-          <>
-            <VaultErrors
-              errorMessages={[
-                ...pickDepositErrors(errorMessages),
-                ...pickGenerateErrors(errorMessages),
-              ]}
-              ilkData={ilkData}
-            />
-            <VaultWarnings
-              warningMessages={pickGenerateWarnings(warningMessages)}
-              ilkData={ilkData}
-            />
-          </>
-        )}
         <Flex
           sx={{
             border: '1px solid',

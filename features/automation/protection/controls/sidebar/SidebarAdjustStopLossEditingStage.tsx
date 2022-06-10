@@ -23,6 +23,7 @@ export function SidebarAdjustStopLossEditingStage({
   collateralizationRatioAtNextPrice,
   ethBalance,
   gasEstimationUsd,
+  currentCollateralRatio,
 }: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
 
@@ -58,6 +59,7 @@ export function SidebarAdjustStopLossEditingStage({
               selectedSLValue={selectedSLValue}
               ethBalance={ethBalance}
               txError={txError}
+              currentCollateralRatio={currentCollateralRatio}
             />
           </Box>
           <Box sx={{ fontSize: 2 }}>
