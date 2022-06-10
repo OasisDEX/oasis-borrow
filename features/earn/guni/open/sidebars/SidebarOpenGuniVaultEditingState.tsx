@@ -13,6 +13,9 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
     token,
     updateDeposit,
     updateDepositMax,
+    errorMessages,
+    warningMessages,
+    ilkData,
   } = props
 
   return (
@@ -32,6 +35,9 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
         maxDepositDaiAmount={daiBalance}
         updateDepositDaiAmountMax={updateDepositMax!}
         updateDepositDaiAmount={updateDeposit!}
+        errorMessages={errorMessages}
+        warningMessages={warningMessages}
+        ilkData={ilkData}
       />
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {maxMultiple.toNumber().toFixed(2)}x {token}

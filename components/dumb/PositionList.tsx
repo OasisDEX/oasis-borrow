@@ -48,7 +48,7 @@ function Cell({ children }: WithChildren) {
 type PositionCommonProps = {
   icon: string
   ilk: string
-  vaultID: string
+  positionId: string
   editLinkProps: AppLinkProps
 }
 
@@ -125,8 +125,8 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
   }
 
   const vaultIdInfo = {
-    header: <Header name="vault-id" />,
-    info: position.vaultID,
+    header: <Header name="position-id" />,
+    info: position.positionId,
   }
 
   switch (position.type) {
@@ -155,7 +155,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.variable,
         },
         {
-          header: <Header name="automation" />,
+          header: <Header name="protection" />,
           info: <AutomationButton position={position} />,
         },
       ]
@@ -180,7 +180,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.fundingCost,
         },
         {
-          header: <Header name="automation" />,
+          header: <Header name="protection" />,
           info: <AutomationButton position={position} />,
         },
       ]
@@ -242,7 +242,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
       </Text>
 
       {/* DESKTOP */}
-      <Box sx={{ display: ['none', 'block'], overflowX: 'scroll' }}>
+      <Box sx={{ display: ['none', 'block'], overflowX: 'auto' }}>
         <Grid
           sx={{
             gridTemplateColumns: `repeat(${columnCount}, auto)`,

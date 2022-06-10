@@ -194,7 +194,7 @@ export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal
     { value: props.percentageOther, color: '#999' },
   ]
   return (
-    <Card variant="positionsOverview">
+    <Card variant="positionsPage" sx={{ maxWidth: '789px' }}>
       <Text
         variant="paragraph2"
         sx={{
