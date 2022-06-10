@@ -34,6 +34,7 @@ import { Summary } from './Summary'
 import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSuggestions } from './VaultSuggestions'
+import { zero } from '../../helpers/zero'
 
 interface Props {
   vaultsOverview: VaultsOverview
@@ -299,14 +300,18 @@ export function VaultsOverviewView({
         {earnEnabled && (
           <WithErrorHandler error={err}>
             <WithLoadingIndicator value={positionsOverviewSummary}>
-              {(positionsOverviewSummary) => (
-                <>
-                  <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
-                  {positionsOverviewSummary.assetsAndPositions.length > 0 && (
-                    <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-                  )}
-                </>
-              )}
+              {(positionsOverviewSummary) =>
+                positionsOverviewSummary.totalValueUsd.gt(zero) ? (
+                  <>
+                    <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
+                    {positionsOverviewSummary.assetsAndPositions.length > 0 && (
+                      <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )
+              }
             </WithLoadingIndicator>
           </WithErrorHandler>
         )}
