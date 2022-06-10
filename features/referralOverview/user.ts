@@ -7,7 +7,6 @@ import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { networksById } from 'blockchain/config'
 import { TxHelpers } from 'components/AppContext'
 import { ethers } from 'ethers'
-import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { gql, GraphQLClient } from 'graphql-request'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
@@ -101,11 +100,6 @@ export function createUserReferral$(
               }),
               map(
                 (txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
-                  const jwtToken = jwtAuthGetToken(txnState.account)
-                  if (txnState.status === TxStatus.Success && jwtToken && claimsOut.weeks) {
-                    trigger()
-                  }
-
                   switch (txnState.status) {
                     case TxStatus.CancelledByTheUser:
                     case TxStatus.Failure:

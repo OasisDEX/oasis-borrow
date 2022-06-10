@@ -102,7 +102,7 @@ export function FeesView({ userReferral }: Props) {
                 }}
                 variant="strong"
               >
-               {/*  // leave this or delay querying the cache ? */}
+                {/*  // leave this or delay querying the cache ? */}
                 {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
                   ? '0.0'
                   : userReferral.totalClaim}
@@ -115,7 +115,7 @@ export function FeesView({ userReferral }: Props) {
             <Button
               variant="outline"
               disabled={
-                !userReferral.claims || userReferral.claimTxnState === ClaimTxnState.PENDING
+                !userReferral.claims || userReferral.claimTxnState === ClaimTxnState.PENDING || userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
               }
               onClick={() =>
                 userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
@@ -129,9 +129,12 @@ export function FeesView({ userReferral }: Props) {
                   <Icon name="dai_circle_color" size="32px" />
                 )}
                 <Text pl="12px" sx={{ whiteSpace: 'nowrap', fontSize: 2 }}>
+                  {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED ? t('ref.claimed') : null}
                   {userReferral.claimTxnState === ClaimTxnState.PENDING ? t('ref.claiming') : null}
                   {!userReferral.claims ? t('ref.no-claim') : null}
-                  {userReferral.claims && userReferral.claimTxnState !== ClaimTxnState.PENDING
+                  {userReferral.claims &&
+                  userReferral.claimTxnState !== ClaimTxnState.PENDING &&
+                  userReferral.claimTxnState !== ClaimTxnState.SUCCEEDED
                     ? t('ref.claim')
                     : null}
                 </Text>
