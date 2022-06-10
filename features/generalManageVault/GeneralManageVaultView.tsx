@@ -1,6 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
+import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
+import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { Survey } from 'features/survey'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Container } from 'theme-ui'
 
@@ -28,6 +31,7 @@ export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
   const vaultType = generalManageVault.type
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   switch (vaultType) {
     case VaultType.Borrow:
@@ -52,7 +56,7 @@ export function GeneralManageVaultViewAutomation({
               manageVault={generalManageVault.state}
               details={GuniManageMultiplyVaultDetails}
               header={GuniVaultHeader}
-              form={GuniManageMultiplyVaultForm}
+              form={!newComponentsEnabled ? GuniManageMultiplyVaultForm : SidebarManageGuniVault}
               history={VaultHistoryView}
             />
           ) : (
@@ -60,7 +64,7 @@ export function GeneralManageVaultViewAutomation({
               manageVault={generalManageVault.state}
               header={DefaultVaultHeader}
               details={ManageMultiplyVaultDetails}
-              form={ManageMultiplyVaultForm}
+              form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
               history={VaultHistoryView}
             />
           )}
@@ -78,6 +82,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const [manageVault, manageVaultError] = useObservable(manageVaultWithId$)
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
@@ -115,7 +120,9 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       manageVault={generalManageVault.state}
                       header={DefaultVaultHeader}
                       details={ManageMultiplyVaultDetails}
-                      form={ManageMultiplyVaultForm}
+                      form={
+                        !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
+                      }
                       history={VaultHistoryView}
                     />
                   )}

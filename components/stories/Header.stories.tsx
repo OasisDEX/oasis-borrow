@@ -97,10 +97,10 @@ stories.add('Connected WalletConnect Kovan', () => {
   )
 })
 
-stories.add('Connected Coinbase wallet Mainnet', () => {
+stories.add('Connected Coinbase Wallet Mainnet', () => {
   return (
     <MockContextProvider
-      title="Connected Coinbase wallet Mainnet"
+      title="Connected Coinbase Wallet Mainnet"
       web3Context={{
         ...protoWeb3Context,
         connectionKind: 'walletLink',

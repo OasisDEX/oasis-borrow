@@ -137,12 +137,16 @@ const oasisBaseTheme = {
       fontSize: 5,
       color: 'primary',
     },
-    headerSettings: {
+    header4: {
       fontFamily: 'body',
       fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
       color: 'primary',
+    },
+    headerSettings: {
+      // deprecated, use header4
+      variant: 'text.header4',
     },
     paragraph1: {
       fontFamily: 'body',
@@ -390,9 +394,8 @@ const oasisBaseTheme = {
       padding: '24px',
       pb: 3,
     },
-    positionsOverview: {
+    positionsPage: {
       boxSizing: 'border-box',
-      maxWidth: '789px',
       backgroundColor: 'background',
       opacity: '0.8',
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
@@ -668,6 +671,7 @@ const oasisBaseTheme = {
       '&:hover': {
         bg: 'actionInputHover',
       },
+      transition: 'background-color 200ms',
     },
     actionOptionOpened: {
       variant: 'buttons.actionOption',
@@ -801,7 +805,7 @@ const oasisBaseTheme = {
       color: 'onPrimary',
     },
     pill: {
-      px: 4,
+      px: '24px',
       py: '12px',
       color: 'text.subtitle',
       fontFamily: 'body',

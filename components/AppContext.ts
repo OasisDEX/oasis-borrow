@@ -188,6 +188,7 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -429,11 +430,12 @@ export function setupAppContext() {
     ),
   )
 
+  const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPriceUSD$(['DAI', 'ETH']), txHelpers$, state, call)
+    return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
 
   // base
@@ -852,7 +854,7 @@ export function setupAppContext() {
   )
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
+    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$, vaultHistory$),
   )
 
   const assetActions$ = memoize(
@@ -890,6 +892,8 @@ export function setupAppContext() {
     bigNumberTostring,
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
+
+  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
 
   return {
     web3Context$,
@@ -934,6 +938,7 @@ export function setupAppContext() {
     ilkToToken$,
     bonus$,
     positionsOverviewSummary$,
+    yields$,
   }
 }
 

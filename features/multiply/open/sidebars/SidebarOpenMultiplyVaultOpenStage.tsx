@@ -1,13 +1,12 @@
-import { OpenVaultChangesInformation } from 'features/borrow/open/containers/OpenVaultChangesInformation'
-import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { OpenMultiplyVaultChangesInformation } from 'features/multiply/open/containers/OpenMultiplyVaultChangesInformation'
+import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { VaultChangesWithADelayCard } from '../VaultChangesWithADelayCard'
-
-export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
+export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
   const { stage } = props
 
@@ -17,7 +16,7 @@ export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
     case 'txSuccess':
       return (
         <>
-          <OpenVaultChangesInformation {...props} />
+          <OpenMultiplyVaultChangesInformation {...props} />
           <VaultChangesWithADelayCard />
         </>
       )
@@ -27,7 +26,7 @@ export function SidebarOpenBorrowVaultOpenStage(props: OpenVaultState) {
           <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          <OpenVaultChangesInformation {...props} />
+          <OpenMultiplyVaultChangesInformation {...props} />
         </>
       )
   }

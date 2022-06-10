@@ -30,6 +30,7 @@ export interface ProtectionDetailsLayoutProps {
   afterSlRatio: BigNumber
   isCollateralActive: boolean
   isEditing: boolean
+  collateralizationRatioAtNextPrice: BigNumber
 }
 
 export function ProtectionDetailsLayout({
@@ -46,13 +47,13 @@ export function ProtectionDetailsLayout({
   afterSlRatio,
   isCollateralActive,
   isEditing,
+  collateralizationRatioAtNextPrice,
 }: ProtectionDetailsLayoutProps) {
   const { t } = useTranslation()
   const afterPillColors = getAfterPillColors('onSuccess')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
-  const collateralizationRatio = lockedCollateral.times(currentOraclePrice).div(vaultDebt)
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
 
@@ -62,7 +63,7 @@ export function ProtectionDetailsLayout({
         <Grid variant="vaultDetailsCardsContainer">
           <VaultDetailsCardStopLossCollRatio
             slRatio={slRatio}
-            collateralizationRatio={collateralizationRatio}
+            collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
             isProtected={isStopLossEnabled}
             showAfterPill={isEditing}
             afterSlRatio={afterSlRatio}
@@ -110,7 +111,7 @@ export function ProtectionDetailsLayout({
                 isStopLossEnabled={isStopLossEnabled}
                 isEditing={isEditing}
                 slRatio={slRatio}
-                collateralizationRatio={collateralizationRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 afterSlRatio={afterSlRatio}
               />
               <ContentCardDynamicStopPrice

@@ -91,6 +91,7 @@ export function ProtectionFormControl({
                   }}
                   collateralPrices={collateralPrices}
                   balanceInfo={balanceInfo}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
               ) : (
                 <AdjustSlFormControl
@@ -113,30 +114,23 @@ export function ProtectionFormControl({
               )}
             </VaultFormContainer>
           ) : currentForm?.currentMode === AutomationFromKind.CANCEL ? (
-            <VaultFormContainer
-              toggleTitle={
-                automationTriggersData.isAutomationEnabled
-                  ? t('protection.set-downside-protection')
-                  : t('protection.edit-vault-protection')
-              }
-            >
-              <CancelSlFormControl
-                vault={vault}
-                ilkData={ilkData}
-                triggerData={automationTriggersData}
-                tx={txHelpers}
-                ctx={context}
-                accountIsController={accountIsController}
-                toggleForms={() => {
-                  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    currentMode: AutomationFromKind.ADJUST,
-                    type: 'change-mode',
-                  })
-                }}
-                collateralPrices={collateralPrices}
-                balanceInfo={balanceInfo}
-              />
-            </VaultFormContainer>
+            <CancelSlFormControl
+              vault={vault}
+              ilkData={ilkData}
+              triggerData={automationTriggersData}
+              tx={txHelpers}
+              ctx={context}
+              accountIsController={accountIsController}
+              toggleForms={() => {
+                uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+                  currentMode: AutomationFromKind.ADJUST,
+                  type: 'change-mode',
+                })
+              }}
+              collateralPrices={collateralPrices}
+              balanceInfo={balanceInfo}
+              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+            />
           ) : (
             <AdjustSlFormControl
               vault={vault}

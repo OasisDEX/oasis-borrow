@@ -10,12 +10,12 @@ import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { combineApplyChanges } from 'helpers/pipelines/combineApply'
+import { TxError } from 'helpers/types'
 import { curry } from 'lodash'
 import { combineLatest, iif, merge, Observable, of, Subject, throwError } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import { combineApplyChanges } from '../../../../helpers/pipelines/combineApply'
-import { TxError } from '../../../../helpers/types'
 import {
   AllowanceChanges,
   AllowanceOption,
@@ -176,6 +176,7 @@ export type OpenMultiplyVaultState = MutableOpenMultiplyVaultState &
     summary: OpenVaultSummary
     totalSteps: number
     currentStep: number
+    withStopLossStage: boolean
   } & HasGasEstimation
 
 function addTransitions(
@@ -335,11 +336,13 @@ export function createOpenMultiplyVault$(
                     }
 
                     const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
+                    const withStopLossStage = false // TODO TO BE UPDATED SOON
 
                     const initialState: OpenMultiplyVaultState = {
                       ...defaultMutableOpenMultiplyVaultState,
                       ...defaultOpenMultiplyVaultStateCalculations,
                       ...defaultOpenMultiplyVaultConditions,
+                      withStopLossStage,
                       priceInfo,
                       balanceInfo,
                       ilkData,

@@ -1,11 +1,12 @@
 import { ManageVaultCollateralAllowance } from 'components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { VaultAllowance } from 'components/vault/VaultAllowance'
+import { CommonVaultState } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
 
-export function SidebarManageVaultAllowanceStage(props: ManageStandardBorrowVaultState) {
+export function SidebarVaultAllowanceStage(props: CommonVaultState) {
   const { t } = useTranslation()
   const { stage } = props
 
@@ -18,6 +19,7 @@ export function SidebarManageVaultAllowanceStage(props: ManageStandardBorrowVaul
         <ManageVaultCollateralAllowance {...props} />
       )}
       {stage === 'daiAllowanceWaitingForConfirmation' && <ManageVaultDaiAllowance {...props} />}
+      {stage === 'allowanceWaitingForConfirmation' && <VaultAllowance {...props} />}
     </Grid>
   )
 }

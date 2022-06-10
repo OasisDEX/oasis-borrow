@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { Ticker } from 'blockchain/prices'
+import { tokenList } from 'components/uniswapWidget/tokenList'
+import { zero } from 'helpers/zero'
 import { uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { Ticker } from '../../../blockchain/prices'
-import * as tokenList from '../../../components/uniswapWidget/tokenList.json'
-import { zero } from '../../../helpers/zero'
 import { AssetAction } from './assetActions'
 
 export type PositionView = {

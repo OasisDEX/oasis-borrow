@@ -1,17 +1,15 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
-
-import { IlkData } from '../../blockchain/ilks'
-import { Vault } from '../../blockchain/vaults'
-import { VaultErrorMessage } from '../../features/form/errorMessagesHandler'
-import { zero } from '../../helpers/zero'
 
 const KbLink = (
   <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
@@ -21,7 +19,6 @@ interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
   maxGenerateAmount?: BigNumber
   ilkData: IlkData
-  vault?: Vault
   maxWithdrawAmount?: BigNumber
 }
 
@@ -29,8 +26,7 @@ export function VaultErrors({
   errorMessages,
   maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
-  ilkData: { debtFloor },
-  vault,
+  ilkData: { debtFloor, token },
 }: VaultErrorsProps) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -79,12 +75,12 @@ export function VaultErrors({
       case 'withdrawAmountExceedsFreeCollateral':
         return translate('withdraw-amount-exceeds-free-collateral', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token,
+          token: token,
         })
       case 'withdrawAmountExceedsFreeCollateralAtNextPrice':
         return translate('withdraw-amount-exceeds-free-collateral-at-next-price', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token,
+          token: token,
         })
       case 'generateAmountExceedsDaiYieldFromTotalCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-total-collateral')

@@ -3,7 +3,7 @@ import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
-const flowsWithoutProxy = ['adjustSl', 'addSl']
+const flowsWithoutProxy = ['adjustSl', 'addSl', 'cancelSl']
 const UNREACHABLE_CASE_MESSAGE = ''
 
 function getPrimaryButtonLabelEditingTranslationKey({
@@ -26,9 +26,12 @@ function getPrimaryButtonLabelEditingTranslationKey({
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
     case 'manageBorrow':
     case 'manageMultiply':
       return 'confirm'
+    case 'manageGuni':
+      return 'close-vault'
     case 'addSl':
       return 'add-stop-loss'
     case 'adjustSl':
@@ -44,6 +47,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'creating-vault'
     case 'addSl':
       return 'add-stop-loss'
@@ -60,9 +64,11 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+    case 'openGuni':
       return 'go-to-vault'
     case 'addSl':
     case 'adjustSl':
+    case 'cancelSl':
       return 'back-to-vault-overview'
     default:
       return UNREACHABLE_CASE_MESSAGE
@@ -78,15 +84,24 @@ export function getPrimaryButtonLabel({
   insufficientDaiAllowance,
   insufficientAllowance,
   flow,
-  canTransition,
+  canTransition = true,
+  isSLPanelVisible = false,
+  shouldRedirectToCloseVault = false,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
-  const allowanceToken = insufficientDaiAllowance ? 'DAI' : token
+  const allowanceToken =
+    insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
+
+  if (isSLPanelVisible) return t('protection.reopen-position')
+  else if (shouldRedirectToCloseVault) return t('close-vault')
 
   switch (stage) {
     case 'editing':
+    case 'stopLossEditing':
     case 'collateralEditing':
     case 'daiEditing':
+    case 'adjustPosition':
+    case 'otherActions':
     case 'manageWaitingForConfirmation':
       const translationKey = getPrimaryButtonLabelEditingTranslationKey({
         proxyAddress,
@@ -152,7 +167,7 @@ export function getPrimaryButtonLabel({
     case 'multiplyTransitionEditing':
       return canTransition
         ? t('borrow-to-multiply.button-start')
-        : t('borrow-to-multiply.button-not-supported', { token })
+        : t('borrow-to-multiply.button-not-supported', { token: token?.toUpperCase() })
     case 'multiplyTransitionWaitingForConfirmation':
       return t('borrow-to-multiply.button-confirm')
     case 'multiplyTransitionInProgress':
@@ -161,6 +176,18 @@ export function getPrimaryButtonLabel({
       return t('borrow-to-multiply.button-failure')
     case 'multiplyTransitionSuccess':
       return t('borrow-to-multiply.button-success')
+    case 'borrowTransitionEditing':
+      return canTransition
+        ? t('multiply-to-borrow.button-start')
+        : t('multiply-to-borrow.button-not-supported', { token: token?.toUpperCase() })
+    case 'borrowTransitionWaitingForConfirmation':
+      return t('multiply-to-borrow.button-confirm')
+    case 'borrowTransitionInProgress':
+      return t('multiply-to-borrow.button-progress')
+    case 'borrowTransitionFailure':
+      return t('multiply-to-borrow.button-failure')
+    case 'borrowTransitionSuccess':
+      return t('multiply-to-borrow.button-success')
     default:
       throw new UnreachableCaseError(stage)
   }

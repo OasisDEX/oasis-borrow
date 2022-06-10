@@ -1,13 +1,12 @@
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
+import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { OpenMultiplyVaultState } from '../../pipes/openMultiplyVault'
-import { OpenMultiplyVaultChangesInformation } from '../OpenMultiplyVaultChangesInformation'
-
-export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState) {
+export function SidebarOpenGuniVaultOpenStage(props: OpenGuniVaultState) {
   const { t } = useTranslation()
   const { stage } = props
 
@@ -17,7 +16,7 @@ export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState)
     case 'txSuccess':
       return (
         <>
-          <OpenMultiplyVaultChangesInformation {...props} />
+          <GuniOpenMultiplyVaultChangesInformation {...props} />
           <VaultChangesWithADelayCard />
         </>
       )
@@ -27,7 +26,7 @@ export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState)
           <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
-          <OpenMultiplyVaultChangesInformation {...props} />
+          <GuniOpenMultiplyVaultChangesInformation {...props} />
         </>
       )
   }

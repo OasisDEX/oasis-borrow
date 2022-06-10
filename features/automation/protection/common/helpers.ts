@@ -1,4 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { UIChanges } from 'components/AppContext'
+import { VaultViewMode } from 'components/VaultTabSwitch'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
@@ -39,4 +46,15 @@ export function getStartingSlRatio({
   initialVaultCollRatio: BigNumber
 }) {
   return isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
+}
+
+export function backToVaultOverview(uiChanges: UIChanges) {
+  uiChanges.publish(TAB_CHANGE_SUBJECT, {
+    type: 'change-tab',
+    currentMode: VaultViewMode.Overview,
+  })
+  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+    currentMode: AutomationFromKind.ADJUST,
+    type: 'change-mode',
+  })
 }

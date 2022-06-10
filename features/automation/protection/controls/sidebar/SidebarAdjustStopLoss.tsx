@@ -2,12 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { VaultViewMode } from 'components/VaultTabSwitch'
-import {
-  AutomationFromKind,
-  PROTECTION_MODE_CHANGE_SUBJECT,
-} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
-import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { backToVaultOverview } from 'features/automation/protection/common/helpers'
 import {
   errorsValidation,
   warningsValidation,
@@ -17,9 +12,9 @@ import {
   slCollRatioNearLiquidationRatio,
 } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { getSidebarProgress } from 'features/sidebar/getSidebarProgress'
-import { getSidebarSuccess } from 'features/sidebar/getSidebarSuccess'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -34,34 +29,21 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    token,
-    txHash,
     addTriggerConfig,
-    ethPrice,
-    ilkData,
-    etherscan,
-    toggleForms,
-    selectedSLValue,
-    firstStopLossSetup,
     collateralizationRatioAtNextPrice,
-    txError,
-    gasEstimationUsd,
     ethBalance,
-    stage,
+    ethPrice,
+    firstStopLossSetup,
+    gasEstimationUsd,
+    ilkData,
     isProgressDisabled,
     redirectToCloseVault,
+    selectedSLValue,
+    stage,
+    toggleForms,
+    token,
+    txError,
   } = props
-
-  function backToVaultOverview() {
-    uiChanges.publish(TAB_CHANGE_SUBJECT, {
-      type: 'change-tab',
-      currentMode: VaultViewMode.Overview,
-    })
-    uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-      currentMode: AutomationFromKind.ADJUST,
-      type: 'change-mode',
-    })
-  }
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
   const errors = errorsValidation({ txError, selectedSLValue, ilkData })
@@ -73,9 +55,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     selectedSLValue,
     collateralizationRatioAtNextPrice,
   })
-
-  const progress = getSidebarProgress({ stage, openTxHash: txHash, token, etherscan, flow })
-  const primaryButtonLabel = getPrimaryButtonLabel({ stage, token, flow })
+  const sidebarTxData = extractSidebarTxData(props)
   const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -84,7 +64,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       <Grid gap={3}>
         {stopLossWriteEnabled ? (
           <>
-            {(stage === 'editing' || stage === 'txFailure') && (
+            {(stage === 'stopLossEditing' || stage === 'txFailure') && (
               <SidebarAdjustStopLossEditingStage {...props} />
             )}
           </>
@@ -98,7 +78,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarAdjustStopLossAddStage {...props} />
         )}
-        {stage === 'editing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
+        {stage === 'stopLossEditing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
           <>
             <VaultErrors errorMessages={errors} ilkData={ilkData} />
             <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
@@ -107,7 +87,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: shouldRedirectToCloseVault ? t('close-vault') : primaryButtonLabel,
+      label: getPrimaryButtonLabel({ flow, stage, token, shouldRedirectToCloseVault }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
@@ -115,24 +95,19 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
           redirectToCloseVault()
           return
         }
-        if (stage !== 'txSuccess') {
-          addTriggerConfig.onClick(() => null)
-        } else {
-          backToVaultOverview()
-        }
+        if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
+        else backToVaultOverview(uiChanges)
       },
     },
     ...(!firstStopLossSetup &&
       stage !== 'txInProgress' && {
         textButton: {
           label: t('protection.navigate-cancel'),
+          hidden: firstStopLossSetup,
           action: () => toggleForms(),
         },
       }),
-    ...(txHash && {
-      progress,
-    }),
-    success: getSidebarSuccess({ stage, openTxHash: txHash, token, flow, etherscan }),
+    status: getSidebarStatus({ flow, ...sidebarTxData }),
   }
 
   return <SidebarSection {...sidebarSectionProps} />
