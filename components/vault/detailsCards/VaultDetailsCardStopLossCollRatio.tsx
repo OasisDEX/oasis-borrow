@@ -35,13 +35,13 @@ export function VaultDetailsStopLossCollRatioModal({
 export function VaultDetailsCardStopLossCollRatio({
   slRatio,
   afterSlRatio,
-  collateralizationRatio,
+  collateralizationRatioAtNextPrice,
   afterPillColors,
   showAfterPill,
   isProtected,
 }: {
   slRatio: BigNumber
-  collateralizationRatio: BigNumber
+  collateralizationRatioAtNextPrice: BigNumber
   isProtected: boolean
   afterSlRatio: BigNumber
 } & AfterPillProps) {
@@ -60,11 +60,11 @@ export function VaultDetailsCardStopLossCollRatio({
       }
       valueBottom={
         <>
-          {formatPercent(collateralizationRatio.times(100), {
+          {formatPercent(collateralizationRatioAtNextPrice.times(100), {
             precision: 2,
           })}{' '}
           <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
-            {t('manage-multiply-vault.card.current-coll-ratio')}
+            {t('manage-multiply-vault.card.next-coll-ratio')}
           </Text>
         </>
       }

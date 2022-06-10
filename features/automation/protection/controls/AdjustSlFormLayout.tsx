@@ -121,17 +121,12 @@ export function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
-  collateralizationRatioAtNextPrice,
-  selectedSLValue,
   gasEstimationUsd,
   ethBalance,
   txError,
-  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -165,11 +160,6 @@ export function SetDownsideProtectionInformation({
       .multipliedBy(ethPrice)
       .dividedBy(new BigNumber(10).pow(9)),
   )
-
-  const currentCollateralizationPriceFloor = currentCollateralRatio
-    .times(100)
-    .decimalPlaces(0)
-    .minus(currentCollateralizationPriceAlertRange)
 
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -218,24 +208,6 @@ export function SetDownsideProtectionInformation({
               </AppLink>
             </Text>
           </Box>
-          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
-            <MessageCard
-              messages={[t('protection.coll-ratio-close-to-current')]}
-              type="warning"
-              withBullet={false}
-            />
-          )}
-          {slRatioHigherThanCurrentOrNext(
-            selectedSLValue,
-            collateralizationRatioAtNextPrice,
-            currentCollateralRatio,
-          ) && (
-            <MessageCard
-              messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
           {potentialInsufficientEthFundsForTx && (
             <MessageCard
               messages={[t('vault-warnings.insufficient-eth-balance')]}
