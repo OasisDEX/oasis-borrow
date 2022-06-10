@@ -21,7 +21,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 export async function selectClaimsByAddress(address: string): Promise<WeeklyClaim[] | null> {
   return prisma.weeklyClaim.findMany({
-    where: { user_address: address, claimed: false },
+    where: { user_address: address },
   })
 }
 
