@@ -196,7 +196,7 @@ const claimedClaimsQuery = gql`
         week
         amount
         timestamp
-        txHash
+        tx_hash
       }
     }
   }
@@ -206,7 +206,7 @@ interface Claim {
   week: number
   amount: number
   timestamp: Date
-  txHash: string
+  tx_hash: string
 }
 
 async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
