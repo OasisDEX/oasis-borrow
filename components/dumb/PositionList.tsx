@@ -242,7 +242,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
       </Text>
 
       {/* DESKTOP */}
-      <Box sx={{ display: ['none', 'block'], overflowX: 'scroll' }}>
+      <Box sx={{ display: ['none', 'block'], overflowX: 'auto' }}>
         <Grid
           sx={{
             gridTemplateColumns: `repeat(${columnCount}, auto)`,

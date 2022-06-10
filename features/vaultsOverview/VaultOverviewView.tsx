@@ -291,11 +291,11 @@ export function VaultsOverviewView({
   const isOwnerViewing = !!connectedAccount && address === connectedAccount
 
   return (
-    <Grid sx={{ flex: 1, zIndex: 1 }}>
+    <Grid sx={{ flex: 1, zIndex: 1, gap: '39px' }}>
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
-      <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+      <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         {earnEnabled && (
           <WithErrorHandler error={err}>
             <WithLoadingIndicator value={positionsOverviewSummary}>
@@ -319,9 +319,12 @@ export function VaultsOverviewView({
             />
           </Heading>
         )}
-        {isOwnerViewing && numberOfVaults === 0 && (
+        {!earnEnabled && isOwnerViewing && numberOfVaults === 0 && (
           <>
-            <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
+            <Text
+              variant="paragraph1"
+              sx={{ mb: 3, color: 'lavender', textAlign: 'center', mt: 6 }}
+            >
               <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
             </Text>
             <AppLink
@@ -400,7 +403,7 @@ export function VaultsOverviewView({
             </>
           )}
           {earnEnabled && (
-            <Card variant="surface" sx={{ mb: 5, px: 3 }}>
+            <Card variant="positionsPage" sx={{ mb: 5 }}>
               <PositionList positions={positions} />
             </Card>
           )}
