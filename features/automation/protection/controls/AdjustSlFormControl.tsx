@@ -29,7 +29,7 @@ import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { DEFAULT_SL_SLIDER_BOUNDRY } from '../common/consts/automationDefaults'
+import { DEFAULT_SL_SLIDER_BOUNDARY } from '../common/consts/automationDefaults'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
@@ -158,11 +158,6 @@ export function AdjustSlFormControl({
     new BigNumber(startingAfterNewLiquidationPrice),
   )
 
-  const maxBoundry =
-    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
-      ? new BigNumber(DEFAULT_SL_SLIDER_BOUNDRY)
-      : nextPriceCollRatio
-
   const liqRatio = ilkData.liquidationRatio
 
   const closeProps: PickCloseStateProps = {
@@ -179,9 +174,13 @@ export function AdjustSlFormControl({
   }
 
   const sliderPercentageFill = uiState.selectedSLValue
-    .minus(liqRatio.times(100))
+    .minus(liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).times(100))
     .div(
-      nextPriceCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
+      nextPriceCollRatio
+        .times(100)
+        .decimalPlaces(0, BigNumber.ROUND_DOWN)
+        .div(100)
+        .minus(liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY)),
     )
 
   const sliderProps: SliderValuePickerProps = {
@@ -196,8 +195,10 @@ export function AdjustSlFormControl({
     rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
     rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
     step: 1,
-    maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: liqRatio.multipliedBy(100).plus(DEFAULT_SL_SLIDER_BOUNDRY),
+    maxBoundry: new BigNumber(
+      nextPriceCollRatio.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN),
+    ),
+    minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
     onChange: (slCollRatio) => {
       setSelectedSLValue(slCollRatio)
       /*TO DO: this is duplicated and can be extracted*/
