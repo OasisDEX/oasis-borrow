@@ -178,14 +178,14 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
       href: `/${value.id}`,
       hash: VaultViewMode.Protection,
     },
-    vaultID: value.id.toString(),
+    positionId: value.id.toString(),
   }))
 
   const multiplyVM: MultiplyPositionVM[] = multiply.map((value) => ({
     type: 'multiply' as const,
     icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
-    vaultID: value.id.toString(),
+    positionId: value.id.toString(),
     multiple: `${calculateMultiply({ ...value }).toFixed(2)}x`,
     netValue: formatCryptoBalance(value.backingCollateralUSD),
     liquidationPrice: `$${formatFiatBalance(value.liquidationPrice)}`,
@@ -207,7 +207,7 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
     type: 'earn' as const,
     icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
-    vaultID: value.id.toString(),
+    positionId: value.id.toString(),
     netValue: formatCryptoBalance(value.backingCollateralUSD),
     sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
     pnl: `${formatPercent((getPnl(value) || zero).times(100), {

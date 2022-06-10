@@ -286,7 +286,7 @@
       },
       "earn": {
         "tabLabel": "Earn on Oasis",
-        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
         "tabParaLinkContent": "Learn more about Earn →"
       }
     },
@@ -1130,7 +1130,7 @@
     },
     "earn": {
       "title": "Oasis Earn",
-      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
     }
   },
@@ -1190,59 +1190,59 @@
     "position-headers": {
       "asset": {
         "label": "Asset",
-        "tooltip": "The Asset"
+        "tooltip": "The identifier of the position asset type, uses the protocols naming conventions."
       },
-      "vault-id": {
-        "label": "Vault ID",
-        "tooltip": "The Vault ID"
+      "position-id": {
+        "label": "Position ID",
+        "tooltip": "The Position ID is used to reference the position across Oasis.app"
       },
       "collateral-ratio": {
         "label": "Collateral Ratio",
-        "tooltip": "The Collateral Ratio"
+        "tooltip": "The value of the collateral in comparison to the amount of debt. Needs to be above the minimum required to avoid liquidation."
       },
       "dai-debt": {
         "label": "Dai Debt",
-        "tooltip": "The Dai Debt"
+        "tooltip": "The amount of dai debt in this position"
       },
       "collateral-locked": {
         "label": "Collateral Locked",
-        "tooltip": "Collateral Locked"
+        "tooltip": "The amount of collateral in this position"
       },
       "variable-perc": {
         "label": "Variable %",
-        "tooltip": "Variable Percentage"
+        "tooltip": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol."
       },
-      "automation": {
-        "label": "Automation",
-        "tooltip": "Protection features"
+      "protection": {
+        "label": "Protection",
+        "tooltip": "Indicates if a Stop Loss Protection has been set up for this position. If not, you can activate it on the Protection page by clicking the button."
       },
       "net-value": {
         "label": "Net Value",
-        "tooltip": "The Net Value"
+        "tooltip": "The current net value of the position based on the oracle price of the collateral in the position minus the debt."
       },
       "multiple": {
         "label": "Multiple",
-        "tooltip": "The Multiple"
+        "tooltip": "The current multiple of the position. Indicating the extra exposure on the underlying collateral in comparison to holding the collateral without a multiply position."
       },
       "liquidation-price": {
         "label": "Liquidation Price",
-        "tooltip": "The Liquidation Price"
+        "tooltip": "The price of the collateral at which this position becomes vulnerable to liquidation."
       },
       "funding-cost": {
         "label": "Funding Cost",
-        "tooltip": "The Funding Cost"
+        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Dai Debt / Net Value * Variable annual fee."
       },
       "pnl": {
         "label": "PnL",
-        "tooltip": "Profit and loss"
+        "tooltip": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position."
       },
       "seven-day-yield": {
         "label": "7 Day Yield",
-        "tooltip": "The 7 Day Yield"
+        "tooltip": "The 7 day yield is the average returns of the past 7 days, annualized, and subtracts any variable rates that need to be paid."
       },
       "liquidity": {
         "label": "Liquidity",
-        "tooltip": "The Liquidity "
+        "tooltip": "The current available liquidity allowing increases of positions."
       }
     }
   },
