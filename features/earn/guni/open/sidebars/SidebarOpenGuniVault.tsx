@@ -19,6 +19,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -59,8 +60,8 @@ export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} token="DAI" />}
         {isOpenStage && <SidebarOpenGuniVaultOpenStage {...props} />}
-        <VaultErrors {...props} />
-        <VaultWarnings {...props} />
+        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
+        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     primaryButton: {

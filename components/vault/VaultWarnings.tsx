@@ -1,12 +1,11 @@
+import { IlkData } from 'blockchain/ilks'
 import { MessageCard } from 'components/MessageCard'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
-
-import { IlkData } from '../../blockchain/ilks'
-import { VaultWarningMessage } from '../../features/form/warningMessagesHandler'
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]

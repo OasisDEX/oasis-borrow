@@ -1,7 +1,9 @@
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
@@ -121,6 +123,11 @@ export function SidebarSliderAdjustMultiply({
         <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
         <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
       </Flex>
+      <VaultErrors
+        errorMessages={extractGenerateErrors(state.errorMessages)}
+        ilkData={state.ilkData}
+        maxGenerateAmount={state.maxGenerateAmount}
+      />
     </Grid>
   )
 }
