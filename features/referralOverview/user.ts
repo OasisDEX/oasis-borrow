@@ -12,8 +12,6 @@ import { gql, GraphQLClient } from 'graphql-request'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
 
-import { updateClaimsUsingApi$ } from './userApi'
-
 export enum ClaimTxnState {
   PENDING = 'PENDING',
   FAILED = 'FAILED',
@@ -77,7 +75,7 @@ export function createUserReferral$(
 
           const referralsOut = referrals?.map((r) => r.address)
 
-          const claimedWeeks = claimedClaims.map((item) => item.week)
+          const claimedWeeks = claimedClaims.map((item) => Number(item.week)) as number[]
           const filteredWeeklyClaims = weeklyClaims?.filter(
             (item) => !claimedWeeks.includes(item.week_number),
           )
@@ -105,15 +103,7 @@ export function createUserReferral$(
                 (txnState: TxState<ClaimMultipleData>): ClaimTxnState => {
                   const jwtToken = jwtAuthGetToken(txnState.account)
                   if (txnState.status === TxStatus.Success && jwtToken && claimsOut.weeks) {
-                    updateClaimsUsingApi$(
-                      txnState.account,
-                      claimsOut.weeks.map((week: ethers.BigNumber) => Number(week)),
-                      jwtToken,
-                    ).subscribe((res) => {
-                      if (res === 200) {
-                        trigger()
-                      }
-                    })
+                    trigger()
                   }
 
                   switch (txnState.status) {
@@ -196,7 +186,7 @@ const claimedClaimsQuery = gql`
         week
         amount
         timestamp
-        tx_hash
+        txHash
       }
     }
   }
@@ -206,10 +196,10 @@ interface Claim {
   week: number
   amount: number
   timestamp: Date
-  tx_hash: string
+  txHash: string
 }
 
 async function getClaimedClaims(client: GraphQLClient, address: string): Promise<Claim[]> {
-  const data = await client.request(claimedClaimsQuery, { address: address })
+  const data = await client.request(claimedClaimsQuery, { address: address.toLocaleLowerCase() })
   return data.allClaims.nodes
 }

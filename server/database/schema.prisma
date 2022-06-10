@@ -59,7 +59,6 @@ model WeeklyClaim {
     user_address String
     proof        String[]
     amount       String
-    claimed      Boolean
     claimant     User     @relation(fields: [user_address], references: [address])
 
     @@unique([week_number, user_address], name: "week_number_userAddress_unique_id")
