@@ -1157,8 +1157,8 @@
       "link": "https://yearn.finance/"
     },
     "dai": {
-      "description": "To be updated",
-      "link": ""
+      "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Oasis.app using various collateral types. Here we show the products that will net you returns in DAI.",
+      "link": "https://kb.oasis.app/help/what-is-dai"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
