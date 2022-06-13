@@ -360,12 +360,16 @@ export function AdjustSlFormLayout({
       {txProgressing && <OpenVaultAnimation />}
       {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
-          <Box mt={3}>
-            <SliderValuePicker {...slValuePickerConfig} />
-          </Box>
-          <Box>
-            <PickCloseState {...closePickerConfig} />
-          </Box>
+          {!vault.debt.isZero() && (
+            <>
+              <Box mt={3}>
+                <SliderValuePicker {...slValuePickerConfig} />
+              </Box>
+              <Box>
+                <PickCloseState {...closePickerConfig} />
+              </Box>
+            </>
+          )}
           {isEditing && (
             <>
               <Box>
