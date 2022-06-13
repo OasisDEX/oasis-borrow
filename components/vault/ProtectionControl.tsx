@@ -1,9 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
-import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
-
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
 import { VaultBanner } from 'features/banners/VaultsBannersView'
@@ -129,8 +128,7 @@ export function ProtectionControl({
     (!vault.debt.isZero() &&
       vault.debt.gt(dustLimit) &&
       (automationTriggersData?.triggers?.length || stopLossWriteEnabled)) ? (
-    <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
-
+    <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, priceInfoData]}
         customLoader={<VaultContainerSpinner />}
