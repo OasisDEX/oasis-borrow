@@ -1274,5 +1274,11 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  "auto-buy": {
+    "min-ratio": "min. ratio with stop loss/basic sell",
+    "target-coll-ratio": "Target Col Ratio",
+    "set-max-buy-price": "Set Max Buy Price",
+    "set-no-threshold": "Set No Threshold"
   }
 }
