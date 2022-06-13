@@ -298,7 +298,6 @@ function addTransitions(
   }
 
   if (state.stage === 'stopLossTxWaitingForConfirmation' || state.stage === 'stopLossTxFailure') {
-    // console.log(state)
     return {
       ...state,
       progress: () => addStopLossTrigger(txHelpers, vaultActions, change, state),
