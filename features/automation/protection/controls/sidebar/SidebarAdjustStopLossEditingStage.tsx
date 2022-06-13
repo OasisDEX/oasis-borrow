@@ -48,19 +48,33 @@ export function SidebarAdjustStopLossEditingStage({
 
   return (
     <>
-      <Box mb={3}>
-        <PickCloseState {...closePickerConfig} />
-      </Box>
-      <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-        {t('protection.set-downside-protection-desc')}{' '}
-        <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-          {t('here')}.
-        </AppLink>
-      </Text>
+      {!vault.debt.isZero() && (
+        <Box mb={3}>
+          <PickCloseState {...closePickerConfig} />
+        </Box>
+      )}
+      {!vault.debt.isZero() ? (
+        <>
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            {t('protection.set-downside-protection-desc')}{' '}
+            <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+              {t('here')}.
+            </AppLink>
+          </Text>
+        </>
+      ) : (
+        <>
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            {t('protection.closed-vault-existing-sl-description')}
+          </Text>
+        </>
+      )}
 
-      <Box mt={3}>
-        <SliderValuePicker {...slValuePickerConfig} />
-      </Box>
+      {!vault.debt.isZero() && (
+        <Box mt={3}>
+          <SliderValuePicker {...slValuePickerConfig} />
+        </Box>
+      )}
       {isEditing && (
         <>
           <Box>

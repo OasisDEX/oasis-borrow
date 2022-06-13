@@ -38,6 +38,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     toggleForms,
     token,
     txError,
+    vault,
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
@@ -51,7 +52,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, vault }),
     content: (
       <Grid gap={3}>
         {stopLossWriteEnabled ? (
