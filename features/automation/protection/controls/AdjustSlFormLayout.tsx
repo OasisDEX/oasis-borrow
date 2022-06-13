@@ -14,6 +14,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
@@ -169,6 +170,7 @@ export function SetDownsideProtectionInformation({
   })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -220,6 +222,13 @@ export function SetDownsideProtectionInformation({
           {insufficientEthFundsForTx && (
             <MessageCard
               messages={[t('vault-errors.insufficient-eth-balance')]}
+              type="error"
+              withBullet={false}
+            />
+          )}
+          {maxDebtForSettingStopLoss && (
+            <MessageCard
+              messages={[t('vault-errors.stop-loss-max-debt')]}
               type="error"
               withBullet={false}
             />

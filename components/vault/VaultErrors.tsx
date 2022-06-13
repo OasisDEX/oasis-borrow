@@ -132,6 +132,8 @@ export function VaultErrors({
         return translate('stop-loss-near-liquidation-ratio')
       case 'stopLossHigherThanCurrentOrNext':
         return translate('stop-loss-near-liquidation-ratio')
+      case 'maxDebtForSettingStopLoss':
+        return translate('stop-loss-max-debt')
       default:
         throw new UnreachableCaseError(message)
     }

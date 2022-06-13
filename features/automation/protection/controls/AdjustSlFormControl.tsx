@@ -31,6 +31,7 @@ import React, { useMemo, useState } from 'react'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   DEFAULT_SL_SLIDER_BOUNDARY,
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MAX_SL_SLIDER_VALUE_OFFSET,
 } from '../common/consts/automationDefaults'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
@@ -197,6 +198,8 @@ export function AdjustSlFormControl({
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
 
+  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
+
   const stage = isSuccessStage
     ? 'txSuccess'
     : isProgressStage
@@ -208,7 +211,8 @@ export function AdjustSlFormControl({
   const isProgressDisabled = !!(
     !isOwner ||
     (!isEditing && txStatus !== TxStatus.Success) ||
-    isProgressStage
+    isProgressStage ||
+    maxDebtForSettingStopLoss
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
@@ -275,7 +279,8 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails),
+      (!isEditing && !uiState?.txDetails) ||
+      maxDebtForSettingStopLoss,
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice

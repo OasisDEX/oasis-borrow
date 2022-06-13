@@ -194,6 +194,7 @@ export function CancelSlFormControl({
     currentCollateralRatio: vault.collateralizationRatio,
     selectedSLValue: addSlUiState.selectedSLValue,
     isProgressDisabled,
+    vault,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

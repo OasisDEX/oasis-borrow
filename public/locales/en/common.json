@@ -772,7 +772,8 @@
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price.",
-    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault."
+    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault.",
+    "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",

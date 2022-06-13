@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -27,8 +28,9 @@ export function warningsValidation({
   })
 }
 
-export function errorsValidation({ txError }: { txError?: TxError }) {
+export function errorsValidation({ txError, debt }: { txError?: TxError; debt: BigNumber }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 
-  return errorMessagesHandler({ insufficientEthFundsForTx })
+  return errorMessagesHandler({ insufficientEthFundsForTx, maxDebtForSettingStopLoss })
 }
