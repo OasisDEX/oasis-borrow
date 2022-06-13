@@ -7,7 +7,7 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
-  vault: Vault
+  vault?: Vault
   isSLPanelVisible?: boolean
   openFlowWithStopLoss?: boolean
 }
@@ -106,7 +106,7 @@ export function getSidebarTitle({
 
       return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
-      return !vault.debt.isZero()
+      return !vault?.debt?.isZero()
         ? t('protection.enable-stop-loss')
         : t('protection.closed-vault-existing-sl-header')
     case 'proxyInProgress':

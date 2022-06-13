@@ -81,7 +81,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     ),
     primaryButton: {
       label: getPrimaryButtonLabel({ flow, stage, token }),
-      disabled: isProgressDisabled,
+      disabled: isProgressDisabled || vault.debt.isZero(),
       isLoading: stage === 'txInProgress',
       action: () => {
         if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
