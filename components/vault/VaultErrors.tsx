@@ -130,6 +130,8 @@ export function VaultErrors({
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':
         return translate('stop-loss-near-liquidation-ratio')
+      case 'stopLossHigherThanCurrentOrNext':
+        return translate('stop-loss-near-liquidation-ratio')
       default:
         throw new UnreachableCaseError(message)
     }

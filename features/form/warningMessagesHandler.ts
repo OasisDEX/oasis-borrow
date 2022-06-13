@@ -10,7 +10,7 @@ export type VaultWarningMessage =
   | 'customSlippageOverridden'
   | 'vaultIsCurrentlyUnderMinActiveColRatio'
   | 'vaultWillRemainUnderMinActiveColRatio'
-  | 'nextCollRatioCloseToCurrentSl'
+  | 'currentCollRatioCloseToStopLoss'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -22,7 +22,7 @@ interface WarningMessagesHandler {
   potentialInsufficientEthFundsForTx?: boolean
   highSlippage?: boolean
   customSlippageOverridden?: boolean
-  nextCollRatioCloseToCurrentSl?: boolean
+  currentCollRatioCloseToStopLoss?: boolean
 }
 
 export function warningMessagesHandler({
@@ -33,7 +33,7 @@ export function warningMessagesHandler({
   vaultWillBeAtRiskLevelWarningAtNextPrice,
   debtIsLessThanDebtFloor,
   potentialInsufficientEthFundsForTx,
-  nextCollRatioCloseToCurrentSl,
+  currentCollRatioCloseToStopLoss,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -65,8 +65,8 @@ export function warningMessagesHandler({
     warningMessages.push('potentialInsufficientEthFundsForTx')
   }
 
-  if (nextCollRatioCloseToCurrentSl) {
-    warningMessages.push('nextCollRatioCloseToCurrentSl')
+  if (currentCollRatioCloseToStopLoss) {
+    warningMessages.push('currentCollRatioCloseToStopLoss')
   }
 
   // if (highSlippage) {

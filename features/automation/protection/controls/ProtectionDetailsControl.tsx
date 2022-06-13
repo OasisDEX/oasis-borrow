@@ -1,12 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React from 'react'
 
-import { getIsEditingProtection, getStartingSlRatio } from '../common/helpers'
+import { getIsEditingProtection } from '../common/helpers'
 import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
@@ -15,32 +14,22 @@ import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './Protect
 function renderLayout(
   triggersData: StopLossTriggerData,
   vaultData: Vault,
-  collateralPrices: CollateralPricesWithFilters,
+  priceInfo: PriceInfo,
   ilkData: IlkData,
   lastUIState: AddFormChange,
 ) {
-  const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
-
-  const initialVaultCollRatio = zero
-
-  const startingSlRatio = getStartingSlRatio({
-    stopLossLevel: triggersData.stopLossLevel,
-    isStopLossEnabled: triggersData.isStopLossEnabled,
-    initialVaultCollRatio,
-  })
-
   const props: ProtectionDetailsLayoutProps = {
     isStopLossEnabled: triggersData.isStopLossEnabled,
     slRatio: triggersData.stopLossLevel,
     vaultDebt: vaultData.debt,
-    currentOraclePrice: collateralPrice.currentPrice,
-    nextOraclePrice: collateralPrice.nextPrice,
+    currentOraclePrice: priceInfo.currentCollateralPrice,
+    nextOraclePrice: priceInfo.nextCollateralPrice,
     lockedCollateral: vaultData.lockedCollateral,
     collateralizationRatioAtNextPrice: vaultData.collateralizationRatioAtNextPrice,
 
     liquidationRatio: ilkData.liquidationRatio,
     liquidationPenalty: ilkData.liquidationPenalty,
-    isStaticPrice: collateralPrice.isStaticPrice,
+    isStaticPrice: priceInfo.isStaticCollateralPrice,
     token: vaultData.token,
 
     afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
@@ -48,7 +37,6 @@ function renderLayout(
     isEditing: getIsEditingProtection({
       isStopLossEnabled: triggersData.isStopLossEnabled,
       selectedSLValue: lastUIState.selectedSLValue,
-      startingSlRatio,
       stopLossLevel: triggersData.stopLossLevel,
       collateralActive: lastUIState.collateralActive,
       isToCollateral: triggersData.isToCollateral,
@@ -60,14 +48,14 @@ function renderLayout(
 interface ProtectionDetailsControlProps {
   ilkData: IlkData
   automationTriggersData: TriggersData
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   vault: Vault
 }
 
 export function ProtectionDetailsControl({
   ilkData,
   automationTriggersData,
-  collateralPrices,
+  priceInfo,
   vault,
 }: ProtectionDetailsControlProps) {
   const [lastUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
@@ -75,7 +63,7 @@ export function ProtectionDetailsControl({
   return renderLayout(
     extractStopLossData(automationTriggersData),
     vault,
-    collateralPrices,
+    priceInfo,
     ilkData,
     lastUIState,
   )

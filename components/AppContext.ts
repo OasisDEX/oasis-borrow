@@ -938,6 +938,7 @@ export function setupAppContext() {
     ilkToToken$,
     bonus$,
     positionsOverviewSummary$,
+    priceInfo$,
     yields$,
   }
 }

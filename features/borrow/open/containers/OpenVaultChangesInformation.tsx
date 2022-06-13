@@ -26,8 +26,9 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
     maxGenerateAmountCurrentPrice,
     inputAmountsEmpty,
     depositAmount,
-    withStopLossStage,
     stopLossSkipped,
+    stopLossLevel,
+    ilkData,
   } = props
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
@@ -35,9 +36,9 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
 
-  // TODO mock for now
-  const afterStopLossRatio = new BigNumber(180)
-  const dynamicStopLossPrice = new BigNumber(2000)
+  const dynamicStopLossPrice = afterLiquidationPrice
+    .div(ilkData.liquidationRatio)
+    .times(stopLossLevel.div(100))
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Vault changes">
@@ -110,7 +111,7 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
         }
       />
       <VaultChangesInformationEstimatedGasFee {...props} />
-      {stopLossOpenFlowEnabled && withStopLossStage && !stopLossSkipped && (
+      {stopLossOpenFlowEnabled && stopLossLevel.gt(zero) && !stopLossSkipped && (
         <>
           <Box as="li" sx={{ listStyle: 'none' }}>
             <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
@@ -121,7 +122,7 @@ export function OpenVaultChangesInformation(props: OpenVaultState) {
             label={`${t('protection.stop-loss-coll-ratio')}`}
             value={
               <Flex>
-                {formatPercent(afterStopLossRatio, {
+                {formatPercent(stopLossLevel, {
                   precision: 2,
                   roundMode: BigNumber.ROUND_DOWN,
                 })}

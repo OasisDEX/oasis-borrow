@@ -86,14 +86,12 @@ export function getPrimaryButtonLabel({
   flow,
   canTransition = true,
   isSLPanelVisible = false,
-  shouldRedirectToCloseVault = false,
 }: PrimaryButtonLabelParams & { flow: SidebarFlow }): string {
   const { t } = useTranslation()
   const allowanceToken =
     insufficientDaiAllowance || flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
 
   if (isSLPanelVisible) return t('protection.reopen-position')
-  else if (shouldRedirectToCloseVault) return t('close-vault')
 
   switch (stage) {
     case 'editing':
@@ -146,6 +144,7 @@ export function getPrimaryButtonLabel({
     case 'allowanceSuccess':
       return t('continue')
     case 'txFailure':
+    case 'stopLossTxFailure':
     case 'manageFailure':
       return t('retry')
     case 'manageSuccess':
@@ -155,12 +154,17 @@ export function getPrimaryButtonLabel({
 
       return t(txInProgressKey)
     case 'txSuccess':
+    case 'stopLossTxSuccess':
       const txSuccessKey = getPrimaryButtonLabelTxSuccessData({ flow })
 
       return t(txSuccessKey, { id })
     case 'txWaitingForApproval':
     case 'txWaitingForConfirmation':
       return t('create-vault')
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxInProgress':
+      return t('set-up-stop-loss-tx')
     case 'manageWaitingForApproval':
     case 'manageInProgress':
       return t('changing-vault')

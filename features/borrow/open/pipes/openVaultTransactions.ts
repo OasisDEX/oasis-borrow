@@ -1,16 +1,19 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { createDsProxy } from 'blockchain/calls/proxy'
+import { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
+import { Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { prepareAddTriggerData } from 'features/automation/protection/controls/AdjustSlFormControl'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import { iif, Observable, of } from 'rxjs'
 
-import { createDsProxy } from '../../../../blockchain/calls/proxy'
-import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -64,6 +67,29 @@ export function applyOpenVaultTransaction(
     }
   }
 
+  if (change.kind === 'stopLossTxWaitingForConfirmation') {
+    return {
+      ...state,
+      stage: 'stopLossTxWaitingForConfirmation',
+      id: change.id,
+    }
+  }
+
+  if (change.kind === 'stopLossTxWaitingForApproval') {
+    return {
+      ...state,
+      stage: 'stopLossTxWaitingForApproval',
+    }
+  }
+
+  if (change.kind === 'openVaultConfirming') {
+    const { openVaultConfirmations } = change
+    return {
+      ...state,
+      openVaultConfirmations,
+    }
+  }
+
   if (change.kind === 'txFailure') {
     const { txError } = change
     return {
@@ -77,6 +103,28 @@ export function applyOpenVaultTransaction(
     return { ...state, stage: 'txSuccess', id: change.id }
   }
 
+  if (change.kind === 'stopLossTxInProgress') {
+    const { stopLossTxHash } = change
+    return {
+      ...state,
+      stopLossTxHash,
+      stage: 'stopLossTxInProgress',
+    }
+  }
+
+  if (change.kind === 'stopLossTxFailure') {
+    const { txError } = change
+    return {
+      ...state,
+      stage: 'stopLossTxFailure',
+      txError,
+    }
+  }
+
+  if (change.kind === 'stopLossTxSuccess') {
+    return { ...state, stage: 'stopLossTxSuccess' }
+  }
+
   return state
 }
 
@@ -84,7 +132,16 @@ export function openVault(
   { sendWithGasEstimation }: TxHelpers,
   vaultActions: VaultActionsLogicInterface,
   change: (ch: OpenVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
+  {
+    generateAmount,
+    depositAmount,
+    proxyAddress,
+    ilk,
+    account,
+    token,
+    openFlowWithStopLoss,
+    openVaultSafeConfirmations,
+  }: OpenVaultState,
 ) {
   sendWithGasEstimation(vaultActions.open, {
     kind: TxMetaKind.open,
@@ -122,11 +179,66 @@ export function openVault(
             ).subscribe()
           }
 
+          if (openFlowWithStopLoss) {
+            return iif(
+              () => (txState as any).confirmations < openVaultSafeConfirmations,
+              of({
+                kind: 'openVaultConfirming',
+                openVaultConfirmations: (txState as any).confirmations,
+              }),
+              of({
+                kind: 'stopLossTxWaitingForConfirmation',
+                id: id!,
+              }),
+            )
+          }
+
           return of({
             kind: 'txSuccess',
             id: id!,
           })
         },
+        !openFlowWithStopLoss ? undefined : openVaultSafeConfirmations,
+      ),
+    )
+    .subscribe((ch) => change(ch))
+}
+
+export function addStopLossTrigger(
+  { sendWithGasEstimation }: TxHelpers,
+  vaultActions: VaultActionsLogicInterface,
+  change: (ch: OpenVaultChange) => void,
+  state: OpenVaultState,
+) {
+  const { id, stopLossCloseType, stopLossLevel, proxyAddress } = state
+  sendWithGasEstimation(
+    vaultActions.addStopLossTrigger,
+    prepareAddTriggerData(
+      { id, owner: proxyAddress } as Vault,
+      stopLossCloseType === 'collateral',
+      stopLossLevel,
+      0,
+    ),
+  )
+    .pipe(
+      transactionToX<OpenVaultChange, AutomationBotAddTriggerData>(
+        { kind: 'stopLossTxWaitingForApproval' },
+        (txState) =>
+          of({ kind: 'stopLossTxInProgress', stopLossTxHash: (txState as any).txHash as string }),
+        (txState) =>
+          of({
+            kind: 'stopLossTxFailure',
+            txError:
+              txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
+                ? txState.error
+                : undefined,
+          }),
+        () => {
+          return of({
+            kind: 'stopLossTxSuccess',
+          })
+        },
+        6,
       ),
     )
     .subscribe((ch) => change(ch))

@@ -26,14 +26,12 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    collateralizationRatioAtNextPrice,
     ethBalance,
     ethPrice,
     gasEstimationUsd,
     ilkData,
     isProgressDisabled,
     removeTriggerConfig,
-    selectedSLValue,
     stage,
     toggleForms,
     token,
@@ -41,14 +39,12 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError, selectedSLValue, ilkData })
+  const errors = errorsValidation({ txError })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
-    selectedSLValue,
-    collateralizationRatioAtNextPrice,
   })
   const sidebarTxData = extractSidebarTxData(props)
 
