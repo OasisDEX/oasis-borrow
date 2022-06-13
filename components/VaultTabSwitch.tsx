@@ -18,6 +18,7 @@ import { VaultTabTag } from './vault/VaultTabTag'
 export enum VaultViewMode {
   Overview = 'Overview',
   Protection = 'Protection',
+  Optimization = 'Optimization',
   History = 'History',
   VaultInfo = 'VaultInfo',
 }
@@ -108,6 +109,7 @@ export function VaultTabSwitch({
   overViewControl,
   historyControl,
   protectionControl,
+  optimizationControl,
   vaultInfo,
   showProtectionTab,
   protectionEnabled,
@@ -119,6 +121,7 @@ export function VaultTabSwitch({
   headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
+  optimizationControl: JSX.Element
   vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
@@ -128,6 +131,7 @@ export function VaultTabSwitch({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
+  const basicBSEnabled = useFeatureToggle('BasicBS')
 
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
@@ -159,6 +163,7 @@ export function VaultTabSwitch({
   const options = useMemo(() => {
     const tagMap = {
       [VaultViewMode.Protection]: protectionEnabled,
+      [VaultViewMode.Optimization]: false,
     } as Record<VaultViewMode, boolean>
 
     return newComponentsEnabled
@@ -240,6 +245,15 @@ export function VaultTabSwitch({
                 <VaultTabTag isEnabled={protectionEnabled} />
               </VaultTabButton>
             )}
+            {basicBSEnabled && (
+              <VaultTabButton
+                onClick={() => setMode(VaultViewMode.Optimization)}
+                variant={getVariant(mode, VaultViewMode.Optimization)}
+              >
+                {t('system.optimization')}
+                <VaultTabTag isEnabled={false} />
+              </VaultTabButton>
+            )}
             <VaultTabButton
               onClick={() => setMode(VaultViewMode.VaultInfo)}
               variant={getVariant(mode, VaultViewMode.VaultInfo)}
@@ -291,13 +305,15 @@ export function VaultTabSwitch({
       </Box>
       <Box sx={{ zIndex: 1 }}>
         {headerControl}
-        {mode === VaultViewMode.Overview
-          ? overViewControl
-          : mode === VaultViewMode.Protection
-          ? protectionControl
-          : mode === VaultViewMode.History
-          ? historyControl
-          : vaultInfo}
+        {
+          {
+            Overview: overViewControl,
+            Protection: protectionControl,
+            Optimization: optimizationControl,
+            History: historyControl,
+            VaultInfo: vaultInfo,
+          }[mode]
+        }
       </Box>
     </Grid>
   )
