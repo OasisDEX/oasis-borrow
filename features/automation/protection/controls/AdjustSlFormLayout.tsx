@@ -193,7 +193,9 @@ export function SetDownsideProtectionInformation({
         value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      {gasEstimation && (
+        <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      )}
       {!newComponentsEnabled && (
         <>
           <Box sx={{ fontSize: 2 }}>

@@ -449,3 +449,19 @@ export function afterCollRatioBelowStopLossRatioValidator({
     afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
   )
 }
+
+export function stopLossCloseToCollRatioValidator({
+  currentCollRatio,
+  stopLossLevel,
+}: {
+  currentCollRatio: BigNumber
+  stopLossLevel: BigNumber
+}) {
+  const alertRange = 3
+  const currentCollRatioFloor = currentCollRatio
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+    .minus(alertRange)
+
+  return stopLossLevel.gte(currentCollRatioFloor)
+}

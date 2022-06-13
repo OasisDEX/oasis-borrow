@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 
 import {
@@ -23,13 +24,13 @@ const defaultOpenVaultStageCategories = {
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
+  isAddStopLossStage: false,
 }
 
 export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
   token: string,
   allowance: BigNumber | undefined | 'skip',
-  withStopLoss: boolean = false,
 ) {
   let totalSteps = 2
 
@@ -43,21 +44,39 @@ export function calculateInitialTotalSteps(
     }
   }
 
-  if (withStopLoss) {
-    totalSteps += 1
-  }
-
   return totalSteps
 }
 
 export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
-  const { stage, token, depositAmount, allowance } = state
+  const {
+    stage,
+    token,
+    depositAmount,
+    allowance,
+    generateAmount,
+    withStopLossStage,
+    proxyAddress,
+  } = state
   const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
   const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
 
   const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
+  const checkIfStopLossAndGenerate = !!(withStopLossStage && generateAmount?.gt(zero))
 
-  const totalSteps = !hasAllowance && state.totalSteps === 2 ? 3 : state.totalSteps
+  const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
+
+  const totalSteps = !stopLossOpenFlowEnabled
+    ? !hasAllowance && state.totalSteps === 2
+      ? 3
+      : state.totalSteps
+    : (!hasAllowance && state.totalSteps === 2) ||
+      (checkIfStopLossAndGenerate && state.totalSteps === 2)
+    ? 3
+    : !checkIfStopLossAndGenerate && state.totalSteps === 3
+    ? 2
+    : proxyAddress && hasAllowance && state.totalSteps === 4
+    ? 2
+    : state.totalSteps
 
   switch (stage) {
     case 'editing':
@@ -79,6 +98,7 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         isProxyStage: true,
         totalSteps,
         currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
+        proxyAddress,
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -112,6 +132,18 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
         totalSteps,
         currentStep: totalSteps,
       }
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxInProgress':
+    case 'stopLossTxFailure':
+    case 'stopLossTxSuccess':
+      return {
+        ...state,
+        ...defaultOpenVaultStageCategories,
+        isAddStopLossStage: true,
+        totalSteps,
+        currentStep: totalSteps,
+      }
     default:
       throw new UnreachableCaseError(stage)
   }
@@ -123,6 +155,7 @@ export interface OpenVaultConditions {
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+  isAddStopLossStage: boolean
 
   inputAmountsEmpty: boolean
 
@@ -150,11 +183,16 @@ export interface OpenVaultConditions {
 
   isLoadingStage: boolean
   isSuccessStage: boolean
+  isStopLossSuccessStage: boolean
+  openFlowWithStopLoss: boolean
   canProgress: boolean
   canRegress: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
+  stopLossOnNearLiquidationRatio: boolean
+  stopLossHigherThanCurrentOrNext: boolean
+  currentCollRatioCloseToStopLoss: boolean
 }
 
 export const defaultOpenVaultConditions: OpenVaultConditions = {
@@ -185,11 +223,16 @@ export const defaultOpenVaultConditions: OpenVaultConditions = {
 
   isLoadingStage: false,
   isSuccessStage: false,
+  isStopLossSuccessStage: false,
+  openFlowWithStopLoss: false,
   canProgress: false,
   canRegress: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
+  stopLossOnNearLiquidationRatio: false,
+  stopLossHigherThanCurrentOrNext: false,
+  currentCollRatioCloseToStopLoss: false,
 }
 
 export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState {
@@ -214,6 +257,9 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     allowanceAmount,
     allowance,
     txError,
+    withStopLossStage,
+    stopLossLevel,
+    stopLossSkipped,
   } = state
 
   const inputAmountsEmpty = !depositAmount && !generateAmount
@@ -298,9 +344,12 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     'allowanceWaitingForApproval',
     'txInProgress',
     'txWaitingForApproval',
+    'stopLossTxInProgress',
+    'stopLossTxWaitingForApproval',
   ] as OpenVaultStage[]).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
+  const isStopLossSuccessStage = stage === 'stopLossTxSuccess'
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -353,6 +402,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
+  const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
+
   return {
     ...state,
     inputAmountsEmpty,
@@ -381,6 +432,8 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
 
     isLoadingStage,
     isSuccessStage,
+    isStopLossSuccessStage,
+    openFlowWithStopLoss,
     canProgress,
     canRegress,
   }

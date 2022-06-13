@@ -783,7 +783,7 @@
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
     "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction",
-    "next-coll-ratio-close-to-current-stop-loss": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
@@ -882,6 +882,16 @@
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
+  "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
+  "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop Loss.",
+  "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
+  "open-vault-two-tx-second-step-title": "Step 2/2: Stop Loss setup transaction",
+  "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
+  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
+  "not-started": "not started",
+  "in-progress": "in progress",
+  "vault-creation-confirmed": "Vault creation confirmed",
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",

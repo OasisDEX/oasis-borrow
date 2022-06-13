@@ -7,6 +7,7 @@ interface GetSidebarTitleParams {
   stage: SidebarVaultStages
   token: string
   isSLPanelVisible?: boolean
+  openFlowWithStopLoss?: boolean
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -43,10 +44,19 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarFlow })
   }
 }
 
-function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarFlow }) {
+function getSidebarTitleTxInProgressTranslationKey({
+  flow,
+  openFlowWithStopLoss,
+}: {
+  flow: SidebarFlow
+  openFlowWithStopLoss: boolean
+}) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+      return !openFlowWithStopLoss
+        ? 'vault-form.header.confirm-in-progress'
+        : 'open-vault-two-tx-first-step-title'
     case 'openGuni':
       return 'vault-form.header.confirm-in-progress'
     case 'addSl':
@@ -80,6 +90,7 @@ export function getSidebarTitle({
   stage,
   token,
   isSLPanelVisible = false,
+  openFlowWithStopLoss = false,
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -119,7 +130,10 @@ export function getSidebarTitle({
     case 'daiAllowanceSuccess':
       return t('vault-form.header.allowance', { token: 'DAI' })
     case 'txInProgress':
-      const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({ flow })
+      const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({
+        flow,
+        openFlowWithStopLoss,
+      })
 
       return t(txInProgressKey)
     case 'txWaitingForConfirmation':
@@ -128,6 +142,12 @@ export function getSidebarTitle({
       const txFailureKey = getSidebarTitleTxFailureTranslationKey({ flow })
 
       return t(txFailureKey)
+    case 'stopLossTxInProgress':
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxFailure':
+    case 'stopLossTxSuccess':
+      return t('open-vault-two-tx-second-step-title')
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 

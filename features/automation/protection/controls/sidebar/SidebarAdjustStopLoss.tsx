@@ -7,10 +7,7 @@ import {
   errorsValidation,
   warningsValidation,
 } from 'features/automation/protection/common/validation'
-import {
-  AdjustSlFormLayoutProps,
-  slCollRatioNearLiquidationRatio,
-} from 'features/automation/protection/controls/AdjustSlFormLayout'
+import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -30,14 +27,12 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const {
     addTriggerConfig,
-    collateralizationRatioAtNextPrice,
     ethBalance,
     ethPrice,
     firstStopLossSetup,
     gasEstimationUsd,
     ilkData,
     isProgressDisabled,
-    redirectToCloseVault,
     selectedSLValue,
     stage,
     toggleForms,
@@ -46,17 +41,14 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
-  const errors = errorsValidation({ txError, selectedSLValue, ilkData })
+  const errors = errorsValidation({ txError })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
-    selectedSLValue,
-    collateralizationRatioAtNextPrice,
   })
   const sidebarTxData = extractSidebarTxData(props)
-  const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token }),
@@ -87,14 +79,10 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, stage, token, shouldRedirectToCloseVault }),
+      label: getPrimaryButtonLabel({ flow, stage, token }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
-        if (shouldRedirectToCloseVault) {
-          redirectToCloseVault()
-          return
-        }
         if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
         else backToVaultOverview(uiChanges)
       },
