@@ -14,6 +14,7 @@ import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
+import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultHeadline } from './VaultHeadline'
 import { VaultInformationControl } from './VaultInformationControl'
@@ -76,6 +77,11 @@ export function GeneralManageLayout({
             account={account}
             balanceInfo={balanceInfo}
             collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+          />
+        }
+        optimizationControl={
+          <OptimizationControl
+            vault={vault}
           />
         }
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}

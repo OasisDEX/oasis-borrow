@@ -109,6 +109,7 @@ export function VaultTabSwitch({
   overViewControl,
   historyControl,
   protectionControl,
+  optimizationControl,
   vaultInfo,
   showProtectionTab,
   protectionEnabled,
@@ -120,6 +121,7 @@ export function VaultTabSwitch({
   headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
+  optimizationControl: JSX.Element
   vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
@@ -307,7 +309,7 @@ export function VaultTabSwitch({
           {
             Overview: overViewControl,
             Protection: protectionControl,
-            Optimization: <p>Optimization</p>,
+            Optimization: optimizationControl,
             History: historyControl,
             VaultInfo: vaultInfo,
           }[mode]
