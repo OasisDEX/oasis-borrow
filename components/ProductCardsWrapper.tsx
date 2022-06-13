@@ -15,7 +15,7 @@ export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
   const desktopWidthOfGrid = (children.length - 1) * gapSpace + children.length * desktopWidthOfCard
   return (
     <Grid
-      columns={children.length > 2 ? [1, 2, 3] : children.length}
+      columns={children.length > 2 ? [1, 2, 3] : [1, children.length, children.length]}
       sx={{
         justifyItems: 'center',
         ...slideInAnimation,
