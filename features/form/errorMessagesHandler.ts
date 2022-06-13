@@ -32,6 +32,7 @@ export type VaultErrorMessage =
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
+  | 'maxDebtForSettingStopLoss'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -66,6 +67,7 @@ interface ErrorMessagesHandler {
   afterCollRatioBelowStopLossRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
+  maxDebtForSettingStopLoss?: boolean
 }
 
 export function errorMessagesHandler({
@@ -101,6 +103,7 @@ export function errorMessagesHandler({
   afterCollRatioBelowStopLossRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
+  maxDebtForSettingStopLoss,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -230,6 +233,10 @@ export function errorMessagesHandler({
 
   if (stopLossHigherThanCurrentOrNext) {
     errorMessages.push('stopLossHigherThanCurrentOrNext')
+  }
+
+  if (maxDebtForSettingStopLoss) {
+    errorMessages.push('maxDebtForSettingStopLoss')
   }
 
   return errorMessages

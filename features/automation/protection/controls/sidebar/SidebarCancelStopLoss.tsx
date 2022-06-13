@@ -36,10 +36,11 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     toggleForms,
     token,
     txError,
+    vault,
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError })
+  const errors = errorsValidation({ txError, debt: vault.debt })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
