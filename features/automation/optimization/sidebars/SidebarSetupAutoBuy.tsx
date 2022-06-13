@@ -1,6 +1,8 @@
 import { Vault } from 'blockchain/vaults'
 import { SidebarSection } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -33,6 +35,21 @@ export function SidebarSetupAutoBuy({ vault }: SidebarSetupAutoBuyProps) {
             leftDescription={t('auto-buy.target-coll-ratio')}
             rightDescription={t('auto-buy.trigger-coll-ratio')}
             minDescription={`(${t('auto-buy.min-ratio')})`}
+          />
+          <VaultActionInput
+            action={t('auto-buy.set-max-buy-price')}
+            hasAuxiliary={true}
+            hasError={false}
+            token="ETH"
+            onChange={(e) => {
+              console.log(e)
+            }}
+            onAuxiliaryChange={() => {}}
+          />
+          <SidebarResetButton
+            clear={() => {
+              alert('Reset!')
+            }}
           />
         </Grid>
       }
