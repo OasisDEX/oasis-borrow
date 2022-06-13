@@ -28,11 +28,11 @@ export function SidebarSetupAutoBuy({ vault }: SidebarSetupAutoBuyProps) {
               value1: 220,
             }}
             valueColors={{
-              value0: 'red',
-              value1: 'blue',
+              value1: 'onSuccess',
             }}
             leftDescription={t('auto-buy.target-coll-ratio')}
-            rightDescription={t('auto-buy.target-coll-ratio')}
+            rightDescription={t('auto-buy.trigger-coll-ratio')}
+            minDescription={`(${t('auto-buy.min-ratio')})`}
           />
         </Grid>
       }

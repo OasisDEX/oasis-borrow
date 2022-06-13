@@ -1278,6 +1278,7 @@
   "auto-buy": {
     "min-ratio": "min. ratio with stop loss/basic sell",
     "target-coll-ratio": "Target Col Ratio",
+    "trigger-coll-ratio": "Trigger Col Ratio",
     "set-max-buy-price": "Set Max Buy Price",
     "set-no-threshold": "Set No Threshold"
   }

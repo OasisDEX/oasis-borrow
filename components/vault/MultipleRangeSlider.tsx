@@ -55,7 +55,7 @@ function getSliderBackgroundGradient({
 }) {
   const { colors } = theme
   return `linear-gradient(to right, ${colors.primaryAlt}  0%, ${colors.primaryAlt} ${value0InPercent}%,
-    ${colors.sliderActiveFill} ${value0InPercent}%,  ${colors.sliderActiveFill} ${value1InPercent}%,
+    ${colors.sliderTrackFill} ${value0InPercent}%,  ${colors.sliderTrackFill} ${value1InPercent}%,
     ${colors.primaryAlt} ${value1InPercent}%, ${colors.primaryAlt} 100%)`
 }
 
@@ -65,8 +65,8 @@ interface SliderValues {
 }
 
 interface SliderValueColors {
-  value0: string
-  value1: string
+  value0?: string
+  value1?: string
 }
 
 interface MultipleRangeSliderProps {
@@ -74,7 +74,7 @@ interface MultipleRangeSliderProps {
   max: number
   onChange: (value: SliderValues) => void
   defaultValue: SliderValues
-  valueColors: SliderValueColors
+  valueColors?: SliderValueColors
   leftDescription: ReactNode
   rightDescription: ReactNode
   middleMark?: { text: string; value: number }
@@ -194,33 +194,43 @@ export function MultipleRangeSlider({
 
   return (
     <Box>
-      <Box>
-        <Flex
-          sx={{
-            variant: 'text.paragraph4',
-            justifyContent: 'space-between',
-            fontWeight: 'semiBold',
-            color: 'text.subtitle',
-            mb: '24px',
-          }}
-        >
-          <Grid gap={2}>
-            <Text>{leftDescription}</Text>
-            <Text variant="paragraph1" sx={{ fontWeight: 'semiBold', color: valueColors.value0 }}>
-              {value0}%
-            </Text>
-          </Grid>
-          <Grid gap={2}>
-            <Text>{rightDescription}</Text>
-            <Text
-              variant="paragraph1"
-              sx={{ fontWeight: 'semiBold', textAlign: 'right', color: valueColors.value1 }}
-            >
-              {value1}%
-            </Text>
-          </Grid>
-        </Flex>
-      </Box>
+      <Flex
+        sx={{
+          variant: 'text.paragraph4',
+          justifyContent: 'space-between',
+          fontWeight: 'semiBold',
+          color: 'text.subtitle',
+          mb: '24px',
+          lineHeight: 'tight',
+        }}
+      >
+        <Grid as="p" gap={2}>
+          <Text as="span">{leftDescription}</Text>
+          <Text
+            as="span"
+            variant="paragraph1"
+            sx={{
+              fontWeight: 'semiBold',
+              ...(valueColors?.value0 && { color: valueColors.value0 }),
+            }}
+          >
+            {value0}%
+          </Text>
+        </Grid>
+        <Grid as="p" gap={2} sx={{ textAlign: 'right' }}>
+          <Text as="span">{rightDescription}</Text>
+          <Text
+            as="span"
+            variant="paragraph1"
+            sx={{
+              fontWeight: 'semiBold',
+              ...(valueColors?.value1 && { color: valueColors.value1 }),
+            }}
+          >
+            {value1}%
+          </Text>
+        </Grid>
+      </Flex>
       <Box onMouseMove={handleMouseMove} ref={sliderBoxRef} sx={{ position: 'relative', mb: 3 }}>
         <Slider
           step={step}
@@ -245,7 +255,7 @@ export function MultipleRangeSlider({
           onChange={(e) => handleChange(e, 1)}
           sx={{
             position: 'absolute',
-            top: '-7px',
+            top: '-8px',
             pointerEvents: side === 'right' && !mobile ? 'all' : 'none',
             backgroundColor: 'unset',
             '&::-webkit-slider-thumb': {
@@ -295,16 +305,18 @@ export function MultipleRangeSlider({
       </Box>
       <Box>
         <Flex
+          as="p"
           sx={{
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
             color: 'text.subtitle',
+            fontWeight: 'medium',
           }}
         >
-          <Text>
+          <Text as="span">
             {min}% {minDescription}
           </Text>
-          <Text>
+          <Text as="span">
             {max}% {maxDescription}
           </Text>
         </Flex>
