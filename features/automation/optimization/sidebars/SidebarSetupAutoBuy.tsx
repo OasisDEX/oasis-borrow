@@ -1,5 +1,5 @@
 import { Vault } from 'blockchain/vaults'
-import { SidebarSection } from 'components/sidebar/SidebarSection'
+import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -14,49 +14,51 @@ interface SidebarSetupAutoBuyProps {
 export function SidebarSetupAutoBuy({ vault }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
+  const sidebarSectionProps: SidebarSectionProps = {
+    title: `Auto Buy Setup #${vault.id.toNumber()}`,
+    content: (
+      <Grid gap={3}>
+        <MultipleRangeSlider
+          min={170}
+          max={500}
+          onChange={(value) => {
+            console.log(value)
+          }}
+          defaultValue={{
+            value0: 200,
+            value1: 220,
+          }}
+          valueColors={{
+            value1: 'onSuccess',
+          }}
+          leftDescription={t('auto-buy.target-coll-ratio')}
+          rightDescription={t('auto-buy.trigger-coll-ratio')}
+          minDescription={`(${t('auto-buy.min-ratio')})`}
+        />
+        <VaultActionInput
+          action={t('auto-buy.set-max-buy-price')}
+          hasAuxiliary={true}
+          hasError={false}
+          token="ETH"
+          onChange={(e) => {
+            console.log(e)
+          }}
+          onAuxiliaryChange={() => {}}
+        />
+        <SidebarResetButton
+          clear={() => {
+            alert('Reset!')
+          }}
+        />
+      </Grid>
+    ),
+    primaryButton: {
+      label: 'Confirm',
+      disabled: true,
+    }
+  }
+
   return (
-    <SidebarSection
-      title={`Auto Buy Setup #${vault.id.toNumber()}`}
-      content={
-        <Grid gap={3}>
-          <MultipleRangeSlider
-            min={170}
-            max={500}
-            onChange={(value) => {
-              console.log(value)
-            }}
-            defaultValue={{
-              value0: 200,
-              value1: 220,
-            }}
-            valueColors={{
-              value1: 'onSuccess',
-            }}
-            leftDescription={t('auto-buy.target-coll-ratio')}
-            rightDescription={t('auto-buy.trigger-coll-ratio')}
-            minDescription={`(${t('auto-buy.min-ratio')})`}
-          />
-          <VaultActionInput
-            action={t('auto-buy.set-max-buy-price')}
-            hasAuxiliary={true}
-            hasError={false}
-            token="ETH"
-            onChange={(e) => {
-              console.log(e)
-            }}
-            onAuxiliaryChange={() => {}}
-          />
-          <SidebarResetButton
-            clear={() => {
-              alert('Reset!')
-            }}
-          />
-        </Grid>
-      }
-      primaryButton={{
-        label: 'Confirm',
-        disabled: true,
-      }}
-    />
+    <SidebarSection {...sidebarSectionProps} />
   )
 }
