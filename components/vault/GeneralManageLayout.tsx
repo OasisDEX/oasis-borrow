@@ -79,11 +79,7 @@ export function GeneralManageLayout({
             collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
           />
         }
-        optimizationControl={
-          <OptimizationControl
-            vault={vault}
-          />
-        }
+        optimizationControl={<OptimizationControl vault={vault} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled}

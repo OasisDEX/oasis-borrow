@@ -1,4 +1,3 @@
-
 import { Vault } from 'blockchain/vaults'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
@@ -14,7 +13,7 @@ export function OptimizationDetailsLayout({ vault }: OptimizationDetailsLayoutPr
       title="Title"
       content={
         <DetailsSectionContentCardWrapper>
-          An optimization tab for vault#{vault.id.toNumber()}. 
+          An optimization tab for vault#{vault.id.toNumber()}.
         </DetailsSectionContentCardWrapper>
       }
     />
