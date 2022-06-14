@@ -1,3 +1,4 @@
+import { Vault } from 'blockchain/vaults'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
@@ -6,6 +7,7 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
+  vault?: Vault
   isSLPanelVisible?: boolean
   openFlowWithStopLoss?: boolean
 }
@@ -89,6 +91,7 @@ export function getSidebarTitle({
   flow,
   stage,
   token,
+  vault,
   isSLPanelVisible = false,
   openFlowWithStopLoss = false,
 }: GetSidebarTitleParams) {
@@ -103,7 +106,9 @@ export function getSidebarTitle({
 
       return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
-      return t('protection.enable-stop-loss')
+      return !vault?.debt?.isZero()
+        ? t('protection.enable-stop-loss')
+        : t('protection.closed-vault-existing-sl-header')
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':
