@@ -1,5 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { LANDING_PILLS } from 'content/landing'
+import { formatFiatBalance } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
@@ -107,12 +109,57 @@ function Pills({ sx }: { sx?: SxProps }) {
   )
 }
 
+function StatCell({ label, value }: { label: string; value: string }) {
+  return (
+    <Box sx={{ mb: [3, 1, 1] }}>
+      <Text
+        variant="paragraph2"
+        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'text.muted' }}
+      >
+        {label}
+      </Text>
+      <Text variant="header2" sx={{ textAlign: 'center' }}>
+        {value}
+      </Text>
+    </Box>
+  )
+}
+
+function Stats({ sx }: { sx?: SxProps }) {
+  const { t } = useTranslation()
+  const { getOasisStats$ } = useAppContext()
+
+  const [oasisStatsValue] = useObservable(getOasisStats$())
+
+  if (!oasisStatsValue) {
+    return null
+  }
+
+  return (
+    <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
+      <StatCell
+        label={t('landing.stats.30-day-volume')}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.monthlyVolume))}`}
+      />
+      <StatCell
+        label={t('landing.stats.managed-on-oasis')}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.managedOnOasis))}`}
+      />
+      <StatCell
+        label={t('landing.stats.median-vault')}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.medianVaultSize))}`}
+      />
+    </Grid>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
   const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const standardAnimationDuration = '0.7s'
 
   return (
     <Box
@@ -125,12 +172,29 @@ export function HomepageView() {
         sx={{
           ...slideInAnimation,
           position: 'relative',
-          animationDuration: '0.7s',
+          animationDuration: standardAnimationDuration,
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         }}
       />
 
-      <Pills sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+      <Pills
+        sx={{
+          mb: 5,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
+
+      <Stats
+        sx={{
+          mb: 6,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
+
       <Box
         sx={{
           ...slideInAnimation,

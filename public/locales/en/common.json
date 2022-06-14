@@ -263,6 +263,11 @@
       "headline": "Deploy your crypto into DeFi",
       "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
+    "stats": {
+      "30-day-volume": "30 Day Volume",
+      "managed-on-oasis": "Managed on Oasis",
+      "median-vault": "Median Vault"
+    },
     "cards": {
       "dai": {
         "title": "Dai Wallet",
