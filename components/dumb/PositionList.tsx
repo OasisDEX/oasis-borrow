@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithChildren } from 'helpers/types'
+import { TFunction } from 'i18next'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -50,6 +51,7 @@ type PositionCommonProps = {
   ilk: string
   positionId: string
   editLinkProps: AppLinkProps
+  isOwnerView: boolean
 }
 
 export type BorrowPositionVM = {
@@ -220,6 +222,10 @@ function ProductHeading({ title, count }: { title: string; count: number }) {
   )
 }
 
+function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
+  return isOwner ? t('earn.edit-vault') : t('earn.view-vault')
+}
+
 export function PositionList({ positions }: { positions: PositionVM[] }) {
   const { t } = useTranslation()
 
@@ -279,7 +285,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     )}
                     <AppLink {...position.editLinkProps}>
                       <Button variant="secondary" sx={{ fontSize: 1 }}>
-                        {t('earn.edit-vault')}
+                        {getVaultActionButtonTranslation(position.isOwnerView, t)}
                       </Button>
                     </AppLink>
                   </React.Fragment>
@@ -312,7 +318,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                   </Grid>
                   <AppLink {...position.editLinkProps}>
                     <Button variant="secondary" sx={{ fontSize: 1 }}>
-                      {t('earn.edit-vault')}
+                      {getVaultActionButtonTranslation(position.isOwnerView, t)}
                     </Button>
                   </AppLink>
                 </Grid>
