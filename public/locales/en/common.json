@@ -1281,12 +1281,16 @@
     }
   },
   "auto-buy": {
+    "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
     "min-ratio": "min. ratio with stop loss/basic sell",
+    "next-buy-price": "Next buy price: {{amount}}",
     "no-threshold": "No threshold set",
-    "target-coll-ratio": "Target Col Ratio",
-    "trigger-coll-ratio": "Trigger Col Ratio",
     "set-max-buy-price": "Set Max Buy Price",
+    "set-no-threshold": "Set No Threshold",
     "set-threshold": "Set Threshold",
-    "set-no-threshold": "Set No Threshold"
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-coll-ratio": "Target Col Ratio",
+    "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "trigger-coll-ratio": "Trigger Col Ratio"
   }
 }
