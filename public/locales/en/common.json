@@ -1202,6 +1202,7 @@
     "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
+    "automation-button-off-disabled": "No protection",
     "position-headers": {
       "asset": {
         "label": "Asset",
