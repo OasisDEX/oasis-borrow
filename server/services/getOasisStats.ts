@@ -1,5 +1,5 @@
-import { config } from '../config'
 import { OasisStats } from '../../features/homepage/OasisStats'
+import { config } from '../config'
 import { getSnowflakeConnection } from '../snowflake'
 
 interface StatsResponse {
