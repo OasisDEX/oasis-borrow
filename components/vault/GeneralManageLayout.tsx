@@ -36,6 +36,7 @@ export function GeneralManageLayout({
     priceInfo,
     collateralizationRatioAtNextPrice,
     balanceInfo,
+    vaultHistory,
   } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
@@ -69,7 +70,7 @@ export function GeneralManageLayout({
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
-        historyControl={<HistoryControl generalManageVault={generalManageVault} />}
+        historyControl={<HistoryControl vaultHistory={vaultHistory} />}
         protectionControl={
           <ProtectionControl
             vault={vault}
