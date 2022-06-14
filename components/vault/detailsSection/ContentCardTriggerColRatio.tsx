@@ -14,6 +14,8 @@ interface ContentCardTriggerColRatioProps {
   afterTriggerColRatio?: BigNumber
   nextBuyPrice?: BigNumber
   changeVariant?: ChangeVariantType
+  nextSellPrice?: BigNumber
+  triggerSellColRatio?: BigNumber
 }
 
 export function ContentCardTriggerColRatio({
@@ -22,6 +24,8 @@ export function ContentCardTriggerColRatio({
   afterTriggerColRatio,
   nextBuyPrice,
   changeVariant,
+  nextSellPrice,
+  triggerSellColRatio,
 }: ContentCardTriggerColRatioProps) {
   const { t } = useTranslation()
 

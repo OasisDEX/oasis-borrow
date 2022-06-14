@@ -8,6 +8,8 @@ import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
+import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
+import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -52,77 +54,96 @@ export function ProtectionDetailsLayout({
   const { t } = useTranslation()
   const afterPillColors = getAfterPillColors('onSuccess')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
+  const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
 
+  
+
   if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
+      
+      <>
+      {basicBSEnabled && <>
+      <DetailsSection
+      title={t('auto-sell.title')}
+      badge={false}
+      content={
+        <DetailsSectionContentCardWrapper>
+          <ContentCardTriggerColRatio
+            token={token}
+            triggerColRatio={new BigNumber(Math.random() * 100)}
+            nextBuyPrice={new BigNumber(Math.random() * 1000)}
+          />
+          <ContentCardTargetColRatio
+            token={token}
+            targetColRatio={new BigNumber(Math.random() * 100)}
+            threshold={new BigNumber(Math.random() * 1000)}
+          />
+        </DetailsSectionContentCardWrapper>
+      }
+    />
+      </>}
       <Box>
-        {!newComponentsEnabled ? (
-          <Grid variant="vaultDetailsCardsContainer">
-            <VaultDetailsCardStopLossCollRatio
-              slRatio={slRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-              isProtected={isStopLossEnabled}
-              showAfterPill={isEditing}
-              afterSlRatio={afterSlRatio}
-              afterPillColors={afterPillColors}
-            />
-            <VaultDetailsCardDynamicStopPrice
-              slRatio={slRatio}
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              isProtected={isStopLossEnabled}
-              showAfterPill={isEditing}
-              afterSlRatio={afterSlRatio}
-              afterPillColors={afterPillColors}
-            />
-            <VaultDetailsCardCurrentPrice
-              currentCollateralPrice={currentOraclePrice}
-              nextCollateralPrice={nextOraclePrice}
-              isStaticCollateralPrice={isStaticPrice}
-              collateralPricePercentageChange={percentageChange}
-            />
+          {!newComponentsEnabled ? (
 
-            <VaultDetailsCardMaxTokenOnStopLossTrigger
-              slRatio={slRatio}
-              isProtected={isStopLossEnabled}
-              liquidationPrice={liquidationPrice}
-              liquidationPenalty={liquidationPenalty}
-              debt={vaultDebt}
-              liquidationRatio={liquidationRatio}
-              token={token}
-              showAfterPill={isEditing}
-              lockedCollateral={lockedCollateral}
-              afterSlRatio={afterSlRatio}
-              afterPillColors={afterPillColors}
-              isCollateralActive={isCollateralActive}
-              tokenPrice={currentOraclePrice}
-            />
-          </Grid>
-        ) : (
-          <DetailsSection
-            title={t('system.protection')}
-            badge={isStopLossEnabled}
-            content={
-              <DetailsSectionContentCardWrapper>
+            <Grid variant="vaultDetailsCardsContainer">
+              <VaultDetailsCardStopLossCollRatio
+                slRatio={slRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                isProtected={isStopLossEnabled}
+                showAfterPill={isEditing}
+                afterSlRatio={afterSlRatio}
+                afterPillColors={afterPillColors} />
+              <VaultDetailsCardDynamicStopPrice
+                slRatio={slRatio}
+                liquidationPrice={liquidationPrice}
+                liquidationRatio={liquidationRatio}
+                isProtected={isStopLossEnabled}
+                showAfterPill={isEditing}
+                afterSlRatio={afterSlRatio}
+                afterPillColors={afterPillColors} />
+              <VaultDetailsCardCurrentPrice
+                currentCollateralPrice={currentOraclePrice}
+                nextCollateralPrice={nextOraclePrice}
+                isStaticCollateralPrice={isStaticPrice}
+                collateralPricePercentageChange={percentageChange} />
+
+              <VaultDetailsCardMaxTokenOnStopLossTrigger
+                slRatio={slRatio}
+                isProtected={isStopLossEnabled}
+                liquidationPrice={liquidationPrice}
+                liquidationPenalty={liquidationPenalty}
+                debt={vaultDebt}
+                liquidationRatio={liquidationRatio}
+                token={token}
+                showAfterPill={isEditing}
+                lockedCollateral={lockedCollateral}
+                afterSlRatio={afterSlRatio}
+                afterPillColors={afterPillColors}
+                isCollateralActive={isCollateralActive}
+                tokenPrice={currentOraclePrice} />
+            </Grid>
+          ) : (
+            <DetailsSection
+              title={t('system.protection')}
+              badge={isStopLossEnabled}
+              content={<DetailsSectionContentCardWrapper>
                 <ContentCardStopLossCollateralRatio
                   isStopLossEnabled={isStopLossEnabled}
                   isEditing={isEditing}
                   slRatio={slRatio}
                   collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-                  afterSlRatio={afterSlRatio}
-                />
+                  afterSlRatio={afterSlRatio} />
                 <ContentCardDynamicStopPrice
                   isStopLossEnabled={isStopLossEnabled}
                   isEditing={isEditing}
                   slRatio={slRatio}
                   liquidationPrice={liquidationPrice}
                   liquidationRatio={liquidationRatio}
-                  afterSlRatio={afterSlRatio}
-                />
+                  afterSlRatio={afterSlRatio} />
                 <ContentCardEstTokenOnTrigger
                   isCollateralActive={isCollateralActive}
                   isStopLossEnabled={isStopLossEnabled}
@@ -135,13 +156,10 @@ export function ProtectionDetailsLayout({
                   debt={vaultDebt}
                   currentOraclePrice={currentOraclePrice}
                   liquidationPenalty={liquidationPenalty}
-                  afterSlRatio={afterSlRatio}
-                />
-              </DetailsSectionContentCardWrapper>
-            }
-          />
-        )}
-      </Box>
+                  afterSlRatio={afterSlRatio} />
+              </DetailsSectionContentCardWrapper>} />
+          )}
+        </Box></>
     )
   } else {
     return <></>
