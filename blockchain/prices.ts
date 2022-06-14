@@ -99,12 +99,12 @@ export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['res
 
 export function coinPaprikaTicker$(ticker: string): Observable<BigNumber> {
   return ajax({
-    url: `https://api.coinpaprika.com/v1/tickers/${ticker}`,
+    url: `${window.location.origin}/api/tokensPrices?coinpaprikaTicker=${ticker}`,
     method: 'GET',
     headers: {
       Accept: 'application/json',
     },
-  }).pipe(map(({ response }) => new BigNumber(response.quotes.USD.price)))
+  }).pipe(map(({ response }) => new BigNumber(response.price)))
 }
 
 export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
