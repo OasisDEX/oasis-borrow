@@ -157,7 +157,6 @@ export function VaultTabSwitch({
   const buttonSx = { flex: 1, px: 4 }
 
   const vaultViewModeTuples = Object.entries(VaultViewMode).filter(([entry]) => {
-    console.log(entry)
     switch (entry) {
       case 'Protection':
         return showProtectionTab
