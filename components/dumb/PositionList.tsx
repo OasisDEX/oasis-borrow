@@ -12,7 +12,7 @@ import { AppLink, AppLinkProps } from '../Links'
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'medium' }}>{label}</Text>
+      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'semiBold' }}>{label}</Text>
       {tooltip && (
         <StatefulTooltip
           tooltip={
@@ -226,7 +226,7 @@ function Separator({ sx }: { sx?: SxStyleProp }) {
 
 function ProductHeading({ title, count }: { title: string; count: number }) {
   return (
-    <Text variant="paragraph3" sx={{ fontWeight: 'medium', my: 2 }}>
+    <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: 2 }}>
       {title} ({count})
     </Text>
   )
@@ -253,7 +253,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
 
   return (
     <Box sx={{ color: 'primary', zIndex: 1 }}>
-      <Text variant="paragraph2" sx={{ fontWeight: 'medium', my: 3 }}>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', my: 3 }}>
         {t('earn.your-positions')} ({positions.length})
       </Text>
 
