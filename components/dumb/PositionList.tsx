@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithChildren } from 'helpers/types'
+import { TFunction } from 'i18next'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -50,6 +51,7 @@ type PositionCommonProps = {
   ilk: string
   positionId: string
   editLinkProps: AppLinkProps
+  isOwnerView: boolean
 }
 
 export type BorrowPositionVM = {
@@ -94,17 +96,27 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
 
   const { automationLinkProps } = position
 
-  return position.automationEnabled ? (
-    <AppLink {...automationLinkProps}>
-      <Button variant="actionActiveGreen">
-        {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+  if (position.automationEnabled) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="actionActiveGreen">
+          {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+        </Button>
+      </AppLink>
+    )
+  } else if (position.isOwnerView) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="action">{t('earn.automation-button-off')}</Button>)
+      </AppLink>
+    )
+  } else {
+    return (
+      <Button disabled={true} variant="action">
+        {t('earn.automation-button-off-disabled')}
       </Button>
-    </AppLink>
-  ) : (
-    <AppLink {...automationLinkProps}>
-      <Button variant="action">{t('earn.automation-button-off')}</Button>
-    </AppLink>
-  )
+    )
+  }
 }
 
 function getPositionInfoItems(position: PositionVM): InfoItem[] {
@@ -220,6 +232,10 @@ function ProductHeading({ title, count }: { title: string; count: number }) {
   )
 }
 
+function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
+  return isOwner ? t('earn.edit-vault') : t('earn.view-vault')
+}
+
 export function PositionList({ positions }: { positions: PositionVM[] }) {
   const { t } = useTranslation()
 
@@ -279,7 +295,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     )}
                     <AppLink {...position.editLinkProps}>
                       <Button variant="secondary" sx={{ fontSize: 1 }}>
-                        {t('earn.edit-vault')}
+                        {getVaultActionButtonTranslation(position.isOwnerView, t)}
                       </Button>
                     </AppLink>
                   </React.Fragment>
@@ -312,7 +328,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                   </Grid>
                   <AppLink {...position.editLinkProps}>
                     <Button variant="secondary" sx={{ fontSize: 1 }}>
-                      {t('earn.edit-vault')}
+                      {getVaultActionButtonTranslation(position.isOwnerView, t)}
                     </Button>
                   </AppLink>
                 </Grid>

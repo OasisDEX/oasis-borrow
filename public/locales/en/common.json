@@ -1196,9 +1196,10 @@
   "below": "below",
   "above": "above",
   "earn": {
-    "your-positions": "Your Positions",
+    "your-positions": "Positions",
     "positions-of-type": "{{type}} Positions",
     "edit-vault": "Edit Vault",
+    "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
     "position-headers": {
