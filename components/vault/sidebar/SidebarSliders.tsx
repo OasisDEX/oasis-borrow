@@ -37,7 +37,6 @@ export function SidebarSliderAdjustMultiply({
     afterCollateralizationRatio,
     multiply,
     maxCollRatio,
-    requiredCollRatio,
     ilkData: { liquidationRatio },
   } = state
 
@@ -45,9 +44,10 @@ export function SidebarSliderAdjustMultiply({
     theme: { colors },
   } = useThemeUI()
 
-  const slider = requiredCollRatio
-    ? maxCollRatio?.minus(requiredCollRatio)?.div(maxCollRatio.minus(liquidationRatio)).times(100)
+  const slider = value
+    ? maxCollRatio?.minus(value).div(maxCollRatio.minus(liquidationRatio)).times(100)
     : zero
+
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
