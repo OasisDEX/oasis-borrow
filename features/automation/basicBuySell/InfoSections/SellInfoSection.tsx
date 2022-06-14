@@ -1,35 +1,34 @@
-import { InfoSection } from "components/infoSection/InfoSection";
-import { DropDownValue } from "components/infoSection/Item";
-import { useTranslation } from "next-i18next";
-
-
+import { InfoSection } from 'components/infoSection/InfoSection'
+import { DropDownValue } from 'components/infoSection/Item'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface SellInfoSectionProps {
-  colRatioAfterSell: string;
-  multipleAfterSell: string;
-  ratiotoPeformSell: string;
+  colRatioAfterSell: string
+  multipleAfterSell: string
+  ratiotoPeformSell: string
   nextSellPrice: {
-    value: string;
+    value: string
     dropDownValues: DropDownValue[]
   }
-  setupTransactionCost: string;
+  setupTransactionCost: string
   slippageLimit: string
   collatAfterNextSell: {
-    value: string;
-    secondaryValue: string;
+    value: string
+    secondaryValue: string
   }
   outstandingDebtAfterSell: {
-    value: string;
-    secondaryValue: string;
+    value: string
+    secondaryValue: string
   }
-  ethToBeSoldAtNextSell: string;
+  ethToBeSoldAtNextSell: string
   estimatedTransactionCost: {
-    value: string;
+    value: string
     dropDownValues: DropDownValue[]
   }
 }
 
-export default function SellInfoSection({
+export function SellInfoSection({
   colRatioAfterSell,
   multipleAfterSell,
   ratiotoPeformSell,
@@ -39,9 +38,9 @@ export default function SellInfoSection({
   collatAfterNextSell,
   outstandingDebtAfterSell,
   ethToBeSoldAtNextSell,
-  estimatedTransactionCost
+  estimatedTransactionCost,
 }: SellInfoSectionProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <InfoSection
@@ -53,11 +52,11 @@ export default function SellInfoSection({
         },
         {
           label: t('basic-buy-sell.target-multiple-each-sell'),
-          value: `${multipleAfterSell}x`
+          value: `${multipleAfterSell}x`,
         },
         {
           label: t('basic-buy-sell.trigger-col-ratio-to-perfrom-sell'),
-          value: `${ratiotoPeformSell}%`
+          value: `${ratiotoPeformSell}%`,
         },
         {
           label: t('basic-buy-sell.next-sell-price'),
@@ -66,29 +65,29 @@ export default function SellInfoSection({
         },
         {
           label: t('basic-buy-sell.setup-transaction-cost'),
-          value: `$${setupTransactionCost}`
+          value: `$${setupTransactionCost}`,
         },
         {
           label: t('basic-buy-sell.slippage-limit'),
-          value: `${slippageLimit}%`
+          value: `${slippageLimit}%`,
         },
         {
           label: t('basic-buy-sell.slippage-limit'),
-          value: `${slippageLimit}%`
+          value: `${slippageLimit}%`,
         },
         {
           label: t('basic-buy-sell.collateral-after-next-sell'),
           value: collatAfterNextSell.value,
-          secondaryValue: `${collatAfterNextSell.secondaryValue} ETH`
+          secondaryValue: `${collatAfterNextSell.secondaryValue} ETH`,
         },
         {
           label: t('basic-buy-sell.outstanding-debt-after-next-sell'),
           value: outstandingDebtAfterSell.value,
-          secondaryValue: `${outstandingDebtAfterSell.secondaryValue} DAI`
+          secondaryValue: `${outstandingDebtAfterSell.secondaryValue} DAI`,
         },
         {
           label: t('basic-buy-sell.eth-to-be-sold'),
-          value: `${ethToBeSoldAtNextSell} ETH`
+          value: `${ethToBeSoldAtNextSell} ETH`,
         },
         {
           label: t('basic-buy-sell.estimated-transaction-cost'),

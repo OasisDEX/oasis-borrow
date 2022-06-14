@@ -1,20 +1,20 @@
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
+import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Flex, Grid, IconButton, Text } from 'theme-ui'
-import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
-import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 
 export interface DropDownValue {
   label: string
   value: string
-  secondaryValue?: string;
+  secondaryValue?: string
 }
 
 export interface ItemProps {
   label: string
   value?: string
-  secondaryValue?: string;
+  secondaryValue?: string
   dropdownValues?: DropDownValue[]
 }
 
@@ -70,7 +70,7 @@ export function Item({ label, dropdownValues, value, secondaryValue }: ItemProps
                   <ExpandableArrow
                     direction={open ? 'up' : 'down'}
                     sx={{
-                      pr: 0
+                      pr: 0,
                     }}
                   />
                 </IconButton>

@@ -1,33 +1,34 @@
-import { InfoSection } from "components/infoSection/InfoSection";
-import { DropDownValue } from "components/infoSection/Item";
-import { useTranslation } from "next-i18next";
+import { InfoSection } from 'components/infoSection/InfoSection'
+import { DropDownValue } from 'components/infoSection/Item'
+import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface BuyInfoSectionProps {
-  colRatioAfterBuy: string;
-  multipleAfterBuy: string;
-  ratiotoPeformBuy: string;
+  colRatioAfterBuy: string
+  multipleAfterBuy: string
+  ratiotoPeformBuy: string
   nextBuyPrice: {
-    value: string;
+    value: string
     dropDownValues: DropDownValue[]
   }
-  totalCostOfNextBuy: string;
+  totalCostOfNextBuy: string
   slippageLimit: string
   collatAfterNextBuy: {
-    value: string;
-    secondaryValue: string;
+    value: string
+    secondaryValue: string
   }
   outstandingDebtAfterNextBuy: {
-    value: string;
-    secondaryValue: string;
+    value: string
+    secondaryValue: string
   }
-  ethToBePurchased: string;
+  ethToBePurchased: string
   estimatedTransactionCost: {
-    value: string;
+    value: string
     dropDownValues: DropDownValue[]
   }
 }
 
-export default function BuyInfoSection({
+export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
   ratiotoPeformBuy,
@@ -37,9 +38,9 @@ export default function BuyInfoSection({
   collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
   ethToBePurchased,
-  estimatedTransactionCost
+  estimatedTransactionCost,
 }: BuyInfoSectionProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <InfoSection
@@ -51,11 +52,11 @@ export default function BuyInfoSection({
         },
         {
           label: t('basic-buy-sell.target-multiple-each-buy'),
-          value: `${multipleAfterBuy}x`
+          value: `${multipleAfterBuy}x`,
         },
         {
           label: t('basic-buy-sell.trigger-col-ratio-to-perfrom-buy'),
-          value: `${ratiotoPeformBuy}%`
+          value: `${ratiotoPeformBuy}%`,
         },
         {
           label: t('basic-buy-sell.next-buy-price'),
@@ -64,25 +65,25 @@ export default function BuyInfoSection({
         },
         {
           label: t('basic-buy-sell.setup-transaction-cost'),
-          value: `$${totalCostOfNextBuy}`
+          value: `$${totalCostOfNextBuy}`,
         },
         {
           label: t('basic-buy-sell.slippage-limit'),
-          value: `${slippageLimit}%`
+          value: `${slippageLimit}%`,
         },
         {
           label: t('basic-buy-sell.collateral-after-next-buy'),
           value: collatAfterNextBuy.value,
-          secondaryValue: `${collatAfterNextBuy.secondaryValue} ETH`
+          secondaryValue: `${collatAfterNextBuy.secondaryValue} ETH`,
         },
         {
           label: t('basic-buy-sell.outstanding-debt-after-next-buy'),
           value: outstandingDebtAfterNextBuy.value,
-          secondaryValue: `${outstandingDebtAfterNextBuy.secondaryValue} DAI`
+          secondaryValue: `${outstandingDebtAfterNextBuy.secondaryValue} DAI`,
         },
         {
           label: t('basic-buy-sell.eth-to-be-purchased'),
-          value: `${ethToBePurchased} ETH`
+          value: `${ethToBePurchased} ETH`,
         },
         {
           label: t('basic-buy-sell.estimated-transaction-cost'),
