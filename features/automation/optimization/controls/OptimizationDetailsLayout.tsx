@@ -16,6 +16,7 @@ export function OptimizationDetailsLayout({ vault }: OptimizationDetailsLayoutPr
   return (
     <DetailsSection
       title="Auto buy"
+      badge={false}
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardTriggerColRatio
