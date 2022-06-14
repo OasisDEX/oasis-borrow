@@ -1277,5 +1277,11 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  "auto-buy": {
+    "next-buy-price": "Next buy price",
+    "continual-buy-threshold": "Continual buy, threshold {{amount} {{token}}",
+    "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying"
   }
 }
