@@ -40,10 +40,12 @@ export function SidebarSetupAutoBuy({ vault }: SidebarSetupAutoBuyProps) {
           hasAuxiliary={true}
           hasError={false}
           token="ETH"
-          onChange={(e) => {
-            console.log(e)
-          }}
+          onChange={(e) => console.log(e.target.value)}
           onAuxiliaryChange={() => {}}
+          showToggle={true}
+          toggleOnLabel={t('auto-buy.set-no-threshold')}
+          toggleOffLabel={t('auto-buy.set-threshold')}
+          toggleOffPlaceholder={t('auto-buy.no-threshold')}
         />
         <SidebarResetButton
           clear={() => {
