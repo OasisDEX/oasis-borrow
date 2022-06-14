@@ -1,5 +1,5 @@
 import { Vault } from 'blockchain/vaults'
-import { SidebarSection } from 'components/sidebar/SidebarSection'
+import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import React from 'react'
 
 interface OptimizationFormControlProps {
@@ -7,14 +7,5 @@ interface OptimizationFormControlProps {
 }
 
 export function OptimizationFormControl({ vault }: OptimizationFormControlProps) {
-  return (
-    <SidebarSection
-      title="Title"
-      content={<>An optimization form for vault#{vault.id.toNumber()}</>}
-      primaryButton={{
-        label: 'Primary button',
-        disabled: true,
-      }}
-    />
-  )
+  return <SidebarSetupAutoBuy vault={vault} />
 }

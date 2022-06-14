@@ -56,6 +56,12 @@ interface VaultActionInputProps {
   maxAmount?: BigNumber
   maxAmountLabel?: string
 
+  showToggle?: boolean
+  toggleOnLabel?: string
+  toggleOffLabel?: string
+  toggleOffPlaceholder?: string
+  onToggle?: (toggleStatus: boolean) => void
+
   hasError: boolean
   collapsed?: boolean
 }
@@ -86,10 +92,17 @@ export function VaultActionInput({
   minAuxiliaryAmount,
   auxiliaryUsdPrice,
 
+  showToggle,
+  toggleOnLabel,
+  toggleOffLabel,
+  toggleOffPlaceholder,
+  onToggle,
+
   hasError,
   collapsed,
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
+  const [toggleStatus, setToggleStatus] = useState<boolean>(true)
   const { symbol: tokenSymbol } = getToken(token)
   const { symbol: auxiliarySymbol } = auxiliaryToken ? getToken(auxiliaryToken) : { symbol: 'USD' }
   const newComponentsEnabled = useFeatureToggle('NewComponents')
@@ -132,7 +145,7 @@ export function VaultActionInput({
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
           {action} {token}
         </Text>
-        {(showMin || showMax) && (
+        {(showMin || showMax || showToggle) && (
           <Text
             variant="paragraph4"
             sx={{
@@ -180,6 +193,20 @@ export function VaultActionInput({
             )}{' '}
             {(maxAmount?.isGreaterThan(zero) || minAmount?.isGreaterThan(zero)) &&
               (auxiliaryFlag ? auxiliarySymbol : tokenSymbol)}
+            {showToggle && !disabled && (
+              <Text
+                as="span"
+                sx={{
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  if (onToggle) onToggle(!toggleStatus)
+                  setToggleStatus(!toggleStatus)
+                }}
+              >
+                {toggleStatus ? toggleOnLabel : toggleOffLabel}
+              </Text>
+            )}
           </Text>
         )}
       </Grid>
@@ -195,20 +222,21 @@ export function VaultActionInput({
             box-shadow 200ms,
             border-color 200ms
           `,
-          ...(disabled
-            ? {}
-            : {
-                '&:hover, &:focus-within': {
-                  borderColor: hasError ? 'onError' : 'borderSelected',
-                },
-              }),
+          opacity: !toggleStatus && !disabled ? '0.5' : '1',
+          cursor: !toggleStatus && !disabled ? 'not-allowed' : 'default',
+          ...(!disabled &&
+            toggleStatus && {
+              '&:hover, &:focus-within': {
+                borderColor: hasError ? 'onError' : 'borderSelected',
+              },
+            }),
         }}
       >
         <Grid gap={0}>
           {!auxiliaryFlag ? (
             <BigNumberInput
               type="text"
-              disabled={disabled}
+              disabled={disabled || !toggleStatus}
               mask={createNumberMask({
                 allowDecimal: true,
                 decimalLimit: tokenDigits,
@@ -216,13 +244,13 @@ export function VaultActionInput({
               })}
               onChange={onChange}
               value={amount ? formatBigNumber(amount, tokenDigits) : ''}
-              placeholder={`0 ${tokenSymbol}`}
+              placeholder={toggleStatus ? `0 ${tokenSymbol}` : toggleOffPlaceholder}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           ) : (
             <BigNumberInput
               type="text"
-              disabled={disabled}
+              disabled={disabled || !toggleStatus}
               mask={createNumberMask({
                 allowDecimal: true,
                 decimalLimit: auxiliaryDigits,
@@ -230,7 +258,7 @@ export function VaultActionInput({
               })}
               onChange={onAuxiliaryChange}
               value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : ''}
-              placeholder={`0 ${auxiliarySymbol}`}
+              placeholder={toggleStatus ? `0 ${auxiliarySymbol}` : toggleOffPlaceholder}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           )}
@@ -245,13 +273,19 @@ export function VaultActionInput({
                 pt: 1,
               }}
             >
-              {!auxiliaryFlag
-                ? `~ ${
-                    auxiliarySymbol === 'USD'
-                      ? formatAmount(auxiliaryAmount || zero, 'USD')
-                      : formatCryptoBalance(auxiliaryAmount || zero)
-                  } ${auxiliarySymbol}`
-                : `${formatCryptoBalance(amount || zero)} ${tokenSymbol}`}
+              {toggleStatus ? (
+                <>
+                  {!auxiliaryFlag
+                    ? `~ ${
+                        auxiliarySymbol === 'USD'
+                          ? formatAmount(auxiliaryAmount || zero, 'USD')
+                          : formatCryptoBalance(auxiliaryAmount || zero)
+                      } ${auxiliarySymbol}`
+                    : `${formatCryptoBalance(amount || zero)} ${tokenSymbol}`}
+                </>
+              ) : (
+                toggleOffPlaceholder
+              )}
             </Text>
           )}
         </Grid>
@@ -262,6 +296,7 @@ export function VaultActionInput({
               cursor: 'pointer',
               textAlign: 'right',
               pr: 3,
+              ...(!toggleStatus && { pointerEvents: 'none' }),
               '& svg': {
                 transform: 'rotate(90deg)',
                 transition: 'color 200ms',
