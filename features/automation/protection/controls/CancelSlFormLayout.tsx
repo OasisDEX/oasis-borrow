@@ -2,6 +2,7 @@ import { TxStatus } from '@oasisdex/transactions'
 import { Box, Grid } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { TxStatusSection } from 'components/dumb/TxStatusSection'
 import { AppLink } from 'components/Links'
@@ -128,8 +129,9 @@ export interface CancelSlFormLayoutProps {
   isProgressDisabled: boolean
   token: string
   ilkData: IlkData
-  collateralizationRatioAtNextPrice: BigNumber
+  currentCollateralRatio: BigNumber
   selectedSLValue: BigNumber
+  vault: Vault
 }
 
 export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {

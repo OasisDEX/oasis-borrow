@@ -854,7 +854,13 @@ export function setupAppContext() {
   )
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$, vaultHistory$),
+    curry(createVaultsOverview$)(
+      context$,
+      vaults$,
+      ilksWithBalance$,
+      automationTriggersData$,
+      vaultHistory$,
+    ),
   )
 
   const assetActions$ = memoize(
@@ -938,6 +944,7 @@ export function setupAppContext() {
     ilkToToken$,
     bonus$,
     positionsOverviewSummary$,
+    priceInfo$,
     yields$,
   }
 }

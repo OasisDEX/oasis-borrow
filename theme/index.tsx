@@ -394,9 +394,8 @@ const oasisBaseTheme = {
       padding: '24px',
       pb: 3,
     },
-    positionsOverview: {
+    positionsPage: {
       boxSizing: 'border-box',
-      maxWidth: '789px',
       backgroundColor: 'background',
       opacity: '0.8',
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',

@@ -14,6 +14,7 @@ import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
+import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
 import { VaultHeadline } from './VaultHeadline'
 import { VaultInformationControl } from './VaultInformationControl'
@@ -35,6 +36,7 @@ export function GeneralManageLayout({
     priceInfo,
     collateralizationRatioAtNextPrice,
     balanceInfo,
+    vaultHistory,
   } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
@@ -68,7 +70,7 @@ export function GeneralManageLayout({
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
-        historyControl={<HistoryControl generalManageVault={generalManageVault} />}
+        historyControl={<HistoryControl vaultHistory={vaultHistory} />}
         protectionControl={
           <ProtectionControl
             vault={vault}
@@ -78,6 +80,7 @@ export function GeneralManageLayout({
             collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
           />
         }
+        optimizationControl={<OptimizationControl vault={vault} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled}

@@ -286,7 +286,7 @@
       },
       "earn": {
         "tabLabel": "Earn on Oasis",
-        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+        "tabParaContent": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
         "tabParaLinkContent": "Learn more about Earn →"
       }
     },
@@ -444,6 +444,7 @@
       "max-token-on-stop-loss-trigger": "Est. {{token}} on stop loss trigger",
       "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on stop loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
       "current-coll-ratio": "Current coll ratio",
+      "next-coll-ratio": "Next Coll Ratio",
       "saving-comp-to-liquidation": "Saving compared to liquidation",
       "above-liquidation-price": "above liquidation price",
       "on-next-price": "on next price",
@@ -666,6 +667,7 @@
     "date": "Date",
     "overview": "Overview",
     "protection": "Protection",
+    "optimization": "Optimization",
     "stop-loss": "Stop Loss",
     "history": "History",
     "vault-info": "Vault Info",
@@ -702,7 +704,7 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} Current Collateral Ratio"
+        "footnote": "{{amount}} Next Collateral Ratio"
       }
     }
   },
@@ -770,7 +772,8 @@
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price.",
-    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault."
+    "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault.",
+    "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -782,7 +785,7 @@
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
     "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction",
-    "next-coll-ratio-close-to-current-stop-loss": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
+    "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
@@ -881,6 +884,16 @@
   "waiting-approval": "Waiting for approval",
   "waiting-confirmation": "Waiting for transaction confirmation",
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
+  "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
+  "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop Loss.",
+  "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
+  "open-vault-two-tx-second-step-title": "Step 2/2: Stop Loss setup transaction",
+  "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
+  "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
+  "not-started": "not started",
+  "in-progress": "in progress",
+  "vault-creation-confirmed": "Vault creation confirmed",
   "withdraw": "Withdraw",
   "withdrawn": "Withdrawn",
   "you-are-sending": "You are sending",
@@ -1023,6 +1036,8 @@
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
+    "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
+    "closed-vault-existing-sl-description": "You can cancel your existing stop-loss here or deposit into your vault in overview tab",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
     "stop-loss-information": "Stop Loss Information"
@@ -1129,7 +1144,7 @@
     },
     "earn": {
       "title": "Oasis Earn",
-      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
     }
   },
@@ -1156,8 +1171,8 @@
       "link": "https://yearn.finance/"
     },
     "dai": {
-      "description": "To be updated",
-      "link": ""
+      "description": "Dai is the largest overcollateralized decentralized stablecoin. Dai can be generated on Oasis.app using various collateral types. Here we show the products that will net you returns in DAI.",
+      "link": "https://kb.oasis.app/help/what-is-dai"
     },
     "uni": {
       "description": "UNI is the governance token of Uniswap Protocol, which is governed by a decentralized community who propose and vote on upgrades to the protocol. Uniswap is a decentralized trading protocol for swapping ERC20 tokens.",
@@ -1181,67 +1196,69 @@
   "below": "below",
   "above": "above",
   "earn": {
-    "your-positions": "Your Positions",
+    "your-positions": "Positions",
     "positions-of-type": "{{type}} Positions",
     "edit-vault": "Edit Vault",
+    "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
+    "automation-button-off-disabled": "No protection",
     "position-headers": {
       "asset": {
         "label": "Asset",
-        "tooltip": "The Asset"
+        "tooltip": "The identifier of the position asset type, uses the protocols naming conventions."
       },
-      "vault-id": {
-        "label": "Vault ID",
-        "tooltip": "The Vault ID"
+      "position-id": {
+        "label": "Position ID",
+        "tooltip": "The Position ID is used to reference the position across Oasis.app"
       },
       "collateral-ratio": {
         "label": "Collateral Ratio",
-        "tooltip": "The Collateral Ratio"
+        "tooltip": "The value of the collateral in comparison to the amount of debt. Needs to be above the minimum required to avoid liquidation."
       },
       "dai-debt": {
         "label": "Dai Debt",
-        "tooltip": "The Dai Debt"
+        "tooltip": "The amount of dai debt in this position"
       },
       "collateral-locked": {
         "label": "Collateral Locked",
-        "tooltip": "Collateral Locked"
+        "tooltip": "The amount of collateral in this position"
       },
       "variable-perc": {
         "label": "Variable %",
-        "tooltip": "Variable Percentage"
+        "tooltip": "The variable annual rate paid over the debt in this position. This can be changed by the governance body of the protocol."
       },
-      "automation": {
-        "label": "Automation",
-        "tooltip": "Protection features"
+      "protection": {
+        "label": "Protection",
+        "tooltip": "Indicates if a Stop Loss Protection has been set up for this position. If not, you can activate it on the Protection page by clicking the button."
       },
       "net-value": {
         "label": "Net Value",
-        "tooltip": "The Net Value"
+        "tooltip": "The current net value of the position based on the oracle price of the collateral in the position minus the debt."
       },
       "multiple": {
         "label": "Multiple",
-        "tooltip": "The Multiple"
+        "tooltip": "The current multiple of the position. Indicating the extra exposure on the underlying collateral in comparison to holding the collateral without a multiply position."
       },
       "liquidation-price": {
         "label": "Liquidation Price",
-        "tooltip": "The Liquidation Price"
+        "tooltip": "The price of the collateral at which this position becomes vulnerable to liquidation."
       },
       "funding-cost": {
         "label": "Funding Cost",
-        "tooltip": "The Funding Cost"
+        "tooltip": "The cost in percentage of the net value of your multiply position if you were to keep it open for 1 year, without a change in collateral prices. The formula for it is: Dai Debt / Net Value * Variable annual fee."
       },
       "pnl": {
         "label": "PnL",
-        "tooltip": "Profit and loss"
+        "tooltip": "The current profit or loss percentage of your position, including incurred gas costs. For a more detailed look on the profit and loss, please check the position."
       },
       "seven-day-yield": {
         "label": "7 Day Yield",
-        "tooltip": "The 7 Day Yield"
+        "tooltip": "The 7 day yield is the average returns of the past 7 days, annualized, and subtracts any variable rates that need to be paid."
       },
       "liquidity": {
         "label": "Liquidity",
-        "tooltip": "The Liquidity "
+        "tooltip": "The current available liquidity allowing increases of positions."
       }
     }
   },

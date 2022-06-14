@@ -1,3 +1,4 @@
+import { Vault } from 'blockchain/vaults'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
@@ -6,7 +7,9 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
+  vault?: Vault
   isSLPanelVisible?: boolean
+  openFlowWithStopLoss?: boolean
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -43,10 +46,19 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarFlow })
   }
 }
 
-function getSidebarTitleTxInProgressTranslationKey({ flow }: { flow: SidebarFlow }) {
+function getSidebarTitleTxInProgressTranslationKey({
+  flow,
+  openFlowWithStopLoss,
+}: {
+  flow: SidebarFlow
+  openFlowWithStopLoss: boolean
+}) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+      return !openFlowWithStopLoss
+        ? 'vault-form.header.confirm-in-progress'
+        : 'open-vault-two-tx-first-step-title'
     case 'openGuni':
       return 'vault-form.header.confirm-in-progress'
     case 'addSl':
@@ -79,7 +91,9 @@ export function getSidebarTitle({
   flow,
   stage,
   token,
+  vault,
   isSLPanelVisible = false,
+  openFlowWithStopLoss = false,
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -92,7 +106,9 @@ export function getSidebarTitle({
 
       return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
-      return t('protection.enable-stop-loss')
+      return !vault?.debt?.isZero()
+        ? t('protection.enable-stop-loss')
+        : t('protection.closed-vault-existing-sl-header')
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':
@@ -119,7 +135,10 @@ export function getSidebarTitle({
     case 'daiAllowanceSuccess':
       return t('vault-form.header.allowance', { token: 'DAI' })
     case 'txInProgress':
-      const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({ flow })
+      const txInProgressKey = getSidebarTitleTxInProgressTranslationKey({
+        flow,
+        openFlowWithStopLoss,
+      })
 
       return t(txInProgressKey)
     case 'txWaitingForConfirmation':
@@ -128,6 +147,12 @@ export function getSidebarTitle({
       const txFailureKey = getSidebarTitleTxFailureTranslationKey({ flow })
 
       return t(txFailureKey)
+    case 'stopLossTxInProgress':
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxFailure':
+    case 'stopLossTxSuccess':
+      return t('open-vault-two-tx-second-step-title')
     case 'txSuccess':
       const txSuccessKey = getSidebarTitleTxSuccessTranslationKey({ flow })
 

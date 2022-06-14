@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
+import { TxError } from 'helpers/types'
 import Web3 from 'web3'
-
-import { TxError } from '../../helpers/types'
 
 type ProxyChange =
   | {
@@ -46,6 +45,10 @@ type OpenChange =
       openTxHash: string
     }
   | {
+      kind: 'openVaultConfirming'
+      openVaultConfirmations?: number
+    }
+  | {
       kind: 'txFailure'
       txError?: TxError
     }
@@ -54,7 +57,25 @@ type OpenChange =
       id: BigNumber
     }
 
-export type OpenVaultTransactionChange = ProxyChange | AllowanceChange | OpenChange
+type AddStopLossChange =
+  | { kind: 'stopLossTxWaitingForApproval' }
+  | { kind: 'stopLossTxWaitingForConfirmation'; id: BigNumber }
+  | {
+      kind: 'stopLossTxInProgress'
+      stopLossTxHash: string
+    }
+  | {
+      kind: 'stopLossTxFailure'
+      txError?: TxError
+    }
+  | {
+      kind: 'stopLossTxSuccess'
+    }
+export type OpenVaultTransactionChange =
+  | ProxyChange
+  | AllowanceChange
+  | OpenChange
+  | AddStopLossChange
 
 interface Receipt {
   logs: { topics: string[] | undefined }[]

@@ -11,6 +11,7 @@ import {
   landingPageCardsData,
   multiplyPageCardsData,
 } from './productCards'
+import { configureLocalStorageForTests } from './useFeatureToggle'
 
 const wbtcA = mockIlkData({
   token: 'WTBC',
@@ -109,6 +110,12 @@ const crv = mockIlkData({
 })()
 
 describe('createProductCardsData$', () => {
+  beforeEach(() => {
+    configureLocalStorageForTests({ EarnProduct: true })
+  })
+  afterEach(() => {
+    localStorage.clear()
+  })
   it('should return correct product data', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
 
@@ -130,7 +137,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, wstethA]), () => mockPriceInfo$()),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -165,17 +172,17 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: guni.token,
-        ilk: guni.ilk,
-        liquidationRatio: guni.liquidationRatio,
-        liquidityAvailable: guni.ilkDebtAvailable,
-        stabilityFee: guni.stabilityFee,
+        token: wstethA.token,
+        ilk: wstethA.ilk,
+        liquidationRatio: wstethA.liquidationRatio,
+        liquidityAvailable: wstethA.ilkDebtAvailable,
+        stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        debtFloor: guni.debtFloor,
-        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
-        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
-        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-        name: 'GUNIV3 DAI/USDC 0.01%',
+        debtFloor: wstethA.debtFloor,
+        bannerIcon: '/static/img/tokens/wstETH.png',
+        bannerGif: '/static/img/tokens/wstETH.gif',
+        background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
+        name: 'WSTETH',
         isFull: false,
       },
     ])
@@ -221,17 +228,17 @@ describe('createProductCardsData$', () => {
         isFull: false,
       },
       {
-        token: guni.token,
-        ilk: guni.ilk,
-        liquidationRatio: guni.liquidationRatio,
-        liquidityAvailable: guni.ilkDebtAvailable,
-        stabilityFee: guni.stabilityFee,
+        token: wstethA.token,
+        ilk: wstethA.ilk,
+        liquidationRatio: wstethA.liquidationRatio,
+        liquidityAvailable: wstethA.ilkDebtAvailable,
+        stabilityFee: wstethA.stabilityFee,
         currentCollateralPrice: new BigNumber('550'),
-        debtFloor: guni.debtFloor,
-        bannerIcon: '/static/img/tokens/uni_old_dai_usdc.png',
-        bannerGif: '/static/img/tokens/uni_old_dai_usdc.gif',
-        background: 'linear-gradient(171.29deg, #FDDEF0 -2.46%, #FFF0F9 -2.45%, #FFF6F1 99.08%)',
-        name: 'GUNIV3 DAI/USDC 0.01%',
+        debtFloor: wstethA.debtFloor,
+        bannerIcon: '/static/img/tokens/wstETH.png',
+        bannerGif: '/static/img/tokens/wstETH.gif',
+        background: 'linear-gradient(158.87deg, #E2F7F9 0%, #D3F3F5 100%), #FFFFFF',
+        name: 'WSTETH',
         isFull: false,
       },
     ])

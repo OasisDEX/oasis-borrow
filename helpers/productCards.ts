@@ -15,7 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
-import { Feature } from './useFeatureToggle'
+import { useFeatureToggle } from './useFeatureToggle'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -96,11 +96,6 @@ export const supportedBorrowIlks = [
   'WSTETH-B',
 ]
 
-// TODO: remove 'GUNIV3DAIUSDC2-A' from supportedMultiplyIlks when EarnProduct feature removed
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _thisConstJustProvidesCompileTimeError: Feature = 'EarnProduct'
-// the above line just to remind me
-
 export const supportedMultiplyIlks = [
   'ETH-A',
   'ETH-B',
@@ -110,8 +105,6 @@ export const supportedMultiplyIlks = [
   'WBTC-B',
   'WBTC-C',
   'RENBTC-A',
-  'GUNIV3DAIUSDC2-A', // remove this when removing EarnProduct feature toggle
-  'GUNIV3DAIUSDC1-A',
   'LINK-A',
   'UNI-A',
   'YFI-A',
@@ -120,11 +113,7 @@ export const supportedMultiplyIlks = [
   'WSTETH-B',
 ]
 
-export const supportedEarnIlks = ['GUNIV3DAIUSDC2-A']
-
-export const supportedIlksList = [
-  ...new Set([...supportedBorrowIlks, supportedMultiplyIlks]),
-] as Ilk[]
+export const supportedEarnIlks = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 type ProductPageType = {
   cardsFilters: Array<ProductLandingPagesFilter>
@@ -143,7 +132,12 @@ const genericFilters = {
     tokens: ['ETH', 'WETH', 'wstETH', 'stETH'],
   },
   btc: { name: 'BTC', icon: 'btc_circle', urlFragment: 'btc', tokens: ['WBTC', 'renBTC'] },
-  unilp: { name: 'UNI LP', icon: 'uni_lp_circle', urlFragment: 'unilp', tokens: [] },
+  unilp: {
+    name: 'UNI LP',
+    icon: 'uni_lp_circle',
+    urlFragment: 'unilp',
+    tokens: ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2'],
+  },
   link: { name: 'LINK', icon: 'link_circle', urlFragment: 'link', tokens: ['LINK'] },
   uni: { name: 'UNI', icon: 'uni_circle', urlFragment: 'uni', tokens: ['UNI'] },
   yfi: { name: 'YFI', icon: 'yfi_circle', urlFragment: 'yfi', tokens: ['YFI'] },
@@ -218,7 +212,7 @@ export const productCardsConfig: {
       genericFilters.mana,
       genericFilters.matic,
     ],
-    featuredCards: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC2-A'],
+    featuredCards: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
     inactiveIlks: [],
     ordering: {
       ETH: ['ETH-B', 'ETH-A', 'WSTETH-A', 'ETH-C'],
@@ -245,7 +239,7 @@ export const productCardsConfig: {
         // 'CRVV1ETHSTETH-A',
         'WSTETH-B',
       ],
-      multiply: ['ETH-B', 'WBTC-B', 'GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
+      multiply: ['ETH-B', 'WBTC-B', 'WSTETH-A'],
       earn: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
     },
   },
@@ -427,9 +421,18 @@ export function landingPageCardsData({
   productCardsData: ProductCardData[]
   product?: ProductTypes
 }) {
-  return productCardsData.filter((ilk) =>
-    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
-  )
+  const earnEnabled = useFeatureToggle('EarnProduct')
+
+  return productCardsData.filter((ilk) => {
+    if (product === 'multiply') {
+      return getMultiplyFeaturedCardsDependsOnEarnToggle(
+        productCardsConfig.landing.featuredCards[product],
+        earnEnabled,
+      ).includes(ilk.ilk)
+    } else {
+      return productCardsConfig.landing.featuredCards[product].includes(ilk.ilk)
+    }
+  })
 }
 
 export function pageCardsDataByProduct({
@@ -470,6 +473,15 @@ function sortCards(
   return productCardsData
 }
 
+function getMultiplyFeaturedCardsDependsOnEarnToggle(cards: Ilk[], earnEnabled: boolean) {
+  if (earnEnabled) {
+    return cards
+  }
+  const featuredGUNI = 'GUNIV3DAIUSDC2-A'
+
+  return [...cards.slice(0, -1), featuredGUNI]
+}
+
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
   return productCardsData.filter((data) =>
     ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
@@ -483,6 +495,7 @@ export function multiplyPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
+  const earnEnabled = useFeatureToggle('EarnProduct')
   productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
 
   const multiplyTokens = productCardsData.filter((ilk) =>
@@ -491,7 +504,10 @@ export function multiplyPageCardsData({
 
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
-      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
+      getMultiplyFeaturedCardsDependsOnEarnToggle(
+        productCardsConfig.multiply.featuredCards,
+        earnEnabled,
+      ).includes(ilk.ilk),
     )
   }
 
