@@ -2,20 +2,25 @@ import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
 import { Box, Flex, Grid, IconButton, Text } from 'theme-ui'
-// import { Item } from "./Item";
+import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
+import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 
 export interface DropDownValue {
-  title: string
+  label: string
   value: string
+  secondaryValue?: string;
 }
 
 export interface ItemProps {
-  title: string
+  label: string
   value?: string
+  secondaryValue?: string;
   dropdownValues?: DropDownValue[]
 }
 
-export function Item({ title, dropdownValues, value }: ItemProps) {
+// TODO: Add tooltip and loading state
+// Note: Use this to phase out the VaultInformationContainer & VaultInformation components
+export function Item({ label, dropdownValues, value, secondaryValue }: ItemProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -32,7 +37,7 @@ export function Item({ title, dropdownValues, value }: ItemProps) {
             color: theme.colors.text.subtitle,
           }}
         >
-          {title}
+          {label}
         </Text>
         <Box>
           <Box>
@@ -44,6 +49,12 @@ export function Item({ title, dropdownValues, value }: ItemProps) {
               }}
             >
               {value}
+              {secondaryValue && (
+                <>
+                  <VaultChangesInformationArrow />
+                  {secondaryValue}
+                </>
+              )}
               {dropdownValues?.length && (
                 <IconButton
                   onClick={() => setOpen(!open)}
@@ -56,22 +67,12 @@ export function Item({ title, dropdownValues, value }: ItemProps) {
                     ml: 1,
                   }}
                 >
-                  <svg
-                    style={{ transform: open ? 'rotate(180deg)' : '' }}
-                    width="9"
-                    height="6"
-                    viewBox="0 0 9 6"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M1.2998 1.3999L4.4998 4.9999L7.6998 1.3999"
-                      stroke="black"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  <ExpandableArrow
+                    direction={open ? 'up' : 'down'}
+                    sx={{
+                      pr: 0
+                    }}
+                  />
                 </IconButton>
               )}
             </Text>
