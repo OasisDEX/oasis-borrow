@@ -156,10 +156,17 @@ export function VaultTabSwitch({
 
   const buttonSx = { flex: 1, px: 4 }
 
-  const vaultViewModeEntries = Object.entries(VaultViewMode)
-  const vaultViewModeTuples = vaultViewModeEntries.splice(
-    -Math.ceil(vaultViewModeEntries.length / 2),
-  )
+  const vaultViewModeTuples = Object.entries(VaultViewMode).filter(([entry]) => {
+    switch (entry) {
+      case 'Protection':
+        return showProtectionTab
+      case 'Optimization':
+        return basicBSEnabled
+      default:
+        return true
+    }
+  })
+
   const options = useMemo(() => {
     const tagMap = {
       [VaultViewMode.Protection]: protectionEnabled,
