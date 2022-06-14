@@ -11,11 +11,13 @@ services:
       - POSTGRES_DB=db
     ports:
       - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
   localnode:
     image: oasisdexorg/multiply-proxy-actions:latest
     container_name: multiply-proxy-actions
     environment:
-      - ALCHEMY_NODE=https://eth-mainnet.alchemyapi.io/v2/K7pZy8x91lW2KwbtJLtYNOYwB8LMJYYZ
+      - ALCHEMY_NODE=https://eth-mainnet.alchemyapi.io/v2/D6h0om_0xv6auSNiNkyKo3QNe0F2LsuS
       - ALCHEMY_NODE_RINKEBY=https://eth-rinkeby.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
       - ALCHEMY_NODE_GOERLI=https://eth-goerli.alchemyapi.io/v2/sJ7rvwzHpW3lEd3UaO_T8tPfUre2u5_j
       - ETHERSCAN_API_KEY=YAJI4NVD8QTQ9JVWG2NKN3FFUK6IZTMV5S
@@ -28,3 +30,5 @@ services:
       - '8545:8545'
     volumes:
       - '../.hardhat/cache:/usr/src/mpa/cache'
+volumes:
+  db_data: {}
