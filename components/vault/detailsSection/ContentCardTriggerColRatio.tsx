@@ -5,7 +5,6 @@ import {
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -39,7 +38,7 @@ export function ContentCardTriggerColRatio({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    nextBuyPrice: nextBuyPrice && `$${formatAmount(nextBuyPrice || zero, 'USD')}`,
+    nextBuyPrice: nextBuyPrice && `$${formatAmount(nextBuyPrice, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -52,7 +51,8 @@ export function ContentCardTriggerColRatio({
       value: `${formatted.afterTriggerColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
-  if (nextBuyPrice) contentCardSettings.footnote = `${t('auto-buy.next-buy-price')}: ${formatted.nextBuyPrice}`
+  if (nextBuyPrice)
+    contentCardSettings.footnote = t('auto-buy.next-buy-price', { amount: formatted.nextBuyPrice })
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
