@@ -17,34 +17,34 @@ import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingBut
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
+import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
+import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
-import { FixedSizeArray } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { DEFAULT_SL_SLIDER_BOUNDRY } from '../common/consts/automationDefaults'
+import {
+  DEFAULT_SL_SLIDER_BOUNDARY,
+  MAX_DEBT_FOR_SETTING_STOP_LOSS,
+  MAX_SL_SLIDER_VALUE_OFFSET,
+} from '../common/consts/automationDefaults'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
-import { getIsEditingProtection } from '../common/helpers'
+import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
 import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { TriggersData } from '../triggers/AutomationTriggersData'
-import {
-  AdjustSlFormLayout,
-  AdjustSlFormLayoutProps,
-  slRatioHigherThanCurrentOrNext,
-} from './AdjustSlFormLayout'
+import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
-function prepareAddTriggerData(
+export function prepareAddTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
   stopLossLevel: BigNumber,
@@ -61,7 +61,7 @@ function prepareAddTriggerData(
 
 interface AdjustSlFormControlProps {
   vault: Vault
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   ilkData: IlkData
   triggerData: TriggersData
   ctx: Context
@@ -74,12 +74,11 @@ interface AdjustSlFormControlProps {
 
 export function AdjustSlFormControl({
   vault,
-  collateralPrices,
+  priceInfo: { currentEthPrice, currentCollateralPrice, nextCollateralPrice },
   ilkData,
   triggerData,
   ctx,
   accountIsController,
-  collateralizationRatioAtNextPrice,
   toggleForms,
   tx,
   balanceInfo,
@@ -87,7 +86,6 @@ export function AdjustSlFormControl({
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
     triggerData,
   )
-  const validOptions: FixedSizeArray<string, 2> = ['collateral', 'dai']
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
@@ -96,19 +94,20 @@ export function AdjustSlFormControl({
 
   const token = vault.token
   const tokenData = getToken(token)
-  const currentCollateralData = collateralPrices.data.find((x) => x.token === vault.token)
-  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
-  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
 
   const [uiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
-  const [selectedSLValue, setSelectedSLValue] = useState(uiState.selectedSLValue)
 
   const replacedTriggerId = triggerId || 0
 
   const txData = useMemo(
     () =>
-      prepareAddTriggerData(vault, uiState.collateralActive, selectedSLValue, replacedTriggerId),
-    [uiState.collateralActive, selectedSLValue, replacedTriggerId],
+      prepareAddTriggerData(
+        vault,
+        uiState.collateralActive,
+        uiState.selectedSLValue,
+        replacedTriggerId,
+      ),
+    [uiState.collateralActive, uiState.selectedSLValue, replacedTriggerId],
   )
   /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
   const gasEstimationData$ = useMemo(() => {
@@ -135,42 +134,19 @@ export function AdjustSlFormControl({
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
     selectedSLValue: uiState.selectedSLValue,
-    startingSlRatio: selectedSLValue,
     stopLossLevel,
     collateralActive: uiState.collateralActive,
     isToCollateral,
   })
 
-  const nextPriceCollRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.nextPrice)
-    .dividedBy(vault.debt)
-
-  const currentCollateralRatio = vault.lockedCollateral
-    .multipliedBy(currentCollateralData!.currentPrice)
-    .dividedBy(vault.debt)
-
-  const startingAfterNewLiquidationPrice = currentCollateralData!.nextPrice
-    .multipliedBy(uiState.selectedSLValue)
-    .dividedBy(100)
-    .dividedBy(nextPriceCollRatio)
-
-  const [afterNewLiquidationPrice, setAfterLiqPrice] = useState(
-    new BigNumber(startingAfterNewLiquidationPrice),
-  )
-
-  const maxBoundry =
-    nextPriceCollRatio.isNaN() || !nextPriceCollRatio.isFinite()
-      ? new BigNumber(DEFAULT_SL_SLIDER_BOUNDRY)
-      : nextPriceCollRatio
-
   const liqRatio = ilkData.liquidationRatio
 
   const closeProps: PickCloseStateProps = {
-    optionNames: validOptions,
+    optionNames: closeVaultOptions,
     onclickHandler: (optionName: string) => {
       uiChanges.publish(ADD_FORM_CHANGE, {
         type: 'close-type',
-        toCollateral: optionName === validOptions[0],
+        toCollateral: optionName === closeVaultOptions[0],
       })
     },
     isCollateralActive: uiState.collateralActive,
@@ -178,39 +154,31 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
-  const sliderPercentageFill = uiState.selectedSLValue
-    .minus(liqRatio.times(100))
-    .div(
-      nextPriceCollRatio.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(liqRatio),
-    )
+  const sliderPercentageFill = getSliderPercentageFill({
+    value: uiState.selectedSLValue,
+    min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
+    max: vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
+  })
+
+  const afterNewLiquidationPrice = uiState.selectedSLValue
+    .dividedBy(100)
+    .multipliedBy(nextCollateralPrice)
+    .dividedBy(vault.collateralizationRatioAtNextPrice)
 
   const sliderProps: SliderValuePickerProps = {
-    disabled: false,
+    ...stopLossSliderBasicConfig,
     sliderPercentageFill,
     leftBoundry: uiState.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
-    sliderKey: 'set-stoploss',
     lastValue: uiState.selectedSLValue,
-    leftBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : formatPercent(x)),
-    leftBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right' },
-    rightBoundryFormatter: (x: BigNumber) => (x.isZero() ? '-' : '$ ' + formatAmount(x, 'USD')),
-    rightBoundryStyling: { fontWeight: 'semiBold', textAlign: 'right', color: 'primary' },
-    step: 1,
-    maxBoundry: new BigNumber(maxBoundry.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN)),
-    minBoundry: liqRatio.multipliedBy(100).plus(DEFAULT_SL_SLIDER_BOUNDRY),
+    maxBoundry: new BigNumber(
+      vault.collateralizationRatioAtNextPrice
+        .minus(MAX_SL_SLIDER_VALUE_OFFSET)
+        .multipliedBy(100)
+        .toFixed(0, BigNumber.ROUND_DOWN),
+    ),
+    minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
     onChange: (slCollRatio) => {
-      setSelectedSLValue(slCollRatio)
-      /*TO DO: this is duplicated and can be extracted*/
-      // const currentCollRatio = vault.lockedCollateral
-      //   .multipliedBy(currentCollateralData!.currentPrice)
-      //   .dividedBy(vault.debt)
-      const computedAfterLiqPrice = slCollRatio
-        .dividedBy(100)
-        .multipliedBy(currentCollateralData!.nextPrice)
-        .dividedBy(nextPriceCollRatio)
-      /* END OF DUPLICATION */
-      setAfterLiqPrice(computedAfterLiqPrice)
-
       if (uiState.collateralActive === undefined) {
         uiChanges.publish(ADD_FORM_CHANGE, {
           type: 'close-type',
@@ -230,6 +198,8 @@ export function AdjustSlFormControl({
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
 
+  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
+
   const stage = isSuccessStage
     ? 'txSuccess'
     : isProgressStage
@@ -241,82 +211,67 @@ export function AdjustSlFormControl({
   const isProgressDisabled = !!(
     !isOwner ||
     (!isEditing && txStatus !== TxStatus.Success) ||
-    isProgressStage
+    isProgressStage ||
+    maxDebtForSettingStopLoss
   )
 
   const addTriggerConfig: RetryableLoadingButtonProps = {
-    translationKey: slRatioHigherThanCurrentOrNext(
-      selectedSLValue,
-      collateralizationRatioAtNextPrice,
-      currentCollateralRatio,
-    )
-      ? 'close-vault'
-      : isStopLossEnabled
-      ? 'update-stop-loss'
-      : 'add-stop-loss',
-    onClick: slRatioHigherThanCurrentOrNext(
-      selectedSLValue,
-      collateralizationRatioAtNextPrice,
-      currentCollateralRatio,
-    )
-      ? redirectToCloseVault
-      : (finishLoader: (succeded: boolean) => void) => {
-          if (tx === undefined) {
-            return
-          }
-          const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
-            transactionStateHandler(
-              (txState) => {
-                /** TODO: This is not right place for it, this should be encapsulated,
-                 * probably in similar fashion as addGasEstimation$
-                 */
-                const gasUsed =
-                  txState.status === TxStatus.Success
-                    ? new BigNumber(txState.receipt.gasUsed)
-                    : zero
+    translationKey: isStopLossEnabled ? 'update-stop-loss' : 'add-stop-loss',
+    onClick: (finishLoader: (succeded: boolean) => void) => {
+      if (tx === undefined) {
+        return
+      }
+      const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
+        transactionStateHandler(
+          (txState) => {
+            /** TODO: This is not right place for it, this should be encapsulated,
+             * probably in similar fashion as addGasEstimation$
+             */
+            const gasUsed =
+              txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
 
-                const effectiveGasPrice =
-                  txState.status ===
-                  TxStatus.Success /* Is this even correct? failed tx also have cost */
-                    ? new BigNumber(txState.receipt.effectiveGasPrice)
-                    : zero
+            const effectiveGasPrice =
+              txState.status ===
+              TxStatus.Success /* Is this even correct? failed tx also have cost */
+                ? new BigNumber(txState.receipt.effectiveGasPrice)
+                : zero
 
-                const totalCost =
-                  !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-                    ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                        tokenPrice,
-                      )
-                    : zero
+            const totalCost =
+              !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
+                    currentEthPrice,
+                  )
+                : zero
 
-                if (txState.status === TxStatus.Success) {
-                  setFirstStopLossSetup(false)
-                }
+            if (txState.status === TxStatus.Success) {
+              setFirstStopLossSetup(false)
+            }
 
-                uiChanges.publish(ADD_FORM_CHANGE, {
-                  type: 'tx-details',
-                  txDetails: {
-                    txHash: (txState as any).txHash,
-                    txStatus: txState.status,
-                    txError: txState.status === TxStatus.Error ? txState.error : undefined,
-                    txCost: totalCost,
-                  },
-                })
+            uiChanges.publish(ADD_FORM_CHANGE, {
+              type: 'tx-details',
+              txDetails: {
+                txHash: (txState as any).txHash,
+                txStatus: txState.status,
+                txError: txState.status === TxStatus.Error ? txState.error : undefined,
+                txCost: totalCost,
               },
-              transactionState,
-              finishLoader,
-              waitForTx,
-            )
-          }
+            })
+          },
+          transactionState,
+          finishLoader,
+          waitForTx,
+        )
+      }
 
-          const sendTxErrorHandler = () => {
-            finishLoader(false)
-          }
+      const sendTxErrorHandler = () => {
+        finishLoader(false)
+      }
 
-          // TODO circular dependency waitForTx <-> txSendSuccessHandler
-          const waitForTx = tx
-            .sendWithGasEstimation(addAutomationBotTrigger, txData)
-            .subscribe(txSendSuccessHandler, sendTxErrorHandler)
-        },
+      // TODO circular dependency waitForTx <-> txSendSuccessHandler
+      const waitForTx = tx
+        .sendWithGasEstimation(addAutomationBotTrigger, txData)
+        .subscribe(txSendSuccessHandler, sendTxErrorHandler)
+    },
     isStopLossEnabled,
     isLoading: false,
     isRetry: false,
@@ -324,7 +279,8 @@ export function AdjustSlFormControl({
     disabled:
       !isOwner ||
       (!isEditing && uiState?.txDetails?.txStatus !== TxStatus.Success) ||
-      (!isEditing && !uiState?.txDetails),
+      (!isEditing && !uiState?.txDetails) ||
+      maxDebtForSettingStopLoss,
   }
 
   const dynamicStopLossPrice = vault.liquidationPrice
@@ -360,21 +316,21 @@ export function AdjustSlFormControl({
     accountIsController,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
-    tokenPrice,
-    ethPrice,
+    tokenPrice: currentCollateralPrice,
+    ethPrice: currentEthPrice,
     vault,
     ilkData,
     etherscan,
-    selectedSLValue,
+    selectedSLValue: uiState.selectedSLValue,
     toggleForms,
     firstStopLossSetup,
     isEditing,
-    collateralizationRatioAtNextPrice,
+    collateralizationRatioAtNextPrice: vault.collateralizationRatioAtNextPrice,
     ethBalance: balanceInfo.ethBalance,
     stage,
     isProgressDisabled,
     redirectToCloseVault,
-    currentCollateralRatio,
+    currentCollateralRatio: vault.collateralizationRatio,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

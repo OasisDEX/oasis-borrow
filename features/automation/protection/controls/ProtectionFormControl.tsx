@@ -4,9 +4,9 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { VaultFormContainer } from 'components/vault/VaultFormContainer'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -27,7 +27,7 @@ import { CancelSlFormControl } from './CancelSlFormControl'
 interface Props {
   ilkData: IlkData
   automationTriggersData: TriggersData
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   vault: Vault
   collateralizationRatioAtNextPrice: BigNumber
   balanceInfo: BalanceInfo
@@ -37,7 +37,7 @@ interface Props {
 export function ProtectionFormControl({
   ilkData,
   automationTriggersData,
-  collateralPrices,
+  priceInfo,
   vault,
   account,
   collateralizationRatioAtNextPrice,
@@ -89,14 +89,13 @@ export function ProtectionFormControl({
                       type: 'change-mode',
                     })
                   }}
-                  collateralPrices={collateralPrices}
+                  priceInfo={priceInfo}
                   balanceInfo={balanceInfo}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
               ) : (
                 <AdjustSlFormControl
                   vault={vault}
-                  collateralPrices={collateralPrices}
+                  priceInfo={priceInfo}
                   ilkData={ilkData}
                   triggerData={automationTriggersData}
                   tx={txHelpers}
@@ -127,14 +126,13 @@ export function ProtectionFormControl({
                   type: 'change-mode',
                 })
               }}
-              collateralPrices={collateralPrices}
+              priceInfo={priceInfo}
               balanceInfo={balanceInfo}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
             />
           ) : (
             <AdjustSlFormControl
               vault={vault}
-              collateralPrices={collateralPrices}
+              priceInfo={priceInfo}
               ilkData={ilkData}
               triggerData={automationTriggersData}
               tx={txHelpers}

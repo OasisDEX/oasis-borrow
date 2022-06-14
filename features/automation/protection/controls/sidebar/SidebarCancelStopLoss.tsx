@@ -26,34 +26,31 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    collateralizationRatioAtNextPrice,
     ethBalance,
     ethPrice,
     gasEstimationUsd,
     ilkData,
     isProgressDisabled,
     removeTriggerConfig,
-    selectedSLValue,
     stage,
     toggleForms,
     token,
     txError,
+    vault,
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError, selectedSLValue, ilkData })
+  const errors = errorsValidation({ txError, debt: vault.debt })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
-    selectedSLValue,
-    collateralizationRatioAtNextPrice,
   })
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, vault }),
     content: (
       <Grid gap={3}>
         {(stage === 'editing' || stage === 'txFailure') && (

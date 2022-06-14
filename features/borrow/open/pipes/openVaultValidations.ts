@@ -17,8 +17,20 @@ export function validateErrors(state: OpenVaultState): OpenVaultState {
     depositAmountExceedsCollateralBalance,
     ledgerWalletContractDataDisabled,
     insufficientEthFundsForTx,
+    stopLossOnNearLiquidationRatio,
+    isStopLossEditingStage,
+    stopLossHigherThanCurrentOrNext,
   } = state
   const errorMessages: VaultErrorMessage[] = []
+
+  if (isStopLossEditingStage) {
+    errorMessages.push(
+      ...errorMessagesHandler({
+        stopLossOnNearLiquidationRatio,
+        stopLossHigherThanCurrentOrNext,
+      }),
+    )
+  }
 
   if (isEditingStage) {
     errorMessages.push(
@@ -63,11 +75,21 @@ export function validateWarnings(state: OpenVaultState): OpenVaultState {
     vaultWillBeAtRiskLevelWarning,
     vaultWillBeAtRiskLevelWarningAtNextPrice,
     potentialGenerateAmountLessThanDebtFloor,
+    currentCollRatioCloseToStopLoss,
+    isStopLossEditingStage,
   } = state
 
   const warningMessages: VaultWarningMessage[] = []
 
   if (errorMessages.length) return { ...state, warningMessages }
+
+  if (isStopLossEditingStage) {
+    warningMessages.push(
+      ...warningMessagesHandler({
+        currentCollRatioCloseToStopLoss,
+      }),
+    )
+  }
 
   if (isEditingStage) {
     warningMessages.push(

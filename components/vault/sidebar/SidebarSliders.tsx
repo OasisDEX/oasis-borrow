@@ -1,7 +1,9 @@
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
@@ -35,7 +37,6 @@ export function SidebarSliderAdjustMultiply({
     afterCollateralizationRatio,
     multiply,
     maxCollRatio,
-    requiredCollRatio,
     ilkData: { liquidationRatio },
   } = state
 
@@ -43,9 +44,10 @@ export function SidebarSliderAdjustMultiply({
     theme: { colors },
   } = useThemeUI()
 
-  const slider = requiredCollRatio
-    ? maxCollRatio?.minus(requiredCollRatio)?.div(maxCollRatio.minus(liquidationRatio)).times(100)
+  const slider = value
+    ? maxCollRatio?.minus(value).div(maxCollRatio.minus(liquidationRatio)).times(100)
     : zero
+
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
@@ -121,6 +123,11 @@ export function SidebarSliderAdjustMultiply({
         <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
         <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
       </Flex>
+      <VaultErrors
+        errorMessages={extractGenerateErrors(state.errorMessages)}
+        ilkData={state.ilkData}
+        maxGenerateAmount={state.maxGenerateAmount}
+      />
     </Grid>
   )
 }

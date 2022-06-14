@@ -7,7 +7,7 @@ export function DefaultVaultLayout({
   listControl,
 }: {
   detailsViewControl: JSX.Element
-  editForm: JSX.Element
+  editForm?: JSX.Element
   listControl?: JSX.Element
 }) {
   return (
@@ -17,7 +17,7 @@ export function DefaultVaultLayout({
           {detailsViewControl}
           {listControl}
         </Grid>
-        <Box>{editForm}</Box>
+        {editForm && <Box>{editForm}</Box>}
       </Grid>
     </Container>
   )

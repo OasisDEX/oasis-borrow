@@ -1,19 +1,14 @@
+import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import React from 'react'
 
-import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { VaultHistoryView } from '../../features/vaultHistory/VaultHistoryView'
-import { DefaultVaultLayout } from './DefaultVaultLayout'
-import { GeneralVaultFormControl } from './GeneralVaultFormControl'
-
 interface HistoryControlProps {
-  generalManageVault: GeneralManageVaultState
+  vaultHistory: VaultHistoryEvent[]
 }
 
-export function HistoryControl({ generalManageVault }: HistoryControlProps) {
+export function HistoryControl({ vaultHistory }: HistoryControlProps) {
   return (
-    <DefaultVaultLayout
-      detailsViewControl={<VaultHistoryView vaultHistory={generalManageVault.state.vaultHistory} />}
-      editForm={<GeneralVaultFormControl generalManageVault={generalManageVault} />}
-    />
+    <DefaultVaultLayout detailsViewControl={<VaultHistoryView vaultHistory={vaultHistory} />} />
   )
 }

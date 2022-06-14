@@ -4,10 +4,17 @@ import { SidebarTxData } from 'helpers/extractSidebarHelpers'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 
-function getSidebarProgressTxInProgressKey({ flow }: { flow: SidebarFlow }) {
+function getSidebarProgressTxInProgressKey({
+  flow,
+  openFlowWithStopLoss,
+}: {
+  flow: SidebarFlow
+  openFlowWithStopLoss: boolean
+}) {
   switch (flow) {
     case 'openBorrow':
     case 'openMultiply':
+      return !openFlowWithStopLoss ? 'creating-your-vault' : 'open-vault-deployment-confirming'
     case 'openGuni':
       return 'creating-your-vault'
     case 'addSl':
@@ -25,7 +32,7 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'openBorrow':
     case 'openMultiply':
     case 'openGuni':
-      return 'creating-your-vault'
+      return 'vault-creation-confirmed'
     case 'addSl':
     case 'adjustSl':
     case 'cancelSl':
@@ -43,83 +50,175 @@ export function getSidebarStatus({
   allowanceTxHash,
   openTxHash,
   manageTxHash,
+  stopLossTxHash,
   etherscan,
   proxyConfirmations,
+  openVaultConfirmations,
   safeConfirmations,
+  openVaultSafeConfirmations,
   token,
   flow,
-}: SidebarTxData & { flow: SidebarFlow }): SidebarSectionStatusProps | undefined {
+  openFlowWithStopLoss = false,
+}: SidebarTxData & { flow: SidebarFlow }): SidebarSectionStatusProps[] | undefined {
   const { t } = useTranslation()
 
   const txData = {
-    txHash: (txHash || openTxHash || manageTxHash || allowanceTxHash || proxyTxHash)!,
+    txHash: (txHash ||
+      stopLossTxHash ||
+      openTxHash ||
+      manageTxHash ||
+      allowanceTxHash ||
+      proxyTxHash)!,
     etherscan: etherscan!,
   }
 
   switch (stage) {
     case 'proxyInProgress':
-      return {
-        text: t('proxy-deployment-confirming', {
-          proxyConfirmations: proxyConfirmations || 0,
-          safeConfirmations,
-        }),
-        type: 'progress',
-        ...txData,
-      }
+      return [
+        {
+          text: t('proxy-deployment-confirming', {
+            proxyConfirmations: proxyConfirmations || 0,
+            safeConfirmations,
+          }),
+          type: 'progress',
+          ...txData,
+        },
+      ]
     case 'collateralAllowanceInProgress':
     case 'daiAllowanceInProgress':
     case 'allowanceInProgress':
-      return {
-        text: t('setting-allowance-for', { token }),
-        type: 'progress',
-        ...txData,
-      }
+      return [
+        {
+          text: t('setting-allowance-for', { token }),
+          type: 'progress',
+          ...txData,
+        },
+      ]
     case 'txInProgress':
-      const txInProgressKey = getSidebarProgressTxInProgressKey({ flow })
+      const txInProgressKey = getSidebarProgressTxInProgressKey({ flow, openFlowWithStopLoss })
 
-      return {
-        text: t(txInProgressKey),
-        type: 'progress',
-        ...txData,
+      const statusArrayTxInProgress: SidebarSectionStatusProps[] = [
+        {
+          text: t(txInProgressKey, {
+            openVaultConfirmations: openVaultConfirmations || 0,
+            safeConfirmations: openVaultSafeConfirmations,
+          }),
+          type: 'progress',
+          ...txData,
+          txHash: openTxHash!,
+        },
+      ]
+
+      if (openFlowWithStopLoss) {
+        statusArrayTxInProgress.push({
+          text: t('open-vault-sl-second-status-title'),
+          description: t('open-vault-sl-second-status-not-started-desc'),
+          type: 'waiting',
+          ...txData,
+          txHash: '',
+        })
       }
+
+      return statusArrayTxInProgress
+    case 'stopLossTxInProgress':
+      return [
+        {
+          text: t('vault-creation-confirmed'),
+          type: 'waiting',
+          ...txData,
+          txHash: openTxHash!,
+        },
+        {
+          text: `${t('open-vault-sl-second-status-title')} ${t('in-progress')}`,
+          type: 'progress',
+          ...txData,
+          txHash: stopLossTxHash!,
+        },
+      ]
+
+    case 'stopLossTxSuccess':
+      return [
+        {
+          text: t('vault-creation-confirmed'),
+          type: 'waiting',
+          icon: 'checkmark',
+          ...txData,
+          txHash: openTxHash!,
+        },
+        {
+          text: t('vault-changed'),
+          type: 'success',
+          ...txData,
+          txHash: stopLossTxHash!,
+        },
+      ]
+
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+      return [
+        {
+          text: t('vault-creation-confirmed'),
+          type: 'success',
+          icon: 'checkmark',
+          ...txData,
+          txHash: openTxHash!,
+        },
+        {
+          text: `${t('open-vault-sl-second-status-title')} ${t('not-started')}`,
+          description: t('open-vault-sl-second-status-not-started-desc'),
+          type: 'waiting',
+          ...txData,
+          txHash: '',
+        },
+      ]
     case 'manageInProgress':
-      return {
-        text: t('changing-vault'),
-        type: 'progress',
-        ...txData,
-      }
+      return [
+        {
+          text: t('changing-vault'),
+          type: 'progress',
+          ...txData,
+        },
+      ]
     case 'proxySuccess':
-      return {
-        text: t('proxy-deployment-confirming', {
-          proxyConfirmations: safeConfirmations,
-          safeConfirmations,
-        }),
-        type: 'success',
-        ...txData,
-      }
+      return [
+        {
+          text: t('proxy-deployment-confirming', {
+            proxyConfirmations: safeConfirmations,
+            safeConfirmations,
+          }),
+          type: 'success',
+          ...txData,
+        },
+      ]
     case 'collateralAllowanceSuccess':
     case 'daiAllowanceSuccess':
     case 'allowanceSuccess':
-      return {
-        text: t('setting-allowance-for', { token }),
-        type: 'success',
-        ...txData,
-      }
+      return [
+        {
+          text: t('setting-allowance-for', { token }),
+          type: 'success',
+          ...txData,
+        },
+      ]
     case 'txSuccess':
       const txSuccessKey = getSidebarSuccessTxSuccessData({ flow })
 
-      return {
-        text: t(txSuccessKey, { id }),
-        type: 'success',
-        ...txData,
-      }
+      return [
+        {
+          text: t(txSuccessKey, { id }),
+          type: 'success',
+          ...txData,
+        },
+      ]
     case 'manageSuccess':
-      return {
-        text: t('vault-changed'),
-        type: 'success',
-        ...txData,
-      }
+      return [
+        {
+          text: t('vault-changed'),
+          type: 'success',
+          ...txData,
+        },
+      ]
     default:
-      return undefined
+      return []
   }
 }

@@ -37,7 +37,6 @@ export function VaultInformation({ items }: VaultInformationProps) {
       sx={{
         p: 4,
         border: 'lightMuted',
-        maxWidth: '688px',
       }}
     >
       <Heading variant="headerSettings" sx={{ mb: 3 }}>

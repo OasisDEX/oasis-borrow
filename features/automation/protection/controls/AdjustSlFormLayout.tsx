@@ -14,6 +14,7 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
@@ -121,17 +122,12 @@ export function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
-  collateralizationRatioAtNextPrice,
-  selectedSLValue,
   gasEstimationUsd,
   ethBalance,
   txError,
-  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
   const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -166,11 +162,6 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const currentCollateralizationPriceFloor = currentCollateralRatio
-    .times(100)
-    .decimalPlaces(0)
-    .minus(currentCollateralizationPriceAlertRange)
-
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
     gasEstimationUsd,
@@ -179,6 +170,7 @@ export function SetDownsideProtectionInformation({
   })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
@@ -203,7 +195,9 @@ export function SetDownsideProtectionInformation({
         value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      {gasEstimation && (
+        <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
+      )}
       {!newComponentsEnabled && (
         <>
           <Box sx={{ fontSize: 2 }}>
@@ -218,24 +212,6 @@ export function SetDownsideProtectionInformation({
               </AppLink>
             </Text>
           </Box>
-          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
-            <MessageCard
-              messages={[t('protection.coll-ratio-close-to-current')]}
-              type="warning"
-              withBullet={false}
-            />
-          )}
-          {slRatioHigherThanCurrentOrNext(
-            selectedSLValue,
-            collateralizationRatioAtNextPrice,
-            currentCollateralRatio,
-          ) && (
-            <MessageCard
-              messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
           {potentialInsufficientEthFundsForTx && (
             <MessageCard
               messages={[t('vault-warnings.insufficient-eth-balance')]}
@@ -246,6 +222,13 @@ export function SetDownsideProtectionInformation({
           {insufficientEthFundsForTx && (
             <MessageCard
               messages={[t('vault-errors.insufficient-eth-balance')]}
+              type="error"
+              withBullet={false}
+            />
+          )}
+          {maxDebtForSettingStopLoss && (
+            <MessageCard
+              messages={[t('vault-errors.stop-loss-max-debt')]}
               type="error"
               withBullet={false}
             />
@@ -340,17 +323,27 @@ export function AdjustSlFormLayout({
         txSuccess={txState === TxStatus.Success}
         translations={{
           editing: {
-            header: t('protection.set-downside-protection'),
-            description: stopLossWriteEnabled ? (
-              <>
-                {t('protection.set-downside-protection-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-                  {t('here')}.
-                </AppLink>
-              </>
-            ) : (
-              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
-            ),
+            header: !vault.debt.isZero()
+              ? t('protection.set-downside-protection')
+              : t('protection.closed-vault-existing-sl-header'),
+            description:
+              stopLossWriteEnabled || vault.debt.isZero() ? (
+                !vault.debt.isZero() ? (
+                  <>
+                    {t('protection.set-downside-protection-desc')}{' '}
+                    <AppLink
+                      href="https://kb.oasis.app/help/stop-loss-protection"
+                      sx={{ fontSize: 2 }}
+                    >
+                      {t('here')}.
+                    </AppLink>
+                  </>
+                ) : (
+                  <>{t('protection.closed-vault-existing-sl-description')}</>
+                )
+              ) : (
+                "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+              ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -376,12 +369,16 @@ export function AdjustSlFormLayout({
       {txProgressing && <OpenVaultAnimation />}
       {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
-          <Box mt={3}>
-            <SliderValuePicker {...slValuePickerConfig} />
-          </Box>
-          <Box>
-            <PickCloseState {...closePickerConfig} />
-          </Box>
+          {!vault.debt.isZero() && (
+            <>
+              <Box mt={3}>
+                <SliderValuePicker {...slValuePickerConfig} />
+              </Box>
+              <Box>
+                <PickCloseState {...closePickerConfig} />
+              </Box>
+            </>
+          )}
           {isEditing && (
             <>
               <Box>
