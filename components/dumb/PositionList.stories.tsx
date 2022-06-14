@@ -7,6 +7,7 @@ export const Positions = () => {
   const positions = [
     {
       type: 'borrow' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
       positionId: '#3290',
@@ -28,6 +29,7 @@ export const Positions = () => {
     },
     {
       type: 'borrow' as const,
+      isOwnerView: true,
       icon: 'uni_circle_color',
       ilk: 'GUNIV3DAIUSDC2-A',
       positionId: '#3291',
@@ -48,6 +50,7 @@ export const Positions = () => {
     },
     {
       type: 'multiply' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
       positionId: '#3292',
@@ -67,6 +70,7 @@ export const Positions = () => {
     },
     {
       type: 'earn' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
       positionId: '#3293',

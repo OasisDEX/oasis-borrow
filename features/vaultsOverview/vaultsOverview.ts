@@ -7,6 +7,7 @@ import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged, switchMap } from 'rxjs/operators'
 
+import { Context } from '../../blockchain/network'
 import { getToken } from '../../blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -44,10 +45,12 @@ export interface VaultsOverview {
   ilksWithFilters: IlksWithFilters
 }
 
-type VaultWithIlkBalance = VaultWithType & IlkWithBalance & { events: VaultHistoryEvent[] }
+type VaultWithIlkBalance = VaultWithType &
+  IlkWithBalance & { events: VaultHistoryEvent[]; isOwner: boolean }
 type VaultPosition = VaultWithIlkBalance & StopLossTriggerData
 
 export function createVaultsOverview$(
+  context$: Observable<Context>,
   vaults$: (address: string) => Observable<VaultWithType[]>,
   ilksListWithBalances$: Observable<IlkWithBalance[]>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
@@ -71,14 +74,18 @@ export function createVaultsOverview$(
   const vaultsAddressWithIlksBalances$: Observable<VaultWithIlkBalance[]> = combineLatest(
     vaultsWithHistory$,
     ilksListWithBalances$,
+    context$,
   ).pipe(
-    map(([vaults, balances]) => {
+    map(([vaults, balances, context]) => {
       return vaults.map((vault) => {
         const balance = balances.find((balance) => balance.ilk === vault.ilk)
+
+        const isOwner = context.status === 'connected' && context.account === vault.controller
 
         return {
           ...vault,
           ...balance,
+          isOwner,
         }
       })
     }),
@@ -161,6 +168,7 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
 
   const borrowVM: BorrowPositionVM[] = borrow.map((value) => ({
     type: 'borrow' as const,
+    isOwnerView: value.isOwner,
     icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
     collateralRatio: formatPercent(value.collateralizationRatio, { precision: 2 }),
@@ -183,6 +191,7 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
 
   const multiplyVM: MultiplyPositionVM[] = multiply.map((value) => ({
     type: 'multiply' as const,
+    isOwnerView: value.isOwner,
     icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
     positionId: value.id.toString(),
@@ -205,6 +214,7 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
 
   const earnVM: EarnPositionVM[] = earn.map((value) => ({
     type: 'earn' as const,
+    isOwnerView: value.isOwner,
     icon: getToken(value.token).iconCircle,
     ilk: value.ilk,
     positionId: value.id.toString(),

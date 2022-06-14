@@ -1196,11 +1196,13 @@
   "below": "below",
   "above": "above",
   "earn": {
-    "your-positions": "Your Positions",
+    "your-positions": "Positions",
     "positions-of-type": "{{type}} Positions",
     "edit-vault": "Edit Vault",
+    "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
+    "automation-button-off-disabled": "No protection",
     "position-headers": {
       "asset": {
         "label": "Asset",
@@ -1279,9 +1281,16 @@
     }
   },
   "auto-buy": {
-    "next-buy-price": "Next buy price: {{amount}}",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
+    "min-ratio": "min. ratio with stop loss/basic sell",
+    "next-buy-price": "Next buy price: {{amount}}",
+    "no-threshold": "No threshold set",
+    "set-max-buy-price": "Set Max Buy Price",
+    "set-no-threshold": "Set No Threshold",
+    "set-threshold": "Set Threshold",
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
-    "target-col-ratio-after-buying": "Target Col. Ratio after buying"
+    "trigger-coll-ratio": "Trigger Col Ratio"
   }
 }
