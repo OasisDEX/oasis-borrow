@@ -96,17 +96,27 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
 
   const { automationLinkProps } = position
 
-  return position.automationEnabled ? (
-    <AppLink {...automationLinkProps}>
-      <Button variant="actionActiveGreen">
-        {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+  if (position.automationEnabled) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="actionActiveGreen">
+          {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+        </Button>
+      </AppLink>
+    )
+  } else if (position.isOwnerView) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="action">{t('earn.automation-button-off')}</Button>)
+      </AppLink>
+    )
+  } else {
+    return (
+      <Button disabled={true} variant="action">
+        {t('earn.automation-button-off-disabled')}
       </Button>
-    </AppLink>
-  ) : (
-    <AppLink {...automationLinkProps}>
-      <Button variant="action">{t('earn.automation-button-off')}</Button>
-    </AppLink>
-  )
+    )
+  }
 }
 
 function getPositionInfoItems(position: PositionVM): InfoItem[] {
