@@ -55,10 +55,8 @@ export function SidebarSetupAutoBuy({ vault }: SidebarSetupAutoBuyProps) {
     primaryButton: {
       label: 'Confirm',
       disabled: true,
-    }
+    },
   }
 
-  return (
-    <SidebarSection {...sidebarSectionProps} />
-  )
+  return <SidebarSection {...sidebarSectionProps} />
 }
