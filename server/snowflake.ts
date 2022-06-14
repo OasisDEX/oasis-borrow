@@ -17,9 +17,9 @@ export interface OasisStats {
 }
 
 interface StatsResponse {
-  SUM_Locked_collateral_USD: number
-  AVG_Locked_collateral_USD: number
-  'SUM_ABS(Collateral_USD)': number
+  Total_Locked_collateral_USD: number
+  MEDIAN_Vault_size_USD: number
+  '30_day_volume_USD': number
 }
 
 export function getOasisStats(): Promise<OasisStats> {
@@ -38,17 +38,19 @@ export function getOasisStats(): Promise<OasisStats> {
         return reject(err)
       }
       connection.execute({
-        sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."FE_test";',
+        sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."Front_end_data";',
         streamResult: false, // prevent rows from being returned inline in the complete callback
         complete: function (err, stmt, rows: StatsResponse[] | undefined) {
           if (err || !rows) {
             return reject(err)
           }
 
+          console.log(rows)
+
           resolve({
-            monthlyVolume: rows[0]['SUM_ABS(Collateral_USD)'],
-            managedOnOasis: rows[0].SUM_Locked_collateral_USD,
-            medianVaultSize: rows[0].AVG_Locked_collateral_USD,
+            monthlyVolume: rows[0]['30_day_volume_USD'],
+            managedOnOasis: rows[0]['Total_Locked_collateral_USD'],
+            medianVaultSize: rows[0]['MEDIAN_Vault_size_USD'],
           })
         },
       })
