@@ -6,5 +6,7 @@ export function LangResolver(content: ContentType) {
     i18n: { language },
   } = useTranslation()
 
-  return content[language || 'en']
+  const Content = content[language || 'en']
+
+  return <Content />
 }

@@ -10,7 +10,7 @@ function isH2(markdownComponent: any) {
   return markdownComponent.props?.mdxType && markdownComponent.props.mdxType === 'h2'
 }
 
-export function MarkdownLayout({
+export function FaqLayout({
   children
 }: WithChildren) {
   const [sectionId, setSectionId] = useState<string>()

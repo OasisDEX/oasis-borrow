@@ -1,0 +1,21 @@
+import { FaqLayout } from "../FaqLayout";
+
+export default ({ children }) => (
+  <FaqLayout>{children}</FaqLayout>
+);
+
+## Do I need to manage this Earn position?
+
+Users should regularly check whether market changes have affected the position, in terms of profit, governance updates, and shifts in fee tiers. It’s expected that the value of the collateral increases faster than the debt but this is not guaranteed.
+
+At the moment the Maker protocol has disabled liquidations for GUNI but they could be enabled in the future. Such changes will be announced in Maker forums and in Oasis communication channels.
+
+## What are the risks?
+
+>Lower than expected returns: Collected fees from the Uniswap V3 position depend entirely on the volume that passes through that pool and as such is a variable return that’s reliant on market conditions and the ratio between liquidity and volume of the pool. 
+>
+>Profit and loss will be shown in the Vault screen but users will need to monitor their position to be sure that the rate of return exceeds the stability fee paid to Maker and the costs paid to setup and close the Earn position.
+
+>Liquidations: for this Vault they have been disabled by the Maker protocol for now. That liquidations are disable at the moment should not be taken as a guarantee since the Maker protocol could decide to enable them, users should still monitor their positions to ensure the growth of the collateral exceeds the growth of the debt thanks to Uniswap V3 fees return.
+
+>Systemic risk: Smart contract bugs, fatal errors in any of the protocols being used.
