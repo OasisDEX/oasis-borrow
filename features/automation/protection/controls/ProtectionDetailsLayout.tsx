@@ -57,7 +57,7 @@ export function ProtectionDetailsLayout({
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
 
-  if (!liquidationPrice.isNaN()) {
+  if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
       <Box>
         {!newComponentsEnabled ? (

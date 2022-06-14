@@ -127,7 +127,7 @@ export function ProtectionControl({
   return vaultHasActiveTrigger ||
     (!vault.debt.isZero() &&
       vault.debt.gt(dustLimit) &&
-      (automationTriggersData?.triggers?.length || stopLossWriteEnabled)) ? (
+      (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
     <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
       <WithLoadingIndicator
         value={[automationTriggersData, priceInfoData]}
