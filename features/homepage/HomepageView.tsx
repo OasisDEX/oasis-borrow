@@ -159,6 +159,7 @@ export function HomepageView() {
   const { context$, productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const standardAnimationDuration = '0.7s'
 
   return (
     <Box
@@ -171,14 +172,28 @@ export function HomepageView() {
         sx={{
           ...slideInAnimation,
           position: 'relative',
-          animationDuration: '0.7s',
+          animationDuration: standardAnimationDuration,
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         }}
       />
 
-      <Pills sx={{ mb: 5, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+      <Pills
+        sx={{
+          mb: 5,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
 
-      <Stats sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+      <Stats
+        sx={{
+          mb: 6,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
 
       <Box
         sx={{
