@@ -1,5 +1,4 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -49,7 +48,6 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
               clear={openVault.clear}
             />
-            <Survey for="multiply" />
           </Container>
         )}
       </WithLoadingIndicator>
