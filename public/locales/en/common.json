@@ -1297,7 +1297,12 @@
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
     "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
-    "trigger-coll-ratio": "Trigger Col Ratio"
+    "trigger-coll-ratio": "Trigger Col Ratio",
+    "banner": {
+      "header": "Set up Auto Buy",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Setup Auto Buy"
+    }
   },
   "auto-sell": {
     "title": "Auto sell",
@@ -1305,6 +1310,5 @@
     "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
     "target-col-ratio-after-selling": "Target Col. Ratio after selling",
     "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
-
   }
 }
