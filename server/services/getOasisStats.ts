@@ -13,11 +13,7 @@ export function getOasisStats(): Promise<OasisStats | null> {
     const snowFlakeConnection = config.enableSnowflake ? getSnowflakeConnection() : undefined
 
     if (!snowFlakeConnection) {
-      return resolve({
-        monthlyVolume: 10_000_000_000,
-        managedOnOasis: 9_000_000_000_000,
-        medianVaultSize: 21_370_000,
-      })
+      return resolve(null)
     }
     snowFlakeConnection.connect((err, connection) => {
       if (err) {
@@ -28,14 +24,20 @@ export function getOasisStats(): Promise<OasisStats | null> {
         streamResult: false, // prevent rows from being returned inline in the complete callback
         complete: function (err, stmt, rows: StatsResponse[] | undefined) {
           if (err || !rows) {
-            return reject(err)
+            return resolve(null)
           }
 
-          resolve({
+          const data = {
             monthlyVolume: rows[0]['30_day_volume_USD'],
             managedOnOasis: rows[0]['Total_Locked_collateral_USD'],
             medianVaultSize: rows[0]['MEDIAN_Vault_size_USD'],
-          })
+          }
+
+          if (!Object.values(data).every((value) => value !== null)) {
+            resolve(null)
+          }
+
+          resolve(data)
         },
       })
     })
