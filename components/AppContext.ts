@@ -285,7 +285,7 @@ export type LegalUiChanges = {
   ProtectionModeChange: ProtectionModeChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
-  OptimizationChangeFeature: AutomationChangeFeatureAction
+  AutomationChangeFeature: AutomationChangeFeatureAction
 }
 
 export type UIChanges = {

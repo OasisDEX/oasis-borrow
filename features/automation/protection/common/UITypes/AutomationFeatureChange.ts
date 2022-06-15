@@ -1,6 +1,6 @@
 type AutomationFeatures = 'stopLoss' | 'autoBuy' | 'autoSell' | 'constantMultiply' | null
 
-export const AUTOMATION_CHANGE_FEATURE = 'optimizationChangeFeature'
+export const AUTOMATION_CHANGE_FEATURE = 'automationChangeFeature'
 
 export type AutomationChangeFeatureAction = { currentFeature: AutomationFeatures }
 
