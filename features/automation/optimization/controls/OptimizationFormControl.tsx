@@ -3,9 +3,10 @@ import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/S
 import React from 'react'
 
 interface OptimizationFormControlProps {
+  isAutoBuyOn: boolean
   vault: Vault
 }
 
-export function OptimizationFormControl({ vault }: OptimizationFormControlProps) {
-  return <SidebarSetupAutoBuy vault={vault} />
+export function OptimizationFormControl({ isAutoBuyOn, vault }: OptimizationFormControlProps) {
+  return <SidebarSetupAutoBuy isAutoBuyOn={isAutoBuyOn} vault={vault} />
 }

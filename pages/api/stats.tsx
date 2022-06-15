@@ -10,8 +10,8 @@ async function oasisStatsHandler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       const stats = await getStats()
-      if (stats) {
-        return res.status(200).json(stats)
+      if (stats.data) {
+        return res.status(200).json(stats.data)
       } else {
         return res.status(404).json({ error: 'Oasis stats unavailable' })
       }
