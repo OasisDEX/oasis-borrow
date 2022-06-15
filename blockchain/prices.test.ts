@@ -13,9 +13,7 @@ describe('createTokenPriceInUSD$', () => {
     })
   }
 
-  function coinPaprikaTicker$() {
-    return of(new BigNumber('31605.56989258439'))
-  }
+  const coinPaprikaTicker$ = of({ 'steth-lido-staked-ether': new BigNumber('31605.56989258439') })
 
   function coinGeckoTicker$() {
     return of(new BigNumber('1947.78'))
@@ -45,6 +43,8 @@ describe('createTokenPriceInUSD$', () => {
     )
 
     const tokenPrice = getStateUnpacker(tokenPrice$)
+
+    console.log(tokenPrice())
 
     expect(tokenPrice().STETH.toString()).eq('31605.56989258439')
   })
@@ -97,7 +97,7 @@ describe('createTokenPriceInUSD$', () => {
       const tokenPrice$ = createTokenPriceInUSD$(
         of(null),
         () => throwError('some error'),
-        () => throwError('some error'),
+        throwError('some error'),
         coinGeckoTicker$,
         ['MKR'],
       )

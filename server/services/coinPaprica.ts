@@ -42,6 +42,19 @@ export interface Quote {
   percent_from_price_ath: number
 }
 
+const supportedTickers = [
+  'usdp-paxos-standard-token',
+  'steth-lido-staked-ether',
+  'mkr-maker',
+  'weth-weth',
+  'eth-ethereum',
+  'wbtc-wrapped-bitcoin',
+  'renbtc-renbtc',
+  'gusd-gemini-dollar',
+  'usdc-usd-coin',
+  'dai-dai',
+]
+
 export async function getTickers(): Promise<CoinPapricaPriceResponse> {
   const res = await axios({
     method: 'get',
@@ -55,10 +68,12 @@ export async function getTickers(): Promise<CoinPapricaPriceResponse> {
 
   const result: ApiResponse[] = res.data
 
-  return result.reduce((acc, res) => {
-    return {
-      ...acc,
-      [res.id]: res.quotes.USD.price,
-    }
-  }, {})
+  return result
+    .filter((response) => supportedTickers.includes(response.id))
+    .reduce((acc, res) => {
+      return {
+        ...acc,
+        [res.id]: res.quotes.USD.price,
+      }
+    }, {})
 }
