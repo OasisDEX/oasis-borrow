@@ -1,5 +1,6 @@
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { useState } from 'react'
 import React from 'react'
 import { theme } from 'theme'
@@ -16,11 +17,12 @@ export interface ItemProps {
   value?: string
   secondaryValue?: string
   dropdownValues?: DropDownValue[]
+  isLoading?: boolean
 }
 
 // TODO: Add tooltip and loading state
 // Note: Use this to phase out the VaultInformationContainer & VaultInformation components
-export function Item({ label, dropdownValues, value, secondaryValue }: ItemProps) {
+export function Item({ label, dropdownValues, value, secondaryValue, isLoading }: ItemProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -48,32 +50,38 @@ export function Item({ label, dropdownValues, value, secondaryValue }: ItemProps
                 alignItems: 'center',
               }}
             >
-              {value}
-              {secondaryValue && (
+              {isLoading ? (
+                <AppSpinner />
+              ) : (
                 <>
-                  <VaultChangesInformationArrow />
-                  {secondaryValue}
+                  {value}
+                  {secondaryValue && (
+                    <>
+                      <VaultChangesInformationArrow />
+                      {secondaryValue}
+                    </>
+                  )}
+                  {dropdownValues?.length && (
+                    <IconButton
+                      onClick={() => setOpen(!open)}
+                      sx={{
+                        height: '100%',
+                        cursor: 'pointer',
+                        width: 'fit-content',
+                        display: 'flex',
+                        justifyContent: 'right',
+                        ml: 1,
+                      }}
+                    >
+                      <ExpandableArrow
+                        direction={open ? 'up' : 'down'}
+                        sx={{
+                          pr: 0,
+                        }}
+                      />
+                    </IconButton>
+                  )}
                 </>
-              )}
-              {dropdownValues?.length && (
-                <IconButton
-                  onClick={() => setOpen(!open)}
-                  sx={{
-                    height: '100%',
-                    cursor: 'pointer',
-                    width: 'fit-content',
-                    display: 'flex',
-                    justifyContent: 'right',
-                    ml: 1,
-                  }}
-                >
-                  <ExpandableArrow
-                    direction={open ? 'up' : 'down'}
-                    sx={{
-                      pr: 0,
-                    }}
-                  />
-                </IconButton>
               )}
             </Text>
           </Box>
