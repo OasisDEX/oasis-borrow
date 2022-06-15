@@ -52,7 +52,9 @@ export function ContentCardSellTriggerCollRatio({
       variant: changeVariant,
     }
   if (nextBuyPrice)
-    contentCardSettings.footnote = t('auto-sell.next-sell-price', { amount: formatted.nextBuyPrice })
+    contentCardSettings.footnote = t('auto-sell.next-sell-price', {
+      amount: formatted.nextBuyPrice,
+    })
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
