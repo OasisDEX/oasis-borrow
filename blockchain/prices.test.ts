@@ -44,8 +44,6 @@ describe('createTokenPriceInUSD$', () => {
 
     const tokenPrice = getStateUnpacker(tokenPrice$)
 
-    console.log(tokenPrice())
-
     expect(tokenPrice().STETH.toString()).eq('31605.56989258439')
   })
 
