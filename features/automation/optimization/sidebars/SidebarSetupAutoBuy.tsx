@@ -8,6 +8,8 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
+  isAutoBuyOn: boolean
+  isEditingAutoBuy: boolean
   vault: Vault
 }
 
