@@ -188,7 +188,7 @@ export function VaultTabSwitch({
           </Heading>
         </Flex>
       )}
-      <Box sx={{ display: ['block', 'none'] }}>
+      <Box sx={{ display: ['block', 'none'], mb: 3, }}>
         <ReactSelect<VaultTabSwitchOption>
           options={options}
           onChange={handleSelectChange}
