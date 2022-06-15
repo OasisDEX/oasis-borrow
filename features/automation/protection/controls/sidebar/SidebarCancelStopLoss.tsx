@@ -50,7 +50,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, vault }),
     content: (
       <Grid gap={3}>
         {(stage === 'editing' || stage === 'txFailure') && (

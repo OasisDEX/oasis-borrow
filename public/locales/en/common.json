@@ -263,6 +263,11 @@
       "headline": "Deploy your crypto into DeFi",
       "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
+    "stats": {
+      "30-day-volume": "30 Day Volume",
+      "managed-on-oasis": "Managed on Oasis",
+      "median-vault": "Median Vault"
+    },
     "cards": {
       "dai": {
         "title": "Dai Wallet",
@@ -1036,6 +1041,8 @@
     "sl-triggered-gas-estimation": "These estimated fees are based on the approximate price you will get from selling your collateral to cover your debt when automation is executed and covers the Oasis fee.",
     "stop-loss-on": "Stop-Loss On",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
+    "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
+    "closed-vault-existing-sl-description": "You can cancel your existing stop-loss here or deposit into your vault in overview tab",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
     "stop-loss-information": "Stop Loss Information"
@@ -1194,11 +1201,13 @@
   "below": "below",
   "above": "above",
   "earn": {
-    "your-positions": "Your Positions",
+    "your-positions": "Positions",
     "positions-of-type": "{{type}} Positions",
     "edit-vault": "Edit Vault",
+    "view-vault": "View Vault",
     "automation-button-on": "On",
     "automation-button-off": "Activate",
+    "automation-button-off-disabled": "No protection",
     "position-headers": {
       "asset": {
         "label": "Asset",
@@ -1275,5 +1284,18 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  "auto-buy": {
+    "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
+    "min-ratio": "min. ratio with stop loss/basic sell",
+    "next-buy-price": "Next buy price: {{amount}}",
+    "no-threshold": "No threshold set",
+    "set-max-buy-price": "Set Max Buy Price",
+    "set-no-threshold": "Set No Threshold",
+    "set-threshold": "Set Threshold",
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-coll-ratio": "Target Col Ratio",
+    "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "trigger-coll-ratio": "Trigger Col Ratio"
   }
 }

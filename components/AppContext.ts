@@ -101,6 +101,7 @@ import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
@@ -854,7 +855,13 @@ export function setupAppContext() {
   )
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$, vaultHistory$),
+    curry(createVaultsOverview$)(
+      context$,
+      vaults$,
+      ilksWithBalance$,
+      automationTriggersData$,
+      vaultHistory$,
+    ),
   )
 
   const assetActions$ = memoize(
@@ -932,6 +939,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    getOasisStats$: memoize(getOasisStats$),
     productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
