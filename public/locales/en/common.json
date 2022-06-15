@@ -263,6 +263,11 @@
       "headline": "Deploy your crypto into DeFi",
       "subheader": "Earn a yield, Multiply your exposure or Borrow against your crypto. ETH, BTC and 30 more cryptos available to put to work."
     },
+    "stats": {
+      "30-day-volume": "30 Day Volume",
+      "managed-on-oasis": "Managed on Oasis",
+      "median-vault": "Median Vault"
+    },
     "cards": {
       "dai": {
         "title": "Dai Wallet",
@@ -1280,6 +1285,7 @@
       "claim-rewards": "Claim Rewards"
     }
   },
+  
   "basic-buy-sell": {
     "buy-title": "Basic Auto Sell Summary",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
@@ -1302,5 +1308,19 @@
     "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
     "eth-to-be-sold": "ETH to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost"
+  },
+
+  "auto-buy": {
+    "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
+    "min-ratio": "min. ratio with stop loss/basic sell",
+    "next-buy-price": "Next buy price: {{amount}}",
+    "no-threshold": "No threshold set",
+    "set-max-buy-price": "Set Max Buy Price",
+    "set-no-threshold": "Set No Threshold",
+    "set-threshold": "Set Threshold",
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-coll-ratio": "Target Col Ratio",
+    "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "trigger-coll-ratio": "Trigger Col Ratio"
   }
 }
