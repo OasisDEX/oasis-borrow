@@ -1303,6 +1303,8 @@
     "title": "Auto sell",
     "next-sell-price": "Next sell price: {{amount}}",
     "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
-    "target-col-ratio-after-selling": "Target Col. Ratio after selling"
+    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
+
   }
 }

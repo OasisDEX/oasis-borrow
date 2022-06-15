@@ -7,9 +7,9 @@ import { VaultDetailsCardMaxTokenOnStopLossTrigger } from 'components/vault/deta
 import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards/VaultDetailsCardStopLossCollRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
+import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
-import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -72,10 +72,10 @@ export function ProtectionDetailsLayout({
       badge={false}
       content={
         <DetailsSectionContentCardWrapper>
-          <ContentCardTriggerColRatio
+          <ContentCardSellTriggerCollRatio
             token={token}
             triggerColRatio={new BigNumber(Math.random() * 100)}
-            nextBuyPrice={new BigNumber(Math.random() * 1000)}
+            nextSellPrice={new BigNumber(Math.random() * 1000)}
           />
           <ContentCardTargetColRatio
             token={token}
