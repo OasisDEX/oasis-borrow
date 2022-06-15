@@ -9,7 +9,7 @@ interface StatsResponse {
 }
 
 export function getOasisStats(): Promise<OasisStats | null> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const snowFlakeConnection = config.enableSnowflake ? getSnowflakeConnection() : undefined
 
     if (!snowFlakeConnection) {
