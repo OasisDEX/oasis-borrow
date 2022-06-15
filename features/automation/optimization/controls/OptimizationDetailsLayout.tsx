@@ -6,30 +6,32 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 export interface OptimizationDetailsLayoutProps {
   isAutoBuyOn: boolean
-  isEditingAutoBuy: boolean
   vault: Vault
 }
 
-export function OptimizationDetailsLayout({
-  isAutoBuyOn,
-  isEditingAutoBuy,
-  vault,
-}: OptimizationDetailsLayoutProps) {
+export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+  const [activeAutomationFeature] = useObservable(
+    uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
+  )
 
   const { token } = vault
 
   return (
     <Grid>
-      {(isAutoBuyOn || isEditingAutoBuy) && (
+      {isAutoBuyOn || activeAutomationFeature?.currentFeature === 'autoBuy' ? (
         <DetailsSection
           title="Auto buy"
           badge={false}
@@ -48,20 +50,21 @@ export function OptimizationDetailsLayout({
             </DetailsSectionContentCardWrapper>
           }
         />
+      ) : (
+        <SetupBanner
+          header={t('auto-buy.banner.header')}
+          content={t('auto-buy.banner.content')}
+          button={t('auto-buy.banner.button')}
+          backgroundImage="/static/img/setup-banner/auto-buy.svg"
+          backgroundColor={setupBannerGradientPresets.autoBuy[0]}
+          backgroundColorEnd={setupBannerGradientPresets.autoBuy[1]}
+          handleClick={() => {
+            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+              currentFeature: 'autoBuy',
+            })
+          }}
+        />
       )}
-      <SetupBanner
-        header={t('auto-buy.banner.header')}
-        content={t('auto-buy.banner.content')}
-        button={t('auto-buy.banner.button')}
-        backgroundImage="/static/img/setup-banner/auto-buy.svg"
-        backgroundColor={setupBannerGradientPresets.autoBuy[0]}
-        backgroundColorEnd={setupBannerGradientPresets.autoBuy[1]}
-        handleClick={() => {
-          uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-            currentFeature: 'autoBuy',
-          })
-        }}
-      />
     </Grid>
   )
 }

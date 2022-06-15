@@ -8,6 +8,9 @@ export interface AutomationChangeFeature {
   currentFeature: AutomationFeatures
 }
 
-export function automationChangeFeatureReducer(state: AutomationChangeFeature, action: AutomationChangeFeatureAction): AutomationChangeFeature {
+export function automationChangeFeatureReducer(
+  state: AutomationChangeFeature,
+  action: AutomationChangeFeatureAction,
+): AutomationChangeFeature {
   return { ...state, currentFeature: action.currentFeature }
 }
