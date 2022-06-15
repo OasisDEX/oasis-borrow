@@ -26,10 +26,11 @@ export function Item({ label, dropdownValues, value, secondaryValue, isLoading }
   const [open, setOpen] = useState(false)
 
   return (
-    <li
-      style={{
-        fontSize: theme.fontSizes[1],
-        fontWeight: theme.fontWeights.semiBold,
+    <Box
+      as="li"
+      sx={{
+        fontSize: 1,
+        fontWeight: 'semiBold',
       }}
     >
       <Flex>
@@ -38,60 +39,59 @@ export function Item({ label, dropdownValues, value, secondaryValue, isLoading }
             mr: 'auto',
             color: theme.colors.text.subtitle,
           }}
+          as="p"
         >
           {label}
         </Text>
         <Box>
-          <Box>
-            <Text
-              sx={{
-                color: theme.colors.primary,
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              {isLoading ? (
-                <AppSpinner />
-              ) : (
-                <>
-                  {value}
-                  {secondaryValue && (
-                    <>
-                      <VaultChangesInformationArrow />
-                      {secondaryValue}
-                    </>
-                  )}
-                  {dropdownValues?.length && (
-                    <IconButton
-                      onClick={() => setOpen(!open)}
+          <Text
+            sx={{
+              color: 'primary',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            {isLoading ? (
+              <AppSpinner />
+            ) : (
+              <>
+                {value}
+                {secondaryValue && (
+                  <>
+                    <VaultChangesInformationArrow />
+                    {secondaryValue}
+                  </>
+                )}
+                {dropdownValues?.length && (
+                  <IconButton
+                    onClick={() => setOpen(!open)}
+                    sx={{
+                      height: '100%',
+                      cursor: 'pointer',
+                      width: 'fit-content',
+                      display: 'flex',
+                      justifyContent: 'right',
+                      ml: 1,
+                    }}
+                  >
+                    <ExpandableArrow
+                      direction={open ? 'up' : 'down'}
                       sx={{
-                        height: '100%',
-                        cursor: 'pointer',
-                        width: 'fit-content',
-                        display: 'flex',
-                        justifyContent: 'right',
-                        ml: 1,
+                        pr: 0,
                       }}
-                    >
-                      <ExpandableArrow
-                        direction={open ? 'up' : 'down'}
-                        sx={{
-                          pr: 0,
-                        }}
-                      />
-                    </IconButton>
-                  )}
-                </>
-              )}
-            </Text>
-          </Box>
+                    />
+                  </IconButton>
+                )}
+              </>
+            )}
+          </Text>
         </Box>
       </Flex>
       {open && (
-        <Grid as="ul" gap={2} sx={{ p: 0, m: 0, pl: theme.space[3], mt: 2, listStyle: 'none' }}>
+        <Grid as="ul" gap={2} sx={{ p: 0, m: 0, pl: 3, mt: 2, listStyle: 'none' }}>
           {dropdownValues && dropdownValues.map((item) => <Item {...item} />)}
         </Grid>
       )}
-    </li>
+    </Box>
   )
 }

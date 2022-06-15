@@ -1286,17 +1286,7 @@
     }
   },
   
-  "basic-buy-sell": {
-    "buy-title": "Basic Auto Sell Summary",
-    "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
-    "target-multiple-each-buy": "Target Multiple after each buy",
-    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
-    "next-buy-price": "Next buy price(s)",
-    "total-cost-of-next-buy": "Total cost of next ETH buy",
-    "collateral-after-next-buy": "Collateral after next buy",
-    "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
-    "eth-to-be-purchased": "ETH to be purchased at next buy",
-
+  "auto-sell": {
     "sell.sell-title": "Basic Auto Sell Summary",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
@@ -1321,6 +1311,16 @@
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
     "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
-    "trigger-coll-ratio": "Trigger Col Ratio"
+    "trigger-coll-ratio": "Trigger Col Ratio",
+
+    "buy-title": "Basic Auto Sell Summary",
+    "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
+    "target-multiple-each-buy": "Target Multiple after each buy",
+    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
+    "next-buy-prices": "Next buy price(s)",
+    "total-cost-of-next-buy": "Total cost of next ETH buy",
+    "collateral-after-next-buy": "Collateral after next buy",
+    "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
+    "eth-to-be-purchased": "ETH to be purchased at next buy"
   }
 }

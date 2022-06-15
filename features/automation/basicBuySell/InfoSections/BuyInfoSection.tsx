@@ -44,49 +44,49 @@ export function BuyInfoSection({
 
   return (
     <InfoSection
-      title={t('basic-buy-sell.buy-title')}
+      title={t('auto-buy.buy-title')}
       items={[
         {
-          label: t('basic-buy-sell.target-col-ratio-each-buy'),
+          label: t('auto-buy.target-col-ratio-each-buy'),
           value: `${colRatioAfterBuy}%`,
         },
         {
-          label: t('basic-buy-sell.target-multiple-each-buy'),
+          label: t('auto-buy.target-multiple-each-buy'),
           value: `${multipleAfterBuy}x`,
         },
         {
-          label: t('basic-buy-sell.trigger-col-ratio-to-perfrom-buy'),
+          label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
           value: `${ratiotoPeformBuy}%`,
         },
         {
-          label: t('basic-buy-sell.next-buy-price'),
+          label: t('auto-buy.next-buy-prices'),
           value: `$${nextBuyPrice.value}`,
           dropdownValues: nextBuyPrice.dropDownValues,
         },
         {
-          label: t('basic-buy-sell.setup-transaction-cost'),
+          label: t('auto-buy.setup-transaction-cost'),
           value: `$${totalCostOfNextBuy}`,
         },
         {
-          label: t('basic-buy-sell.slippage-limit'),
+          label: t('auto-buy.slippage-limit'),
           value: `${slippageLimit}%`,
         },
         {
-          label: t('basic-buy-sell.collateral-after-next-buy'),
+          label: t('auto-buy.collateral-after-next-buy'),
           value: collatAfterNextBuy.value,
           secondaryValue: `${collatAfterNextBuy.secondaryValue} ETH`,
         },
         {
-          label: t('basic-buy-sell.outstanding-debt-after-next-buy'),
+          label: t('auto-buy.outstanding-debt-after-next-buy'),
           value: outstandingDebtAfterNextBuy.value,
           secondaryValue: `${outstandingDebtAfterNextBuy.secondaryValue} DAI`,
         },
         {
-          label: t('basic-buy-sell.eth-to-be-purchased'),
+          label: t('auto-buy.eth-to-be-purchased'),
           value: `${ethToBePurchased} ETH`,
         },
         {
-          label: t('basic-buy-sell.estimated-transaction-cost'),
+          label: t('auto-buy.estimated-transaction-cost'),
           value: `$${estimatedTransactionCost.value}`,
           dropdownValues: estimatedTransactionCost.dropDownValues,
         },
