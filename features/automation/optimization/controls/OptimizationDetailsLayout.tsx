@@ -17,7 +17,7 @@ export function OptimizationDetailsLayout({ vault }: OptimizationDetailsLayoutPr
 
   return (
     <DetailsSection
-      title={t('auto-sell.title')}
+      title={t('auto-buy.title')}
       badge={false}
       content={
         <DetailsSectionContentCardWrapper>
