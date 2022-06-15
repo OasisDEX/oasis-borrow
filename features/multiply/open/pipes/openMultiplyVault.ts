@@ -383,12 +383,7 @@ export function createOpenMultiplyVault$(
                       ? isSupportedAutomationIlk(network, ilk)
                       : false
 
-                    const totalSteps = calculateInitialTotalSteps(
-                      proxyAddress,
-                      token,
-                      allowance,
-                      withStopLossStage,
-                    )
+                    const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
 
                     const initialState: OpenMultiplyVaultState = {
                       ...defaultMutableOpenMultiplyVaultState,

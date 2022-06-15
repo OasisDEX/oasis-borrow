@@ -1,6 +1,7 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
+import { getTotalStepsForOpenVaultFlow } from 'helpers/totalSteps'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
@@ -35,13 +36,22 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
     withProxyStep,
     withAllowanceStep,
     withStopLossStage,
+    proxyAddress,
   } = state
   const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
   const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
 
   const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
 
-  const totalSteps = !hasAllowance && state.totalSteps < 3 ? state.totalSteps + 1 : state.totalSteps
+  const totalSteps = getTotalStepsForOpenVaultFlow({
+    token,
+    proxyAddress,
+    hasAllowance,
+    withProxyStep,
+    withAllowanceStep,
+    withStopLossStep: withStopLossStage,
+    openingEmptyVault,
+  })
 
   switch (stage) {
     case 'editing':
@@ -62,7 +72,9 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
         totalSteps,
-        currentStep: withStopLossStage
+        currentStep: openingEmptyVault
+          ? totalSteps - 1
+          : withStopLossStage
           ? totalSteps - (token === 'ETH' ? 2 : 3)
           : totalSteps - (token === 'ETH' ? 1 : 2),
         withProxyStep: true,
