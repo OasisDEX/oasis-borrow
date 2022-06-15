@@ -20,7 +20,7 @@ export function ContentCardSellTriggerCollRatio({
   token,
   triggerColRatio,
   afterTriggerColRatio,
-  nextSellPrice: nextBuyPrice,
+  nextSellPrice,
   changeVariant,
 }: ContentCardSellTriggerCollRatioProps) {
   const { t } = useTranslation()
@@ -38,7 +38,7 @@ export function ContentCardSellTriggerCollRatio({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    nextBuyPrice: nextBuyPrice && `$${formatAmount(nextBuyPrice, 'USD')}`,
+    nextSellPrice: nextSellPrice && `$${formatAmount(nextSellPrice, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
@@ -51,9 +51,9 @@ export function ContentCardSellTriggerCollRatio({
       value: `${formatted.afterTriggerColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
-  if (nextBuyPrice)
+  if (nextSellPrice)
     contentCardSettings.footnote = t('auto-sell.next-sell-price', {
-      amount: formatted.nextBuyPrice,
+      amount: formatted.nextSellPrice,
     })
 
   return <DetailsSectionContentCard {...contentCardSettings} />
