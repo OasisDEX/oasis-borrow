@@ -1,5 +1,6 @@
 import { Vault } from 'blockchain/vaults'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
+import React from 'react'
 
 interface OptimizationFormControlProps {
   isAutoBuyOn: boolean
