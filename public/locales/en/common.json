@@ -1286,6 +1286,7 @@
     }
   },
   "auto-buy": {
+    "title": "Auto buy",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
     "min-ratio": "min. ratio with stop loss/basic sell",
     "next-buy-price": "Next buy price: {{amount}}",
@@ -1297,5 +1298,13 @@
     "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Trigger Col Ratio"
+  },
+  "auto-sell": {
+    "title": "Auto sell",
+    "next-sell-price": "Next sell price: {{amount}}",
+    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
+    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
+
   }
 }

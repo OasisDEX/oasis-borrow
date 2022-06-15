@@ -4,6 +4,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 export interface OptimizationDetailsLayoutProps {
@@ -12,10 +13,11 @@ export interface OptimizationDetailsLayoutProps {
 
 export function OptimizationDetailsLayout({ vault }: OptimizationDetailsLayoutProps) {
   const { token } = vault
+  const { t } = useTranslation()
 
   return (
     <DetailsSection
-      title="Auto buy"
+      title={t('auto-buy.title')}
       badge={false}
       content={
         <DetailsSectionContentCardWrapper>
