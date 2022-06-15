@@ -33,7 +33,7 @@ export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDe
     <Grid>
       {isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy' ? (
         <DetailsSection
-          title="Auto buy"
+          title={t('auto-buy.title')}
           badge={false}
           content={
             <DetailsSectionContentCardWrapper>
