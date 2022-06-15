@@ -62,7 +62,7 @@ export function ProtectionDetailsLayout({
 
   if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
-      <>
+      <Grid gap={0} sx={{ width: '100%' }}>
         {basicBSEnabled && (
           <>
             <DetailsSection
@@ -168,7 +168,7 @@ export function ProtectionDetailsLayout({
             />
           )}
         </Box>
-      </>
+      </Grid>
     )
   } else {
     return <></>
