@@ -1,5 +1,6 @@
 import { WithChildren } from "helpers/types";
 import React, { useState } from "react";
+import { Box } from "theme-ui";
 
 
 function getHeadingId(text: string) {
@@ -36,13 +37,24 @@ export function FaqLayout({
       i--
     }
   }
-  
+
+  const quoteColors = ['bull', 'link', 'primaryEmphasis']
+  const quoteColorsSx = quoteColors.reduce(function(obj: any, color, index) {
+    obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {borderColor: color}
+    return obj;
+   }, {})
+
   return (
     <>
       <ul>
         {anchors.map(anchor => <li><a onClick={() => setSectionId(anchor.id)}>{anchor.text}</a></li>)}
       </ul>
-      {sectionId ? sections[sectionId] : Object.values(sections)[0]}
+      <Box sx={{ blockquote: {
+        borderLeft: '5px solid',
+        ...quoteColorsSx
+      }}}>
+        {sectionId ? sections[sectionId] : Object.values(sections)[0]}
+      </Box>
     </>
   );
 }
