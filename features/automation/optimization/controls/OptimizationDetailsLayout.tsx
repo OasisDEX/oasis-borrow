@@ -31,7 +31,7 @@ export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDe
 
   return (
     <Grid>
-      {isAutoBuyOn || activeAutomationFeature?.currentFeature === 'autoBuy' ? (
+      {isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy' ? (
         <DetailsSection
           title="Auto buy"
           badge={false}
@@ -60,7 +60,8 @@ export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDe
           backgroundColorEnd={setupBannerGradientPresets.autoBuy[1]}
           handleClick={() => {
             uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              currentFeature: 'autoBuy',
+              type: 'Optimization',
+              currentOptimizationFeature: 'autoBuy',
             })
           }}
         />

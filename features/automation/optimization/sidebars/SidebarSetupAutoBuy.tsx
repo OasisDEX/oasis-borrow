@@ -18,16 +18,16 @@ interface SidebarSetupAutoBuyProps {
   vault: Vault
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useObservable(
     uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
   )
 
-  if (isAutoBuyOn || activeAutomationFeature?.currentFeature === 'autoBuy') {
+  if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: `Auto Buy Setup #${vault.id.toNumber()}`,
+      title: 'Auto Buy Setup',
       content: (
         <Grid gap={3}>
           <MultipleRangeSlider
