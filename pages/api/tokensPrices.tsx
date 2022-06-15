@@ -11,7 +11,7 @@ async function tokensPricesHandler(req: NextApiRequest, res: NextApiResponse) {
     case 'GET':
       const tickers = await getTicker()
       res.setHeader('Cache-Control', 'public, s-maxage=90, stale-while-revalidate=119')
-      return res.status(200).json(tickers)
+      return res.status(200).json(tickers.data)
     default:
       return res.status(405).end()
   }
