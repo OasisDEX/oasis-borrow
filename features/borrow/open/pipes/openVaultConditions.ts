@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 
 import {
@@ -31,6 +30,7 @@ export function calculateInitialTotalSteps(
   proxyAddress: string | undefined,
   token: string,
   allowance: BigNumber | undefined | 'skip',
+  withStopLossStage?: boolean,
 ) {
   let totalSteps = 2
 
@@ -43,6 +43,12 @@ export function calculateInitialTotalSteps(
       totalSteps += 1
     }
   }
+
+  if (withStopLossStage) {
+    totalSteps += 1
+  }
+
+  console.log('tot', totalSteps)
 
   return totalSteps
 }
@@ -63,9 +69,7 @@ export function applyOpenVaultStageCategorisation(state: OpenVaultState) {
   const hasAllowance = token === 'ETH' ? true : depositAmountLessThanAllowance || openingEmptyVault
   const checkIfStopLossAndGenerate = !!(withStopLossStage && generateAmount?.gt(zero))
 
-  const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
-
-  const totalSteps = !stopLossOpenFlowEnabled
+  const totalSteps = !withStopLossStage
     ? !hasAllowance && state.totalSteps === 2
       ? 3
       : state.totalSteps
@@ -260,6 +264,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     withStopLossStage,
     stopLossLevel,
     stopLossSkipped,
+    isStopLossEditingStage,
   } = state
 
   const inputAmountsEmpty = !depositAmount && !generateAmount
@@ -375,10 +380,13 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
     token !== 'ETH' &&
     !!(depositAmount && !depositAmount.isZero() && (!allowance || depositAmount.gt(allowance)))
 
+  const stopLossNotAdjusted = isStopLossEditingStage && stopLossLevel.isZero()
+
   const canProgress =
     !(
       inputAmountsEmpty ||
       isLoadingStage ||
+      stopLossNotAdjusted ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||
       depositingAllEthBalance ||

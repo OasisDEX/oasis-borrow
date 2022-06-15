@@ -1,7 +1,3 @@
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
 import { zero } from 'helpers/zero'
 import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
 
@@ -23,7 +19,6 @@ export interface VaultActionsLogicInterface {
   withdrawAndPayback: TransactionDef<WithdrawAndPaybackData>
   depositAndGenerate: TransactionDef<DepositAndGenerateData>
   claimReward: TransactionDef<ClaimRewardData>
-  addStopLossTrigger: TransactionDef<AutomationBotAddTriggerData>
 }
 
 export function vaultActionsLogic(
@@ -94,7 +89,6 @@ export function vaultActionsLogic(
       options: ({ token, depositAmount }) =>
         token === 'ETH' ? { value: amountToWei(depositAmount, 'ETH').toString() } : {},
     },
-    addStopLossTrigger: addAutomationBotTrigger,
   }
 }
 

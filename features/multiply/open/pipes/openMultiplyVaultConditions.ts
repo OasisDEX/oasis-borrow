@@ -1,9 +1,9 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
+import { isNullish } from 'helpers/functions'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
-import { isNullish } from '../../../../helpers/functions'
 import {
   customAllowanceAmountEmptyValidator,
   customAllowanceAmountExceedsMaxUint256Validator,
@@ -20,13 +20,22 @@ import { OpenMultiplyVaultStage, OpenMultiplyVaultState } from './openMultiplyVa
 
 const defaultOpenVaultStageCategories = {
   isEditingStage: false,
+  isStopLossEditingStage: false,
   isProxyStage: false,
   isAllowanceStage: false,
   isOpenStage: false,
 }
 
 export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState) {
-  const { stage, token, depositAmount, allowance } = state
+  const {
+    stage,
+    token,
+    depositAmount,
+    allowance,
+    withProxyStep,
+    withAllowanceStep,
+    withStopLossStage,
+  } = state
   const openingEmptyVault = depositAmount ? depositAmount.eq(zero) : true
   const depositAmountLessThanAllowance = allowance && depositAmount && allowance.gte(depositAmount)
 
@@ -41,7 +50,7 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...defaultOpenVaultStageCategories,
         isEditingStage: true,
         totalSteps,
-        currentStep: 1,
+        currentStep: withProxyStep ? 3 : withAllowanceStep ? 2 : 1,
       }
     case 'proxyWaitingForConfirmation':
     case 'proxyWaitingForApproval':
@@ -53,7 +62,10 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...defaultOpenVaultStageCategories,
         isProxyStage: true,
         totalSteps,
-        currentStep: totalSteps - (token === 'ETH' ? 1 : 2),
+        currentStep: withStopLossStage
+          ? totalSteps - (token === 'ETH' ? 2 : 3)
+          : totalSteps - (token === 'ETH' ? 1 : 2),
+        withProxyStep: true,
       }
     case 'allowanceWaitingForConfirmation':
     case 'allowanceWaitingForApproval':
@@ -64,6 +76,15 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         ...state,
         ...defaultOpenVaultStageCategories,
         isAllowanceStage: true,
+        totalSteps,
+        currentStep: withStopLossStage ? totalSteps - 2 : totalSteps - 1,
+        withAllowanceStep: true,
+      }
+    case 'stopLossEditing':
+      return {
+        ...state,
+        ...defaultOpenVaultStageCategories,
+        isStopLossEditingStage: true,
         totalSteps,
         currentStep: totalSteps - 1,
       }
@@ -79,6 +100,18 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
         totalSteps,
         currentStep: totalSteps,
       }
+    case 'stopLossTxWaitingForConfirmation':
+    case 'stopLossTxWaitingForApproval':
+    case 'stopLossTxInProgress':
+    case 'stopLossTxFailure':
+    case 'stopLossTxSuccess':
+      return {
+        ...state,
+        ...defaultOpenVaultStageCategories,
+        isAddStopLossStage: true,
+        totalSteps,
+        currentStep: totalSteps,
+      }
     default:
       throw new UnreachableCaseError(stage)
   }
@@ -86,9 +119,13 @@ export function applyOpenVaultStageCategorisation(state: OpenMultiplyVaultState)
 
 export interface OpenMultiplyVaultConditions {
   isEditingStage: boolean
+  isStopLossEditingStage: boolean
   isProxyStage: boolean
   isAllowanceStage: boolean
   isOpenStage: boolean
+  isAddStopLossStage: boolean
+  withProxyStep: boolean
+  withAllowanceStep: boolean
 
   inputAmountsEmpty: boolean
 
@@ -126,6 +163,8 @@ export interface OpenMultiplyVaultConditions {
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
+  openFlowWithStopLoss: boolean
+  isStopLossSuccessStage: boolean
 }
 
 export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
@@ -161,10 +200,15 @@ export const defaultOpenMultiplyVaultConditions: OpenMultiplyVaultConditions = {
   canProgress: false,
   canRegress: false,
   isExchangeLoading: false,
+  withProxyStep: false,
+  withAllowanceStep: false,
 
   highSlippage: false,
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
+  openFlowWithStopLoss: false,
+  isStopLossSuccessStage: false,
+  isAddStopLossStage: false,
 }
 
 export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMultiplyVaultState {
@@ -196,6 +240,10 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     swap,
     slippage,
     txError,
+    withStopLossStage,
+    stopLossSkipped,
+    stopLossLevel,
+    isStopLossEditingStage,
   } = state
 
   const inputAmountsEmpty = !depositAmount
@@ -284,6 +332,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   const isSuccessStage = stage === 'txSuccess'
+  const isStopLossSuccessStage = stage === 'stopLossTxSuccess'
 
   const customAllowanceAmountEmpty = customAllowanceAmountEmptyValidator({
     selectedAllowanceRadio,
@@ -316,10 +365,13 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
 
   const highSlippage = slippage.gt(SLIPPAGE_WARNING_THRESHOLD)
 
+  const stopLossNotAdjusted = isStopLossEditingStage && stopLossLevel.isZero()
+
   const canProgress =
     !(
       inputAmountsEmpty ||
       isLoadingStage ||
+      stopLossNotAdjusted ||
       vaultWillBeUnderCollateralized ||
       vaultWillBeUnderCollateralizedAtNextPrice ||
       depositingAllEthBalance ||
@@ -339,11 +391,14 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     'proxyFailure',
     'allowanceWaitingForConfirmation',
     'allowanceFailure',
+    'stopLossEditing',
     'txWaitingForConfirmation',
     'txFailure',
   ] as OpenMultiplyVaultStage[]).some((s) => s === stage)
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
+  const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
 
   return {
     ...state,
@@ -381,5 +436,7 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
     highSlippage,
 
     insufficientEthFundsForTx,
+    openFlowWithStopLoss,
+    isStopLossSuccessStage,
   }
 }
