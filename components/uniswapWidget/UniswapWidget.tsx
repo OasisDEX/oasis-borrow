@@ -308,8 +308,11 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
   )
 
   useEffect(() => {
-    if (swapWidgetChange?.isOpen) {
-      clickawayRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (swapWidgetChange?.isOpen && clickawayRef?.current) {
+      const clientRect = clickawayRef.current.getBoundingClientRect()
+      if (clientRect.bottom > window.innerHeight || clientRect.top < 0) {
+        clickawayRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
     }
   }, [swapWidgetChange])
 
