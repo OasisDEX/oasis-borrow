@@ -36,6 +36,9 @@ function AssetRow(props: PositionView) {
         pr: '14px',
         borderRadius: '12px',
       }}
+      title={`${props.title}  |  ${props.proportion && formatPercent(props.proportion)}  |  $${
+        props.contentsUsd && formatAmount(props.contentsUsd, 'USD')
+      }`}
     >
       <Icon
         name={getToken(props.token).iconCircle}
