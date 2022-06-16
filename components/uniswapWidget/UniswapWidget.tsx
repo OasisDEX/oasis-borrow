@@ -15,7 +15,7 @@ import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { keyBy } from 'lodash'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { theme } from 'theme'
 import { Box, Button, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 
@@ -306,6 +306,12 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
   const [swapWidgetChange] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
+
+  useEffect(() => {
+    if (swapWidgetChange?.isOpen) {
+      clickawayRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [swapWidgetChange])
 
   if (swapWidgetChange && swapWidgetChange.isOpen) {
     return (
