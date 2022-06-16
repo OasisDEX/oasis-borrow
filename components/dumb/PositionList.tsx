@@ -99,7 +99,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   if (position.automationEnabled) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="actionActiveGreen">
+        <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
           {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
         </Button>
       </AppLink>
@@ -107,12 +107,14 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   } else if (position.isOwnerView) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="action">{t('earn.automation-button-off')}</Button>
+        <Button variant="action" sx={{ px: '24px', py: '11px' }}>
+          {t('earn.automation-button-off')}
+        </Button>
       </AppLink>
     )
   } else {
     return (
-      <Button disabled={true} variant="action">
+      <Button disabled={true} variant="action" sx={{ px: '24px', py: '11px' }}>
         {t('earn.automation-button-off-disabled')}
       </Button>
     )
@@ -294,7 +296,14 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                       columnCount - 1,
                     )}
                     <AppLink {...position.editLinkProps}>
-                      <Button variant="secondary" sx={{ fontSize: 1 }}>
+                      <Button
+                        variant="secondary"
+                        sx={{
+                          fontSize: 1,
+                          px: '24px',
+                          py: '11px',
+                        }}
+                      >
                         {getVaultActionButtonTranslation(position.isOwnerView, t)}
                       </Button>
                     </AppLink>

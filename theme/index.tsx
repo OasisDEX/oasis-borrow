@@ -540,6 +540,9 @@ const oasisBaseTheme = {
         pointerEvents: 'none',
         opacity: 0.5,
       },
+      '&:hover': {
+        backgroundColor: 'grey.darker',
+      },
     },
     tertiary: {
       variant: 'text.paragraph3',
