@@ -1261,5 +1261,9 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  "simulate-faq": {
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

@@ -1,6 +1,8 @@
+import { AppLink } from "components/Links";
 import { WithChildren } from "helpers/types";
+import { Trans, useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { Box } from "theme-ui";
+import { Box, Heading } from "theme-ui";
 
 
 function getHeadingId(text: string) {
@@ -12,8 +14,10 @@ function isH2(markdownComponent: any) {
 }
 
 export function FaqLayout({
+  learnMoreUrl,
   children
-}: WithChildren) {
+}: { learnMoreUrl: string } & WithChildren) {
+  const { t } = useTranslation()
   const [sectionId, setSectionId] = useState<string>()
   const childrenArray = React.Children.toArray(children)
   const anchors = childrenArray
@@ -45,7 +49,7 @@ export function FaqLayout({
    }, {})
 
   return (
-    <>
+    <Box>
       <ul>
         {anchors.map(anchor => <li><a onClick={() => setSectionId(anchor.id)}>{anchor.text}</a></li>)}
       </ul>
@@ -55,6 +59,18 @@ export function FaqLayout({
       }}}>
         {sectionId ? sections[sectionId] : Object.values(sections)[0]}
       </Box>
-    </>
+      <Box>
+        <Heading>{t('simulate-faq.learn-more-heading')}</Heading>
+        <Box>
+          <Trans
+            i18nKey="simulate-faq.learn-more-body"
+            components={[
+              <AppLink href={learnMoreUrl} />,
+              <AppLink href="https://discord.gg/oasisapp" />
+            ]}
+          />
+        </Box>
+      </Box>
+    </Box>
   );
 }
