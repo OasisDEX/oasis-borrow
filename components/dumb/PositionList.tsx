@@ -107,7 +107,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   } else if (position.isOwnerView) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="action">{t('earn.automation-button-off')}</Button>)
+        <Button variant="action">{t('earn.automation-button-off')}</Button>
       </AppLink>
     )
   } else {
