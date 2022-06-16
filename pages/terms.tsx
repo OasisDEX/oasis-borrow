@@ -1,8 +1,6 @@
 import { PageSEONoFollow } from 'components/HeadTags'
 import { MarketingLayout } from 'components/Layouts'
-import { currentContent } from 'features/content'
-import { LangResolver } from 'helpers/LangResolver'
-import { useTranslation } from 'next-i18next'
+import { currentContent, TranslatedContent } from 'features/content'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -18,7 +16,7 @@ function TermsPage() {
     <>
       <PageSEONoFollow />
       <Box sx={{ width: '100%', position: 'relative' }}>
-        <LangResolver content={currentContent.tos.content} />
+        <TranslatedContent content={currentContent.tos} />
       </Box>
     </>
   )

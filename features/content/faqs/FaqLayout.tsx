@@ -2,7 +2,7 @@ import { AppLink } from "components/Links";
 import { WithChildren } from "helpers/types";
 import { Trans, useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { Box, Text } from "theme-ui";
+import { Box, Link, Grid, Text } from "theme-ui";
 
 
 function getHeadingId(text: string) {
@@ -18,7 +18,6 @@ export function FaqLayout({
   children
 }: { learnMoreUrl: string } & WithChildren) {
   const { t } = useTranslation()
-  const [sectionId, setSectionId] = useState<string>()
   const childrenArray = React.Children.toArray(children)
   const anchors = childrenArray
     .filter(isHeading)
@@ -26,7 +25,8 @@ export function FaqLayout({
       id: getHeadingId(child.props.children),
       text: child.props.children,
     }));
-  
+  const [sectionId, setSectionId] = useState<string>(anchors[0].id)
+
    // Divide markdown into sections delimited by headings
   const sections: Record<string, any[]> = {}
   for (let i = 0; i < childrenArray.length; i++) {
@@ -50,15 +50,19 @@ export function FaqLayout({
 
   return (
     <Box>
-      <Text variant="heading5">{t('simulate-faq.contents')}</Text>
-      <ul>
-        {anchors.map(anchor => <li><a onClick={() => setSectionId(anchor.id)}>{anchor.text}</a></li>)}
-      </ul>
+      <Text variant="header5">{t('simulate-faq.contents')}</Text>
+      <Grid>
+        {anchors.map(anchor => <Link variant="nav" sx={{
+          '&, &:hover': {color: sectionId === anchor.id ? 'primary' : 'textAlt'},
+          fontSize: '12px' }} onClick={() => setSectionId(anchor.id)}>
+          {anchor.text}
+        </Link>)}
+      </Grid>
       <Box sx={{ blockquote: {
         borderLeft: '5px solid',
         ...quoteColorsSx
       }}}>
-        {sectionId ? sections[sectionId] : Object.values(sections)[0]}
+        {sections[sectionId]}
       </Box>
       <Box>
         <Text variant="paragraph3" sx={{ fontWeight: 'bold' }}>{t('simulate-faq.learn-more-heading')}</Text>
