@@ -18,7 +18,7 @@ export type Feature =
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  EarnProduct: false,
+  EarnProduct: true,
   Automation: true,
   AutomationBasicBuyAndSell: false,
   NewComponents: false,
