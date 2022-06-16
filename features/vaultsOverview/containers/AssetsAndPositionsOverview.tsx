@@ -1,7 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
+import BigNumber from 'bignumber.js'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
+import ReactDOM from 'react-dom'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
@@ -13,8 +15,6 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
 import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
-import BigNumber from 'bignumber.js'
-import { UseTranslationResponse } from 'react-i18next'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -103,15 +103,18 @@ function LinkedRow(props: PositionView) {
           })
         }}
       >
-        {menuPosition && props.actions && (
-          <Menu
-            sx={menuPosition}
-            close={() => {
-              setMenuPosition(undefined)
-            }}
-            assetActions={props.actions}
-          />
-        )}
+        {menuPosition &&
+          props.actions &&
+          ReactDOM.createPortal(
+            <Menu
+              sx={menuPosition}
+              close={() => {
+                setMenuPosition(undefined)
+              }}
+              assetActions={props.actions}
+            />,
+            document.body,
+          )}
         <AssetRow {...props} />
       </Box>
     )
@@ -167,6 +170,7 @@ function Menu(props: {
         borderRadius: '12px',
         border: 'none',
         padding: '24px',
+        zIndex: 10,
         ...props.sx,
       }}
     >

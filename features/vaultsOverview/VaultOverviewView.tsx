@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -8,7 +7,6 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
-  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
@@ -389,8 +387,6 @@ export function VaultsOverviewView({
               variant="positionsPage"
               sx={{
                 mb: 5,
-                zIndex: -1, // fix menu overlay
-                position: 'relative', // fix menu overlay
               }}
             >
               <PositionList positions={positions} />
