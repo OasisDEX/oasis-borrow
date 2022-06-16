@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { SystemStyleObject } from '@styled-system/css'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
@@ -13,6 +13,8 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
 import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
+import BigNumber from 'bignumber.js'
+import { UseTranslationResponse } from 'react-i18next'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
@@ -83,7 +85,6 @@ function AssetRow(props: PositionView) {
 
 function LinkedRow(props: PositionView) {
   const [menuPosition, setMenuPosition] = useState<SxStyleProp | undefined>(undefined)
-  const breakpointIndex = useBreakpointIndex()
 
   if (props.url) {
     return (
@@ -96,14 +97,10 @@ function LinkedRow(props: PositionView) {
       <Box
         onClick={(event) => {
           const rect = event.currentTarget.getBoundingClientRect()
-          if (breakpointIndex <= 1) {
-            setMenuPosition({
-              right: `${window.innerWidth - rect.right - 20}px`,
-              top: `${window.scrollY + rect.top}px`,
-            })
-          } else {
-            setMenuPosition({ left: rect.right, top: rect.top + window.scrollY })
-          }
+          setMenuPosition({
+            right: `${window.innerWidth - rect.right - 20}px`,
+            top: `${window.scrollY + rect.top}px`,
+          })
         }}
       >
         {menuPosition && props.actions && (
@@ -182,6 +179,37 @@ function Menu(props: {
   )
 }
 
+function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
+  const { t } = useTranslation()
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Text
+        variant="paragraph2"
+        sx={{
+          fontWeight: 'semiBold',
+        }}
+      >
+        {t('vaults-overview.total-assets')}
+      </Text>
+      <Text variant="paragraph3" sx={{ color: 'lavender', fontSize: 3, mt: '7px' }}>
+        <Trans
+          i18nKey="vaults-overview.total-assets-subheader"
+          components={[
+            <AppLink
+              href="https://kb.oasis.app/help/curated-token-list"
+              target="_blank"
+              sx={{ fontWeight: 'body' }}
+            />,
+          ]}
+        />
+      </Text>
+      <Text sx={{ fontWeight: 'medium', fontSize: 7, mt: '4px' }}>
+        ${formatAmount(props.totalValueUsd, 'USD')}
+      </Text>
+    </Box>
+  )
+}
+
 export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
@@ -194,24 +222,37 @@ export function AssetsAndPositionsOverview(props: TopAssetsAndPositionsViewModal
     { value: props.percentageOther, color: '#999' },
   ]
   return (
-    <Card variant="positionsPage" sx={{ maxWidth: '789px' }}>
-      <Text
-        variant="paragraph2"
-        sx={{
-          fontWeight: 'semiBold',
-        }}
-      >
-        {t('vaults-overview.assets-and-positions', { number: topAssetsAndPositions.length })}
-      </Text>
-      <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
-        {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
+    <>
+      {breakpointIndex === 0 && <TotalAssetsContent totalValueUsd={props.totalValueUsd} />}
+      <Card variant="positionsPage">
+        <Flex sx={{ justifyContent: 'space-between', alignContent: 'stretch' }}>
+          {breakpointIndex !== 0 && (
+            <>
+              <TotalAssetsContent totalValueUsd={props.totalValueUsd} />
+              <Box sx={{ borderLeft: 'solid 1px #EAEAEA', ml: '45px', mr: '45px' }} />
+            </>
+          )}
+          <Box sx={{ flexGrow: 1 }}>
+            <Text
+              variant="paragraph2"
+              sx={{
+                fontWeight: 'semiBold',
+              }}
+            >
+              {t('vaults-overview.assets-and-positions', { number: topAssetsAndPositions.length })}
+            </Text>
+            <Flex sx={{ mt: '36px', justifyContent: 'space-between', alignContent: 'stretch' }}>
+              {breakpointIndex !== 0 && <PieChart items={pieSlices} />}
 
-        <Box sx={{ flex: 1, ml: [null, '53px'] }}>
-          {topAssetsAndPositions.map((row, index) => (
-            <LinkedRow key={`${index}-${row.token}`} {...row} />
-          ))}
-        </Box>
-      </Flex>
-    </Card>
+              <Box sx={{ flex: 1, ml: [null, '53px'] }}>
+                {topAssetsAndPositions.map((row, index) => (
+                  <LinkedRow key={`${index}-${row.token}`} {...row} />
+                ))}
+              </Box>
+            </Flex>
+          </Box>
+        </Flex>
+      </Card>
+    </>
   )
 }
