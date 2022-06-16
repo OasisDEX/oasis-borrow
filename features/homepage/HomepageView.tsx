@@ -202,6 +202,7 @@ export function HomepageView() {
           animationDuration: '0.3s',
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           width: '100%',
+          mt: '126px',
         }}
         id="product-cards-wrapper"
       >
