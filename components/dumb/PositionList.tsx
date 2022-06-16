@@ -16,10 +16,23 @@ function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element |
       {tooltip && (
         <StatefulTooltip
           tooltip={
-            <Text sx={{ fontWeight: 'semiBold', mb: 1, fontSize: 2, textAlign: 'left' }}>
+            <Text
+              sx={{
+                fontWeight: 'semiBold',
+                fontSize: 2,
+                textAlign: 'left',
+              }}
+            >
               {tooltip}
             </Text>
           }
+          tooltipSx={{
+            px: '16px',
+            py: '8px',
+            borderRadius: '8px',
+            border: 'none',
+            maxWidth: '480px',
+          }}
         >
           <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
         </StatefulTooltip>
