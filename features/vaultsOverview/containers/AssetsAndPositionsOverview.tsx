@@ -195,14 +195,14 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
       >
         {t('vaults-overview.total-assets')}
       </Text>
-      <Text variant="paragraph3" sx={{ color: 'lavender', fontSize: 3, mt: '7px' }}>
+      <Text variant="paragraph2" sx={{ color: 'lavender', mt: '7px' }}>
         <Trans
           i18nKey="vaults-overview.total-assets-subheader"
           components={[
             <AppLink
               href="https://kb.oasis.app/help/curated-token-list"
               target="_blank"
-              sx={{ fontWeight: 'body' }}
+              sx={{ fontWeight: 'body', fontSize: 3 }}
             />,
           ]}
         />
