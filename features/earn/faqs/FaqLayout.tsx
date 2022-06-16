@@ -2,15 +2,15 @@ import { AppLink } from "components/Links";
 import { WithChildren } from "helpers/types";
 import { Trans, useTranslation } from "next-i18next";
 import React, { useState } from "react";
-import { Box, Heading } from "theme-ui";
+import { Box, Text } from "theme-ui";
 
 
 function getHeadingId(text: string) {
   return text.replace(/ /g, "_").toLowerCase()
 }
 
-function isH2(markdownComponent: any) {
-  return markdownComponent.props?.mdxType && markdownComponent.props.mdxType === 'h2'
+function isHeading(markdownComponent: any) {
+  return markdownComponent.props?.mdxType && markdownComponent.props.mdxType === 'h5'
 }
 
 export function FaqLayout({
@@ -21,7 +21,7 @@ export function FaqLayout({
   const [sectionId, setSectionId] = useState<string>()
   const childrenArray = React.Children.toArray(children)
   const anchors = childrenArray
-    .filter(isH2)
+    .filter(isHeading)
     .map((child: any) => ({
       id: getHeadingId(child.props.children),
       text: child.props.children,
@@ -31,13 +31,13 @@ export function FaqLayout({
   const sections: Record<string, any[]> = {}
   for (let i = 0; i < childrenArray.length; i++) {
     const comp: any = childrenArray[i]
-    if (isH2(comp)) {
+    if (isHeading(comp)) {
       const id = getHeadingId(comp.props.children)
       sections[id] = []
       do {
         sections[id].push(childrenArray[i])
         i++
-      } while(i < childrenArray.length && !isH2(childrenArray[i]))
+      } while(i < childrenArray.length && !isHeading(childrenArray[i]))
       i--
     }
   }
@@ -50,6 +50,7 @@ export function FaqLayout({
 
   return (
     <Box>
+      <Text variant="heading5">{t('simulate-faq.contents')}</Text>
       <ul>
         {anchors.map(anchor => <li><a onClick={() => setSectionId(anchor.id)}>{anchor.text}</a></li>)}
       </ul>
@@ -60,15 +61,17 @@ export function FaqLayout({
         {sectionId ? sections[sectionId] : Object.values(sections)[0]}
       </Box>
       <Box>
-        <Heading>{t('simulate-faq.learn-more-heading')}</Heading>
+        <Text variant="paragraph3" sx={{ fontWeight: 'bold' }}>{t('simulate-faq.learn-more-heading')}</Text>
         <Box>
-          <Trans
-            i18nKey="simulate-faq.learn-more-body"
-            components={[
-              <AppLink href={learnMoreUrl} />,
-              <AppLink href="https://discord.gg/oasisapp" />
-            ]}
-          />
+          <Text variant="paragraph3">
+            <Trans
+              i18nKey="simulate-faq.learn-more-body"
+              components={[
+                <AppLink href={learnMoreUrl} />,
+                <AppLink href="https://discord.gg/oasisapp" />
+              ]}
+            />
+          </Text>
         </Box>
       </Box>
     </Box>

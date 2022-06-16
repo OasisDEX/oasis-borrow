@@ -148,6 +148,10 @@ const oasisBaseTheme = {
       // deprecated, use header4
       variant: 'text.header4',
     },
+    header5: {
+      variant: 'text.header4',
+      fontSize: 3,
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -1110,7 +1114,10 @@ const oasisBaseTheme = {
       variant: 'text.header3',
     },
     h4: {
-      variant: 'text.microHeading',
+      variant: 'text.header4',
+    },
+    h5: {
+      variant: 'text.header5'
     },
     a: {
       variant: 'text.paragraph3',
