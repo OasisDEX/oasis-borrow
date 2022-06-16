@@ -336,7 +336,10 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     ))}
                   </Grid>
                   <AppLink {...position.editLinkProps}>
-                    <Button variant="secondary" sx={{ fontSize: 1 }}>
+                    <Button
+                      variant="secondary"
+                      sx={{ fontSize: 1, width: '100%', px: '24px', py: '11px' }}
+                    >
                       {getVaultActionButtonTranslation(position.isOwnerView, t)}
                     </Button>
                   </AppLink>
