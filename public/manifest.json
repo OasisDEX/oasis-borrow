@@ -10,29 +10,19 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "/static/icons/android-icon-192x192.png",
+      "src": "/static/icons/android-chrome-192x192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/static/icons/apple-icon-152x152.png",
+      "src": "/static/icons/android-chrome-512x512.png",
       "type": "image/png",
-      "sizes": "152x152"
+      "sizes": "512x512"
     },
     {
-      "src": "/static/icons/apple-icon-120x120.png",
+      "src": "/static/icons/apple-touch-icon.png",
       "type": "image/png",
-      "sizes": "120x120"
-    },
-    {
-      "src": "/static/icons/favicon-96x96.png",
-      "type": "image/png",
-      "sizes": "96x96"
-    },
-    {
-      "src": "/static/icons/apple-icon-76x76.png",
-      "type": "image/png",
-      "sizes": "76x76"
+      "sizes": "180x180"
     },
     {
       "src": "/static/icons/favicon-32x32.png",
