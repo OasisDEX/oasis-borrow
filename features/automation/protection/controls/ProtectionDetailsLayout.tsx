@@ -85,7 +85,6 @@ export function ProtectionDetailsLayout({
               isStaticCollateralPrice={isStaticPrice}
               collateralPricePercentageChange={percentageChange}
             />
-
             <VaultDetailsCardMaxTokenOnStopLossTrigger
               slRatio={slRatio}
               isProtected={isStopLossEnabled}
