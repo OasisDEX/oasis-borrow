@@ -60,15 +60,21 @@ export function FaqLayout({
       </Grid>
       <Box variant="separator" sx={{ my: 4 }} />
       <Box sx={{ blockquote: {
-        borderLeft: '5px solid',
-        ...quoteColorsSx
+        m: 0,
+        pl: 4,
+        py: 3,
+        p: {
+          my: 0,
+        },
+        borderLeft: '8px solid',
+        ...quoteColorsSx,
       }}}>
         {sections[sectionId]}
       </Box>
       <Box>
         <Text variant="paragraph3" sx={{ fontWeight: 'bold' }}>{t('simulate-faq.learn-more-heading')}</Text>
         <Box>
-          <Text variant="paragraph3">
+          <Text variant="paragraph3" sx={{ a: { fontWeight: 'normal' }}}>
             <Trans
               i18nKey="simulate-faq.learn-more-body"
               components={[

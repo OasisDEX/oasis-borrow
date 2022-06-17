@@ -24,19 +24,19 @@ At the moment the Maker protocol has disabled liquidations for GUNI but they cou
 
 >On top of your deposit amount, Dai is flashloaned from Maker, enough to reach the desired strategy multiple.
 
->*Dai is partly swapped for USDC*
+>**Dai is partly swapped for USDC**
 >
 >Dai is swapped with USDC in the proportion needed for the Gelato Uniswap v3 position in the specific DAI/USDC pool.
 
->*DAI and USDC are used to attain GUNI V3 DAI/USDC shares*
+>**DAI and USDC are used to attain GUNI V3 DAI/USDC shares**
 >
 >Dai and USDC are locked in Gelato Uniswap v3 position manager. This deposit gives shares representing the deposited amount.
 
->*GUNI V3 DAI/USDC shares deposited in Maker to generate DAI*
+>**GUNI V3 DAI/USDC shares deposited in Maker to generate DAI**
 >
 >The shares called GUNI DAI/USDC are locked in a Maker Vault and Dai is borrowed against this collateral up to the maximum collateralization ratio possible.
 
->*Flashloan is paid back*
+>**Flashloan is paid back**
 >
 >Dai and USDC are locked in Gelato Uniswap v3 position manager. This deposit gives shares representing the deposited amount.
 
