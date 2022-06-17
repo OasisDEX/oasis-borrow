@@ -1,6 +1,6 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
 import { useSharedUI } from 'components/SharedUIProvider'
-import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Box, Card } from 'theme-ui'
 
@@ -23,14 +23,13 @@ export function SidebarSection({
   textButton,
   status,
 }: SidebarSectionProps) {
-  const { t } = useTranslation()
   const { vaultFormOpened, setVaultFormOpened, setVaultFormToggleTitle } = useSharedUI()
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
   )
 
   useEffect(() => {
-    setVaultFormToggleTitle(t('edit-vault'))
+    setVaultFormToggleTitle(<Icon name="edit" color="onSuccess" />)
 
     return () => {
       setVaultFormToggleTitle(undefined)
