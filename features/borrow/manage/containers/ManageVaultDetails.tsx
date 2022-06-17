@@ -28,7 +28,7 @@ import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 // import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
@@ -154,7 +154,7 @@ export function ManageVaultDetails(
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   return (
-    <Box>
+    <Grid>
       {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
@@ -260,11 +260,9 @@ export function ManageVaultDetails(
         />
       )}
       {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
-        <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
-        </Box>
+        <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
       )}
       <BonusContainer cdpId={props.vault.id} />
-    </Box>
+    </Grid>
   )
 }

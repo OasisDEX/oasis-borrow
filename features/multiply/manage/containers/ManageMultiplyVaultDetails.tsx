@@ -19,7 +19,7 @@ import { useObservable } from 'helpers/observableHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { DetailsSection } from '../../../../components/DetailsSection'
 import {
@@ -138,7 +138,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   return (
-    <Box>
+    <Grid>
       {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
@@ -263,10 +263,8 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         />
       )}
       {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
-        <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
-        </Box>
+        <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
       )}
-    </Box>
+    </Grid>
   )
 }

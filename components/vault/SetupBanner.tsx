@@ -43,8 +43,11 @@ export function SetupBanner({
           flexDirection: ['column', null, null, 'row'],
         }}
       >
-        <Box
+        <Flex
           sx={{
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'center',
             mt: [hasImage ? 2 : 3, null, null, 3],
             mr: [3, null, null, 0],
             mb: 3,
@@ -69,7 +72,7 @@ export function SetupBanner({
           <Button variant="tertiary" onClick={handleClick}>
             {button}
           </Button>
-        </Box>
+        </Flex>
         {hasImage && (
           <Box
             sx={{
