@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Box, Button, Flex } from 'theme-ui'
 
 interface ActionPillsProps {
-  varient?: 'secondary'
+  variant?: 'secondary'
   active: string
   items: {
     id: string
@@ -11,18 +11,18 @@ interface ActionPillsProps {
   }[]
 }
 
-export function ActionPills({ active, items, varient }: ActionPillsProps) {
+export function ActionPills({ active, items, variant }: ActionPillsProps) {
   const secondaryVarientStyles = useMemo(
     () => ({
       py: '8px',
       px: '16px',
       fontSize: 1,
     }),
-    [varient],
+    [variant],
   )
 
   return (
-    <Flex as="ul" sx={{ justifyContent: varient === 'secondary' ? 'flex-start' : 'center', p: 0 }}>
+    <Flex as="ul" sx={{ justifyContent: variant === 'secondary' ? 'flex-start' : 'center', p: 0 }}>
       {items.map((item, k) => (
         <Box as="li" sx={{ listStyle: 'none', m: 0, p: 0 }} key={k}>
           <Button
@@ -30,7 +30,7 @@ export function ActionPills({ active, items, varient }: ActionPillsProps) {
             variant={active === item.id ? 'pillActive' : 'pill'}
             sx={{
               mx: 1,
-              ...(varient === 'secondary' && secondaryVarientStyles),
+              ...(variant === 'secondary' && secondaryVarientStyles),
             }}
           >
             {item.label}
