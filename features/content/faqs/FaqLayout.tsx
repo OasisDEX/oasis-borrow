@@ -68,21 +68,26 @@ export function FaqLayout({
         },
         borderLeft: '8px solid',
         ...quoteColorsSx,
-      }}}>
+      },
+        fontSize: 2,
+        pr: [0, 4],
+      }}>
         {sections[sectionId]}
       </Box>
-      <Box>
-        <Text variant="paragraph3" sx={{ fontWeight: 'bold' }}>{t('simulate-faq.learn-more-heading')}</Text>
-        <Box>
-          <Text variant="paragraph3" sx={{ a: { fontWeight: 'normal' }}}>
-            <Trans
-              i18nKey="simulate-faq.learn-more-body"
-              components={[
-                <AppLink href={learnMoreUrl} />,
-                <AppLink href="https://discord.gg/oasisapp" />
-              ]}
-            />
-          </Text>
+      <Box sx={{ borderRadius: 'mediumLarge', bg: 'secondaryAlt', p: 3, mt: 4 }}>
+        <Box sx={{ maxWidth: '455px' }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'bold', mb: 2 }}>{t('simulate-faq.learn-more-heading')}</Text>
+          <Box>
+            <Text variant="paragraph3" sx={{ a: { fontWeight: 'normal' }}}>
+              <Trans
+                i18nKey="simulate-faq.learn-more-body"
+                components={[
+                  <AppLink href={learnMoreUrl} />,
+                  <AppLink href="https://discord.gg/oasisapp" />
+                ]}
+              />
+            </Text>
+          </Box>
         </Box>
       </Box>
     </Box>
