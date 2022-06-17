@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
 import { WithChildren } from 'helpers/types'
+import { TFunction } from 'i18next'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -11,14 +12,27 @@ import { AppLink, AppLinkProps } from '../Links'
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'medium' }}>{label}</Text>
+      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'semiBold' }}>{label}</Text>
       {tooltip && (
         <StatefulTooltip
           tooltip={
-            <Text sx={{ fontWeight: 'semiBold', mb: 1, fontSize: 2, textAlign: 'left' }}>
+            <Text
+              sx={{
+                fontWeight: 'semiBold',
+                fontSize: 2,
+                textAlign: 'left',
+              }}
+            >
               {tooltip}
             </Text>
           }
+          tooltipSx={{
+            px: '16px',
+            py: '8px',
+            borderRadius: '8px',
+            border: 'none',
+            maxWidth: '480px',
+          }}
         >
           <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
         </StatefulTooltip>
@@ -48,8 +62,9 @@ function Cell({ children }: WithChildren) {
 type PositionCommonProps = {
   icon: string
   ilk: string
-  vaultID: string
+  positionId: string
   editLinkProps: AppLinkProps
+  isOwnerView: boolean
 }
 
 export type BorrowPositionVM = {
@@ -94,17 +109,29 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
 
   const { automationLinkProps } = position
 
-  return position.automationEnabled ? (
-    <AppLink {...automationLinkProps}>
-      <Button variant="actionActiveGreen">
-        {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+  if (position.automationEnabled) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
+          {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+        </Button>
+      </AppLink>
+    )
+  } else if (position.isOwnerView) {
+    return (
+      <AppLink {...automationLinkProps}>
+        <Button variant="action" sx={{ px: '24px', py: '11px' }}>
+          {t('earn.automation-button-off')}
+        </Button>
+      </AppLink>
+    )
+  } else {
+    return (
+      <Button disabled={true} variant="action" sx={{ px: '24px', py: '11px' }}>
+        {t('earn.automation-button-off-disabled')}
       </Button>
-    </AppLink>
-  ) : (
-    <AppLink {...automationLinkProps}>
-      <Button variant="action">{t('earn.automation-button-off')}</Button>
-    </AppLink>
-  )
+    )
+  }
 }
 
 function getPositionInfoItems(position: PositionVM): InfoItem[] {
@@ -125,8 +152,8 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
   }
 
   const vaultIdInfo = {
-    header: <Header name="vault-id" />,
-    info: position.vaultID,
+    header: <Header name="position-id" />,
+    info: position.positionId,
   }
 
   switch (position.type) {
@@ -155,7 +182,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.variable,
         },
         {
-          header: <Header name="automation" />,
+          header: <Header name="protection" />,
           info: <AutomationButton position={position} />,
         },
       ]
@@ -180,7 +207,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.fundingCost,
         },
         {
-          header: <Header name="automation" />,
+          header: <Header name="protection" />,
           info: <AutomationButton position={position} />,
         },
       ]
@@ -197,10 +224,6 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
           info: position.pnl,
         },
         {
-          header: <Header name="seven-day-yield" />,
-          info: position.sevenDayYield,
-        },
-        {
           header: <Header name="liquidity" />,
           info: position.liquidity,
         },
@@ -210,10 +233,14 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
 
 function ProductHeading({ title, count }: { title: string; count: number }) {
   return (
-    <Text variant="paragraph3" sx={{ fontWeight: 'medium', my: 2 }}>
+    <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', my: 2 }}>
       {title} ({count})
     </Text>
   )
+}
+
+function getVaultActionButtonTranslation(isOwner: boolean, t: TFunction) {
+  return isOwner ? t('earn.edit-vault') : t('earn.view-vault')
 }
 
 export function PositionList({ positions }: { positions: PositionVM[] }) {
@@ -233,12 +260,12 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
 
   return (
     <Box sx={{ color: 'primary', zIndex: 1 }}>
-      <Text variant="paragraph2" sx={{ fontWeight: 'medium', my: 3 }}>
+      <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', my: 3 }}>
         {t('earn.your-positions')} ({positions.length})
       </Text>
 
       {/* DESKTOP */}
-      <Box sx={{ display: ['none', 'block'], overflowX: 'scroll' }}>
+      <Box sx={{ display: ['none', 'block'], overflowX: 'auto' }}>
         <Grid
           sx={{
             gridTemplateColumns: `repeat(${columnCount}, auto)`,
@@ -274,8 +301,15 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                       columnCount - 1,
                     )}
                     <AppLink {...position.editLinkProps}>
-                      <Button variant="secondary" sx={{ fontSize: 1 }}>
-                        {t('earn.edit-vault')}
+                      <Button
+                        variant="secondary"
+                        sx={{
+                          fontSize: 1,
+                          px: '24px',
+                          py: '11px',
+                        }}
+                      >
+                        {getVaultActionButtonTranslation(position.isOwnerView, t)}
                       </Button>
                     </AppLink>
                   </React.Fragment>
@@ -309,8 +343,11 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     ))}
                   </Grid>
                   <AppLink {...position.editLinkProps}>
-                    <Button variant="secondary" sx={{ fontSize: 1 }}>
-                      {t('earn.edit-vault')}
+                    <Button
+                      variant="secondary"
+                      sx={{ fontSize: 1, width: '100%', px: '24px', py: '11px' }}
+                    >
+                      {getVaultActionButtonTranslation(position.isOwnerView, t)}
                     </Button>
                   </AppLink>
                 </Grid>

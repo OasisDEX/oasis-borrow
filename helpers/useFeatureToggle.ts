@@ -13,17 +13,19 @@ export type Feature =
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
+  | 'BasicBS'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  EarnProduct: false,
+  EarnProduct: true,
   Automation: true,
   AutomationBasicBuyAndSell: false,
   NewComponents: false,
   StopLossRead: true,
   StopLossWrite: true,
   StopLossOpenFlow: false,
+  BasicBS: false,
   // your feature here....
 }
 

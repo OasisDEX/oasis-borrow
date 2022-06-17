@@ -3,9 +3,12 @@ import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
+import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
+import { getDataForStopLoss } from 'features/borrow/open/pipes/openVaultStopLoss'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -18,6 +21,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -50,6 +54,10 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     stage,
     token,
     totalSteps,
+    stopLossLevel,
+    isStopLossSuccessStage,
+    openFlowWithStopLoss,
+    isAddStopLossStage,
   } = props
 
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openBorrow' : 'addSl'
@@ -58,18 +66,20 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
+  const stopLossData = getDataForStopLoss(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),
     content: (
       <Grid gap={3}>
         {isEditingStage && <SidebarOpenBorrowVaultEditingStage {...props} />}
-        {isStopLossEditingStage && <>STOP LOSS BRO</>}
+        {isStopLossEditingStage && <SidebarAdjustStopLossEditingStage {...stopLossData} />}
         {isProxyStage && <SidebarVaultProxyStage stage={stage} gasData={gasData} />}
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
-        <VaultErrors {...props} />
-        <VaultWarnings {...props} />
+        {isAddStopLossStage && <SidebarVaultStopLossStage {...props} />}
+        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
+        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     ...(isStopLossEditingStage && {
@@ -80,14 +90,15 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     }),
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
-      steps: !isSuccessStage ? [currentStep, totalSteps] : undefined,
-      disabled: !canProgress,
+      steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
+      disabled: !canProgress || (isStopLossEditingStage && stopLossLevel.isZero()),
       isLoading: isLoadingStage,
       action: () => {
-        if (!isSuccessStage) progress!()
+        if (!isSuccessStage && !isStopLossSuccessStage) progress!()
         progressTrackingEvent({ props, firstCDP })
       },
-      url: isSuccessStage ? `/${id}` : undefined,
+      url:
+        (isSuccessStage && !openFlowWithStopLoss) || isStopLossSuccessStage ? `/${id}` : undefined,
     },
     textButton: {
       label: getTextButtonLabel({ flow, stage, token }),

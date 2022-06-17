@@ -127,7 +127,7 @@ export function VaultSuggestions(props: { productCardsData: ProductCardData[]; a
 
   return (
     <>
-      <Heading variant="header2" mt={6} sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
+      <Heading variant="header2" sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
         <Trans
           i18nKey="vaults-overview.headers.vault-suggestions"
           values={{ address: formatAddress(address) }}

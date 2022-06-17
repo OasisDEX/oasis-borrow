@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -8,7 +7,6 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
-  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
@@ -27,6 +25,7 @@ import { ColumnDef, Table, TableSortHeader } from '../../components/Table'
 import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { useRedirect } from '../../helpers/useRedirect'
+import { zero } from '../../helpers/zero'
 import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Filters } from './Filters'
@@ -239,33 +238,6 @@ function VaultsOverviewPerType({
   )
 }
 
-function TotalAssets({ totalValueUsd }: { totalValueUsd: BigNumber }) {
-  const { t } = useTranslation()
-
-  return (
-    <Box sx={{ mb: 4 }}>
-      <Text variant="header4" sx={{ mb: 1 }}>
-        {t('vaults-overview.total-assets')}
-      </Text>
-      <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
-        <Trans
-          i18nKey="vaults-overview.total-assets-subheader"
-          components={[
-            <AppLink
-              href="https://kb.oasis.app/help/curated-token-list"
-              target="_blank"
-              sx={{ fontWeight: 'body' }}
-            />,
-          ]}
-        />
-      </Text>
-      <Text variant="display" sx={{ fontWeight: 'body' }}>
-        ${formatAmount(totalValueUsd, 'USD')}
-      </Text>
-    </Box>
-  )
-}
-
 export function VaultsOverviewView({
   vaultsOverview,
   context,
@@ -291,35 +263,48 @@ export function VaultsOverviewView({
   const isOwnerViewing = !!connectedAccount && address === connectedAccount
 
   return (
-    <Grid sx={{ flex: 1, zIndex: 1 }}>
+    <Grid sx={{ flex: 1, zIndex: 1, gap: '39px' }}>
       {connectedAccount && address !== connectedAccount && (
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
-      <Flex sx={{ mt: 5, mb: 4, flexDirection: 'column' }}>
+      <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         {earnEnabled && (
           <WithErrorHandler error={err}>
             <WithLoadingIndicator value={positionsOverviewSummary}>
-              {(positionsOverviewSummary) => (
-                <>
-                  <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
-                  {positionsOverviewSummary.assetsAndPositions.length > 0 && (
-                    <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-                  )}
-                </>
-              )}
+              {(positionsOverviewSummary) =>
+                positionsOverviewSummary.totalValueUsd.gt(zero) ? (
+                  <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                ) : (
+                  <></>
+                )
+              }
             </WithLoadingIndicator>
           </WithErrorHandler>
         )}
-        <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
-          <Trans
-            i18nKey={headerTranslationKey}
-            values={{ address: formatAddress(address) }}
-            components={[<br />]}
-          />
-        </Heading>
-        {isOwnerViewing && numberOfVaults === 0 && (
+        {!earnEnabled && (
+          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+            <Trans
+              i18nKey={headerTranslationKey}
+              values={{ address: formatAddress(address) }}
+              components={[<br />]}
+            />
+          </Heading>
+        )}
+        {earnEnabled && !isOwnerViewing && numberOfVaults === 0 && (
+          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+            <Trans
+              i18nKey={headerTranslationKey}
+              values={{ address: formatAddress(address) }}
+              components={[<br />]}
+            />
+          </Heading>
+        )}
+        {!earnEnabled && isOwnerViewing && numberOfVaults === 0 && (
           <>
-            <Text variant="paragraph1" sx={{ mb: 3, color: 'lavender', textAlign: 'center' }}>
+            <Text
+              variant="paragraph1"
+              sx={{ mb: 3, color: 'lavender', textAlign: 'center', mt: 6 }}
+            >
               <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
             </Text>
             <AppLink
@@ -384,15 +369,26 @@ export function VaultsOverviewView({
       </Flex>
       {numberOfVaults !== 0 && (
         <>
-          <Summary summary={vaultSummary} />
           {!earnEnabled && (
-            <Grid gap={5}>
-              <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
-              <VaultsOverviewPerType vaults={vaults.multiply} heading="Multiply Vaults" multiply />
-            </Grid>
+            <>
+              <Summary summary={vaultSummary} />
+              <Grid gap={5}>
+                <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
+                <VaultsOverviewPerType
+                  vaults={vaults.multiply}
+                  heading="Multiply Vaults"
+                  multiply
+                />
+              </Grid>
+            </>
           )}
           {earnEnabled && (
-            <Card variant="surface" sx={{ mb: 5, px: 3 }}>
+            <Card
+              variant="positionsPage"
+              sx={{
+                mb: 5,
+              }}
+            >
               <PositionList positions={positions} />
             </Card>
           )}

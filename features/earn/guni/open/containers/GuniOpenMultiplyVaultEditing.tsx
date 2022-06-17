@@ -1,7 +1,6 @@
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { handleNumericInput } from 'helpers/input'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
 
@@ -10,7 +9,6 @@ import { GuniOpenMultiplyVaultChangesInformation } from './GuniOpenMultiplyVault
 
 export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   const { t } = useTranslation()
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const {
     token,
@@ -25,17 +23,6 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
   return (
     <Grid gap={4}>
       <Grid gap={4}>
-        {newComponentsEnabled && (
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-            <Trans
-              i18nKey="vault-form.subtext.edit-multiply-dai"
-              values={{ token: 'GUNIV3DAIUSDC' }}
-            >
-              This vault can be created by simply <strong>depositing DAI</strong>. The transaction
-              will create the GUNIV3DAIUSDC position for you based on this DAI deposit
-            </Trans>
-          </Text>
-        )}
         <VaultActionInput
           action="Deposit"
           token="DAI"

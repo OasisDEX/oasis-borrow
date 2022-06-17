@@ -8,6 +8,25 @@ import { Text } from 'theme-ui'
 
 import { AdjustSlFormLayoutProps, SetDownsideProtectionInformation } from '../AdjustSlFormLayout'
 
+export type SidebarAdjustStopLossEditingStageProps = Pick<
+  AdjustSlFormLayoutProps,
+  | 'token'
+  | 'txError'
+  | 'slValuePickerConfig'
+  | 'closePickerConfig'
+  | 'tokenPrice'
+  | 'ethPrice'
+  | 'vault'
+  | 'ilkData'
+  | 'gasEstimation'
+  | 'selectedSLValue'
+  | 'isEditing'
+  | 'collateralizationRatioAtNextPrice'
+  | 'currentCollateralRatio'
+  | 'ethBalance'
+  | 'gasEstimationUsd'
+>
+
 export function SidebarAdjustStopLossEditingStage({
   token,
   txError,
@@ -24,24 +43,33 @@ export function SidebarAdjustStopLossEditingStage({
   ethBalance,
   gasEstimationUsd,
   currentCollateralRatio,
-}: AdjustSlFormLayoutProps) {
+}: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
   return (
     <>
-      <Box mb={3}>
-        <PickCloseState {...closePickerConfig} />
-      </Box>
-      <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-        {t('protection.set-downside-protection-desc')}{' '}
-        <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-          {t('here')}.
-        </AppLink>
-      </Text>
-
-      <Box mt={3}>
-        <SliderValuePicker {...slValuePickerConfig} />
-      </Box>
+      {!vault.debt.isZero() ? (
+        <>
+          <Box mb={3}>
+            <PickCloseState {...closePickerConfig} />
+          </Box>
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            {t('protection.set-downside-protection-desc')}{' '}
+            <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+              {t('here')}.
+            </AppLink>
+          </Text>
+          <Box mt={3}>
+            <SliderValuePicker {...slValuePickerConfig} />
+          </Box>
+        </>
+      ) : (
+        <>
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            {t('protection.closed-vault-existing-sl-description')}
+          </Text>
+        </>
+      )}
       {isEditing && (
         <>
           <Box>

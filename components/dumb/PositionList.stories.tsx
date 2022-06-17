@@ -7,9 +7,10 @@ export const Positions = () => {
   const positions = [
     {
       type: 'borrow' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
-      vaultID: '#3290',
+      positionId: '#3290',
       collateralRatio: '155.20%',
       inDanger: true,
       daiDebt: '1.32m',
@@ -28,9 +29,10 @@ export const Positions = () => {
     },
     {
       type: 'borrow' as const,
+      isOwnerView: true,
       icon: 'uni_circle_color',
       ilk: 'GUNIV3DAIUSDC2-A',
-      vaultID: '#3291',
+      positionId: '#3291',
       collateralRatio: '223.55%',
       inDanger: false,
       daiDebt: '1.32m',
@@ -48,9 +50,10 @@ export const Positions = () => {
     },
     {
       type: 'multiply' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
-      vaultID: '#3292',
+      positionId: '#3292',
       netValue: '1.23m',
       multiple: '2.2x',
       liquidationPrice: '1888.29 ETH',
@@ -67,9 +70,10 @@ export const Positions = () => {
     },
     {
       type: 'earn' as const,
+      isOwnerView: true,
       icon: 'ether_circle_color',
       ilk: 'ETH-A',
-      vaultID: '#3293',
+      positionId: '#3293',
       netValue: '1.23m',
       pnl: '+ $100k',
       sevenDayYield: '11.29%',

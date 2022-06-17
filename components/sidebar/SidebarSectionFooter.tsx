@@ -13,7 +13,7 @@ export interface SidebarSectionFooterProps {
   primaryButton: SidebarSectionFooterButtonSettings
   secondaryButton?: SidebarSectionFooterButtonSettings
   textButton?: SidebarSectionFooterButtonSettings
-  status?: SidebarSectionStatusProps
+  status?: SidebarSectionStatusProps[]
 }
 
 export function SidebarSectionFooter({
@@ -32,7 +32,7 @@ export function SidebarSectionFooter({
       <SidebarSectionFooterButton {...primaryButton} />
       {secondaryButton && <SidebarSectionFooterButton variant="secondary" {...secondaryButton} />}
       {textButton && <SidebarSectionFooterButton variant="textual" {...textButton} />}
-      {status && <SidebarSectionStatus {...status} />}
+      {!!status?.length && status.map((item) => <SidebarSectionStatus {...item} />)}
     </Grid>
   )
 }

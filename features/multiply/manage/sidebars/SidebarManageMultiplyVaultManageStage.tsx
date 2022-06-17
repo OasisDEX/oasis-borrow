@@ -8,7 +8,9 @@ import { OpenVaultAnimation } from 'theme/animations'
 
 export function SidebarManageMultiplyVaultManageStage(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
+
   const { stage } = props
+
   const [vaultChange, setVaultChanges] = useState<ManageMultiplyVaultState>(props)
 
   useEffect(() => {

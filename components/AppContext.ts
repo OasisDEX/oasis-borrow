@@ -66,6 +66,12 @@ import {
   formChangeReducer,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+  AutomationChangeFeatureAction,
+  automationChangeFeatureReducer,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
   MultiplyPillChangeAction,
@@ -101,6 +107,7 @@ import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
@@ -188,6 +195,7 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -268,6 +276,7 @@ export type SupportedUIChangeType =
   | ProtectionModeChange
   | MultiplyPillChange
   | SwapWidgetState
+  | AutomationChangeFeature
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -276,6 +285,7 @@ export type LegalUiChanges = {
   ProtectionModeChange: ProtectionModeChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
+  AutomationChangeFeature: AutomationChangeFeatureAction
 }
 
 export type UIChanges = {
@@ -363,6 +373,7 @@ function initializeUIChanges() {
 
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
+  uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
 
   return uiChangesSubject
 }
@@ -853,7 +864,13 @@ export function setupAppContext() {
   )
 
   const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$, vaultHistory$),
+    curry(createVaultsOverview$)(
+      context$,
+      vaults$,
+      ilksWithBalance$,
+      automationTriggersData$,
+      vaultHistory$,
+    ),
   )
 
   const assetActions$ = memoize(
@@ -892,6 +909,8 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
+  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
+
   return {
     web3Context$,
     web3ContextConnected$,
@@ -929,12 +948,15 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    getOasisStats$: memoize(getOasisStats$),
     productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
     bonus$,
     positionsOverviewSummary$,
+    priceInfo$,
+    yields$,
   }
 }
 
