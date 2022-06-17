@@ -1076,6 +1076,12 @@ const oasisBaseTheme = {
       gap: '0px',
     },
   },
+  separator: {
+    borderTop: '1px solid', 
+    borderColor: 'border', 
+    height: '1px', 
+    width: '100%'
+  },
   styles: {
     root: {
       fontFamily: 'body',

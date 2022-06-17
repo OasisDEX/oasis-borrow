@@ -208,14 +208,6 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
   }
 }
 
-function Separator({ sx }: { sx?: SxStyleProp }) {
-  return (
-    <Box
-      sx={{ borderTop: '1px solid', borderColor: 'border', height: '1px', width: '100%', ...sx }}
-    />
-  )
-}
-
 function ProductHeading({ title, count }: { title: string; count: number }) {
   return (
     <Text variant="paragraph3" sx={{ fontWeight: 'medium', my: 2 }}>
@@ -288,7 +280,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     </AppLink>
                   </React.Fragment>
                 ))}
-                {index < array.length - 1 && <Separator sx={{ mb: 2, ...fillRowSx }} />}
+                {index < array.length - 1 && <Box variant="separator" sx={{ mb: 2, ...fillRowSx }} />}
               </React.Fragment>
             )
           })}
@@ -321,7 +313,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                   </AppLink>
                 </Grid>
               ))}
-              {index < array.length - 1 && <Separator sx={{ my: 4 }} />}
+              {index < array.length - 1 && <Box variant="separator" sx={{ my: 4 }} />}
             </Box>
           )
         })}
