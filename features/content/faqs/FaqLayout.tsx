@@ -50,14 +50,15 @@ export function FaqLayout({
 
   return (
     <Box>
-      <Text variant="header5">{t('simulate-faq.contents')}</Text>
-      <Grid>
+      <Text variant="header5" sx={{ mb: 4 }}>{t('simulate-faq.contents')}</Text>
+      <Grid sx={{ py: 1 }}>
         {anchors.map(anchor => <Link variant="nav" sx={{
           '&, &:hover': {color: sectionId === anchor.id ? 'primary' : 'textAlt'},
           fontSize: '12px' }} onClick={() => setSectionId(anchor.id)}>
           {anchor.text}
         </Link>)}
       </Grid>
+      <Box variant="separator" sx={{ my: 4 }} />
       <Box sx={{ blockquote: {
         borderLeft: '5px solid',
         ...quoteColorsSx
