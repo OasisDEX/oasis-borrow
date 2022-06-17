@@ -1077,10 +1077,10 @@ const oasisBaseTheme = {
     },
   },
   separator: {
-    borderTop: '1px solid', 
-    borderColor: 'border', 
-    height: '1px', 
-    width: '100%'
+    borderTop: '1px solid',
+    borderColor: 'border',
+    height: '1px',
+    width: '100%',
   },
   styles: {
     root: {
@@ -1123,7 +1123,7 @@ const oasisBaseTheme = {
       variant: 'text.header4',
     },
     h5: {
-      variant: 'text.header5'
+      variant: 'text.header5',
     },
     a: {
       variant: 'text.paragraph3',

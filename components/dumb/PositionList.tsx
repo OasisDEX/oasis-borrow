@@ -4,7 +4,7 @@ import { WithChildren } from 'helpers/types'
 import _ from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Flex, Grid, SxStyleProp, Text } from 'theme-ui'
+import { Box, Button, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink, AppLinkProps } from '../Links'
 
@@ -280,7 +280,9 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     </AppLink>
                   </React.Fragment>
                 ))}
-                {index < array.length - 1 && <Box variant="separator" sx={{ mb: 2, ...fillRowSx }} />}
+                {index < array.length - 1 && (
+                  <Box variant="separator" sx={{ mb: 2, ...fillRowSx }} />
+                )}
               </React.Fragment>
             )
           })}

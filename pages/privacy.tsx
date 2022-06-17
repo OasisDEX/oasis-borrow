@@ -16,7 +16,7 @@ function PrivacyPage() {
     <>
       <PageSEONoFollow />
       <Box sx={{ width: '100%' }}>
-        <TranslatedContent content={currentContent.privacy}  />
+        <TranslatedContent content={currentContent.privacy} />
       </Box>
     </>
   )

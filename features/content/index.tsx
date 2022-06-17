@@ -1,5 +1,6 @@
-import React from 'react'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
+
 import { content as privacyContent } from './privacy/privacy'
 import { content as supportContent, ContentTypeSupport } from './support/support'
 import { content as tosContent } from './tos/tos'
@@ -39,11 +40,9 @@ export function TranslatedContent({ content }: { content: ContentType | ContentV
     i18n: { language },
   } = useTranslation()
   const actualContent = content.content || content
-  const ContentComp = actualContent[language] || actualContent.en;
+  const ContentComp = actualContent[language] || actualContent.en
 
   return <ContentComp />
 }
 
 export const currentContent: Content = v1
-
-

@@ -1,33 +1,27 @@
-import { AppLink } from "components/Links";
-import { WithChildren } from "helpers/types";
-import { Trans, useTranslation } from "next-i18next";
-import React, { useState } from "react";
-import { Box, Link, Grid, Text } from "theme-ui";
-
+import { AppLink } from 'components/Links'
+import { WithChildren } from 'helpers/types'
+import { Trans, useTranslation } from 'next-i18next'
+import React, { useState } from 'react'
+import { Box, Grid, Link, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {
-  return text.replace(/ /g, "_").toLowerCase()
+  return text.replace(/ /g, '_').toLowerCase()
 }
 
 function isHeading(markdownComponent: any) {
   return markdownComponent.props?.mdxType && markdownComponent.props.mdxType === 'h5'
 }
 
-export function FaqLayout({
-  learnMoreUrl,
-  children
-}: { learnMoreUrl: string } & WithChildren) {
+export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } & WithChildren) {
   const { t } = useTranslation()
   const childrenArray = React.Children.toArray(children)
-  const anchors = childrenArray
-    .filter(isHeading)
-    .map((child: any) => ({
-      id: getHeadingId(child.props.children),
-      text: child.props.children,
-    }));
+  const anchors = childrenArray.filter(isHeading).map((child: any) => ({
+    id: getHeadingId(child.props.children),
+    text: child.props.children,
+  }))
   const [sectionId, setSectionId] = useState<string>(anchors[0].id)
 
-   // Divide markdown into sections delimited by headings
+  // Divide markdown into sections delimited by headings
   const sections: Record<string, any[]> = {}
   for (let i = 0; i < childrenArray.length; i++) {
     const comp: any = childrenArray[i]
@@ -37,53 +31,69 @@ export function FaqLayout({
       do {
         sections[id].push(childrenArray[i])
         i++
-      } while(i < childrenArray.length && !isHeading(childrenArray[i]))
+      } while (i < childrenArray.length && !isHeading(childrenArray[i]))
       i--
     }
   }
 
   const quoteColors = ['bull', 'link', 'primaryEmphasis']
-  const quoteColorsSx = quoteColors.reduce(function(obj: any, color, index) {
-    obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {borderColor: color}
-    return obj;
-   }, {})
+  const quoteColorsSx = quoteColors.reduce(function (obj: any, color, index) {
+    obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
+      borderColor: color,
+    }
+    return obj
+  }, {})
 
   return (
     <Box>
-      <Text variant="header5" sx={{ mb: 4 }}>{t('simulate-faq.contents')}</Text>
+      <Text variant="header5" sx={{ mb: 4 }}>
+        {t('simulate-faq.contents')}
+      </Text>
       <Grid sx={{ py: 1 }}>
-        {anchors.map(anchor => <Link variant="nav" sx={{
-          '&, &:hover': {color: sectionId === anchor.id ? 'primary' : 'textAlt'},
-          fontSize: '12px' }} onClick={() => setSectionId(anchor.id)}>
-          {anchor.text}
-        </Link>)}
+        {anchors.map((anchor) => (
+          <Link
+            variant="nav"
+            sx={{
+              '&, &:hover': { color: sectionId === anchor.id ? 'primary' : 'textAlt' },
+              fontSize: '12px',
+            }}
+            onClick={() => setSectionId(anchor.id)}
+          >
+            {anchor.text}
+          </Link>
+        ))}
       </Grid>
       <Box variant="separator" sx={{ my: 4 }} />
-      <Box sx={{ blockquote: {
-        m: 0,
-        pl: 4,
-        py: 3,
-        p: {
-          my: 0,
-        },
-        borderLeft: '8px solid',
-        ...quoteColorsSx,
-      },
-        fontSize: 2,
-        pr: [0, 4],
-      }}>
+      <Box
+        sx={{
+          blockquote: {
+            m: 0,
+            pl: 4,
+            py: 3,
+            p: {
+              my: 0,
+            },
+            borderLeft: '8px solid',
+            ...quoteColorsSx,
+          },
+          fontSize: 2,
+          pr: [0, 4],
+        }}
+      >
         {sections[sectionId]}
       </Box>
       <Box sx={{ borderRadius: 'mediumLarge', bg: 'secondaryAlt', p: 3, mt: 4 }}>
         <Box sx={{ maxWidth: '455px' }}>
-          <Text variant="paragraph3" sx={{ fontWeight: 'bold', mb: 2 }}>{t('simulate-faq.learn-more-heading')}</Text>
+          <Text variant="paragraph3" sx={{ fontWeight: 'bold', mb: 2 }}>
+            {t('simulate-faq.learn-more-heading')}
+          </Text>
           <Box>
-            <Text variant="paragraph3" sx={{ a: { fontWeight: 'normal' }}}>
+            <Text variant="paragraph3" sx={{ a: { fontWeight: 'normal' } }}>
               <Trans
                 i18nKey="simulate-faq.learn-more-body"
                 components={[
                   <AppLink href={learnMoreUrl} />,
-                  <AppLink href="https://discord.gg/oasisapp" />
+                  <AppLink href="https://discord.gg/oasisapp" />,
                 ]}
               />
             </Text>
@@ -91,5 +101,5 @@ export function FaqLayout({
         </Box>
       </Box>
     </Box>
-  );
+  )
 }
