@@ -1,8 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { MobileSidePanelClose, MobileSidePanelPortal } from 'components/Modal'
-import { useSharedUI } from 'components/SharedUIProvider'
-import React, { useEffect, useState } from 'react'
-import { Box, Card } from 'theme-ui'
+import { MobileSidePanel } from 'components/Modal'
+import React, { useState } from 'react'
+import { Card } from 'theme-ui'
 
 import { SidebarSectionContent, SidebarSectionContentProps } from './SidebarSectionContent'
 import { SidebarSectionFooter, SidebarSectionFooterProps } from './SidebarSectionFooter'
@@ -23,66 +22,35 @@ export function SidebarSection({
   textButton,
   status,
 }: SidebarSectionProps) {
-  const { vaultFormOpened, setVaultFormOpened, setVaultFormToggleTitle } = useSharedUI()
   const [activePanel, setActivePanel] = useState<string>(
     Array.isArray(content) ? content[0].panel : '',
   )
 
-  useEffect(() => {
-    setVaultFormToggleTitle(<Icon name="edit" color="onSuccess" />)
-
-    return () => {
-      setVaultFormToggleTitle(undefined)
-      setVaultFormOpened(false)
-    }
-  }, [])
-
-  const onClose = () => setVaultFormOpened(false)
-
   return (
-    <MobileSidePanelPortal>
-      <Box
+    <MobileSidePanel toggleTitle={<Icon name="edit" color="onSuccess" />}>
+      <Card
         sx={{
-          display: 'block',
-          position: ['fixed', 'relative'],
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          transition: ['0.3s transform ease-in-out', '0s'],
-          transform: [`translateX(${vaultFormOpened ? '0' : '100'}%)`, 'translateX(0)'],
-          bg: ['background', 'transparent'],
-          p: [3, 0],
-          pt: [0, 0],
-          overflowX: ['hidden', 'visible'],
-          zIndex: ['modal', 0],
+          position: 'relative',
+          p: 0,
+          border: 'lightMuted',
         }}
       >
-        <MobileSidePanelClose opened={vaultFormOpened} onClose={onClose} />
-        <Card
-          sx={{
-            position: 'relative',
-            p: 0,
-            border: 'lightMuted',
+        <SidebarSectionHeader
+          title={title}
+          dropdown={dropdown}
+          headerButton={headerButton}
+          onSelect={(panel) => {
+            setActivePanel(panel)
           }}
-        >
-          <SidebarSectionHeader
-            title={title}
-            dropdown={dropdown}
-            headerButton={headerButton}
-            onSelect={(panel) => {
-              setActivePanel(panel)
-            }}
-          />
-          <SidebarSectionContent content={content} activePanel={activePanel} />
-          <SidebarSectionFooter
-            primaryButton={primaryButton}
-            secondaryButton={secondaryButton}
-            textButton={textButton}
-            status={status}
-          />
-        </Card>
-      </Box>
-    </MobileSidePanelPortal>
+        />
+        <SidebarSectionContent content={content} activePanel={activePanel} />
+        <SidebarSectionFooter
+          primaryButton={primaryButton}
+          secondaryButton={secondaryButton}
+          textButton={textButton}
+          status={status}
+        />
+      </Card>
+    </MobileSidePanel>
   )
 }
