@@ -497,7 +497,7 @@ const oasisBaseTheme = {
         left: 0,
         height: '3px',
         backgroundColor: 'primary',
-        ...fadeInAnimation
+        ...fadeInAnimation,
       },
     },
     outline: {

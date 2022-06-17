@@ -1043,6 +1043,7 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
     "closed-vault-existing-sl-description": "You can cancel your existing stop-loss here or deposit into your vault in overview tab",
+    "edit-stop-loss": "Edit Stop-Loss",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
     "stop-loss-information": "Stop Loss Information"
