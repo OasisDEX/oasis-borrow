@@ -147,7 +147,7 @@ export function VaultTabSwitch({
     return newComponentsEnabled
       ? (vaultViewModeTuples.map(([label, value]) => ({
           value,
-          label,
+          label: t(`system.${label.toLowerCase()}`),
           withTag: Object.keys(tagMap).includes(value.toString()),
           isTagEnabled: tagMap[value as VaultViewMode],
         })) as VaultTabSwitchOptionNewComponentDesignEnabled[])
@@ -236,7 +236,7 @@ export function VaultTabSwitch({
               onClick={() => setMode(VaultViewMode.VaultInfo)}
               variant={getVariant(mode, VaultViewMode.VaultInfo)}
             >
-              {t('system.vault-info')}
+              {t('system.vaultinfo')}
             </Button>
             <Button
               onClick={() => setMode(VaultViewMode.History)}

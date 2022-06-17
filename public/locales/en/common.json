@@ -675,7 +675,7 @@
     "optimization": "Optimization",
     "stop-loss": "Stop Loss",
     "history": "History",
-    "vault-info": "Vault Info",
+    "vaultinfo": "Vault Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
