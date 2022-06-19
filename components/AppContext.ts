@@ -60,7 +60,7 @@ import {
   createStandardCdps$,
   createVault$,
   createVaults$,
-  createVaultsWithValue$,
+  decorateVaultsWithValue$,
   Vault,
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
@@ -692,7 +692,7 @@ export function setupAppContext() {
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
   const vaultWithValue$ = memoize(
-    curry(createVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
+    curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
   const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
 

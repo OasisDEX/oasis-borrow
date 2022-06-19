@@ -134,26 +134,22 @@ export function createVaultsOverview$(
     vaultsAddressWithIlksBalances$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
-    switchMap(([borrow, multiply, vaults, vaultSummary, ilksWithFilters]) => {
-      return mapToPositionVM$(vaults).pipe(
-        map((positions) => {
-          return {
-            vaults: {
-              borrow,
-              multiply,
-            },
-            positions: positions,
-            vaultSummary,
-            ilksWithFilters,
-          }
-        }),
-      )
+    map(([borrow, multiply, vaults, vaultSummary, ilksWithFilters]) => {
+      return {
+        vaults: {
+          borrow,
+          multiply,
+        },
+        positions: mapToPositionVM(vaults),
+        vaultSummary,
+        ilksWithFilters,
+      }
     }),
     distinctUntilChanged(isEqual),
   )
 }
 
-function mapToPositionVM$(vaults: VaultWithValue<VaultPosition>[]): Observable<PositionVM[]> {
+function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] {
   const { borrow, multiply, earn } = vaults.reduce<{
     borrow: VaultWithValue<VaultPosition>[]
     multiply: VaultWithValue<VaultPosition>[]
@@ -197,94 +193,58 @@ function mapToPositionVM$(vaults: VaultWithValue<VaultPosition>[]): Observable<P
     }
   })
 
-  const multiplyVMs$: Observable<MultiplyPositionVM[]> = of(multiply).pipe(
-    switchMap((positions) => {
-      if (positions.length > 0) {
-        return combineLatest(
-          positions.map((position) => {
-            return of(undefined).pipe(
-              map(() => {
-                return {
-                  type: 'multiply' as const,
-                  isOwnerView: position.isOwner,
-                  icon: getToken(position.token).iconCircle,
-                  ilk: position.ilk,
-                  positionId: position.id.toString(),
-                  multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
-                  netValue: `$${formatFiatBalance(position.value)}`,
-                  liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
-                  fundingCost: formatPercent(
-                    position.debt
-                      .div(position.value)
-                      .multipliedBy(position.stabilityFee)
-                      .times(100),
-                    {
-                      precision: 2,
-                    },
-                  ),
-                  automationEnabled: position.isStopLossEnabled,
-                  editLinkProps: {
-                    href: `/${position.id}`,
-                    hash: VaultViewMode.Overview,
-                    internalInNewTab: false,
-                  },
-                  automationLinkProps: {
-                    href: `/${position.id}`,
-                    hash: VaultViewMode.Protection,
-                    internalInNewTab: false,
-                  },
-                }
-              }),
-            )
-          }),
-        )
-      } else {
-        return of([])
-      }
-    }),
-  )
+  const multiplyVMs: MultiplyPositionVM[] = multiply.map((position) => {
+    return {
+      type: 'multiply' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      positionId: position.id.toString(),
+      multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
+      netValue: `$${formatFiatBalance(position.value)}`,
+      liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+      fundingCost: formatPercent(
+        position.debt.div(position.value).multipliedBy(position.stabilityFee).times(100),
+        {
+          precision: 2,
+        },
+      ),
+      automationEnabled: position.isStopLossEnabled,
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+        internalInNewTab: false,
+      },
+      automationLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Protection,
+        internalInNewTab: false,
+      },
+    }
+  })
 
-  const earnVMs$: Observable<EarnPositionVM[]> = of(earn).pipe(
-    switchMap((positions) => {
-      if (positions.length > 0) {
-        return combineLatest(
-          positions.map((position) => {
-            return of(undefined).pipe(
-              map(() => {
-                return {
-                  type: 'earn' as const,
-                  isOwnerView: position.isOwner,
-                  icon: getToken(position.token).iconCircle,
-                  ilk: position.ilk,
-                  positionId: position.id.toString(),
-                  netValue: `$${formatFiatBalance(position.value)}`,
-                  sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
-                  pnl: `${formatPercent((getPnl(position) || zero).times(100), {
-                    precision: 2,
-                    roundMode: BigNumber.ROUND_DOWN,
-                  })}`,
-                  liquidity: `${formatCryptoBalance(position.ilkDebtAvailable)} DAI`,
-                  editLinkProps: {
-                    href: `/${position.id}`,
-                    hash: VaultViewMode.Overview,
-                    internalInNewTab: false,
-                  },
-                }
-              }),
-            )
-          }),
-        )
-      } else {
-        return of([])
-      }
-    }),
-  )
-
-  return combineLatest(of(borrowVMs), multiplyVMs$, earnVMs$).pipe(
-    map(([borrowVMs, multiplyVMs, earnVMs]) => {
-      return [...borrowVMs, ...multiplyVMs, ...earnVMs]
-    }),
-  )
+  const earnVMs: EarnPositionVM[] = earn.map((position) => {
+    return {
+      type: 'earn' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      positionId: position.id.toString(),
+      netValue: `$${formatFiatBalance(position.value)}`,
+      sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
+      pnl: `${formatPercent((getPnl(position) || zero).times(100), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
+      })}`,
+      liquidity: `${formatCryptoBalance(position.ilkDebtAvailable)} DAI`,
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+        internalInNewTab: false,
+      },
+    }
+  })
+  return [...borrowVMs, ...multiplyVMs, ...earnVMs]
 }
 
 function getPnl(vault: VaultWithIlkBalance): BigNumber {

@@ -84,7 +84,7 @@ export function createVaults$(
 export type VaultWithValue<V extends VaultWithType> = V & { value: BigNumber }
 // the value of the position in USD.  collateral prices can come from different places
 // depending on the vault type.
-export function createVaultsWithValue$<V extends VaultWithType>(
+export function decorateVaultsWithValue$<V extends VaultWithType>(
   vaults$: (address: string) => Observable<V>,
   exchangeQuote$: (
     token: string,
@@ -101,21 +101,27 @@ export function createVaultsWithValue$<V extends VaultWithType>(
       if (vaults.length === 0) return of([])
       return combineLatest(
         vaults.map((vault) => {
-          return exchangeQuote$(
-            vault.token,
-            userSettings.slippage,
-            vault.lockedCollateral,
-            'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
-            'defaultExchange',
-          ).pipe(
-            map((quote) => {
-              const collateralValue =
-                quote.status === 'SUCCESS'
-                  ? vault.lockedCollateral.times(quote.tokenPrice)
-                  : vault.lockedCollateralUSD
-              return { ...vault, value: collateralValue.minus(vault.debt) }
-            }),
-          )
+          if (vault.type === 'borrow') {
+            // use price from maker oracle
+            return of({ ...vault, value: vault.lockedCollateralUSD.minus(vault.debt) })
+          } else {
+            // use price from 1inch
+            return exchangeQuote$(
+              vault.token,
+              userSettings.slippage,
+              vault.lockedCollateral,
+              'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+              'defaultExchange',
+            ).pipe(
+              map((quote) => {
+                const collateralValue =
+                  quote.status === 'SUCCESS'
+                    ? vault.lockedCollateral.times(quote.tokenPrice)
+                    : vault.lockedCollateralUSD
+                return { ...vault, value: collateralValue.minus(vault.debt) }
+              }),
+            )
+          }
         }),
       )
     }),
