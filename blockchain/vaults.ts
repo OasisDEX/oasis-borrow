@@ -81,11 +81,11 @@ export function createVaults$(
   )
 }
 
-export type VaultWithValue = VaultWithType & { value: BigNumber }
+export type VaultWithValue<V extends VaultWithType> = V & { value: BigNumber }
 // the value of the position in USD.  collateral prices can come from different places
 // depending on the vault type.
-export function createVaultsWithValue$(
-  vaults$: (address: string) => Observable<VaultWithType[]>,
+export function createVaultsWithValue$<V extends VaultWithType>(
+  vaults$: (address: string) => Observable<V>,
   exchangeQuote$: (
     token: string,
     slippage: BigNumber,
@@ -95,7 +95,7 @@ export function createVaultsWithValue$(
   ) => Observable<Quote>,
   userSettings$: Observable<UserSettingsState>,
   address: string,
-): Observable<VaultWithValue[]> {
+): Observable<VaultWithValue<V>[]> {
   return combineLatest(vaults$(address), userSettings$).pipe(
     switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
       if (vaults.length === 0) return of([])

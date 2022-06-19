@@ -22,11 +22,11 @@ export function isMakerEarnPosition(vault: VaultWithType): boolean {
 }
 
 export function createPositions$(
-  vaultsWithValue$: (address: string) => Observable<VaultWithValue[]>,
+  vaultsWithValue$: (address: string) => Observable<VaultWithValue<VaultWithType>[]>,
   address: string,
 ): Observable<Position[]> {
   return vaultsWithValue$(address).pipe(
-    map((vaults: Array<VaultWithValue>) => {
+    map((vaults) => {
       return vaults.map((vault) => {
         return {
           token: vault.token,
