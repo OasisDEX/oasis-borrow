@@ -56,7 +56,13 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import {
+  createStandardCdps$,
+  createVault$,
+  createVaults$,
+  createVaultsWithValue$,
+  Vault,
+} from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -685,8 +691,10 @@ export function setupAppContext() {
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
-
-  const positions$ = memoize(curry(createPositions$)(vaults$, exchangeQuote$, userSettings$))
+  const vaultWithValue$ = memoize(
+    curry(createVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
+  )
+  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(

@@ -1,11 +1,8 @@
-import { combineLatest, Observable, of } from 'rxjs'
-import { switchMap, map } from 'rxjs/operators'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
 
-import { VaultWithType } from '../../../blockchain/vaults'
+import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { Position } from './positionsOverviewSummary'
-import { BigNumber } from 'bignumber.js'
-import { ExchangeAction, ExchangeType, Quote } from '../../exchange/exchange'
-import { UserSettingsState } from '../../userSettings/userSettings'
 
 function makerPositionName(vault: VaultWithType): string {
   if (isMakerEarnPosition(vault)) {
@@ -25,55 +22,19 @@ export function isMakerEarnPosition(vault: VaultWithType): boolean {
 }
 
 export function createPositions$(
-  createMakerVaults$: (address: string) => Observable<VaultWithType[]>,
-  exchangeQuote$: (
-    token: string,
-    slippage: BigNumber,
-    amount: BigNumber,
-    action: ExchangeAction,
-    exchangeType: ExchangeType,
-  ) => Observable<Quote>,
-  userSettings$: Observable<UserSettingsState>,
+  vaultsWithValue$: (address: string) => Observable<VaultWithValue[]>,
   address: string,
 ): Observable<Position[]> {
-  return combineLatest(createMakerVaults$(address), userSettings$).pipe(
-    switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
-      if (vaults.length > 0) {
-        return combineLatest(
-          vaults.map((vault) => {
-            if (vault.type === 'borrow') {
-              return of({
-                token: vault.token,
-                contentsUsd: vault.lockedCollateralUSD.minus(vault.debt),
-                title: makerPositionName(vault),
-                url: `/${vault.id}`,
-              })
-            }
-            return exchangeQuote$(
-              vault.token,
-              userSettings.slippage,
-              vault.lockedCollateral,
-              'BUY_COLLATERAL',
-              'defaultExchange',
-            ).pipe(
-              map((quote) => {
-                const collateralValue =
-                  quote.status === 'SUCCESS'
-                    ? vault.lockedCollateral.times(quote.tokenPrice)
-                    : vault.lockedCollateralUSD
-                return {
-                  token: vault.token,
-                  contentsUsd: collateralValue.minus(vault.debt),
-                  title: makerPositionName(vault),
-                  url: `/${vault.id}`,
-                }
-              }),
-            )
-          }),
-        )
-      } else {
-        return of([])
-      }
+  return vaultsWithValue$(address).pipe(
+    map((vaults: Array<VaultWithValue>) => {
+      return vaults.map((vault) => {
+        return {
+          token: vault.token,
+          contentsUsd: vault.value,
+          title: makerPositionName(vault),
+          url: `/${vault.id}`,
+        }
+      })
     }),
   )
 }
