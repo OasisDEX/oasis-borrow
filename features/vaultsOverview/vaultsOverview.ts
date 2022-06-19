@@ -29,8 +29,10 @@ import {
   StopLossTriggerData,
 } from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
+import { ExchangeAction, ExchangeType, Quote } from '../exchange/exchange'
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { UserSettingsState } from '../userSettings/userSettings'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
 import { vaultsWithFilter$, VaultsWithFilters, VaultWithSLData } from './vaultsFilters'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
@@ -55,6 +57,14 @@ export function createVaultsOverview$(
   ilksListWithBalances$: Observable<IlkWithBalance[]>,
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   vaultHistory$: (vaultId: BigNumber) => Observable<VaultHistoryEvent[]>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
+  userSettings$: Observable<UserSettingsState>,
   address: string,
 ): Observable<VaultsOverview> {
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
@@ -133,21 +143,38 @@ export function createVaultsOverview$(
     vaultWithAutomationData$,
     vaultsAddressWithIlksBalances$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
+    userSettings$,
   ).pipe(
-    map(([borrow, multiply, vaults, vaultSummary, ilksWithFilters]) => ({
-      vaults: {
-        borrow,
-        multiply,
-      },
-      positions: mapToPositionVM(vaults),
-      vaultSummary,
-      ilksWithFilters,
-    })),
+    switchMap(([borrow, multiply, vaults, vaultSummary, ilksWithFilters, userSettings]) => {
+      return mapToPositionVM$(vaults, exchangeQuote$, userSettings).pipe(
+        map((positions) => {
+          return {
+            vaults: {
+              borrow,
+              multiply,
+            },
+            positions: positions,
+            vaultSummary,
+            ilksWithFilters,
+          }
+        }),
+      )
+    }),
     distinctUntilChanged(isEqual),
   )
 }
 
-function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
+function mapToPositionVM$(
+  vaults: VaultPosition[],
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
+  userSettings: UserSettingsState,
+): Observable<PositionVM[]> {
   const { borrow, multiply, earn } = vaults.reduce<{
     borrow: VaultPosition[]
     multiply: VaultPosition[]
@@ -166,77 +193,139 @@ function mapToPositionVM(vaults: VaultPosition[]): PositionVM[] {
     { borrow: [], multiply: [], earn: [] },
   )
 
-  const borrowVM: BorrowPositionVM[] = borrow.map((position) => ({
-    type: 'borrow' as const,
-    isOwnerView: position.isOwner,
-    icon: getToken(position.token).iconCircle,
-    ilk: position.ilk,
-    collateralRatio: formatPercent(position.collateralizationRatio, { precision: 2 }),
-    inDanger: position.atRiskLevelDanger,
-    daiDebt: formatCryptoBalance(position.debt),
-    collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
-    variable: formatPercent(position.stabilityFee, { precision: 2 }),
-    automationEnabled: position.isStopLossEnabled,
-    protectionAmount: formatPercent(position.stopLossLevel),
-    editLinkProps: {
-      href: `/${position.id}`,
-      hash: VaultViewMode.Overview,
-    },
-    automationLinkProps: {
-      href: `/${position.id}`,
-      hash: VaultViewMode.Protection,
-    },
-    positionId: position.id.toString(),
-  }))
+  const borrowVMs: BorrowPositionVM[] = borrow.map((position) => {
+    return {
+      type: 'borrow' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      collateralRatio: formatPercent(position.collateralizationRatio.times(100), { precision: 2 }),
+      inDanger: position.atRiskLevelDanger,
+      daiDebt: formatCryptoBalance(position.debt),
+      collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+      variable: formatPercent(position.stabilityFee.times(100), { precision: 2 }),
+      automationEnabled: position.isStopLossEnabled,
+      protectionAmount: formatPercent(position.stopLossLevel.times(100)),
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+      },
+      automationLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Protection,
+      },
+      positionId: position.id.toString(),
+    }
+  })
 
-  const multiplyVM: MultiplyPositionVM[] = multiply.map((position) => ({
-    type: 'multiply' as const,
-    isOwnerView: position.isOwner,
-    icon: getToken(position.token).iconCircle,
-    ilk: position.ilk,
-    positionId: position.id.toString(),
-    multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
-    netValue: `$${formatFiatBalance(position.lockedCollateralUSD.minus(position.debt))}`,
-    liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
-    fundingCost: formatPercent(calculateFundingCost(position).times(100), { precision: 2 }),
-    automationEnabled: position.isStopLossEnabled,
-    editLinkProps: {
-      href: `/${position.id}`,
-      hash: VaultViewMode.Overview,
-      internalInNewTab: false,
-    },
-    automationLinkProps: {
-      href: `/${position.id}`,
-      hash: VaultViewMode.Protection,
-      internalInNewTab: false,
-    },
-  }))
+  const multiplyVMs$: Observable<MultiplyPositionVM[]> = of(multiply).pipe(
+    switchMap((positions) => {
+      if (positions.length > 0) {
+        return combineLatest(
+          positions.map((position) => {
+            return exchangeQuote$(
+              position.token,
+              userSettings.slippage,
+              position.lockedCollateral,
+              'BUY_COLLATERAL',
+              'defaultExchange',
+            ).pipe(
+              map((quote) => {
+                const collateralValue =
+                  quote.status === 'SUCCESS'
+                    ? position.lockedCollateral.times(quote.tokenPrice)
+                    : position.lockedCollateralUSD
+                return {
+                  type: 'multiply' as const,
+                  isOwnerView: position.isOwner,
+                  icon: getToken(position.token).iconCircle,
+                  ilk: position.ilk,
+                  positionId: position.id.toString(),
+                  multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
+                  netValue: `$${formatFiatBalance(collateralValue.minus(position.debt))}`,
+                  liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+                  fundingCost: formatPercent(
+                    position.debt
+                      .div(collateralValue.minus(position.debt))
+                      .multipliedBy(position.stabilityFee)
+                      .times(100),
+                    {
+                      precision: 2,
+                    },
+                  ),
+                  automationEnabled: position.isStopLossEnabled,
+                  editLinkProps: {
+                    href: `/${position.id}`,
+                    hash: VaultViewMode.Overview,
+                    internalInNewTab: false,
+                  },
+                  automationLinkProps: {
+                    href: `/${position.id}`,
+                    hash: VaultViewMode.Protection,
+                    internalInNewTab: false,
+                  },
+                }
+              }),
+            )
+          }),
+        )
+      } else {
+        return of([])
+      }
+    }),
+  )
 
-  const earnVM: EarnPositionVM[] = earn.map((position) => ({
-    type: 'earn' as const,
-    isOwnerView: position.isOwner,
-    icon: getToken(position.token).iconCircle,
-    ilk: position.ilk,
-    positionId: position.id.toString(),
-    netValue: `$${formatFiatBalance(position.lockedCollateralUSD.minus(position.debt))}`,
-    sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
-    pnl: `${formatPercent((getPnl(position) || zero).times(100), {
-      precision: 2,
-      roundMode: BigNumber.ROUND_DOWN,
-    })}`,
-    liquidity: `${formatCryptoBalance(position.ilkDebtAvailable)} DAI`,
-    editLinkProps: {
-      href: `/${position.id}`,
-      hash: VaultViewMode.Overview,
-      internalInNewTab: false,
-    },
-  }))
+  const earnVMs$: Observable<EarnPositionVM[]> = of(earn).pipe(
+    switchMap((positions) => {
+      if (positions.length > 0) {
+        return combineLatest(
+          positions.map((position) => {
+            return exchangeQuote$(
+              position.token,
+              userSettings.slippage,
+              position.lockedCollateral,
+              'BUY_COLLATERAL',
+              'defaultExchange',
+            ).pipe(
+              map((quote) => {
+                const collateralValue =
+                  quote.status === 'SUCCESS'
+                    ? position.lockedCollateral.times(quote.tokenPrice)
+                    : position.lockedCollateralUSD
+                return {
+                  type: 'earn' as const,
+                  isOwnerView: position.isOwner,
+                  icon: getToken(position.token).iconCircle,
+                  ilk: position.ilk,
+                  positionId: position.id.toString(),
+                  netValue: `$${formatFiatBalance(collateralValue.minus(position.debt))}`,
+                  sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
+                  pnl: `${formatPercent((getPnl(position) || zero).times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}`,
+                  liquidity: `${formatCryptoBalance(position.ilkDebtAvailable)} DAI`,
+                  editLinkProps: {
+                    href: `/${position.id}`,
+                    hash: VaultViewMode.Overview,
+                    internalInNewTab: false,
+                  },
+                }
+              }),
+            )
+          }),
+        )
+      } else {
+        return of([])
+      }
+    }),
+  )
 
-  return [...borrowVM, ...multiplyVM, ...earnVM]
-}
-
-function calculateFundingCost(vault: VaultWithIlkBalance): BigNumber {
-  return vault.debt.div(vault.backingCollateralUSD).multipliedBy(vault.stabilityFee)
+  return combineLatest(of(borrowVMs), multiplyVMs$, earnVMs$).pipe(
+    map(([borrowVMs, multiplyVMs, earnVMs]) => {
+      return [...borrowVMs, ...multiplyVMs, ...earnVMs]
+    }),
+  )
 }
 
 function getPnl(vault: VaultWithIlkBalance): BigNumber {

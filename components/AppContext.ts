@@ -870,6 +870,8 @@ export function setupAppContext() {
       ilksWithBalance$,
       automationTriggersData$,
       vaultHistory$,
+      exchangeQuote$,
+      userSettings$,
     ),
   )
 
