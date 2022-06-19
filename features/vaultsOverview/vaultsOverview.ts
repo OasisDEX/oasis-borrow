@@ -194,6 +194,9 @@ function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] 
   })
 
   const multiplyVMs: MultiplyPositionVM[] = multiply.map((position) => {
+    const fundingCost = position.value.gt(zero)
+      ? position.debt.div(position.value).multipliedBy(position.stabilityFee).times(100)
+      : zero
     return {
       type: 'multiply' as const,
       isOwnerView: position.isOwner,
@@ -203,12 +206,9 @@ function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] 
       multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
       netValue: `$${formatFiatBalance(position.value)}`,
       liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
-      fundingCost: formatPercent(
-        position.debt.div(position.value).multipliedBy(position.stabilityFee).times(100),
-        {
-          precision: 2,
-        },
-      ),
+      fundingCost: formatPercent(fundingCost, {
+        precision: 2,
+      }),
       automationEnabled: position.isStopLossEnabled,
       editLinkProps: {
         href: `/${position.id}`,
