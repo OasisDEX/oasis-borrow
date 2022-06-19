@@ -619,8 +619,6 @@ export function setupAppContext() {
     ]),
   )
 
-  const positions$ = memoize(curry(createPositions$)(vaults$))
-
   const ilks$ = createIlks$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
@@ -687,6 +685,8 @@ export function setupAppContext() {
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
+
+  const positions$ = memoize(curry(createPositions$)(vaults$, exchangeQuote$, userSettings$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
