@@ -103,11 +103,13 @@ interface CancelCompleteInformationProps {
   tokenPrice: BigNumber
   txState?: TxStatus
   totalCost: BigNumber
+  selectedSLValue: BigNumber
 }
 
 export function CancelCompleteInformation({
   liquidationPrice,
   totalCost,
+  selectedSLValue,
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
 
@@ -119,6 +121,16 @@ export function CancelCompleteInformation({
           value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
         />
       )}
+      <VaultChangesInformationItem
+        label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
+        value={
+          <Flex>
+            {formatPercent(selectedSLValue)}
+            <VaultChangesInformationArrow />
+            n/a
+          </Flex>
+        }
+      />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}
         value={<Flex>${formatAmount(totalCost, 'USD')}</Flex>}
@@ -234,6 +246,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
               totalCost={props.actualCancelTxCost!}
               tokenPrice={props.tokenPrice}
               liquidationPrice={props.liquidationPrice}
+              selectedSLValue={props.selectedSLValue}
             />
           </Box>
           <Box>
