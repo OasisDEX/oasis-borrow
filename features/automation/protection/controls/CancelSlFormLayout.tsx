@@ -9,12 +9,13 @@ import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import {
   getEstimatedGasFeeText,
+  VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { HasGasEstimation } from 'helpers/form'
-import { formatAmount } from 'helpers/formatters/format'
+import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
@@ -35,6 +36,7 @@ interface CancelDownsideProtectionInformationProps {
   ethBalance: BigNumber
   txError?: TxError
   gasEstimationUsd?: BigNumber
+  selectedSLValue: BigNumber
 }
 
 export function CancelDownsideProtectionInformation({
@@ -44,6 +46,7 @@ export function CancelDownsideProtectionInformation({
   ethBalance,
   txError,
   gasEstimationUsd,
+  selectedSLValue,
 }: CancelDownsideProtectionInformationProps) {
   const { t } = useTranslation()
 
@@ -57,9 +60,21 @@ export function CancelDownsideProtectionInformation({
 
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
+      {!liquidationPrice.isZero() && (
+        <VaultChangesInformationItem
+          label={`${t('cancel-stoploss.liquidation')}`}
+          value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
+        />
+      )}
       <VaultChangesInformationItem
-        label={`${t('cancel-stoploss.liquidation')}`}
-        value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
+        label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
+        value={
+          <Flex>
+            {formatPercent(selectedSLValue)}
+            <VaultChangesInformationArrow />
+            n/a
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('protection.max-cost')}`}
@@ -88,19 +103,33 @@ interface CancelCompleteInformationProps {
   tokenPrice: BigNumber
   txState?: TxStatus
   totalCost: BigNumber
+  selectedSLValue: BigNumber
 }
 
 export function CancelCompleteInformation({
   liquidationPrice,
   totalCost,
+  selectedSLValue,
 }: CancelCompleteInformationProps) {
   const { t } = useTranslation()
 
   return (
     <VaultChangesInformationContainer title={t('cancel-stoploss.summary-header')}>
+      {!liquidationPrice.isZero() && (
+        <VaultChangesInformationItem
+          label={`${t('cancel-stoploss.liquidation')}`}
+          value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
+        />
+      )}
       <VaultChangesInformationItem
-        label={`${t('cancel-stoploss.liquidation')}`}
-        value={<Flex>${formatAmount(liquidationPrice, 'USD')}</Flex>}
+        label={`${t('cancel-stoploss.stop-loss-coll-ratio')}`}
+        value={
+          <Flex>
+            {formatPercent(selectedSLValue)}
+            <VaultChangesInformationArrow />
+            n/a
+          </Flex>
+        }
       />
       <VaultChangesInformationItem
         label={`${t('protection.total-cost')}`}
@@ -191,6 +220,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
               gasEstimationUsd={props.gasEstimationUsd}
               ethBalance={props.ethBalance}
               txError={props.txError}
+              selectedSLValue={props.selectedSLValue}
             />
           </Box>
           <MessageCard
@@ -216,6 +246,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
               totalCost={props.actualCancelTxCost!}
               tokenPrice={props.tokenPrice}
               liquidationPrice={props.liquidationPrice}
+              selectedSLValue={props.selectedSLValue}
             />
           </Box>
           <Box>

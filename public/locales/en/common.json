@@ -25,10 +25,10 @@
   "activity": "Activity",
   "address": "Address",
   "address-invalid": "Address not found",
-  "add-stop-loss": "Add Stop Loss",
-  "update-stop-loss": "Update Stop Loss",
+  "add-stop-loss": "Add Stop-Loss",
+  "update-stop-loss": "Update Stop-Loss",
   "back-to-vault-overview": "Back to Vault Overview",
-  "cancel-stop-loss": "Cancel Stop Loss",
+  "cancel-stop-loss": "Cancel Stop-Loss",
   "adjust-your-position": "Adjust your position",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
@@ -244,7 +244,7 @@
     "close_vault_to_collateral": "Closed Vault, exited to collateral",
     "sold": "Sold",
     "total-fees": "Total fees",
-    "stop-loss": "Stop Loss trigger"
+    "stop-loss": "Stop-Loss trigger"
   },
   "triggers": {
     "added": "added",
@@ -440,15 +440,15 @@
       "profit-and-loss": "P&L",
       "profit-and-loss-description": "TBD",
       "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
-      "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
-      "current-stop-loss-coll-ratio": "The current Stop Loss Collateral Ratio is:",
-      "stop-loss-coll-ratio-desc": "The Stop Loss Collateral Ratio is the trigger point for executing the Stop Loss on this Vault based on the Collateral Ratio at the next OSM price. Should the next OSM price take the current Vault Collateralisation Ratio below the Stop Loss Collateral Ratio, then the Vault will be automatically closed.",
+      "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
+      "current-stop-loss-coll-ratio": "The current Stop-Loss Collateral Ratio is:",
+      "stop-loss-coll-ratio-desc": "The Stop-Loss Collateral Ratio is the trigger point for executing the Stop-Loss on this Vault based on the Collateral Ratio at the next OSM price. Should the next OSM price take the current Vault Collateralisation Ratio below the Stop-Loss Collateral Ratio, then the Vault will be automatically closed.",
       "dynamic-stop-price": "Dynamic Stop price",
-      "dynamic-stop-loss-price": "Dynamic Stop Loss Price",
-      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop Loss Collateralisation Ratio. The reason this price is dynamic is that the stop loss trigger is based on a collateralisation ratio, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the stop loss will trigger.",
-      "current-dynamic-stop-loss-price": "The current Dynamic Stop Loss Price is:",
-      "max-token-on-stop-loss-trigger": "Est. {{token}} on stop loss trigger",
-      "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on stop loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
+      "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
+      "dynamic-stop-loss-price-desc": "The dynamic stop-loss price is the current price at which this Vault will be closed based on the set Stop-Loss Collateralisation Ratio. The reason this price is dynamic is that the Stop-Loss trigger is based on a collateralisation ratio, so when the Vault is adjusted, or Stability Fees accrue, it automatically adjusts the price at which the Stop-Loss will trigger.",
+      "current-dynamic-stop-loss-price": "The current Dynamic Stop-Loss Price is:",
+      "max-token-on-stop-loss-trigger": "Est. {{token}} on Stop-Loss trigger",
+      "max-token-on-stop-loss-trigger-desc": "The estimated {{token}} on Stop-Loss trigger is the approximate amount of {{token}} you can expect to get returned to the wallet when the Vault has been closed because of Stop-Loss. It is very difficult to give a perfect amount as it depends on several factors at the time of the Stop-Loss trigger, such as market price, available liquidity and gas costs. This calculation assumes a 2% difference from Trigger Price to Market Price. The amount saved compared to liquidation is based on the assumption of not paying a Liquidation Penalty, currently set to {{liquidationPenalty}}.",
       "current-coll-ratio": "Current coll ratio",
       "next-coll-ratio": "Next Coll Ratio",
       "saving-comp-to-liquidation": "Saving compared to liquidation",
@@ -612,14 +612,15 @@
       "right-footer": "Increase risk"
     },
     "set-stoploss": {
-      "left-label": "Stop loss coll.ratio",
+      "left-label": "Stop-Loss coll.ratio",
       "right-label": "Dynamic stop price",
       "left-footer": "Bigger loss",
       "right-footer": "More likely execution"
     }
   },
   "cancel-stoploss": {
-    "summary-header": "Cancel stop loss order summary",
+    "summary-header": "Cancel Stop-Loss order summary",
+    "stop-loss-coll-ratio":"Stop-Loss Coll. Ratio",
     "liquidation": "Liquidation price after cancellation",
     "total": "Total transaction cost",
     "max": "Max transaction cost"
@@ -674,7 +675,7 @@
     "overview": "Overview",
     "protection": "Protection",
     "optimization": "Optimization",
-    "stop-loss": "Stop Loss",
+    "stop-loss": "Stop-Loss",
     "history": "History",
     "vaultinfo": "Vault Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
@@ -779,7 +780,7 @@
     "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral by choosing 'Manage collateral' option in select.",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
-    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
+    "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price.",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price.",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault.",
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI"
@@ -882,8 +883,8 @@
     },
     "setup-stop-loss": {
       "header": "Get vault protection",
-      "content": "Set up a stop loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
-      "button": "Setup Stop Loss"
+      "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
+      "button": "Setup Stop-Loss"
     }
   },
   "view": "View",
@@ -895,9 +896,9 @@
   "proxy-deployment-confirming": "{{proxyConfirmations}} of {{safeConfirmations}}: Proxy deployment confirmed",
   "open-vault-deployment-confirming": "Vault created. Waiting for confirmations {{openVaultConfirmations}}/{{safeConfirmations}}",
   "set-up-stop-loss-tx": "Set up Stop-Loss transaction",
-  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop Loss.",
+  "open-vault-two-tx-setup-requirement": "You will be required to sign 2 transactions. 1 to setup the the Vault and another to set up the Stop-Loss.",
   "open-vault-two-tx-first-step-title": "Step 1/2: Vault being created",
-  "open-vault-two-tx-second-step-title": "Step 2/2: Stop Loss setup transaction",
+  "open-vault-two-tx-second-step-title": "Step 2/2: Stop-Loss setup transaction",
   "open-vault-sl-second-status-title": "Transaction 2 of 2 (Stop-Loss setup)",
   "open-vault-sl-second-status-not-started-desc": "Transaction will start once 1/2 is confirmed",
   "not-started": "not started",
@@ -992,15 +993,15 @@
   },
   "protection": {
     "navigate-cancel": "Cancel downside protection",
-    "navigate-adjust": "Return to adjusting stop loss",
+    "navigate-adjust": "Return to adjusting Stop-Loss",
     "set-downside-protection": "Set up Stop-Loss Protection",
     "set-downside-protection-desc": "Set the Collateralisation Ratio trigger at the point which you want your Vault to be closed at automatically. Learn more about how Stop-Loss works",
     "cancel-downside-protection": "Cancellation confirmation",
-    "cancel-downside-protection-desc": "To cancel the stop loss you’ll need to click the button below and confirm the transaction.",
+    "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",
-    "cancelling-downside-protection": "Cancelling stop loss",
+    "cancelling-downside-protection": "Cancelling Stop-Loss",
     "setting-downside-protection-desc": "Your Vault is currently being updated to add Stop-Loss Protection. Your Vault will not be protected from Liquidation until this completes.",
-    "cancelling-downside-protection-desc": "The stop loss cancellation is in progress. Once the transaction is done, the stop loss will be removed.",
+    "cancelling-downside-protection-desc": "The Stop-Loss cancellation is in progress. Once the transaction is done, the Stop-Loss will be removed.",
     "position-again-at-risk": "Your position is then at risk of liquidation again once the liquidation price is hit.",
     "downside-protection-complete": "Stop-Loss Protection Enabled",
     "cancel-protection-complete": "Stop-Loss cancellation complete",
@@ -1011,15 +1012,15 @@
     "banner-content": "Setup a dynamic Stop-Loss based on your Collateralisation Ratio to help protect your Vault from liquidation or the worry of big losses.",
     "banner-button": "Set up Vault Protection ->",
     "edit-vault-protection": "Edit Vault Protection",
-    "dynamic-stop-loss-price": "Dynamic Stop Loss Price",
-    "dynamic-stop-loss": "Dynamic Stop Loss",
-    "stop-loss-coll-ratio": "Stop Loss Collateral Ratio",
+    "dynamic-stop-loss-price": "Dynamic Stop-Loss Price",
+    "dynamic-stop-loss": "Dynamic Stop-Loss",
+    "stop-loss-coll-ratio": "Stop-Loss Collateral Ratio",
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
-    "token-on-stop-loss-trigger": "{{token}} on stop loss trigger",
+    "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
     "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
     "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
-    "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop Loss Protection",
+    "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
     "estimated-to-receive": "Estimated to receive",
@@ -1051,7 +1052,7 @@
     "edit-stop-loss": "Edit Stop-Loss",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
-    "stop-loss-information": "Stop Loss Information"
+    "stop-loss-information": "Stop-Loss Information"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1247,7 +1248,7 @@
       },
       "protection": {
         "label": "Protection",
-        "tooltip": "Indicates if a Stop Loss Protection has been set up for this position. If not, you can activate it on the Protection page by clicking the button."
+        "tooltip": "Indicates if a Stop-Loss Protection has been set up for this position. If not, you can activate it on the Protection page by clicking the button."
       },
       "net-value": {
         "label": "Net Value",
@@ -1320,7 +1321,7 @@
   "auto-buy": {
     "title": "Auto buy",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
-    "min-ratio": "min. ratio with stop loss/basic sell",
+    "min-ratio": "min. ratio with Stop-Loss/basic sell",
     "next-buy-price": "Next buy price: {{amount}}",
     "no-threshold": "No threshold set",
     "set-max-buy-price": "Set Max Buy Price",
