@@ -619,6 +619,7 @@
   },
   "cancel-stoploss": {
     "summary-header": "Cancel stop loss order summary",
+    "stop-loss-coll-ratio":"Stop Loss Coll. Ratio",
     "liquidation": "Liquidation price after cancellation",
     "total": "Total transaction cost",
     "max": "Max transaction cost"
