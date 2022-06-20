@@ -107,6 +107,24 @@ describe('open multiply vault', () => {
       expect(state().depositAmountUSD!).to.deep.equal(depositAmountUSD)
     })
 
+    it('should update stop loss type', () => {
+      const closeVaultType = 'collateral'
+      const defaultCloseVaultType = 'dai'
+      const state = getStateUnpacker(mockOpenMultiplyVault())
+      expect(state().stopLossCloseType!).to.equal(defaultCloseVaultType)
+      state().setStopLossCloseType(closeVaultType)
+      expect(state().stopLossCloseType).to.equal(closeVaultType)
+    })
+
+    it('should update stop loss level', () => {
+      const stopLossLevel = new BigNumber(2)
+      const defaultStopLossLevel = zero
+      const state = getStateUnpacker(mockOpenMultiplyVault())
+      expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
+      state().setStopLossLevel(stopLossLevel)
+      expect(state().stopLossLevel).to.deep.equal(stopLossLevel)
+    })
+
     it('should progress to proxy flow from editing when without proxy', () => {
       const depositAmount = new BigNumber('100')
 
@@ -683,6 +701,90 @@ describe('open multiply vault', () => {
       const stateSnap = state()
 
       expect(stateSnap.maxCollRatio).to.deep.eq(new BigNumber(5))
+    })
+
+    it('should skip stop loss step', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      const depositAmount = new BigNumber('100')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(3)
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossEditing')
+      state().skipStopLoss!()
+      expect(state().stopLossSkipped).to.deep.equal(true)
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+    })
+
+    it('should add stop loss successfully', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      const depositAmount = new BigNumber('100')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxSuccess')
+    })
+
+    it('should handle add stop loss failure', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      const depositAmount = new BigNumber('100')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => {
+              if (meta.kind === 'multiply') {
+                return mockTxState(meta, TxStatus.Success, newCDPTxReceipt)
+              }
+              return mockTxState(meta, TxStatus.Failure)
+            },
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      state().stage = 'stopLossTxWaitingForConfirmation'
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxFailure')
     })
   })
 })
