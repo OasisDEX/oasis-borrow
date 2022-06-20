@@ -18,8 +18,8 @@ export function ActionPills({ active, items, variant }: ActionPillsProps) {
       px: '16px',
       fontSize: 1,
       ':first-child': {
-        ml: 0
-      }
+        ml: 0,
+      },
     }),
     [variant],
   )

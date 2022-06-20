@@ -15,11 +15,11 @@ export interface DropDownValue {
 
 export interface ItemProps {
   label?: string
-  labelColorPrimary?: boolean;
-  subLabel?: string;
+  labelColorPrimary?: boolean
+  subLabel?: string
   value?: string | BigNumber | ReactNode
   // Select element type if you wish to render custom components within a dropdown
-  dropDownElementType?: 'element' | 'default';
+  dropDownElementType?: 'element' | 'default'
   secondaryValue?: string
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
@@ -27,7 +27,16 @@ export interface ItemProps {
 
 // TODO: Add tooltip and loading state
 // Note: Use this to phase out the VaultInformationContainer & VaultInformation components
-export function Item({ label, subLabel, dropdownValues, value, secondaryValue, isLoading, dropDownElementType, labelColorPrimary }: ItemProps) {
+export function Item({
+  label,
+  subLabel,
+  dropdownValues,
+  value,
+  secondaryValue,
+  isLoading,
+  dropDownElementType,
+  labelColorPrimary,
+}: ItemProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -36,7 +45,7 @@ export function Item({ label, subLabel, dropdownValues, value, secondaryValue, i
       sx={{
         fontSize: 1,
         fontWeight: 'semiBold',
-        listStyle: 'none'
+        listStyle: 'none',
       }}
     >
       <Flex>
@@ -63,11 +72,7 @@ export function Item({ label, subLabel, dropdownValues, value, secondaryValue, i
               <AppSpinner />
             ) : (
               <>
-                {value && (
-                  <>
-                    {typeof value === 'object' ? value : `${value}`}
-                  </>
-                )}
+                {value && <>{typeof value === 'object' ? value : `${value}`}</>}
                 {secondaryValue && (
                   <>
                     <VaultChangesInformationArrow />
@@ -105,13 +110,17 @@ export function Item({ label, subLabel, dropdownValues, value, secondaryValue, i
             <Text
               sx={{
                 fontWeight: 400,
-                color: '#787A9B'
+                color: '#787A9B',
               }}
             >
               {subLabel}
             </Text>
           )}
-          <Grid as="ul" gap={2} sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 2, listStyle: 'none' }}>
+          <Grid
+            as="ul"
+            gap={2}
+            sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 2, listStyle: 'none' }}
+          >
             {dropdownValues && dropdownValues.map((item) => <Item {...item} />)}
           </Grid>
         </>

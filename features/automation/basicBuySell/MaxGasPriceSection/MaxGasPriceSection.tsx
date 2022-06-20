@@ -1,8 +1,8 @@
-import { ActionPills } from "components/ActionPills";
-import { Item } from "components/infoSection/Item";
-import React, { useState } from "react";
+import { ActionPills } from 'components/ActionPills'
+import { Item } from 'components/infoSection/Item'
+import React, { useState } from 'react'
 
-export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT';
+export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
 
 export function MaxGasPrice() {
   const [active, setActiveItem] = useState('FIVE' as GAS_PERCENTAGE_TYPES)
@@ -19,7 +19,7 @@ export function MaxGasPrice() {
             <>
               <ActionPills
                 active={active}
-                variant='secondary'
+                variant="secondary"
                 items={[
                   {
                     id: 'FIVE',
@@ -52,8 +52,8 @@ export function MaxGasPrice() {
                 ]}
               />
             </>
-          )
-        }
+          ),
+        },
       ]}
     />
   )
