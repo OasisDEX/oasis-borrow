@@ -1297,6 +1297,26 @@
       "claim-rewards": "Claim Rewards"
     }
   },
+  
+  "auto-sell": {
+    "sell.sell-title": "Basic Auto Sell Summary",
+    "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
+    "target-multiple-each-sell": "Target Multiple after each sell",
+    "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
+    "next-sell-prices": "Next sell price(s)",
+    "setup-transaction-cost": "Setup transaction cost",
+    "slippage-limit": "Slippage Limit",
+    "collateral-after-next-sell": "Collateral after next sell",
+    "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
+    "eth-to-be-sold": "ETH to be sold at next sell",
+    "estimated-transaction-cost": "Estimated transaction cost",
+    "title": "Auto sell",
+    "next-sell-price": "Next sell price: {{amount}}",
+    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
+    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
+  },
+
   "auto-buy": {
     "title": "Auto buy",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
@@ -1310,17 +1330,21 @@
     "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Trigger Col Ratio",
+
+    "buy-title": "Basic Auto Sell Summary",
+    "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
+    "target-multiple-each-buy": "Target Multiple after each buy",
+    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
+    "next-buy-prices": "Next buy price(s)",
+    "total-cost-of-next-buy": "Total cost of next ETH buy",
+    "collateral-after-next-buy": "Collateral after next buy",
+    "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
+    "eth-to-be-purchased": "ETH to be purchased at next buy",
     "banner": {
       "header": "Set up Auto Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
       "button": "Setup Auto Buy"
     }
-  },
-  "auto-sell": {
-    "title": "Auto sell",
-    "next-sell-price": "Next sell price: {{amount}}",
-    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
-    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
-    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
   }
+
 }
