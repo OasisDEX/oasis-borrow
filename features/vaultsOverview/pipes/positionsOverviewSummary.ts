@@ -166,7 +166,7 @@ export function createPositionsOverviewSummary$(
       percentageOther,
       totalValueUsd,
     })),
-    distinctUntilChanged(isEqual),
     debounceTime(500),
+    distinctUntilChanged(isEqual),
   )
 }
