@@ -69,7 +69,6 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
         {
           label: t('system.actions.earn.vault-overview'),
           icon: getToken(token).iconCircle,
-          iconShrink: 2,
           panel: 'overview',
           action: () => {
             toggle!('adjustPosition')
