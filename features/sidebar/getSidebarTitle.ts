@@ -1,4 +1,4 @@
-import { Vault } from 'blockchain/vaults'
+import BigNumber from 'bignumber.js'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
@@ -7,9 +7,10 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
-  vault?: Vault
+  debt?: BigNumber
   isSLPanelVisible?: boolean
   openFlowWithStopLoss?: boolean
+  isStopLossEnabled?: boolean
 }
 
 function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
@@ -87,13 +88,30 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
   }
 }
 
+function getSidebarTitleStopLossEditingKey({
+  debt,
+  isStopLossEnabled,
+}: {
+  debt?: BigNumber
+  isStopLossEnabled: boolean
+}) {
+  if (debt?.isZero()) {
+    return 'protection.closed-vault-existing-sl-header'
+  } else if (isStopLossEnabled) {
+    return 'protection.edit-stop-loss'
+  } else {
+    return 'protection.enable-stop-loss'
+  }
+}
+
 export function getSidebarTitle({
   flow,
   stage,
   token,
-  vault,
+  debt,
   isSLPanelVisible = false,
   openFlowWithStopLoss = false,
+  isStopLossEnabled = false,
 }: GetSidebarTitleParams) {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
@@ -106,9 +124,9 @@ export function getSidebarTitle({
 
       return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
-      return !vault?.debt?.isZero()
-        ? t('protection.enable-stop-loss')
-        : t('protection.closed-vault-existing-sl-header')
+      const stopLossEditingKey = getSidebarTitleStopLossEditingKey({ debt, isStopLossEnabled })
+
+      return t(stopLossEditingKey)
     case 'proxyInProgress':
       return t('vault-form.header.proxy-in-progress')
     case 'proxyWaitingForConfirmation':

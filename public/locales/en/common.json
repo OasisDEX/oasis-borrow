@@ -39,7 +39,7 @@
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
-  "ok": "Ok",
+  "ok": "OK",
   "back-to-editing": "Back to editing",
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
@@ -56,6 +56,7 @@
   },
   "change-your-vault": "Change your vault",
   "close": "Close",
+  "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
@@ -675,7 +676,7 @@
     "optimization": "Optimization",
     "stop-loss": "Stop Loss",
     "history": "History",
-    "vault-info": "Vault Info",
+    "vaultinfo": "Vault Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
@@ -710,6 +711,9 @@
       },
       "stop-loss-collateral-ratio": {
         "footnote": "{{amount}} Next Collateral Ratio"
+      },
+      "dynamic-stop-price": {
+        "footnote": "{{amount}} S/L Coll. Ratio"
       }
     }
   },
@@ -772,7 +776,7 @@
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
-    "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
+    "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral by choosing 'Manage collateral' option in select.",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
@@ -1035,6 +1039,7 @@
     "reopen-position": "Reopen position",
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
+    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
@@ -1043,6 +1048,7 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
     "closed-vault-existing-sl-description": "You can cancel your existing stop-loss here or deposit into your vault in overview tab",
+    "edit-stop-loss": "Edit Stop-Loss",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
     "stop-loss-information": "Stop Loss Information"

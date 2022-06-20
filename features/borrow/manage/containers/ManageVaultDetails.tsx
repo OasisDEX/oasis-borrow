@@ -1,4 +1,5 @@
 import { getToken } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -11,6 +12,7 @@ import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/Vaul
 import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
+import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
 import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/ContentCardLiquidationPrice'
 import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import {
@@ -20,11 +22,13 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 // import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
@@ -136,6 +140,10 @@ export function ManageVaultDetails(
   } = props
 
   const { t } = useTranslation()
+  const { automationTriggersData$ } = useAppContext()
+  const autoTriggersData$ = automationTriggersData$(id)
+  const [automationTriggersData] = useObservable(autoTriggersData$)
+
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -143,22 +151,25 @@ export function ManageVaultDetails(
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
+  const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   return (
-    <Box>
+    <Grid>
       {stopLossReadEnabled && (
         <>
           {stopLossTriggered && <StopLossTriggeredBannerControl />}
           {!newComponentsEnabled && stopLossWriteEnabled && (
             <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
           )}
-          <StopLossBannerControl
-            vaultId={id}
-            liquidationPrice={liquidationPrice}
-            liquidationRatio={liquidationRatio}
-            afterLiquidationPrice={afterLiquidationPrice}
-            showAfterPill={showAfterPill}
-          />
+          {!newComponentsEnabled && (
+            <StopLossBannerControl
+              vaultId={id}
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              afterLiquidationPrice={afterLiquidationPrice}
+              showAfterPill={showAfterPill}
+            />
+          )}
         </>
       )}
       {!newComponentsEnabled ? (
@@ -221,6 +232,15 @@ export function ManageVaultDetails(
                 afterLockedCollateralUSD={afterLockedCollateralUSD}
                 changeVariant={changeVariant}
               />
+              {slData && slData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={slData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
             </DetailsSectionContentCardWrapper>
           }
           footer={
@@ -240,11 +260,9 @@ export function ManageVaultDetails(
         />
       )}
       {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
-        <Box sx={{ mt: 3 }}>
-          <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
-        </Box>
+        <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
       )}
       <BonusContainer cdpId={props.vault.id} />
-    </Box>
+    </Grid>
   )
 }

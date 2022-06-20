@@ -1,3 +1,5 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import { MobileSidePanel } from 'components/Modal'
 import React, { useState } from 'react'
 import { Card } from 'theme-ui'
 
@@ -25,28 +27,30 @@ export function SidebarSection({
   )
 
   return (
-    <Card
-      sx={{
-        position: 'relative',
-        p: 0,
-        border: 'lightMuted',
-      }}
-    >
-      <SidebarSectionHeader
-        title={title}
-        dropdown={dropdown}
-        headerButton={headerButton}
-        onSelect={(panel) => {
-          setActivePanel(panel)
+    <MobileSidePanel toggleTitle={<Icon name="edit" color="onSuccess" />}>
+      <Card
+        sx={{
+          position: 'relative',
+          p: 0,
+          border: 'lightMuted',
         }}
-      />
-      <SidebarSectionContent content={content} activePanel={activePanel} />
-      <SidebarSectionFooter
-        primaryButton={primaryButton}
-        secondaryButton={secondaryButton}
-        textButton={textButton}
-        status={status}
-      />
-    </Card>
+      >
+        <SidebarSectionHeader
+          title={title}
+          dropdown={dropdown}
+          headerButton={headerButton}
+          onSelect={(panel) => {
+            setActivePanel(panel)
+          }}
+        />
+        <SidebarSectionContent content={content} activePanel={activePanel} />
+        <SidebarSectionFooter
+          primaryButton={primaryButton}
+          secondaryButton={secondaryButton}
+          textButton={textButton}
+          status={status}
+        />
+      </Card>
+    </MobileSidePanel>
   )
 }

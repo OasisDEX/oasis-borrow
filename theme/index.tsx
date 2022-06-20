@@ -1,4 +1,4 @@
-import { slideInAnimation } from './animations'
+import { fadeInAnimation } from './animations'
 import { icons } from './icons'
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
@@ -299,7 +299,7 @@ const oasisBaseTheme = {
       maxWidth: ['400px', '1232px'],
       zIndex: 1,
       position: 'relative',
-      ...slideInAnimation,
+      ...fadeInAnimation,
     },
     announcement: {
       maxWidth: '792px',
@@ -473,28 +473,31 @@ const oasisBaseTheme = {
     vaultTab: {
       variant: 'text.paragraph2',
       cursor: 'pointer',
-      bg: 'unset',
-      transition: 'background 0.2s ease-in',
       fontWeight: 'semiBold',
-      color: 'primary',
+      color: 'text.subtitle',
       px: 3,
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-    },
-    vaultTabInactive: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      bg: 'unset',
-      transition: 'background 0.2s ease-in',
-      fontWeight: 'semiBold',
-      color: 'text.subtitle',
+      background: 'unset',
+      transition: 'color 200ms',
       '&:hover': {
         color: 'primary',
       },
-      px: 3,
-      display: 'flex',
-      alignItems: 'center',
+    },
+    vaultTabActive: {
+      variant: 'buttons.vaultTab',
+      color: 'primary',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: '100%',
+        right: 0,
+        left: 0,
+        height: '3px',
+        backgroundColor: 'primary',
+        ...fadeInAnimation,
+      },
     },
     outline: {
       variant: 'text.paragraph2',
