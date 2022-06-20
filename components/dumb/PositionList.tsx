@@ -16,10 +16,23 @@ function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element |
       {tooltip && (
         <StatefulTooltip
           tooltip={
-            <Text sx={{ fontWeight: 'semiBold', mb: 1, fontSize: 2, textAlign: 'left' }}>
+            <Text
+              sx={{
+                fontWeight: 'semiBold',
+                fontSize: 2,
+                textAlign: 'left',
+              }}
+            >
               {tooltip}
             </Text>
           }
+          tooltipSx={{
+            px: '16px',
+            py: '8px',
+            borderRadius: '8px',
+            border: 'none',
+            maxWidth: '480px',
+          }}
         >
           <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
         </StatefulTooltip>
@@ -99,7 +112,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   if (position.automationEnabled) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="actionActiveGreen">
+        <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
           {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
         </Button>
       </AppLink>
@@ -107,12 +120,14 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   } else if (position.isOwnerView) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="action">{t('earn.automation-button-off')}</Button>)
+        <Button variant="action" sx={{ px: '24px', py: '11px' }}>
+          {t('earn.automation-button-off')}
+        </Button>
       </AppLink>
     )
   } else {
     return (
-      <Button disabled={true} variant="action">
+      <Button disabled={true} variant="action" sx={{ px: '24px', py: '11px' }}>
         {t('earn.automation-button-off-disabled')}
       </Button>
     )
@@ -294,7 +309,14 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                       columnCount - 1,
                     )}
                     <AppLink {...position.editLinkProps}>
-                      <Button variant="secondary" sx={{ fontSize: 1 }}>
+                      <Button
+                        variant="secondary"
+                        sx={{
+                          fontSize: 1,
+                          px: '24px',
+                          py: '11px',
+                        }}
+                      >
                         {getVaultActionButtonTranslation(position.isOwnerView, t)}
                       </Button>
                     </AppLink>
@@ -327,7 +349,10 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
                     ))}
                   </Grid>
                   <AppLink {...position.editLinkProps}>
-                    <Button variant="secondary" sx={{ fontSize: 1 }}>
+                    <Button
+                      variant="secondary"
+                      sx={{ fontSize: 1, width: '100%', px: '24px', py: '11px' }}
+                    >
                       {getVaultActionButtonTranslation(position.isOwnerView, t)}
                     </Button>
                   </AppLink>

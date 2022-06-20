@@ -1,4 +1,3 @@
-import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 
@@ -16,7 +15,6 @@ function MultiplyPage() {
   return (
     <WithConnection>
       <MultiplyView />
-      <Survey for="multiply" />
     </WithConnection>
   )
 }

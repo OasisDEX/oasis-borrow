@@ -1,10 +1,17 @@
 import NodeCache from 'node-cache'
 
-export function cacheObject<R>(fetchFunction: () => Promise<R>, stdTTL: number): () => Promise<R> {
+interface Cached<T> {
+  data: T
+  time: number
+}
+export function cacheObject<R>(
+  fetchFunction: () => Promise<R>,
+  stdTTL: number,
+): () => Promise<Cached<R>> {
   const statsCache = new NodeCache({ stdTTL })
 
   async function cacheFreshData() {
-    const response = { ...(await fetchFunction()), time: Date.now() }
+    const response = { data: await fetchFunction(), time: Date.now() }
     statsCache.set('data', JSON.stringify(response))
     return JSON.stringify(response)
   }

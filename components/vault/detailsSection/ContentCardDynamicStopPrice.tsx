@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-interface ContentCardDynamicStopPriceModalProps {
+export interface ContentCardDynamicStopPriceModalProps {
   dynamicStopPrice: BigNumber
   dynamicStopPriceFormatted: string
 }
@@ -19,7 +19,7 @@ interface ContentCardDynamicStopPriceProps {
   afterSlRatio: BigNumber
 }
 
-function ContentCardDynamicStopPriceModal({
+export function ContentCardDynamicStopPriceModal({
   dynamicStopPrice,
   dynamicStopPriceFormatted,
 }: ContentCardDynamicStopPriceModalProps) {

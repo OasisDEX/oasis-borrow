@@ -36,11 +36,11 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
     toggleForms,
     token,
     txError,
-    vault,
+    vault: { debt },
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError, debt: vault.debt })
+  const errors = errorsValidation({ txError, debt: debt })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
@@ -50,7 +50,7 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, vault }),
+    title: getSidebarTitle({ flow, stage, token, debt }),
     content: (
       <Grid gap={3}>
         {(stage === 'editing' || stage === 'txFailure') && (
