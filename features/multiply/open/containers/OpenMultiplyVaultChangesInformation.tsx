@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Flex, Grid, Text } from '@theme-ui/components'
+import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   getEstimatedGasFeeText,
@@ -16,6 +16,7 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
@@ -40,12 +41,21 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
     buyingCollateral,
     buyingCollateralUSD,
     marketPrice,
+    stopLossSkipped,
+    stopLossLevel,
+    ilkData,
+    afterLiquidationPrice,
   } = props
+  const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
-  const { t } = useTranslation()
+
+  const dynamicStopLossPrice = afterLiquidationPrice
+    .div(ilkData.liquidationRatio)
+    .times(stopLossLevel.div(100))
 
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
@@ -162,6 +172,30 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           />
           <VaultChangesInformationEstimatedGasFee {...props} />
         </Grid>
+      )}
+      {stopLossOpenFlowEnabled && stopLossLevel.gt(zero) && !stopLossSkipped && (
+        <>
+          <Box as="li" sx={{ listStyle: 'none' }}>
+            <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+              {t('protection.stop-loss-information')}
+            </Text>
+          </Box>
+          <VaultChangesInformationItem
+            label={`${t('protection.stop-loss-coll-ratio')}`}
+            value={
+              <Flex>
+                {formatPercent(stopLossLevel, {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </Flex>
+            }
+          />
+          <VaultChangesInformationItem
+            label={`${t('protection.dynamic-stop-loss')}`}
+            value={<Flex>${formatAmount(dynamicStopLossPrice, 'USD')}</Flex>}
+          />
+        </>
       )}
     </VaultChangesInformationContainer>
   ) : null
