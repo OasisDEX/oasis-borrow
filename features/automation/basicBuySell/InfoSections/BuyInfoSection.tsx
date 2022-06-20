@@ -1,29 +1,30 @@
+import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { DropDownValue } from 'components/infoSection/Item'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface BuyInfoSectionProps {
-  colRatioAfterBuy: string
-  multipleAfterBuy: string
-  ratiotoPeformBuy: string
+  colRatioAfterBuy: BigNumber
+  multipleAfterBuy: BigNumber
+  ratiotoPeformBuy: BigNumber
   nextBuyPrice: {
-    value: string
+    value: BigNumber
     dropDownValues: DropDownValue[]
   }
-  totalCostOfNextBuy: string
-  slippageLimit: string
+  totalCostOfNextBuy: BigNumber
+  slippageLimit: BigNumber
   collatAfterNextBuy: {
-    value: string
+    value: BigNumber
     secondaryValue: string
   }
   outstandingDebtAfterNextBuy: {
-    value: string
-    secondaryValue: string
+    value: BigNumber
+    secondaryValue: BigNumber
   }
-  ethToBePurchased: string
+  ethToBePurchased: BigNumber
   estimatedTransactionCost: {
-    value: string
+    value: BigNumber
     dropDownValues: DropDownValue[]
   }
 }

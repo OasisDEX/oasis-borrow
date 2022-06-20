@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { ExpandableArrow } from 'components/dumb/ExpandableArrow'
 import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { AppSpinner } from 'helpers/AppSpinner'
@@ -14,7 +15,7 @@ export interface DropDownValue {
 
 export interface ItemProps {
   label: string
-  value?: string
+  value?: string | BigNumber
   secondaryValue?: string
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
@@ -55,11 +56,11 @@ export function Item({ label, dropdownValues, value, secondaryValue, isLoading }
               <AppSpinner />
             ) : (
               <>
-                {value}
+                {`${value}`}
                 {secondaryValue && (
                   <>
                     <VaultChangesInformationArrow />
-                    {secondaryValue}
+                    {`${secondaryValue}`}
                   </>
                 )}
                 {dropdownValues?.length && (
