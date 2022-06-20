@@ -56,7 +56,13 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import {
+  createStandardCdps$,
+  createVault$,
+  createVaults$,
+  decorateVaultsWithValue$,
+  Vault,
+} from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -65,6 +71,12 @@ import {
   AddFormChangeAction,
   formChangeReducer,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+  AutomationChangeFeatureAction,
+  automationChangeFeatureReducer,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -270,6 +282,7 @@ export type SupportedUIChangeType =
   | ProtectionModeChange
   | MultiplyPillChange
   | SwapWidgetState
+  | AutomationChangeFeature
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -278,6 +291,7 @@ export type LegalUiChanges = {
   ProtectionModeChange: ProtectionModeChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
+  AutomationChangeFeature: AutomationChangeFeatureAction
 }
 
 export type UIChanges = {
@@ -365,6 +379,7 @@ function initializeUIChanges() {
 
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
+  uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
 
   return uiChangesSubject
 }
@@ -610,8 +625,6 @@ export function setupAppContext() {
     ]),
   )
 
-  const positions$ = memoize(curry(createPositions$)(vaults$))
-
   const ilks$ = createIlks$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
@@ -678,6 +691,10 @@ export function setupAppContext() {
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
+  const vaultWithValue$ = memoize(
+    curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
+  )
+  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -857,7 +874,7 @@ export function setupAppContext() {
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(
       context$,
-      vaults$,
+      vaultWithValue$,
       ilksWithBalance$,
       automationTriggersData$,
       vaultHistory$,

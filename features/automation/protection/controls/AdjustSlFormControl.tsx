@@ -331,6 +331,7 @@ export function AdjustSlFormControl({
     isProgressDisabled,
     redirectToCloseVault,
     currentCollateralRatio: vault.collateralizationRatio,
+    isStopLossEnabled,
   }
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')

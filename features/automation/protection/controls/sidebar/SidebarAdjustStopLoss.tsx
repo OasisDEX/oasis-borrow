@@ -33,16 +33,17 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     gasEstimationUsd,
     ilkData,
     isProgressDisabled,
+    isStopLossEnabled,
     selectedSLValue,
     stage,
     toggleForms,
     token,
     txError,
-    vault,
+    vault: { debt },
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
-  const errors = errorsValidation({ txError, debt: vault.debt })
+  const errors = errorsValidation({ txError, debt })
   const warnings = warningsValidation({
     token,
     gasEstimationUsd,
@@ -52,7 +53,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, vault }),
+    title: getSidebarTitle({ flow, stage, token, debt, isStopLossEnabled }),
     content: (
       <Grid gap={3}>
         {stopLossWriteEnabled ? (

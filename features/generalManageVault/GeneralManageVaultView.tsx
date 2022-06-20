@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
 import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
-import { Survey } from 'features/survey'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -38,7 +37,6 @@ export function GeneralManageVaultViewAutomation({
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
           <ManageVaultContainer manageVault={generalManageVault.state} />
-          <Survey for="borrow" />
         </Container>
       )
     case VaultType.Insti:
@@ -68,7 +66,6 @@ export function GeneralManageVaultViewAutomation({
               history={VaultHistoryView}
             />
           )}
-          <Survey for="multiply" />
         </Container>
       )
     default:
@@ -93,7 +90,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
               return (
                 <Container variant="vaultPageContainer">
                   <ManageVaultContainer manageVault={generalManageVault.state} />
-                  <Survey for="borrow" />
                 </Container>
               )
             case VaultType.Insti:
@@ -126,7 +122,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                       history={VaultHistoryView}
                     />
                   )}
-                  <Survey for="multiply" />
                 </Container>
               )
           }

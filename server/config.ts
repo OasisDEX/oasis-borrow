@@ -15,7 +15,7 @@ export const config = configSchema.parse({
   snowflakeAccount: process.env.SNOWFLAKE_ACCOUNT,
   snowflakeUser: process.env.SNOWFLAKE_USER,
   snowflakePassword: process.env.SNOWFLAKE_PASSWORD,
-  enableSnowflake: Boolean(process.env.ENABLE_SNOWFLAKE),
+  enableSnowflake: JSON.parse(process.env.ENABLE_SNOWFLAKE || 'false'),
 })
 
 export type Config = z.infer<typeof configSchema>

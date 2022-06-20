@@ -39,7 +39,7 @@
   "approve-allowance": "Approve Allowance",
   "approving-allowance": "Approving Allowance",
   "back": "Back",
-  "ok": "Ok",
+  "ok": "OK",
   "back-to-editing": "Back to editing",
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
@@ -56,6 +56,7 @@
   },
   "change-your-vault": "Change your vault",
   "close": "Close",
+  "close-notification": "Close notification",
   "close-to": "Close to {{token}}",
   "close-vault": "Close Vault",
   "coming-soon": "Coming soon",
@@ -675,7 +676,7 @@
     "optimization": "Optimization",
     "stop-loss": "Stop Loss",
     "history": "History",
-    "vault-info": "Vault Info",
+    "vaultinfo": "Vault Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
@@ -710,6 +711,9 @@
       },
       "stop-loss-collateral-ratio": {
         "footnote": "{{amount}} Next Collateral Ratio"
+      },
+      "dynamic-stop-price": {
+        "footnote": "{{amount}} S/L Coll. Ratio"
       }
     }
   },
@@ -772,7 +776,7 @@
     "custom-dai-allowance-amount-exceeds-maxuint256": "Allowance too large. Please decrease custom allowance amount",
     "custom-dai-allowance-amount-less-than-payback-amount": "You need at least an allowance of your payback amount to continue",
     "withdraw-collateral-on-vault-under-debt-floor": "You cannot withdraw from your vault while it is below the minimum required of {{debtFloor}} Dai. To withdraw your collateral, payback your debt fully. Learn more about the Minimum Vault Debt <0>here</0>.",
-    "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral in the 'Other actions' tab, with the 'deposit collateral' action",
+    "has-to-deposit-collateral-on-empty-vault": "There is no collateral in this vault. Please first add collateral by choosing 'Manage collateral' option in select.",
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop Loss Col. Ratio at current or next collateral price.",
@@ -789,7 +793,7 @@
     "vault-will-be-at-risk-level-warning-at-next-price": "With this action your vault will be at a collateralization ratio near the minimum required at the next price update",
     "vault-is-currently-under-min-active-col-ratio": "Your vault is currently under the min active collateralization ratio at current or next price.  You can decrease the risk of the position, but not increase it.",
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
-    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for transaction",
+    "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for this transaction",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
@@ -1035,6 +1039,7 @@
     "reopen-position": "Reopen position",
     "stop-loss-triggered": "Stop-Loss triggered",
     "stop-loss-triggered-desc": "Your Stop-Loss was triggered on your Vault",
+    "stop-loss-triggered-content": "Your stop loss was triggered on your Vault. You can read the fully summary of the Stop Loss event on the right.",
     "cancel-notice": "Cancelling your Stop-Loss means you will no longer have protection in place and you will need to actively monitor your Collateralisation Ratio.",
     "find-more-about-setting-stop-loss": "Find out more about setting Stop-Loss →",
     "set-stop-loss-again": "Set up Stop-Loss again",
@@ -1043,6 +1048,7 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "closed-vault-existing-sl-header": "Your vault is closed but stop-loss is still active",
     "closed-vault-existing-sl-description": "You can cancel your existing stop-loss here or deposit into your vault in overview tab",
+    "edit-stop-loss": "Edit Stop-Loss",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
     "stop-loss-information": "Stop Loss Information"
@@ -1095,7 +1101,10 @@
     "lowest-annual-fee-cheapest-vault": "The lowest Annual Fee and cheapest Vault for borrowing using staked ETH",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
-    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+      "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -1108,7 +1117,10 @@
     "borrow": "Borrow up to {{value}} DAI",
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
-    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
+      "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    }
   },
   "product-card-title": {
     "ETH-A": "ETH with medium cost and multiple",
@@ -1291,16 +1303,22 @@
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
     "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
-    "next-sell-price": "Next sell price(s)",
+    "next-sell-prices": "Next sell price(s)",
     "setup-transaction-cost": "Setup transaction cost",
     "slippage-limit": "Slippage Limit",
     "collateral-after-next-sell": "Collateral after next sell",
     "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
     "eth-to-be-sold": "ETH to be sold at next sell",
-    "estimated-transaction-cost": "Estimated transaction cost"
+    "estimated-transaction-cost": "Estimated transaction cost",
+    "title": "Auto sell",
+    "next-sell-price": "Next sell price: {{amount}}",
+    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
+    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
   },
 
   "auto-buy": {
+    "title": "Auto buy",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
     "min-ratio": "min. ratio with stop loss/basic sell",
     "next-buy-price": "Next buy price: {{amount}}",
@@ -1321,6 +1339,12 @@
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
-    "eth-to-be-purchased": "ETH to be purchased at next buy"
+    "eth-to-be-purchased": "ETH to be purchased at next buy",
+    "banner": {
+      "header": "Set up Auto Buy",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Setup Auto Buy"
+    }
   }
+
 }

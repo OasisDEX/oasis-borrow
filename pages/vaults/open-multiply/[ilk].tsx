@@ -2,7 +2,6 @@ import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
-import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -40,10 +39,7 @@ function OpenVault({ ilk }: { ilk: string }) {
         {multiplyContainerMap[ilk] ? (
           multiplyContainerMap[ilk](ilk)
         ) : (
-          <>
-            <OpenMultiplyVaultView ilk={ilk} />
-            <Survey for="multiply" />
-          </>
+          <OpenMultiplyVaultView ilk={ilk} />
         )}
       </WithTermsOfService>
     </WithWalletConnection>

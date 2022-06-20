@@ -1,5 +1,4 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -8,7 +7,6 @@ import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import {
   formatAddress,
-  formatAmount,
   formatCryptoBalance,
   formatFiatBalance,
   formatPercent,
@@ -240,33 +238,6 @@ function VaultsOverviewPerType({
   )
 }
 
-function TotalAssets({ totalValueUsd }: { totalValueUsd: BigNumber }) {
-  const { t } = useTranslation()
-
-  return (
-    <Box sx={{ mb: 4 }}>
-      <Text variant="header4" sx={{ mb: 1 }}>
-        {t('vaults-overview.total-assets')}
-      </Text>
-      <Text variant="paragraph3" sx={{ color: 'lavender', display: ['none', 'block'] }}>
-        <Trans
-          i18nKey="vaults-overview.total-assets-subheader"
-          components={[
-            <AppLink
-              href="https://kb.oasis.app/help/curated-token-list"
-              target="_blank"
-              sx={{ fontWeight: 'body' }}
-            />,
-          ]}
-        />
-      </Text>
-      <Text variant="display" sx={{ fontWeight: 'body' }}>
-        ${formatAmount(totalValueUsd, 'USD')}
-      </Text>
-    </Box>
-  )
-}
-
 export function VaultsOverviewView({
   vaultsOverview,
   context,
@@ -302,12 +273,7 @@ export function VaultsOverviewView({
             <WithLoadingIndicator value={positionsOverviewSummary}>
               {(positionsOverviewSummary) =>
                 positionsOverviewSummary.totalValueUsd.gt(zero) ? (
-                  <>
-                    <TotalAssets totalValueUsd={positionsOverviewSummary.totalValueUsd} />
-                    {positionsOverviewSummary.assetsAndPositions.length > 0 && (
-                      <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-                    )}
-                  </>
+                  <AssetsAndPositionsOverview {...positionsOverviewSummary} />
                 ) : (
                   <></>
                 )
@@ -417,7 +383,12 @@ export function VaultsOverviewView({
             </>
           )}
           {earnEnabled && (
-            <Card variant="positionsPage" sx={{ mb: 5 }}>
+            <Card
+              variant="positionsPage"
+              sx={{
+                mb: 5,
+              }}
+            >
               <PositionList positions={positions} />
             </Card>
           )}

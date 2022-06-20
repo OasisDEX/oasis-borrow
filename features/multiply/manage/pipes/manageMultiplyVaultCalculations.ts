@@ -409,6 +409,9 @@ export function calculateMultiply({
   debt: BigNumber
   lockedCollateralUSD: BigNumber
 }) {
+  if (lockedCollateralUSD.eq(zero)) {
+    return zero
+  }
   return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
 }
 
@@ -707,7 +710,7 @@ export function applyManageVaultCalculations(
     ? zero
     : afterLockedCollateralUSD.div(afterDebt)
 
-  const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
+  const multiply = calculateMultiply({ debt, lockedCollateralUSD })
   const afterMultiply =
     vaultHasZeroCollateral && afterDebt.isZero()
       ? zero

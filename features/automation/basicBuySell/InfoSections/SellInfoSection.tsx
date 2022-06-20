@@ -60,7 +60,7 @@ export function SellInfoSection({
           value: `${ratiotoPeformSell}%`,
         },
         {
-          label: t('auto-sell.next-sell-price'),
+          label: t('auto-sell.next-sell-prices'),
           value: `$${nextSellPrice.value}`,
           dropdownValues: nextSellPrice.dropDownValues,
         },
