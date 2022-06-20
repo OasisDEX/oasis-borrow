@@ -1,13 +1,20 @@
+import { OtherAction } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { useTranslation } from 'next-i18next'
 
 interface GetTextButtonLabelParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
+  otherAction?: OtherAction
   token: string
 }
 
-export function getTextButtonLabel({ flow, stage, token }: GetTextButtonLabelParams): string {
+export function getTextButtonLabel({
+  flow,
+  stage,
+  otherAction,
+  token,
+}: GetTextButtonLabelParams): string {
   const { t } = useTranslation()
   const allowanceToken = flow === 'openGuni' ? 'DAI' : token?.toUpperCase()
 
@@ -22,6 +29,7 @@ export function getTextButtonLabel({ flow, stage, token }: GetTextButtonLabelPar
     case 'daiAllowanceFailure':
       return t('edit-token-allowance', { token: 'DAI' })
     default:
-      return t('edit-vault-details')
+      if (otherAction === 'closeVault') return t('not-right-now')
+      else return t('edit-vault-details')
   }
 }
