@@ -1,18 +1,21 @@
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
+import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 
 export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
 
+// Future TODO: Will need to add the correct props to the component.
 export function MaxGasPrice() {
+  const { t } = useTranslation()
   const [active, setActiveItem] = useState('FIVE' as GAS_PERCENTAGE_TYPES)
 
   return (
     <Item
-      label="Max Gas Fee (% of Transaction Value)"
+      label={t('basic-buy-sell-generic.max-gas-fee-trans-value')}
       labelColorPrimary
       dropDownElementType="element"
-      subLabel="Select the maximum gas fee you are willing to spend as % of the value of the Vault."
+      subLabel={t('basic-buy-sell-generic.max-gas-fee-trans-subheading')}
       dropdownValues={[
         {
           value: (
