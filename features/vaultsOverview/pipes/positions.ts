@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { VaultWithType } from '../../../blockchain/vaults'
+import { VaultWithType, VaultWithValue } from '../../../blockchain/vaults'
 import { Position } from './positionsOverviewSummary'
 
 function makerPositionName(vault: VaultWithType): string {
@@ -22,15 +22,15 @@ export function isMakerEarnPosition(vault: VaultWithType): boolean {
 }
 
 export function createPositions$(
-  createMakerVaults$: (address: string) => Observable<VaultWithType[]>,
+  vaultsWithValue$: (address: string) => Observable<VaultWithValue<VaultWithType>[]>,
   address: string,
 ): Observable<Position[]> {
-  return createMakerVaults$(address).pipe(
-    map((vaults: Array<VaultWithType>) => {
+  return vaultsWithValue$(address).pipe(
+    map((vaults) => {
       return vaults.map((vault) => {
         return {
           token: vault.token,
-          contentsUsd: vault.lockedCollateralUSD.minus(vault.debt),
+          contentsUsd: vault.value,
           title: makerPositionName(vault),
           url: `/${vault.id}`,
         }
