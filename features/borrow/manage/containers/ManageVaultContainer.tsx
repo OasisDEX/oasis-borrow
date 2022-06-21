@@ -1,7 +1,6 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
@@ -14,7 +13,6 @@ import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
-import { ManageVaultForm } from './ManageVaultForm'
 
 export function ManageVaultContainer({
   manageVault,
@@ -30,7 +28,6 @@ export function ManageVaultContainer({
   } = manageVault
   const { t } = useTranslation()
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -70,14 +67,7 @@ export function ManageVaultContainer({
           {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
-          {newComponentsEnabled ? (
-            <SidebarManageBorrowVault {...manageVault} />
-          ) : (
-            <ManageVaultForm
-              {...manageVault}
-              txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
-            />
-          )}
+          <SidebarManageBorrowVault {...manageVault} />
         </Box>
       </Grid>
     </>

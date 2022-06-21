@@ -9,7 +9,6 @@ export type Feature =
   | 'EarnProduct'
   | 'Automation'
   | 'AutomationBasicBuyAndSell'
-  | 'NewComponents'
   | 'StopLossRead'
   | 'StopLossWrite'
   | 'StopLossOpenFlow'
@@ -21,7 +20,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   EarnProduct: true,
   Automation: true,
   AutomationBasicBuyAndSell: false,
-  NewComponents: false,
   StopLossRead: true,
   StopLossWrite: true,
   StopLossOpenFlow: false,
