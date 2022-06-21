@@ -261,6 +261,7 @@ export function createManageGuniVault$(
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
                     vaultHistory: [],
+                    toggle: (stage) => change({ kind: 'toggleEditing', stage }),
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
                     invalidSlippage: false,

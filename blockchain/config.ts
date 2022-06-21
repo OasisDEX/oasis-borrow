@@ -353,7 +353,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
+  cacheApi: 'http://localhost:3001/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

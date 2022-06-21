@@ -16,6 +16,7 @@ export function SidebarCancelStopLossEditingStage({
   ethBalance,
   gasEstimationUsd,
   liquidationPrice,
+  selectedSLValue,
 }: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const gasEstimationText = getEstimatedGasFeeText(gasEstimation)
@@ -33,6 +34,7 @@ export function SidebarCancelStopLossEditingStage({
           gasEstimationUsd={gasEstimationUsd}
           ethBalance={ethBalance}
           txError={txError}
+          selectedSLValue={selectedSLValue}
         />
       </Box>
       <MessageCard

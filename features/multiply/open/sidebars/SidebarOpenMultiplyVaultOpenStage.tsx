@@ -8,11 +8,20 @@ import { OpenVaultAnimation } from 'theme/animations'
 
 export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState) {
   const { t } = useTranslation()
-  const { stage } = props
+  const { stage, openFlowWithStopLoss } = props
 
   switch (stage) {
     case 'txInProgress':
-      return <OpenVaultAnimation />
+      return (
+        <>
+          {openFlowWithStopLoss && (
+            <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+              {t('open-vault-two-tx-setup-requirement')}
+            </Text>
+          )}
+          <OpenVaultAnimation />
+        </>
+      )
     case 'txSuccess':
       return (
         <>

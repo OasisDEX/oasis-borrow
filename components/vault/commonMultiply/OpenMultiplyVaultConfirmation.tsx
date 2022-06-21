@@ -1,17 +1,16 @@
 import { Divider } from '@theme-ui/components'
 import { BigNumber } from 'bignumber.js'
 import { TxStatusCardProgress, TxStatusCardSuccess } from 'components/vault/TxStatusCard'
+import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { OpenVaultAnimation } from 'theme/animations'
-
-import { Stage } from '../../../features/earn/guni/open/pipes/openGuniVault'
 
 export function OpenMultiplyVaultConfirmation({
   stage,
   children,
 }: {
-  stage: Stage
+  stage: OpenMultiplyVaultStage
   children: ReactNode
 }) {
   return stage === 'txInProgress' ? (
@@ -25,7 +24,7 @@ export function OpenMultiplyVaultConfirmation({
 }
 
 export interface OpenMultiplyVaultStatusProps {
-  stage: Stage
+  stage: OpenMultiplyVaultStage
   id?: BigNumber
   etherscan?: string
   openTxHash?: string
