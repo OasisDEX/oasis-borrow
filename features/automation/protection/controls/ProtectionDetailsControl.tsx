@@ -1,49 +1,19 @@
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
+import { extractAutoSellData } from 'features/automation/protection/autoSellTriggerDataExtractor'
+import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { BasicSellDetailsControl } from 'features/automation/protection/controls/BasicSellDetailsControl'
+import { StopLossDetailsControl } from 'features/automation/protection/controls/StopLossDetailsControl'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-
-import { getIsEditingProtection } from '../common/helpers'
-import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
-import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
-
-function renderLayout(
-  triggersData: StopLossTriggerData,
-  vaultData: Vault,
-  priceInfo: PriceInfo,
-  ilkData: IlkData,
-  lastUIState: AddFormChange,
-) {
-  const props: ProtectionDetailsLayoutProps = {
-    isStopLossEnabled: triggersData.isStopLossEnabled,
-    slRatio: triggersData.stopLossLevel,
-    vaultDebt: vaultData.debt,
-    currentOraclePrice: priceInfo.currentCollateralPrice,
-    nextOraclePrice: priceInfo.nextCollateralPrice,
-    lockedCollateral: vaultData.lockedCollateral,
-    collateralizationRatioAtNextPrice: vaultData.collateralizationRatioAtNextPrice,
-
-    liquidationRatio: ilkData.liquidationRatio,
-    liquidationPenalty: ilkData.liquidationPenalty,
-    isStaticPrice: priceInfo.isStaticCollateralPrice,
-    token: vaultData.token,
-
-    afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
-    isCollateralActive: !!lastUIState?.collateralActive,
-    isEditing: getIsEditingProtection({
-      isStopLossEnabled: triggersData.isStopLossEnabled,
-      selectedSLValue: lastUIState.selectedSLValue,
-      stopLossLevel: triggersData.stopLossLevel,
-      collateralActive: lastUIState.collateralActive,
-      isToCollateral: triggersData.isToCollateral,
-    }),
-  }
-  return <ProtectionDetailsLayout {...props} />
-}
 
 interface ProtectionDetailsControlProps {
   ilkData: IlkData
@@ -53,18 +23,39 @@ interface ProtectionDetailsControlProps {
 }
 
 export function ProtectionDetailsControl({
-  ilkData,
+  vault,
   automationTriggersData,
   priceInfo,
-  vault,
+  ilkData,
 }: ProtectionDetailsControlProps) {
-  const [lastUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  const stopLossTriggerData = extractStopLossData(automationTriggersData)
+  const autoSellTriggerData = extractAutoSellData()
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const basicBSEnabled = useFeatureToggle('BasicBS')
 
-  return renderLayout(
-    extractStopLossData(automationTriggersData),
-    vault,
-    priceInfo,
-    ilkData,
-    lastUIState,
+  const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
+    currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
+    isAutoSellOn: autoSellTriggerData.isAutoSellEnabled,
+    isStopLossOn: stopLossTriggerData.isStopLossEnabled,
+    section: 'details',
+  })
+
+  return (
+    <>
+      <StopLossDetailsControl
+        vault={vault}
+        stopLossTriggerData={stopLossTriggerData}
+        priceInfo={priceInfo}
+        ilkData={ilkData}
+        isStopLossActive={isStopLossActive}
+      />
+      {basicBSEnabled && (
+        <BasicSellDetailsControl
+          token={vault.token}
+          autoSellTriggerData={autoSellTriggerData}
+          isAutoSellActive={isAutoSellActive}
+        />
+      )}
+    </>
   )
 }
