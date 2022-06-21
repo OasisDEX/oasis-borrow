@@ -17,8 +17,7 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
