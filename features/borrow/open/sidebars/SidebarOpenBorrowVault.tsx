@@ -21,6 +21,7 @@ import {
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarOpenBorrowVaultEditingStage } from './SidebarOpenBorrowVaultEditingStage'

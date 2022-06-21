@@ -18,6 +18,7 @@ import {
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
 import { useObservable } from 'helpers/observableHook'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 export function SidebarOpenGuniVault(props: OpenGuniVaultState) {
