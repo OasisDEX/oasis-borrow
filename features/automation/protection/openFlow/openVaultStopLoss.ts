@@ -58,7 +58,7 @@ export function getDataForStopLoss(props: {
   setStopLossLevel: (level: BigNumber) => void
   stopLossCloseType: CloseVaultTo
   stopLossLevel: BigNumber
-  depositAmount?: BigNumber
+  totalExposure?: BigNumber
   generateAmount?: BigNumber
   afterOutstandingDebt?: BigNumber
 }) {
@@ -70,7 +70,7 @@ export function getDataForStopLoss(props: {
     afterCollateralizationRatioAtNextPrice,
     afterCollateralizationRatio,
     afterLiquidationPrice,
-    depositAmount,
+    totalExposure,
 
     setStopLossCloseType,
     setStopLossLevel,
@@ -120,7 +120,7 @@ export function getDataForStopLoss(props: {
     ethPrice: currentEthPrice,
     vault: {
       liquidationPrice: afterLiquidationPrice,
-      lockedCollateral: depositAmount,
+      lockedCollateral: totalExposure,
       debt: generateAmount,
     } as Vault,
     ilkData,
