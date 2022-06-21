@@ -57,7 +57,7 @@ export function GeneralManageLayout({
             priceInfo={priceInfo}
           />
         }
-        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
+        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore - not sure which one ~ŁW
         headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
