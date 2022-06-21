@@ -46,22 +46,26 @@ export function applyOpenVaultStopLoss<S>(state: S, change: OpenVaultStopLossCha
   return state
 }
 
-export function getDataForStopLoss(props: {
-  token: string
-  priceInfo: PriceInfo
-  ilkData: IlkData
-  balanceInfo: BalanceInfo
-  afterCollateralizationRatioAtNextPrice: BigNumber
-  afterCollateralizationRatio: BigNumber
-  afterLiquidationPrice: BigNumber
-  setStopLossCloseType: (type: CloseVaultTo) => void
-  setStopLossLevel: (level: BigNumber) => void
-  stopLossCloseType: CloseVaultTo
-  stopLossLevel: BigNumber
-  totalExposure?: BigNumber
-  generateAmount?: BigNumber
-  afterOutstandingDebt?: BigNumber
-}) {
+export function getDataForStopLoss(
+  props: {
+    token: string
+    priceInfo: PriceInfo
+    ilkData: IlkData
+    balanceInfo: BalanceInfo
+    afterCollateralizationRatioAtNextPrice: BigNumber
+    afterCollateralizationRatio: BigNumber
+    afterLiquidationPrice: BigNumber
+    setStopLossCloseType: (type: CloseVaultTo) => void
+    setStopLossLevel: (level: BigNumber) => void
+    stopLossCloseType: CloseVaultTo
+    stopLossLevel: BigNumber
+    totalExposure?: BigNumber
+    depositAmount?: BigNumber
+    generateAmount?: BigNumber
+    afterOutstandingDebt?: BigNumber
+  },
+  feature: 'borrow' | 'multiply',
+) {
   const {
     token,
     priceInfo: { currentEthPrice, nextCollateralPrice },
@@ -71,6 +75,7 @@ export function getDataForStopLoss(props: {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     totalExposure,
+    depositAmount,
 
     setStopLossCloseType,
     setStopLossLevel,
@@ -78,7 +83,7 @@ export function getDataForStopLoss(props: {
     stopLossLevel,
   } = props
 
-  const generateAmount = props.generateAmount || props.afterOutstandingDebt
+  const generateAmount = feature === 'multiply' ? props.afterOutstandingDebt : props.generateAmount
   const tokenData = getToken(token)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -120,7 +125,7 @@ export function getDataForStopLoss(props: {
     ethPrice: currentEthPrice,
     vault: {
       liquidationPrice: afterLiquidationPrice,
-      lockedCollateral: totalExposure,
+      lockedCollateral: feature === 'multiply' ? totalExposure : depositAmount,
       debt: generateAmount,
     } as Vault,
     ilkData,
