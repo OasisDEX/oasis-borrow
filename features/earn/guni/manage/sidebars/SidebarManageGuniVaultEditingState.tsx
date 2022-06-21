@@ -25,7 +25,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
   return (
     <Grid gap={3}>
       {stage === 'adjustPosition' && (
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
           <Trans
             i18nKey={'vault-info-messages.earn-overview'}
             values={{ token }}
@@ -45,7 +45,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
       )}
       {stage === 'otherActions' && (
         <>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
             {t('vault-info-messages.closing')}
           </Text>
           {!debt.isZero() && (
