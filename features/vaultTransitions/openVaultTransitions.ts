@@ -18,7 +18,11 @@ export type OpenVaultTransitionChange =
 
 type GenericOpenVaultState = {
   withStopLossStage: boolean
+  withProxyStep: boolean
+  withAllowanceStep: boolean
+  proxySuccess?: string
   generateAmount?: BigNumber
+  afterOutstandingDebt?: BigNumber
   errorMessages: VaultErrorMessage[]
   proxyAddress?: any
   depositAmount?: BigNumber
@@ -53,7 +57,8 @@ export function createApplyOpenVaultTransition<
         ? 'proxyWaitingForConfirmation'
         : !hasAllowance
         ? 'allowanceWaitingForConfirmation'
-        : state.withStopLossStage && state.generateAmount?.gt(zero)
+        : state.withStopLossStage &&
+          (state.generateAmount?.gt(zero) || state.afterOutstandingDebt?.gt(zero))
         ? 'stopLossEditing'
         : 'txWaitingForConfirmation'
 
@@ -93,6 +98,8 @@ export function createApplyOpenVaultTransition<
       return {
         ...state,
         stopLossSkipped: false,
+        withProxyStep: !!state.proxySuccess,
+        withAllowanceStep: false,
         stopLossLevel: zero,
         stopLossCloseType: 'dai',
         stage: 'editing',

@@ -14,7 +14,12 @@ import { setAllowance } from 'features/allowance/setAllowance'
 import {
   applyOpenVaultStopLoss,
   OpenVaultStopLossChanges,
-} from 'features/borrow/open/pipes/openVaultStopLoss'
+  StopLossOpenFlowStages,
+} from 'features/automation/protection/openFlow/openVaultStopLoss'
+import {
+  addStopLossTrigger,
+  applyStopLossOpenFlowTransaction,
+} from 'features/automation/protection/openFlow/stopLossOpenFlowTransaction'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { BalanceInfo, balanceInfoChange$ } from 'features/shared/balanceInfo'
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
@@ -61,12 +66,7 @@ import {
   defaultOpenVaultSummary,
   OpenVaultSummary,
 } from './openVaultSummary'
-import {
-  addStopLossTrigger,
-  applyEstimateGas,
-  applyOpenVaultTransaction,
-  openVault,
-} from './openVaultTransactions'
+import { applyEstimateGas, applyOpenVaultTransaction, openVault } from './openVaultTransactions'
 import { finalValidation, validateErrors, validateWarnings } from './openVaultValidations'
 
 interface OpenVaultInjectedOverrideChange {
@@ -109,15 +109,10 @@ export type OpenVaultStage =
   | 'allowanceSuccess'
   | 'txWaitingForConfirmation'
   | 'txWaitingForApproval'
-  | 'stopLossEditing'
   | 'txInProgress'
   | 'txFailure'
   | 'txSuccess'
-  | 'stopLossTxWaitingForConfirmation'
-  | 'stopLossTxWaitingForApproval'
-  | 'stopLossTxInProgress'
-  | 'stopLossTxFailure'
-  | 'stopLossTxSuccess'
+  | StopLossOpenFlowStages
 
 export interface MutableOpenVaultState {
   stage: OpenVaultStage
@@ -127,7 +122,7 @@ export interface MutableOpenVaultState {
   showGenerateOption: boolean
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
-  stopLossSkipped: false
+  stopLossSkipped: boolean
   id?: BigNumber
 }
 
@@ -173,7 +168,8 @@ interface OpenVaultTxInfo {
   openVaultSafeConfirmations: number
 }
 
-interface OpenVaultStopLossSetup {
+// TODO to be moved to common
+export interface OpenVaultStopLossSetup {
   withStopLossStage: boolean
   setStopLossCloseType: (type: CloseVaultTo) => void
   setStopLossLevel: (level: BigNumber) => void
@@ -300,7 +296,7 @@ function addTransitions(
   if (state.stage === 'stopLossTxWaitingForConfirmation' || state.stage === 'stopLossTxFailure') {
     return {
       ...state,
-      progress: () => addStopLossTrigger(txHelpers, vaultActions, change, state),
+      progress: () => addStopLossTrigger(txHelpers, change, state),
       regress: () => change({ kind: 'backToEditing' }),
     }
   }
@@ -430,6 +426,7 @@ export function createOpenVault$(
                       ),
                       applyProxyChanges,
                       applyOpenVaultTransaction,
+                      applyStopLossOpenFlowTransaction,
                       applyAllowanceChanges,
                       applyOpenVaultEnvironment,
                       applyOpenVaultInjectedOverride,

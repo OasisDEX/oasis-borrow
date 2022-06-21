@@ -12,6 +12,7 @@ export interface ProxyState {
   progress?(): void
   regress?(): void
   isProxyStage: boolean
+  proxySuccess?: boolean
 }
 
 export const defaultProxyStage: ProxyState = {
@@ -116,6 +117,7 @@ export function applyProxyChanges<S extends ProxyState & Dependencies>(
       ...state,
       proxyAddress,
       stage: 'proxySuccess',
+      proxySuccess: true,
     }
   }
 
