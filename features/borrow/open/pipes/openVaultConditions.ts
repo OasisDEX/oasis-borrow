@@ -399,7 +399,10 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
       customAllowanceAmountEmpty ||
       customAllowanceAmountExceedsMaxUint256 ||
       customAllowanceAmountLessThanDepositAmount
-    ) || stage === 'txSuccess'
+    ) ||
+    stage === 'txSuccess' ||
+    stage === 'stopLossTxWaitingForConfirmation' ||
+    stage === 'stopLossTxSuccess'
 
   const canRegress = ([
     'proxyWaitingForConfirmation',
@@ -414,7 +417,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
-
+  console.log(state)
   return {
     ...state,
     inputAmountsEmpty,
