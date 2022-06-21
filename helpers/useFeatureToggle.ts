@@ -21,10 +21,10 @@ const configuredFeatures: Record<Feature, boolean> = {
   EarnProduct: true,
   Automation: true,
   AutomationBasicBuyAndSell: false,
-  NewComponents: false,
+  NewComponents: true,
   StopLossRead: true,
   StopLossWrite: true,
-  StopLossOpenFlow: false,
+  StopLossOpenFlow: true,
   BasicBS: false,
   // your feature here....
 }
