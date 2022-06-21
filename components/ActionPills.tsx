@@ -17,6 +17,9 @@ export function ActionPills({ active, items, variant }: ActionPillsProps) {
       py: '8px',
       px: '16px',
       fontSize: 1,
+      ':first-child': {
+        ml: 0,
+      },
     }),
     [variant],
   )

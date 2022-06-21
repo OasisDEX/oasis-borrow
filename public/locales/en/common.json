@@ -1303,6 +1303,11 @@
       "claim-rewards": "Claim Rewards"
     }
   },
+  
+  "basic-buy-sell-generic": {
+    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
+  },
 
   "auto-sell": {
     "sell.sell-title": "Basic Auto Sell Summary",
