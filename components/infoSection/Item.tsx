@@ -67,12 +67,13 @@ export function Item({
               display: 'flex',
               alignItems: 'center',
             }}
+            as="p"
           >
             {isLoading ? (
               <AppSpinner />
             ) : (
               <>
-                {value && <>{typeof value === 'object' ? value : `${value}`}</>}
+                {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
                 {secondaryValue && (
                   <>
                     <VaultChangesInformationArrow />
@@ -110,7 +111,7 @@ export function Item({
             <Text
               sx={{
                 fontWeight: 400,
-                color: '#787A9B',
+                color: theme.colors.text.subtitle,
               }}
             >
               {subLabel}

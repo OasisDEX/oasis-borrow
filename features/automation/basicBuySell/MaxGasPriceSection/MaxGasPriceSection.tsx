@@ -6,7 +6,7 @@ import React, { useState } from 'react'
 export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
 
 // Future TODO: Will need to add the correct props to the component.
-export function MaxGasPrice() {
+export function MaxGasPriceSection() {
   const { t } = useTranslation()
   const [active, setActiveItem] = useState('FIVE' as GAS_PERCENTAGE_TYPES)
 
