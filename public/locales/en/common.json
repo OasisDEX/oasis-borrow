@@ -523,6 +523,7 @@
   "next": "Next",
   "no-dai": "No Dai",
   "no-activity": "No activity to show",
+  "not-right-now": "Not right now",
   "notice-privacy": "By using our site you agree to our <0>Cookie Policy</0>.",
   "notification-status-complete": "Complete",
   "notification-status-completed": "Complete",
@@ -695,6 +696,9 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "switch-to-borrow": "Switch to Borrow"
+      },
+      "earn": {
+        "vault-overview": "Vault overview"
       }
     },
     "cards": {
@@ -798,6 +802,7 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
+    "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
