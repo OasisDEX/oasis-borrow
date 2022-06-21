@@ -10,8 +10,11 @@ import {
   FieldWithdrawCollateral,
 } from 'components/vault/sidebar/SidebarFields'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageVaultChangesInformation } from 'features/borrow/manage/containers/ManageVaultChangesInformation'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -23,6 +26,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     accountIsConnected,
     accountIsController,
     depositAmount,
+    errorMessages,
     generateAmount,
     inputAmountsEmpty,
     mainAction,
@@ -38,6 +42,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     updatePayback,
     updateWithdraw,
     vault: { token },
+    warningMessages,
     withdrawAmount,
   } = props
 
@@ -139,6 +144,8 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
           }}
         />
       )}
+      <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
+      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
       <ManageVaultChangesInformation {...props} />
     </Grid>
   )
