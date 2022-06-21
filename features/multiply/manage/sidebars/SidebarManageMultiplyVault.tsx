@@ -130,6 +130,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           panel: 'transition',
           action: () => {
             toggle!('borrowTransitionEditing')
+            setOtherAction!('depositCollateral')
           },
         },
         {
