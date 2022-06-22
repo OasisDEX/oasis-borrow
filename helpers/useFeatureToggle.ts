@@ -11,7 +11,6 @@ export type Feature =
   | 'AutomationBasicBuyAndSell'
   | 'StopLossRead'
   | 'StopLossWrite'
-  | 'StopLossOpenFlow'
   | 'BasicBS'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -22,7 +21,6 @@ const configuredFeatures: Record<Feature, boolean> = {
   AutomationBasicBuyAndSell: false,
   StopLossRead: true,
   StopLossWrite: true,
-  StopLossOpenFlow: false,
   BasicBS: false,
   // your feature here....
 }

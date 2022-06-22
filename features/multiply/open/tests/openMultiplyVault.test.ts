@@ -158,7 +158,7 @@ describe('open multiply vault', () => {
       expect(state().proxyAddress).to.deep.equal(DEFAULT_PROXY_ADDRESS)
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().currentStep).to.deep.equal(2)
+      expect(state().currentStep).to.deep.equal(1)
       expect(state().totalSteps).to.deep.equal(3)
     })
 
@@ -197,7 +197,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('stopLossEditing')
     })
 
     it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
@@ -287,7 +287,7 @@ describe('open multiply vault', () => {
       )
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
 
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
@@ -300,7 +300,7 @@ describe('open multiply vault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceSuccess')
       expect(state().allowance!).to.be.deep.equal(customAllowanceAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
@@ -317,7 +317,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('stopLossEditing')
     })
 
     it('should open vault successfully and progress to editing', () => {
@@ -337,10 +337,11 @@ describe('open multiply vault', () => {
       )
       state().updateDeposit!(depositAmount)
       state().progress!()
+      state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('txSuccess')
       expect(state().id!).to.deep.equal(new BigNumber('3281'))
+      expect(state().stage).to.deep.equal('txSuccess')
       state().progress!()
       expect(state().stage).to.deep.equal('editing')
     })
@@ -380,7 +381,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should handle set allowance failure and regress allowance', () => {
@@ -426,7 +427,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().updateRequiredCollRatio!(requiredCollRatio)
       state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('stopLossEditing')
 
       state().clear()
       expect(state().stage).to.deep.equal('editing')
@@ -704,7 +705,6 @@ describe('open multiply vault', () => {
     })
 
     it('should skip stop loss step', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
 
       const state = getStateUnpacker(
@@ -725,7 +725,6 @@ describe('open multiply vault', () => {
     })
 
     it('should add stop loss successfully', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
       const stopLossLevel = new BigNumber('2')
 
@@ -753,7 +752,6 @@ describe('open multiply vault', () => {
     })
 
     it('should handle add stop loss failure', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
       const stopLossLevel = new BigNumber('2')
 
