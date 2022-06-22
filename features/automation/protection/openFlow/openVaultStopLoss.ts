@@ -81,9 +81,11 @@ export function getDataForStopLoss(
     setStopLossLevel,
     stopLossCloseType,
     stopLossLevel,
+    afterOutstandingDebt,
+    generateAmount,
   } = props
 
-  const generateAmount = feature === 'multiply' ? props.afterOutstandingDebt : props.generateAmount
+  const debt = feature === 'multiply' ? afterOutstandingDebt : generateAmount
   const tokenData = getToken(token)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -126,7 +128,7 @@ export function getDataForStopLoss(
     vault: {
       liquidationPrice: afterLiquidationPrice,
       lockedCollateral: feature === 'multiply' ? totalExposure : depositAmount,
-      debt: generateAmount,
+      debt,
     } as Vault,
     ilkData,
     selectedSLValue: stopLossLevel,
