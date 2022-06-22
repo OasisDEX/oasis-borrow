@@ -105,7 +105,7 @@ export function getSidebarStatus({
           }),
           type: 'progress',
           ...txData,
-          txHash: openFlowWithStopLoss ? openTxHash! : txHash!,
+          txHash: openTxHash! || txHash!,
         },
       ]
 
