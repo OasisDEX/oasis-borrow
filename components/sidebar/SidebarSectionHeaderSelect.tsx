@@ -41,6 +41,7 @@ export function SidebarSectionHeaderSelect({
       ref={componentRef}
       sx={{
         position: 'relative',
+        flexShrink: 0,
         ml: 2,
         '&:first-child': {
           ml: 0,
@@ -82,15 +83,21 @@ export function SidebarSectionHeaderSelect({
             }}
           />
         )}
-        {activeItem?.shortLabel || activeItem?.label}
-        <ExpandableArrow size={13} direction={isExpanded ? 'up' : 'down'} sx={{ ml: '12px' }} />
+        <Text as="span" sx={{ whiteSpace: 'nowrap' }}>
+          {activeItem?.shortLabel || activeItem?.label}
+        </Text>
+        <ExpandableArrow
+          size={13}
+          direction={isExpanded ? 'up' : 'down'}
+          sx={{ mt: '2px', ml: '12px' }}
+        />
       </Button>
       <Box
         as="ul"
         sx={{
           listStyle: 'none',
           position: 'absolute',
-          top: '100%',
+          top: 40,
           right: 0,
           mt: 2,
           px: 0,

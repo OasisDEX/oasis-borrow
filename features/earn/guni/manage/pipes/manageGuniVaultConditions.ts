@@ -9,8 +9,11 @@ export function applyGuniManageVaultConditions(
 
   const invalidSlippage = slippage.gt(GUNI_MAX_SLIPPAGE)
 
+  const hasToDepositCollateralOnEmptyVault = false
+
   return {
     ...state,
     invalidSlippage,
+    hasToDepositCollateralOnEmptyVault,
   }
 }

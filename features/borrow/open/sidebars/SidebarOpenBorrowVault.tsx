@@ -7,8 +7,8 @@ import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVault
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
+import { getDataForStopLoss } from 'features/automation/protection/openFlow/openVaultStopLoss'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
-import { getDataForStopLoss } from 'features/borrow/open/pipes/openVaultStopLoss'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -54,7 +54,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     stage,
     token,
     totalSteps,
-    stopLossLevel,
     isStopLossSuccessStage,
     openFlowWithStopLoss,
     isAddStopLossStage,
@@ -91,7 +90,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
     primaryButton: {
       label: getPrimaryButtonLabel({ ...primaryButtonLabelParams, flow }),
       steps: !isSuccessStage && !isAddStopLossStage ? [currentStep, totalSteps] : undefined,
-      disabled: !canProgress || (isStopLossEditingStage && stopLossLevel.isZero()),
+      disabled: !canProgress,
       isLoading: isLoadingStage,
       action: () => {
         if (!isSuccessStage && !isStopLossSuccessStage) progress!()

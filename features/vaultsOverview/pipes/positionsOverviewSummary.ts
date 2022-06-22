@@ -2,9 +2,9 @@ import BigNumber from 'bignumber.js'
 import { Ticker } from 'blockchain/prices'
 import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
-import { uniq } from 'lodash'
+import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { map } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
 
 import { AssetAction } from './assetActions'
 
@@ -129,6 +129,7 @@ export function createPositionsOverviewSummary$(
     map((tokensAndBalances) =>
       tokensAndBalances.reduce((acc, { contentsUsd }) => acc.plus(contentsUsd || zero), zero),
     ),
+    distinctUntilChanged((prev, cur) => prev.eq(cur)),
   )
 
   // add percentages
@@ -165,5 +166,7 @@ export function createPositionsOverviewSummary$(
       percentageOther,
       totalValueUsd,
     })),
+    debounceTime(500),
+    distinctUntilChanged(isEqual),
   )
 }

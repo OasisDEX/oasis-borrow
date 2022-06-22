@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
 import {
@@ -10,8 +11,8 @@ import { stopLossSliderBasicConfig } from 'features/automation/protection/common
 import { getSliderPercentageFill } from 'features/automation/protection/common/helpers'
 import { SidebarAdjustStopLossEditingStageProps } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { CloseVaultTo } from 'features/multiply/manage/pipes/manageMultiplyVault'
-
-import { OpenVaultChange, OpenVaultState } from './openVault'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 
 export type OpenVaultStopLossLevelChange = {
   kind: 'stopLossLevel'
@@ -23,10 +24,11 @@ export type OpenVaultStopLossCloseTypeChange = {
   type: 'dai' | 'collateral'
 }
 
-export function applyOpenVaultStopLoss(
-  state: OpenVaultState,
-  change: OpenVaultChange,
-): OpenVaultState {
+export type OpenVaultStopLossChanges =
+  | OpenVaultStopLossLevelChange
+  | OpenVaultStopLossCloseTypeChange
+
+export function applyOpenVaultStopLoss<S>(state: S, change: OpenVaultStopLossChanges) {
   if (change.kind === 'stopLossLevel') {
     return {
       ...state,
@@ -44,11 +46,22 @@ export function applyOpenVaultStopLoss(
   return state
 }
 
-export type OpenVaultStopLossChanges =
-  | OpenVaultStopLossLevelChange
-  | OpenVaultStopLossCloseTypeChange
-
-export function getDataForStopLoss(props: OpenVaultState) {
+export function getDataForStopLoss(props: {
+  token: string
+  priceInfo: PriceInfo
+  ilkData: IlkData
+  balanceInfo: BalanceInfo
+  afterCollateralizationRatioAtNextPrice: BigNumber
+  afterCollateralizationRatio: BigNumber
+  afterLiquidationPrice: BigNumber
+  setStopLossCloseType: (type: CloseVaultTo) => void
+  setStopLossLevel: (level: BigNumber) => void
+  stopLossCloseType: CloseVaultTo
+  stopLossLevel: BigNumber
+  depositAmount?: BigNumber
+  generateAmount?: BigNumber
+  afterOutstandingDebt?: BigNumber
+}) {
   const {
     token,
     priceInfo: { currentEthPrice, nextCollateralPrice },
@@ -58,13 +71,14 @@ export function getDataForStopLoss(props: OpenVaultState) {
     afterCollateralizationRatio,
     afterLiquidationPrice,
     depositAmount,
-    generateAmount,
+
     setStopLossCloseType,
     setStopLossLevel,
     stopLossCloseType,
     stopLossLevel,
   } = props
 
+  const generateAmount = props.generateAmount || props.afterOutstandingDebt
   const tokenData = getToken(token)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -120,3 +134,11 @@ export function getDataForStopLoss(props: OpenVaultState) {
 
   return sidebarProps
 }
+
+export type StopLossOpenFlowStages =
+  | 'stopLossEditing'
+  | 'stopLossTxWaitingForConfirmation'
+  | 'stopLossTxWaitingForApproval'
+  | 'stopLossTxInProgress'
+  | 'stopLossTxFailure'
+  | 'stopLossTxSuccess'

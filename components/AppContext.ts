@@ -56,7 +56,13 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import {
+  createStandardCdps$,
+  createVault$,
+  createVaults$,
+  decorateVaultsWithValue$,
+  Vault,
+} from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -619,8 +625,6 @@ export function setupAppContext() {
     ]),
   )
 
-  const positions$ = memoize(curry(createPositions$)(vaults$))
-
   const ilks$ = createIlks$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
@@ -687,6 +691,10 @@ export function setupAppContext() {
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
+  const vaultWithValue$ = memoize(
+    curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
+  )
+  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -866,7 +874,7 @@ export function setupAppContext() {
   const vaultsOverview$ = memoize(
     curry(createVaultsOverview$)(
       context$,
-      vaults$,
+      vaultWithValue$,
       ilksWithBalance$,
       automationTriggersData$,
       vaultHistory$,

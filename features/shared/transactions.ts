@@ -57,7 +57,7 @@ type OpenChange =
       id: BigNumber
     }
 
-type AddStopLossChange =
+export type AddStopLossChange =
   | { kind: 'stopLossTxWaitingForApproval' }
   | { kind: 'stopLossTxWaitingForConfirmation'; id: BigNumber }
   | {

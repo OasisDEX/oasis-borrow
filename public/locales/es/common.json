@@ -1142,7 +1142,10 @@
     "lowest-stabilityFee-and-cheapest": "El Vault más barato y con la menor Tasa de Estabilidad para préstamos contra {{token}}",
     "staking-rewards": "Perfecto para pedir préstamos o multiplicar exposición mientras gana recompensas por staking.",
     "great-borrowing-and-multiplying": "Perfecto para pedir préstamos o multiplicar su exposición a {{token}}",
-    "guni": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+      "GUNIV3DAIUSDC1-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 5bps de UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "La menor tasa para préstamos",
       "staking-rewards": "Recompensas de staking",
@@ -1155,7 +1158,11 @@
     "borrow": "Tome un préstamo de hasta {{value}} Dai",
     "multiply": "Obtenga una exposición de hasta {{value}} {{token}}",
     "earn": "Gane {{value}} {{token}} por año",
-    "guni": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps"
+    "guni": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
+      "GUNIV3DAIUSDC1-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 5bps"
+    }
   },
   "product-page": {
     "multiply": {

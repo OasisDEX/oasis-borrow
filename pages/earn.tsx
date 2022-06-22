@@ -1,4 +1,3 @@
-import { Survey } from 'features/survey'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import React from 'react'
@@ -26,12 +25,7 @@ function EarnPage() {
 
   const view = enabled ? <EarnView /> : null
 
-  return (
-    <WithConnection>
-      {view}
-      <Survey for="earn" />
-    </WithConnection>
-  )
+  return <WithConnection>{view}</WithConnection>
 }
 
 EarnPage.layout = ProductPagesLayout

@@ -269,6 +269,7 @@ export interface AdjustSlFormLayoutProps {
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
+  isStopLossEnabled: boolean
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {

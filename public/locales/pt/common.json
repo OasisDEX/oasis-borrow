@@ -798,7 +798,10 @@
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
-    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+      "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -810,7 +813,10 @@
     "borrow": "Borrow up to {{value}} DAI",
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
-    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
+      "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    }
   },
   "product-page": {
     "multiply": {

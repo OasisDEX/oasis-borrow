@@ -93,18 +93,13 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
               tokenImage={cardData.bannerIcon}
               tokenGif={cardData.bannerGif}
               title={title}
-              description={t(
-                `product-card.${productCardsConfig.descriptionCustomKeys[cardData.ilk]}`,
-                {
-                  token: cardData.token,
-                },
-              )}
+              description={t(`product-card.guni.${cardData.ilk}`)}
               banner={{
                 title: t('product-card-banner.with', {
                   value: roundedTokenAmount.toFormat(0),
                   token: 'DAI',
                 }),
-                description: t(`product-card-banner.guni`, {
+                description: t(`product-card-banner.guni.${cardData.ilk}`, {
                   value: formatCryptoBalance(maxMultiple.times(roundedTokenAmount)),
                   token: cardData.token,
                 }),
