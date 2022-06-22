@@ -166,7 +166,6 @@ export function extractFieldDepositDaiData(state: VaultState) {
 }
 
 export function extractFieldGenerateDaiData(state: VaultState) {
-  console.log(state)
   return {
     ...pick(
       [
