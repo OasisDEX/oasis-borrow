@@ -1,12 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
-import {
-  errorsValidation,
-  warningsValidation,
-} from 'features/automation/protection/common/validation'
 import { CancelSlFormLayoutProps } from 'features/automation/protection/controls/CancelSlFormLayout'
 import { SidebarCancelStopLossCancelStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossCancelStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossEditingStage'
@@ -15,7 +9,6 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -23,30 +16,17 @@ import { Grid } from 'theme-ui'
 export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd,
-    ilkData,
     isProgressDisabled,
     removeTriggerConfig,
     stage,
     toggleForms,
     token,
-    txError,
     vault: { debt },
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError, debt: debt })
-  const warnings = warningsValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
   const sidebarTxData = extractSidebarTxData(props)
 
   const sidebarSectionProps: SidebarSectionProps = {
@@ -58,12 +38,6 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
         )}
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarCancelStopLossCancelStage {...props} />
-        )}
-        {stage === 'editing' && stopLossWriteEnabled && (
-          <>
-            <VaultErrors errorMessages={errors} ilkData={ilkData} />
-            <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-          </>
         )}
       </Grid>
     ),

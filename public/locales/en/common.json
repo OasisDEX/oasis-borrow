@@ -488,6 +488,7 @@
     "button-failure": "Something went wrong, try again",
     "button-success": "Transition completed, refreshing..."
   },
+  "field-from": "From",
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "minimum": "Minimum",
@@ -669,8 +670,8 @@
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
-    "seven-day-average": "7 day average",
-    "ninety-day-average": "90 day average",
+    "seven-day-average": "7 day net APY",
+    "ninety-day-average": "90 day net APY",
     "vault-protection": "Vault Protection",
     "date": "Date",
     "overview": "Overview",
@@ -1302,6 +1303,11 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  
+  "basic-buy-sell-generic": {
+    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
   },
 
   "auto-sell": {
