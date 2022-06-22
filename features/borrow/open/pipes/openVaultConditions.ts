@@ -417,7 +417,7 @@ export function applyOpenVaultConditions(state: OpenVaultState): OpenVaultState 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
   const openFlowWithStopLoss = withStopLossStage && !stopLossSkipped && stopLossLevel.gt(zero)
-  console.log(state)
+
   return {
     ...state,
     inputAmountsEmpty,
