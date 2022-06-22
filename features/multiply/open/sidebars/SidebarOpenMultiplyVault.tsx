@@ -59,7 +59,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props)
+  const stopLossData = getDataForStopLoss(props, 'multiply')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),

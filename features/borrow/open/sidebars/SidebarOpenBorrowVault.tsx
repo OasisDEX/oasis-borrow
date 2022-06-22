@@ -62,7 +62,7 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props)
+  const stopLossData = getDataForStopLoss(props, 'borrow')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),

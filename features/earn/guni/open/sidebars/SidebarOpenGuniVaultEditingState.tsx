@@ -3,7 +3,11 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
-import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
+import {
+  extractCommonErrors,
+  extractCommonWarnings,
+  extractGenerateErrors,
+} from 'helpers/messageMappers'
 import { Trans } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -19,6 +23,7 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
     updateDeposit,
     updateDepositMax,
     warningMessages,
+    maxGenerateAmount,
   } = props
 
   return (
@@ -42,11 +47,18 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
         warningMessages={warningMessages}
         ilkData={ilkData}
       />
+      <VaultErrors
+        {...props}
+        errorMessages={[
+          ...extractCommonErrors(errorMessages),
+          ...extractGenerateErrors(errorMessages),
+        ]}
+        maxGenerateAmount={maxGenerateAmount}
+      />
+      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {maxMultiple.toNumber().toFixed(2)}x {token}
       </Text>
-      <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
-      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
       <GuniOpenMultiplyVaultChangesInformation {...props} />
     </Grid>
   )

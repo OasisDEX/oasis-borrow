@@ -55,9 +55,9 @@ function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMul
   return (
     <SidebarSliderAdjustMultiply
       state={props}
-      min={sliderMin.toNumber()}
-      max={sliderMax.toNumber()}
-      value={requiredCollRatio?.toNumber() || collateralizationRatio.toNumber()}
+      min={sliderMin}
+      max={sliderMax}
+      value={requiredCollRatio || collateralizationRatio}
       onChange={(e) => {
         updateRequiredCollRatio!(new BigNumber(e.target.value))
       }}

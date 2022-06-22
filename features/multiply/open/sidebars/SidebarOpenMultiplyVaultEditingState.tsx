@@ -32,9 +32,9 @@ export function SidebarOpenMultiplyVaultEditingState(props: OpenMultiplyVaultSta
       <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
       <SidebarSliderAdjustMultiply
         state={props}
-        min={liquidationRatio.toNumber()}
-        max={maxCollRatio?.toNumber()}
-        value={canAdjustRisk && requiredCollRatio ? requiredCollRatio.toNumber() : 100}
+        min={liquidationRatio}
+        max={maxCollRatio}
+        value={canAdjustRisk && requiredCollRatio ? requiredCollRatio : new BigNumber(100)}
         onChange={(e) => {
           updateRequiredCollRatio && updateRequiredCollRatio(new BigNumber(e.target.value))
         }}
