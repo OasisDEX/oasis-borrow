@@ -1,42 +1,58 @@
-import { Box } from '@theme-ui/components'
 import { MessageCard } from 'components/MessageCard'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import {
+  errorsValidation,
+  warningsValidation,
+} from 'features/automation/protection/common/validation'
 import {
   CancelDownsideProtectionInformation,
   CancelSlFormLayoutProps,
 } from 'features/automation/protection/controls/CancelSlFormLayout'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Text } from 'theme-ui'
+import { Grid, Text } from 'theme-ui'
 
 export function SidebarCancelStopLossEditingStage({
-  txError,
+  ethBalance,
   ethPrice,
   gasEstimation,
-  ethBalance,
   gasEstimationUsd,
+  ilkData,
   liquidationPrice,
   selectedSLValue,
+  token,
+  txError,
+  vault: { debt },
 }: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
+
   const gasEstimationText = getEstimatedGasFeeText(gasEstimation)
+  const errors = errorsValidation({ txError, debt: debt })
+  const warnings = warningsValidation({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
 
   return (
-    <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+    <Grid>
+      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {t('protection.cancel-downside-protection-desc')}
       </Text>
-      <Box my={3}>
-        <CancelDownsideProtectionInformation
-          gasEstimationText={gasEstimationText}
-          liquidationPrice={liquidationPrice}
-          ethPrice={ethPrice}
-          gasEstimationUsd={gasEstimationUsd}
-          ethBalance={ethBalance}
-          txError={txError}
-          selectedSLValue={selectedSLValue}
-        />
-      </Box>
+      <VaultErrors errorMessages={errors} ilkData={ilkData} />
+      <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+      <CancelDownsideProtectionInformation
+        gasEstimationText={gasEstimationText}
+        liquidationPrice={liquidationPrice}
+        ethPrice={ethPrice}
+        gasEstimationUsd={gasEstimationUsd}
+        ethBalance={ethBalance}
+        txError={txError}
+        selectedSLValue={selectedSLValue}
+      />
       <MessageCard
         messages={[
           <>
@@ -46,6 +62,6 @@ export function SidebarCancelStopLossEditingStage({
         type="warning"
         withBullet={false}
       />
-    </>
+    </Grid>
   )
 }

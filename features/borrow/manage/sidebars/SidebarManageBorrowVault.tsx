@@ -4,8 +4,6 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultSLTriggered } from 'components/vault/sidebar/SidebarVaultSLTriggered'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -19,7 +17,6 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
-import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
@@ -138,11 +135,6 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
               <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
             )}
             {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
-            <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
-            <VaultWarnings
-              {...props}
-              warningMessages={extractCommonWarnings(props.warningMessages)}
-            />
           </>
         ) : (
           <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />

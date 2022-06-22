@@ -223,7 +223,6 @@ export function VaultActionInput({
             border-color 200ms
           `,
           opacity: !toggleStatus && !disabled ? '0.5' : '1',
-          cursor: !toggleStatus && !disabled ? 'not-allowed' : 'default',
           ...(!disabled &&
             toggleStatus && {
               '&:hover, &:focus-within': {

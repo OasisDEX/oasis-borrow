@@ -17,6 +17,8 @@ import {
 import { OptionalAdjust } from 'components/vault/sidebar/SidebarOptionalAdjust'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarSliderAdjustMultiply } from 'components/vault/sidebar/SidebarSliders'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultChangesInformation } from 'features/multiply/manage/containers/ManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import {
@@ -25,6 +27,7 @@ import {
 } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
 import { MAX_COLL_RATIO } from 'features/multiply/open/pipes/openMultiplyVaultCalculations'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -37,13 +40,13 @@ interface SliderAdjustMultiplyParams extends ManageMultiplyVaultState {
 
 function SliderAdjustMultiply({ collapsed, disabled, ...props }: SliderAdjustMultiplyParams) {
   const {
-    vault: { collateralizationRatio },
+    hasToDepositCollateralOnEmptyVault,
     ilkData: { liquidationRatio },
-    requiredCollRatio,
-    updateRequiredCollRatio,
     maxCollRatio,
     minCollRatio,
-    hasToDepositCollateralOnEmptyVault,
+    requiredCollRatio,
+    updateRequiredCollRatio,
+    vault: { collateralizationRatio },
   } = props
 
   const sliderMax = maxCollRatio || MAX_COLL_RATIO
@@ -215,7 +218,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
 
   return (
     <>
-      <FieldGenerateDai action="Withdraw" {...extractFieldGenerateDaiData(props)} />
+      <FieldGenerateDai debt={debt} action="Withdraw" {...extractFieldGenerateDaiData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={generateAmount?.gt(zero) && debt.gt(zero)}
@@ -232,6 +235,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
   const { t } = useTranslation()
 
   const {
+    errorMessages,
     inputAmountsEmpty,
     otherAction,
     setOtherAction,
@@ -242,6 +246,7 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
     updatePaybackAmount,
     updateWithdrawAmount,
     vault: { debt },
+    warningMessages,
   } = props
 
   return (
@@ -333,6 +338,9 @@ export function SidebarManageMultiplyVaultEditingStage(props: ManageMultiplyVaul
           }}
         />
       )}
+
+      <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
+      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
       <ManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
