@@ -4,8 +4,6 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { getDataForStopLoss } from 'features/automation/protection/openFlow/openVaultStopLoss'
 import { OpenVaultState } from 'features/borrow/open/pipes/openVault'
@@ -21,7 +19,6 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
-import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -77,8 +74,6 @@ export function SidebarOpenBorrowVault(props: OpenVaultState) {
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenBorrowVaultOpenStage {...props} />}
         {isAddStopLossStage && <SidebarVaultStopLossStage {...props} />}
-        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
-        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     ...(isStopLossEditingStage && {

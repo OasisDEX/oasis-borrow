@@ -2,8 +2,6 @@ import { getToken } from 'blockchain/tokensMetadata'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarManageGuniVaultEditingState } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultEditingState'
 import { SidebarManageGuniVaultManageStage } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVaultManageStage'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -18,7 +16,6 @@ import {
   extractPrimaryButtonLabelParams,
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
-import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 import { Grid } from 'theme-ui'
@@ -96,8 +93,6 @@ export function SidebarManageGuniVault(props: ManageMultiplyVaultState) {
           <SidebarVaultAllowanceStage {...props} />
         )}
         {isManageStage && <SidebarManageGuniVaultManageStage {...props} />}
-        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
-        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     primaryButton: {
