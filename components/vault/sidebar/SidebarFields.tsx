@@ -17,6 +17,7 @@ import {
   extractPaybackErrors,
   extractWithdrawErrors,
 } from 'helpers/messageMappers'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { pick } from 'ramda'
 import React from 'react'
@@ -76,6 +77,7 @@ interface FieldDepositDaiProps extends FieldProps {
 }
 
 interface FieldGenerateDaiProps extends FieldProps {
+  debt?: BigNumber
   debtFloor?: BigNumber
   generateAmount?: BigNumber
   maxGenerateAmount?: BigNumber
@@ -164,6 +166,7 @@ export function extractFieldDepositDaiData(state: VaultState) {
 }
 
 export function extractFieldGenerateDaiData(state: VaultState) {
+  console.log(state)
   return {
     ...pick(
       [
@@ -335,6 +338,7 @@ export function FieldDepositDai({
 
 export function FieldGenerateDai({
   action = 'Generate',
+  debt = zero,
   debtFloor,
   generateAmount,
   maxGenerateAmount,
@@ -356,8 +360,9 @@ export function FieldGenerateDai({
         disabled={disabled}
         hasError={false}
         maxAmount={maxGenerateAmount}
-        minAmount={debtFloor}
-        minAmountLabel={t('from')}
+        maxAmountLabel={!debt ? '' : t('max')}
+        minAmount={debt.isZero() ? debtFloor : zero}
+        minAmountLabel={t('field-from')}
         onChange={handleNumericInput(updateGenerate! || updateGenerateAmount!)}
         onSetMin={() => {
           if (updateGenerate) updateGenerate(debtFloor)
@@ -365,7 +370,7 @@ export function FieldGenerateDai({
         }}
         onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
         showMax={true}
-        showMin={true}
+        showMin={debt.isZero()}
         token={'DAI'}
       />
       <VaultErrors

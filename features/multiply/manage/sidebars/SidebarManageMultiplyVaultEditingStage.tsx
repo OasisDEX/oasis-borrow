@@ -218,7 +218,7 @@ function SidebarManageMultiplyVaultEditingStageWithdrawDai(props: ManageMultiply
 
   return (
     <>
-      <FieldGenerateDai action="Withdraw" {...extractFieldGenerateDaiData(props)} />
+      <FieldGenerateDai debt={debt} action="Withdraw" {...extractFieldGenerateDaiData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
         isVisible={generateAmount?.gt(zero) && debt.gt(zero)}

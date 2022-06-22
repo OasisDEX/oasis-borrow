@@ -41,7 +41,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
     updateGenerate,
     updatePayback,
     updateWithdraw,
-    vault: { token },
+    vault: { debt, token },
     warningMessages,
     withdrawAmount,
   } = props
@@ -90,6 +90,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
             <>
               <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
               <FieldGenerateDai
+                debt={debt}
                 disabled={isSecondaryFieldDisabled}
                 {...extractFieldGenerateDaiData(props)}
               />
@@ -114,7 +115,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
         <>
           {isDepositOrGenerate && (
             <>
-              <FieldGenerateDai disabled={!isOwner} {...extractFieldGenerateDaiData(props)} />
+              <FieldGenerateDai debt={debt} disabled={!isOwner} {...extractFieldGenerateDaiData(props)} />
               <FieldDepositCollateral
                 token={token}
                 disabled={isSecondaryFieldDisabled}
