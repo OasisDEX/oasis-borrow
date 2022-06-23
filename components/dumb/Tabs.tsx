@@ -1,5 +1,5 @@
 import { useHash } from 'helpers/useHash'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Flex, Grid, Button, Box } from 'theme-ui'
 
 type TabSection = {
@@ -8,13 +8,16 @@ type TabSection = {
   content: JSX.Element
 }
 
-export function UnderlineTabs({ sections } : { sections: TabSection[] }) {
-  const [hash, setHash] = useHash<string>()
-  const [mode, setMode] = useState<string>(hash || sections[0].hash)
 
-  useEffect(() => {
-    setHash(mode)
-  }, [mode])
+
+export function UnderlineTabs({ sections } : { sections: TabSection[] }) {
+  const [currentHash, setHash] = useHash<string>()
+
+  useEffect(() => setHash(sections[0].hash), [])
+
+  function isCurrentHash(sectionHash: string) {
+    return `#${sectionHash}` === currentHash
+  }
 
   return <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
     <Flex
@@ -25,12 +28,16 @@ export function UnderlineTabs({ sections } : { sections: TabSection[] }) {
         mb: 4,
       }}
     >
-      {sections.map(({hash, label}) => <Button key={hash} variant={mode === hash ? 'vaultTabActive' : 'vaultTab'} onClick={() => {setMode(hash)}}>
+      {sections.map(({hash, label}) => <Button 
+        key={hash} 
+        variant={isCurrentHash(hash) ? 'vaultTabActive' : 'vaultTab'} 
+        onClick={() => {setHash(hash)}}
+      >
         {label}
       </Button>)}
     </Flex>
     <Box sx={{ zIndex: 1 }}>
-      {sections.find(s => { return `#${s.hash}` == hash; console.log('current hash:', hash, 'section hash', s.hash)})?.content}
+      {sections.find(s => isCurrentHash(s.hash))?.content}
     </Box>
   </Grid>
 }
