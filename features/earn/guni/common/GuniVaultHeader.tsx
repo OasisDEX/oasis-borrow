@@ -1,43 +1,43 @@
+import BigNumber from 'bignumber.js'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { DefaultVaultHeaderProps } from '../../../../components/vault/DefaultVaultHeader'
-import { VaultHeader, VaultIlkDetailsItem } from '../../../../components/vault/VaultHeader'
-import { formatCryptoBalance, formatPercent } from '../../../../helpers/formatters/format'
+import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadline'
+import { HeadlineDetailsProp } from '../../../../components/vault/VaultHeadline'
+import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
+import { zero } from '../../../../helpers/zero'
+import { YieldPeriod } from '../../yieldCalculations'
 
-export function GuniVaultHeader(props: DefaultVaultHeaderProps) {
-  const {
-    ilkData: { stabilityFee, debtFloor },
-    id,
-    header,
-    token,
-    priceInfo,
-  } = props
+export interface EarnVaultHeaderProps {
+  ilk: string
+  token: string
+  yields: {
+    [key in YieldPeriod]?: {
+      value: BigNumber
+    }
+  }
+  totalValueLocked?: BigNumber
+}
+
+export function GuniVaultHeader({ ilk, token, yields, totalValueLocked }: EarnVaultHeaderProps) {
   const { t } = useTranslation()
-  return (
-    <VaultHeader header={header} id={id} token={token} priceInfo={priceInfo}>
-      <VaultIlkDetailsItem
-        label={t('manage-vault.stability-fee')}
-        value={`${formatPercent(stabilityFee.times(100), { precision: 2 })}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.stabilityFee')}
-        styles={{
-          tooltip: {
-            left: ['auto', '-20px'],
-            right: ['-0px', 'auto'],
-          },
-        }}
-      />
-      <VaultIlkDetailsItem
-        label={t('manage-vault.dust-limit')}
-        value={`$${formatCryptoBalance(debtFloor)}`}
-        tooltipContent={t('manage-multiply-vault.tooltip.dust-limit')}
-        styles={{
-          tooltip: {
-            left: ['-80px', 'auto'],
-            right: ['auto', '-32px'],
-          },
-        }}
-      />
-    </VaultHeader>
-  )
+  const details: HeadlineDetailsProp[] = [
+    {
+      label: t('open-earn-vault.headlines.current-yield'),
+      value: getPercent(yields[YieldPeriod.Yield7Days]?.value),
+    },
+    {
+      label: t('open-earn-vault.headlines.ninety-days-avg'),
+      value: getPercent(yields[YieldPeriod.Yield90Days]?.value),
+    },
+    {
+      label: t('open-earn-vault.headlines.total-value-locked'),
+      value: `$${formatFiatBalance(totalValueLocked || zero)}`,
+    },
+  ]
+  return <EarnVaultHeadline header={ilk} token={token} details={details} />
+}
+
+function getPercent(value?: BigNumber) {
+  return formatPercent((value || zero).times(100), { precision: 2 })
 }

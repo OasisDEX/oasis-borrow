@@ -9,6 +9,7 @@ import { Container } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { ManageMultiplyVaultContainer } from '../../components/vault/commonMultiply/ManageMultiplyVaultContainer'
 import { DefaultVaultHeader } from '../../components/vault/DefaultVaultHeader'
+import { ManageEarnVaultContainer } from '../../components/vault/earn/ManageEarnVaultContainer'
 import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
@@ -46,28 +47,30 @@ export function GeneralManageVaultViewAutomation({
         </Container>
       )
     case VaultType.Multiply:
-      const vaultIlk = generalManageVault.state.ilkData.ilk
       return (
         <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
-          {['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
-            <ManageMultiplyVaultContainer
-              manageVault={generalManageVault.state}
-              details={GuniManageMultiplyVaultDetails}
-              header={GuniVaultHeader}
-              form={!newComponentsEnabled ? GuniManageMultiplyVaultForm : SidebarManageGuniVault}
-              history={VaultHistoryView}
-            />
-          ) : (
-            <ManageMultiplyVaultContainer
-              manageVault={generalManageVault.state}
-              header={DefaultVaultHeader}
-              details={ManageMultiplyVaultDetails}
-              form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
-              history={VaultHistoryView}
-            />
-          )}
+          <ManageMultiplyVaultContainer
+            manageVault={generalManageVault.state}
+            header={DefaultVaultHeader}
+            details={ManageMultiplyVaultDetails}
+            form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
+            history={VaultHistoryView}
+          />
         </Container>
       )
+    case VaultType.Earn:
+      return (
+        <Container variant="vaultPageContainer" sx={{ zIndex: 0 }}>
+          <ManageEarnVaultContainer
+            manageVault={generalManageVault.state}
+            details={GuniManageMultiplyVaultDetails}
+            header={GuniVaultHeader}
+            form={!newComponentsEnabled ? GuniManageMultiplyVaultForm : SidebarManageGuniVault}
+            history={VaultHistoryView}
+          />
+        </Container>
+      )
+
     default:
       throw new Error(
         `could not render GeneralManageVaultViewAutomation for vault type ${vaultType}`,
@@ -99,29 +102,29 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                 </Container>
               )
             case VaultType.Multiply:
-              const vaultIlk = generalManageVault.state.ilkData.ilk
-
               return (
                 <Container variant="vaultPageContainer">
-                  {['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
-                    <ManageMultiplyVaultContainer
-                      manageVault={generalManageVault.state}
-                      details={GuniManageMultiplyVaultDetails}
-                      header={GuniVaultHeader}
-                      form={GuniManageMultiplyVaultForm}
-                      history={VaultHistoryView}
-                    />
-                  ) : (
-                    <ManageMultiplyVaultContainer
-                      manageVault={generalManageVault.state}
-                      header={DefaultVaultHeader}
-                      details={ManageMultiplyVaultDetails}
-                      form={
-                        !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
-                      }
-                      history={VaultHistoryView}
-                    />
-                  )}
+                  <ManageMultiplyVaultContainer
+                    manageVault={generalManageVault.state}
+                    header={DefaultVaultHeader}
+                    details={ManageMultiplyVaultDetails}
+                    form={
+                      !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
+                    }
+                    history={VaultHistoryView}
+                  />
+                </Container>
+              )
+            case VaultType.Earn:
+              return (
+                <Container variant="vaultPageContainer">
+                  <ManageEarnVaultContainer
+                    manageVault={generalManageVault.state}
+                    details={GuniManageMultiplyVaultDetails}
+                    header={GuniVaultHeader}
+                    form={GuniManageMultiplyVaultForm}
+                    history={VaultHistoryView}
+                  />
                 </Container>
               )
           }

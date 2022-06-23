@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
+import { GuniVaultHeader } from '../../features/earn/guni/common/GuniVaultHeader'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -38,19 +39,23 @@ export function GeneralManageLayout({
   const vaultHeadingKey =
     generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
 
+  const headlineElement =
+    generalManageVault.type === VaultType.Earn ? (
+      <GuniVaultHeader {...generalManageVault.state} token={vault.token} />
+    ) : (
+      <VaultHeadline
+        header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
+        token={vault.token}
+        priceInfo={priceInfo}
+      />
+    )
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
-        headline={
-          <VaultHeadline
-            header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
-            token={vault.token}
-            priceInfo={priceInfo}
-          />
-        }
+        headline={headlineElement}
         // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
         headerControl={
           !newComponentsEnabled ? (

@@ -308,6 +308,13 @@
       "collateral-locked-oracles": "Nós usamos o preço atual dos oráculos do Maker para calcular este valor. O preço de mercado atual do seu colateral pode ser diferente deste preço."
     }
   },
+  "open-earn-vault": {
+    "headlines": {
+      "current-yield": "Current yield",
+      "ninety-days-avg": "90 days avg",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "O ID do seu Cofre (Vault) é uma referência única do seu Cofre Maker no Oasis.app.",

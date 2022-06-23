@@ -13,7 +13,7 @@ import { first } from 'rxjs/operators'
 import { Card, Container, Grid } from 'theme-ui'
 
 import { GuniOpenVaultView } from '../../features/earn/guni/open/containers/GuniOpenVaultView'
-import { mockGuniOpenMultiplyVault } from '../mocks/guniOpenMultiplyVault.mock'
+import { mockGuniOpenEarnVault } from '../mocks/guniOpenEarnVault.mock'
 
 type GuniOpenMultiplyVaultStory = { title?: string } & MockOpenMultiplyVaultProps
 
@@ -33,7 +33,7 @@ export function guniOpenMultiplyVaultStory({
     depositAmount,
     ...otherState
   }: Partial<MutableOpenMultiplyVaultState> = defaultMutableOpenMultiplyVaultState) => () => {
-    const obs$ = mockGuniOpenMultiplyVault({
+    const obs$ = mockGuniOpenEarnVault({
       _ilks$,
       balanceInfo,
       priceInfo,
