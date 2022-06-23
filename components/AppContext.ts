@@ -220,6 +220,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { BasicBuyTriggerCreationData } from 'features/automation/optimization/common/BasicBuyTriggerExtractor'
 
 export type TxData =
   | OpenData
@@ -238,6 +239,7 @@ export type TxData =
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
+  | BasicBuyTriggerCreationData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

@@ -1,9 +1,10 @@
 import { CommandContractType, encodeTriggerDataByType } from "@oasisdex/automation";
 import BigNumber from "bignumber.js";
+import { TxMetaKind } from "blockchain/calls/txMeta";
 import { Vault } from "blockchain/vaults";
 import { TriggerType } from "features/automation/protection/common/enums/TriggersTypes";
 
-export interface BasicBuyTriggerCreationData {
+export type BasicBuyTriggerCreationData = {
     cdpId: BigNumber
     triggerType: BigNumber
     execCollRatio: BigNumber
@@ -12,6 +13,9 @@ export interface BasicBuyTriggerCreationData {
     continuous: boolean
     deviation: BigNumber
     triggerData: string
+    proxyAddress: string
+    kind: TxMetaKind.addTrigger
+    replacedTriggerId: number
 }
 
 export function prepareBasicBuyTriggerCreationData(
@@ -21,7 +25,9 @@ export function prepareBasicBuyTriggerCreationData(
     maxBuyPrice: BigNumber,
     continuous: boolean,
     deviation: BigNumber,
-) {
+    replacedTriggerId: number,
+
+): BasicBuyTriggerCreationData {
     const triggerType = new BigNumber(TriggerType.BasicBuy)
     return {
         cdpId: vaultData.id,
@@ -39,6 +45,9 @@ export function prepareBasicBuyTriggerCreationData(
             maxBuyPrice.toString(),
             continuous.toString(),
             deviation.toString(),
-        ])
+        ]),
+        kind: TxMetaKind.addTrigger,
+        replacedTriggerId,
+        proxyAddress: vaultData.owner,
     }
 }
