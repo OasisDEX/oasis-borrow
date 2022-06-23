@@ -406,6 +406,7 @@ const oasisBaseTheme = {
       padding: '32px',
     },
     faq: {
+      variant: 'cards.primary',
       p: 4, 
       borderRadius: 'mediumLarge', 
       maxWidth: '711px'
