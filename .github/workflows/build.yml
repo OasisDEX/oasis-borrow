@@ -7,11 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Cache YARN dependencies
+        uses: actions/cache@v3
         with:
-          node-version: '14'
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile --no-progress --non-interactive
+          path: node_modules
+          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.OS }}-yarn-cache-
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --no-progress --non-interactive
 
       - name: Lint
         run: yarn lint
