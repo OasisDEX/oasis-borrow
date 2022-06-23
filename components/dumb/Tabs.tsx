@@ -10,7 +10,13 @@ type TabSection = {
   content: JSX.Element
 }
 
-export function UnderlineTabs({ sections }: { sections: TabSection[] }) {
+export function UnderlineTabs({
+  sections,
+  useDropdownOnMobile,
+}: {
+  sections: TabSection[]
+  useDropdownOnMobile?: boolean
+}) {
   const [hash, setHash] = useHash<string>()
 
   useEffect(() => setHash(sections[0].value), [])
@@ -24,17 +30,19 @@ export function UnderlineTabs({ sections }: { sections: TabSection[] }) {
 
   return (
     <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
-      <Box sx={{ display: ['block', 'none'], mb: 3 }}>
-        <ReactSelect<TabSection>
-          options={sections}
-          onChange={(option) => setHash((option as TabSection).value)}
-          components={selectComponents}
-          value={selectedSection}
-          isOptionSelected={isSelected}
-          isSearchable={false}
-        />
-      </Box>
-      <Box sx={{ display: ['none', 'block'], zIndex: 1 }}>
+      {useDropdownOnMobile ? (
+        <Box sx={{ display: ['block', 'none'], mb: 3 }}>
+          <ReactSelect<TabSection>
+            options={sections}
+            onChange={(option) => setHash((option as TabSection).value)}
+            components={selectComponents}
+            value={selectedSection}
+            isOptionSelected={isSelected}
+            isSearchable={false}
+          />
+        </Box>
+      ) : null}
+      <Box sx={{ display: [useDropdownOnMobile ? 'none' : 'block', 'block'], zIndex: 1 }}>
         <Flex
           sx={{
             borderBottom: '3px solid',
