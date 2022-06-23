@@ -30,6 +30,8 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.depositDai)
     case 'MOVE_DEST':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_SRC':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
@@ -54,6 +56,8 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.exitDai)
     case 'MOVE_SRC':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_DEST':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }

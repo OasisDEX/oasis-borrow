@@ -488,6 +488,7 @@
     "button-failure": "Something went wrong, try again",
     "button-success": "Transition completed, refreshing..."
   },
+  "field-from": "From",
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "minimum": "Minimum",
@@ -523,6 +524,7 @@
   "next": "Next",
   "no-dai": "No Dai",
   "no-activity": "No activity to show",
+  "not-right-now": "Not right now",
   "notice-privacy": "By using our site you agree to our <0>Cookie Policy</0>.",
   "notification-status-complete": "Complete",
   "notification-status-completed": "Complete",
@@ -668,8 +670,8 @@
     "market-price": "Market Price",
     "max-multiple": "Max Multiple",
     "variable-annual-fee": "Variable Annual Fee",
-    "seven-day-average": "7 day average",
-    "ninety-day-average": "90 day average",
+    "seven-day-average": "7 day net APY",
+    "ninety-day-average": "90 day net APY",
     "vault-protection": "Vault Protection",
     "date": "Date",
     "overview": "Overview",
@@ -696,6 +698,9 @@
         "buy-coll": "Buy Coll.",
         "reduce-debt": "Reduce Debt",
         "switch-to-borrow": "Switch to Borrow"
+      },
+      "earn": {
+        "vault-overview": "Vault overview"
       }
     },
     "cards": {
@@ -799,6 +804,7 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change."
   },
   "vault-info-messages": {
+    "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
     "closing": "To close your vault, a part of your position will be sold to payback the outstanding debt. The rest of your collateral will be sent to your address."
   },
   "vault-changes": {
@@ -1301,6 +1307,11 @@
     "claim-button": {
       "claim-rewards": "Claim Rewards"
     }
+  },
+  
+  "basic-buy-sell-generic": {
+    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
   },
 
   "auto-sell": {

@@ -1,13 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
-import {
-  errorsValidation,
-  warningsValidation,
-} from 'features/automation/protection/common/validation'
 import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -29,29 +23,16 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const {
     addTriggerConfig,
-    ethBalance,
-    ethPrice,
     firstStopLossSetup,
-    gasEstimationUsd,
-    ilkData,
     isProgressDisabled,
     isStopLossEnabled,
-    selectedSLValue,
     stage,
     toggleForms,
     token,
-    txError,
     vault: { debt },
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
-  const errors = errorsValidation({ txError, debt })
-  const warnings = warningsValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
@@ -81,12 +62,6 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         )}
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarAdjustStopLossAddStage {...props} />
-        )}
-        {stage === 'stopLossEditing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
-          <>
-            <VaultErrors errorMessages={errors} ilkData={ilkData} />
-            <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-          </>
         )}
       </Grid>
     ),

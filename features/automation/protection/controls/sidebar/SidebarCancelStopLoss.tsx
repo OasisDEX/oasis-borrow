@@ -1,13 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
-import {
-  errorsValidation,
-  warningsValidation,
-} from 'features/automation/protection/common/validation'
 import { CancelSlFormLayoutProps } from 'features/automation/protection/controls/CancelSlFormLayout'
 import { SidebarCancelStopLossCancelStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossCancelStage'
 import { SidebarCancelStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLossEditingStage'
@@ -25,30 +19,17 @@ import { Grid } from 'theme-ui'
 export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
   const {
-    ethBalance,
-    ethPrice,
-    gasEstimationUsd,
-    ilkData,
     isProgressDisabled,
     removeTriggerConfig,
     stage,
     toggleForms,
     token,
-    txError,
     vault: { debt },
   } = props
 
   const flow: SidebarFlow = 'cancelSl'
-  const errors = errorsValidation({ txError, debt })
-  const warnings = warningsValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
@@ -68,12 +49,6 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
         )}
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarCancelStopLossCancelStage {...props} />
-        )}
-        {stage === 'editing' && stopLossWriteEnabled && (
-          <>
-            <VaultErrors errorMessages={errors} ilkData={ilkData} />
-            <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-          </>
         )}
       </Grid>
     ),

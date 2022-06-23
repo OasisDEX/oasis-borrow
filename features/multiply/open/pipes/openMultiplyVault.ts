@@ -144,6 +144,7 @@ export interface MutableOpenMultiplyVaultState {
   id?: BigNumber
   requiredCollRatio?: BigNumber
   stopLossSkipped: boolean
+  stopLossLevel: BigNumber
 }
 
 interface OpenMultiplyVaultFunctions {
@@ -322,6 +323,7 @@ export const defaultMutableOpenMultiplyVaultState: MutableOpenMultiplyVaultState
   depositAmountUSD: undefined,
   requiredCollRatio: undefined,
   stopLossSkipped: false,
+  stopLossLevel: zero,
 }
 
 export function createOpenMultiplyVault$(

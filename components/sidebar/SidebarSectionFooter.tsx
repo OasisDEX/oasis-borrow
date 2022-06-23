@@ -22,7 +22,14 @@ export function SidebarSectionFooter({
   textButton,
   status,
 }: SidebarSectionFooterProps) {
-  return (
+  const isPrimaryButtonVisible = !primaryButton.hidden
+  const isSecondaryButtonVisible = secondaryButton !== undefined && !secondaryButton.hidden
+  const isTextButtonVisible = textButton !== undefined && !textButton.hidden
+  const isStatusVisible = status !== undefined && status.length > 0
+  const isFooterVisible =
+    isPrimaryButtonVisible || isSecondaryButtonVisible || isTextButtonVisible || isStatusVisible
+
+  return isFooterVisible ? (
     <Grid
       sx={{
         p: '24px',
@@ -32,8 +39,7 @@ export function SidebarSectionFooter({
       <SidebarSectionFooterButton {...primaryButton} />
       {secondaryButton && <SidebarSectionFooterButton variant="secondary" {...secondaryButton} />}
       {textButton && <SidebarSectionFooterButton variant="textual" {...textButton} />}
-      {!!status?.length &&
-        status.map((item) => <SidebarSectionStatus {...item} key={item.txHash} />)}
+      {!!status?.length && status.map((item, idx) => <SidebarSectionStatus {...item} key={idx} />)}
     </Grid>
-  )
+  ) : null
 }

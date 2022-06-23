@@ -131,8 +131,7 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
                 },
               ]}
               button={{
-                // TODO to be replaced with open-earn in the future
-                link: `/vaults/open-multiply/${cardData.ilk}`,
+                link: `/vaults/open-earn/${cardData.ilk}`,
                 text: t('nav.earn'),
               }}
               background={cardData.background}
