@@ -52,7 +52,7 @@ export function extractStopLossData(data: TriggersData): StopLossTriggerData {
     stopLossLevel: new BigNumber(0),
   } as StopLossTriggerData
 }
-
+// TODO ŁW - add tests, and reorganize methods to read top down
 export function prepareTriggerData(
   vaultData: Vault,
   isCloseToCollateral: boolean,
