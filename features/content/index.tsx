@@ -23,11 +23,11 @@ export interface Content {
 const v1: Content = {
   tos: {
     version: 'version-1.06.2021',
-    content: tosContent,
+    content: <TranslatedContent content={tosContent} />,
   },
   privacy: {
     version: 'ver-1.6.2021',
-    content: privacyContent,
+    content: <TranslatedContent content={privacyContent} />,
   },
   support: {
     version: 'ver-4.11.2020',
@@ -35,12 +35,11 @@ const v1: Content = {
   },
 }
 
-export function TranslatedContent({ content }: { content: ContentType | ContentVersioned }) {
+export function TranslatedContent({ content }: { content: ContentType }) {
   const {
     i18n: { language },
   } = useTranslation()
-  const actualContent = content.content || content
-  const ContentComp = actualContent[language] || actualContent.en
+  const ContentComp = content[language] || content.en
 
   return <ContentComp />
 }

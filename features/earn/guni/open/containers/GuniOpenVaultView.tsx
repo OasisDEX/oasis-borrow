@@ -10,7 +10,7 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
-import { content as faqContent } from 'features/content/faqs/guni'
+import { guniFaq } from 'features/content/faqs/guni'
 import { TranslatedContent } from 'features/content'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
@@ -51,7 +51,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               }
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
-              faq={newComponentsEnabled ? <TranslatedContent content={faqContent} /> : undefined}
+              faq={newComponentsEnabled ? guniFaq : undefined}
               clear={openVault.clear}
             />
           </Container>
