@@ -15,9 +15,7 @@ function TermsPage() {
   return (
     <>
       <PageSEONoFollow />
-      <Box sx={{ width: '100%', position: 'relative' }}>
-        {currentContent.tos.content}
-      </Box>
+      <Box sx={{ width: '100%', position: 'relative' }}>{currentContent.tos.content}</Box>
     </>
   )
 }

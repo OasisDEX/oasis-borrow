@@ -15,9 +15,7 @@ function PrivacyPage() {
   return (
     <>
       <PageSEONoFollow />
-      <Box sx={{ width: '100%' }}>
-        {currentContent.privacy.content}
-      </Box>
+      <Box sx={{ width: '100%' }}>{currentContent.privacy.content}</Box>
     </>
   )
 }

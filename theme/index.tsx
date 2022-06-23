@@ -407,10 +407,10 @@ const oasisBaseTheme = {
     },
     faq: {
       variant: 'cards.primary',
-      p: 4, 
-      borderRadius: 'mediumLarge', 
-      maxWidth: '711px'
-    }
+      p: 4,
+      borderRadius: 'mediumLarge',
+      maxWidth: '711px',
+    },
   },
   badges: {
     dsr: {

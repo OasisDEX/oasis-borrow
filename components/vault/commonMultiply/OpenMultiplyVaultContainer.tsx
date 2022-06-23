@@ -21,28 +21,34 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
     }
   }, [])
 
-  const detailsAndForm = <Grid variant="vaultContainer">
-    <Box>{details}</Box>
-    <Box>{form}</Box>
-  </Grid>
+  const detailsAndForm = (
+    <Grid variant="vaultContainer">
+      <Box>{details}</Box>
+      <Box>{form}</Box>
+    </Grid>
+  )
 
   return (
     <>
       {header}
-      {faq ? (<UnderlineTabs sections={[
-          {
-            value: 'Simulate',
-            label: t('open-vault.simulate'),
-            content: detailsAndForm
-          },
-          {
-            value: 'FAQ',
-            label: t('nav.faq'),
-            content: <Card variant='faq'>
-              {faq}
-            </Card>
-          }
-        ]} />): detailsAndForm}
+      {faq ? (
+        <UnderlineTabs
+          sections={[
+            {
+              value: 'Simulate',
+              label: t('open-vault.simulate'),
+              content: detailsAndForm,
+            },
+            {
+              value: 'FAQ',
+              label: t('nav.faq'),
+              content: <Card variant="faq">{faq}</Card>,
+            },
+          ]}
+        />
+      ) : (
+        detailsAndForm
+      )}
     </>
   )
 }

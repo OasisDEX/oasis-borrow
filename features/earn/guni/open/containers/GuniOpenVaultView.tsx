@@ -1,4 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { guniFaq } from 'features/content/faqs/guni'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -10,9 +12,6 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
-import { guniFaq } from 'features/content/faqs/guni'
-import { TranslatedContent } from 'features/content'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { t } = useTranslation()

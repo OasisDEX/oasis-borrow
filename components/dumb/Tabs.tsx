@@ -2,15 +2,15 @@ import { reactSelectCustomComponents } from 'components/reactSelectCustomCompone
 import { useHash } from 'helpers/useHash'
 import React, { useEffect, useMemo } from 'react'
 import ReactSelect from 'react-select'
-import { Flex, Grid, Button, Box } from 'theme-ui'
+import { Box, Button, Flex, Grid } from 'theme-ui'
 
 type TabSection = {
-  value: string,
-  label: JSX.Element | string,
+  value: string
+  label: JSX.Element | string
   content: JSX.Element
 }
 
-export function UnderlineTabs({ sections } : { sections: TabSection[] }) {
+export function UnderlineTabs({ sections }: { sections: TabSection[] }) {
   const [hash, setHash] = useHash<string>()
 
   useEffect(() => setHash(sections[0].value), [])
@@ -22,37 +22,41 @@ export function UnderlineTabs({ sections } : { sections: TabSection[] }) {
 
   const selectedSection = sections.find(isSelected)
 
-  return <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
-    <Box sx={{ display: ['block', 'none'], mb: 3 }}>
-      <ReactSelect<TabSection>
-        options={sections}
-        onChange={option => setHash((option as TabSection).value)}
-        components={selectComponents}
-        value={selectedSection}
-        isOptionSelected={isSelected}
-        isSearchable={false}
-      />
-    </Box>
-    <Box sx={{ display: ['none', 'block'], zIndex: 1}}>
-      <Flex
-        sx={{
-          borderBottom: '3px solid',
-          borderColor: 'rgba(37, 39, 61, 0.1)',
-          width: '100%',
-          mb: 4,
-        }}
-      >
-        {sections.map(section => <Button 
-          key={section.value} 
-          variant={isSelected(section) ? 'vaultTabActive' : 'vaultTab'} 
-          onClick={() => {setHash(section.value)}}
+  return (
+    <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
+      <Box sx={{ display: ['block', 'none'], mb: 3 }}>
+        <ReactSelect<TabSection>
+          options={sections}
+          onChange={(option) => setHash((option as TabSection).value)}
+          components={selectComponents}
+          value={selectedSection}
+          isOptionSelected={isSelected}
+          isSearchable={false}
+        />
+      </Box>
+      <Box sx={{ display: ['none', 'block'], zIndex: 1 }}>
+        <Flex
+          sx={{
+            borderBottom: '3px solid',
+            borderColor: 'rgba(37, 39, 61, 0.1)',
+            width: '100%',
+            mb: 4,
+          }}
         >
-          {section.label}
-        </Button>)}
-      </Flex>
-    </Box>
-    <Box sx={{ zIndex: 1 }}>
-      {selectedSection?.content}
-    </Box>
-  </Grid>
+          {sections.map((section) => (
+            <Button
+              key={section.value}
+              variant={isSelected(section) ? 'vaultTabActive' : 'vaultTab'}
+              onClick={() => {
+                setHash(section.value)
+              }}
+            >
+              {section.label}
+            </Button>
+          ))}
+        </Flex>
+      </Box>
+      <Box sx={{ zIndex: 1 }}>{selectedSection?.content}</Box>
+    </Grid>
+  )
 }
