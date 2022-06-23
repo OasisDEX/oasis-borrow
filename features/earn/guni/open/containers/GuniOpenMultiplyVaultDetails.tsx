@@ -12,19 +12,16 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { TranslatedContent } from 'features/content'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
-import { content as faqContent } from 'features/content/faqs/guni'
-import { UnderlineTabs } from 'components/dumb/Tabs'
 
 function GuniOpenMultiplyVaultDetailsSummary({
   token,
@@ -139,46 +136,33 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
           />
         </>
       ) : (
-        <UnderlineTabs sections={[
-          {
-            hash: 'Simulate',
-            label: 'Simulate',
-            content: <DetailsSection
-              title={t('system.overview')}
-              content={
-                <DetailsSectionContentCardWrapper>
-                  <ContentCardNetValue
-                    token={token}
-                    oraclePrice={oraclePrice}
-                    afterNetValueUSD={afterNetValueUSD}
-                    changeVariant={changeVariant}
-                  />
-                </DetailsSectionContentCardWrapper>
-              }
-              footer={
-                <DetailsSectionFooterItemWrapper>
-                  <ContentFooterItemsMultiply
-                    token={token}
-                    debt={zero}
-                    lockedCollateral={zero}
-                    multiply={zero}
-                    afterDebt={afterOutstandingDebt}
-                    afterLockedCollateral={totalCollateral}
-                    afterMultiply={multiply}
-                    changeVariant={changeVariant}
-                  />
-                </DetailsSectionFooterItemWrapper>
-              }
-            />
-          },
-          {
-            hash: 'FAQ',
-            label: 'FAQ',
-            content: <Card sx={{ p: 4, borderRadius: 'mediumLarge' }}>
-              <TranslatedContent content={faqContent} />
-            </Card>
+        <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                afterNetValueUSD={afterNetValueUSD}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
           }
-        ]} />
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsMultiply
+                token={token}
+                debt={zero}
+                lockedCollateral={zero}
+                multiply={zero}
+                afterDebt={afterOutstandingDebt}
+                afterLockedCollateral={totalCollateral}
+                afterMultiply={multiply}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
+        />
       )}
     </>
   )

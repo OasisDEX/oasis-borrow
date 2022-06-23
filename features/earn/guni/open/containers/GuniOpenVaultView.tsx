@@ -10,6 +10,9 @@ import { useObservable } from '../../../../../helpers/observableHook'
 import { GuniVaultHeader } from '../../common/GuniVaultHeader'
 import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
+import { content as faqContent } from 'features/content/faqs/guni'
+import { TranslatedContent } from 'features/content'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { t } = useTranslation()
@@ -18,6 +21,8 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   // const multiplyVaultWithIlk$ = openGuniVault$(ilk)
 
   const [openVault, openVaultError] = useObservable(openGuniVault$(ilk))
+
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   // useEffect(() => {
   //   const subscription = createOpenMultiplyVaultAnalytics$(
@@ -46,6 +51,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               }
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
+              faq={newComponentsEnabled ? <TranslatedContent content={faqContent} /> : undefined}
               clear={openVault.clear}
             />
           </Container>
