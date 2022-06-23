@@ -37,7 +37,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
           {
             hash: 'FAQ',
             label: 'FAQ',
-            content: <Card sx={{ p: 4, borderRadius: 'mediumLarge', maxWidth: '711px' }}>
+            content: <Card variant='faq'>
               {faq}
             </Card>
           }

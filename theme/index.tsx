@@ -405,6 +405,11 @@ const oasisBaseTheme = {
       borderRadius: 'large',
       padding: '32px',
     },
+    faq: {
+      p: 4, 
+      borderRadius: 'mediumLarge', 
+      maxWidth: '711px'
+    }
   },
   badges: {
     dsr: {
