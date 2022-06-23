@@ -30,12 +30,12 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
       {header}
       {faq ? (<UnderlineTabs sections={[
           {
-            hash: 'Simulate',
+            value: 'Simulate',
             label: 'Simulate',
             content: detailsAndForm
           },
           {
-            hash: 'FAQ',
+            value: 'FAQ',
             label: 'FAQ',
             content: <Card variant='faq'>
               {faq}
