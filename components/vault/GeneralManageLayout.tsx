@@ -1,16 +1,16 @@
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
+import { VaultBannersView } from 'features/banners/VaultsBannersView'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { TriggersData } from '../../features/automation/protection/triggers/AutomationTriggersData'
-import { useStopLossStateInitializator } from '../../features/automation/protection/useStopLossStateInitializator'
-import { VaultBannersView } from '../../features/banners/VaultsBannersView'
-import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { GeneralManageVaultViewAutomation } from '../../features/generalManageVault/GeneralManageVaultView'
-import { VaultType } from '../../features/generalManageVault/vaultType'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -29,15 +29,7 @@ export function GeneralManageLayout({
   autoTriggersData,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const {
-    ilkData,
-    vault,
-    account,
-    priceInfo,
-    collateralizationRatioAtNextPrice,
-    balanceInfo,
-    vaultHistory,
-  } = generalManageVault.state
+  const { ilkData, vault, account, priceInfo, balanceInfo, vaultHistory } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const newComponentsEnabled = useFeatureToggle('NewComponents')
@@ -77,7 +69,6 @@ export function GeneralManageLayout({
             ilkData={ilkData}
             account={account}
             balanceInfo={balanceInfo}
-            collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
           />
         }
         optimizationControl={<OptimizationControl vault={vault} />}

@@ -31,9 +31,8 @@ import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
 import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 function prepareRemoveTriggerData(
@@ -54,7 +53,7 @@ function prepareRemoveTriggerData(
 interface CancelSlFormControlProps {
   vault: Vault
   ilkData: IlkData
-  triggerData: TriggersData
+  triggerData: StopLossTriggerData
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
@@ -74,7 +73,7 @@ export function CancelSlFormControl({
   ilkData,
   tx,
 }: CancelSlFormControlProps) {
-  const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
+  const { triggerId, isStopLossEnabled } = triggerData
   const { addGasEstimation$, uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)

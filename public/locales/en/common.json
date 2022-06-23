@@ -678,6 +678,7 @@
     "protection": "Protection",
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
+    "basic-sell": "Basic Sell",
     "history": "History",
     "vaultinfo": "Vault Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
@@ -891,6 +892,11 @@
       "header": "Get vault protection",
       "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
       "button": "Setup Stop-Loss"
+    },
+    "get-protection": {
+      "header": "Get vault protection",
+      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
+      "button": "Protect your Vault"
     }
   },
   "view": "View",
@@ -1058,7 +1064,10 @@
     "edit-stop-loss": "Edit Stop-Loss",
     "enable-stop-loss": "Enable Stop-Loss",
     "continue-without-stop-loss": "Continue without Stop-Loss",
-    "stop-loss-information": "Stop-Loss Information"
+    "stop-loss-information": "Stop-Loss Information",
+    "no-threshold": "No threshold set",
+    "set-no-threshold": "Set No Threshold",
+    "set-threshold": "Set Threshold"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1304,7 +1313,7 @@
       "claim-rewards": "Claim Rewards"
     }
   },
-  
+
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
@@ -1323,21 +1332,28 @@
     "eth-to-be-sold": "ETH to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "title": "Auto sell",
+    "form-title": "Auto Sell Setup",
     "next-sell-price": "Next sell price: {{amount}}",
     "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
     "target-col-ratio-after-selling": "Target Col. Ratio after selling",
-    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}"
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}",
+    "sell-trigger-ratio": "Sell Trigger Ratio",
+    "target-coll-ratio": "Target Col Ratio (After Sell)",
+    "set-min-sell-price": "Set Min Sell Price",
+    "banner": {
+      "header": "Set up Auto Sell",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Setup Auto Sell"
+    }
   },
 
   "auto-buy": {
     "title": "Auto buy",
+    "form-title": "Auto Buy Setup",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
     "min-ratio": "min. ratio with Stop-Loss/basic sell",
     "next-buy-price": "Next buy price: {{amount}}",
-    "no-threshold": "No threshold set",
     "set-max-buy-price": "Set Max Buy Price",
-    "set-no-threshold": "Set No Threshold",
-    "set-threshold": "Set Threshold",
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
     "target-coll-ratio": "Target Col Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",

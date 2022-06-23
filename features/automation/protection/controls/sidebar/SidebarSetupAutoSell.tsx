@@ -1,29 +1,40 @@
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
-} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { AutoSellTriggerData } from 'features/automation/protection/autoSellTriggerDataExtractor'
+import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
-  isAutoBuyOn: boolean
   vault: Vault
+  autoSellTriggerData: AutoSellTriggerData
+  isAutoSellActive: boolean
+  stage?: any // TODO
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoSell({
+  vault,
+  // autoSellTriggerData, not used for now
+  isAutoSellActive,
+  stage,
+}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const { uiChanges } = useAppContext()
 
-  if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
+  if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('auto-buy.form-title'),
+      title: t('auto-sell.form-title'),
+      dropdown: {
+        forcePanel: 'autoSell',
+        disabled: isDropdownDisabled({ stage }),
+        items: commonProtectionDropdownItems(uiChanges),
+      },
       content: (
         <Grid gap={3}>
           <MultipleRangeSlider
@@ -39,15 +50,15 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
             valueColors={{
               value1: 'onSuccess',
             }}
-            leftDescription={t('auto-buy.target-coll-ratio')}
-            rightDescription={t('auto-buy.trigger-coll-ratio')}
-            minDescription={`(${t('auto-buy.min-ratio')})`}
+            leftDescription={t('auto-sell.sell-trigger-ratio')}
+            rightDescription={t('auto-sell.target-coll-ratio')}
+            rightThumbColor="primary"
           />
           <VaultActionInput
-            action={t('auto-buy.set-max-buy-price')}
+            action={t('auto-sell.set-min-sell-price')}
             hasAuxiliary={true}
             hasError={false}
-            token="ETH"
+            token={vault.token}
             onChange={(e) => console.log(e.target.value)}
             onAuxiliaryChange={() => {}}
             showToggle={true}

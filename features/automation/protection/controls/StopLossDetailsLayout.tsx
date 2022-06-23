@@ -7,9 +7,7 @@ import { VaultDetailsCardMaxTokenOnStopLossTrigger } from 'components/vault/deta
 import { VaultDetailsCardStopLossCollRatio } from 'components/vault/detailsCards/VaultDetailsCardStopLossCollRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
-import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
-import { ContentCardTargetSellColRatio } from 'components/vault/detailsSection/ContentCardTargetSellColRatio'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -35,7 +33,7 @@ export interface ProtectionDetailsLayoutProps {
   collateralizationRatioAtNextPrice: BigNumber
 }
 
-export function ProtectionDetailsLayout({
+export function StopLossDetailsLayout({
   slRatio,
   vaultDebt,
   currentOraclePrice,
@@ -54,7 +52,6 @@ export function ProtectionDetailsLayout({
   const { t } = useTranslation()
   const afterPillColors = getAfterPillColors('onSuccess')
   const newComponentsEnabled = useFeatureToggle('NewComponents')
-  const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const percentageChange = calculatePricePercentageChange(currentOraclePrice, nextOraclePrice)
 
@@ -63,28 +60,6 @@ export function ProtectionDetailsLayout({
   if (!(vaultDebt.isZero() && isStopLossEnabled)) {
     return (
       <Grid>
-        {basicBSEnabled && (
-          <>
-            <DetailsSection
-              title={t('auto-sell.title')}
-              badge={false}
-              content={
-                <DetailsSectionContentCardWrapper>
-                  <ContentCardSellTriggerCollRatio
-                    token={token}
-                    triggerColRatio={new BigNumber(Math.random() * 100)}
-                    nextSellPrice={new BigNumber(Math.random() * 1000)}
-                  />
-                  <ContentCardTargetSellColRatio
-                    token={token}
-                    targetColRatio={new BigNumber(Math.random() * 100)}
-                    threshold={new BigNumber(Math.random() * 1000)}
-                  />
-                </DetailsSectionContentCardWrapper>
-              }
-            />
-          </>
-        )}
         <Box>
           {!newComponentsEnabled ? (
             <Grid variant="vaultDetailsCardsContainer">
