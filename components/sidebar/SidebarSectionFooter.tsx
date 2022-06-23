@@ -39,8 +39,7 @@ export function SidebarSectionFooter({
       <SidebarSectionFooterButton {...primaryButton} />
       {secondaryButton && <SidebarSectionFooterButton variant="secondary" {...secondaryButton} />}
       {textButton && <SidebarSectionFooterButton variant="textual" {...textButton} />}
-      {!!status?.length &&
-        status.map((item) => <SidebarSectionStatus {...item} key={item.txHash} />)}
+      {!!status?.length && status.map((item, idx) => <SidebarSectionStatus {...item} key={idx} />)}
     </Grid>
   ) : null
 }

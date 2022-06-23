@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { guniFaq } from 'features/content/faqs/guni'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { Survey } from 'features/survey'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -53,6 +54,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               faq={newComponentsEnabled ? guniFaq : undefined}
               clear={openVault.clear}
             />
+            <Survey for="earn" />
           </Container>
         )}
       </WithLoadingIndicator>

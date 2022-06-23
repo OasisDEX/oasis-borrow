@@ -1,6 +1,6 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
+import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
@@ -8,10 +8,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
-import { supportedMultiplyIlks } from '../../../helpers/productCards'
+import { supportedEarnIlks } from '../../../helpers/productCards'
 
 export const getStaticPaths: GetStaticPaths<{ ilk: string }> = async () => {
-  const paths = supportedMultiplyIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
+  const paths = supportedEarnIlks.map((ilk) => ({ params: { ilk } })) // these paths will be generated at built time
   return {
     paths,
     fallback: true,
@@ -32,8 +32,8 @@ function OpenVault({ ilk }: { ilk: string }) {
     <WithWalletConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        <OpenMultiplyVaultView ilk={ilk} />
-        <Survey for="multiply" />
+        <GuniOpenVaultView ilk={ilk} />
+        <Survey for="earn" />
       </WithTermsOfService>
     </WithWalletConnection>
   )

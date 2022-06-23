@@ -323,10 +323,9 @@ const goerli: NetworkConfig = {
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
   serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
-  // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  noFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  lowerFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  noFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
   etherscan: {

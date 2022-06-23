@@ -488,6 +488,7 @@
     "button-failure": "Something went wrong, try again",
     "button-success": "Transition completed, refreshing..."
   },
+  "field-from": "From",
   "max": "Max",
   "min-amount": "Minimum amount is {{minAmount}} {{token}}",
   "minimum": "Minimum",

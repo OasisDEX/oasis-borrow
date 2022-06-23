@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
@@ -14,11 +15,11 @@ type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
 interface SidebarSliderAdjustMultiplyProps {
   collapsed?: boolean
   disabled?: boolean
-  max?: number
-  min?: number
+  max?: BigNumber
+  min: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   state: VaultState
-  value: number
+  value: BigNumber
 }
 
 export function SidebarSliderAdjustMultiply({
@@ -32,21 +33,13 @@ export function SidebarSliderAdjustMultiply({
 }: SidebarSliderAdjustMultiplyProps) {
   const { t } = useTranslation()
 
-  const {
-    afterLiquidationPrice,
-    afterCollateralizationRatio,
-    multiply,
-    maxCollRatio,
-    ilkData: { liquidationRatio },
-  } = state
+  const { afterLiquidationPrice, afterCollateralizationRatio, multiply } = state
 
   const {
     theme: { colors },
   } = useThemeUI()
 
-  const slider = value
-    ? maxCollRatio?.minus(value).div(maxCollRatio.minus(liquidationRatio)).times(100)
-    : zero
+  const slider = value ? max?.minus(value).div(max.minus(min)).times(100) : zero
 
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
@@ -107,9 +100,9 @@ export function SidebarSliderAdjustMultiply({
           }}
           disabled={disabled}
           step={0.05}
-          min={min}
-          max={max}
-          value={value}
+          min={min.toNumber()}
+          max={max?.toNumber()}
+          value={value.toNumber()}
           onChange={onChange}
         />
       </Box>
