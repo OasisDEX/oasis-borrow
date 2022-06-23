@@ -1,5 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
@@ -10,17 +13,20 @@ import {
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
+import vault from 'pages/api/vault'
 import React from 'react'
 import { Grid } from 'theme-ui'
+import { prepareBasicBuyTriggerCreationData } from '../common/BasicBuyTriggerExtractor'
 
 interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
+  addBasicBuyTriggerConfig: RetryableLoadingButtonProps
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, addBasicBuyTriggerConfig }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
+  const { uiChanges/*, txHelpers$*/ } = useAppContext()
   const [activeAutomationFeature] = useObservable(
     uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
   )
@@ -68,11 +74,15 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
       ),
       primaryButton: {
         label: 'Confirm',
-        disabled: true,
+        disabled: false,
+        action: () => {
+          addBasicBuyTriggerConfig.onClick(() => null)
+        }
       },
     }
 
     return <SidebarSection {...sidebarSectionProps} />
   }
   return null
+
 }
