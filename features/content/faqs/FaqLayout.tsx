@@ -1,8 +1,8 @@
 import { AppLink } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
-import { Box, Grid, Link, Text } from 'theme-ui'
+import React, { ReactElement, useState } from 'react'
+import { Box, Grid, Link, SxStyleProp, Text } from 'theme-ui'
 
 function getHeadingId(text: string) {
   return text.replace(/ /g, '_').toLowerCase()
@@ -22,11 +22,11 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
   const [sectionId, setSectionId] = useState<string>(anchors[0].id)
 
   // Divide markdown into sections delimited by headings
-  const sections: Record<string, any[]> = {}
+  const sections: Record<string, React.ReactNode[]> = {}
   for (let i = 0; i < childrenArray.length; i++) {
-    const comp: any = childrenArray[i]
+    const comp = childrenArray[i]
     if (isHeading(comp)) {
-      const id = getHeadingId(comp.props.children)
+      const id = getHeadingId((comp as ReactElement).props.children)
       sections[id] = []
       do {
         sections[id].push(childrenArray[i])
@@ -37,7 +37,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
   }
 
   const quoteColors = ['bull', 'link', 'primaryEmphasis']
-  const quoteColorsSx = quoteColors.reduce(function (obj: any, color, index) {
+  const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,
     }
