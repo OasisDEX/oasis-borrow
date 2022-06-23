@@ -892,6 +892,11 @@
       "header": "Get vault protection",
       "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
       "button": "Setup Stop-Loss"
+    },
+    "get-protection": {
+      "header": "Get vault protection",
+      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
+      "button": "Protect your Vault"
     }
   },
   "view": "View",
@@ -1308,7 +1313,7 @@
       "claim-rewards": "Claim Rewards"
     }
   },
-  
+
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
