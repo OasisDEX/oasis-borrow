@@ -244,7 +244,9 @@
     "close_vault_to_collateral": "Closed Vault, exited to collateral",
     "sold": "Sold",
     "total-fees": "Total fees",
-    "stop-loss": "Stop-Loss trigger"
+    "stop-loss": "Stop-Loss trigger",
+    "basic-buy": "Basic-Buy trigger",
+    "basic-sell": "Basic-Sell trigger"
   },
   "triggers": {
     "added": "added",
@@ -1304,7 +1306,7 @@
       "claim-rewards": "Claim Rewards"
     }
   },
-  
+
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
