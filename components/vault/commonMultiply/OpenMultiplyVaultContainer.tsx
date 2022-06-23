@@ -1,5 +1,5 @@
 import { UnderlineTabs } from 'components/dumb/Tabs'
-import { TranslatedContent } from 'features/content'
+import { useTranslation } from 'next-i18next'
 import React, { ReactElement, useEffect } from 'react'
 import { Box, Card, Grid } from 'theme-ui'
 
@@ -13,6 +13,7 @@ interface OpenMultiplyVaultContainerProps {
 
 export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProps) {
   const { clear, details, form, header, faq } = props
+  const { t } = useTranslation()
 
   useEffect(() => {
     return () => {
@@ -31,12 +32,12 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
       {faq ? (<UnderlineTabs sections={[
           {
             value: 'Simulate',
-            label: 'Simulate',
+            label: t('open-vault.simulate'),
             content: detailsAndForm
           },
           {
             value: 'FAQ',
-            label: 'FAQ',
+            label: t('nav.faq'),
             content: <Card variant='faq'>
               {faq}
             </Card>
