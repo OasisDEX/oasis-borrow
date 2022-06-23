@@ -136,6 +136,7 @@ describe('open multiply vault', () => {
     })
 
     it('should create proxy and progress for non ETH ilk', () => {
+      const depositAmount = new BigNumber('100')
       const _proxyAddress$ = new Subject<string>()
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
@@ -148,7 +149,8 @@ describe('open multiply vault', () => {
       )
 
       _proxyAddress$.next()
-      expect(state().totalSteps).to.deep.equal(3)
+      state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(5)
       state().progress!()
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
       state().progress!()
@@ -158,8 +160,8 @@ describe('open multiply vault', () => {
       expect(state().proxyAddress).to.deep.equal(DEFAULT_PROXY_ADDRESS)
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().currentStep).to.deep.equal(2)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().currentStep).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(5)
     })
 
     it('should handle proxy failure and back to editing after', () => {
@@ -197,7 +199,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('stopLossEditing')
     })
 
     it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
@@ -287,7 +289,7 @@ describe('open multiply vault', () => {
       )
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
 
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
@@ -300,7 +302,7 @@ describe('open multiply vault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceSuccess')
       expect(state().allowance!).to.be.deep.equal(customAllowanceAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
@@ -317,6 +319,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().progress!()
+      state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
@@ -337,6 +340,7 @@ describe('open multiply vault', () => {
       )
       state().updateDeposit!(depositAmount)
       state().progress!()
+      state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
       expect(state().stage).to.deep.equal('txSuccess')
@@ -380,7 +384,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should handle set allowance failure and regress allowance', () => {
@@ -414,6 +418,7 @@ describe('open multiply vault', () => {
     it('should clear form values and go to editing stage', () => {
       const depositAmount = new BigNumber('100')
       const requiredCollRatio = new BigNumber('2')
+      const stopLossLevel = new BigNumber('1.7')
 
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
@@ -426,13 +431,14 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().updateRequiredCollRatio!(requiredCollRatio)
       state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-
+      expect(state().stage).to.deep.equal('stopLossEditing')
+      state().setStopLossLevel(stopLossLevel)
       state().clear()
       expect(state().stage).to.deep.equal('editing')
       expect(state().depositAmount).to.be.undefined
       expect(state().depositAmountUSD).to.be.undefined
       expect(state().requiredCollRatio).to.be.undefined
+      expect(state().stopLossLevel).to.be.deep.equal(zero)
     })
   })
 
