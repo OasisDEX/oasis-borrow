@@ -11,7 +11,7 @@ jobs:
         with:
           node-version: '14'
           cache: 'yarn'
-      - run: yarn install --frozen-lockfile --no-progress --non-interactive --immutable
+      - run: yarn install --frozen-lockfile --no-progress --non-interactive
 
       - name: Lint
         run: yarn lint
