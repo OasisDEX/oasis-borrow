@@ -77,7 +77,7 @@ export type AddStopLossChange =
     | { kind: 'basicBuyTxWaitingForConfirmation'; id: BigNumber }
     | {
         kind: 'basicBuyTxInProgress'
-        stopLossTxHash: string
+        basicBuyTxHash: string
       }
     | {
         kind: 'basicBuyTxFailure'
