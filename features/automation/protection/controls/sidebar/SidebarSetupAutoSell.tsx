@@ -33,7 +33,7 @@ export function SidebarSetupAutoSell({
       dropdown: {
         forcePanel: 'autoSell',
         disabled: isDropdownDisabled({ stage }),
-        items: commonProtectionDropdownItems(uiChanges),
+        items: commonProtectionDropdownItems(uiChanges, t),
       },
       content: (
         <Grid gap={3}>
