@@ -99,6 +99,7 @@
     "lodash": "^4.17.15",
     "mixpanel": "^0.13.0",
     "mixpanel-browser": "^2.29.1",
+    "mkdirp": "^0.5.5",
     "mock-local-storage": "^1.1.15",
     "moment": "^2.26.0",
     "moment-locales-webpack-plugin": "^1.2.0",
@@ -145,6 +146,7 @@
     "zod": "^1.5.0"
   },
   "resolutions": {
+    "mkdirp": "^0.5.5",
     "webpack": "5"
   },
   "devDependencies": {
