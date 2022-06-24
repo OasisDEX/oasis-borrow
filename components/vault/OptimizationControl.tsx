@@ -1,4 +1,5 @@
 import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
 import React, { useState } from 'react'
@@ -15,7 +16,7 @@ export function OptimizationControl({ vault }: OptimizationControlProps) {
   return (
     <DefaultVaultLayout
       detailsViewControl={<OptimizationDetailsControl isAutoBuyOn={isAutoBuyOn} vault={vault} />}
-      editForm={<OptimizationFormControl isAutoBuyOn={isAutoBuyOn} vault={vault} />}
+      editForm={<OptimizationFormControl isAutoBuyOn={isAutoBuyOn} vault={vault}/>}
     />
   )
 }
