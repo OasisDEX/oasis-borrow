@@ -50,8 +50,8 @@ import {
 } from 'rxjs/internal/operators'
 import { withLatestFrom } from 'rxjs/operators'
 
-import { OraclePriceData } from '../../../../../blockchain/prices'
-import { Yield } from '../../../yieldCalculations'
+import { TotalValueLocked } from '../../../../../blockchain/collateral'
+import { YieldChanges } from '../../../yieldCalculations'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,
@@ -201,8 +201,10 @@ export type OpenGuniVaultState = OverrideHelper &
     currentPnL: BigNumber
     totalGasSpentUSD: BigNumber
     id?: BigNumber
-  } & HasGasEstimation &
-  Yield & { totalValueLocked?: BigNumber }
+  } & HasGasEstimation & {
+    yieldsChanges: YieldChanges
+    totalValueLocked: TotalValueLocked
+  }
 
 interface GuniCalculations {
   leveragedAmount?: BigNumber
@@ -282,36 +284,40 @@ export function createOpenGuniVault$(
     amount1Max: BigNumber
   }) => Observable<{ amount0: BigNumber; amount1: BigNumber; mintAmount: BigNumber }>,
   slippageLimit$: Observable<UserSettingsState>,
-  getYields$: (ilk: string) => Observable<Yield>,
-  collateralLocked$: ({ ilk, token }: { ilk: string; token: string }) => Observable<BigNumber>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  yieldChange$: (ilk: string) => Observable<YieldChanges>,
+  totalValueLocked$: (ilk: string) => Observable<TotalValueLocked>,
 ): Observable<OpenGuniVaultState> {
   return ilks$.pipe(
     switchMap((ilks) =>
       iif(
         () => !ilks.some((i) => i === ilk),
         throwError(new Error(`Ilk ${ilk} does not exist`)),
-        combineLatest(context$, txHelpers$, ilkData$(ilk), slippageLimit$, getYields$(ilk)).pipe(
+        combineLatest(
+          context$,
+          txHelpers$,
+          ilkData$(ilk),
+          slippageLimit$,
+          yieldChange$(ilk),
+          totalValueLocked$(ilk),
+        ).pipe(
           first(),
-          switchMap(([context, txHelpers, ilkData, { slippage }, { yields }]) => {
-            const { token, ilkDebtAvailable } = ilkData
-            const tokenInfo = getToken(token)
+          switchMap(
+            ([context, txHelpers, ilkData, { slippage }, yieldsChanges, totalValueLocked]) => {
+              const { token, ilkDebtAvailable } = ilkData
+              const tokenInfo = getToken(token)
 
-            if (!tokenInfo.token0 || !tokenInfo.token1) {
-              throw new Error('Missing tokens in configuration')
-            }
+              if (!tokenInfo.token0 || !tokenInfo.token1) {
+                throw new Error('Missing tokens in configuration')
+              }
 
-            const account = context.account
-            return combineLatest(
-              priceInfo$(token),
-              balanceInfo$(tokenInfo.token0, account),
-              proxyAddress$(account),
-              oraclePriceData$(token),
-              collateralLocked$({ ilk, token }),
-            ).pipe(
-              first(),
-              switchMap(
-                ([priceInfo, balanceInfo, proxyAddress, oraclePriceData, collateralLocked]) =>
+              const account = context.account
+              return combineLatest(
+                priceInfo$(token),
+                balanceInfo$(tokenInfo.token0, account),
+                proxyAddress$(account),
+              ).pipe(
+                first(),
+                switchMap(([priceInfo, balanceInfo, proxyAddress]) =>
                   (
                     (proxyAddress &&
                       tokenInfo.token0 &&
@@ -330,8 +336,6 @@ export function createOpenGuniVault$(
                       function injectStateOverride(stateToOverride: Partial<OpenGuniVaultState>) {
                         return change$.next({ kind: 'injectStateOverride', stateToOverride })
                       }
-
-                      const totalValueLocked = oraclePriceData.currentPrice.times(collateralLocked)
 
                       const initialState: OpenGuniVaultState = {
                         ...defaultFormState,
@@ -378,9 +382,7 @@ export function createOpenGuniVault$(
                         totalGasSpentUSD: zero,
                         invalidSlippage: false,
                         injectStateOverride,
-                        yields: {
-                          ...yields,
-                        },
+                        yieldsChanges: yieldsChanges,
                         totalValueLocked: totalValueLocked,
                       }
 
@@ -573,9 +575,10 @@ export function createOpenGuniVault$(
                       )
                     }),
                   ),
-              ),
-            )
-          }),
+                ),
+              )
+            },
+          ),
         ),
       ),
     ),

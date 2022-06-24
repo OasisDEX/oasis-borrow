@@ -52,7 +52,7 @@ export function ManageEarnVaultContainer({
 
   return (
     <>
-      {!stopLossReadEnabled && <Header {...manageVault} token={ilkData.token} />}
+      {!stopLossReadEnabled && <Header {...manageVault} token={ilkData.token} ilk={ilkData.ilk} />}
       <Grid variant="vaultContainer">
         <Grid gap={5} mb={[0, 5]}>
           <Details {...manageVault} />

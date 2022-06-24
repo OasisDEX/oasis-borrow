@@ -385,10 +385,10 @@
       "collateral-locked-oracles": "We use the current price from the Maker oracles to calculate this value. The current market price of your collateral may differ from this price."
     }
   },
-  "open-earn-vault": {
+  "earn-vault": {
     "headlines": {
-      "current-yield": "Current yield",
-      "ninety-days-avg": "90 days avg",
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
       "total-value-locked": "Total value locked"
     }
   },
