@@ -16,8 +16,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
+import { Banner } from '../../../../../components/Banner'
 import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
@@ -108,62 +109,38 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
   const oraclePrice = priceInfo.currentCollateralPrice
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const newComponentsEnabled = useFeatureToggle('NewComponents')
-
+  console.log('newComponentsEnabled:', newComponentsEnabled)
   return (
     <>
-      {!newComponentsEnabled ? (
-        <>
-          <Grid variant="vaultDetailsCardsContainer">
-            <VaultDetailsCardNetValue
-              {...{
-                netValueUSD,
-                afterNetValueUSD,
-                afterPillColors,
-                showAfterPill,
-                currentPnL,
-                totalGasSpentUSD,
-                priceInfo,
-                vault: undefined,
-                relevant: inputAmountChangedSinceFirstRender,
-              }}
+      <DetailsSection
+        // title={t('system.overview')}
+        content={
+          <DetailsSectionContentCardWrapper>
+            <ContentCardNetValue
+              token={token}
+              oraclePrice={oraclePrice}
+              afterNetValueUSD={afterNetValueUSD}
+              changeVariant={changeVariant}
             />
-          </Grid>
-          <GuniOpenMultiplyVaultDetailsSummary
-            {...props}
-            afterPillColors={afterPillColors}
-            showAfterPill={showAfterPill}
-            relevant={inputAmountChangedSinceFirstRender}
-          />
-        </>
-      ) : (
-        <DetailsSection
-          title={t('system.overview')}
-          content={
-            <DetailsSectionContentCardWrapper>
-              <ContentCardNetValue
-                token={token}
-                oraclePrice={oraclePrice}
-                afterNetValueUSD={afterNetValueUSD}
-                changeVariant={changeVariant}
-              />
-            </DetailsSectionContentCardWrapper>
-          }
-          footer={
-            <DetailsSectionFooterItemWrapper>
-              <ContentFooterItemsMultiply
-                token={token}
-                debt={zero}
-                lockedCollateral={zero}
-                multiply={zero}
-                afterDebt={afterOutstandingDebt}
-                afterLockedCollateral={totalCollateral}
-                afterMultiply={multiply}
-                changeVariant={changeVariant}
-              />
-            </DetailsSectionFooterItemWrapper>
-          }
-        />
-      )}
+          </DetailsSectionContentCardWrapper>
+        }
+        footer={
+          <DetailsSectionFooterItemWrapper>
+            <ContentFooterItemsMultiply
+              token={token}
+              debt={zero}
+              lockedCollateral={zero}
+              multiply={zero}
+              afterDebt={afterOutstandingDebt}
+              afterLockedCollateral={totalCollateral}
+              afterMultiply={multiply}
+              changeVariant={changeVariant}
+            />
+          </DetailsSectionFooterItemWrapper>
+        }
+      />
+      <Box sx={{ mt: '21px' }} />
+      <Banner withClose={false} />
     </>
   )
 }
