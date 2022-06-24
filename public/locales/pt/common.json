@@ -370,6 +370,7 @@
   "open-new-vault": "Abrir novo Cofre",
   "open-vault": {
     "title": "Abrir Cofre",
+    "simulate": "Simulate",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "O mínimo em Dai necessário para abrir um Cofre é {{debtFloor}}. Por favor, adicione mais colateral para gerar ao menos {{debtFloor}} Dai",
       "vault-will-be-at-risk-level-danger": "Com essa ação, seu Cofre estará em um Ratio de Colateralização muito próximo ao mínimo necessário",
@@ -841,5 +842,10 @@
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
     }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

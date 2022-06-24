@@ -549,7 +549,8 @@
   "onramp-leave-message": "By clicking buy, you will leave Oasis and be redirected to a third party website where you will complete the buy process.",
   "open-new-vault": "Open new Vault",
   "open-vault": {
-    "title": "Open Vault"
+    "title": "Open Vault",
+    "simulate": "Simulate"
   },
   "or": "or",
   "outstanding-debt": "Outstanding Debt",
@@ -1322,6 +1323,12 @@
       "claim-rewards": "Claim Rewards"
     }
   },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
+  },
+  
 
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
