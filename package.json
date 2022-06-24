@@ -148,6 +148,7 @@
   "resolutions": {
     "minimist": "^1.2.6",
     "mkdirp": "^0.5.5",
+    "set-value": "^2.0.1",
     "webpack": "5"
   },
   "devDependencies": {
@@ -230,6 +231,7 @@
     "prettier": "^2.0.1",
     "prisma": "^3.14.0",
     "react-i18next": "^11.16.2",
+    "set-value": "^2.0.1",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "stream-browserify": "^3.0.0",
