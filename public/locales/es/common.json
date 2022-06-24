@@ -412,6 +412,13 @@
       "collateral-locked-oracles": "Usamos el precio actual del oráculo de Maker para calcular este valor. El precio actual de mercado de su colateral puede diferir de este precio."
     }
   },
+  "open-earn-vault": {
+    "headlines": {
+      "current-yield": "Current yield",
+      "ninety-days-avg": "90 days avg",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "El ID del Vault es un identificador único para su Vault de Maker en Oasis.app",
@@ -1158,7 +1165,6 @@
     "borrow": "Tome un préstamo de hasta {{value}} Dai",
     "multiply": "Obtenga una exposición de hasta {{value}} {{token}}",
     "earn": "Gane {{value}} {{token}} por año",
-    "guni": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
     "guni": {
       "GUNIV3DAIUSDC2-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
       "GUNIV3DAIUSDC1-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 5bps"

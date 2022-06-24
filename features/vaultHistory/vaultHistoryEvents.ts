@@ -211,12 +211,15 @@ export interface CloseVaultExitCollateralMultipleEvent extends MultiplyBaseEvent
   exitDai: BigNumber
 }
 
-interface StopLossBaseEvent {
+interface AutomationBaseEvent {
   id: string
   triggerId: string
-  kind: 'stoploss'
   hash: string
   timestamp: string
+}
+
+interface StopLossBaseEvent extends AutomationBaseEvent {
+  kind: 'stop-loss'
 }
 
 interface StopLossExecutedEvent extends StopLossBaseEvent {
@@ -229,6 +232,34 @@ interface StopLossRemovedEvent extends StopLossBaseEvent {
   eventType: 'removed'
 }
 
+interface BasicBuyBaseEvent extends AutomationBaseEvent {
+  kind: 'basic-buy'
+}
+
+interface BasicBuyExecutedEvent extends BasicBuyBaseEvent {
+  eventType: 'executed'
+}
+interface BasicBuyAddedEvent extends BasicBuyBaseEvent {
+  eventType: 'added'
+}
+interface BasicBuyRemovedEvent extends BasicBuyBaseEvent {
+  eventType: 'removed'
+}
+
+interface BasicSellBaseEvent extends AutomationBaseEvent {
+  kind: 'basic-sell'
+}
+
+interface BasicSellExecutedEvent extends BasicSellBaseEvent {
+  eventType: 'executed'
+}
+interface BasicSellAddedEvent extends BasicSellBaseEvent {
+  eventType: 'added'
+}
+interface BasicSellRemovedEvent extends BasicSellBaseEvent {
+  eventType: 'removed'
+}
+
 export type MultiplyEvent =
   | OpenMultiplyEvent
   | OpenMultiplyGuniEvent
@@ -238,7 +269,16 @@ export type MultiplyEvent =
   | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
 
-type AutomationEvent = StopLossExecutedEvent | StopLossAddedEvent | StopLossRemovedEvent
+type AutomationEvent =
+  | StopLossExecutedEvent
+  | StopLossAddedEvent
+  | StopLossRemovedEvent
+  | BasicBuyExecutedEvent
+  | BasicBuyAddedEvent
+  | BasicBuyRemovedEvent
+  | BasicSellExecutedEvent
+  | BasicSellAddedEvent
+  | BasicSellRemovedEvent
 
 export interface ReturnedEvent {
   kind: string
