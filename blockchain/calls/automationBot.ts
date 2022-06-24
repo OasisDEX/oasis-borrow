@@ -41,7 +41,9 @@ function getAddAutomationTriggerCallData(
   )
 }
 
-export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData | BasicBuyTriggerCreationData> = {
+export const addAutomationBotTrigger: TransactionDef<
+  AutomationBotAddTriggerData | BasicBuyTriggerCreationData
+> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },

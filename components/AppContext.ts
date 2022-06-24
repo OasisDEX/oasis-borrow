@@ -65,6 +65,7 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { BasicBuyTriggerCreationData } from 'features/automation/optimization/common/BasicBuyTriggerExtractor'
 import {
   ADD_FORM_CHANGE,
   AddFormChange,
@@ -220,7 +221,6 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { BasicBuyTriggerCreationData } from 'features/automation/optimization/common/BasicBuyTriggerExtractor'
 
 export type TxData =
   | OpenData

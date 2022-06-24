@@ -18,6 +18,37 @@ export interface StopLossTriggerData {
   triggerId: number
 }
 
+export function prepareTriggerData(
+  vaultData: Vault,
+  isCloseToCollateral: boolean,
+  stopLossLevel: BigNumber,
+): AutomationBaseTriggerData {
+  const triggerType = new BigNumber(
+    isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
+  )
+  return {
+    cdpId: vaultData.id,
+    triggerType,
+    proxyAddress: vaultData.owner,
+    triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
+      vaultData.id.toString(),
+      triggerType.toString(),
+      stopLossLevel.toString(),
+    ]),
+  }
+}
+
+export function extractStopLossData(data: TriggersData): StopLossTriggerData {
+  if (data.triggers && data.triggers.length > 0) {
+    return pickTriggerWithHighestStopLossLevel(data.triggers)
+  }
+
+  return {
+    isStopLossEnabled: false,
+    stopLossLevel: new BigNumber(0),
+  } as StopLossTriggerData
+}
+
 function pickTriggerWithHighestStopLossLevel(triggers: TriggerRecord[]) {
   const MAINNET_ID = 1
   const GOERLI_ID = 5
@@ -40,35 +71,4 @@ function pickTriggerWithHighestStopLossLevel(triggers: TriggerRecord[]) {
   })
 
   return decodedTriggers.reduce((max, obj) => (max.stopLossLevel.gt(obj.stopLossLevel) ? max : obj))
-}
-
-export function extractStopLossData(data: TriggersData): StopLossTriggerData {
-  if (data.triggers && data.triggers.length > 0) {
-    return pickTriggerWithHighestStopLossLevel(data.triggers)
-  }
-
-  return {
-    isStopLossEnabled: false,
-    stopLossLevel: new BigNumber(0),
-  } as StopLossTriggerData
-}
-// TODO ŁW - add tests, and reorganize methods to read top down
-export function prepareTriggerData(
-  vaultData: Vault,
-  isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber,
-): AutomationBaseTriggerData {
-  const triggerType = new BigNumber(
-    isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
-  )
-  return {
-    cdpId: vaultData.id,
-    triggerType,
-    proxyAddress: vaultData.owner,
-    triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
-      vaultData.id.toString(),
-      triggerType.toString(),
-      stopLossLevel.toString(),
-    ]),
-  }
 }
