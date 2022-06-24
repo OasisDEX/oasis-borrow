@@ -2,10 +2,10 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
-import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
+import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -51,7 +51,7 @@ export function GeneralManageLayout({
     )
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
-      <VaultBannersView id={vault.id} />
+      <VaultNoticesView id={vault.id} />
       <VaultTabSwitch
         defaultMode={VaultViewMode.Overview}
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
