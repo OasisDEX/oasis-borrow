@@ -1,8 +1,7 @@
-import { CommandContractType, encodeTriggerDataByType } from '@oasisdex/automation'
+import { CommandContractType, encodeTriggerDataByType, TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { TriggerType } from 'features/automation/protection/common/enums/TriggersTypes'
 
 export type BasicBuyTriggerCreationData = {
   cdpId: BigNumber

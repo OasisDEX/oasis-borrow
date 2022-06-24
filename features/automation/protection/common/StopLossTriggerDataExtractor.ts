@@ -2,6 +2,7 @@ import {
   CommandContractType,
   decodeTriggerData,
   encodeTriggerDataByType,
+  TriggerType,
 } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
@@ -9,7 +10,6 @@ import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 
 import { TriggerRecord, TriggersData } from '../triggers/AutomationTriggersData'
-import { TriggerType } from './enums/TriggersTypes'
 
 export interface StopLossTriggerData {
   isStopLossEnabled: boolean
