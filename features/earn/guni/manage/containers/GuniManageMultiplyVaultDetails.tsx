@@ -21,6 +21,10 @@ import { Box, Grid } from 'theme-ui'
 
 import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
+import { ExpandableButton } from '../../../../../components/ExpandableButton'
+import { ContentCardEarningsToDate } from '../../../../../components/vault/detailsSection/ContentCardEarningsToDate'
+import BigNumber from 'bignumber.js'
+import { ManageEarnVaultState } from '../pipes/manageGuniVault'
 
 function GuniManageMultiplyVaultDetailsSummary({
   vault: { debt, token, lockedCollateral },
@@ -84,7 +88,7 @@ function GuniManageMultiplyVaultDetailsSummary({
   )
 }
 
-export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
+export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
   const { t } = useTranslation()
   const {
     vault: { debt, token, lockedCollateral, lockedCollateralUSD },
@@ -101,6 +105,8 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
     afterDebt,
     afterLockedCollateral,
     afterMultiply,
+    earningsToDate,
+    earningsToDateAfterFees,
   } = props
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
@@ -150,6 +156,10 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
                 lockedCollateralUSD={lockedCollateralUSD}
                 debt={debt}
                 changeVariant={changeVariant}
+              />
+              <ContentCardEarningsToDate
+                earningsToDate={earningsToDate}
+                earningsToDateAfterFees={earningsToDateAfterFees}
               />
             </DetailsSectionContentCardWrapper>
           }

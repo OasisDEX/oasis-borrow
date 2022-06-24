@@ -1,4 +1,8 @@
-import { calculatePNL } from '../../../../../helpers/multiply/calculations'
+import {
+  calculateGrossEarnings,
+  calculateNetEarnings,
+  calculatePNL,
+} from '../../../../../helpers/multiply/calculations'
 import { zero } from '../../../../../helpers/zero'
 import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 import { GuniTxData } from './manageGuniVault'
@@ -16,6 +20,8 @@ export function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxDa
   const netValueUSD = lockedCollateralUSD.minus(debt)
   const currentPnL = calculatePNL(vaultHistory, netValueUSD)
 
+  const grossEarnings = calculateGrossEarnings(vaultHistory, netValueUSD)
+  const netEarnings = calculateNetEarnings(vaultHistory, netValueUSD)
   return {
     ...state,
     netValueUSD,
@@ -24,6 +30,8 @@ export function applyGuniCalculations(state: ManageMultiplyVaultState & GuniTxDa
     loanFee: zero,
     fees: zero,
     currentPnL,
+    earningsToDate: grossEarnings,
+    earningsToDateAfterFees: netEarnings,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }

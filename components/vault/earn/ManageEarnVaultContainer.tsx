@@ -16,8 +16,8 @@ export interface ManageEarnVaultContainerProps {
 
 interface ManageEarnVaultContainerComponents {
   header: (props: EarnVaultHeaderProps) => JSX.Element
-  details: (props: ManageMultiplyVaultState) => JSX.Element
-  form: (props: ManageMultiplyVaultState) => JSX.Element
+  details: (props: ManageEarnVaultState) => JSX.Element
+  form: (props: ManageEarnVaultState) => JSX.Element
   history: (props: { vaultHistory: VaultHistoryEvent[] }) => JSX.Element
 }
 

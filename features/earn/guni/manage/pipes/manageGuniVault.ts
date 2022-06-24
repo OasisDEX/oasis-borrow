@@ -174,7 +174,11 @@ export const defaultMutableManageMultiplyVaultState = {
 } as MutableManageMultiplyVaultState
 
 export type ManageEarnVaultState = ManageMultiplyVaultState &
-  Yield & { totalValueLocked?: BigNumber }
+  Yield & {
+    totalValueLocked?: BigNumber
+    earningsToDate?: BigNumber
+    earningsToDateAfterFees?: BigNumber
+  }
 
 export function createManageGuniVault$(
   context$: Observable<Context>,
