@@ -244,7 +244,9 @@
     "close_vault_to_collateral": "Closed Vault, exited to collateral",
     "sold": "Sold",
     "total-fees": "Total fees",
-    "stop-loss": "Stop-Loss trigger"
+    "stop-loss": "Stop-Loss trigger",
+    "basic-buy": "Basic-Buy trigger",
+    "basic-sell": "Basic-Sell trigger"
   },
   "triggers": {
     "added": "added",
