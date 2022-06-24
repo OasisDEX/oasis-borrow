@@ -65,6 +65,7 @@ import {
 } from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
+import { BasicBuyTriggerCreationData } from 'features/automation/optimization/common/BasicBuyTriggerExtractor'
 import {
   ADD_FORM_CHANGE,
   AddFormChange,
@@ -239,6 +240,7 @@ export type TxData =
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
+  | BasicBuyTriggerCreationData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>

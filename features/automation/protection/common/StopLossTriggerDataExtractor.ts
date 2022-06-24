@@ -2,6 +2,7 @@ import {
   CommandContractType,
   decodeTriggerData,
   encodeTriggerDataByType,
+  TriggerType,
 } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
 import BigNumber from 'bignumber.js'
@@ -9,13 +10,43 @@ import { AutomationBaseTriggerData } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 
 import { TriggerRecord, TriggersData } from '../triggers/AutomationTriggersData'
-import { TriggerType } from './enums/TriggersTypes'
 
 export interface StopLossTriggerData {
   isStopLossEnabled: boolean
   stopLossLevel: BigNumber
   isToCollateral: boolean
   triggerId: number
+}
+
+export function prepareTriggerData(
+  vaultData: Vault,
+  isCloseToCollateral: boolean,
+  stopLossLevel: BigNumber,
+): AutomationBaseTriggerData {
+  const triggerType = new BigNumber(
+    isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
+  )
+  return {
+    cdpId: vaultData.id,
+    triggerType,
+    proxyAddress: vaultData.owner,
+    triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
+      vaultData.id.toString(),
+      triggerType.toString(),
+      stopLossLevel.toString(),
+    ]),
+  }
+}
+
+export function extractStopLossData(data: TriggersData): StopLossTriggerData {
+  if (data.triggers && data.triggers.length > 0) {
+    return pickTriggerWithHighestStopLossLevel(data.triggers)
+  }
+
+  return {
+    isStopLossEnabled: false,
+    stopLossLevel: new BigNumber(0),
+  } as StopLossTriggerData
 }
 
 function pickTriggerWithHighestStopLossLevel(triggers: TriggerRecord[]) {
@@ -40,35 +71,4 @@ function pickTriggerWithHighestStopLossLevel(triggers: TriggerRecord[]) {
   })
 
   return decodedTriggers.reduce((max, obj) => (max.stopLossLevel.gt(obj.stopLossLevel) ? max : obj))
-}
-
-export function extractStopLossData(data: TriggersData): StopLossTriggerData {
-  if (data.triggers && data.triggers.length > 0) {
-    return pickTriggerWithHighestStopLossLevel(data.triggers)
-  }
-
-  return {
-    isStopLossEnabled: false,
-    stopLossLevel: new BigNumber(0),
-  } as StopLossTriggerData
-}
-
-export function prepareTriggerData(
-  vaultData: Vault,
-  isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber,
-): AutomationBaseTriggerData {
-  const triggerType = new BigNumber(
-    isCloseToCollateral ? TriggerType.StopLossToCollateral : TriggerType.StopLossToDai,
-  )
-  return {
-    cdpId: vaultData.id,
-    triggerType,
-    proxyAddress: vaultData.owner,
-    triggerData: encodeTriggerDataByType(CommandContractType.CloseCommand, [
-      vaultData.id.toString(),
-      triggerType.toString(),
-      stopLossLevel.toString(),
-    ]),
-  }
 }
