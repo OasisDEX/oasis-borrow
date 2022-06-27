@@ -1,12 +1,10 @@
 import { decodeTriggerData, TriggerType } from '@oasisdex/automation'
 import { getNetworkId } from '@oasisdex/web3-context'
+import { NetworkIds } from 'blockchain/network'
 import { TriggerRecord } from 'features/automation/protection/triggers/AutomationTriggersData'
 
 export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: TriggerType[]) {
-  const MAINNET_ID = 1
-  const GOERLI_ID = 5
-
-  const networkId = getNetworkId() === GOERLI_ID ? GOERLI_ID : MAINNET_ID
+  const networkId = getNetworkId() === NetworkIds.GOERLI ? NetworkIds.GOERLI : NetworkIds.MAINNET
 
   try {
     const decodedTriggers = triggers.map((trigger) => {

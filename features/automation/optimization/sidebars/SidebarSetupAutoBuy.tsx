@@ -39,7 +39,7 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyP
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  console.log(uiState)
+
   const txData = prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,

@@ -21,6 +21,8 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
+type BasicBSTriggerTypes = TriggerType.BasicSell | TriggerType.BasicBuy
+
 function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
   return basicSellTriggers.map((trigger) => {
     const [
@@ -70,8 +72,6 @@ export function extractBasicBSData(data: TriggersData, type: TriggerType): Basic
 
   return defaultBasicSellData
 }
-
-type BasicBSTriggerTypes = TriggerType.BasicSell | TriggerType.BasicBuy
 
 export function prepareBasicBSTriggerData({
   vaultData,
