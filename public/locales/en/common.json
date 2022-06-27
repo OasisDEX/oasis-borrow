@@ -905,6 +905,11 @@
       "header": "Get vault protection",
       "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
       "button": "Protect your Vault"
+    },
+    "what-are-the-risks": {
+      "header": "What are the risks",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Learn more"
     }
   },
   "view": "View",

@@ -1,3 +1,6 @@
+import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
+import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSection } from 'components/DetailsSection'
 import {
   DetailsSectionContentCardWrapper,
@@ -16,9 +19,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { Banner } from '../../../../../components/Banner'
+import { Banner, bannerGradientPresets } from '../../../../../components/Banner'
 import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
 import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
@@ -101,7 +104,7 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
     totalCollateral,
     multiply,
   } = props
-
+  console.log('props:', props)
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
@@ -110,19 +113,51 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   console.log('newComponentsEnabled:', newComponentsEnabled)
+  const { iconCircle, name } = getToken(token)
   return (
     <>
       <DetailsSection
-        // title={t('system.overview')}
         content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardNetValue
-              token={token}
-              oraclePrice={oraclePrice}
-              afterNetValueUSD={afterNetValueUSD}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionContentCardWrapper>
+          <>
+            {/* Create component for Earn Header */}
+            <Flex
+              sx={{
+                flexDirection: ['column', null, null, 'row'],
+                alignItems: ['flex-start', null, null, 'flex-end'],
+                mb: 4,
+              }}
+            >
+              <Icon name={iconCircle} size="64px" sx={{ verticalAlign: 'text-bottom', mr: 3 }} />
+              <Box>
+                <Heading
+                  as="h3"
+                  variant="heading3"
+                  sx={{
+                    fontWeight: 'semiBold',
+                    fontSize: '28px',
+                    color: 'primary',
+                  }}
+                >
+                  {`${(props.depositAmount || new BigNumber(0))?.toFixed(2)} DAI`}
+                </Heading>
+                <Text
+                  variant="paragraph3"
+                  color="text.subtitle"
+                  sx={{ fontWeight: 'semiBold', fontSize: 'inherit' }}
+                >
+                  {`In this position`}
+                </Text>
+              </Box>
+            </Flex>
+            <DetailsSectionContentCardWrapper>
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                afterNetValueUSD={afterNetValueUSD}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionContentCardWrapper>
+          </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>
@@ -140,7 +175,16 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
         }
       />
       <Box sx={{ mt: '21px' }} />
-      <Banner withClose={false} />
+      <Banner
+        title={t('vault-banners.what-are-the-risks.header')}
+        description={t('vault-banners.what-are-the-risks.content')}
+        button={{ text: t('vault-banners.what-are-the-risks.button'), action: () => null }}
+        image={{
+          src: '/static/img/setup-banner/stop-loss.svg',
+          backgroundColor: bannerGradientPresets.stopLoss[0],
+          backgroundColorEnd: bannerGradientPresets.stopLoss[1],
+        }}
+      />
     </>
   )
 }
