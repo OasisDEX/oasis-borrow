@@ -8,7 +8,7 @@ import {
   ContentCardDynamicStopPriceModal,
   ContentCardDynamicStopPriceModalProps,
 } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
-import { StopLossTriggerData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'

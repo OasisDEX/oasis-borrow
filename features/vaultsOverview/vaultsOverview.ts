@@ -1,5 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import {
+  extractStopLossData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'
 import { iif, Observable } from 'rxjs'
@@ -24,10 +28,6 @@ import {
 import { calculatePNL } from '../../helpers/multiply/calculations'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { zero } from '../../helpers/zero'
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from '../automation/protection/common/StopLossTriggerDataExtractor'
 import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'

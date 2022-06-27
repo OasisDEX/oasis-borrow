@@ -42,7 +42,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
       dropdown: {
         forcePanel: 'stopLoss',
         disabled: isDropdownDisabled({ stage }),
-        items: commonProtectionDropdownItems(uiChanges),
+        items: commonProtectionDropdownItems(uiChanges, t),
       },
     }),
     content: (

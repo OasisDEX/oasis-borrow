@@ -2,7 +2,9 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
+import { useBasicSellStateInitialization } from 'features/automation/useBasicSellStateInitializator'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
+import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -11,7 +13,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { GuniVaultHeader } from '../../features/earn/guni/common/GuniVaultHeader'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
@@ -35,6 +36,7 @@ export function GeneralManageLayout({
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
+  const isBasicSellEnabled = useBasicSellStateInitialization(ilkData, vault, autoTriggersData)
 
   const vaultHeadingKey =
     generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
@@ -79,7 +81,7 @@ export function GeneralManageLayout({
         optimizationControl={<OptimizationControl vault={vault} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
-        protectionEnabled={isStopLossEnabled}
+        protectionEnabled={isStopLossEnabled || isBasicSellEnabled}
       />
     </Grid>
   )
