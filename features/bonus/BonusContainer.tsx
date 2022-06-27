@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { Banner } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
@@ -12,13 +13,37 @@ type BonusContainerProps = {
   cdpId: BigNumber
 }
 
+// export type Bonus = {
+//   amountToClaim: BigNumber
+//   symbol: string
+//   name: string
+//   moreInfoLink: string
+//   readableAmount: string
+// }
+
+// export type BonusViewModel = {
+//   bonus: Bonus
+//   claimAll?: () => void
+//   claimTxnState?: ClaimTxnState
+// }
+
 export function BonusContainer(props: BonusContainerProps) {
   const { bonus$ } = useAppContext()
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
 
-  if (bonusViewModel) {
-    const { bonus, claimAll, claimTxnState } = bonusViewModel
+  if (true) {
+    const { bonus, claimAll, claimTxnState } = bonusViewModel || {
+      bonus: {
+        amountToClaim: new BigNumber(200),
+        name: 'Bonus',
+        symbol: 'Bonus',
+        readableAmount: '100',
+        moreInfoLink: 'hello',
+      },
+      claimAll: () => null,
+      claimTxnState: null,
+    }
 
     let bonusInstructionSnippet: string
     if (bonus.amountToClaim.eq(0)) {
@@ -38,10 +63,10 @@ export function BonusContainer(props: BonusContainerProps) {
               {t('claim-rewards.for-this-position', {
                 bonusTokenName: bonus.name,
               })}{' '}
-              {t('claim-rewards.more-info.text1')}{' '}
-              <a href={bonus.moreInfoLink} target="_blank">
+              {t('claim-rewards.more-info.text1')}
+              <AppLink sx={{ ml: 1 }} href={bonus.moreInfoLink} target="_blank">
                 {t('claim-rewards.more-info.link-text')}
-              </a>
+              </AppLink>
               {t('claim-rewards.more-info.text2')}
             </Text>
             <Text mt={3}>{t(bonusInstructionSnippet, bonus)}</Text>
