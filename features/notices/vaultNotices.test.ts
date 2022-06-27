@@ -9,7 +9,7 @@ import { one } from 'helpers/zero'
 import moment from 'moment'
 import { of } from 'rxjs/internal/observable/of'
 
-import { createVaultsBanners$ } from './vaultsBanners'
+import { createVaultsBanners$ } from './vaultsNotices'
 
 describe('createVaultNotices$', () => {
   it('should assign ownership banner', () => {
