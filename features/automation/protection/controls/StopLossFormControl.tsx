@@ -4,7 +4,6 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers, UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useSharedUI } from 'components/SharedUIProvider'
-import { VaultFormContainer } from 'components/vault/VaultFormContainer'
 import { StopLossTriggerData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -14,7 +13,6 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 
 import {
@@ -107,10 +105,9 @@ export function StopLossFormControl({
   balanceInfo,
 }: StopLossFormControlProps) {
   const { txHelpers$, context$, uiChanges } = useAppContext()
-  const { t } = useTranslation()
   const { setVaultFormOpened } = useSharedUI()
   const isTouchDevice = window && 'ontouchstart' in window
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   useEffect(() => {
@@ -131,28 +128,7 @@ export function StopLossFormControl({
     <WithErrorHandler error={[contextError, txHelpersError]}>
       <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
         {([context]) =>
-          !newComponentsEnabled ? (
-            <VaultFormContainer
-              toggleTitle={
-                stopLossTriggerData.isStopLossEnabled
-                  ? t('protection.set-downside-protection')
-                  : t('protection.edit-vault-protection')
-              }
-            >
-              <StopLossForms
-                currentForm={currentForm}
-                txHelpers={txHelpers}
-                context={context}
-                vault={vault}
-                ilkData={ilkData}
-                uiChanges={uiChanges}
-                priceInfo={priceInfo}
-                balanceInfo={balanceInfo}
-                accountIsController={accountIsController}
-                stopLossTriggerData={stopLossTriggerData}
-              />
-            </VaultFormContainer>
-          ) : basicBSEnabled ? (
+          basicBSEnabled ? (
             isStopLossActive ? (
               <StopLossForms
                 currentForm={currentForm}

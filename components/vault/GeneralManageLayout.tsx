@@ -6,7 +6,6 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -33,7 +32,6 @@ export function GeneralManageLayout({
   const { ilkData, vault, account, priceInfo, balanceInfo, vaultHistory } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
 
   const vaultHeadingKey =
@@ -57,13 +55,7 @@ export function GeneralManageLayout({
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
         headline={headlineElement}
         // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
-        headerControl={
-          !newComponentsEnabled ? (
-            <DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />
-          ) : (
-            <></>
-          )
-        }
+        headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
