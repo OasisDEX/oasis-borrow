@@ -66,8 +66,6 @@ export function extractBasicBSData(data: TriggersData, type: TriggerType): Basic
     if (basicSellTriggers.length) {
       return mapBasicBSTriggerData(basicSellTriggers)[0]
     }
-
-    return defaultBasicSellData
   }
 
   return defaultBasicSellData
