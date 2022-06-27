@@ -32,7 +32,7 @@ export const MinusIcon = () => (
 
 interface VaultActionInputProps {
   action: VaultAction
-  currencyCode: string //TODO ŁW use some enum type
+  currencyCode: string
   tokenUsdPrice?: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
