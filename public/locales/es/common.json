@@ -548,7 +548,10 @@
   "one-of-some": "{{one}} de {{some}}",
   "onramp-leave-message": "Al hacer clic en comprar, saldrá de Oasis y será redirigido a un sitio web de terceros donde completará el proceso de compra.",
   "open-new-vault": "Abrir un nuevo Vault",
-  "open-vault": "Abrir Vault",
+  "open-vault": {
+    "title": "Abrir Vault",
+    "simulate": "Simulate"
+  },
   "or": "o",
   "outstanding-debt": "Deuda pendiente",
   "paste": "Pegar",
@@ -1236,5 +1239,10 @@
     "claim-button": {
       "claim-rewards": "Reclamar recompensas"
     }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

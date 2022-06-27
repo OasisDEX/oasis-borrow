@@ -5083,10 +5083,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.6.tgz#0dd4309e2120a33b06feafc9a2308da8d2bb0f77"
-  integrity sha512-0TIS/KQJFregvFQUmLO1FNlCZ9ZA8SRfT1sCDijZuZR34MpuSyHSFXymujz8ZY1k7XlUqCe429SFS66UzOPOrw==
+"@oasisdex/automation@^1.0.12":
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.12.tgz#18e90580f4ea67d6289ace5a6518d20774596719"
+  integrity sha512-GLjyPnuhWBmHxpI2Frcijp/8gspCtjxjMP01ZGXQVe/nTk/naJJxUspB0gK+UgcN8fsiqKF5rSLbhkxe5Yt4yQ==
   dependencies:
     ethers "^5.6.2"
 
@@ -5114,10 +5114,10 @@
     web3 "^1.5.3"
     web3-provider-engine "^14.0.1"
 
-"@oasisdex/multiply@^0.2.8":
-  version "0.2.10"
-  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.10.tgz#5eea596dddee83f3e15cb2201dd0706a6c0cf28c"
-  integrity sha512-LQhmqmrLKyymbMfCOetp6o5zfSAPDBLlL485KBxdZgD3gehC9aSMKGJhhAOz6HjDC8gjvf8CUfZ0fArBFDh+kw==
+"@oasisdex/multiply@^0.2.11":
+  version "0.2.11"
+  resolved "https://registry.yarnpkg.com/@oasisdex/multiply/-/multiply-0.2.11.tgz#62a3d46e983648f37407f830225c23c3d5876ea1"
+  integrity sha512-syiTcUETuDZ/01jNq5hEtlHCrZDri6DcNZvMzvApFOX+38HJcFI8h8Ki6tiTUO/sezFZGwO/XVd1sk2LX9rBlQ==
   dependencies:
     "@types/chai" "^4.2.21"
     "@types/mocha" "^9.0.0"
