@@ -1,15 +1,15 @@
 import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
+import { VaultViewMode } from 'components/VaultTabSwitch'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../../components/VaultTabSwitch'
-import { useObservable } from '../../../../helpers/observableHook'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface GetProtectionBannerProps {
@@ -35,9 +35,7 @@ export function GetProtectionBannerControl({
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
-  return !slData?.isStopLossEnabled &&
-    isAllowedForAutomation &&
-    !debt.isZero() ? (
+  return !slData?.isStopLossEnabled && isAllowedForAutomation && !debt.isZero() ? (
     <>
       <SetupBanner
         header={
