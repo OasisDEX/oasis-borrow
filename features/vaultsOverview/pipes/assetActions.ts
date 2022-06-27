@@ -1,7 +1,8 @@
-import { map as mapL, reduce } from 'lodash'
+import { map as mapLodash, omit, reduce } from 'lodash'
 import { combineLatest, iif, Observable, of } from 'rxjs'
-import { flatMap, map, startWith } from 'rxjs/operators'
+import { flatMap, map, startWith, switchMap } from 'rxjs/operators'
 
+import { ilksNotSupportedOnGoerli } from '../../../blockchain/config'
 import { ContextConnected } from '../../../blockchain/network'
 import { UIChanges } from '../../../components/AppContext'
 import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
@@ -11,6 +12,7 @@ import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
 } from '../../automation/protection/common/UITypes/SwapWidgetChange'
+import { Web3Context } from '@oasisdex/web3-context/src/types'
 
 export type AssetAction = UrlAssetAction | OnClickAssetAction
 
@@ -76,13 +78,14 @@ function productCategoryToAssetAction(
 
 // returns a list of actions a user can perform for a given asset
 export function createAssetActions$(
-  context$: Observable<ContextConnected>,
+  context$: Observable<Web3Context>,
   ilkToToken$: (ilk: string) => Observable<string>,
   productCategoryIlks: ProductCategoryIlks,
   uiChanges: UIChanges,
   token: string,
 ): Observable<Array<AssetAction>> {
-  const contextConnected$ = context$.pipe(startWith(undefined))
+  const contextConnected$ = context$.pipe(startWith<ContextConnected | undefined>(undefined))
+
   const ilkToProductCategory = reduce<
     ProductCategoryIlks,
     {
@@ -105,14 +108,29 @@ export function createAssetActions$(
 
   const earnProductEnabled = useFeatureToggle('EarnProduct')
 
-  const assetActions$ = combineLatest(
-    mapL(ilkToProductCategory, (productCategories, ilk) => {
-      return combineLatest(
-        iif(() => supportedEarnIlks.includes(ilk), of('DAI'), ilkToToken$(ilk)),
-        of(productCategories),
-      )
+  const assetActions$ = context$.pipe(
+    switchMap((context) => {
+      // todo: move this to product/ilk config per network, or a stream
+      let _ilkToProductCategory
+
+      if (
+        (context.status === 'connectedReadonly' || context.status === 'connected') &&
+        context.chainId === 5
+      ) {
+        _ilkToProductCategory = omit(ilkToProductCategory, ilksNotSupportedOnGoerli)
+      } else {
+        _ilkToProductCategory = ilkToProductCategory
+      }
+
+      const obsArray = mapLodash(_ilkToProductCategory, (productCategories, ilk) => {
+        return combineLatest(
+          iif(() => supportedEarnIlks.includes(ilk), of('DAI'), ilkToToken$(ilk)),
+          of(productCategories),
+        )
+      })
+      return obsArray.length > 0 ? combineLatest(obsArray) : of([])
     }),
-  ).pipe(
+
     map((tokenToProductCategories) => {
       const relevantMappings = tokenToProductCategories.filter(([t]) => t === token)
       return relevantMappings

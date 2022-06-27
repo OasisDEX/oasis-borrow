@@ -10,7 +10,7 @@ interface OptimizationControlProps {
 }
 
 export function OptimizationControl({ vault }: OptimizationControlProps) {
-  const [isAutoBuyOn] = useState<boolean>(false) // should be taken from pipeline or triggers, probably on component leve, not here
+  const [isAutoBuyOn] = useState<boolean>(false) // should be taken from pipeline or triggers, probably on component level, not here
 
   return (
     <DefaultVaultLayout

@@ -396,7 +396,10 @@ export function applyOpenVaultConditions(state: OpenMultiplyVaultState): OpenMul
       customAllowanceAmountLessThanDepositAmount ||
       exchangeError ||
       isExchangeLoading
-    ) || stage === 'txSuccess'
+    ) ||
+    stage === 'txSuccess' ||
+    stage === 'stopLossTxWaitingForConfirmation' ||
+    stage === 'stopLossTxSuccess'
 
   const canRegress = ([
     'proxyWaitingForConfirmation',

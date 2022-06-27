@@ -123,6 +123,7 @@ export interface MutableOpenVaultState {
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   stopLossSkipped: boolean
+  stopLossLevel: BigNumber
   id?: BigNumber
 }
 
@@ -313,6 +314,7 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   depositAmountUSD: undefined,
   generateAmount: undefined,
   stopLossSkipped: false,
+  stopLossLevel: zero,
 }
 
 export function createOpenVault$(

@@ -1,5 +1,6 @@
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
+// import { useAppContext } from 'components/AppContextProvider'
+import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
@@ -8,7 +9,8 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { useObservable } from 'helpers/observableHook'
+// import { useObservable } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -16,18 +18,25 @@ import { Grid } from 'theme-ui'
 interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
+  addBasicBuyTriggerConfig: RetryableLoadingButtonProps
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({
+  isAutoBuyOn,
+  // vault,
+  addBasicBuyTriggerConfig,
+}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
-  const [activeAutomationFeature] = useObservable(
-    uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
-  )
+  // const { uiChanges /*, txHelpers$*/ } = useAppContext()
+  // TODO ŁW change to useUIChanges
+  // const [activeAutomationFeature] = useObservable(
+  //   uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
+  // )
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: 'Auto Buy Setup',
+      title: t('auto-buy.form-title'),
       content: (
         <Grid gap={3}>
           <MultipleRangeSlider
@@ -55,9 +64,9 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
             onChange={(e) => console.log(e.target.value)}
             onAuxiliaryChange={() => {}}
             showToggle={true}
-            toggleOnLabel={t('auto-buy.set-no-threshold')}
-            toggleOffLabel={t('auto-buy.set-threshold')}
-            toggleOffPlaceholder={t('auto-buy.no-threshold')}
+            toggleOnLabel={t('protection.set-no-threshold')}
+            toggleOffLabel={t('protection.set-threshold')}
+            toggleOffPlaceholder={t('protection.no-threshold')}
           />
           <SidebarResetButton
             clear={() => {
@@ -68,7 +77,10 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
       ),
       primaryButton: {
         label: 'Confirm',
-        disabled: true,
+        disabled: false,
+        action: () => {
+          addBasicBuyTriggerConfig.onClick(() => null)
+        },
       },
     }
 

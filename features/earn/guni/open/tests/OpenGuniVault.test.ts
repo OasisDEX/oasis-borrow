@@ -8,10 +8,12 @@ import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
 import { Observable, of } from 'rxjs'
 
+import { OraclePriceData } from '../../../../../blockchain/prices'
 import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.mock'
 import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
 import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
 import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
+import { Yield, YieldPeriod } from '../../../yieldCalculations'
 import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,6 +52,32 @@ function getGuniMintAmount$() {
   })
 }
 
+function yields$(ilk: string): Observable<Yield> {
+  return of({
+    yields: {
+      [YieldPeriod.Yield7Days]: {
+        days: 7,
+        value: new BigNumber(10.02),
+      },
+      [YieldPeriod.Yield90Days]: {
+        days: 90,
+        value: new BigNumber(20.03),
+      },
+    },
+    ilk: ilk,
+  })
+}
+
+function oraclePriceData$(): Observable<OraclePriceData> {
+  return of({
+    currentPrice: new BigNumber(1000),
+  } as OraclePriceData)
+}
+
+function collateralLocked$() {
+  return of(new BigNumber(419_277.8636977543371))
+}
+
 describe('OpenGuniVault', () => {
   it('playground', () => {
     function gasEstimationMock$<T>(state: T) {
@@ -72,6 +100,9 @@ describe('OpenGuniVault', () => {
       token1Balance$,
       getGuniMintAmount$,
       slippageLimitMock(),
+      yields$,
+      collateralLocked$,
+      oraclePriceData$,
     )
 
     const state = getStateUnpacker(openGuniVault$)
@@ -100,6 +131,9 @@ describe('OpenGuniVault', () => {
       token1Balance$,
       getGuniMintAmount$,
       slippageLimitMock(),
+      yields$,
+      collateralLocked$,
+      oraclePriceData$,
     )
 
     const state = getStateUnpacker(openGuniVault$)()

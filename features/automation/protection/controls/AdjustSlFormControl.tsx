@@ -35,11 +35,10 @@ import {
 } from '../common/consts/automationDefaults'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
-import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
+import { prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
 import { AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
@@ -62,10 +61,9 @@ interface AdjustSlFormControlProps {
   vault: Vault
   priceInfo: PriceInfo
   ilkData: IlkData
-  triggerData: TriggersData
+  triggerData: StopLossTriggerData
   ctx: Context
   accountIsController: boolean
-  collateralizationRatioAtNextPrice: BigNumber
   toggleForms: () => void
   balanceInfo: BalanceInfo
   tx?: TxHelpers
@@ -82,9 +80,7 @@ export function AdjustSlFormControl({
   tx,
   balanceInfo,
 }: AdjustSlFormControlProps) {
-  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
-    triggerData,
-  )
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()

@@ -1,11 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { UIChanges } from 'components/AppContext'
 import { VaultViewMode } from 'components/VaultTabSwitch'
+import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
 } from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
@@ -68,4 +70,41 @@ export function getSliderPercentageFill({
   return value
     .minus(min.times(100))
     .div(max.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(min))
+}
+
+export function getActiveProtectionFeature({
+  isAutoSellOn,
+  isStopLossOn,
+  section,
+  currentProtectionFeature,
+}: {
+  isAutoSellOn: boolean
+  isStopLossOn: boolean
+  section: 'form' | 'details'
+  currentProtectionFeature?: AutomationProtectionFeatures
+}) {
+  const basicBSEnabled = useFeatureToggle('BasicBS')
+
+  if (section === 'form') {
+    return {
+      isAutoSellActive:
+        (isAutoSellOn && !isStopLossOn && currentProtectionFeature !== 'stopLoss') ||
+        currentProtectionFeature === 'autoSell',
+      isStopLossActive:
+        (isStopLossOn && currentProtectionFeature !== 'autoSell') ||
+        currentProtectionFeature === 'stopLoss',
+    }
+  }
+
+  if (section === 'details') {
+    return {
+      isAutoSellActive: isAutoSellOn || currentProtectionFeature === 'autoSell',
+      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !basicBSEnabled,
+    }
+  }
+
+  return {
+    isAutoSellActive: false,
+    isStopLossActive: false,
+  }
 }
