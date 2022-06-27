@@ -1,7 +1,6 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Heading, IconButton, Image, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Image, Text } from 'theme-ui'
 
 import { AppSpinner } from '../helpers/AppSpinner'
 

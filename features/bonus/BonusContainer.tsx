@@ -13,37 +13,13 @@ type BonusContainerProps = {
   cdpId: BigNumber
 }
 
-// export type Bonus = {
-//   amountToClaim: BigNumber
-//   symbol: string
-//   name: string
-//   moreInfoLink: string
-//   readableAmount: string
-// }
-
-// export type BonusViewModel = {
-//   bonus: Bonus
-//   claimAll?: () => void
-//   claimTxnState?: ClaimTxnState
-// }
-
 export function BonusContainer(props: BonusContainerProps) {
   const { bonus$ } = useAppContext()
   const [bonusViewModel] = useObservable(bonus$(props.cdpId))
   const { t } = useTranslation()
 
-  if (true) {
-    const { bonus, claimAll, claimTxnState } = bonusViewModel || {
-      bonus: {
-        amountToClaim: new BigNumber(200),
-        name: 'Bonus',
-        symbol: 'Bonus',
-        readableAmount: '100',
-        moreInfoLink: 'hello',
-      },
-      claimAll: () => null,
-      claimTxnState: null,
-    }
+  if (bonusViewModel) {
+    const { bonus, claimAll, claimTxnState } = bonusViewModel
 
     let bonusInstructionSnippet: string
     if (bonus.amountToClaim.eq(0)) {
@@ -63,7 +39,7 @@ export function BonusContainer(props: BonusContainerProps) {
               {t('claim-rewards.for-this-position', {
                 bonusTokenName: bonus.name,
               })}{' '}
-              {t('claim-rewards.more-info.text1')}
+              {t('claim-rewards.more-info.text1')}{' '}
               <AppLink sx={{ ml: 1 }} href={bonus.moreInfoLink} target="_blank">
                 {t('claim-rewards.more-info.link-text')}
               </AppLink>
