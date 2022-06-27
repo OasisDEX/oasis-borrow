@@ -19,7 +19,7 @@ interface SidebarSetupAutoBuyProps {
 }
 
 export function SidebarSetupAutoSell({
-  vault,
+  // vault,
   // autoSellTriggerData, not used for now
   isAutoSellActive,
   stage,
@@ -56,9 +56,9 @@ export function SidebarSetupAutoSell({
           />
           <VaultActionInput
             action={t('auto-sell.set-min-sell-price')}
-            hasAuxiliary={true}
+            hasAuxiliary={false}
             hasError={false}
-            token={vault.token}
+            currencyCode={'USD'}
             onChange={(e) => console.log(e.target.value)}
             onAuxiliaryChange={() => {}}
             showToggle={true}

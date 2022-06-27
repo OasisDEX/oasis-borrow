@@ -60,7 +60,7 @@ export function SidebarSetupAutoBuy({
             action={t('auto-buy.set-max-buy-price')}
             hasAuxiliary={true}
             hasError={false}
-            token="ETH"
+            currencyCode="ETH"
             onChange={(e) => console.log(e.target.value)}
             onAuxiliaryChange={() => {}}
             showToggle={true}
