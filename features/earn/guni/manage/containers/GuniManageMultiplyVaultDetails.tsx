@@ -20,10 +20,9 @@ import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
 import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
-import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
-import { ExpandableButton } from '../../../../../components/ExpandableButton'
 import { ContentCardEarningsToDate } from '../../../../../components/vault/detailsSection/ContentCardEarningsToDate'
-import BigNumber from 'bignumber.js'
+import { ContentCardNetAPY } from '../../../../../components/vault/detailsSection/ContentCardNetAPY'
+import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 import { ManageEarnVaultState } from '../pipes/manageGuniVault'
 
 function GuniManageMultiplyVaultDetailsSummary({
@@ -107,6 +106,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
     afterMultiply,
     earningsToDate,
     earningsToDateAfterFees,
+    netAPY,
   } = props
   const afterCollRatioColor = 'onSuccess'
   const afterPillColors = getAfterPillColors(afterCollRatioColor)
@@ -161,6 +161,8 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
                 earningsToDate={earningsToDate}
                 earningsToDateAfterFees={earningsToDateAfterFees}
               />
+
+              <ContentCardNetAPY netAPY={netAPY} />
             </DetailsSectionContentCardWrapper>
           }
           footer={

@@ -115,19 +115,20 @@ async function getPrices(
   return data.allHistoricTokenPrices.nodes[0]
 }
 
+// returns annualised percentage yield between the two dates
 export function calculateYield(
   startPrice: BigNumber,
   endPrice: BigNumber,
-  stabilityFee: BigNumber,
+  stabilityFee: BigNumber, // yearly
   days: number,
-  multiply: BigNumber,
+  multiple: BigNumber,
 ): BigNumber {
   const priceIncreasePercentage = endPrice.minus(startPrice).div(startPrice)
   const percentageYieldFromPriceIncreasePeriod = priceIncreasePercentage
-    .times(multiply)
+    .times(multiple)
     .times(365 / days)
 
-  const feeForYear = stabilityFee.times(multiply.minus(1))
+  const feeForYear = stabilityFee.times(multiple.minus(1))
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
 }

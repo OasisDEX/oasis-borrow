@@ -53,7 +53,7 @@ import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
+  state: ManageEarnVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
     return {
@@ -89,8 +89,8 @@ function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state:
 
 export function applyManageGuniVaultTransition(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: ManageEarnVaultState,
+): ManageEarnVaultState {
   if (change.kind === 'clear') {
     return {
       ...state,
@@ -105,9 +105,9 @@ export function applyManageGuniVaultTransition(
 }
 
 function apply(
-  state: ManageMultiplyVaultState,
+  state: ManageEarnVaultState,
   change: ManageMultiplyVaultChange | GuniTxDataChange,
-) {
+): ManageEarnVaultState {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
   const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
   const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
@@ -117,7 +117,7 @@ function apply(
   const s7 = applyGuniDataChanges(change as GuniTxDataChange, s6)
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyGuniCalculations(s8)
-  const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
+  const s10 = applyManageVaultStageCategorisation(s9)
   const s11 = applyManageVaultConditions(s10)
   const s12 = applyGuniManageVaultConditions(s11)
   return applyManageVaultSummary(s12)
@@ -178,6 +178,8 @@ export type ManageEarnVaultState = ManageMultiplyVaultState &
     totalValueLocked?: BigNumber
     earningsToDate?: BigNumber
     earningsToDateAfterFees?: BigNumber
+    netAPY?: BigNumber
+    netAPYToDate?: BigNumber
   }
 
 export function createManageGuniVault$(

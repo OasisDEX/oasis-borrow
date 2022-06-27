@@ -45,7 +45,9 @@ const defaultManageVaultStageCategories = {
   isBorrowTransitionStage: false,
 }
 
-export function applyManageVaultStageCategorisation(state: ManageMultiplyVaultState) {
+export function applyManageVaultStageCategorisation<VS extends ManageMultiplyVaultState>(
+  state: VS,
+): VS {
   const {
     stage,
     vault: { token, debtOffset },
@@ -298,9 +300,7 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   insufficientEthFundsForTx: false,
 }
 
-export function applyManageVaultConditions(
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(state: VS): VS {
   const {
     afterCollateralizationRatio,
     afterCollateralizationRatioAtNextPrice,

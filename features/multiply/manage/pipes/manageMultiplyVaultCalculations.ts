@@ -482,9 +482,7 @@ export function getVaultChange({
   }
 }
 
-export function applyManageVaultCalculations(
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState>(state: VS): VS {
   const {
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
