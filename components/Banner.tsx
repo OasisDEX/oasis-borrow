@@ -25,10 +25,9 @@ type BannerProps = {
   description: ReactNode
   button?: BannerButtonProps
   image?: { src: string; backgroundColor?: string; backgroundColorEnd?: string }
-  close?: () => void
 }
 
-export function Banner({ title, description, button, image, close }: BannerProps) {
+export function Banner({ title, description, button, image }: BannerProps) {
   return (
     <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2 }}>
       <Flex
@@ -48,27 +47,6 @@ export function Banner({ title, description, button, image, close }: BannerProps
             pr: [0, null, null, image ? 4 : 3],
           }}
         >
-          {close && (
-            <IconButton
-              onClick={close}
-              sx={{
-                cursor: 'pointer',
-                height: 3,
-                width: 3,
-                padding: 0,
-                position: 'absolute',
-                top: 3,
-                right: 3,
-                zIndex: 1,
-                color: 'onSurface',
-                '&:hover': {
-                  color: 'primary',
-                },
-              }}
-            >
-              <Icon name="close_squared" size={14} />
-            </IconButton>
-          )}
           <Heading as="h3" variant="headerSettings" sx={{ mb: 1 }}>
             {title}
           </Heading>

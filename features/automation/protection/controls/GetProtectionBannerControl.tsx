@@ -28,7 +28,7 @@ export function GetProtectionBannerControl({
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
-  const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
+  const [isBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
@@ -36,8 +36,6 @@ export function GetProtectionBannerControl({
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
-
-  const handleClose = useCallback(() => setIsBannerClosed(true), [])
 
   return !slData?.isStopLossEnabled &&
     !isBannerClosed &&
@@ -71,7 +69,6 @@ export function GetProtectionBannerControl({
             ? t('vault-banners.setup-stop-loss.button')
             : t('vault-banners.get-protection.button'),
         }}
-        close={handleClose}
       />
     </>
   ) : null

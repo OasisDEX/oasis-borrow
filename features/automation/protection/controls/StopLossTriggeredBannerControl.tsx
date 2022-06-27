@@ -34,7 +34,6 @@ export function StopLossTriggeredBannerControl() {
                 }
               : undefined
           }
-          close={handleClose}
         />
       )}
     </>
