@@ -379,9 +379,9 @@ export function createOpenMultiplyVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
+                    const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
                     const network = getNetworkName()
-                    const withStopLossStage = stopLossOpenFlowEnabled
+                    const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(network, ilk)
                       : false
 

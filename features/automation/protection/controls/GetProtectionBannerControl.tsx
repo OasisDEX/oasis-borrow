@@ -5,14 +5,12 @@ import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupB
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React from 'react'
 
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { useObservable } from '../../../../helpers/observableHook'
-import { useSessionStorage } from '../../../../helpers/useSessionStorage'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
-import { GetProtectionBannerLayout } from './GetProtectionBannerLayout'
 
 interface GetProtectionBannerProps {
   vaultId: BigNumber
@@ -29,61 +27,44 @@ export function GetProtectionBannerControl({
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
-  const [isBannerClosed, setIsBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
-  const handleClose = useCallback(() => setIsBannerClosed(true), [])
-
   return !slData?.isStopLossEnabled &&
-    !isBannerClosed &&
     isAllowedForAutomation &&
     !debt.isZero() ? (
     <>
-      {!newComponentsEnabled ? (
-        <GetProtectionBannerLayout
-          handleClick={() => {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Protection,
-            })
-          }}
-          handleClose={handleClose}
-        />
-      ) : (
-        <SetupBanner
-          header={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.header')
-              : t('vault-banners.get-protection.header')
-          }
-          content={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.content', { token })
-              : t('vault-banners.get-protection.content', { token })
-          }
-          button={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.button')
-              : t('vault-banners.get-protection.button')
-          }
-          backgroundImage="/static/img/setup-banner/stop-loss.svg"
-          backgroundColor={setupBannerGradientPresets.stopLoss[0]}
-          backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
-          handleClick={() => {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Protection,
-            })
-          }}
-        />
-      )}
+      <SetupBanner
+        header={
+          !basicBSEnabled
+            ? t('vault-banners.setup-stop-loss.header')
+            : t('vault-banners.get-protection.header')
+        }
+        content={
+          !basicBSEnabled
+            ? t('vault-banners.setup-stop-loss.content', { token })
+            : t('vault-banners.get-protection.content', { token })
+        }
+        button={
+          !basicBSEnabled
+            ? t('vault-banners.setup-stop-loss.button')
+            : t('vault-banners.get-protection.button')
+        }
+        backgroundImage="/static/img/setup-banner/stop-loss.svg"
+        backgroundColor={setupBannerGradientPresets.stopLoss[0]}
+        backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
+        handleClick={() => {
+          uiChanges.publish(TAB_CHANGE_SUBJECT, {
+            type: 'change-tab',
+            currentMode: VaultViewMode.Protection,
+          })
+        }}
+      />
     </>
   ) : null
 }

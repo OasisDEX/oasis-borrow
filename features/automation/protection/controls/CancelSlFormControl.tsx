@@ -29,13 +29,12 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
-import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
+import { CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 interface CancelSlFormControlProps {
   vault: Vault
@@ -184,11 +183,5 @@ export function CancelSlFormControl({
     vault,
   }
 
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  return newComponentsEnabled ? (
-    <SidebarCancelStopLoss {...props} />
-  ) : (
-    <CancelSlFormLayout {...props} />
-  )
+  return <SidebarCancelStopLoss {...props} />
 }
