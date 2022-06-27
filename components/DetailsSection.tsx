@@ -1,3 +1,4 @@
+import { isString } from 'lodash'
 import React from 'react'
 import { Box, Card, Flex } from 'theme-ui'
 
@@ -5,7 +6,7 @@ import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './Expanda
 import { VaultTabTag } from './vault/VaultTabTag'
 
 interface DetailsSectionProps {
-  title?: string
+  title?: string | JSX.Element
   badge?: boolean
   buttons?: (ButtonWithAction | ButtonWithActions)[]
   content: string | JSX.Element
@@ -20,7 +21,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
         border: 'lightMuted',
       }}
     >
-      {title && (
+      {title && isString(title) && (
         <Flex
           sx={{
             flexDirection: ['column', null, 'row'],
@@ -57,6 +58,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
           )}
         </Flex>
       )}
+      {title && !isString(title) && title}
       <Box
         sx={{
           px: [3, null, '24px'],

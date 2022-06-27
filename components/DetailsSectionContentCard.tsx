@@ -30,6 +30,11 @@ export interface ContentCardProps {
   modal?: string | JSX.Element
 }
 
+interface ContentTableProps {
+  headers: [string, string, string]
+  rows: [string, string, string][]
+}
+
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
   return collRatioColor === 'primary' || collRatioColor === 'onSuccess' ? 'positive' : 'negative'
 }
@@ -87,6 +92,44 @@ function DetailsSectionContentCardModal({
   children,
 }: ModalProps<{ children: string | JSX.Element }>) {
   return <VaultDetailsCardModal close={close}>{children}</VaultDetailsCardModal>
+}
+
+export function DetailsSectionContentTable({ headers, rows }: ContentTableProps) {
+  return (
+    <Grid
+      sx={{
+        gridTemplateColumns: [3, '2fr 1fr 1fr'],
+      }}
+    >
+      {headers.map((header, index) => (
+        <Text
+          key={`${header}-${index}`}
+          as="p"
+          color="text.subtitle"
+          sx={{ fontWeight: 'semiBold', textAlign: index === 0 ? 'left' : 'right' }}
+          variant="paragraph4"
+        >
+          {header}
+        </Text>
+      ))}
+      {rows.map((row) =>
+        row.map((rowItem, index) => (
+          <Text
+            key={`${rowItem}-${index}`}
+            as="p"
+            variant="paragraph3"
+            sx={{ fontWeight: 'semiBold', textAlign: index === 0 ? 'left' : 'right' }}
+          >
+            {rowItem}
+          </Text>
+        )),
+      )}
+      {/* <Box bg="primary">Box</Box>
+      <Box bg="muted">Box</Box>
+      <Box bg="primary">Box</Box>
+      <Box bg="muted">Box</Box> */}
+    </Grid>
+  )
 }
 
 export function DetailsSectionContentCardWrapper({ children }: { children: ReactNode }) {
