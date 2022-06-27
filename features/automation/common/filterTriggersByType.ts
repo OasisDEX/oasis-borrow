@@ -16,9 +16,11 @@ export function getTriggersByType(triggers: TriggerRecord[], triggerTypes: Trigg
       }
     })
 
-    return decodedTriggers.filter((decodedTrigger) =>
-      triggerTypes.includes(decodedTrigger.result[1]),
-    )
+    return decodedTriggers.filter((decodedTrigger) => {
+      const triggerType = decodedTrigger.result[1]
+
+      return triggerTypes.includes(triggerType)
+    })
   } catch (e) {
     console.error(e)
     return []

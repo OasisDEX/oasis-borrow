@@ -30,7 +30,6 @@ export function useBasicBSstateInitialization(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
-  console.log(publishKey)
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
