@@ -11,7 +11,7 @@ import { of } from 'rxjs/internal/observable/of'
 
 import { createVaultsBanners$ } from './vaultsBanners'
 
-describe('createVaultBanners$', () => {
+describe('createVaultNotices$', () => {
   it('should assign ownership banner', () => {
     const state = getStateUnpacker(
       createVaultsBanners$(

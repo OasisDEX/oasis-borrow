@@ -7,9 +7,9 @@ import { Box, Container, Text } from 'theme-ui'
 import {
   VaultLiquidatedBanner,
   VaultLiquidatingBanner,
-  VaultLiquidatingNextPriceBanner,
+  VaultLiquidatingNextPriceNotice,
   VaultOwnershipBanner,
-} from '../VaultsBannersView'
+} from '../VaultsNoticesView'
 
 const mockedReclaimCollateral = () => of({})
 export const VaultLiquidated = () => (
@@ -53,7 +53,7 @@ export const VaultLiquidatingNextPrice = () => (
     <Container>
       <Box sx={{ mb: 3 }}>
         <Text>Owner viewing vault</Text>
-        <VaultLiquidatingNextPriceBanner
+        <VaultLiquidatingNextPriceNotice
           token="ETH"
           controller="0x00"
           id={new BigNumber(1)}
@@ -63,7 +63,7 @@ export const VaultLiquidatingNextPrice = () => (
       </Box>
       <Box sx={{ mb: 3 }}>
         <Text>Other user viewing vault</Text>
-        <VaultLiquidatingNextPriceBanner
+        <VaultLiquidatingNextPriceNotice
           token="ETH"
           controller="0x00"
           id={new BigNumber(1)}
