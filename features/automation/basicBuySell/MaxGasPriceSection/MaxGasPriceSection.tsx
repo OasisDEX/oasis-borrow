@@ -7,11 +7,12 @@ export type MaxGasPriceValues = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT
 
 interface MaxGasPriceSectionProps {
   onChange: (item: MaxGasPriceValues) => void
+  defaultValue?: MaxGasPriceValues
 }
 
-export function MaxGasPriceSection({ onChange }: MaxGasPriceSectionProps) {
+export function MaxGasPriceSection({ onChange, defaultValue = 'FIVE' }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
-  const [active, setActiveItem] = useState<MaxGasPriceValues>('FIVE')
+  const [active, setActiveItem] = useState<MaxGasPriceValues>(defaultValue)
 
   const handleChange = useCallback(
     (item: MaxGasPriceValues) => {

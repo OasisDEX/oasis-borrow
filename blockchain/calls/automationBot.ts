@@ -4,7 +4,6 @@ import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
-import { BasicBuyTriggerCreationData } from 'features/automation/optimization/common/BasicBuyTriggerExtractor'
 import { AutomationBot, DsProxy } from 'types/ethers-contracts'
 
 import { TxMetaKind } from './txMeta'
@@ -42,9 +41,7 @@ function getAddAutomationTriggerCallData(
   )
 }
 
-export const addAutomationBotTrigger: TransactionDef<
-  AutomationBotAddTriggerData | BasicBuyTriggerCreationData
-> = {
+export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },

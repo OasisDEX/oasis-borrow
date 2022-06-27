@@ -1,63 +1,75 @@
+import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicSellData } from 'features/automation/protection/basicBSTriggerData'
-import { BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useEffect } from 'react'
 
-export function useBasicSellStateInitialization(
+export function useBasicBSstateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
   autoTriggersData: TriggersData,
+  type: TriggerType,
 ) {
   const { uiChanges } = useAppContext()
   const {
     triggerId,
-    basicSellLevel,
-    basicSellTargetLevel,
-    basicSellMinSellPrice,
-    basicSellDeviation,
-    isBasicSellContinuous,
-    isBasicSellEnabled,
-  } = extractBasicSellData(autoTriggersData)
+    execCollRatio,
+    targetCollRatio,
+    maxBuyOrMinSellPrice,
+    continuous,
+    deviation,
+    isTriggerEnabled,
+  } = extractBasicBSData(autoTriggersData, type)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
+  const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
+  console.log(publishKey)
+
   useEffect(() => {
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'trigger-id',
       triggerId,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'execution-coll-ratio',
-      execCollRatio: basicSellLevel,
+      execCollRatio,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'target-coll-ratio',
-      targetCollRatio: basicSellTargetLevel,
+      targetCollRatio,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'max-buy-or-sell-price',
-      maxBuyOrMinSellPrice: basicSellMinSellPrice,
+      maxBuyOrMinSellPrice,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'continuous',
-      continuous: isBasicSellContinuous,
+      continuous,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'deviation',
-      deviation: basicSellDeviation,
+      deviation,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
+      type: 'max-gas-percentage-price',
+      maxGasPercentagePrice: 'FIVE',
+    })
+    uiChanges.publish(publishKey, {
       type: 'with-threshold',
       withThreshold: true,
     })
-    uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+    uiChanges.publish(publishKey, {
       type: 'tx-details',
       txDetails: {},
     })
   }, [collateralizationRatio, triggerId.toNumber()])
 
-  return isBasicSellEnabled
+  return isTriggerEnabled
 }

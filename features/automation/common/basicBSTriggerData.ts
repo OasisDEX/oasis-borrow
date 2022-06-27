@@ -11,17 +11,17 @@ import { getTriggersByType } from 'features/automation/common/filterTriggersByTy
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
 
-export interface BasicSellTriggerData {
+export interface BasicBSTriggerData {
   triggerId: BigNumber
-  basicSellLevel: BigNumber
-  basicSellTargetLevel: BigNumber
-  basicSellMinSellPrice: BigNumber
-  isBasicSellContinuous: boolean
-  basicSellDeviation: BigNumber
-  isBasicSellEnabled: boolean
+  execCollRatio: BigNumber
+  targetCollRatio: BigNumber
+  maxBuyOrMinSellPrice: BigNumber
+  continuous: boolean
+  deviation: BigNumber
+  isTriggerEnabled: boolean
 }
 
-function mapBasicSellTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
+function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
   return basicSellTriggers.map((trigger) => {
     const [
       ,
@@ -35,34 +35,34 @@ function mapBasicSellTriggerData(basicSellTriggers: { triggerId: number; result:
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
-      basicSellLevel: new BigNumber(execCollRatio.toString()).div(100),
-      basicSellTargetLevel: new BigNumber(targetCollRatio.toString()).div(100),
-      basicSellMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).div(
+      execCollRatio: new BigNumber(execCollRatio.toString()).div(100),
+      targetCollRatio: new BigNumber(targetCollRatio.toString()).div(100),
+      maxBuyOrMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).div(
         new BigNumber(10).pow(18),
       ),
-      isBasicSellContinuous: continuous,
-      basicSellDeviation: new BigNumber(deviation.toString()),
-      isBasicSellEnabled: true,
-    } as BasicSellTriggerData
+      continuous: continuous,
+      deviation: new BigNumber(deviation.toString()),
+      isTriggerEnabled: true,
+    } as BasicBSTriggerData
   })
 }
 
 const defaultBasicSellData = {
   triggerId: zero,
-  basicSellLevel: zero,
-  basicSellTargetLevel: zero,
-  basicSellMinSellPrice: zero,
-  isBasicSellContinuous: false,
-  basicSellDeviation: zero,
-  isBasicSellEnabled: false,
+  execCollRatio: zero,
+  targetCollRatio: zero,
+  maxBuyOrMinSellPrice: zero,
+  continuous: false,
+  deviation: zero,
+  isTriggerEnabled: false,
 }
 
-export function extractBasicSellData(data: TriggersData): BasicSellTriggerData {
+export function extractBasicBSData(data: TriggersData, type: TriggerType): BasicBSTriggerData {
   if (data.triggers && data.triggers.length > 0) {
-    const basicSellTriggers = getTriggersByType(data.triggers, [TriggerType.BasicSell])
+    const basicSellTriggers = getTriggersByType(data.triggers, [type])
 
     if (basicSellTriggers.length) {
-      return mapBasicSellTriggerData(basicSellTriggers)[0]
+      return mapBasicBSTriggerData(basicSellTriggers)[0]
     }
 
     return defaultBasicSellData

@@ -84,6 +84,7 @@ export function VaultTabSwitch({
   vaultInfo,
   showProtectionTab,
   protectionEnabled,
+  optimizationEnabled,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
@@ -96,6 +97,7 @@ export function VaultTabSwitch({
   vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
+  optimizationEnabled: boolean
 }): JSX.Element {
   const [hash, setHash] = useHash<VaultViewMode>()
   const [mode, setMode] = useState<VaultViewMode>(hash || defaultMode)
@@ -141,7 +143,7 @@ export function VaultTabSwitch({
   const options = useMemo(() => {
     const tagMap = {
       [VaultViewMode.Protection]: protectionEnabled,
-      [VaultViewMode.Optimization]: false,
+      [VaultViewMode.Optimization]: optimizationEnabled,
     } as Record<VaultViewMode, boolean>
 
     return newComponentsEnabled
@@ -229,7 +231,7 @@ export function VaultTabSwitch({
                 variant={getVariant(mode, VaultViewMode.Optimization)}
               >
                 {t('system.optimization')}
-                <VaultTabTag isEnabled={false} />
+                <VaultTabTag isEnabled={optimizationEnabled} />
               </Button>
             )}
             <Button

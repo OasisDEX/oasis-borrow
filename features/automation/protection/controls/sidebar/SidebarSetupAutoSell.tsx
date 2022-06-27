@@ -9,9 +9,9 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import {
-  BasicSellTriggerData,
+  BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
-} from 'features/automation/protection/basicBSTriggerData'
+} from 'features/automation/common/basicBSTriggerData'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import {
   BASIC_SELL_FORM_CHANGE,
@@ -28,7 +28,7 @@ import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
-  autoSellTriggerData: BasicSellTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
   stage?: any // TODO
 }
@@ -92,7 +92,7 @@ export function SidebarSetupAutoSell({
           <VaultActionInput
             action={t('auto-sell.set-min-sell-price')}
             amount={uiState.maxBuyOrMinSellPrice}
-            hasAuxiliary={true}
+            hasAuxiliary={false}
             hasError={false}
             token={vault.token}
             onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
@@ -118,12 +118,13 @@ export function SidebarSetupAutoSell({
             }}
           />
           <MaxGasPriceSection
-            onChange={() => {
-              // uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-              //   type: 'deviation',
-              //   deviation: maxGasPrice,
-              // })
+            onChange={(maxGasPercentagePrice) => {
+              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                type: 'max-gas-percentage-price',
+                maxGasPercentagePrice,
+              })
             }}
+            defaultValue={uiState.maxGasPercentagePrice}
           />
         </Grid>
       ),

@@ -1,8 +1,9 @@
+import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
-import { useBasicSellStateInitialization } from 'features/automation/useBasicSellStateInitializator'
+import { useBasicBSstateInitialization } from 'features/automation/useBasicSellStateInitializator'
 import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
@@ -36,7 +37,18 @@ export function GeneralManageLayout({
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
-  const isBasicSellEnabled = useBasicSellStateInitialization(ilkData, vault, autoTriggersData)
+  const isBasicSellEnabled = useBasicBSstateInitialization(
+    ilkData,
+    vault,
+    autoTriggersData,
+    TriggerType.BasicSell,
+  )
+  const isBasicBuyEnabled = useBasicBSstateInitialization(
+    ilkData,
+    vault,
+    autoTriggersData,
+    TriggerType.BasicBuy,
+  )
 
   const vaultHeadingKey =
     generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
@@ -82,6 +94,7 @@ export function GeneralManageLayout({
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled || isBasicSellEnabled}
+        optimizationEnabled={isBasicBuyEnabled}
       />
     </Grid>
   )

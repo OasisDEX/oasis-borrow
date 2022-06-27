@@ -1,6 +1,6 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
-import { BasicSellTriggerData } from 'features/automation/protection/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/controls/BasicSellDetailsLayout'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -10,7 +10,7 @@ import { Grid } from 'theme-ui'
 
 interface BasicSellDetailsControlProps {
   token: string
-  basicSellTriggerData: BasicSellTriggerData
+  basicSellTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
   priceInfo: PriceInfo
 }
@@ -23,17 +23,17 @@ export function BasicSellDetailsControl({
 }: BasicSellDetailsControlProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const { basicSellTargetLevel, basicSellLevel, basicSellMinSellPrice } = basicSellTriggerData
+  const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = basicSellTriggerData
 
   return (
     <Grid>
       {isAutoSellActive ? (
         <BasicSellDetailsLayout
           token={token}
-          triggerColRatio={basicSellLevel}
+          triggerColRatio={execCollRatio}
           nextSellPrice={priceInfo.nextCollateralPrice}
-          targetColRatio={basicSellTargetLevel}
-          threshold={basicSellMinSellPrice}
+          targetColRatio={targetCollRatio}
+          threshold={maxBuyOrMinSellPrice}
           basicSellTriggerData={basicSellTriggerData}
         />
       ) : (

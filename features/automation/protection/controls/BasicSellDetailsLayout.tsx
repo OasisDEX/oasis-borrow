@@ -3,7 +3,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardTargetSellColRatio } from 'components/vault/detailsSection/ContentCardTargetSellColRatio'
-import { BasicSellTriggerData } from 'features/automation/protection/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -18,7 +18,7 @@ interface BasicSellDetailsLayoutProps {
   nextSellPrice: BigNumber
   targetColRatio: BigNumber
   threshold: BigNumber
-  basicSellTriggerData: BasicSellTriggerData
+  basicSellTriggerData: BasicBSTriggerData
 }
 
 export function BasicSellDetailsLayout({
@@ -35,7 +35,7 @@ export function BasicSellDetailsLayout({
   return (
     <DetailsSection
       title={t('auto-sell.title')}
-      badge={basicSellTriggerData.isBasicSellEnabled}
+      badge={basicSellTriggerData.isTriggerEnabled}
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardSellTriggerCollRatio
