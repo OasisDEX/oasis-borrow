@@ -141,20 +141,18 @@ interface CalculateBreakeven {
 interface CalculateEarnings {
   multipliedDai: BigNumber
   apy: BigNumber
-  days: number
+  days: BigNumber
 }
-
-// 100,000 x 10% = net value after a yr
-// 100,000 x 10% / Y = net value after a yr X
-// X = estimatedFees = 100,000 * 10% / X = Y
 
 export function calculateBreakeven({ multipliedDai, estimatedFees, apy }: CalculateBreakeven) {
   return multipliedDai.times(apy.plus(one)).div(estimatedFees)
 }
 
 export function calculateEarnings({ multipliedDai, apy, days }: CalculateEarnings) {
+  const earningsAfterFees = multipliedDai.times(apy.div(365).times(days).plus(one))
+
   return {
-    earningsAfterFees: null,
-    netValue: null,
+    earningsAfterFees: earningsAfterFees.minus(multipliedDai),
+    netValue: earningsAfterFees,
   }
 }

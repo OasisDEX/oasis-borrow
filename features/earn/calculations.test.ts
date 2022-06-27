@@ -3,7 +3,7 @@ import { expect } from 'chai'
 
 import { amountFromRay } from '../../blockchain/utils'
 import { SECONDS_PER_YEAR } from '../../components/constants'
-import { calculateBreakeven, calculateYield } from './yieldCalculations'
+import { calculateBreakeven, calculateEarnings, calculateYield } from './calculations'
 
 describe('Yield Calculations', async () => {
   const stabilityFee = amountFromRay(new BigNumber('1000000000015850933588756013'))
@@ -35,6 +35,10 @@ describe('Yield Calculations', async () => {
 
     expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
   })
+})
+
+describe('Breakeven Calculations', async () => {
+  const precision = 6
 
   it('Should return correct breakeven amount', () => {
     const multipliedDai = new BigNumber(100000)
@@ -45,8 +49,22 @@ describe('Yield Calculations', async () => {
 
     const expected = new BigNumber(27.5) // days
 
-    expect(result).to.be.eq(expected)
+    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
   })
+})
 
-  it('Should return correct earnings and net value positions', () => {})
+describe('Earnings Calculations', async () => {
+  const precision = 6
+
+  it('Should return correct earnings and net value positions', () => {
+    const multipliedDai = new BigNumber(100000)
+    const apy = new BigNumber(0.1) // 10%
+    const days = new BigNumber(30)
+
+    const { netValue: result } = calculateEarnings({ multipliedDai, apy, days })
+
+    const expected = new BigNumber(100821.917808)
+
+    expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
+  })
 })
