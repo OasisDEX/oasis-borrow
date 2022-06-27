@@ -40,7 +40,7 @@ export function BonusContainer(props: BonusContainerProps) {
                 bonusTokenName: bonus.name,
               })}{' '}
               {t('claim-rewards.more-info.text1')}{' '}
-              <AppLink sx={{ ml: 1 }} href={bonus.moreInfoLink} target="_blank">
+              <AppLink sx={{ ml: '1px' }} href={bonus.moreInfoLink} target="_blank">
                 {t('claim-rewards.more-info.link-text')}
               </AppLink>
               {t('claim-rewards.more-info.text2')}
