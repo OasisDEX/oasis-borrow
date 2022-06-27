@@ -11,12 +11,13 @@ const bannerProps = {
 }
 
 export const Default = () => {
-  return <Banner {...bannerProps} />
+  return <Banner sx={{ width: '687px' }} {...bannerProps} />
 }
 
 export const WithImage = () => {
   return (
     <Banner
+      sx={{ width: '687px' }}
       {...bannerProps}
       image={{
         src: '/static/img/setup-banner/auto-sell.svg',
