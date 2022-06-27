@@ -1,4 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
+import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
@@ -9,6 +10,7 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { prepareAddBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { failedStatuses, progressStatuses } from 'features/automation/protection/common/consts/txStatues'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -23,12 +25,14 @@ import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
+  // isProgressDisabled: boolean
+  // uiState?
 }
 
 export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyProps) {
@@ -38,9 +42,24 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyP
   const [txHelpers] = useObservable(txHelpers$)
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
+  
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+  
 
-  const txData = prepareAddBasicBSTriggerData({
+  // TODO
+  // const isProgressDisabled = !!(
+  //   !isOwner ||
+  //   (!isEditing && txStatus !== TxStatus.Success) ||
+  //   isProgressStage
+  // )
+
+  const txData = useMemo(
+    () => prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
     execCollRatio: uiState.execCollRatio,
@@ -49,7 +68,9 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyP
     continuous: uiState.continuous, // leave as default
     deviation: uiState.deviation,
     replacedTriggerId: uiState.triggerId,
-  })
+  }),
+  [uiState.execCollRatio, uiState.targetCollRatio, uiState.maxBuyOrMinSellPrice, uiState.triggerId],
+  ) //TODO ŁW verify l8r if uiState variables are correct, it might behave differently form AdjustSlFormControl
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -122,7 +143,7 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyP
       ),
       primaryButton: {
         label: 'Confirm',
-        disabled: false,
+        disabled: false, //isProgressDisabled,
         action: () => {
           if (txHelpers) {
             txHelpers
