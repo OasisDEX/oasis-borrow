@@ -72,7 +72,6 @@ type VaultTabSwitchOptionNewComponentDesignEnabled = {
 export function VaultTabSwitch({
   defaultMode,
   headline,
-  headerControl,
   overViewControl,
   historyControl,
   protectionControl,
@@ -86,7 +85,6 @@ export function VaultTabSwitch({
   overViewControl: JSX.Element
   heading: JSX.Element
   headline: JSX.Element
-  headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
   optimizationControl: JSX.Element
@@ -217,7 +215,6 @@ export function VaultTabSwitch({
         </Flex>
       </Box>
       <Box sx={{ zIndex: 1 }}>
-        {headerControl}
         {
           {
             Overview: overViewControl,

@@ -14,7 +14,6 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
-import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
 import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
@@ -68,8 +67,6 @@ export function GeneralManageLayout({
         defaultMode={VaultViewMode.Overview}
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
         headline={headlineElement}
-        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
-        headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
