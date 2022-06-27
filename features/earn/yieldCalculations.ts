@@ -131,3 +131,30 @@ export function calculateYield(
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
 }
+
+interface CalculateBreakeven {
+  multipliedDai: BigNumber
+  estimatedFees: BigNumber
+  apy: BigNumber
+}
+
+interface CalculateEarnings {
+  multipliedDai: BigNumber
+  apy: BigNumber
+  days: number
+}
+
+// 100,000 x 10% = net value after a yr
+// 100,000 x 10% / Y = net value after a yr X
+// X = estimatedFees = 100,000 * 10% / X = Y
+
+export function calculateBreakeven({ multipliedDai, estimatedFees, apy }: CalculateBreakeven) {
+  return multipliedDai.times(apy.plus(one)).div(estimatedFees)
+}
+
+export function calculateEarnings({ multipliedDai, apy, days }: CalculateEarnings) {
+  return {
+    earningsAfterFees: null,
+    netValue: null,
+  }
+}
