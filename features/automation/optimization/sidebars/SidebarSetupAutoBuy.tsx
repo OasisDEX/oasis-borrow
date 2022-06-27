@@ -31,11 +31,18 @@ import { Grid } from 'theme-ui'
 interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
-  // isProgressDisabled: boolean
-  // uiState?
+  // txState?: TxStatus
+  isProgressDisabled: boolean
+  execCollRatio: BigNumber
+  targetCollRatio: BigNumber
+  withThreshold: boolean
+  maxBuyOrMinSellPrice?: BigNumber
+  continuous: boolean
+  deviation: BigNumber
+  replacedTriggerId: BigNumber,
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, continuous, deviation, replacedTriggerId }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -44,32 +51,19 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault }: SidebarSetupAutoBuyP
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  
-  const txStatus = uiState?.txDetails?.txStatus
-  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
-  const isSuccessStage = txStatus === TxStatus.Success
-  
-
-  // TODO
-  // const isProgressDisabled = !!(
-  //   !isOwner ||
-  //   (!isEditing && txStatus !== TxStatus.Success) ||
-  //   isProgressStage
-  // )
 
   const txData = useMemo(
     () => prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
-    execCollRatio: uiState.execCollRatio,
-    targetCollRatio: uiState.targetCollRatio,
-    maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-    continuous: uiState.continuous, // leave as default
-    deviation: uiState.deviation,
-    replacedTriggerId: uiState.triggerId,
+    execCollRatio: execCollRatio,
+    targetCollRatio: targetCollRatio,
+    maxBuyOrMinSellPrice: withThreshold ? maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
+    continuous: continuous, // leave as default
+    deviation: deviation,
+    replacedTriggerId: replacedTriggerId,
   }),
-  [uiState.execCollRatio, uiState.targetCollRatio, uiState.maxBuyOrMinSellPrice, uiState.triggerId],
+  [execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, replacedTriggerId],
   ) //TODO ŁW verify l8r if uiState variables are correct, it might behave differently form AdjustSlFormControl
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
