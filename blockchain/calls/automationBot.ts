@@ -52,7 +52,7 @@ export const addAutomationBotTrigger: TransactionDef<
     getAddAutomationTriggerCallData(data, context).encodeABI(),
   ],
 }
-// TODO ŁW refactor use template method pattern and getAddAutomationTriggerCallData
+
 function getRemoveAutomationTriggerCallData(
   data: AutomationBotRemoveTriggerData,
   context: ContextConnected,

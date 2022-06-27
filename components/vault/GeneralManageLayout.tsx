@@ -54,7 +54,8 @@ export function GeneralManageLayout({
         defaultMode={VaultViewMode.Overview}
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
         headline={headlineElement}
-        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
+        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore.
+        // ^^ Not quite sure what can be removed. Isn't comment above is outdated? ~ŁW
         headerControl={<DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />}
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />

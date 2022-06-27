@@ -18,7 +18,6 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
 
   return (
     <>
-      {/* TODO: remove VaultHistoryItem, MultiplyHistoryEventDetails and MultiplyHistoryEventDetailsItem components when this flag is no longer needed */}
       <Card
         sx={{
           p: 4,
