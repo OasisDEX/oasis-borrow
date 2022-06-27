@@ -1,6 +1,6 @@
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import React, { ReactNode } from 'react'
-import { Box, Button, Card, Flex, Heading, Image, Text } from 'theme-ui'
+import { Box, Button, Card, Flex, Heading, Image, SxProps, Text } from 'theme-ui'
 
 import { AppSpinner } from '../helpers/AppSpinner'
 
@@ -24,11 +24,12 @@ type BannerProps = {
   description: ReactNode
   button?: BannerButtonProps
   image?: { src: string; backgroundColor?: string; backgroundColorEnd?: string }
+  sx?: SxProps
 }
 
-export function Banner({ title, description, button, image }: BannerProps) {
+export function Banner({ title, description, button, image, sx }: BannerProps) {
   return (
-    <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2 }}>
+    <Card sx={{ borderRadius: 'large', border: 'lightMuted', p: 2, ...sx }}>
       <Flex
         sx={{
           flexDirection: ['column', null, null, 'row'],
@@ -44,6 +45,7 @@ export function Banner({ title, description, button, image }: BannerProps) {
             mb: 3,
             ml: 3,
             pr: [0, null, null, image ? 4 : 3],
+            flexGrow: 1,
           }}
         >
           <Heading as="h3" variant="headerSettings" sx={{ mb: 1 }}>
