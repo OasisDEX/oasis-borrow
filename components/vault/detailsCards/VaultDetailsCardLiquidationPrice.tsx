@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-import { extractStopLossData } from '../../../features/automation/protection/common/StopLossTriggerDataExtractor'
 import { StopLossBannerControl } from '../../../features/automation/protection/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'

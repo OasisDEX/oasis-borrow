@@ -1,16 +1,29 @@
+import { TriggerType } from '@oasisdex/automation'
 import { Vault } from 'blockchain/vaults'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBuyDetailsControl } from 'features/automation/optimization/controls/BasicBuyDetailsControl'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { PriceInfo } from 'features/shared/priceInfo'
 import React from 'react'
 
-import { OptimizationDetailsLayout } from './OptimizationDetailsLayout'
-
 interface OptimizationDetailsControlProps {
-  isAutoBuyOn: boolean
+  automationTriggersData: TriggersData
   vault: Vault
+  priceInfo: PriceInfo
 }
 
 export function OptimizationDetailsControl({
-  isAutoBuyOn,
+  automationTriggersData,
   vault,
+  priceInfo,
 }: OptimizationDetailsControlProps) {
-  return <OptimizationDetailsLayout isAutoBuyOn={isAutoBuyOn} vault={vault} />
+  const basicBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+
+  return (
+    <BasicBuyDetailsControl
+      token={vault.token}
+      basicBuyTriggerData={basicBuyTriggerData}
+      priceInfo={priceInfo}
+    />
+  )
 }

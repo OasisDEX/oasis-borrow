@@ -732,7 +732,9 @@
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"
       }
-    }
+    },
+    "remove-trigger": "Remove trigger",
+    "add-trigger": "Add trigger"
   },
   "token-balance": "{{token}} balance",
   "token-depositing": "{{token}} depositing {{amount}}",
@@ -1328,7 +1330,7 @@
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
-  
+
 
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",

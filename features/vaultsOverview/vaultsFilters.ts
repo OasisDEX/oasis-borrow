@@ -1,11 +1,10 @@
 import { CoinTag, getToken } from 'blockchain/tokensMetadata'
 import { Vault } from 'blockchain/vaults'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { compareBigNumber } from 'helpers/compare'
 import { ApplyChange, applyChange, Change, Direction, toggleSort } from 'helpers/form'
 import { Observable, Subject } from 'rxjs'
 import { map, scan, startWith, switchMap } from 'rxjs/operators'
-
-import { StopLossTriggerData } from '../automation/protection/common/StopLossTriggerDataExtractor'
 export type VaultSortBy =
   | 'collateral'
   | 'debt'
