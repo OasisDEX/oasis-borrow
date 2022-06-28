@@ -3,9 +3,10 @@ import { config } from '../config'
 import { getSnowflakeConnection } from '../snowflake'
 
 interface StatsResponse {
-  Total_Locked_collateral_USD: number
-  MEDIAN_Vault_size_USD: number
-  '30_day_volume_USD': number
+  MEDIAN_VAULT_SIZE_USD: number
+  LAST_MONTH_VOLUME_USD: number
+  TOTAL_LOCKED_COLLATERAL_USD: number
+  LOAD_TIME: number
 }
 
 export function getOasisStats(): Promise<OasisStats | null> {
@@ -20,7 +21,7 @@ export function getOasisStats(): Promise<OasisStats | null> {
         return resolve(null)
       }
       connection.execute({
-        sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."Front_end_data";',
+        sqlText: 'select * from "OAZO_ANALYTICS_DWH"."PUBLIC"."FE_DATA";',
         streamResult: false, // prevent rows from being returned inline in the complete callback
         complete: function (err, stmt, rows: StatsResponse[] | undefined) {
           if (err || !rows) {
@@ -28,9 +29,9 @@ export function getOasisStats(): Promise<OasisStats | null> {
           }
 
           const data = {
-            monthlyVolume: rows[0]['30_day_volume_USD'],
-            managedOnOasis: rows[0]['Total_Locked_collateral_USD'],
-            medianVaultSize: rows[0]['MEDIAN_Vault_size_USD'],
+            monthlyVolume: rows[0].LAST_MONTH_VOLUME_USD,
+            managedOnOasis: rows[0].TOTAL_LOCKED_COLLATERAL_USD,
+            medianVaultSize: rows[0].MEDIAN_VAULT_SIZE_USD,
           }
 
           if (!Object.values(data).every((value) => value !== null)) {
