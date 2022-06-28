@@ -7,7 +7,7 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
+import { MaxGasPriceSection, MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import {
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
@@ -20,6 +20,7 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
+  CurrentBSForm,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
@@ -43,6 +44,8 @@ export interface SidebarSetupAutoBuyProps {
   replacedTriggerId: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
   firstSetup: boolean
+  currentForm: CurrentBSForm
+  maxGasPercentagePrice?: MaxGasPriceValues
 }
 
 
@@ -57,7 +60,9 @@ export function SidebarSetupAutoBuy({
   deviation,
   replacedTriggerId,
   stage,
-  firstSetup, }: SidebarSetupAutoBuyProps) {
+  firstSetup,
+  currentForm, 
+  maxGasPercentagePrice,}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -65,7 +70,7 @@ export function SidebarSetupAutoBuy({
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
+  // const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   const flow = firstSetup ? 'add' : 'adjust'
 
@@ -74,12 +79,12 @@ export function SidebarSetupAutoBuy({
     prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
-    execCollRatio: uiState.execCollRatio,
-    targetCollRatio: uiState.targetCollRatio,
-    maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-    continuous: uiState.continuous, // leave as default
-    deviation: uiState.deviation,
-    replacedTriggerId: uiState.triggerId,
+    execCollRatio: execCollRatio,
+    targetCollRatio: targetCollRatio,
+    maxBuyOrMinSellPrice: withThreshold ? maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
+    continuous: continuous, // leave as default
+    deviation: deviation,
+    replacedTriggerId: replacedTriggerId,
   }),
   [execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, replacedTriggerId],
 ) //TODO ŁW verify l8r if uiState variables are correct, it might behave differently form AdjustSlFormControl
@@ -87,10 +92,10 @@ export function SidebarSetupAutoBuy({
   const removeTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicSell,
-    triggerId: uiState.triggerId,
+    triggerId: replacedTriggerId,
   })
 
-  const isAddForm = uiState.currentForm === 'add'
+  const isAddForm = currentForm === 'add'
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -113,8 +118,8 @@ export function SidebarSetupAutoBuy({
                   })
                 }}
                 defaultValue={{
-                  value0: uiState.targetCollRatio.toNumber(),
-                  value1: uiState.execCollRatio.toNumber(),
+                  value0: targetCollRatio.toNumber(),
+                  value1: execCollRatio.toNumber(),
                 }}
                 valueColors={{
                   value1: 'onSuccess',
@@ -125,7 +130,7 @@ export function SidebarSetupAutoBuy({
               />
               <VaultActionInput
                 action={t('auto-buy.set-max-buy-price')}
-                amount={uiState.maxBuyOrMinSellPrice}
+                amount={maxBuyOrMinSellPrice}
                 hasAuxiliary={true}
                 hasError={false}
                 token="ETH"
@@ -159,11 +164,11 @@ export function SidebarSetupAutoBuy({
                     maxGasPercentagePrice,
                   })
                 }}
-                defaultValue={uiState.maxGasPercentagePrice}
+                defaultValue={maxGasPercentagePrice}
               />
             </>
           )}
-          {uiState.currentForm === 'remove' && <>Remove form TBD</>}
+          {currentForm === 'remove' && <>Remove form TBD</>}
         </Grid>
       ),
       primaryButton: {
@@ -177,7 +182,7 @@ export function SidebarSetupAutoBuy({
                 .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
                 .subscribe((next) => console.log(next))
             }
-            if (uiState.currentForm === 'remove') {
+            if (currentForm === 'remove') {
               txHelpers
                 .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
                 .subscribe((next) => console.log(next))
@@ -188,7 +193,7 @@ export function SidebarSetupAutoBuy({
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: uiState.triggerId.isZero(),
+          hidden: replacedTriggerId.isZero(),
           action: () => {
             uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
               type: 'current-form',

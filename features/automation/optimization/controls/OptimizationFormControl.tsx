@@ -54,6 +54,7 @@ export function OptimizationFormControl({
     isProgressStage
   )
 
+  uiState.maxGasPercentagePrice
   const props: SidebarSetupAutoBuyProps = {
     isAutoBuyOn: basicBuyTriggerData.isTriggerEnabled,
     vault,
@@ -67,6 +68,8 @@ export function OptimizationFormControl({
     replacedTriggerId: uiState.triggerId,
     stage,
     firstSetup,
+    currentForm: uiState.currentForm,
+    maxGasPercentagePrice: uiState.maxGasPercentagePrice,
   }
 
   return <SidebarSetupAutoBuy {...props} />
