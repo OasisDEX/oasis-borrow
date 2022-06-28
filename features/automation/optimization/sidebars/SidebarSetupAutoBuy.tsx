@@ -1,5 +1,4 @@
 import { TriggerType } from '@oasisdex/automation'
-import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
@@ -10,7 +9,6 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { prepareAddBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { failedStatuses, progressStatuses } from 'features/automation/protection/common/consts/txStatues'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -28,7 +26,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupAutoBuyProps {
+export interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
   // txState?: TxStatus
@@ -39,12 +37,24 @@ interface SidebarSetupAutoBuyProps {
   maxBuyOrMinSellPrice?: BigNumber
   continuous: boolean
   deviation: BigNumber
-  replacedTriggerId: BigNumber,
+  replacedTriggerId: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
   // firstSetup: boolean
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, continuous, deviation, replacedTriggerId, stage, firstSetup }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({
+  isAutoBuyOn,
+  vault,
+  execCollRatio,
+  targetCollRatio,
+  withThreshold,
+  maxBuyOrMinSellPrice,
+  continuous,
+  deviation,
+  replacedTriggerId,
+  stage,
+}: // firstSetup,
+SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -54,20 +64,21 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetC
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-  const flow = firstSetup ? 'add' : 'adjust'
+  // const flow = firstSetup ? 'add' : 'adjust'
 
   const txData = useMemo(
-    () => prepareAddBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicBuy,
-    execCollRatio: execCollRatio,
-    targetCollRatio: targetCollRatio,
-    maxBuyOrMinSellPrice: withThreshold ? maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-    continuous: continuous, // leave as default
-    deviation: deviation,
-    replacedTriggerId: replacedTriggerId,
-  }),
-  [execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, replacedTriggerId],
+    () =>
+      prepareAddBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicBuy,
+        execCollRatio: execCollRatio,
+        targetCollRatio: targetCollRatio,
+        maxBuyOrMinSellPrice: withThreshold ? maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
+        continuous: continuous, // leave as default
+        deviation: deviation,
+        replacedTriggerId: replacedTriggerId,
+      }),
+    [execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, replacedTriggerId],
   ) //TODO ŁW verify l8r if uiState variables are correct, it might behave differently form AdjustSlFormControl
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
