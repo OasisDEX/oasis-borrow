@@ -68,13 +68,13 @@ export function getYields$(
 
       return result
         .map(({ period, days, price }) => {
-          const multiply = one.div(liquidationRatio.minus(one))
+          const multiple = one.div(liquidationRatio.minus(one))
           const value = calculateYield(
             new BigNumber(price),
             new BigNumber(prices.price),
             stabilityFee,
             days,
-            multiply,
+            multiple,
           )
           return { period, days, value }
         })

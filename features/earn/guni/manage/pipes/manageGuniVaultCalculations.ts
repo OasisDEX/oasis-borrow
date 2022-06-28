@@ -24,7 +24,7 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
   const grossEarnings = calculateGrossEarnings(vaultHistory, netValueUSD)
   const netEarnings = calculateNetEarnings(vaultHistory, netValueUSD)
 
-  // const netAPY = state.yields.
+  const netAPY = state.yields['0']?.value
 
   return {
     ...state,
@@ -36,7 +36,8 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
     currentPnL,
     earningsToDate: grossEarnings,
     earningsToDateAfterFees: netEarnings,
-    netAPY: new BigNumber(200),
+    // TODO: update when yield calcs finished
+    netAPY: netAPY,
     afterCloseToDai:
       sharedAmount0 && minToTokenAmount ? sharedAmount0.plus(minToTokenAmount).minus(debt) : zero,
   }

@@ -179,7 +179,6 @@ export type ManageEarnVaultState = ManageMultiplyVaultState &
     earningsToDate?: BigNumber
     earningsToDateAfterFees?: BigNumber
     netAPY?: BigNumber
-    netAPYToDate?: BigNumber
   }
 
 export function createManageGuniVault$(
