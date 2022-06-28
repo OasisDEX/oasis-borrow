@@ -364,6 +364,7 @@
   "open-new-vault": "开启新金库",
   "open-vault": {
     "title": "开启金库",
+    "simulate": "Simulate",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
       "vault-will-be-at-risk-level-danger": "当前操作会让你的金库抵押率非常接近最低要求。",
@@ -721,5 +722,10 @@
     "claim-button": {
       "claim-rewards": "领取奖励"
     }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

@@ -8,13 +8,11 @@ import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingBut
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { TxStatusSection } from 'components/dumb/TxStatusSection'
 import { AppLink } from 'components/Links'
-import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
-import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
@@ -22,10 +20,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
+import { Divider, Flex, Image } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -122,12 +119,8 @@ export function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
-  gasEstimationUsd,
-  ethBalance,
-  txError,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -162,16 +155,6 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
-
-  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-  const maxDebtForSettingStopLoss = vault.debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
-
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -197,43 +180,6 @@ export function SetDownsideProtectionInformation({
       />
       {gasEstimation && (
         <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
-      )}
-      {!newComponentsEnabled && (
-        <>
-          <Box sx={{ fontSize: 2 }}>
-            <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
-            <Text sx={{ mb: 3 }}>
-              {t('protection.guarantee-factors')}{' '}
-              <AppLink
-                href="https://kb.oasis.app/help/stop-loss-protection"
-                sx={{ fontWeight: 'body' }}
-              >
-                {t('protection.learn-more-about-automation')}
-              </AppLink>
-            </Text>
-          </Box>
-          {potentialInsufficientEthFundsForTx && (
-            <MessageCard
-              messages={[t('vault-warnings.insufficient-eth-balance')]}
-              type="warning"
-              withBullet={false}
-            />
-          )}
-          {insufficientEthFundsForTx && (
-            <MessageCard
-              messages={[t('vault-errors.insufficient-eth-balance')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
-          {maxDebtForSettingStopLoss && (
-            <MessageCard
-              messages={[t('vault-errors.stop-loss-max-debt')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
-        </>
       )}
     </VaultChangesInformationContainer>
   )

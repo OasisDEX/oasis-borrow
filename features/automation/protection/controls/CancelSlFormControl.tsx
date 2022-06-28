@@ -5,7 +5,6 @@ import {
   AutomationBotRemoveTriggerData,
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -17,6 +16,10 @@ import {
   progressStatuses,
 } from 'features/automation/protection/common/consts/txStatues'
 import {
+  prepareRemoveStopLossTriggerData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
+import {
   ADD_FORM_CHANGE,
   AddFormChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
@@ -26,29 +29,12 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
-import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
-
-function prepareRemoveTriggerData(
-  vaultData: Vault,
-  triggerId: number,
-  removeAllowance: boolean,
-): AutomationBotRemoveTriggerData {
-  const baseTriggerData = prepareTriggerData(vaultData, false, new BigNumber(0))
-
-  return {
-    ...baseTriggerData,
-    kind: TxMetaKind.removeTrigger,
-    triggerId,
-    removeAllowance,
-  }
-}
+import { CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 interface CancelSlFormControlProps {
   vault: Vault
@@ -79,9 +65,10 @@ export function CancelSlFormControl({
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
-  const txData = useMemo(() => prepareRemoveTriggerData(vault, triggerId, removeAllowance), [
-    triggerId,
-  ])
+  const txData = useMemo(
+    () => prepareRemoveStopLossTriggerData(vault, triggerId, removeAllowance),
+    [triggerId],
+  )
 
   const gasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
@@ -196,11 +183,5 @@ export function CancelSlFormControl({
     vault,
   }
 
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  return newComponentsEnabled ? (
-    <SidebarCancelStopLoss {...props} />
-  ) : (
-    <CancelSlFormLayout {...props} />
-  )
+  return <SidebarCancelStopLoss {...props} />
 }

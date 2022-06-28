@@ -1,8 +1,9 @@
+import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { extractAutoSellData } from 'features/automation/protection/autoSellTriggerDataExtractor'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
-import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -33,12 +34,12 @@ export function ProtectionFormControl({
   balanceInfo,
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
-  const autoSellTriggerData = extractAutoSellData()
+  const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
     currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
-    isAutoSellOn: autoSellTriggerData.isAutoSellEnabled,
+    isAutoSellOn: autoSellTriggerData.isTriggerEnabled,
     isStopLossOn: stopLossTriggerData.isStopLossEnabled,
     section: 'form',
   })

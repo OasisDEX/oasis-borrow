@@ -1,4 +1,3 @@
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Box, Grid, Text } from 'theme-ui'
 
@@ -10,19 +9,14 @@ interface InfoSectionProps {
 }
 
 export function InfoSection({ title, items }: InfoSectionProps) {
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
   return (
     <Grid
       as="ul"
       sx={{
-        p: 0,
-        ...(newComponentsEnabled && {
-          p: 3,
-          backgroundColor: 'secondaryAlt',
-          borderRadius: 'medium',
-          listStyle: 'none',
-        }),
+        p: 3,
+        backgroundColor: 'secondaryAlt',
+        borderRadius: 'medium',
+        listStyle: 'none',
       }}
     >
       <Box as="li" sx={{ listStyle: 'none' }}>

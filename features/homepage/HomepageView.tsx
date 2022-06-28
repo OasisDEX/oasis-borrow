@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { LANDING_PILLS } from 'content/landing'
-import { formatFiatBalance } from 'helpers/formatters/format'
+import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
@@ -139,15 +139,15 @@ function Stats({ sx }: { sx?: SxProps }) {
     <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
       <StatCell
         label={t('landing.stats.30-day-volume')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.monthlyVolume))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
       />
       <StatCell
         label={t('landing.stats.managed-on-oasis')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.managedOnOasis))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
       />
       <StatCell
         label={t('landing.stats.median-vault')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.medianVaultSize))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
       />
     </Grid>
   )

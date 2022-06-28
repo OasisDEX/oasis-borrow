@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { guniFaq } from 'features/content/faqs/guni'
 import { Survey } from 'features/survey'
 import React from 'react'
 import { Observable } from 'rxjs'
@@ -35,6 +36,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
                 <GuniOpenMultiplyVaultDetails {...openVault} {...gasPrice} {...daiEthTokenPrice} />
               }
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
+              faq={guniFaq}
               clear={openVault.clear}
             />
             <Survey for="earn" />
