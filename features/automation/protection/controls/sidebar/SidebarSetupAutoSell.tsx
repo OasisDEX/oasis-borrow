@@ -1,6 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { BigNumber } from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -11,6 +11,7 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
+  prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import {
@@ -44,7 +45,7 @@ export function SidebarSetupAutoSell({
   const [txHelpers] = useObservable(txHelpers$)
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
 
-  const txData = prepareAddBasicBSTriggerData({
+  const addTxData = prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicSell,
     execCollRatio: uiState.execCollRatio,
@@ -54,6 +55,14 @@ export function SidebarSetupAutoSell({
     deviation: uiState.deviation,
     replacedTriggerId: uiState.triggerId,
   })
+
+  const removeTxData = prepareRemoveBasicBSTriggerData({
+    vaultData: vault,
+    triggerType: TriggerType.BasicSell,
+    triggerId: uiState.triggerId,
+  })
+
+  const isAddForm = uiState.currentForm === 'add'
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -65,67 +74,72 @@ export function SidebarSetupAutoSell({
       },
       content: (
         <Grid gap={3}>
-          <MultipleRangeSlider
-            min={170}
-            max={500}
-            onChange={(value) => {
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'execution-coll-ratio',
-                execCollRatio: new BigNumber(value.value0),
-              })
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'target-coll-ratio',
-                targetCollRatio: new BigNumber(value.value1),
-              })
-            }}
-            defaultValue={{
-              value0: uiState.execCollRatio.toNumber(),
-              value1: uiState.targetCollRatio.toNumber(),
-            }}
-            valueColors={{
-              value1: 'onSuccess',
-            }}
-            leftDescription={t('auto-sell.sell-trigger-ratio')}
-            rightDescription={t('auto-sell.target-coll-ratio')}
-            rightThumbColor="primary"
-          />
-          <VaultActionInput
-            action={t('auto-sell.set-min-sell-price')}
-            amount={uiState.maxBuyOrMinSellPrice}
-            hasAuxiliary={false}
-            hasError={false}
-            token={vault.token}
-            onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'max-buy-or-sell-price',
-                maxBuyOrMinSellPrice,
-              })
-            })}
-            onToggle={(toggleStatus) => {
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'with-threshold',
-                withThreshold: toggleStatus,
-              })
-            }}
-            showToggle={true}
-            toggleOnLabel={t('protection.set-no-threshold')}
-            toggleOffLabel={t('protection.set-threshold')}
-            toggleOffPlaceholder={t('protection.no-threshold')}
-          />
-          <SidebarResetButton
-            clear={() => {
-              alert('Reset!')
-            }}
-          />
-          <MaxGasPriceSection
-            onChange={(maxGasPercentagePrice) => {
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'max-gas-percentage-price',
-                maxGasPercentagePrice,
-              })
-            }}
-            defaultValue={uiState.maxGasPercentagePrice}
-          />
+          {isAddForm && (
+            <>
+              <MultipleRangeSlider
+                min={170}
+                max={500}
+                onChange={(value) => {
+                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                    type: 'execution-coll-ratio',
+                    execCollRatio: new BigNumber(value.value0),
+                  })
+                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                    type: 'target-coll-ratio',
+                    targetCollRatio: new BigNumber(value.value1),
+                  })
+                }}
+                defaultValue={{
+                  value0: uiState.execCollRatio.toNumber(),
+                  value1: uiState.targetCollRatio.toNumber(),
+                }}
+                valueColors={{
+                  value1: 'onSuccess',
+                }}
+                leftDescription={t('auto-sell.sell-trigger-ratio')}
+                rightDescription={t('auto-sell.target-coll-ratio')}
+                rightThumbColor="primary"
+              />
+              <VaultActionInput
+                action={t('auto-sell.set-min-sell-price')}
+                amount={uiState.maxBuyOrMinSellPrice}
+                hasAuxiliary={false}
+                hasError={false}
+                token={vault.token}
+                onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
+                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                    type: 'max-buy-or-sell-price',
+                    maxBuyOrMinSellPrice,
+                  })
+                })}
+                onToggle={(toggleStatus) => {
+                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                    type: 'with-threshold',
+                    withThreshold: toggleStatus,
+                  })
+                }}
+                showToggle={true}
+                toggleOnLabel={t('protection.set-no-threshold')}
+                toggleOffLabel={t('protection.set-threshold')}
+                toggleOffPlaceholder={t('protection.no-threshold')}
+              />
+              <SidebarResetButton
+                clear={() => {
+                  alert('Reset!')
+                }}
+              />
+              <MaxGasPriceSection
+                onChange={(maxGasPercentagePrice) => {
+                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                    type: 'max-gas-percentage-price',
+                    maxGasPercentagePrice,
+                  })
+                }}
+                defaultValue={uiState.maxGasPercentagePrice}
+              />
+            </>
+          )}
+          {uiState.currentForm === 'remove' && <>Remove form TBD</>}
         </Grid>
       ),
       primaryButton: {
@@ -133,12 +147,31 @@ export function SidebarSetupAutoSell({
         disabled: false,
         action: () => {
           if (txHelpers) {
-            txHelpers
-              .sendWithGasEstimation(addAutomationBotTrigger, txData)
-              .subscribe((next) => console.log(next))
+            if (isAddForm) {
+              txHelpers
+                .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
+                .subscribe((next) => console.log(next))
+            }
+            if (uiState.currentForm === 'remove') {
+              txHelpers
+                .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
+                .subscribe((next) => console.log(next))
+            }
           }
         },
       },
+      ...(stage !== 'txInProgress' && {
+        textButton: {
+          label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
+          hidden: uiState.triggerId.isZero(),
+          action: () => {
+            uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+              type: 'current-form',
+              currentForm: isAddForm ? 'remove' : 'add',
+            })
+          },
+        },
+      }),
     }
 
     return <SidebarSection {...sidebarSectionProps} />
