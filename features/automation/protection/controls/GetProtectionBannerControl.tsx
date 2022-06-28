@@ -1,16 +1,15 @@
 import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
+import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
+import { VaultViewMode } from 'components/VaultTabSwitch'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React from 'react'
 
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../../components/VaultTabSwitch'
-import { useObservable } from '../../../../helpers/observableHook'
-import { useSessionStorage } from '../../../../helpers/useSessionStorage'
-import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface GetProtectionBannerProps {
@@ -28,7 +27,6 @@ export function GetProtectionBannerControl({
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
   const { uiChanges, automationTriggersData$ } = useAppContext()
-  const [isBannerClosed] = useSessionStorage('overviewProtectionBanner', false)
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
@@ -37,10 +35,7 @@ export function GetProtectionBannerControl({
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
-  return !slData?.isStopLossEnabled &&
-    !isBannerClosed &&
-    isAllowedForAutomation &&
-    !debt.isZero() ? (
+  return !slData?.isStopLossEnabled && isAllowedForAutomation && !debt.isZero() ? (
     <>
       <Banner
         title={

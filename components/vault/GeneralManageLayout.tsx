@@ -1,19 +1,19 @@
+import { TriggerType } from '@oasisdex/automation'
 import { getNetworkName } from '@oasisdex/web3-context'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
+import { useBasicBSstateInitialization } from 'features/automation/useBasicSellStateInitializator'
+import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { GuniVaultHeader } from '../../features/earn/guni/common/GuniVaultHeader'
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
-import { DefaultVaultHeaderControl } from './DefaultVaultHeaderControl'
 import { HistoryControl } from './HistoryControl'
 import { OptimizationControl } from './OptimizationControl'
 import { ProtectionControl } from './ProtectionControl'
@@ -33,8 +33,19 @@ export function GeneralManageLayout({
   const { ilkData, vault, account, priceInfo, balanceInfo, vaultHistory } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
+  const isBasicSellEnabled = useBasicBSstateInitialization(
+    ilkData,
+    vault,
+    autoTriggersData,
+    TriggerType.BasicSell,
+  )
+  const isBasicBuyEnabled = useBasicBSstateInitialization(
+    ilkData,
+    vault,
+    autoTriggersData,
+    TriggerType.BasicBuy,
+  )
 
   const vaultHeadingKey =
     generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
@@ -56,14 +67,6 @@ export function GeneralManageLayout({
         defaultMode={VaultViewMode.Overview}
         heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
         headline={headlineElement}
-        // TODO this prop to be removed when newComponentsEnabled wont be needed anymore
-        headerControl={
-          !newComponentsEnabled ? (
-            <DefaultVaultHeaderControl vault={vault} ilkData={ilkData} />
-          ) : (
-            <></>
-          )
-        }
         overViewControl={
           <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
         }
@@ -79,7 +82,8 @@ export function GeneralManageLayout({
         optimizationControl={<OptimizationControl vault={vault} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         showProtectionTab={showProtectionTab}
-        protectionEnabled={isStopLossEnabled}
+        protectionEnabled={isStopLossEnabled || isBasicSellEnabled}
+        optimizationEnabled={isBasicBuyEnabled}
       />
     </Grid>
   )

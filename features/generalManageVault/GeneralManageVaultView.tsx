@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import { ManageVaultContainer } from 'features/borrow/manage/containers/ManageVaultContainer'
 import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
 import { SidebarManageMultiplyVault } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVault'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Container } from 'theme-ui'
 
@@ -18,7 +17,6 @@ import { GuniManageMultiplyVaultDetails } from '../earn/guni/manage/containers/G
 import { GuniManageMultiplyVaultForm } from '../earn/guni/manage/containers/GuniManageMultiplyVaultForm'
 import { ManageInstiVaultContainer } from '../instiVault/manage/containers/ManageInstiVaultContainer'
 import { ManageMultiplyVaultDetails } from '../multiply/manage/containers/ManageMultiplyVaultDetails'
-import { ManageMultiplyVaultForm } from '../multiply/manage/containers/ManageMultiplyVaultForm'
 import { VaultHistoryView } from '../vaultHistory/VaultHistoryView'
 import { GeneralManageVaultState } from './generalManageVault'
 import { VaultType } from './vaultType'
@@ -31,7 +29,6 @@ export function GeneralManageVaultViewAutomation({
   generalManageVault,
 }: GeneralManageVaultViewProps) {
   const vaultType = generalManageVault.type
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   switch (vaultType) {
     case VaultType.Borrow:
@@ -53,7 +50,7 @@ export function GeneralManageVaultViewAutomation({
             manageVault={generalManageVault.state}
             header={DefaultVaultHeader}
             details={ManageMultiplyVaultDetails}
-            form={!newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault}
+            form={SidebarManageMultiplyVault}
             history={VaultHistoryView}
           />
         </Container>
@@ -65,7 +62,7 @@ export function GeneralManageVaultViewAutomation({
             manageVault={generalManageVault.state}
             details={GuniManageMultiplyVaultDetails}
             header={GuniVaultHeader}
-            form={!newComponentsEnabled ? GuniManageMultiplyVaultForm : SidebarManageGuniVault}
+            form={SidebarManageGuniVault}
             history={VaultHistoryView}
           />
         </Container>
@@ -82,7 +79,6 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
   const { generalManageVault$ } = useAppContext()
   const manageVaultWithId$ = generalManageVault$(id)
   const [manageVault, manageVaultError] = useObservable(manageVaultWithId$)
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
 
   return (
     <WithErrorHandler error={[manageVaultError]}>
@@ -108,9 +104,7 @@ export function GeneralManageVaultView({ id }: { id: BigNumber }) {
                     manageVault={generalManageVault.state}
                     header={DefaultVaultHeader}
                     details={ManageMultiplyVaultDetails}
-                    form={
-                      !newComponentsEnabled ? ManageMultiplyVaultForm : SidebarManageMultiplyVault
-                    }
+                    form={SidebarManageMultiplyVault}
                     history={VaultHistoryView}
                   />
                 </Container>

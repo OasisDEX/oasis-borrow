@@ -1,0 +1,53 @@
+import { FaqLayout } from "../FaqLayout";
+
+export default ({ children }) => (
+  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply">{children}</FaqLayout>
+);
+
+##### Do I need to manage this Earn position?
+
+Users should regularly check whether market changes have affected the position, in terms of profit, governance updates, and shifts in fee tiers. It’s expected that the value of the collateral increases faster than the debt but this is not guaranteed.
+
+At the moment the Maker protocol has disabled liquidations for GUNI but they could be enabled in the future. Such changes will be announced in Maker forums and in Oasis communication channels.
+
+##### What are the risks?
+
+>Lower than expected returns: Collected fees from the Uniswap V3 position depend entirely on the volume that passes through that pool and as such is a variable return that’s reliant on market conditions and the ratio between liquidity and volume of the pool. 
+>
+>Profit and loss will be shown in the Vault screen but users will need to monitor their position to be sure that the rate of return exceeds the stability fee paid to Maker and the costs paid to setup and close the Earn position.
+
+>Liquidations: for this Vault they have been disabled by the Maker protocol for now. That liquidations are disable at the moment should not be taken as a guarantee since the Maker protocol could decide to enable them, users should still monitor their positions to ensure the growth of the collateral exceeds the growth of the debt thanks to Uniswap V3 fees return.
+
+>Systemic risk: Smart contract bugs, fatal errors in any of the protocols being used.
+
+##### How does it work?
+
+>On top of your deposit amount, Dai is flashloaned from Maker, enough to reach the desired strategy multiple.
+
+>**Dai is partly swapped for USDC**
+>
+>Dai is swapped with USDC in the proportion needed for the Gelato Uniswap v3 position in the specific DAI/USDC pool.
+
+>**DAI and USDC are used to attain GUNI V3 DAI/USDC shares**
+>
+>Dai and USDC are locked in Gelato Uniswap v3 position manager. This deposit gives shares representing the deposited amount.
+
+>**GUNI V3 DAI/USDC shares deposited in Maker to generate DAI**
+>
+>The shares called GUNI DAI/USDC are locked in a Maker Vault and Dai is borrowed against this collateral up to the maximum collateralization ratio possible.
+
+>**Flashloan is paid back**
+>
+>Dai and USDC are locked in Gelato Uniswap v3 position manager. This deposit gives shares representing the deposited amount.
+
+##### Where does the yield come from?
+
+Uniswap users pay the liquidity providers when trading DAI/USDC and this return is multiplied thanks to Maker Vaults. Since the position is multiplied up to 50 times the returns are much greater than just putting up liquidity in Uniswap V3 directly. 
+
+##### Where is my capital?
+
+The Earn position uses 3 protocols and the power of Oasis.app smart contracts: Uniswap V3 is the underlying yield source. Gelato is the Uniswap V3 position manager and Maker is used to multiply exposure to the Uniswap returns.
+
+##### Is this a short or long term position?
+
+This is a long term position that asumes that the volume of DAI/USDC going through Uniswap V3 will trend up, since that's the yield source. In general users should expect this position to be profitable as long as demand to use DAI or USDC grows and Uniswap V3 remains the prime venue for these swaps. As time goes by the fixed costs for setting up the position will be paid off. The longer you stay on the position, higher profit if all assumptions hold.
