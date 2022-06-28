@@ -1,11 +1,11 @@
 import { BigNumber } from 'bignumber.js'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import React from 'react'
 
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { AfterPillProps } from '../../../../components/vault/VaultDetails'
 import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { useObservable } from '../../../../helpers/observableHook'
-import { extractStopLossData } from '../common/StopLossTriggerDataExtractor'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { StopLossBannerLayout } from './StopLossBannerLayout'
 

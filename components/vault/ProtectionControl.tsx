@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
 import { VaultBanner } from 'features/banners/VaultsBannersView'

@@ -78,6 +78,12 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSChangeAction,
+  basicBSFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
   MultiplyPillChangeAction,
@@ -287,6 +293,7 @@ export type SupportedUIChangeType =
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
+  BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
@@ -374,6 +381,8 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)

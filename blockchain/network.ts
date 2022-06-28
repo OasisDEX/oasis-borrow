@@ -137,3 +137,9 @@ export function reload(network: string) {
     document.location.href = document.location.href + '?network=' + network
   }
 }
+
+export enum NetworkIds {
+  MAINNET = 1,
+  GOERLI = 5,
+  HARDHAT = 2137,
+}

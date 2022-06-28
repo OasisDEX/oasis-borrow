@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { guniFaq } from 'features/content/faqs/guni'
 import { Survey } from 'features/survey'
 import React from 'react'
 import { Container } from 'theme-ui'
@@ -24,6 +25,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               header={<GuniVaultHeader {...openVault} />}
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
+              faq={guniFaq}
               clear={openVault.clear}
             />
             <Survey for="earn" />

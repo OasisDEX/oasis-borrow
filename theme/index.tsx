@@ -148,6 +148,10 @@ const oasisBaseTheme = {
       // deprecated, use header4
       variant: 'text.header4',
     },
+    header5: {
+      variant: 'text.header4',
+      fontSize: 3,
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -250,7 +254,6 @@ const oasisBaseTheme = {
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
-    vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
@@ -400,6 +403,12 @@ const oasisBaseTheme = {
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
       borderRadius: 'large',
       padding: '32px',
+    },
+    faq: {
+      variant: 'cards.primary',
+      p: 4,
+      borderRadius: 'mediumLarge',
+      maxWidth: '711px',
     },
   },
   badges: {
@@ -1076,6 +1085,12 @@ const oasisBaseTheme = {
       gap: '0px',
     },
   },
+  separator: {
+    borderTop: '1px solid',
+    borderColor: 'border',
+    height: '1px',
+    width: '100%',
+  },
   styles: {
     root: {
       fontFamily: 'body',
@@ -1114,7 +1129,10 @@ const oasisBaseTheme = {
       variant: 'text.header3',
     },
     h4: {
-      variant: 'text.microHeading',
+      variant: 'text.header4',
+    },
+    h5: {
+      variant: 'text.header5',
     },
     a: {
       variant: 'text.paragraph3',

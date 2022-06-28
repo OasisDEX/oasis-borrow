@@ -30,14 +30,7 @@ export const ASSETS_PAGES = [
     descriptionKey: 'assets.lp-token.description',
     link: 'assets.lp-token.link',
     multiplyIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
-    borrowIlks: [
-      'UNIV2DAIUSDC-A',
-      'UNIV2USDCETH-A',
-      'UNIV2WBTCETH-A',
-      'UNIV2WBTCDAI-A',
-      'UNIV2DAIETH-A',
-      'UNIV2UNIETH-A',
-    ],
+    borrowIlks: ['UNIV2DAIUSDC-A', 'UNIV2USDCETH-A'],
   },
   {
     slug: 'yfi',
@@ -57,16 +50,6 @@ export const ASSETS_PAGES = [
     descriptionKey: 'assets.dai.description',
     link: 'assets.dai.link',
     earnIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
-  },
-  {
-    slug: 'uni',
-    header: 'Uniswap',
-    symbol: 'UNI',
-    icon: 'uni_circle_color',
-    descriptionKey: 'assets.uni.description',
-    link: 'assets.uni.link',
-    multiplyIlks: ['UNI-A'],
-    borrowIlks: ['UNI-A'],
   },
   {
     slug: 'link',

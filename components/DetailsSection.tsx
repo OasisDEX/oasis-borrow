@@ -25,7 +25,7 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
           sx={{
             flexDirection: ['column', null, 'row'],
             justifyContent: 'space-between',
-            px: [3, null, '24px'],
+            mx: [3, null, '24px'],
             pt: 3,
             pb: ['24px', null, 3],
             borderBottom: 'lightMuted',

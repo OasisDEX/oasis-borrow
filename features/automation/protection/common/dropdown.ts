@@ -1,10 +1,8 @@
 import { UIChanges } from 'components/AppContext'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { useTranslation } from 'next-i18next'
+import { TFunction } from 'next-i18next'
 
-export function commonProtectionDropdownItems(uiChanges: UIChanges) {
-  const { t } = useTranslation()
-
+export function commonProtectionDropdownItems(uiChanges: UIChanges, t: TFunction) {
   return [
     {
       label: t('system.stop-loss'),
