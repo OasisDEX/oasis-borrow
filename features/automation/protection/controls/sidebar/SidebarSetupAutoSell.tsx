@@ -1,5 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
-import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { TxStatus } from '@oasisdex/transactions'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -9,6 +9,14 @@ import {
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
+import {
+  addBasicBSTrigger,
+  removeBasicBSTrigger,
+} from 'features/automation/common/basicBStxHandlers'
+import {
+  failedStatuses,
+  progressStatuses,
+} from 'features/automation/protection/common/consts/txStatues'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import {
   BASIC_SELL_FORM_CHANGE,
@@ -30,7 +38,6 @@ interface SidebarSetupAutoBuyProps {
   priceInfo: PriceInfo
   autoSellTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
-  stage?: any // TODO
 }
 
 export function SidebarSetupAutoSell({
@@ -39,13 +46,12 @@ export function SidebarSetupAutoSell({
   priceInfo,
   autoSellTriggerData,
   isAutoSellActive,
-  stage,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const { uiChanges, txHelpers$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
-
+  console.log(uiState.txDetails)
   const addTxData = useMemo(
     () =>
       prepareAddBasicBSTriggerData({
@@ -77,6 +83,19 @@ export function SidebarSetupAutoSell({
   // TODO isEditing to be extended
   const isEditing = !autoSellTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio)
 
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-sell.form-title'),
@@ -106,14 +125,10 @@ export function SidebarSetupAutoSell({
         action: () => {
           if (txHelpers) {
             if (isAddForm) {
-              txHelpers
-                .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
-                .subscribe((next) => console.log(next))
+              addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
             }
             if (isRemoveForm) {
-              txHelpers
-                .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
-                .subscribe((next) => console.log(next))
+              removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice)
             }
           }
         },

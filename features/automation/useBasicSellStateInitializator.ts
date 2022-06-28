@@ -72,7 +72,7 @@ export function useBasicBSstateInitialization(
       type: 'tx-details',
       txDetails: {},
     })
-  }, [collateralizationRatio, triggerId.toNumber()])
+  }, [collateralizationRatio])
 
   return isTriggerEnabled
 }
