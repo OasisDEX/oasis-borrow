@@ -12,7 +12,6 @@ import { Box } from 'theme-ui'
 
 import { ContentCardEarningsToDate } from '../../../../../components/vault/detailsSection/ContentCardEarningsToDate'
 import { ContentCardNetAPY } from '../../../../../components/vault/detailsSection/ContentCardNetAPY'
-
 import { ManageEarnVaultState } from '../pipes/manageGuniVault'
 
 export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
