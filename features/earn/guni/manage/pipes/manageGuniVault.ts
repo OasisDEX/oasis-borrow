@@ -295,6 +295,10 @@ export function createManageGuniVault$(
                       ilk: ilkData.ilk,
                     }
 
+                    const t = initialState.multiply
+
+                    console.log(t.toString())
+
                     const stateSubject$ = new Subject<ManageMultiplyVaultState>()
                     const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
 

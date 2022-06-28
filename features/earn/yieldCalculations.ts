@@ -1,27 +1,11 @@
 import BigNumber from 'bignumber.js'
-import { gql, GraphQLClient } from 'graphql-request'
-import { isEqual, memoize } from 'lodash'
+import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { IlkData } from '../../blockchain/ilks'
-import { Context } from '../../blockchain/network'
 import { one } from '../../helpers/zero'
-import { fetchWithOperationId } from '../vaultHistory/vaultHistory'
-
-const historicalPriceQuery = gql`
-  query prices($token: String!) {
-    allHistoricTokenPrices(filter: { token: { equalTo: $token } }) {
-      nodes {
-        token
-        price
-        price7
-        price30
-        price90
-      }
-    }
-  }
-`
+import { HistoricalTokenPricesApiResponse } from './makerOracleTokenPrices'
 
 export enum YieldPeriod {
   Yield7Days,
@@ -42,24 +26,23 @@ export interface Yield {
 export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 export function getYields$(
-  context$: Observable<Context>,
+  makerOracleTokenPrices$: (token: string) => Observable<HistoricalTokenPricesApiResponse>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
 ): Observable<Yield> {
   if (!SupportedIlkForYieldsCalculations.includes(ilk)) {
-    return of({ ilk: ilk, yields: {} })
+    throw new Error(`${ilk} is not supported for Yields calculations`)
   }
 
-  const createClient = memoize(
-    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
-  )
-
-  return combineLatest(context$, ilkData$(ilk)).pipe(
-    switchMap(([{ cacheApi }, { ilk, token, stabilityFee, liquidationRatio }]) => {
-      const apiClient = createClient(cacheApi)
-      return combineLatest(getPrices(apiClient, token), of({ ilk, stabilityFee, liquidationRatio }))
+  return ilkData$(ilk).pipe(
+    switchMap(({ ilk, token, stabilityFee, liquidationRatio }) => {
+      return combineLatest(
+        makerOracleTokenPrices$(token),
+        of({ ilk, stabilityFee, liquidationRatio }),
+      )
     }),
     map(([prices, { ilk, stabilityFee, liquidationRatio }]) => {
+      console.log('prices', prices)
       const result = [
         { period: YieldPeriod.Yield7Days, days: 7, price: prices.price7 },
         { period: YieldPeriod.Yield30Days, days: 30, price: prices.price30 },
@@ -68,13 +51,13 @@ export function getYields$(
 
       return result
         .map(({ period, days, price }) => {
-          const multiply = one.div(liquidationRatio.minus(one))
+          const multiple = one.div(liquidationRatio.minus(one))
           const value = calculateYield(
             new BigNumber(price),
             new BigNumber(prices.price),
             stabilityFee,
             days,
-            multiply,
+            multiple,
           )
           return { period, days, value }
         })
@@ -99,35 +82,19 @@ export function getYields$(
   )
 }
 
-interface HistoricalTokenPricesApiResponse {
-  token: string
-  price: string
-  price7: string
-  price30: string
-  price90: string
-}
-
-async function getPrices(
-  client: GraphQLClient,
-  token: string,
-): Promise<HistoricalTokenPricesApiResponse> {
-  const data = await client.request(historicalPriceQuery, { token: token })
-  return data.allHistoricTokenPrices.nodes[0]
-}
-
 export function calculateYield(
   startPrice: BigNumber,
   endPrice: BigNumber,
   stabilityFee: BigNumber,
   days: number,
-  multiply: BigNumber,
+  multiple: BigNumber,
 ): BigNumber {
   const priceIncreasePercentage = endPrice.minus(startPrice).div(startPrice)
   const percentageYieldFromPriceIncreasePeriod = priceIncreasePercentage
-    .times(multiply)
+    .times(multiple)
     .times(365 / days)
 
-  const feeForYear = stabilityFee.times(multiply.minus(1))
+  const feeForYear = stabilityFee.times(multiple.minus(1))
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
 }
