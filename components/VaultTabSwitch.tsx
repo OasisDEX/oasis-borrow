@@ -72,7 +72,6 @@ type VaultTabSwitchOptionNewComponentDesignEnabled = {
 export function VaultTabSwitch({
   defaultMode,
   headline,
-  headerControl,
   overViewControl,
   historyControl,
   protectionControl,
@@ -80,18 +79,19 @@ export function VaultTabSwitch({
   vaultInfo,
   showProtectionTab,
   protectionEnabled,
+  optimizationEnabled,
 }: {
   defaultMode: VaultViewMode
   overViewControl: JSX.Element
   heading: JSX.Element
   headline: JSX.Element
-  headerControl: JSX.Element
   historyControl: JSX.Element
   protectionControl: JSX.Element
   optimizationControl: JSX.Element
   vaultInfo: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
+  optimizationEnabled: boolean
 }): JSX.Element {
   const [hash, setHash] = useHash<VaultViewMode>()
   const [mode, setMode] = useState<VaultViewMode>(hash || defaultMode)
@@ -131,7 +131,7 @@ export function VaultTabSwitch({
   const options = useMemo(() => {
     const tagMap = {
       [VaultViewMode.Protection]: protectionEnabled,
-      [VaultViewMode.Optimization]: false,
+      [VaultViewMode.Optimization]: optimizationEnabled,
     } as Record<VaultViewMode, boolean>
 
     return vaultViewModeTuples.map(([label, value]) => ({
@@ -197,7 +197,7 @@ export function VaultTabSwitch({
               variant={getVariant(mode, VaultViewMode.Optimization)}
             >
               {t('system.optimization')}
-              <VaultTabTag isEnabled={false} />
+              <VaultTabTag isEnabled={optimizationEnabled} />
             </Button>
           )}
           <Button
@@ -215,7 +215,6 @@ export function VaultTabSwitch({
         </Flex>
       </Box>
       <Box sx={{ zIndex: 1 }}>
-        {headerControl}
         {
           {
             Overview: overViewControl,
