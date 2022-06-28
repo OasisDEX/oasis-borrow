@@ -513,7 +513,8 @@
     "next-price_plural": "下一次喂价更新: {{count}} 分钟后",
     "open-vault": "开启 {{ilk}} 金库",
     "vault-details": "金库细节",
-    "token-uds-price": "{{token}} / 美元价格"
+    "token-uds-price": "{{token}} / 美元价格",
+    "position-info-tab": "Position Info"
   },
   "vault-actions": {
     "deposit": "存入",

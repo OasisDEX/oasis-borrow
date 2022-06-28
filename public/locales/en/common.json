@@ -767,7 +767,8 @@
     "next-price_plural": "Next price in {{count}} minutes",
     "open-vault": "Open {{ilk}} Vault",
     "vault-details": "Vault Details",
-    "token-uds-price": "{{token}}/USD price"
+    "token-uds-price": "{{token}}/USD price",
+    "position-info-tab": "Position Info"
   },
   "vault-errors": {
     "deposit-amount-exceeds-collateral-balance": "You cannot deposit more collateral than the amount in your wallet",
