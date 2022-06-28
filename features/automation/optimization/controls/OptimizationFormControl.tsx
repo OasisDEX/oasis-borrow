@@ -8,6 +8,7 @@ import { failedStatuses, progressStatuses } from 'features/automation/protection
 import { BasicBSFormChange, BASIC_BUY_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useState } from 'hoist-non-react-statics/node_modules/@types/react'
 import React from 'react'
 
 interface OptimizationFormControlProps {
@@ -28,10 +29,21 @@ export function OptimizationFormControl({
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+  ? 'txSuccess'
+  : isProgressStage
+  ? 'txInProgress'
+  : isFailureStage
+  ? 'txFailure'
+  : 'stopLossEditing'
+
+  // const [firstSetup] = useState(!basicBuyTriggerData.isTriggerEnabled)
+
   const isProgressDisabled = !!(
     // !isOwner ||
     // (!isEditing && txStatus !== TxStatus.Success) ||
     isProgressStage
   )
-  return <SidebarSetupAutoBuy isAutoBuyOn={basicBuyTriggerData.isTriggerEnabled} vault={vault} isProgressDisabled execCollRatio={uiState.execCollRatio} targetCollRatio={uiState.targetCollRatio} withThreshold={uiState.withThreshold} maxBuyOrMinSellPrice={uiState.maxBuyOrMinSellPrice} continuous={uiState.continuous} deviation={uiState.deviation} replacedTriggerId={uiState.triggerId} />
+  return <SidebarSetupAutoBuy isAutoBuyOn={basicBuyTriggerData.isTriggerEnabled} vault={vault} isProgressDisabled execCollRatio={uiState.execCollRatio} targetCollRatio={uiState.targetCollRatio} withThreshold={uiState.withThreshold} maxBuyOrMinSellPrice={uiState.maxBuyOrMinSellPrice} continuous={uiState.continuous} deviation={uiState.deviation} replacedTriggerId={uiState.triggerId} stage={stage} />
 }

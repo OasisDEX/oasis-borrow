@@ -40,9 +40,11 @@ interface SidebarSetupAutoBuyProps {
   continuous: boolean
   deviation: BigNumber
   replacedTriggerId: BigNumber,
+  stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
+  // firstSetup: boolean
 }
 
-export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, continuous, deviation, replacedTriggerId }: SidebarSetupAutoBuyProps) {
+export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetCollRatio, withThreshold, maxBuyOrMinSellPrice, continuous, deviation, replacedTriggerId, stage, firstSetup }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -51,6 +53,8 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetC
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
+
+  const flow = firstSetup ? 'add' : 'adjust'
 
   const txData = useMemo(
     () => prepareAddBasicBSTriggerData({
@@ -136,8 +140,9 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, execCollRatio, targetC
         </Grid>
       ),
       primaryButton: {
-        label: 'Confirm',
+        label: t('confirm'),
         disabled: false, //isProgressDisabled,
+        isLoading: stage === 'txInProgress',
         action: () => {
           if (txHelpers) {
             txHelpers
