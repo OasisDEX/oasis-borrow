@@ -1,66 +1,35 @@
 import BigNumber from 'bignumber.js'
-import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentFooterItemsEarnProps {
   token: string
-  earn: BigNumber
-  afterEarn: BigNumber
-  changeVariant?: ChangeVariantType
+  breakeven: BigNumber
+  entryFees: BigNumber
+  apy: BigNumber
 }
 
 export function ContentFooterItemsEarn({
   token,
-  earn,
-  afterEarn,
-  changeVariant,
+  breakeven,
+  entryFees,
+  apy,
 }: ContentFooterItemsEarnProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    breakeven: ``,
-    entryfees: ``,
-    apy: ``,
-    afterBreakeven: ``,
-    afterEntryfees: ``,
-    afterApy: afterEarn?.toFixed(2),
+    breakeven: breakeven.gt(zero) ? breakeven.toFixed(2) : '-',
+    entryFees: entryFees.gt(zero) ? `${entryFees.toFixed(2)} ${token}` : '-',
+    apy: apy.toFixed(2),
   }
 
   return (
     <>
-      <DetailsSectionFooterItem
-        title={t('system.est-break-even')}
-        value={formatted.breakeven}
-        {...(changeVariant && {
-          change: {
-            value: `${formatted.afterBreakeven} ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
-      />
-      <DetailsSectionFooterItem
-        title={t('system.est-entry-fees')}
-        value={formatted.entryfees}
-        {...(changeVariant && {
-          change: {
-            value: `${formatted.afterEntryfees} ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
-      />
-      <DetailsSectionFooterItem
-        title={t('system.apy')}
-        value={`${formatted.apy}%`}
-        {...(changeVariant && {
-          change: {
-            value: `${formatted.afterApy}x ${t('system.cards.common.after')}`,
-            variant: changeVariant,
-          },
-        })}
-      />
+      <DetailsSectionFooterItem title={t('system.est-break-even')} value={formatted.breakeven} />
+      <DetailsSectionFooterItem title={t('system.est-entry-fees')} value={formatted.entryFees} />
+      <DetailsSectionFooterItem title={t('system.apy')} value={`${formatted.apy}%`} />
     </>
   )
 }

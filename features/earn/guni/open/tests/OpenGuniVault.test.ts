@@ -13,7 +13,7 @@ import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.m
 import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
 import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
 import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
-import { Yield, YieldPeriod } from '../../../yieldCalculations'
+import { Yield, YieldPeriod } from '../../../earnCalculations'
 import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

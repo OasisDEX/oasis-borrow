@@ -33,6 +33,7 @@ export interface ContentCardProps {
 interface ContentTableProps {
   headers: [string, string, string]
   rows: [string, string, string][]
+  footnote?: string | JSX.Element
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
@@ -94,7 +95,7 @@ function DetailsSectionContentCardModal({
   return <VaultDetailsCardModal close={close}>{children}</VaultDetailsCardModal>
 }
 
-export function DetailsSectionContentTable({ headers, rows }: ContentTableProps) {
+export function DetailsSectionContentTable({ headers, rows, footnote }: ContentTableProps) {
   return (
     <Grid
       sx={{
@@ -123,6 +124,13 @@ export function DetailsSectionContentTable({ headers, rows }: ContentTableProps)
             {rowItem}
           </Text>
         )),
+      )}
+      {footnote && (
+        <Box sx={{ gridColumn: '1/-1' }}>
+          <Text variant="paragraph4" color="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
+            {footnote}
+          </Text>
+        </Box>
       )}
       {/* <Box bg="primary">Box</Box>
       <Box bg="muted">Box</Box>

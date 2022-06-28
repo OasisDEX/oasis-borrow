@@ -133,26 +133,26 @@ export function calculateYield(
 }
 
 interface CalculateBreakeven {
-  multipliedDai: BigNumber
-  estimatedFees: BigNumber
+  depositAmount: BigNumber
+  entryFees: BigNumber
   apy: BigNumber
 }
 
 interface CalculateEarnings {
-  multipliedDai: BigNumber
+  depositAmount: BigNumber
   apy: BigNumber
   days: BigNumber
 }
 
-export function calculateBreakeven({ multipliedDai, estimatedFees, apy }: CalculateBreakeven) {
-  return multipliedDai.times(apy.plus(one)).div(estimatedFees)
+export function calculateBreakeven({ depositAmount, entryFees, apy }: CalculateBreakeven) {
+  return entryFees.div(depositAmount.times(apy.plus(one)).minus(depositAmount).div(365))
 }
 
-export function calculateEarnings({ multipliedDai, apy, days }: CalculateEarnings) {
-  const earningsAfterFees = multipliedDai.times(apy.div(365).times(days).plus(one))
+export function calculateEarnings({ depositAmount, apy, days }: CalculateEarnings) {
+  const earningsAfterFees = depositAmount.times(apy.div(365).times(days).plus(one))
 
   return {
-    earningsAfterFees: earningsAfterFees.minus(multipliedDai),
+    earningsAfterFees: earningsAfterFees.minus(depositAmount),
     netValue: earningsAfterFees,
   }
 }

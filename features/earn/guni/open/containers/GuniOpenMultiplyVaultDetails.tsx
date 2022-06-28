@@ -1,105 +1,187 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
+import { GasPriceParams } from 'blockchain/prices'
 import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSection } from 'components/DetailsSection'
-import {
-  DetailsSectionContentCardTable,
-  DetailsSectionContentCardWrapper,
-  DetailsSectionContentTable,
-  getChangeVariant,
-} from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentTable } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
-import {
-  AfterPillProps,
-  getAfterPillColors,
-  VaultDetailsSummaryContainer,
-  VaultDetailsSummaryItem,
-} from 'components/vault/VaultDetails'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { useHasChangedSinceFirstRender } from 'helpers/useHasChangedSinceFirstRender'
+import { calculateBreakeven, calculateEarnings } from 'features/earn/earnCalculations'
+import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Flex, Heading, Text } from 'theme-ui'
 
 import { Banner, bannerGradientPresets } from '../../../../../components/Banner'
-import { VaultDetailsCardNetValue } from '../../../../../components/vault/detailsCards/VaultDetailsCardNetValue'
-import { formatAmount, formatCryptoBalance } from '../../../../../helpers/formatters/format'
+import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
 
-export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
-  const { t } = useTranslation()
-  const {
-    token,
-    afterNetValueUSD,
-    inputAmountsEmpty,
-    stage,
-    netValueUSD,
-    currentPnL,
-    totalGasSpentUSD,
-    priceInfo,
-    afterOutstandingDebt,
-    totalCollateral,
-    multiply,
-  } = props
-  console.log('props:', props)
-  const afterCollRatioColor = 'onSuccess'
-  const afterPillColors = getAfterPillColors(afterCollRatioColor)
-  const showAfterPill = !inputAmountsEmpty && stage !== 'txSuccess'
-  const inputAmountChangedSinceFirstRender = useHasChangedSinceFirstRender(inputAmountsEmpty)
-  const oraclePrice = priceInfo.currentCollateralPrice
-  const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-  console.log('newComponentsEnabled:', newComponentsEnabled)
+const usdcSwapAmountOnExamplePosition = new BigNumber(`2018064.22`)
+
+function calculateEntryFees(
+  gasPrice: BigNumber,
+  DAIUsd: BigNumber,
+  ETHUsd: BigNumber,
+  daiAmountToSwapForUsdc: BigNumber = usdcSwapAmountOnExamplePosition,
+  actualGasCostInDai?: BigNumber,
+) {
+  const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
+
+  if (actualGasCostInDai) {
+    const daiGasFee = actualGasCostInDai
+    return daiGasFee.plus(oazoFee)
+  }
+
+  const estimatedGasUsed = new BigNumber(1000000)
+  return oazoFee.plus(estimatedGasUsed.times(amountFromWei(gasPrice).times(ETHUsd).div(DAIUsd)))
+}
+
+interface GuniVaultDetailsTitleProps {
+  token: string
+  depositAmount: BigNumber
+}
+
+function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetailsTitleProps) {
   const { iconCircle } = getToken(token)
+
+  return (
+    <Flex
+      sx={{
+        flexDirection: ['column', null, 'row'],
+        px: [3, null, '24px'],
+        py: '24px',
+        borderBottom: 'lightMuted',
+      }}
+    >
+      <Icon
+        name={iconCircle}
+        size="64px"
+        sx={{
+          verticalAlign: 'text-bottom',
+          mr: 3,
+        }}
+      />
+      <Box>
+        <Heading
+          as="h3"
+          variant="heading3"
+          sx={{
+            fontWeight: 'semiBold',
+            fontSize: '28px',
+            color: 'primary',
+          }}
+        >
+          {`${formatCryptoBalance(depositAmount)} DAI`}
+        </Heading>
+        <Text
+          variant="paragraph3"
+          color="text.subtitle"
+          sx={{
+            fontWeight: 'semiBold',
+          }}
+        >
+          {`In this position`}
+        </Text>
+      </Box>
+    </Flex>
+  )
+}
+
+const examplePositionDepositAmount = new BigNumber(150000)
+
+export function GuniOpenMultiplyVaultDetails(
+  props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber },
+) {
+  const { t } = useTranslation()
+  const { token, yields } = props
+
+  let breakeven = zero
+  const apy30 = yields[1]?.value || zero
+  const apy90 = yields[2]?.value || zero
+
+  const depositAmount = props.depositAmount?.gt(zero)
+    ? props.depositAmount
+    : examplePositionDepositAmount
+
+  const entryFees = calculateEntryFees(
+    props.maxFeePerGas,
+    props.DAI,
+    props.ETH,
+    props.depositAmount?.gt(zero) ? props.buyingCollateralUSD : undefined,
+    props.gasEstimationDai,
+  )
+
+  if (entryFees.gt(zero) && depositAmount.gt(zero) && apy30.gt(zero)) {
+    breakeven = calculateBreakeven({
+      depositAmount,
+      entryFees: entryFees,
+      apy: apy30,
+    })
+  }
+
+  const earnings30 = calculateEarnings({
+    depositAmount,
+    apy: apy30,
+    days: new BigNumber(30),
+  })
+  const earnings90 = calculateEarnings({
+    depositAmount,
+    apy: apy90,
+    days: new BigNumber(90),
+  })
+  // Note: We're using the 90 day yield for annual earnings calculations
+  const earnings1yr = calculateEarnings({
+    depositAmount,
+    apy: apy90,
+    days: new BigNumber(365),
+  })
+
+  const contentRowData: [string, string, string][] = [
+    [
+      'Previous 30 days*',
+      `${formatCryptoBalance(earnings30.earningsAfterFees)} DAI`,
+      `${formatCryptoBalance(earnings30.netValue)} DAI`,
+    ],
+    [
+      'Previous 90 days*',
+      `${formatCryptoBalance(earnings90.earningsAfterFees)} DAI`,
+      `${formatCryptoBalance(earnings90.netValue)} DAI`,
+    ],
+    [
+      'Previous 1 year**',
+      `${formatCryptoBalance(earnings1yr.earningsAfterFees)} DAI`,
+      `${formatCryptoBalance(earnings1yr.netValue)} DAI`,
+    ],
+  ]
+
   return (
     <>
       <DetailsSection
-        title={
-          <Flex
-            sx={{
-              flexDirection: ['column', null, 'row'],
-              px: [3, null, '24px'],
-              py: '24px',
-              borderBottom: 'lightMuted',
-            }}
-          >
-            <Icon name={iconCircle} size="64px" sx={{ verticalAlign: 'text-bottom', mr: 3 }} />
-            <Box>
-              <Heading
-                as="h3"
-                variant="heading3"
-                sx={{
-                  fontWeight: 'semiBold',
-                  fontSize: '28px',
-                  color: 'primary',
-                }}
-              >
-                {`${(props.depositAmount || new BigNumber(0))?.toFixed(2)} DAI`}
-              </Heading>
-              <Text variant="paragraph3" color="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
-                {`In this position`}
-              </Text>
-            </Box>
-          </Flex>
-        }
+        title={<GuniVaultDetailsTitle token={token} depositAmount={depositAmount} />}
         content={
           <>
             <DetailsSectionContentTable
               headers={['Duration', 'Earnings after fees', 'Net value']}
-              rows={[['Previous', '34,000.20 DAI', '34,000.20 DAI']]}
+              rows={contentRowData}
+              footnote={
+                <>
+                  *Past performance is not indicative of future results.
+                  <br />
+                  **Prior year estimates use the 90 day APY.
+                </>
+              }
             />
           </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>
             <ContentFooterItemsEarn
-              token={token}
-              earn={zero}
-              afterEarn={multiply}
-              changeVariant={changeVariant}
+              token={`DAI`}
+              breakeven={breakeven}
+              entryFees={entryFees}
+              apy={apy30.times(100)}
             />
           </DetailsSectionFooterItemWrapper>
         }
@@ -108,7 +190,10 @@ export function GuniOpenMultiplyVaultDetails(props: OpenGuniVaultState) {
       <Banner
         title={t('vault-banners.what-are-the-risks.header')}
         description={t('vault-banners.what-are-the-risks.content')}
-        button={{ text: t('vault-banners.what-are-the-risks.button'), action: () => null }}
+        button={{
+          text: t('vault-banners.what-are-the-risks.button'),
+          action: () => null,
+        }}
         image={{
           src: '/static/img/setup-banner/stop-loss.svg',
           backgroundColor: bannerGradientPresets.stopLoss[0],
