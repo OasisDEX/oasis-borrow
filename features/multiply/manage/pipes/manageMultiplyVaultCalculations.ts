@@ -711,7 +711,7 @@ export function applyManageVaultCalculations(
     : afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = calculateMultiply({ debt, lockedCollateralUSD })
-  console.log('multiply', multiply.toString())
+
   const afterMultiply =
     vaultHasZeroCollateral && afterDebt.isZero()
       ? zero
