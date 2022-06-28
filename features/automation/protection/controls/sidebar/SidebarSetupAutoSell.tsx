@@ -1,13 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
-import { BigNumber } from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
@@ -18,17 +14,20 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { SidebarAutoSellEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellEditingStage'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
+  ilkData: IlkData
+  priceInfo: PriceInfo
   autoSellTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
   stage?: any // TODO
@@ -36,7 +35,9 @@ interface SidebarSetupAutoBuyProps {
 
 export function SidebarSetupAutoSell({
   vault,
-  // autoSellTriggerData, not used for now
+  ilkData,
+  priceInfo,
+  autoSellTriggerData,
   isAutoSellActive,
   stage,
 }: SidebarSetupAutoBuyProps) {
@@ -45,16 +46,25 @@ export function SidebarSetupAutoSell({
   const [txHelpers] = useObservable(txHelpers$)
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
 
-  const addTxData = prepareAddBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicSell,
-    execCollRatio: uiState.execCollRatio,
-    targetCollRatio: uiState.targetCollRatio,
-    maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-    continuous: uiState.continuous, // leave as default
-    deviation: uiState.deviation,
-    replacedTriggerId: uiState.triggerId,
-  })
+  const addTxData = useMemo(
+    () =>
+      prepareAddBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicSell,
+        execCollRatio: uiState.execCollRatio,
+        targetCollRatio: uiState.targetCollRatio,
+        maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
+        continuous: uiState.continuous,
+        deviation: uiState.deviation,
+        replacedTriggerId: uiState.triggerId,
+      }),
+    [
+      uiState.execCollRatio.toNumber(),
+      uiState.targetCollRatio.toNumber(),
+      uiState.maxBuyOrMinSellPrice?.toNumber(),
+      uiState.triggerId.toNumber(),
+    ],
+  )
 
   const removeTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
@@ -63,6 +73,9 @@ export function SidebarSetupAutoSell({
   })
 
   const isAddForm = uiState.currentForm === 'add'
+  const isRemoveForm = uiState.currentForm === 'remove'
+  // TODO isEditing to be extended
+  const isEditing = !autoSellTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio)
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -75,71 +88,16 @@ export function SidebarSetupAutoSell({
       content: (
         <Grid gap={3}>
           {isAddForm && (
-            <>
-              <MultipleRangeSlider
-                min={170}
-                max={500}
-                onChange={(value) => {
-                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                    type: 'execution-coll-ratio',
-                    execCollRatio: new BigNumber(value.value0),
-                  })
-                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                    type: 'target-coll-ratio',
-                    targetCollRatio: new BigNumber(value.value1),
-                  })
-                }}
-                defaultValue={{
-                  value0: uiState.execCollRatio.toNumber(),
-                  value1: uiState.targetCollRatio.toNumber(),
-                }}
-                valueColors={{
-                  value1: 'onSuccess',
-                }}
-                leftDescription={t('auto-sell.sell-trigger-ratio')}
-                rightDescription={t('auto-sell.target-coll-ratio')}
-                rightThumbColor="primary"
-              />
-              <VaultActionInput
-                action={t('auto-sell.set-min-sell-price')}
-                amount={uiState.maxBuyOrMinSellPrice}
-                hasAuxiliary={false}
-                hasError={false}
-                token={vault.token}
-                onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                    type: 'max-buy-or-sell-price',
-                    maxBuyOrMinSellPrice,
-                  })
-                })}
-                onToggle={(toggleStatus) => {
-                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                    type: 'with-threshold',
-                    withThreshold: toggleStatus,
-                  })
-                }}
-                showToggle={true}
-                toggleOnLabel={t('protection.set-no-threshold')}
-                toggleOffLabel={t('protection.set-threshold')}
-                toggleOffPlaceholder={t('protection.no-threshold')}
-              />
-              <SidebarResetButton
-                clear={() => {
-                  alert('Reset!')
-                }}
-              />
-              <MaxGasPriceSection
-                onChange={(maxGasPercentagePrice) => {
-                  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                    type: 'max-gas-percentage-price',
-                    maxGasPercentagePrice,
-                  })
-                }}
-                defaultValue={uiState.maxGasPercentagePrice}
-              />
-            </>
+            <SidebarAutoSellEditingStage
+              vault={vault}
+              ilkData={ilkData}
+              isEditing={isEditing}
+              addTxData={addTxData}
+              priceInfo={priceInfo}
+              basicSellState={uiState}
+            />
           )}
-          {uiState.currentForm === 'remove' && <>Remove form TBD</>}
+          {isRemoveForm && <>Remove form TBD</>}
         </Grid>
       ),
       primaryButton: {
@@ -152,7 +110,7 @@ export function SidebarSetupAutoSell({
                 .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
                 .subscribe((next) => console.log(next))
             }
-            if (uiState.currentForm === 'remove') {
+            if (isRemoveForm) {
               txHelpers
                 .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
                 .subscribe((next) => console.log(next))

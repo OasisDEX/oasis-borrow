@@ -983,6 +983,7 @@ export function setupAppContext() {
     positionsOverviewSummary$,
     priceInfo$,
     yields$,
+    tokenPriceUSD$,
   }
 }
 

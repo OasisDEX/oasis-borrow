@@ -1338,7 +1338,7 @@
   },
 
   "auto-sell": {
-    "sell.sell-title": "Basic Auto Sell Summary",
+    "sell-title": "Basic Auto Sell Summary",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
     "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",

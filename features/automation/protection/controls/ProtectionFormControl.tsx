@@ -57,6 +57,8 @@ export function ProtectionFormControl({
       />
       <SidebarSetupAutoSell
         vault={vault}
+        ilkData={ilkData}
+        priceInfo={priceInfo}
         autoSellTriggerData={autoSellTriggerData}
         isAutoSellActive={isAutoSellActive}
       />

@@ -10,11 +10,10 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { OasisTheme } from 'theme'
 import { Box, Flex, Grid, Slider, Text } from 'theme-ui'
-
-import { OasisTheme } from '../../theme'
-import { useBreakpointIndex } from '../../theme/useBreakpointIndex'
-import { useTheme } from '../../theme/useThemeUI'
+import { useBreakpointIndex } from 'theme/useBreakpointIndex'
+import { useTheme } from 'theme/useThemeUI'
 
 function getSliderBoxBoundaries(boxRef: RefObject<HTMLDivElement>) {
   const box = boxRef.current?.getBoundingClientRect()
@@ -39,7 +38,7 @@ function convertValuesToPercents({
   min: number
 }) {
   return {
-    value0InPercent: ((value0 - min) / (max - min)) * 100,
+    value0InPercent: value0 === 0 ? 0 : ((value0 - min) / (max - min)) * 100,
     value1InPercent: ((value1 - min) / (max - min)) * 100,
   }
 }
