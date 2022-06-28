@@ -39,7 +39,7 @@ export interface SidebarSetupAutoBuyProps {
   deviation: BigNumber
   replacedTriggerId: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
-  // firstSetup: boolean
+  firstSetup: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -53,8 +53,8 @@ export function SidebarSetupAutoBuy({
   deviation,
   replacedTriggerId,
   stage,
-}: // firstSetup,
-SidebarSetupAutoBuyProps) {
+  firstSetup,
+}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -64,7 +64,7 @@ SidebarSetupAutoBuyProps) {
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-  // const flow = firstSetup ? 'add' : 'adjust'
+  const flow = firstSetup ? 'add' : 'adjust'
 
   const txData = useMemo(
     () =>

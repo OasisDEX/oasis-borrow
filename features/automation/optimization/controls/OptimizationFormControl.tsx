@@ -16,7 +16,7 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
+import React, { useState } from 'react'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
@@ -46,7 +46,7 @@ export function OptimizationFormControl({
     : 'stopLossEditing'
 
   const { isTriggerEnabled } = basicBuyTriggerData
-  // const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
+  const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
 
   const isProgressDisabled = !!(
     // !isOwner ||
@@ -66,7 +66,7 @@ export function OptimizationFormControl({
     deviation: uiState.deviation,
     replacedTriggerId: uiState.triggerId,
     stage,
-    // firstSetup,
+    firstSetup,
   }
 
   return <SidebarSetupAutoBuy {...props} />
