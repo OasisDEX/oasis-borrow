@@ -103,11 +103,8 @@ export function VaultActionInput({
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const [toggleStatus, setToggleStatus] = useState<boolean>(true)
-  const { symbol: tokenSymbol } =
-    currencyCode !== 'USD' ? getToken(currencyCode) : { symbol: 'USD' }
-  const { symbol: auxiliarySymbol } = auxiliaryCurrencyCode
-    ? getToken(auxiliaryCurrencyCode)
-    : { symbol: 'USD' }
+  const tokenSymbol = currencyCode !== 'USD' ? getToken(currencyCode).symbol : 'USD'
+  const auxiliarySymbol = auxiliaryCurrencyCode ? getToken(auxiliaryCurrencyCode).symbol : 'USD'
 
   const currencyDigits =
     currencyCode !== 'USD'
