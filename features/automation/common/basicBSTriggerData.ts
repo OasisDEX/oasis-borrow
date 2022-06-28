@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import {
   AutomationBaseTriggerData,
   AutomationBotAddTriggerData,
+  AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
@@ -139,5 +140,32 @@ export function prepareAddBasicBSTriggerData({
     ...baseTriggerData,
     replacedTriggerId: replacedTriggerId.toNumber(),
     kind: TxMetaKind.addTrigger,
+  }
+}
+
+export function prepareRemoveBasicBSTriggerData({
+  vaultData,
+  triggerType,
+  triggerId,
+}: {
+  vaultData: Vault
+  triggerType: BasicBSTriggerTypes
+  triggerId: BigNumber
+}): AutomationBotRemoveTriggerData {
+  const baseTriggerData = prepareBasicBSTriggerData({
+    vaultData,
+    triggerType,
+    execCollRatio: zero,
+    targetCollRatio: zero,
+    maxBuyOrMinSellPrice: zero,
+    continuous: false,
+    deviation: zero,
+  })
+
+  return {
+    ...baseTriggerData,
+    kind: TxMetaKind.removeTrigger,
+    triggerId: triggerId.toNumber(),
+    removeAllowance: false,
   }
 }

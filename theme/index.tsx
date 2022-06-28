@@ -254,7 +254,6 @@ const oasisBaseTheme = {
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
-    vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',

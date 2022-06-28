@@ -14,9 +14,9 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useState } from 'react'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import React from 'react'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
