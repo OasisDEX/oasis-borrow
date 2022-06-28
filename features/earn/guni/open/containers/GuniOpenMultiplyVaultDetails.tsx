@@ -1,30 +1,33 @@
-import { Icon } from '@makerdao/dai-ui-icons'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
-import { getToken } from 'blockchain/tokensMetadata'
 import { DetailsSection } from 'components/DetailsSection'
-import { DetailsSectionContentTable } from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
 import { calculateBreakeven, calculateEarnings } from 'features/earn/earnCalculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box } from 'theme-ui'
 
 import { Banner, bannerGradientPresets } from '../../../../../components/Banner'
 import { formatCryptoBalance } from '../../../../../helpers/formatters/format'
 import { zero } from '../../../../../helpers/zero'
 import { OpenGuniVaultState } from '../pipes/openGuniVault'
+import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
-const usdcSwapAmountOnExamplePosition = new BigNumber(`2018064.22`)
+const examplePosition = {
+  usdcSwapAmount: new BigNumber(`2018064.22`),
+  gasUsed: new BigNumber(`1000000`),
+  depositAmount: new BigNumber(`150000`),
+}
 
 function calculateEntryFees(
   gasPrice: BigNumber,
   DAIUsd: BigNumber,
   ETHUsd: BigNumber,
-  daiAmountToSwapForUsdc: BigNumber = usdcSwapAmountOnExamplePosition,
+  daiAmountToSwapForUsdc: BigNumber = examplePosition.usdcSwapAmount,
   actualGasCostInDai?: BigNumber,
 ) {
   const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
@@ -34,62 +37,10 @@ function calculateEntryFees(
     return daiGasFee.plus(oazoFee)
   }
 
-  const estimatedGasUsed = new BigNumber(1000000)
-  return oazoFee.plus(estimatedGasUsed.times(amountFromWei(gasPrice).times(ETHUsd).div(DAIUsd)))
-}
-
-interface GuniVaultDetailsTitleProps {
-  token: string
-  depositAmount: BigNumber
-}
-
-function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetailsTitleProps) {
-  const { iconCircle } = getToken(token)
-
-  return (
-    <Flex
-      sx={{
-        flexDirection: ['column', null, 'row'],
-        px: [3, null, '24px'],
-        py: '24px',
-        borderBottom: 'lightMuted',
-      }}
-    >
-      <Icon
-        name={iconCircle}
-        size="64px"
-        sx={{
-          verticalAlign: 'text-bottom',
-          mr: 3,
-        }}
-      />
-      <Box>
-        <Heading
-          as="h3"
-          variant="heading3"
-          sx={{
-            fontWeight: 'semiBold',
-            fontSize: '28px',
-            color: 'primary',
-          }}
-        >
-          {`${formatCryptoBalance(depositAmount)} DAI`}
-        </Heading>
-        <Text
-          variant="paragraph3"
-          color="text.subtitle"
-          sx={{
-            fontWeight: 'semiBold',
-          }}
-        >
-          {`In this position`}
-        </Text>
-      </Box>
-    </Flex>
+  return oazoFee.plus(
+    examplePosition.gasUsed.times(amountFromWei(gasPrice).times(ETHUsd).div(DAIUsd)),
   )
 }
-
-const examplePositionDepositAmount = new BigNumber(150000)
 
 export function GuniOpenMultiplyVaultDetails(
   props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber },
@@ -103,7 +54,7 @@ export function GuniOpenMultiplyVaultDetails(
 
   const depositAmount = props.depositAmount?.gt(zero)
     ? props.depositAmount
-    : examplePositionDepositAmount
+    : examplePosition.depositAmount
 
   const entryFees = calculateEntryFees(
     props.maxFeePerGas,
@@ -113,7 +64,7 @@ export function GuniOpenMultiplyVaultDetails(
     props.gasEstimationDai,
   )
 
-  if (entryFees.gt(zero) && depositAmount.gt(zero) && apy30.gt(zero)) {
+  if (depositAmount.gt(zero) && apy30.gt(zero)) {
     breakeven = calculateBreakeven({
       depositAmount,
       entryFees: entryFees,

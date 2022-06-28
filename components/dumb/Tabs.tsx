@@ -20,6 +20,7 @@ export function UnderlineTabs({
   const [hash, setHash] = useHash<string>()
 
   useEffect(() => setHash(sections[0].value), [])
+
   const selectComponents = useMemo(() => reactSelectCustomComponents<any>(), [])
 
   function isSelected(section: TabSection) {

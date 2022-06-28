@@ -11,7 +11,7 @@ export const GRADIENTS = {
   newsletterSuccess: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%);',
 }
 
-const oasisBaseTheme = {
+export const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
   breakpoints: ['48em', '60em', '68em'],
