@@ -43,7 +43,10 @@ export function OptimizationFormControl({
     ? 'txInProgress'
     : isFailureStage
     ? 'txFailure'
-    : 'stopLossEditing'
+    : 'basicBuyEditing'
+  
+    console.log('stage')
+    console.log(stage)
 
   const { isTriggerEnabled } = basicBuyTriggerData
   const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
@@ -54,7 +57,6 @@ export function OptimizationFormControl({
     isProgressStage
   )
 
-  uiState.maxGasPercentagePrice
   const props: SidebarSetupAutoBuyProps = {
     isAutoBuyOn: basicBuyTriggerData.isTriggerEnabled,
     vault,

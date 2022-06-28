@@ -1,6 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
+import { stat } from 'fs'
 import { TxError } from 'helpers/types'
 
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
@@ -32,6 +33,10 @@ export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
   action: BasicBSChangeAction,
 ): BasicBSFormChange {
+  console.log('state')
+  console.log(state)
+  console.log('action')
+  console.log(action)
   switch (action.type) {
     case 'trigger-id':
       return { ...state, triggerId: action.triggerId }

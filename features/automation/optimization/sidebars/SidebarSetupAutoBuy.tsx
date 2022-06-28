@@ -1,4 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
+import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
@@ -12,6 +13,7 @@ import {
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
+import { backToVaultOverview } from 'features/automation/protection/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -24,6 +26,7 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
+import { TxError } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -33,7 +36,10 @@ import { Grid } from 'theme-ui'
 export interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
-  // txState?: TxStatus
+  txStatus?: TxStatus
+  txError?: TxError
+  txHash?: string
+  txCost?: BigNumber
   isProgressDisabled: boolean
   execCollRatio: BigNumber
   targetCollRatio: BigNumber
@@ -42,7 +48,7 @@ export interface SidebarSetupAutoBuyProps {
   continuous: boolean
   deviation: BigNumber
   replacedTriggerId: BigNumber
-  stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
+  stage: 'basicBuyEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
   firstSetup: boolean
   currentForm: CurrentBSForm
   maxGasPercentagePrice?: MaxGasPriceValues
@@ -62,7 +68,11 @@ export function SidebarSetupAutoBuy({
   stage,
   firstSetup,
   currentForm, 
-  maxGasPercentagePrice,}: SidebarSetupAutoBuyProps) {
+  maxGasPercentagePrice,
+  txStatus,
+  txError,
+  txHash,
+  txCost,}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
   const { uiChanges, txHelpers$ } = useAppContext()
@@ -176,17 +186,33 @@ export function SidebarSetupAutoBuy({
         disabled: false, //isProgressDisabled,
         isLoading: stage === 'txInProgress',
         action: () => {
-          if (txHelpers) {
+          console.log('stage')
+          console.log(stage)
+          if (txHelpers /*&& stage !== 'txSuccess'*/) {
             if (isAddForm) {
               txHelpers
                 .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
-                .subscribe((next) => console.log(next))
+                .subscribe((next) => {console.log(next)
+                uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+                  type: 'tx-details',
+                  txDetails: {
+                    txHash: (next as any).txHash,
+                    txStatus: next.status,
+                    txError: next.status === TxStatus.Error ? next.error : undefined,
+                    // txCost,
+                  },
+                })
+              }
+                )
+                
+                
             }
             if (currentForm === 'remove') {
               txHelpers
                 .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
                 .subscribe((next) => console.log(next))
             }
+            // else backToVaultOverview(uiChanges)
           }
         },
       },
