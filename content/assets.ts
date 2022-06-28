@@ -30,10 +30,7 @@ export const ASSETS_PAGES = [
     descriptionKey: 'assets.lp-token.description',
     link: 'assets.lp-token.link',
     multiplyIlks: ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'],
-    borrowIlks: [
-      'UNIV2DAIUSDC-A',
-      'UNIV2USDCETH-A',
-    ],
+    borrowIlks: ['UNIV2DAIUSDC-A', 'UNIV2USDCETH-A'],
   },
   {
     slug: 'yfi',
