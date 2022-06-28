@@ -709,6 +709,7 @@ export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState
     : afterLockedCollateralUSD.div(afterDebt)
 
   const multiply = calculateMultiply({ debt, lockedCollateralUSD })
+
   const afterMultiply =
     vaultHasZeroCollateral && afterDebt.isZero()
       ? zero
