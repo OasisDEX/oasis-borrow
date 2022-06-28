@@ -3,13 +3,13 @@ import {
   TAB_CHANGE_SUBJECT,
   TabChange,
 } from 'features/automation/protection/common/UITypes/TabChange'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, ValueType } from 'react-select'
 import { Flex } from 'theme-ui'
 
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
-import { useHash } from '../helpers/useHash'
 import { useAppContext } from './AppContextProvider'
 import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 import { VaultTabTag } from './vault/VaultTabTag'
