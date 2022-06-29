@@ -3,14 +3,30 @@ import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsS
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
 
 import { zero } from '../../../helpers/zero'
 
-interface ContentCardEarningsToDateProps {
+interface ContentCardNetAPYProps {
   netAPY?: BigNumber
+  token: string
 }
 
-export function ContentCardNetAPY({ netAPY }: ContentCardEarningsToDateProps) {
+type ContentCardNetAPYModalProps = {
+  token: string
+}
+
+function ContentCardNetAPYModal({ token }: ContentCardNetAPYModalProps) {
+  const { t } = useTranslation()
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('manage-earn-vault.net-apy')}</Heading>
+      <Text variant="paragraph2">{t('manage-earn-vault.net-apy-modal', { token })}</Text>
+    </Grid>
+  )
+}
+
+export function ContentCardNetAPY({ netAPY, token }: ContentCardNetAPYProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -20,7 +36,7 @@ export function ContentCardNetAPY({ netAPY }: ContentCardEarningsToDateProps) {
   const contentCardSettings: ContentCardProps = {
     title: t('manage-earn-vault.net-apy'),
     value: formatted.netAPY,
-    modal: t('manage-earn-vault.net-apy-modal'),
+    modal: <ContentCardNetAPYModal token={token} />,
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

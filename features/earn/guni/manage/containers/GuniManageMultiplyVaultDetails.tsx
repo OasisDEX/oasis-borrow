@@ -65,7 +65,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
               earningsToDateAfterFees={earningsToDateAfterFees}
             />
 
-            <ContentCardNetAPY netAPY={netAPY} />
+            <ContentCardNetAPY netAPY={netAPY} token={token} />
             <ContentCardMultiple multiple={multiply} />
           </DetailsSectionContentCardWrapper>
         }

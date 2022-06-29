@@ -3,12 +3,23 @@ import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsS
 import { formatAmount } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Grid, Heading, Text } from 'theme-ui'
 
 import { zero } from '../../../helpers/zero'
 
 interface ContentCardEarningsToDateProps {
   earningsToDate?: BigNumber
   earningsToDateAfterFees?: BigNumber
+}
+
+function ContentCardEarningsToDateModal() {
+  const { t } = useTranslation()
+  return (
+    <Grid gap={2}>
+      <Heading variant="header3">{t('manage-earn-vault.earnings-to-date')}</Heading>
+      <Text variant="paragraph2">{t('manage-earn-vault.earnings-to-date-modal')}</Text>
+    </Grid>
+  )
 }
 
 export function ContentCardEarningsToDate({
@@ -29,7 +40,7 @@ export function ContentCardEarningsToDate({
       afterFees: formatted.earningsToDateAfterFees,
       symbol: '',
     }),
-    modal: t('manage-earn-vault.earnings-to-date-modal'),
+    modal: <ContentCardEarningsToDateModal />,
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />
