@@ -1,26 +1,25 @@
 import BigNumber from 'bignumber.js'
 import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
-import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 import { zero } from '../../../helpers/zero'
 
-interface ContentCardEarningsToDateProps {
+interface ContentCardMultipleProps {
   multiple?: BigNumber
 }
 
-export function ContentCardMultiple({ multiple }: ContentCardEarningsToDateProps) {
+export function ContentCardMultiple({ multiple }: ContentCardMultipleProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    multiple: `${formatPercent((multiple || zero).times(100), { precision: 1 })}`,
+    multiple: `${(multiple || zero).toFixed(2)}`,
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('manage-earn-vault.net-apy'),
-    value: formatted.multiple,
-    modal: t('manage-earn-vault.net-apy-modal'),
+    title: t('system.multiple'),
+    value: `${formatted.multiple}x ${t('system.exposure')}`,
+    modal: t('manage-earn-vault.exposure-modal'),
   }
 
   return <DetailsSectionContentCard {...contentCardSettings} />

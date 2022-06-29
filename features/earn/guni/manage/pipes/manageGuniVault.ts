@@ -45,12 +45,12 @@ import {
   validateWarnings,
 } from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../../../../shared/balanceInfo'
+import { HistoricalTokenPrices } from '../../../makerOracleTokenPrices'
 import { Yield } from '../../../yieldCalculations'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
-import { HistoricalTokenPrices } from '../../../makerOracleTokenPrices'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,

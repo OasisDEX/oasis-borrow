@@ -472,11 +472,13 @@
     }
   },
   "manage-earn-vault": {
+    "overview-earn": "Overview (Earn ID: {{earnId}})",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
     "earnings-to-date-modal": "The gross and net earnings of the position.",
     "net-apy": "Net APY",
-    "net-apy-modal": "The annual percentage yield."
+    "net-apy-modal": "The annual percentage yield.",
+    "exposure-modal": "The total exposure of the position, above the given capital deployed."
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",

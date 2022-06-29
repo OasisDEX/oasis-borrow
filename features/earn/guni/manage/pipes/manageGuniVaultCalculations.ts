@@ -4,8 +4,8 @@ import {
   calculatePNL,
 } from '../../../../../helpers/multiply/calculations'
 import { zero } from '../../../../../helpers/zero'
-import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
 import { calculateYield } from '../../../yieldCalculations'
+import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
 
 // this method extends / overwrites  applyManageVaultCalculations
 export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) {

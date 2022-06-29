@@ -1,9 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import { Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../blockchain/network'
-import BigNumber from 'bignumber.js'
 
 const historicalPriceQuery = gql`
   query prices($token: String!) {
