@@ -31,6 +31,9 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'manageMultiply':
     case 'addBasicSell':
     case 'cancelBasicSell':
+    case 'addBasicBuy':
+    case 'cancelBasicBuy':
+    case 'basicBuyEditing':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'

@@ -115,6 +115,9 @@ export function SidebarSetupAutoSell({
     ? 'txFailure'
     : 'editing'
 
+  console.log('stage')
+  console.log(stage)
+
   const isOwner = context.status === 'connected' && context.account === vault.controller
   const isDisabled =
     (isProgressStage ||

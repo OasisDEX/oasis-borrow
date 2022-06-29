@@ -39,6 +39,9 @@ function handleTriggerTx({
       ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
       : zero
 
+  console.log('txState inside handleTriggerTx')
+  console.log(txState)
+
   uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
     type: 'tx-details',
     txDetails: {

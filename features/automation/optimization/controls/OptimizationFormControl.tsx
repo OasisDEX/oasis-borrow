@@ -19,12 +19,14 @@ import { TriggersData } from 'features/automation/protection/triggers/Automation
 import React, { useState } from 'react'
 import { IlkData } from 'blockchain/ilks'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { Context } from 'blockchain/network'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
+  // context: Context
 
 }
 
@@ -38,12 +40,8 @@ export function OptimizationFormControl({
 
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-
-
   // const { isTriggerEnabled } = basicBuyTriggerData
   // const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
-
-  
 
   const props: SidebarSetupAutoBuyProps = {
     isAutoBuyOn: basicBuyTriggerData.isTriggerEnabled,
@@ -53,7 +51,6 @@ export function OptimizationFormControl({
     priceInfo,
     autoBuyTriggerData: basicBuyTriggerData,
     ilkData: ilkData,
-    stage: 'basicBuyEditing'
   }
 
   return <SidebarSetupAutoBuy {...props} />
