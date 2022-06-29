@@ -41,7 +41,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
             },
             {
               value: 'position-info',
-              label: t('vault.position-info-tab'),
+              label: t('system.position-info'),
               content: <Card variant="faq">{faq}</Card>,
             },
           ]}

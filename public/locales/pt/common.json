@@ -484,7 +484,8 @@
     "vault-id": "Cofre ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
-    "max-multiple": "Max Multiple"
+    "max-multiple": "Max Multiple",
+    "position-info": "Position Info"
   },
   "token-balance": "Saldo {{token}}",
   "token-depositing": "{{token}} depositando {{amount}}",
