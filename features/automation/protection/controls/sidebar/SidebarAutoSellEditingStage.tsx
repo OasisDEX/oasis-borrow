@@ -151,7 +151,7 @@ export function SidebarAutoSellEditingStage({
         amount={uiStateBasicSell.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}
-        token={vault.token}
+        currencyCode={vault.token}
         onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'max-buy-or-sell-price',

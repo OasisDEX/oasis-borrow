@@ -64,30 +64,31 @@ export function SidebarAutoBuyEditingStage({
         rightDescription={t('auto-buy.trigger-coll-ratio')}
         minDescription={`(${t('auto-buy.min-ratio')})`}
       />
-      <VaultActionInput
-        action={t('auto-buy.set-max-buy-price')}
-        amount={basicBuyState.maxBuyOrMinSellPrice}
-        hasAuxiliary={true}
-        hasError={false}
-        token="ETH" //TODO ŁW merge dev change to usd
-        onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'max-buy-or-sell-price',
-            maxBuyOrMinSellPrice,
-          })
-        })}
-        onToggle={(toggleStatus) => {
-          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'with-threshold',
-            withThreshold: toggleStatus,
-          })
-        }}
-        onAuxiliaryChange={() => {}}
-        showToggle={true}
-        toggleOnLabel={t('protection.set-no-threshold')}
-        toggleOffLabel={t('protection.set-threshold')}
-        toggleOffPlaceholder={t('protection.no-threshold')}
-      />
+    <VaultActionInput
+                action={t('auto-buy.set-max-buy-price')}
+                amount={basicBuyState.maxBuyOrMinSellPrice}
+                hasAuxiliary={true}
+                hasError={false}
+                currencyCode="USD"
+                onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
+                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+                    type: 'max-buy-or-sell-price',
+                    maxBuyOrMinSellPrice,
+                  })
+                })}
+                onToggle={(toggleStatus) => {
+                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+                    type: 'with-threshold',
+                    withThreshold: toggleStatus,
+                  })
+                }}
+                onAuxiliaryChange={() => {}}
+                showToggle={true}
+                toggleOnLabel={t('protection.set-no-threshold')}
+                toggleOffLabel={t('protection.set-threshold')}
+                toggleOffPlaceholder={t('protection.no-threshold')}
+              />
+              
       <SidebarResetButton
         clear={() => {
           alert('Reset!')
