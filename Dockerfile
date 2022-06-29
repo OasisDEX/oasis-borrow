@@ -2,14 +2,13 @@ FROM node:16.13.2
 
 EXPOSE 3000
 
+RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
+
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
-COPY ./server/ /usr/src/app/server
-COPY ./.next/ /usr/src/app/.next
+COPY .next/ /usr/src/app/.next
 
 WORKDIR /usr/src/app
-
-RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
 
 ARG COMMIT_SHA
 ARG API_HOST
@@ -51,10 +50,5 @@ ENV COMMIT_SHA=$COMMIT_SHA \
   SNOWFLAKE_PASSWORD=$SNOWFLAKE_PASSWORD \
   ENABLE_SNOWFLAKE=$ENABLE_SNOWFLAKE \
   NODE_OPTIONS=--max-old-space-size=4096
-
-COPY . .
-
-RUN chmod +x ./scripts/wait-for-it.sh \
-  && npm run build
 
 CMD [ "npm", "run", "start:prod" ]
