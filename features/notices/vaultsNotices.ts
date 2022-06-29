@@ -74,7 +74,7 @@ function eventsFromLastWeek(event: VaultHistoryEvent) {
   return moment(event.timestamp).isAfter(moment().subtract(1, 'weeks'))
 }
 
-export function createVaultsBanners$(
+export function createVaultsNotices$(
   context$: Observable<Context>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
