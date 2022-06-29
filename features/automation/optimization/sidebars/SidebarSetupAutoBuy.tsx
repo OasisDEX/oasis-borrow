@@ -45,7 +45,7 @@ export interface SidebarSetupAutoBuyProps {
   vault: Vault
   autoBuyTriggerData: BasicBSTriggerData
   ilkData: IlkData
-  stage: 'basicBuyEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
+  // stage: 'basicBuyEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
   currentForm: CurrentBSForm
   // maxGasPercentagePrice?: MaxGasPriceValues
   priceInfo: PriceInfo

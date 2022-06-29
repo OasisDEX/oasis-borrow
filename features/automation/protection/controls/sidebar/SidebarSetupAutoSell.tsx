@@ -37,7 +37,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupAutoBuyProps {
+interface SidebarSetupAutoBuyProps { //TODO ŁW Auto sell
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
