@@ -56,15 +56,15 @@ export function getYields$(
     throw new Error(`${ilk} is not supported for Yields calculations`)
   }
 
-  const referenceDate = date || moment().startOf('day')
+  const referenceDate = date || moment()
 
   return ilkData$(ilk).pipe(
     switchMap(({ ilk, token, stabilityFee, liquidationRatio }) => {
       return combineLatest(
         makerOracleTokenPrices$(token, referenceDate),
-        makerOracleTokenPrices$(token, referenceDate.subtract(7, 'days')),
-        makerOracleTokenPrices$(token, referenceDate.subtract(30, 'days')),
-        makerOracleTokenPrices$(token, referenceDate.subtract(90, 'days')),
+        makerOracleTokenPrices$(token, referenceDate.clone().subtract(7, 'day')),
+        makerOracleTokenPrices$(token, referenceDate.clone().subtract(30, 'day')),
+        makerOracleTokenPrices$(token, referenceDate.clone().subtract(90, 'day')),
         of({ ilk, stabilityFee, liquidationRatio }),
       )
     }),
@@ -72,13 +72,13 @@ export function getYields$(
       ([
         currentPrice,
         sevenDaysPrice,
-        threerthyDaysPrice,
+        thirtyDaysPrice,
         ninetyDaysPrice,
         { ilk, stabilityFee, liquidationRatio },
       ]) => {
         const result = [
           { period: YieldPeriod.Yield7Days, days: 7, price: sevenDaysPrice.price },
-          { period: YieldPeriod.Yield30Days, days: 30, price: threerthyDaysPrice.price },
+          { period: YieldPeriod.Yield30Days, days: 30, price: thirtyDaysPrice.price },
           { period: YieldPeriod.Yield90Days, days: 90, price: ninetyDaysPrice.price },
         ]
 

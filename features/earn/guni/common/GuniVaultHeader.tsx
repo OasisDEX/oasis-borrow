@@ -19,7 +19,7 @@ export interface EarnVaultHeaderProps {
 }
 
 const currentDate = moment().startOf('day')
-const previousDate = currentDate.subtract(1, 'day')
+const previousDate = currentDate.clone().subtract(1, 'day')
 
 export function GuniVaultHeader({ ilk, token }: EarnVaultHeaderProps) {
   const { yieldsChange$, totalValueLocked$ } = useAppContext()

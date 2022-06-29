@@ -20,7 +20,7 @@ const makerOraclePrice = gql`
 export interface MakerOracleTokenPrice {
   token: string
   price: string
-  timestamp: string
+  timestamp: moment.Moment
 }
 
 export function createMakerOracleTokenPrices$(
@@ -34,9 +34,9 @@ export function createMakerOracleTokenPrices$(
       const apiClient = new GraphQLClient(cacheApi)
       return apiClient.request(makerOraclePrice, {
         token,
-        date: timestamp.format('YYYY-MM-DD HH:mm'),
+        date: timestamp.toISOString(),
       })
     }),
-    map((apiResponse) => apiResponse.data.makerOracleTokenPrices.tokenPrice),
+    map((apiResponse) => apiResponse.makerOracleTokenPrices.tokenPrice),
   )
 }
