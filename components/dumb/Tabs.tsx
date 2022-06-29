@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from 'react'
 import ReactSelect from 'react-select'
 import { Box, Button, Flex, Grid } from 'theme-ui'
 
-type TabSection = {
+export type TabSection = {
   value: string
   label: JSX.Element | string
   content: JSX.Element

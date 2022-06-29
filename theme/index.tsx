@@ -37,7 +37,6 @@ const oasisBaseTheme = {
     grey: {
       darker: '#E6E9EB',
     },
-
     text: {
       focused: '#272940',
       muted: '#708390',
@@ -443,42 +442,6 @@ const oasisBaseTheme = {
         outline: 'none',
       },
     },
-    tab: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      fontWeight: 'semiBold',
-      paddingTop: '5px',
-      paddingBottom: '5px',
-      borderRadius: 'round',
-      lineHeight: 'buttons',
-      color: 'text.contrast',
-      transition: 'background 0.2s ease-in',
-      '&:focus-visible': {
-        bg: 'primaryEmphasis',
-      },
-      '&:disabled': {
-        bg: 'primaryAlt',
-        pointerEvents: 'none',
-      },
-      '&:focus': {
-        outline: 'none',
-      },
-    },
-    tabInactive: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      paddingTop: '5px',
-      paddingBottom: '5px',
-      fontWeight: 'semiBold',
-      borderRadius: 'round',
-      lineHeight: 'buttons',
-      color: 'text.subtitle',
-      transition: 'background 0.2s ease-in',
-      bg: 'unset',
-      '&:hover': {
-        color: 'maritimeBlue',
-      },
-    },
     vaultTab: {
       variant: 'text.paragraph2',
       cursor: 'pointer',
@@ -731,6 +694,17 @@ const oasisBaseTheme = {
       '&:hover': {
         color: 'primary',
       },
+    },
+    tab: {
+      display: 'flex',
+      alignItems: 'center',
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: 'body',
+      bg: 'transparent',
+      color: 'text.subtitle',
+      cursor: 'pointer',
+      transition: TRANSITIONS.global,
     },
     tabSwitcherTabActive: {
       fontFamily: 'body',
