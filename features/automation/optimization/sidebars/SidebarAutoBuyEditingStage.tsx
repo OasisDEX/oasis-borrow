@@ -16,7 +16,6 @@ import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPrice
 import BigNumber from 'bignumber.js'
 import { handleNumericInput } from 'helpers/input'
 
-
 interface SidebarAutoBuyEditingStageProps {
   vault: Vault
   ilkData: IlkData
@@ -25,10 +24,10 @@ interface SidebarAutoBuyEditingStageProps {
 }
 
 export function SidebarAutoBuyEditingStage({
-//   vault,
+  //   vault,
   ilkData,
   // isEditing,
-//   addTxData,
+  //   addTxData,
   basicBuyState,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
@@ -36,7 +35,7 @@ export function SidebarAutoBuyEditingStage({
 
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-//   const max = basicBuyState.targetCollRatio ? basicBuyState.targetCollRatio.toNumber() : 500
+  //   const max = basicBuyState.targetCollRatio ? basicBuyState.targetCollRatio.toNumber() : 500
 
   return (
     <>
@@ -64,30 +63,30 @@ export function SidebarAutoBuyEditingStage({
         rightDescription={t('auto-buy.trigger-coll-ratio')}
         minDescription={`(${t('auto-buy.min-ratio')})`}
       />
-    <VaultActionInput
-                action={t('auto-buy.set-max-buy-price')}
-                amount={basicBuyState.maxBuyOrMinSellPrice}
-                hasAuxiliary={true}
-                hasError={false}
-                currencyCode="USD"
-                onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'max-buy-or-sell-price',
-                    maxBuyOrMinSellPrice,
-                  })
-                })}
-                onToggle={(toggleStatus) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'with-threshold',
-                    withThreshold: toggleStatus,
-                  })
-                }}
-                onAuxiliaryChange={() => {}}
-                showToggle={true}
-                toggleOnLabel={t('protection.set-no-threshold')}
-                toggleOffLabel={t('protection.set-threshold')}
-                toggleOffPlaceholder={t('protection.no-threshold')}
-              />
+      <VaultActionInput
+        action={t('auto-buy.set-max-buy-price')}
+        amount={basicBuyState.maxBuyOrMinSellPrice}
+        hasAuxiliary={true}
+        hasError={false}
+        currencyCode="USD"
+        onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'max-buy-or-sell-price',
+            maxBuyOrMinSellPrice,
+          })
+        })}
+        onToggle={(toggleStatus) => {
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'with-threshold',
+            withThreshold: toggleStatus,
+          })
+        }}
+        onAuxiliaryChange={() => {}}
+        showToggle={true}
+        toggleOnLabel={t('protection.set-no-threshold')}
+        toggleOffLabel={t('protection.set-threshold')}
+        toggleOffPlaceholder={t('protection.no-threshold')}
+      />
 
       <SidebarResetButton
         clear={() => {

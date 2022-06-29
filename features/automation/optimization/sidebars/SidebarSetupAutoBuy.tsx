@@ -37,6 +37,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
+import { SidebarAutoBuyAdditionStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 
 export interface SidebarSetupAutoBuyProps {
@@ -135,6 +136,9 @@ export function SidebarSetupAutoBuy({
               />
           )}
           {currentForm === 'remove' && <>Remove form TBD</>}
+          {(stage === 'txSuccess' || stage === 'txInProgress') && (
+            <SidebarAutoBuyAdditionStage stage={stage} />
+          )}
         </Grid>
       ),
       primaryButton: {
@@ -151,7 +155,6 @@ export function SidebarSetupAutoBuy({
             if (currentForm === 'remove') {
               removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice)
             }
-            // else backToVaultOverview(uiChanges)
           }
         },
       },
