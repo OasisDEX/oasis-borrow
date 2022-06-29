@@ -50,6 +50,7 @@ import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
 import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
+import { HistoricalTokenPrices } from '../../../makerOracleTokenPrices'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
@@ -179,6 +180,7 @@ export type ManageEarnVaultState = ManageMultiplyVaultState &
     earningsToDate?: BigNumber
     earningsToDateAfterFees?: BigNumber
     netAPY?: BigNumber
+    historicalTokenPrices: HistoricalTokenPrices
   }
 
 export function createManageGuniVault$(
@@ -205,6 +207,7 @@ export function createManageGuniVault$(
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
   getYields$: (ilk: string) => Observable<Yield>,
   collateralLocked$: ({ ilk, token }: { ilk: string; token: string }) => Observable<BigNumber>,
+  historicalTokenPrices$: (token: string) => Observable<HistoricalTokenPrices>,
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   id: BigNumber,
 ): Observable<ManageEarnVaultState> {
@@ -223,6 +226,7 @@ export function createManageGuniVault$(
               getYields$(vault.ilk),
               oraclePriceData$(vault.token),
               collateralLocked$({ ...vault }),
+              historicalTokenPrices$(vault.token),
             ),
           ).pipe(
             first(),
@@ -232,7 +236,7 @@ export function createManageGuniVault$(
                 balanceInfo,
                 ilkData,
                 proxyAddress,
-                [{ yields }, oraclePriceData, collateralLocked],
+                [{ yields }, oraclePriceData, collateralLocked, historicalTokenPrices],
               ]) => {
                 const collateralAllowance$ =
                   account && proxyAddress
@@ -298,6 +302,7 @@ export function createManageGuniVault$(
                         ...yields,
                       },
                       ilk: ilkData.ilk,
+                      historicalTokenPrices,
                     }
 
                     const stateSubject$ = new Subject<ManageMultiplyVaultState>()

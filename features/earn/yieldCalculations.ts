@@ -5,7 +5,7 @@ import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators
 
 import { IlkData } from '../../blockchain/ilks'
 import { one } from '../../helpers/zero'
-import { HistoricalTokenPricesApiResponse } from './makerOracleTokenPrices'
+import { HistoricalTokenPrices } from './makerOracleTokenPrices'
 
 export enum YieldPeriod {
   Yield7Days,
@@ -26,7 +26,7 @@ export interface Yield {
 export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 export function getYields$(
-  makerOracleTokenPrices$: (token: string) => Observable<HistoricalTokenPricesApiResponse>,
+  makerOracleTokenPrices$: (token: string) => Observable<HistoricalTokenPrices>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
 ): Observable<Yield> {

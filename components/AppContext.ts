@@ -825,6 +825,7 @@ export function setupAppContext() {
         vaultHistory$,
         yields$,
         collateralLocked$,
+        makerOracleTokenPrices$,
         oraclePriceData$,
         id,
       ),

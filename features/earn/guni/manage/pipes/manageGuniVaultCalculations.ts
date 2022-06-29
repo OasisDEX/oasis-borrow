@@ -5,6 +5,7 @@ import {
 } from '../../../../../helpers/multiply/calculations'
 import { zero } from '../../../../../helpers/zero'
 import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
+import { calculateYield } from '../../../yieldCalculations'
 
 // this method extends / overwrites  applyManageVaultCalculations
 export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) {
@@ -14,6 +15,7 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
     sharedAmount1,
     minToTokenAmount,
     vaultHistory,
+    historicalTokenPrices,
   } = state
 
   const netValueUSD = lockedCollateralUSD.minus(debt)
@@ -22,7 +24,13 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
   const grossEarnings = calculateGrossEarnings(vaultHistory, netValueUSD)
   const netEarnings = calculateNetEarnings(vaultHistory, netValueUSD)
 
-  const netAPY = state.yields['0']?.value
+  const netAPY = calculateYield(
+    historicalTokenPrices.price7,
+    historicalTokenPrices.price,
+    state.ilkData.stabilityFee,
+    7,
+    state.multiply,
+  )
 
   return {
     ...state,
