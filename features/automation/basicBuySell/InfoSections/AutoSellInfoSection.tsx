@@ -10,7 +10,6 @@ interface SellInfoSectionProps {
   multipleAfterSell: BigNumber
   execCollRatio: BigNumber
   nextSellPrice: BigNumber
-  setupTransactionCost: BigNumber
   slippageLimit: BigNumber
   collateralAfterNextSell: {
     value: BigNumber
@@ -30,7 +29,6 @@ export function AutoSellInfoSection({
   multipleAfterSell,
   execCollRatio,
   nextSellPrice,
-  setupTransactionCost,
   slippageLimit,
   collateralAfterNextSell,
   outstandingDebtAfterSell,
@@ -72,10 +70,6 @@ export function AutoSellInfoSection({
         {
           label: t('auto-sell.next-sell-prices'),
           value: `$${nextSellPriceFormatted}`,
-        },
-        {
-          label: t('auto-sell.setup-transaction-cost'),
-          value: `$${setupTransactionCost}`,
         },
         {
           label: t('auto-sell.slippage-limit'),

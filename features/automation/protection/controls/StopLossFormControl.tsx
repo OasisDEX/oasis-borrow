@@ -8,9 +8,6 @@ import { StopLossTriggerData } from 'features/automation/protection/common/stopL
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
@@ -92,6 +89,8 @@ interface StopLossFormControlProps {
   vault: Vault
   balanceInfo: BalanceInfo
   isStopLossActive: boolean
+  txHelpers?: TxHelpers
+  context: Context
   account?: string
 }
 
@@ -103,8 +102,10 @@ export function StopLossFormControl({
   account,
   isStopLossActive,
   balanceInfo,
+  context,
+  txHelpers,
 }: StopLossFormControlProps) {
-  const { txHelpers$, context$, uiChanges } = useAppContext()
+  const { uiChanges } = useAppContext()
   const { setVaultFormOpened } = useSharedUI()
   const isTouchDevice = window && 'ontouchstart' in window
 
@@ -116,51 +117,40 @@ export function StopLossFormControl({
     }
   }, [])
 
-  const [txHelpers, txHelpersError] = useObservable(txHelpers$)
-  const [context, contextError] = useObservable(context$)
-
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
   const accountIsConnected = accountIsConnectedValidator({ account })
   const accountIsController = accountIsConnected && account === vault.controller
 
-  return (
-    <WithErrorHandler error={[contextError, txHelpersError]}>
-      <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
-        {([context]) =>
-          basicBSEnabled ? (
-            isStopLossActive ? (
-              <StopLossForms
-                currentForm={currentForm}
-                txHelpers={txHelpers}
-                context={context}
-                vault={vault}
-                ilkData={ilkData}
-                uiChanges={uiChanges}
-                priceInfo={priceInfo}
-                balanceInfo={balanceInfo}
-                accountIsController={accountIsController}
-                stopLossTriggerData={stopLossTriggerData}
-              />
-            ) : (
-              <></>
-            )
-          ) : (
-            <StopLossForms
-              currentForm={currentForm}
-              txHelpers={txHelpers}
-              context={context}
-              vault={vault}
-              ilkData={ilkData}
-              uiChanges={uiChanges}
-              priceInfo={priceInfo}
-              balanceInfo={balanceInfo}
-              accountIsController={accountIsController}
-              stopLossTriggerData={stopLossTriggerData}
-            />
-          )
-        }
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+  return basicBSEnabled ? (
+    isStopLossActive ? (
+      <StopLossForms
+        currentForm={currentForm}
+        txHelpers={txHelpers}
+        context={context}
+        vault={vault}
+        ilkData={ilkData}
+        uiChanges={uiChanges}
+        priceInfo={priceInfo}
+        balanceInfo={balanceInfo}
+        accountIsController={accountIsController}
+        stopLossTriggerData={stopLossTriggerData}
+      />
+    ) : (
+      <></>
+    )
+  ) : (
+    <StopLossForms
+      currentForm={currentForm}
+      txHelpers={txHelpers}
+      context={context}
+      vault={vault}
+      ilkData={ilkData}
+      uiChanges={uiChanges}
+      priceInfo={priceInfo}
+      balanceInfo={balanceInfo}
+      accountIsController={accountIsController}
+      stopLossTriggerData={stopLossTriggerData}
+    />
   )
 }
