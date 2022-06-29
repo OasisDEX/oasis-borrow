@@ -517,8 +517,7 @@
     "next-price_plural": "Próximo preço em {{count}} minutos",
     "open-vault": "Abrir {{ilk}} Cofre",
     "vault-details": "Detalhes do Cofre",
-    "token-uds-price": "{{token}}/USD preço",
-    "position-info-tab": "Position Info"
+    "token-uds-price": "{{token}}/USD preço"
   },
   "vault-actions": {
     "deposit": "Depositar",

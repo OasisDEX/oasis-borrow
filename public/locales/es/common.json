@@ -712,8 +712,7 @@
     "next-price_plural": "Próximo precio en {{count}} minutos",
     "open-vault": "Abrir Vault {{ilk}}",
     "vault-details": "Datos del Vault",
-    "token-uds-price": "Precio {{token}}/USD",
-    "position-info-tab": "Position Info"
+    "token-uds-price": "Precio {{token}}/USD"
   },
   "vault-errors": {
     "deposit-amount-exceeds-collateral-balance": "No puede depositar más colateral que el disponible en su cartera",
