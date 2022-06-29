@@ -1,6 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
+import { BasicBSTriggerResetData } from 'features/automation/common/basicBSTriggerData'
 import { TxError } from 'helpers/types'
 
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
@@ -18,6 +19,7 @@ export type BasicBSChangeAction =
   | { type: 'max-gas-percentage-price'; maxGasPercentagePrice: MaxGasPriceValues }
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'with-threshold'; withThreshold: boolean }
+  | { type: 'reset'; resetData: BasicBSTriggerResetData }
   | {
       type: 'tx-details'
       txDetails: {
@@ -53,6 +55,8 @@ export function basicBSFormChangeReducer(
       return { ...state, withThreshold: action.withThreshold }
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }
+    case 'reset':
+      return { ...state, ...action.resetData }
     default:
       return state
   }
@@ -68,6 +72,7 @@ export interface BasicBSFormChange {
   withThreshold: boolean
   maxGasPercentagePrice?: MaxGasPriceValues
   currentForm: CurrentBSForm
+  resetData: BasicBSTriggerResetData
   txDetails?: {
     txStatus?: TxStatus
     txError?: TxError

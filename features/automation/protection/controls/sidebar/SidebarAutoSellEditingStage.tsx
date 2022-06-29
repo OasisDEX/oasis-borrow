@@ -138,7 +138,7 @@ export function SidebarAutoSellEditingStage({
             targetCollRatio: new BigNumber(value.value1),
           })
         }}
-        defaultValue={{
+        value={{
           value0: uiStateBasicSell.execCollRatio.toNumber(),
           value1: uiStateBasicSell.targetCollRatio.toNumber(),
         }}
@@ -181,7 +181,14 @@ export function SidebarAutoSellEditingStage({
       />
       <SidebarResetButton
         clear={() => {
-          alert('Reset!')
+          uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+            type: 'reset',
+            resetData: {
+              targetCollRatio: autoSellTriggerData.targetCollRatio,
+              execCollRatio: autoSellTriggerData.execCollRatio,
+              maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
+            },
+          })
         }}
       />
       <MaxGasPriceSection

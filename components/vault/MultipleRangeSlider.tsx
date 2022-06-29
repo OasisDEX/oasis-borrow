@@ -72,7 +72,7 @@ interface MultipleRangeSliderProps {
   min: number
   max: number
   onChange: (value: SliderValues) => void
-  defaultValue: SliderValues
+  value: SliderValues
   valueColors?: SliderValueColors
   leftDescription: ReactNode
   rightDescription: ReactNode
@@ -88,7 +88,7 @@ export function MultipleRangeSlider({
   min,
   max,
   onChange,
-  defaultValue,
+  value,
   valueColors,
   middleMark,
   step = 5,
@@ -99,14 +99,13 @@ export function MultipleRangeSlider({
   minDescription = '',
   maxDescription = '',
 }: MultipleRangeSliderProps) {
-  const [sliderValue, setSliderValue] = useState(defaultValue)
   const [side, setSide] = useState('')
   const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
   const sliderBoxRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
   const breakpoint = useBreakpointIndex()
 
-  const { value0, value1 } = sliderValue
+  const { value0, value1 } = value
   const mobile = breakpoint === 0
 
   useEffect(() => {
@@ -129,7 +128,6 @@ export function MultipleRangeSlider({
         value0: middleMark.value - step,
         value1: middleMark.value + step,
       }
-      setSliderValue(newValue)
       onChange(newValue)
     }
   }, [middleMark?.value])
@@ -152,10 +150,9 @@ export function MultipleRangeSlider({
         return
       }
 
-      setSliderValue((prev) => ({ ...prev, [`value${slider}`]: newValue }))
-      onChange({ ...sliderValue, [`value${slider}`]: newValue })
+      onChange({ ...value, [`value${slider}`]: newValue })
     },
-    [step, value1, middleMark?.value],
+    [step, value0, value1, middleMark?.value],
   )
 
   const { value0InPercent, value1InPercent } = useMemo(
