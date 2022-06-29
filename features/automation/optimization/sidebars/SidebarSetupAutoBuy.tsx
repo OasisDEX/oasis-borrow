@@ -122,13 +122,14 @@ SidebarSetupAutoBuyProps) {
   !autoBuyTriggerData.triggerId.isZero() // TODO ŁW check also maxBuyOrMinSellPrice
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
-  const isDisabled = isProgressStage || !isOwner || !isEditing
   // TODO ŁW - adjust isDisabled, when min max will be defined, apply validations etc.
-  //   ||
-  //   (uiState.withThreshold &&
-  //     (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
-  //   uiState.execCollRatio.isZero()) &&
-  // stage !== 'txSuccess'
+  const isDisabled =
+    isProgressStage ||
+    !isOwner ||
+    !isEditing ||
+    (uiState.withThreshold &&
+      (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
+    (uiState.execCollRatio.isZero() && stage !== 'txSuccess')
 
   const flow = isAddForm ? 'addBasicBuy' : 'cancelBasicBuy'
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage }) // TODO ŁW returns setup proxy as no proxy is passed, can't get how the same method returns confirm in basic sell ŁW
@@ -138,18 +139,22 @@ SidebarSetupAutoBuyProps) {
       title: t('auto-buy.form-title'),
       content: (
         <Grid gap={3}>
-          {isAddForm && (
-            <SidebarAutoBuyEditingStage
-              vault={vault}
-              ilkData={ilkData}
-              addTxData={addTxData}
-              basicBuyState={uiState}
-              isEditing
-              autoBuyTriggerData={autoBuyTriggerData}
-              priceInfo={priceInfo}
-            />
+          {(stage === 'editing' || stage === 'txFailure') && (
+            <>
+              {isAddForm && (
+                <SidebarAutoBuyEditingStage
+                  vault={vault}
+                  ilkData={ilkData}
+                  addTxData={addTxData}
+                  basicBuyState={uiState}
+                  isEditing
+                  autoBuyTriggerData={autoBuyTriggerData}
+                  priceInfo={priceInfo}
+                />
+              )}
+              {currentForm === 'remove' && <>Remove form TBD</>}
+            </>
           )}
-          {currentForm === 'remove' && <>Remove form TBD</>}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutoBuyAdditionStage stage={stage} />
           )}
@@ -177,7 +182,13 @@ SidebarSetupAutoBuyProps) {
                 addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
               }
               if (currentForm === 'remove') {
-                removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
+                removeBasicBSTrigger(
+                  txHelpers,
+                  removeTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  'buy',
+                )
               }
             }
           }
