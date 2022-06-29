@@ -16,7 +16,6 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 function Loader() {
   return (
@@ -52,7 +51,6 @@ export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
-  const enabled = useFeatureToggle('EarnProduct')
 
   const tabs = (productCardsData: ProductCardData[]) => {
     const borrowTab = content.borrowIlks && {
@@ -67,32 +65,29 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       ),
     }
 
-    const multiplyTab = content.multiplyIlks &&
-      // TODO its tricky one, during feature toggle removal an GUNIV3DAIUSDC2-A should be removed from multiplyIlks within lp-tokens
-      !(enabled && content.slug === 'lp-token') && {
-        tabLabel: t('landing.tabs.multiply.tabLabel'),
-        tabContent: (
-          <TabContent
-            ilks={content.multiplyIlks}
-            type="multiply"
-            renderProductCard={ProductCardMultiply}
-            productCardsData={productCardsData}
-          />
-        ),
-      }
+    const multiplyTab = content.multiplyIlks && {
+      tabLabel: t('landing.tabs.multiply.tabLabel'),
+      tabContent: (
+        <TabContent
+          ilks={content.multiplyIlks}
+          type="multiply"
+          renderProductCard={ProductCardMultiply}
+          productCardsData={productCardsData}
+        />
+      ),
+    }
 
-    const earnTab = content.earnIlks &&
-      enabled && {
-        tabLabel: t('landing.tabs.earn.tabLabel'),
-        tabContent: (
-          <TabContent
-            ilks={content.earnIlks}
-            type="earn"
-            renderProductCard={ProductCardEarn}
-            productCardsData={productCardsData}
-          />
-        ),
-      }
+    const earnTab = content.earnIlks && {
+      tabLabel: t('landing.tabs.earn.tabLabel'),
+      tabContent: (
+        <TabContent
+          ilks={content.earnIlks}
+          type="earn"
+          renderProductCard={ProductCardEarn}
+          productCardsData={productCardsData}
+        />
+      ),
+    }
 
     return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSwitcherTab[]
   }
