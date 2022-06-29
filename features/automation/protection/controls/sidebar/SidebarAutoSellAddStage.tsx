@@ -2,7 +2,7 @@ import { Box } from '@theme-ui/components'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-import { useTranslation } from 'next-i18next'
+// import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
@@ -12,16 +12,17 @@ interface SidebarAutoSellAddStageProps {
 }
 
 export function SidebarAutoSellAddStage({ stage }: SidebarAutoSellAddStageProps) {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
 
   switch (stage) {
     case 'txInProgress':
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-            {t('protection.setting-downside-protection-desc')}
-          </Text>
           <AddingStopLossAnimation />
+          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus
+            blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.
+          </Text>
         </>
       )
     case 'txSuccess':
