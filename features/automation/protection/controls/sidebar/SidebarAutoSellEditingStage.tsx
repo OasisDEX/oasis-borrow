@@ -187,6 +187,9 @@ export function SidebarAutoSellEditingStage({
               targetCollRatio: autoSellTriggerData.targetCollRatio,
               execCollRatio: autoSellTriggerData.execCollRatio,
               maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
+              withThreshold:
+                !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
+                autoSellTriggerData.triggerId.isZero(),
             },
           })
         }}

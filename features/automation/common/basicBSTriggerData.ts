@@ -22,11 +22,6 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-export type BasicBSTriggerResetData = Pick<
-  BasicBSTriggerData,
-  'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice'
->
-
 type BasicBSTriggerTypes = TriggerType.BasicSell | TriggerType.BasicBuy
 
 function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {

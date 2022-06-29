@@ -1,13 +1,20 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
-import { BasicBSTriggerResetData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { TxError } from 'helpers/types'
 
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
 export const BASIC_BUY_FORM_CHANGE = 'BASIC_BUY_FORM_CHANGE'
 
 export type CurrentBSForm = 'add' | 'remove'
+
+export type BasicBSTriggerResetData = Pick<
+  BasicBSTriggerData,
+  'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice'
+> & {
+  withThreshold: boolean
+}
 
 export type BasicBSChangeAction =
   | { type: 'trigger-id'; triggerId: BigNumber }
