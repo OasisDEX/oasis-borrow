@@ -4,6 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
+import { YieldPeriod } from '../features/earn/yieldCalculations'
 import { WithLoadingIndicator } from '../helpers/AppSpinner'
 import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
@@ -63,7 +64,7 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   const defaultDaiValue = new BigNumber(100000)
   const { yields$ } = useAppContext()
 
-  const [yields, yieldsError] = useObservable(yields$({ ilk: cardData.ilk, days: [7, 90] }))
+  const [yields, yieldsError] = useObservable(yields$(cardData.ilk))
 
   const maxMultiple = one.div(cardData.liquidationRatio.minus(one))
   const tagKey = productCardsConfig.earn.tags[cardData.ilk]
@@ -75,9 +76,9 @@ export function ProductCardEarn({ cardData }: ProductCardEarnProps) {
   return (
     <WithErrorHandler error={[yieldsError]}>
       <WithLoadingIndicator value={[yields]}>
-        {([{ values }]) => {
-          const sevenDayAverage = values[7]?.value || zero
-          const ninetyDayAverage = values[90]?.value || zero
+        {([{ yields }]) => {
+          const sevenDayAverage = yields[YieldPeriod.Yield7Days]?.value || zero
+          const ninetyDayAverage = yields[YieldPeriod.Yield90Days]?.value || zero
 
           const yieldSevenDayAsPercentage = formatPercent(sevenDayAverage.times(100), {
             precision: 2,

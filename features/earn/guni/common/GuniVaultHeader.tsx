@@ -1,43 +1,73 @@
 import BigNumber from 'bignumber.js'
+import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-import { TotalValueLocked } from '../../../../blockchain/collateral'
+import { useAppContext } from '../../../../components/AppContextProvider'
 import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from '../../../../components/vault/VaultHeadline'
+import { WithLoadingIndicator } from '../../../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
 import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
+import { useObservable } from '../../../../helpers/observableHook'
 import { zero } from '../../../../helpers/zero'
-import { YieldChanges } from '../../yieldCalculations'
+import { YieldChange } from '../../yieldCalculations'
 
 export interface EarnVaultHeaderProps {
   ilk: string
   token: string
-  yieldsChanges: YieldChanges
-  totalValueLocked: TotalValueLocked
 }
 
-export function GuniVaultHeader({
-  ilk,
-  token,
-  yieldsChanges,
-  totalValueLocked,
-}: EarnVaultHeaderProps) {
+const currentDate = moment().startOf('day')
+const previousDate = currentDate.subtract(1, 'day')
+
+export function GuniVaultHeader({ ilk, token }: EarnVaultHeaderProps) {
+  const { yieldsChange$, totalValueLocked$ } = useAppContext()
+  const [yieldChanges, changesError] = useObservable(yieldsChange$(currentDate, previousDate, ilk))
+  const [totalValueLocked, totalValueLockedError] = useObservable(totalValueLocked$(ilk))
+
   const { t } = useTranslation()
-  const details: HeadlineDetailsProp[] = [
-    ...yieldsChanges.changes.map((change) => {
-      return {
-        label: t(`earn-vault.headlines.yield-${change.yieldFromDays}`),
-        value: getPercent(change.yieldValue),
-        sub: getPercent(change.change),
-        subColor: getSubColor(change.change),
-      }
-    }),
-    {
-      label: t('earn-vault.headlines.total-value-locked'),
-      value: `$${formatFiatBalance(totalValueLocked.value || zero)}`,
-    },
-  ]
-  return <EarnVaultHeadline header={ilk} token={token} details={details} />
+
+  return (
+    <WithErrorHandler error={[changesError, totalValueLockedError]}>
+      <WithLoadingIndicator value={[yieldChanges, totalValueLocked]} customLoader={<div />}>
+        {([_yieldsChanges, _totalValueLocked]) => {
+          const details: HeadlineDetailsProp[] = [
+            ...Object.values(_yieldsChanges.changes)
+              .filter(({ days }) => [7, 90].includes(days))
+              .map((yieldChange) => getHeadlineDetail(yieldChange)),
+            {
+              label: t('earn-vault.headlines.total-value-locked'),
+              value: `$${formatFiatBalance(_totalValueLocked.value || zero)}`,
+            },
+          ]
+          return <EarnVaultHeadline header={ilk} token={token} details={details} />
+        }}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
+  )
+}
+
+function getHeadlineDetail(yieldChange?: YieldChange): HeadlineDetailsProp {
+  const { t } = useTranslation()
+
+  if (!yieldChange || yieldChange.days === 0) {
+    return {
+      label: '',
+      value: '',
+      sub: '',
+      subColor: '',
+    }
+  }
+
+  const { days, change, yieldValue } = yieldChange
+
+  return {
+    label: t(`earn-vault.headlines.yield-${days}`),
+    value: getPercent(yieldValue),
+    sub: getPercent(change),
+    subColor: getSubColor(change),
+  }
 }
 
 function getPercent(value?: BigNumber) {

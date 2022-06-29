@@ -6,15 +6,12 @@ import { mockContextConnected } from 'helpers/mocks/context.mock'
 import { mockIlkData$ } from 'helpers/mocks/ilks.mock'
 import { mockPriceInfo$ } from 'helpers/mocks/priceInfo.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import moment from 'moment'
 import { Observable, of } from 'rxjs'
 
-import { TotalValueLocked } from '../../../../../blockchain/collateral'
 import { mockExchangeQuote$ } from '../../../../../helpers/mocks/exchangeQuote.mock'
 import { addGasEstimationMock } from '../../../../../helpers/mocks/openVault.mock'
 import { slippageLimitMock } from '../../../../../helpers/mocks/slippageLimit.mock'
 import { GUNI_SLIPPAGE } from '../../../../../helpers/multiply/calculations'
-import { YieldChanges } from '../../../yieldCalculations'
 import { createOpenGuniVault$ } from '../pipes/openGuniVault'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,30 +50,6 @@ function getGuniMintAmount$() {
   })
 }
 
-function yieldsChanges$(ilk: string): Observable<YieldChanges> {
-  return of({
-    ilk,
-    currentDate: moment('2022-06-10'),
-    previousDate: moment('2022-06-09'),
-    changes: [
-      {
-        yieldFromDays: 7,
-        yieldValue: new BigNumber(12.0),
-        change: new BigNumber(0.5),
-      },
-      {
-        yieldFromDays: 90,
-        yieldValue: new BigNumber(16.4),
-        change: new BigNumber(-1),
-      },
-    ],
-  })
-}
-
-function totalValueLocked$(): Observable<TotalValueLocked> {
-  return of({ value: new BigNumber(419_277.8636977543371) })
-}
-
 describe('OpenGuniVault', () => {
   it('playground', () => {
     function gasEstimationMock$<T>(state: T) {
@@ -99,8 +72,6 @@ describe('OpenGuniVault', () => {
       token1Balance$,
       getGuniMintAmount$,
       slippageLimitMock(),
-      yieldsChanges$,
-      totalValueLocked$,
     )
 
     const state = getStateUnpacker(openGuniVault$)
@@ -129,8 +100,6 @@ describe('OpenGuniVault', () => {
       token1Balance$,
       getGuniMintAmount$,
       slippageLimitMock(),
-      yieldsChanges$,
-      totalValueLocked$,
     )
 
     const state = getStateUnpacker(openGuniVault$)()

@@ -138,6 +138,7 @@ import {
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
+import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -173,7 +174,7 @@ import {
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
-import { getCollateralLocked$ } from '../blockchain/collateral'
+import { getCollateralLocked$, getTotalValueLocked$ } from '../blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -209,7 +210,7 @@ import {
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
 import { createMakerOracleTokenPrices$ } from '../features/earn/makerOracleTokenPrices'
-import { getYields$ } from '../features/earn/yieldCalculations'
+import { getYieldChange$, getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -823,9 +824,6 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        yields$,
-        collateralLocked$,
-        oraclePriceData$,
         id,
       ),
     bigNumberTostring,
@@ -911,11 +909,33 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const makerOracleTokenPrices$ = memoize(curry(createMakerOracleTokenPrices$)(context$))
+  const makerOracleTokenPrices$ = memoize(
+    curry(createMakerOracleTokenPrices$)(context$),
+    (token: string, timestamp: moment.Moment) => {
+      return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
+    },
+  )
 
-  const yields$ = memoize(curry(getYields$)(makerOracleTokenPrices$, ilkData$))
+  const yields$ = memoize(
+    (ilk: string, date?: moment.Moment) => {
+      return getYields$(makerOracleTokenPrices$, ilkData$, ilk, date)
+    },
+    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+  )
 
-  const collateralLocked$ = memoize(curry(getCollateralLocked$)(connectedContext$, balance$))
+  const yieldsChange$ = memoize(
+    curry(getYieldChange$)(yields$),
+    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+      `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
+  )
+
+  const collateralLocked$ = memoize(
+    curry(getCollateralLocked$)(connectedContext$, ilkToToken$, balance$),
+  )
+
+  const totalValueLocked$ = memoize(
+    curry(getTotalValueLocked$)(collateralLocked$, oraclePriceData$),
+  )
 
   const openGuniVault$ = memoize((ilk: string) =>
     createOpenGuniVault$(
@@ -934,9 +954,6 @@ export function setupAppContext() {
       token1Balance$,
       getGuniMintAmount$,
       userSettings$,
-      yields$,
-      collateralLocked$,
-      oraclePriceData$,
     ),
   )
 
@@ -986,6 +1003,8 @@ export function setupAppContext() {
     positionsOverviewSummary$,
     priceInfo$,
     yields$,
+    totalValueLocked$,
+    yieldsChange$,
   }
 }
 
