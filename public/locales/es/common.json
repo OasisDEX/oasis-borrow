@@ -679,7 +679,8 @@
     "overview": "Visión general",
     "protection": "Protección",
     "history": "Historial",
-    "vault-info": "Información del Vault"
+    "vault-info": "Información del Vault",
+    "position-info": "Información de la Posición"
   },
   "token-balance": "Saldo de {{token}} ",
   "token-depositing": "Depositando {{amount}} {{token}}",

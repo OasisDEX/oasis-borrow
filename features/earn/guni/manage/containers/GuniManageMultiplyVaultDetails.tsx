@@ -41,7 +41,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
 
   return (
     <Box>
-      (
       <DetailsSection
         title={t('system.overview')}
         content={
@@ -82,7 +81,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
           </DetailsSectionFooterItemWrapper>
         }
       />
-      )
     </Box>
   )
 }
