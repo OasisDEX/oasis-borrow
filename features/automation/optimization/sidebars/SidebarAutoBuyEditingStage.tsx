@@ -53,7 +53,7 @@ export function SidebarAutoBuyEditingStage({
             execCollRatio: new BigNumber(value.value1),
           })
         }}
-        defaultValue={{
+        value={{
           value0: basicBuyState.targetCollRatio.toNumber(),
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
@@ -88,7 +88,7 @@ export function SidebarAutoBuyEditingStage({
                 toggleOffLabel={t('protection.set-threshold')}
                 toggleOffPlaceholder={t('protection.no-threshold')}
               />
-              
+
       <SidebarResetButton
         clear={() => {
           alert('Reset!')
