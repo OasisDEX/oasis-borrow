@@ -208,6 +208,7 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import { createMakerOracleTokenPrices$ } from '../features/earn/makerOracleTokenPrices'
 import { getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
@@ -910,7 +911,9 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
+  const makerOracleTokenPrices$ = memoize(curry(createMakerOracleTokenPrices$)(context$))
+
+  const yields$ = memoize(curry(getYields$)(makerOracleTokenPrices$, ilkData$))
 
   const collateralLocked$ = memoize(curry(getCollateralLocked$)(connectedContext$, balance$))
 
