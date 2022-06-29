@@ -42,7 +42,6 @@ export function getYields$(
       )
     }),
     map(([prices, { ilk, stabilityFee, liquidationRatio }]) => {
-      console.log('prices', prices)
       const result = [
         { period: YieldPeriod.Yield7Days, days: 7, price: prices.price7 },
         { period: YieldPeriod.Yield30Days, days: 30, price: prices.price30 },
