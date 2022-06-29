@@ -17,61 +17,43 @@ import {
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import React, { useState } from 'react'
+import { IlkData } from 'blockchain/ilks'
+import { PriceInfo } from 'features/shared/priceInfo'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
   vault: Vault
+  ilkData: IlkData
+  priceInfo: PriceInfo
+
 }
 
 export function OptimizationFormControl({
   automationTriggersData,
   vault,
+  ilkData,
+  priceInfo,
 }: OptimizationFormControlProps) {
   const basicBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
 
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-  const txStatus = uiState?.txDetails?.txStatus
 
-  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
-  const isSuccessStage = txStatus === TxStatus.Success
 
-  const stage = isSuccessStage
-    ? 'txSuccess'
-    : isProgressStage
-    ? 'txInProgress'
-    : isFailureStage
-    ? 'txFailure'
-    : 'basicBuyEditing'
+  // const { isTriggerEnabled } = basicBuyTriggerData
+  // const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
+
   
-    console.log('stage')
-    console.log(stage)
-
-  const { isTriggerEnabled } = basicBuyTriggerData
-  const [firstSetup, setFirstSetup] = useState(!isTriggerEnabled)
-
-  const isProgressDisabled = !!(
-    // !isOwner ||
-    // (!isEditing && txStatus !== TxStatus.Success) ||
-    isProgressStage
-  )
 
   const props: SidebarSetupAutoBuyProps = {
     isAutoBuyOn: basicBuyTriggerData.isTriggerEnabled,
     vault,
-    isProgressDisabled,
-    execCollRatio: uiState.execCollRatio,
-    targetCollRatio: uiState.targetCollRatio,
-    withThreshold: uiState.withThreshold,
-    maxBuyOrMinSellPrice: uiState.maxBuyOrMinSellPrice,
-    continuous: uiState.continuous,
-    deviation: uiState.deviation,
-    replacedTriggerId: uiState.triggerId,
-    stage,
-    firstSetup,
     currentForm: uiState.currentForm,
-    maxGasPercentagePrice: uiState.maxGasPercentagePrice,
+    // maxGasPercentagePrice: uiState.maxGasPercentagePrice,
+    priceInfo,
+    autoBuyTriggerData: basicBuyTriggerData,
+    ilkData: ilkData,
+    stage: 'basicBuyEditing'
   }
 
   return <SidebarSetupAutoBuy {...props} />

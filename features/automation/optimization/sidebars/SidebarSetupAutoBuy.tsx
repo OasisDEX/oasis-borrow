@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import { BigNumber } from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -10,9 +11,12 @@ import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { MaxGasPriceSection, MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import {
+  BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
+import { addBasicBSTrigger, removeBasicBSTrigger } from 'features/automation/common/basicBStxHandlers'
+import { failedStatuses, progressStatuses } from 'features/automation/protection/common/consts/txStatues'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -24,6 +28,7 @@ import {
   BasicBSFormChange,
   CurrentBSForm,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
 import { useObservable } from 'helpers/observableHook'
 import { TxError } from 'helpers/types'
@@ -32,49 +37,32 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
+import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 
 export interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
-  txStatus?: TxStatus
-  txError?: TxError
-  txHash?: string
-  txCost?: BigNumber
-  isProgressDisabled: boolean
-  execCollRatio: BigNumber
-  targetCollRatio: BigNumber
-  withThreshold: boolean
-  maxBuyOrMinSellPrice?: BigNumber
-  continuous: boolean
-  deviation: BigNumber
-  replacedTriggerId: BigNumber
+  autoBuyTriggerData: BasicBSTriggerData
+  ilkData: IlkData
   stage: 'basicBuyEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
-  firstSetup: boolean
   currentForm: CurrentBSForm
-  maxGasPercentagePrice?: MaxGasPriceValues
+  // maxGasPercentagePrice?: MaxGasPriceValues
+  priceInfo: PriceInfo
 }
 
 
 export function SidebarSetupAutoBuy({  
-   isAutoBuyOn,
+  isAutoBuyOn,
   vault,
-  execCollRatio,
-  targetCollRatio,
-  withThreshold,
-  maxBuyOrMinSellPrice,
-  continuous,
-  deviation,
-  replacedTriggerId,
-  stage,
-  firstSetup,
+  ilkData,
+  autoBuyTriggerData,
   currentForm, 
-  maxGasPercentagePrice,
-  txStatus,
-  txError,
-  txHash,
-  txCost,}: SidebarSetupAutoBuyProps) {
-  const { t } = useTranslation()
+  // maxGasPercentagePrice,
+  priceInfo,
 
+}: SidebarSetupAutoBuyProps) {
+  const { t } = useTranslation()
+  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, txHelpers$ } = useAppContext()
   const [txHelpers] = useObservable(txHelpers$)
 
@@ -82,30 +70,56 @@ export function SidebarSetupAutoBuy({
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   // const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-  const flow = firstSetup ? 'add' : 'adjust'
+  // const flow = firstSetup ? 'add' : 'adjust'
+  const txStatus = uiState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'basicBuyEditing'
+  
+    console.log('stage')
+    console.log(stage)
 
   const addTxData = useMemo(
     () =>
     prepareAddBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
-    execCollRatio: execCollRatio,
-    targetCollRatio: targetCollRatio,
-    maxBuyOrMinSellPrice: withThreshold ? maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-    continuous: continuous, // leave as default
-    deviation: deviation,
-    replacedTriggerId: replacedTriggerId,
+    execCollRatio: uiState.execCollRatio,
+    targetCollRatio: uiState.targetCollRatio,
+    maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
+    continuous: uiState.continuous, // leave as default
+    deviation: uiState.deviation,
+    replacedTriggerId: uiState.triggerId,
   }),
-  [execCollRatio, targetCollRatio, maxBuyOrMinSellPrice, replacedTriggerId],
-) //TODO ŁW verify l8r if uiState variables are correct, it might behave differently form AdjustSlFormControl
+  [
+    uiState.execCollRatio.toNumber(),
+    uiState.targetCollRatio.toNumber(),
+    uiState.maxBuyOrMinSellPrice?.toNumber(),
+    uiState.triggerId.toNumber(),
+  ],
+)
 
   const removeTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicSell,
-    triggerId: replacedTriggerId,
+    triggerId: uiState.triggerId,
   })
 
   const isAddForm = currentForm === 'add'
+
+  const isProgressDisabled = !!(
+    // !isOwner ||
+    // (!isEditing && txStatus !== TxStatus.Success) ||
+    isProgressStage
+  )
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -113,104 +127,29 @@ export function SidebarSetupAutoBuy({
       content: (
         <Grid gap={3}>
           {isAddForm && (
-            <>
-              <MultipleRangeSlider
-                min={170}
-                max={500}
-                onChange={(value) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'target-coll-ratio',
-                    targetCollRatio: new BigNumber(value.value0),
-                  })
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'execution-coll-ratio',
-                    execCollRatio: new BigNumber(value.value1),
-                  })
-                }}
-                defaultValue={{
-                  value0: targetCollRatio.toNumber(),
-                  value1: execCollRatio.toNumber(),
-                }}
-                valueColors={{
-                  value1: 'onSuccess',
-                }}
-                leftDescription={t('auto-buy.target-coll-ratio')}
-                rightDescription={t('auto-buy.trigger-coll-ratio')}
-                minDescription={`(${t('auto-buy.min-ratio')})`}
+              <SidebarAutoBuyEditingStage
+                vault={vault}
+                ilkData={ilkData}
+                addTxData={addTxData}
+                basicBuyState={uiState}
               />
-              <VaultActionInput
-                action={t('auto-buy.set-max-buy-price')}
-                amount={maxBuyOrMinSellPrice}
-                hasAuxiliary={true}
-                hasError={false}
-                token="ETH"
-                onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'max-buy-or-sell-price',
-                    maxBuyOrMinSellPrice,
-                  })
-                })}
-                onToggle={(toggleStatus) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'with-threshold',
-                    withThreshold: toggleStatus,
-                  })
-                }}
-                onAuxiliaryChange={() => {}}
-                showToggle={true}
-                toggleOnLabel={t('protection.set-no-threshold')}
-                toggleOffLabel={t('protection.set-threshold')}
-                toggleOffPlaceholder={t('protection.no-threshold')}
-              />
-              <SidebarResetButton
-                clear={() => {
-                  alert('Reset!')
-                }}
-              />
-              <MaxGasPriceSection
-                onChange={(maxGasPercentagePrice) => {
-                  uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                    type: 'max-gas-percentage-price',
-                    maxGasPercentagePrice,
-                  })
-                }}
-                defaultValue={maxGasPercentagePrice}
-              />
-            </>
           )}
           {currentForm === 'remove' && <>Remove form TBD</>}
         </Grid>
       ),
       primaryButton: {
         label: t('confirm'),
-        disabled: false, //isProgressDisabled,
+        disabled: isProgressDisabled,
         isLoading: stage === 'txInProgress',
         action: () => {
           console.log('stage')
           console.log(stage)
           if (txHelpers /*&& stage !== 'txSuccess'*/) {
             if (isAddForm) {
-              txHelpers
-                .sendWithGasEstimation(addAutomationBotTrigger, addTxData)
-                .subscribe((next) => {console.log(next)
-                uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-                  type: 'tx-details',
-                  txDetails: {
-                    txHash: (next as any).txHash,
-                    txStatus: next.status,
-                    txError: next.status === TxStatus.Error ? next.error : undefined,
-                    // txCost,
-                  },
-                })
-              }
-                )
-                
-                
+              addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
             }
             if (currentForm === 'remove') {
-              txHelpers
-                .sendWithGasEstimation(removeAutomationBotTrigger, removeTxData)
-                .subscribe((next) => console.log(next))
+              removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice)
             }
             // else backToVaultOverview(uiChanges)
           }
@@ -219,7 +158,7 @@ export function SidebarSetupAutoBuy({
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: replacedTriggerId.isZero(),
+          hidden: uiState.triggerId.isZero(),
           action: () => {
             uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
               type: 'current-form',

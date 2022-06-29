@@ -1,3 +1,4 @@
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
@@ -11,9 +12,10 @@ import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface OptimizationControlProps {
   vault: Vault
+  ilkData: IlkData
 }
 
-export function OptimizationControl({ vault }: OptimizationControlProps) {
+export function OptimizationControl({ vault, ilkData }: OptimizationControlProps) {
   const { automationTriggersData$, priceInfo$ } = useAppContext()
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
   const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
@@ -37,7 +39,9 @@ export function OptimizationControl({ vault }: OptimizationControlProps) {
               />
             }
             editForm={
-              <OptimizationFormControl vault={vault} automationTriggersData={automationTriggers} />
+              <OptimizationFormControl vault={vault} automationTriggersData={automationTriggers}                       ilkData={ilkData}
+              priceInfo={priceInfo}
+              />
             }
           />
         )}
