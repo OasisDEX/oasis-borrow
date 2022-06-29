@@ -119,7 +119,8 @@ export function SidebarSetupAutoSell({
       !isOwner ||
       !isEditing ||
       (uiState.withThreshold &&
-        (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero()))) &&
+        (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
+      uiState.execCollRatio.isZero()) &&
     stage !== 'txSuccess' &&
     !isRemoveForm
 
