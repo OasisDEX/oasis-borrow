@@ -390,6 +390,16 @@
       "current-yield": "Current yield",
       "ninety-days-avg": "90 days avg",
       "total-value-locked": "Total value locked"
+    },
+    "simulate": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Previous 30 days*",
+      "rowlabel2": "Previous 90 days*",
+      "rowlabel3": "Previous 1 year**",
+      "footnote1": "*Past performance is not indicative of future results.",
+      "footnote2": "**Prior year estimates use the 90 day APY."
     }
   },
   "manage-insti-vault": {
@@ -1333,7 +1343,6 @@
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
-
 
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",

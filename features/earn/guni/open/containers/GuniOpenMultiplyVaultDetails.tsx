@@ -5,7 +5,8 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
-import { calculateBreakeven, calculateEarnings } from 'features/earn/earnCalculations'
+import { calculateBreakeven } from 'features/earn/common/calculateBreakeven'
+import { calculateEarnings } from 'features/earn/common/calculateEarnings'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -91,17 +92,17 @@ export function GuniOpenMultiplyVaultDetails(
 
   const contentRowData: [string, string, string][] = [
     [
-      'Previous 30 days*',
+      t('open-earn-vault.simulate.rowlabel1'),
       `${formatCryptoBalance(earnings30.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings30.netValue)} DAI`,
     ],
     [
-      'Previous 90 days*',
+      t('open-earn-vault.simulate.rowlabel2'),
       `${formatCryptoBalance(earnings90.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings90.netValue)} DAI`,
     ],
     [
-      'Previous 1 year**',
+      'open-earn-vault.simulate.rowlabel3',
       `${formatCryptoBalance(earnings1yr.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings1yr.netValue)} DAI`,
     ],
@@ -114,13 +115,17 @@ export function GuniOpenMultiplyVaultDetails(
         content={
           <>
             <DetailsSectionContentTable
-              headers={['Duration', 'Earnings after fees', 'Net value']}
+              headers={[
+                t('open-earn-vault.simulate.header1'),
+                t('open-earn-vault.simulate.header2'),
+                t('open-earn-vault.simulate.header3'),
+              ]}
               rows={contentRowData}
               footnote={
                 <>
-                  *Past performance is not indicative of future results.
+                  {t('open-earn-vault.simulate.footnote1')}
                   <br />
-                  **Prior year estimates use the 90 day APY.
+                  {t('open-earn-vault.simulate.footnote2')}
                 </>
               }
             />

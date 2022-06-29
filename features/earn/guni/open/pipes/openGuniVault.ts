@@ -51,7 +51,7 @@ import {
 import { withLatestFrom } from 'rxjs/operators'
 
 import { OraclePriceData } from '../../../../../blockchain/prices'
-import { Yield } from '../../../earnCalculations'
+import { Yield } from '../../../common/calculateYields'
 import { applyEnvironment, EnvironmentChange, EnvironmentState } from './enviroment'
 import {
   addFormTransitions,

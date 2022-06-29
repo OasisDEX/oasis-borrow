@@ -6,7 +6,7 @@ import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadlin
 import { HeadlineDetailsProp } from '../../../../components/vault/VaultHeadline'
 import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
 import { zero } from '../../../../helpers/zero'
-import { YieldPeriod } from '../../earnCalculations'
+import { YieldPeriod } from '../../common/calculateYields'
 
 export interface EarnVaultHeaderProps {
   ilk: string

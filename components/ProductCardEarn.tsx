@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
-import { YieldPeriod } from '../features/earn/earnCalculations'
+import { YieldPeriod } from '../features/earn/common/calculateYields'
 import { WithLoadingIndicator } from '../helpers/AppSpinner'
 import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'

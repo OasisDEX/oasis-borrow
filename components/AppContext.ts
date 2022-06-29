@@ -117,9 +117,9 @@ import { createCollateralPrices$ } from 'features/collateralPrices/collateralPri
 import { currentContent } from 'features/content'
 import {
   EARN_TAB_CHANGE_SUBJECT,
+  EarnTabChange,
   EarnTabChangeAction,
   earnTabChangeReducer,
-  EarnTabChange,
 } from 'features/earn/guni/common/UITypes/TabChange'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
@@ -205,7 +205,7 @@ import {
   ManageInstiVaultState,
 } from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { getYields$ } from '../features/earn/earnCalculations'
+import { getYields$ } from '../features/earn/common/calculateYields'
 import {
   getTotalSupply,
   getUnderlyingBalances,

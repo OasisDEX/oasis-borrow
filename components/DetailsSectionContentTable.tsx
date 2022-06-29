@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import ReactSelect from 'react-select'
 import { oasisBaseTheme } from 'theme'
 import { Box, Card, Flex, Grid, Text } from 'theme-ui'
 import { useMediaQuery } from 'usehooks-ts'
 
 import { ChevronUpDown } from './ChevronUpDown'
+import { SelectComponents } from 'react-select/src/components'
 
 interface ContentTableProps {
   headers: [string, string, string]
@@ -17,14 +18,19 @@ interface TableHeaderOption {
 }
 
 export function DetailsSectionContentTable({ headers, rows, footnote }: ContentTableProps) {
-  const dropdownHeaders = headers.slice(1).map((header) => ({ label: header }))
-  const [selectedHeader, setSelectedHeader] = useState<TableHeaderOption>(dropdownHeaders[0])
-  const matches = useMediaQuery(`(max-width: ${oasisBaseTheme?.breakpoints[0]})`)
-
-  const selectedHeaderIndex = headers.indexOf(selectedHeader.label || '')
-  const filteredRows = rows.map((row) =>
-    row.filter((_, index) => index === 0 || selectedHeaderIndex === index),
+  const mobileHeaders = headers.slice(1).map((header) => ({ label: header }))
+  const defaultMobileHeader = mobileHeaders[0]
+  const [selectedMobileHeader, setSelectedMobileHeader] = useState<TableHeaderOption>(
+    defaultMobileHeader,
   )
+  const isMobileView = useMediaQuery(`(max-width: ${oasisBaseTheme?.breakpoints[0]})`)
+
+  const selectedMobileHeaderIndex = headers.indexOf(selectedMobileHeader.label || '')
+  const visibleMobileRow = rows.map((row) =>
+    row.filter((_, index) => index === 0 || selectedMobileHeaderIndex === index),
+  )
+
+  const assetsSelectComponents = useMemo(() => reactSelectCustomComponents<TableHeaderOption>(), [])
 
   return (
     <Grid
@@ -32,7 +38,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
         gridTemplateColumns: ['1fr 1fr', '2fr 1fr 1fr'],
       }}
     >
-      {matches && (
+      {isMobileView && (
         <>
           <Text
             as="p"
@@ -43,87 +49,17 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
             {headers[0]}
           </Text>
           <ReactSelect<TableHeaderOption>
-            options={dropdownHeaders}
+            options={mobileHeaders}
             isSearchable={false}
-            value={selectedHeader}
+            value={selectedMobileHeader}
             onChange={(value) => {
-              setSelectedHeader(value as TableHeaderOption)
+              setSelectedMobileHeader(value as TableHeaderOption)
             }}
-            components={{
-              IndicatorsContainer: () => null,
-              ValueContainer: ({ children }) => <Flex>{children}</Flex>,
-              SingleValue: ({ children }) => <Box>{children}</Box>,
-              Option: ({ children, innerProps }) => (
-                <Text
-                  {...innerProps}
-                  variant="paragraph4"
-                  sx={{
-                    py: 2,
-                    px: 3,
-                    cursor: 'pointer',
-                    '&:hover': {
-                      bg: 'backgroundAlt',
-                    },
-                  }}
-                >
-                  {children}
-                </Text>
-              ),
-              Menu: ({ innerProps, children }) => (
-                <Card
-                  {...innerProps}
-                  sx={{
-                    position: 'absolute',
-                    p: 0,
-                    py: 2,
-                    overflow: 'hidden',
-                    bottom: 0,
-
-                    transform: `translateY(calc(100%))`,
-                    boxShadow: 'cardLanding',
-                    left: 0,
-                    width: '100%',
-                    zIndex: 1,
-                  }}
-                >
-                  {children}
-                </Card>
-              ),
-              MenuList: ({ children }) => <Box sx={{ textAlign: 'left' }}>{children}</Box>,
-              Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-                <Text
-                  {...innerProps}
-                  variant="paragraph4"
-                  sx={{
-                    variant: 'cards.primary',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    py: 2,
-                    mb: 3,
-                    pr: 0,
-                    border: 'none',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                    fontWeight: 'semiBold',
-                    color: 'text.subtitle',
-                  }}
-                >
-                  {children}
-                  <ChevronUpDown
-                    isUp={!!menuIsOpen}
-                    variant="select"
-                    size="auto"
-                    width="14px"
-                    height="9px"
-                    sx={{ color: 'text.subtitle', ml: 3 }}
-                  />
-                </Text>
-              ),
-            }}
+            components={assetsSelectComponents}
           />
         </>
       )}
-      {!matches &&
+      {!isMobileView &&
         headers.map((header, index) => (
           <Text
             key={`${header}-${index}`}
@@ -135,7 +71,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
             {header}
           </Text>
         ))}
-      {(matches ? filteredRows : rows).map((row) =>
+      {(isMobileView ? visibleMobileRow : rows).map((row) =>
         row.map((rowItem, index) => (
           <Text
             key={`${rowItem}-${index}`}
@@ -157,3 +93,75 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
     </Grid>
   )
 }
+
+export const reactSelectCustomComponents = <T extends object>(): Partial<SelectComponents<T>> => ({
+  IndicatorsContainer: () => null,
+  ValueContainer: ({ children }) => <Flex>{children}</Flex>,
+  SingleValue: ({ children }) => <Box>{children}</Box>,
+  Option: ({ children, innerProps }) => (
+    <Text
+      {...innerProps}
+      variant="paragraph4"
+      sx={{
+        py: 2,
+        px: 3,
+        cursor: 'pointer',
+        '&:hover': {
+          bg: 'backgroundAlt',
+        },
+      }}
+    >
+      {children}
+    </Text>
+  ),
+  Menu: ({ innerProps, children }) => (
+    <Card
+      {...innerProps}
+      sx={{
+        position: 'absolute',
+        p: 0,
+        py: 2,
+        overflow: 'hidden',
+        bottom: 0,
+
+        transform: `translateY(calc(100%))`,
+        boxShadow: 'cardLanding',
+        left: 0,
+        width: '100%',
+        zIndex: 1,
+      }}
+    >
+      {children}
+    </Card>
+  ),
+  MenuList: ({ children }) => <Box sx={{ textAlign: 'left' }}>{children}</Box>,
+  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
+    <Text
+      {...innerProps}
+      variant="paragraph4"
+      sx={{
+        variant: 'cards.primary',
+        cursor: 'pointer',
+        display: 'flex',
+        py: 2,
+        mb: 3,
+        pr: 0,
+        border: 'none',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        fontWeight: 'semiBold',
+        color: 'text.subtitle',
+      }}
+    >
+      {children}
+      <ChevronUpDown
+        isUp={!!menuIsOpen}
+        variant="select"
+        size="auto"
+        width="14px"
+        height="9px"
+        sx={{ color: 'text.subtitle', ml: 3 }}
+      />
+    </Text>
+  ),
+})

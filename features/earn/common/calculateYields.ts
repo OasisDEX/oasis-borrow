@@ -4,10 +4,10 @@ import { isEqual, memoize } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
-import { IlkData } from '../../blockchain/ilks'
-import { Context } from '../../blockchain/network'
-import { one } from '../../helpers/zero'
-import { fetchWithOperationId } from '../vaultHistory/vaultHistory'
+import { IlkData } from '../../../blockchain/ilks'
+import { Context } from '../../../blockchain/network'
+import { one } from '../../../helpers/zero'
+import { fetchWithOperationId } from '../../vaultHistory/vaultHistory'
 
 const historicalPriceQuery = gql`
   query prices($token: String!) {
@@ -130,29 +130,4 @@ export function calculateYield(
   const feeForYear = stabilityFee.times(multiply.minus(1))
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
-}
-
-interface CalculateBreakeven {
-  depositAmount: BigNumber
-  entryFees: BigNumber
-  apy: BigNumber
-}
-
-interface CalculateEarnings {
-  depositAmount: BigNumber
-  apy: BigNumber
-  days: BigNumber
-}
-
-export function calculateBreakeven({ depositAmount, entryFees, apy }: CalculateBreakeven) {
-  return entryFees.div(depositAmount.times(apy.plus(one)).minus(depositAmount).div(365))
-}
-
-export function calculateEarnings({ depositAmount, apy, days }: CalculateEarnings) {
-  const earningsAfterFees = depositAmount.times(apy.div(365).times(days).plus(one))
-
-  return {
-    earningsAfterFees: earningsAfterFees.minus(depositAmount),
-    netValue: earningsAfterFees,
-  }
 }
