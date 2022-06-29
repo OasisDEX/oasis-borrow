@@ -92,6 +92,8 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
       return 'back-to-vault-overview'
     case 'addBasicSell':
     case 'cancelBasicSell':
+    case 'addBasicBuy':
+    case 'cancelBasicBuy':
       return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE

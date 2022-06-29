@@ -115,11 +115,12 @@ SidebarSetupAutoBuyProps) {
     triggerId: uiState.triggerId,
   })
 
-  const isAddForm = currentForm === 'add'
+  const isAddForm = uiState.currentForm === 'add'
+  const isRemoveForm = uiState.currentForm === 'remove'
   const isEditing =
     !autoBuyTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio) ||
     !autoBuyTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio)
-  !autoBuyTriggerData.triggerId.isZero() // TODO ŁW check also maxBuyOrMinSellPrice
+  !autoBuyTriggerData.triggerId.isZero() || isRemoveForm // TODO ŁW check also maxBuyOrMinSellPrice
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
   // TODO ŁW - adjust isDisabled, when min max will be defined, apply validations etc.
@@ -127,8 +128,8 @@ SidebarSetupAutoBuyProps) {
     isProgressStage ||
     !isOwner ||
     !isEditing ||
-    (uiState.withThreshold &&
-      (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
+    // (uiState.withThreshold &&
+    //   (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
     (uiState.execCollRatio.isZero() && stage !== 'txSuccess')
 
   const flow = isAddForm ? 'addBasicBuy' : 'cancelBasicBuy'
@@ -152,7 +153,7 @@ SidebarSetupAutoBuyProps) {
                   priceInfo={priceInfo}
                 />
               )}
-              {currentForm === 'remove' && <>Remove form TBD</>}
+              {isRemoveForm && (  <>Remove form TBD</>)}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
@@ -160,14 +161,11 @@ SidebarSetupAutoBuyProps) {
           )}
         </Grid>
       ),
-      // TODO ŁW hide button on txSuccess
       primaryButton: {
         label: primaryButtonLabel,
         disabled: isDisabled,
         isLoading: stage === 'txInProgress',
         action: () => {
-          console.log('stage')
-          console.log(stage)
           if (txHelpers) {
             if (stage === 'txSuccess') {
               uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
@@ -182,7 +180,7 @@ SidebarSetupAutoBuyProps) {
               if (isAddForm) {
                 addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
               }
-              if (currentForm === 'remove') {
+              if (isRemoveForm) {
                 removeBasicBSTrigger(
                   txHelpers,
                   removeTxData,
