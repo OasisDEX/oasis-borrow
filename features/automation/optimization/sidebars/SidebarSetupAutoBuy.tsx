@@ -160,6 +160,7 @@ SidebarSetupAutoBuyProps) {
           )}
         </Grid>
       ),
+      // TODO ŁW hide button on txSuccess
       primaryButton: {
         label: primaryButtonLabel,
         disabled: isDisabled,

@@ -46,6 +46,8 @@
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
   "balances": "Balances",
+  "adding-auto-buy": "Adding auto buy trigger",
+  "cancelling-auto-buy": "Removing auto buy trigger",
   "buy": "Buy",
   "careers": {
     "heading": "Open Roles",

@@ -3,7 +3,15 @@ import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
-const flowsWithoutProxy = ['adjustSl', 'addSl', 'cancelSl', 'addBasicSell', 'cancelBasicSell', 'addBasicBuy', 'cancelBasicBuy']
+const flowsWithoutProxy = [
+  'adjustSl',
+  'addSl',
+  'cancelSl',
+  'addBasicSell',
+  'cancelBasicSell',
+  'addBasicBuy',
+  'cancelBasicBuy',
+]
 const UNREACHABLE_CASE_MESSAGE = ''
 
 function getPrimaryButtonLabelEditingTranslationKey({
@@ -63,10 +71,10 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
       return 'adding-auto-sell'
     case 'cancelBasicSell':
       return 'cancelling-auto-sell'
-      case 'addBasicBuy':
-        return 'adding-auto-buy'
-      case 'cancelBasicBuy':
-        return 'cancelling-auto-buy'
+    case 'addBasicBuy':
+      return 'adding-auto-buy'
+    case 'cancelBasicBuy':
+      return 'cancelling-auto-buy'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }
