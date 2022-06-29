@@ -209,12 +209,14 @@ export function VaultTabSwitch({
           >
             {t('system.vaultinfo')}
           </Button>
-          {positionInfo ? <Button
-            onClick={() => setMode(VaultViewMode.PositionInfo)}
-            variant={getVariant(mode, VaultViewMode.PositionInfo)}
-          >
-            {t('system.position-info')}
-          </Button> : null}
+          {positionInfo ? (
+            <Button
+              onClick={() => setMode(VaultViewMode.PositionInfo)}
+              variant={getVariant(mode, VaultViewMode.PositionInfo)}
+            >
+              {t('system.position-info')}
+            </Button>
+          ) : null}
           <Button
             onClick={() => setMode(VaultViewMode.History)}
             variant={getVariant(mode, VaultViewMode.History)}

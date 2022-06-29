@@ -62,7 +62,8 @@ export function GeneralManageLayout({
       />
     )
 
-  const positionInfo = generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
+  const positionInfo =
+    generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
