@@ -115,7 +115,7 @@ export function SidebarSetupAutoSell({
     ? 'txFailure'
     : 'editing'
 
-  console.log('stage')
+  console.log('stage sell')
   console.log(stage)
 
   const isOwner = context.status === 'connected' && context.account === vault.controller
@@ -193,10 +193,10 @@ export function SidebarSetupAutoSell({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
+                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice)
+                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
               }
             }
           }

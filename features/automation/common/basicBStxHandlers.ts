@@ -8,7 +8,7 @@ import {
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxHelpers, UIChanges } from 'components/AppContext'
-import { BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { BASIC_BUY_FORM_CHANGE, BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
@@ -23,10 +23,12 @@ function handleTriggerTx({
   txState,
   ethPrice,
   uiChanges,
+  formChanged,
 }: {
   txState: TxState<TxMeta>
   ethPrice: BigNumber
   uiChanges: UIChanges
+  formChanged: 'buy' | 'sell'
 }) {
   const gasUsed =
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
@@ -41,8 +43,10 @@ function handleTriggerTx({
 
   console.log('txState inside handleTriggerTx')
   console.log(txState)
-
-  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+// TODO ŁW - handle basic buy
+  const changeType = formChanged === 'buy' ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
+  console.log({changeType})
+  uiChanges.publish(changeType, {
     type: 'tx-details',
     txDetails: {
       txHash: (txState as any).txHash,
@@ -58,10 +62,11 @@ export function addBasicBSTrigger(
   txData: AutomationBotAddTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
+  formChanged: 'buy' | 'sell',
 ) {
   sendWithGasEstimation(addAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, formChanged }))
 }
 
 export function removeBasicBSTrigger(
@@ -69,8 +74,9 @@ export function removeBasicBSTrigger(
   txData: AutomationBotRemoveTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
+  formChanged: 'buy' | 'sell',
 ) {
   sendWithGasEstimation(removeAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, formChanged }))
 }

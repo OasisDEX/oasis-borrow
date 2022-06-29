@@ -69,8 +69,11 @@ SidebarSetupAutoBuyProps) {
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
   // const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
-  // const flow = firstSetup ? 'add' : 'adjust'
   const txStatus = uiState?.txDetails?.txStatus
+  console.log('uiState buy')
+  console.log(uiState)
+  console.log('txStatus')
+  console.log(txStatus)
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
@@ -171,10 +174,10 @@ SidebarSetupAutoBuyProps) {
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
+                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
               }
               if (currentForm === 'remove') {
-                removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice)
+                removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
               }
             }
           }
