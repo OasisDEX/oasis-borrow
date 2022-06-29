@@ -59,7 +59,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
         <Text variant="strong">Deposit your {token}</Text>
         <VaultActionInput
           action="Deposit"
-          token={token}
+          currencyCode={token}
           tokenUsdPrice={currentCollateralPrice}
           showMax={true}
           hasAuxiliary={true}

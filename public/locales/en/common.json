@@ -691,6 +691,7 @@
     "basic-sell": "Basic Sell",
     "history": "History",
     "vaultinfo": "Vault Info",
+    "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
@@ -1170,10 +1171,6 @@
     "GUNIV3DAIUSDC1-A": "50x UNI V3 DAI / USDC 0.05% tier",
     "UNIV2DAIUSDC-A": "UNI V2 DAI / USDC LP",
     "UNIV2USDCETH-A": "UNI V2 USDC / ETH LP",
-    "UNIV2WBTCETH-A": "UNI V2 WBTC / ETH LP",
-    "UNIV2WBTCDAI-A": "UNI V2 WBTC /DAI LP",
-    "UNIV2DAIETH-A": "UNI V2 ETH / DAI  LP",
-    "UNIV2UNIETH-A": "UNI V2 UNI / ETH LP",
     "CRVV1ETHSTETH-A": "CRV V1 ETH / Staked ETH LP"
   },
   "product-page": {

@@ -10,6 +10,7 @@ import { createNumberMask } from 'text-mask-addons'
 import { Box, Grid, Text } from 'theme-ui'
 
 export type VaultAction = 'Deposit' | 'Withdraw' | 'Generate' | 'Payback' | 'Sell' | 'Buy'
+const FIAT_PRECISION = 2
 
 export const PlusIcon = () => (
   <Icon
@@ -31,7 +32,7 @@ export const MinusIcon = () => (
 
 interface VaultActionInputProps {
   action: VaultAction
-  token: string
+  currencyCode: string
   tokenUsdPrice?: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   disabled?: boolean
@@ -67,7 +68,7 @@ interface VaultActionInputProps {
 
 export function VaultActionInput({
   action,
-  token,
+  currencyCode,
   tokenUsdPrice = one,
   amount,
   onChange,
@@ -85,7 +86,7 @@ export function VaultActionInput({
 
   hasAuxiliary,
   auxiliaryAmount,
-  auxiliaryToken,
+  auxiliaryToken: auxiliaryCurrencyCode,
   onAuxiliaryChange,
   maxAuxiliaryAmount,
   minAuxiliaryAmount,
@@ -102,20 +103,23 @@ export function VaultActionInput({
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
   const [toggleStatus, setToggleStatus] = useState<boolean>(true)
-  const { symbol: tokenSymbol } = getToken(token)
-  const { symbol: auxiliarySymbol } = auxiliaryToken ? getToken(auxiliaryToken) : { symbol: 'USD' }
+  const tokenSymbol = currencyCode !== 'USD' ? getToken(currencyCode).symbol : 'USD'
+  const auxiliarySymbol = auxiliaryCurrencyCode ? getToken(auxiliaryCurrencyCode).symbol : 'USD'
 
-  const tokenDigits = calculateTokenPrecisionByValue({
-    token: token,
-    usdPrice: tokenUsdPrice,
-  })
+  const currencyDigits =
+    currencyCode !== 'USD'
+      ? calculateTokenPrecisionByValue({
+          token: currencyCode,
+          usdPrice: tokenUsdPrice,
+        })
+      : FIAT_PRECISION
 
-  const auxiliaryDigits = auxiliaryToken
+  const auxiliaryDigits = auxiliaryCurrencyCode
     ? calculateTokenPrecisionByValue({
-        token: auxiliaryToken,
+        token: auxiliaryCurrencyCode,
         usdPrice: auxiliaryUsdPrice!,
       })
-    : 2
+    : FIAT_PRECISION
 
   function handleAuxiliarySwitch() {
     setAuxiliaryFlag(!auxiliaryFlag)
@@ -141,7 +145,7 @@ export function VaultActionInput({
         }}
       >
         <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }}>
-          {action} {token}
+          {action} {currencyCode}
         </Text>
         {(showMin || showMax || showToggle) && (
           <Text
@@ -236,11 +240,11 @@ export function VaultActionInput({
               disabled={disabled || !toggleStatus}
               mask={createNumberMask({
                 allowDecimal: true,
-                decimalLimit: tokenDigits,
+                decimalLimit: currencyDigits,
                 prefix: '',
               })}
               onChange={onChange}
-              value={amount ? formatBigNumber(amount, tokenDigits) : ''}
+              value={amount ? formatBigNumber(amount, currencyDigits) : ''}
               placeholder={toggleStatus ? `0 ${tokenSymbol}` : toggleOffPlaceholder}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
