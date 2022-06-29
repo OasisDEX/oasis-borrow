@@ -691,6 +691,7 @@
     "basic-sell": "Basic Sell",
     "history": "History",
     "vaultinfo": "Vault Info",
+    "position-info": "Position Info",
     "multiply-buy-coll": "Buy Collateral ({{token}}) with DAI",
     "multiply-reduce-debt": "Reduce Vault's debt",
     "actions": {
