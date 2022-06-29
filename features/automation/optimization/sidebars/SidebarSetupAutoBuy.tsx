@@ -37,13 +37,13 @@ import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 import { SidebarAutoBuyAdditionStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
+import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
 export interface SidebarSetupAutoBuyProps {
   isAutoBuyOn: boolean
   vault: Vault
   autoBuyTriggerData: BasicBSTriggerData
   ilkData: IlkData
-  // stage: 'basicBuyEditing' | 'txInProgress' | 'txSuccess' | 'txFailure' //TODO ŁW - create common enum?
   currentForm: CurrentBSForm
   // maxGasPercentagePrice?: MaxGasPriceValues
   priceInfo: PriceInfo
@@ -67,7 +67,6 @@ SidebarSetupAutoBuyProps) {
   const [context] = useObservable(context$)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
-  // const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   const txStatus = uiState?.txDetails?.txStatus
   console.log('uiState buy')
@@ -109,7 +108,7 @@ SidebarSetupAutoBuyProps) {
     ],
   )
 
-  const removeTxData = prepareRemoveBasicBSTriggerData({
+  const cancelTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
     triggerId: uiState.triggerId,
@@ -124,14 +123,7 @@ SidebarSetupAutoBuyProps) {
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
   // TODO ŁW - adjust isDisabled, when min max will be defined, apply validations etc.
-  const isDisabled =
-    isProgressStage ||
-    !isOwner ||
-    !isEditing ||
-    // (uiState.withThreshold &&
-    //   (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
-    (uiState.execCollRatio.isZero() && stage !== 'txSuccess')
-
+  const isDisabled = (isProgressStage != undefined && isProgressStage) || !isOwner || (isAddForm && !isEditing)
   const flow = isAddForm ? 'addBasicBuy' : 'cancelBasicBuy'
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage }) // TODO ŁW returns setup proxy as no proxy is passed, can't get how the same method returns confirm in basic sell ŁW
 
@@ -153,7 +145,14 @@ SidebarSetupAutoBuyProps) {
                   priceInfo={priceInfo}
                 />
               )}
-              {isRemoveForm && (  <>Remove form TBD</>)}
+              {isRemoveForm && (
+                <SidebarAutoBuyRemovalEditingStage
+                  vault={vault}
+                  cancelTxData={cancelTxData}
+                  priceInfo={priceInfo}
+                  basicBuyState={uiState}
+                />
+              )}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
@@ -183,7 +182,7 @@ SidebarSetupAutoBuyProps) {
               if (isRemoveForm) {
                 removeBasicBSTrigger(
                   txHelpers,
-                  removeTxData,
+                  cancelTxData,
                   uiChanges,
                   priceInfo.currentEthPrice,
                   'buy',

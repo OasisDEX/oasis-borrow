@@ -1,4 +1,4 @@
-import { addAutomationBotTrigger, AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger, AutomationBotAddTriggerData, AutomationBotRemoveTriggerData } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -46,7 +46,6 @@ export function SidebarAutoBuyEditingStage({
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-//   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
@@ -204,3 +203,4 @@ function AutoBuyInfoSectionControl({
         />
       )
   }
+  
