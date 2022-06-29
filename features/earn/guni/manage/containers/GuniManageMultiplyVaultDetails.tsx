@@ -36,7 +36,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
 
   return (
     <Box>
-      (
       <DetailsSection
         title={t('system.overview')}
         content={
@@ -71,7 +70,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) 
           </DetailsSectionFooterItemWrapper>
         }
       />
-      )
     </Box>
   )
 }
