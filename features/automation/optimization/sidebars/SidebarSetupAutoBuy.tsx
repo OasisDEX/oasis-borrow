@@ -98,7 +98,7 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, stage }: SidebarSetupA
                 amount={uiState.maxBuyOrMinSellPrice}
                 hasAuxiliary={true}
                 hasError={false}
-                token="ETH"
+                currencyCode="USD"
                 onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
                   uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
                     type: 'max-buy-or-sell-price',
