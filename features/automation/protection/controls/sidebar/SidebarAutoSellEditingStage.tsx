@@ -78,7 +78,6 @@ function AutoSellInfoSectionControl({
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
       nextSellPrice={priceInfo.nextCollateralPrice}
-      setupTransactionCost={zero}
       slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
