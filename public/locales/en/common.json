@@ -477,8 +477,8 @@
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
     "earnings-to-date-modal": "The gross and net earnings of the position.",
     "net-apy": "Net APY",
-    "net-apy-modal": "The annual percentage yield.",
-    "exposure-modal": "The total exposure of the position, above the given capital deployed."
+    "net-apy-modal": "The annual percentage yield including fees.",
+    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
   },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
@@ -674,6 +674,7 @@
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
     "buying-power": "Buying Power",
+    "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
     "dust-limit": "Dust Limit",
     "min-coll-ratio": "Min Coll. Ratio",
