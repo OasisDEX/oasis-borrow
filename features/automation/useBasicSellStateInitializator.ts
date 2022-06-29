@@ -31,6 +31,8 @@ export function useBasicBSstateInitialization(
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
 
+  console.log('maxBuyOrMinSellPrice.isZero() ', maxBuyOrMinSellPrice.isZero())
+
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'trigger-id',
@@ -46,7 +48,7 @@ export function useBasicBSstateInitialization(
     })
     uiChanges.publish(publishKey, {
       type: 'max-buy-or-sell-price',
-      maxBuyOrMinSellPrice,
+      maxBuyOrMinSellPrice: maxBuyOrMinSellPrice.isZero() ? undefined : maxBuyOrMinSellPrice,
     })
     uiChanges.publish(publishKey, {
       type: 'continuous',
@@ -66,8 +68,11 @@ export function useBasicBSstateInitialization(
     })
     uiChanges.publish(publishKey, {
       type: 'with-threshold',
-      withThreshold: true,
+      withThreshold: !maxBuyOrMinSellPrice.isZero() || triggerId.isZero(),
     })
+  }, [triggerId.toNumber(), collateralizationRatio])
+
+  useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'tx-details',
       txDetails: {},

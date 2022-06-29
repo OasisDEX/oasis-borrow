@@ -12,6 +12,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { AutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
@@ -59,7 +60,7 @@ function AutoSellInfoSectionControl({
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
     marketPrice: marketPrice,
-    slippage: basicSellState.deviation,
+    slippage: basicSellState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
     requiredCollRatio: basicSellState.targetCollRatio.div(100),
@@ -101,6 +102,7 @@ interface SidebarAutoSellEditingStageProps {
   isEditing: boolean
   addTxData: AutomationBotAddTriggerData
   basicSellState: BasicBSFormChange
+  autoSellTriggerData: BasicBSTriggerData
 }
 
 export function SidebarAutoSellEditingStage({
@@ -110,6 +112,7 @@ export function SidebarAutoSellEditingStage({
   addTxData,
   priceInfo,
   basicSellState,
+  autoSellTriggerData,
 }: SidebarAutoSellEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
@@ -119,6 +122,7 @@ export function SidebarAutoSellEditingStage({
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
   const max = uiStateBasicBuy.targetCollRatio ? uiStateBasicBuy.targetCollRatio.toNumber() : 500
+  console.log(basicSellState)
 
   return (
     <>
@@ -151,7 +155,7 @@ export function SidebarAutoSellEditingStage({
         amount={uiStateBasicSell.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}
-        token={vault.token}
+        currencyCode="USD"
         onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'max-buy-or-sell-price',
@@ -163,7 +167,14 @@ export function SidebarAutoSellEditingStage({
             type: 'with-threshold',
             withThreshold: toggleStatus,
           })
+          uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+            type: 'max-buy-or-sell-price',
+            maxBuyOrMinSellPrice: !toggleStatus
+              ? undefined
+              : autoSellTriggerData.maxBuyOrMinSellPrice,
+          })
         }}
+        defaultToggle={basicSellState.withThreshold}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}

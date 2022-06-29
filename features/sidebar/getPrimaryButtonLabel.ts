@@ -3,7 +3,7 @@ import { PrimaryButtonLabelParams } from 'helpers/extractSidebarHelpers'
 import { useTranslation } from 'next-i18next'
 import { UnreachableCaseError } from 'ts-essentials'
 
-const flowsWithoutProxy = ['adjustSl', 'addSl', 'cancelSl']
+const flowsWithoutProxy = ['adjustSl', 'addSl', 'cancelSl', 'addBasicSell', 'cancelBasicSell']
 const UNREACHABLE_CASE_MESSAGE = ''
 
 function getPrimaryButtonLabelEditingTranslationKey({
@@ -29,6 +29,8 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'openGuni':
     case 'manageBorrow':
     case 'manageMultiply':
+    case 'addBasicSell':
+    case 'cancelBasicSell':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'
@@ -55,6 +57,10 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
       return 'update-stop-loss'
     case 'cancelSl':
       return 'cancel-stop-loss'
+    case 'addBasicSell':
+      return 'adding-auto-sell'
+    case 'cancelBasicSell':
+      return 'cancelling-auto-sell'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }
@@ -70,6 +76,9 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'adjustSl':
     case 'cancelSl':
       return 'back-to-vault-overview'
+    case 'addBasicSell':
+    case 'cancelBasicSell':
+      return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }

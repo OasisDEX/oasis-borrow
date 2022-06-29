@@ -61,6 +61,7 @@ interface VaultActionInputProps {
   toggleOffLabel?: string
   toggleOffPlaceholder?: string
   onToggle?: (toggleStatus: boolean) => void
+  defaultToggle?: boolean
 
   hasError: boolean
   collapsed?: boolean
@@ -97,12 +98,13 @@ export function VaultActionInput({
   toggleOffLabel,
   toggleOffPlaceholder,
   onToggle,
+  defaultToggle = true,
 
   hasError,
   collapsed,
 }: VaultActionInputProps) {
   const [auxiliaryFlag, setAuxiliaryFlag] = useState<boolean>(false)
-  const [toggleStatus, setToggleStatus] = useState<boolean>(true)
+  const [toggleStatus, setToggleStatus] = useState<boolean>(defaultToggle)
   const tokenSymbol = currencyCode !== 'USD' ? getToken(currencyCode).symbol : 'USD'
   const auxiliarySymbol = auxiliaryCurrencyCode ? getToken(auxiliaryCurrencyCode).symbol : 'USD'
 
