@@ -24,8 +24,9 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingState'
+import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutoSellAddStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddStage'
-import { SidebarAutoSellEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellEditingStage'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -79,7 +80,7 @@ export function SidebarSetupAutoSell({
     ],
   )
 
-  const removeTxData = prepareRemoveBasicBSTriggerData({
+  const cancelTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicSell,
     triggerId: uiState.triggerId,
@@ -96,7 +97,8 @@ export function SidebarSetupAutoSell({
     !autoSellTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio) ||
     !autoSellTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio) ||
     (mB?.toNumber() !== uiState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoSellTriggerData.triggerId.isZero())
+      !autoSellTriggerData.triggerId.isZero()) ||
+    isRemoveForm
 
   const txStatus = uiState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
@@ -121,8 +123,8 @@ export function SidebarSetupAutoSell({
       (uiState.withThreshold &&
         (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
       uiState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess' &&
-    !isRemoveForm
+    stage !== 'txSuccess'
+  // !isRemoveForm
 
   const sidebarStatus = getSidebarStatus({
     stage,
@@ -143,18 +145,29 @@ export function SidebarSetupAutoSell({
       },
       content: (
         <Grid gap={3}>
-          {isAddForm && (stage === 'editing' || stage === 'txFailure') && (
-            <SidebarAutoSellEditingStage
-              vault={vault}
-              ilkData={ilkData}
-              isEditing={isEditing}
-              addTxData={addTxData}
-              priceInfo={priceInfo}
-              basicSellState={uiState}
-              autoSellTriggerData={autoSellTriggerData}
-            />
+          {(stage === 'editing' || stage === 'txFailure') && (
+            <>
+              {isAddForm && (
+                <SidebarAutoSellAddEditingStage
+                  vault={vault}
+                  ilkData={ilkData}
+                  isEditing={isEditing}
+                  addTxData={addTxData}
+                  priceInfo={priceInfo}
+                  basicSellState={uiState}
+                  autoSellTriggerData={autoSellTriggerData}
+                />
+              )}
+              {isRemoveForm && (
+                <SidebarAutoSellCancelEditingStage
+                  vault={vault}
+                  cancelTxData={cancelTxData}
+                  priceInfo={priceInfo}
+                  basicSellState={uiState}
+                />
+              )}
+            </>
           )}
-          {isRemoveForm && stage === 'editing' && <>Remove form TBD</>}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
             <SidebarAutoSellAddStage stage={stage} />
           )}
@@ -171,12 +184,16 @@ export function SidebarSetupAutoSell({
                 type: 'tx-details',
                 txDetails: {},
               })
+              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+                type: 'current-form',
+                currentForm: 'add',
+              })
             } else {
               if (isAddForm) {
                 addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(txHelpers, removeTxData, uiChanges, priceInfo.currentEthPrice)
+                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice)
               }
             }
           }

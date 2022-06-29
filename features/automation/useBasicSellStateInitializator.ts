@@ -63,10 +63,6 @@ export function useBasicBSstateInitialization(
       maxGasPercentagePrice: 'FIVE',
     })
     uiChanges.publish(publishKey, {
-      type: 'current-form',
-      currentForm: 'add',
-    })
-    uiChanges.publish(publishKey, {
       type: 'with-threshold',
       withThreshold: !maxBuyOrMinSellPrice.isZero() || triggerId.isZero(),
     })
@@ -76,6 +72,10 @@ export function useBasicBSstateInitialization(
     uiChanges.publish(publishKey, {
       type: 'tx-details',
       txDetails: {},
+    })
+    uiChanges.publish(publishKey, {
+      type: 'current-form',
+      currentForm: 'add',
     })
   }, [collateralizationRatio])
 

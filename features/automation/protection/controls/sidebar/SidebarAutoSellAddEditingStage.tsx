@@ -94,7 +94,7 @@ function AutoSellInfoSectionControl({
   )
 }
 
-interface SidebarAutoSellEditingStageProps {
+interface SidebarAutoSellAddEditingStageProps {
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
@@ -104,7 +104,7 @@ interface SidebarAutoSellEditingStageProps {
   autoSellTriggerData: BasicBSTriggerData
 }
 
-export function SidebarAutoSellEditingStage({
+export function SidebarAutoSellAddEditingStage({
   vault,
   ilkData,
   isEditing,
@@ -112,7 +112,7 @@ export function SidebarAutoSellEditingStage({
   priceInfo,
   basicSellState,
   autoSellTriggerData,
-}: SidebarAutoSellEditingStageProps) {
+}: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const [uiStateBasicBuy] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
