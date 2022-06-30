@@ -10,10 +10,10 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
 import { curry } from 'lodash'
+import moment, { Moment } from 'moment'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
-import { OraclePriceData } from '../../../../../blockchain/prices'
 import { getToken } from '../../../../../blockchain/tokensMetadata'
 import { one, zero } from '../../../../../helpers/zero'
 import { applyExchange } from '../../../../multiply/manage/pipes/manageMultiplyQuote'
@@ -45,7 +45,7 @@ import {
   validateWarnings,
 } from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../../../../shared/balanceInfo'
-import { Yield } from '../../../yieldCalculations'
+import { MakerOracleTokenPrice } from '../../../makerOracleTokenPrices'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
@@ -53,7 +53,7 @@ import { applyGuniManageEstimateGas } from './manageGuniVaultTransactions'
 
 function applyManageVaultInjectedOverride(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
+  state: ManageEarnVaultState,
 ) {
   if (change.kind === 'injectStateOverride') {
     return {
@@ -89,8 +89,8 @@ function applyGuniDataChanges<S, Ch extends GuniTxDataChange>(change: Ch, state:
 
 export function applyManageGuniVaultTransition(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: ManageEarnVaultState,
+): ManageEarnVaultState {
   if (change.kind === 'clear') {
     return {
       ...state,
@@ -105,9 +105,9 @@ export function applyManageGuniVaultTransition(
 }
 
 function apply(
-  state: ManageMultiplyVaultState,
+  state: ManageEarnVaultState,
   change: ManageMultiplyVaultChange | GuniTxDataChange,
-) {
+): ManageEarnVaultState {
   const s1 = applyExchange(change as ManageMultiplyVaultChange, state)
   const s2 = applyManageVaultTransition(change as ManageMultiplyVaultChange, s1)
   const s3 = applyManageGuniVaultTransition(change as ManageMultiplyVaultChange, s2)
@@ -117,7 +117,7 @@ function apply(
   const s7 = applyGuniDataChanges(change as GuniTxDataChange, s6)
   const s8 = applyManageVaultCalculations(s7)
   const s9 = applyGuniCalculations(s8)
-  const s10 = applyManageVaultStageCategorisation(s9 as ManageMultiplyVaultState)
+  const s10 = applyManageVaultStageCategorisation(s9)
   const s11 = applyManageVaultConditions(s10)
   const s12 = applyGuniManageVaultConditions(s11)
   return applyManageVaultSummary(s12)
@@ -173,8 +173,16 @@ export const defaultMutableManageMultiplyVaultState = {
   otherAction: 'closeVault',
 } as MutableManageMultiplyVaultState
 
-export type ManageEarnVaultState = ManageMultiplyVaultState &
-  Yield & { totalValueLocked?: BigNumber }
+export type ManageEarnVaultState = ManageMultiplyVaultState & {
+  totalValueLocked?: BigNumber
+  earningsToDate?: BigNumber
+  earningsToDateAfterFees?: BigNumber
+  netAPY?: BigNumber
+  makerOracleTokenPrices: {
+    today: MakerOracleTokenPrice
+    sevenDaysAgo: MakerOracleTokenPrice
+  }
+}
 
 export function createManageGuniVault$(
   context$: Observable<Context>,
@@ -198,9 +206,7 @@ export function createManageGuniVault$(
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  getYields$: (ilk: string) => Observable<Yield>,
-  collateralLocked$: ({ ilk, token }: { ilk: string; token: string }) => Observable<BigNumber>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  historicalTokenPrices$: (token: string, timestamp: Moment) => Observable<MakerOracleTokenPrice>,
   id: BigNumber,
 ): Observable<ManageEarnVaultState> {
   return context$.pipe(
@@ -214,11 +220,8 @@ export function createManageGuniVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
-            combineLatest(
-              getYields$(vault.ilk),
-              oraclePriceData$(vault.token),
-              collateralLocked$({ ...vault }),
-            ),
+            historicalTokenPrices$(vault.token, moment()),
+            historicalTokenPrices$(vault.token, moment().subtract(7, 'd')),
           ).pipe(
             first(),
             switchMap(
@@ -227,7 +230,8 @@ export function createManageGuniVault$(
                 balanceInfo,
                 ilkData,
                 proxyAddress,
-                [{ yields }, oraclePriceData, collateralLocked],
+                tokenPriceToday,
+                tokenPriceSevenDaysAgo,
               ]) => {
                 const collateralAllowance$ =
                   account && proxyAddress
@@ -258,8 +262,6 @@ export function createManageGuniVault$(
                       'skip',
                     )
 
-                    const totalValueLocked = oraclePriceData.currentPrice.times(collateralLocked)
-
                     const initialState: ManageEarnVaultState & GuniTxData = {
                       ...defaultMutableManageMultiplyVaultState,
                       ...defaultManageMultiplyVaultCalculations,
@@ -288,11 +290,10 @@ export function createManageGuniVault$(
                       gasEstimationStatus: GasEstimationStatus.unset,
                       invalidSlippage: false,
                       injectStateOverride,
-                      totalValueLocked: totalValueLocked,
-                      yields: {
-                        ...yields,
+                      makerOracleTokenPrices: {
+                        today: tokenPriceToday,
+                        sevenDaysAgo: tokenPriceSevenDaysAgo,
                       },
-                      ilk: ilkData.ilk,
                     }
 
                     const stateSubject$ = new Subject<ManageMultiplyVaultState>()

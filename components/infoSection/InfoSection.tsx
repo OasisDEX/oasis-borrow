@@ -24,7 +24,7 @@ export function InfoSection({ title, items }: InfoSectionProps) {
           {title}
         </Text>
       </Box>
-      {items && items.map((item) => <Item {...item} />)}
+      {items && items.map((item) => <Item {...item} key={item.label} />)}
     </Grid>
   )
 }

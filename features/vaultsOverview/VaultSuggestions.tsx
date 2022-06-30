@@ -21,7 +21,6 @@ import {
   ProductTypes,
 } from '../../helpers/productCards'
 import { WithChildren } from '../../helpers/types'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 
 function filterCards(props: {
@@ -97,7 +96,6 @@ function TabContent(props: {
 export function VaultSuggestions(props: { productCardsData: ProductCardData[]; address: string }) {
   const { t } = useTranslation()
   const { productCardsData, address } = props
-  const isEarnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <Box mt={5}>
@@ -150,29 +148,25 @@ export function VaultSuggestions(props: { productCardsData: ProductCardData[]; a
               />
             ),
           },
-          ...(isEarnEnabled
-            ? [
-                {
-                  label: t('landing.tabs.earn.tabLabel'),
-                  value: 'earn',
-                  topContent: (
-                    <TabHeaderParagraph>
-                      {t('landing.tabs.earn.tabParaContent')}{' '}
-                      <AppLink href="/multiply" variant="inText">
-                        {t('landing.tabs.earn.tabParaLinkContent')}
-                      </AppLink>
-                    </TabHeaderParagraph>
-                  ),
-                  content: (
-                    <TabContent
-                      type="earn"
-                      renderProductCard={ProductCardEarn}
-                      productCardsData={productCardsData}
-                    />
-                  ),
-                },
-              ]
-            : []),
+          {
+            label: t('landing.tabs.earn.tabLabel'),
+            value: 'earn',
+            topContent: (
+              <TabHeaderParagraph>
+                {t('landing.tabs.earn.tabParaContent')}{' '}
+                <AppLink href="/multiply" variant="inText">
+                  {t('landing.tabs.earn.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+            content: (
+              <TabContent
+                type="earn"
+                renderProductCard={ProductCardEarn}
+                productCardsData={productCardsData}
+              />
+            ),
+          },
         ]}
       />
     </Box>

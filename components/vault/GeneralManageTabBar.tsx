@@ -20,11 +20,13 @@ export enum VaultViewMode {
   Protection = 'protection',
   Optimization = 'optimization',
   History = 'history',
+  PositionInfo = 'position-info',
   VaultInfo = 'vault-info',
 }
 
 interface GeneralManageTabBarProps {
   generalManageVault: GeneralManageVaultState
+  positionInfo?: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
   optimizationEnabled: boolean
@@ -32,6 +34,7 @@ interface GeneralManageTabBarProps {
 
 export function GeneralManageTabBar({
   generalManageVault,
+  positionInfo,
   showProtectionTab,
   protectionEnabled,
   optimizationEnabled,
@@ -86,7 +89,7 @@ export function GeneralManageTabBar({
                 label: t('system.optimization'),
                 value: 'optimization',
                 tag: { include: true, active: optimizationEnabled },
-                content: <OptimizationControl vault={vault} />,
+                content: <OptimizationControl vault={vault} ilkData={ilkData} />,
               },
             ]
           : []),
@@ -95,6 +98,15 @@ export function GeneralManageTabBar({
           value: 'vaultinfo',
           content: <VaultInformationControl generalManageVault={generalManageVault} />,
         },
+        ...(positionInfo
+          ? [
+              {
+                label: t('system.position-info'),
+                value: 'position-info',
+                content: positionInfo,
+              },
+            ]
+          : []),
         {
           label: t('system.history'),
           value: 'history',

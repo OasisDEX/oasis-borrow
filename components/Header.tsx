@@ -12,7 +12,7 @@ import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
@@ -24,7 +24,6 @@ import {
   SwapWidgetChangeAction,
   SwapWidgetState,
 } from '../features/automation/protection/common/UITypes/SwapWidgetChange'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { useSharedUI } from './SharedUIProvider'
@@ -436,7 +435,6 @@ function ConnectedHeader() {
   const { uiChanges } = useAppContext()
   const { pathname } = useRouter()
   const { t } = useTranslation()
-  const earnEnabled = useFeatureToggle('EarnProduct')
   const onMobile = useOnMobile()
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
@@ -482,15 +480,13 @@ function ConnectedHeader() {
                 >
                   {t('nav.borrow')}
                 </AppLink>
-                {earnEnabled && (
-                  <AppLink
-                    variant="links.navHeader"
-                    href={LINKS.earn}
-                    sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
-                  >
-                    {t('nav.earn')}
-                  </AppLink>
-                )}
+                <AppLink
+                  variant="links.navHeader"
+                  href={LINKS.earn}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
+                >
+                  {t('nav.earn')}
+                </AppLink>
                 <AssetsDropdown />
               </Flex>
             </Flex>
@@ -668,13 +664,12 @@ export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const earnProductEnabled = useFeatureToggle('EarnProduct')
   const [showAssets, setShowAssets] = useState(false)
 
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
-    ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
+    { labelKey: 'nav.earn', url: LINKS.earn },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -775,7 +770,6 @@ export function MobileMenu() {
 function DisconnectedHeader() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
-  const earnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <>
@@ -797,15 +791,13 @@ function DisconnectedHeader() {
             >
               {t('nav.borrow')}
             </AppLink>
-            {earnEnabled && (
-              <AppLink
-                variant="links.navHeader"
-                href={LINKS.earn}
-                sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
-              >
-                {t('nav.earn')}
-              </AppLink>
-            )}
+            <AppLink
+              variant="links.navHeader"
+              href={LINKS.earn}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
+            >
+              {t('nav.earn')}
+            </AppLink>
             <AssetsDropdown />
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>

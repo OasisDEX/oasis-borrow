@@ -241,7 +241,7 @@ export function FieldDepositCollateral({
         onChange={handleNumericInput(updateDeposit! || updateDepositAmount!)}
         onSetMax={updateDepositMax! || updateDepositAmountMax!}
         showMax={true}
-        token={token}
+        currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
         disabled={disabled}
       />
@@ -287,7 +287,7 @@ export function FieldWithdrawCollateral({
         onChange={handleNumericInput(updateWithdraw! || updateWithdrawAmount!)}
         onSetMax={updateWithdrawMax! || updateWithdrawAmountMax!}
         showMax={true}
-        token={token}
+        currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
       />
       <VaultErrors
@@ -320,7 +320,7 @@ export function FieldDepositDai({
       <VaultActionInput
         action={action}
         amount={depositDaiAmount}
-        token="DAI"
+        currencyCode="DAI"
         showMax={true}
         maxAmount={maxDepositDaiAmount}
         maxAmountLabel={t(maxAmountLabelKey)}
@@ -370,7 +370,7 @@ export function FieldGenerateDai({
         onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
         showMax={true}
         showMin={debt.isZero()}
-        token={'DAI'}
+        currencyCode={'DAI'}
       />
       <VaultErrors
         errorMessages={extractGenerateErrors(errorMessages)}
@@ -407,7 +407,7 @@ export function FieldPaybackDai({
         onChange={handleNumericInput(updatePayback! || updatePaybackAmount!)}
         onSetMax={updatePaybackMax! || updatePaybackAmountMax!}
         showMax={true}
-        token="DAI"
+        currencyCode="DAI"
       />
       <VaultErrors errorMessages={extractPaybackErrors(errorMessages)} ilkData={ilkData} />
     </>
