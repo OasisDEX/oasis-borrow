@@ -16,13 +16,32 @@ interface TabProps {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-// Todo: move to theme-ui
+export function Tab({ variant, value, label, selected, tag, onClick }: TabProps) {
+  return (
+    <Button
+      key={value}
+      variant={'tab'}
+      onClick={onClick}
+      sx={{
+        ...styles[variant],
+        ...(variant === 'large' && selected ? styles.largeSelected : {}),
+        ...(variant === 'medium' && selected ? styles.mediumSelected : {}),
+        ...(variant === 'small' && selected ? styles.smallSelected : {}),
+        ...(variant === 'underline' && selected ? styles.underlineSelected : {}),
+      }}
+    >
+      {label}
+      {variant === 'underline' && tag?.include && <VaultTabTag isEnabled={tag.active} />}
+    </Button>
+  )
+}
+
 const styles = {
   large: {
     fontSize: 3,
     p: 3,
     borderRadius: '58px',
-    px: '40px',
+    px: 4,
     '&:hover': {
       color: 'primary',
     },
@@ -69,7 +88,7 @@ const styles = {
   underline: {
     fontSize: 3,
     transform: 'translateY(3px)',
-    borderBottom: '3px solid #e9e9eb',
+    borderBottom: '3px solid transparent',
     borderRadius: '0px',
     paddingTop: '12px',
     paddingBottom: '12px',
@@ -79,24 +98,4 @@ const styles = {
     borderBottom: '3px solid',
     borderColor: 'primary',
   },
-}
-
-export function Tab({ variant, value, label, selected, tag, onClick }: TabProps) {
-  return (
-    <Button
-      key={value}
-      variant={'tab'}
-      onClick={onClick}
-      sx={{
-        ...styles[variant],
-        ...(variant === 'large' && selected ? styles.largeSelected : {}),
-        ...(variant === 'medium' && selected ? styles.mediumSelected : {}),
-        ...(variant === 'small' && selected ? styles.smallSelected : {}),
-        ...(variant === 'underline' && selected ? styles.underlineSelected : {}),
-      }}
-    >
-      {label}
-      {variant === 'underline' && tag?.include && <VaultTabTag isEnabled={tag.active} />}
-    </Button>
-  )
 }

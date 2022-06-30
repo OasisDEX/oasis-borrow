@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
@@ -13,7 +14,6 @@ import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
@@ -217,11 +217,14 @@ export function HomepageView() {
           >
             {([productCardsData]) => {
               return (
-                <TabSwitcher
-                  tabs={[
+                <TabBar
+                  variant="large"
+                  useDropdownOnMobile
+                  sections={[
                     {
-                      tabLabel: t('landing.tabs.multiply.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.multiply.tabLabel'),
+                      value: 'multiply',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -238,8 +241,9 @@ export function HomepageView() {
                       ),
                     },
                     {
-                      tabLabel: t('landing.tabs.borrow.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.borrow.tabLabel'),
+                      value: 'borrow',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -258,8 +262,9 @@ export function HomepageView() {
                     ...(isEarnEnabled
                       ? [
                           {
-                            tabLabel: t('landing.tabs.earn.tabLabel'),
-                            tabContent: (
+                            label: t('landing.tabs.earn.tabLabel'),
+                            value: 'earn',
+                            content: (
                               <TabContent
                                 paraText={
                                   <>
@@ -278,11 +283,6 @@ export function HomepageView() {
                         ]
                       : []),
                   ]}
-                  narrowTabsSx={{
-                    display: ['block', 'none'],
-                    width: '100%',
-                  }}
-                  wideTabsSx={{ display: ['none', 'block'] }}
                 />
               )
             }}

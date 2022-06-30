@@ -4,7 +4,7 @@ import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
 import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
-import { TabSwitcher, TabSwitcherTab } from 'components/TabSwitcher'
+import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -41,11 +41,13 @@ function TabContent(props: {
     )
 
   return (
-    <ProductCardsWrapper>
-      {filteredCards.map((cardData) => (
-        <ProductCard cardData={cardData} key={cardData.ilk} />
-      ))}
-    </ProductCardsWrapper>
+    <Box mt={5}>
+      <ProductCardsWrapper>
+        {filteredCards.map((cardData) => (
+          <ProductCard cardData={cardData} key={cardData.ilk} />
+        ))}
+      </ProductCardsWrapper>
+    </Box>
   )
 }
 export function AssetView({ content }: { content: AssetPageContent }) {
@@ -56,8 +58,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
 
   const tabs = (productCardsData: ProductCardData[]) => {
     const borrowTab = content.borrowIlks && {
-      tabLabel: t('landing.tabs.borrow.tabLabel'),
-      tabContent: (
+      label: t('landing.tabs.borrow.tabLabel'),
+      value: 'borrow',
+      content: (
         <TabContent
           ilks={content.borrowIlks}
           type="borrow"
@@ -70,8 +73,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     const multiplyTab = content.multiplyIlks &&
       // TODO its tricky one, during feature toggle removal an GUNIV3DAIUSDC2-A should be removed from multiplyIlks within lp-tokens
       !(enabled && content.slug === 'lp-token') && {
-        tabLabel: t('landing.tabs.multiply.tabLabel'),
-        tabContent: (
+        label: t('landing.tabs.multiply.tabLabel'),
+        value: 'multiply',
+        content: (
           <TabContent
             ilks={content.multiplyIlks}
             type="multiply"
@@ -83,8 +87,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
 
     const earnTab = content.earnIlks &&
       enabled && {
-        tabLabel: t('landing.tabs.earn.tabLabel'),
-        tabContent: (
+        label: t('landing.tabs.earn.tabLabel'),
+        value: 'earn',
+        content: (
           <TabContent
             ilks={content.earnIlks}
             type="earn"
@@ -94,7 +99,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         ),
       }
 
-    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSwitcherTab[]
+    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSection[]
   }
 
   return (
@@ -125,16 +130,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
           <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
             {([productCardsData]) => {
               return (
-                <TabSwitcher
-                  narrowTabsSx={{
-                    display: ['block', 'none'],
-                    maxWidth: '343px',
-                    width: '100%',
-                    mb: 4,
-                  }}
-                  wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
-                  tabs={tabs(productCardsData)}
-                />
+                <TabBar useDropdownOnMobile variant="large" sections={tabs(productCardsData)} />
               )
             }}
           </WithLoadingIndicator>

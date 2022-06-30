@@ -13,6 +13,7 @@ export type TabSection = {
     include: boolean
     active: boolean
   }
+  topContent?: JSX.Element | string
   content: JSX.Element
 }
 
@@ -36,9 +37,10 @@ export function TabBar({ sections, variant, useDropdownOnMobile }: TabBarProps) 
   const handleClick = (section: TabSection) => () => setHash(section.value)
 
   return (
-    <Grid gap={0} sx={{ width: '100%', mt: 4 }}>
+    <Grid gap={0} sx={{ width: '100%' }}>
+      {selectedSection?.topContent && <Box>{selectedSection?.topContent}</Box>}
       {useDropdownOnMobile ? (
-        <Box sx={{ display: ['block', 'none'], mb: 3 }}>
+        <Box sx={{ display: ['block', 'none'] }}>
           <ReactSelect<TabSection>
             options={sections}
             onChange={(option) => setHash((option as TabSection).value)}
@@ -49,7 +51,13 @@ export function TabBar({ sections, variant, useDropdownOnMobile }: TabBarProps) 
           />
         </Box>
       ) : null}
-      <Box sx={{ display: [useDropdownOnMobile ? 'none' : 'block', 'block'], zIndex: 1 }}>
+      <Box
+        sx={{
+          display: [useDropdownOnMobile ? 'none' : 'flex', 'flex'],
+          justifyContent: 'center',
+          zIndex: 1,
+        }}
+      >
         {variant === 'underline' && (
           <UnderlineTabBarWrapper
             sections={sections}
@@ -108,8 +116,7 @@ function TabBarWrapper({ sections, variant, isSelected, onClick }: TabsWrapperPr
   return (
     <Flex
       sx={{
-        width: '100%',
-        mb: 4,
+        display: 'inline-flex',
         borderRadius: '58px',
         bg: 'backgroundAlt',
       }}
