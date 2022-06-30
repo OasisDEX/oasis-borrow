@@ -7,6 +7,7 @@ import { ChevronUpDown } from './ChevronUpDown'
 import { Tab, TabVariant } from './Tab'
 import { VaultTabTag } from './vault/VaultTabTag'
 import { SelectComponents } from 'react-select/src/components'
+import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 export type TabSection = {
   value: string
@@ -31,14 +32,13 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
 
   useEffect(() => setHash(sections[0]?.value), [])
   useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
-  const selectComponents = useMemo(() => selectCustomComponents(), [])
+  // const selectComponents = useMemo(() => selectCustomComponents(), [])
 
   function isSelected(section: TabSection) {
     return `#${section.value}` === hash
   }
 
   const selectedSection = sections.find(isSelected)
-  const handleClick = (section: TabSection) => () => setHash(section.value)
 
   if (sections.length <= 1) {
     return (
@@ -56,7 +56,40 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
           <ReactSelect<TabSection>
             options={sections}
             onChange={(option) => setHash((option as TabSection).value)}
-            components={selectComponents}
+            components={{
+              ...reactSelectCustomComponents,
+              SingleValue: ({ data }) => {
+                return (
+                  <Flex sx={{ alignItems: 'center' }}>
+                    {data.label}
+                    {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+                  </Flex>
+                )
+              },
+              Option: ({ innerProps, isSelected, data }) => {
+                return (
+                  <Box
+                    {...innerProps}
+                    sx={{
+                      py: 2,
+                      px: 3,
+                      bg: isSelected ? 'selected' : undefined,
+                      cursor: 'pointer',
+                      '&:hover': {
+                        bg: 'secondaryAlt',
+                      },
+                    }}
+                  >
+                    <Flex
+                      sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}
+                    >
+                      {data.label}
+                      {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+                    </Flex>
+                  </Box>
+                )
+              },
+            }}
             value={selectedSection}
             isOptionSelected={isSelected}
             isSearchable={false}
@@ -70,165 +103,39 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
           zIndex: 1,
         }}
       >
-        {variant === 'underline' && (
-          <UnderlineTabBarWrapper
-            sections={sections}
-            variant={variant}
-            isSelected={isSelected}
-            onClick={handleClick}
-          />
-        )}
-        {variant !== 'underline' && (
-          <TabBarWrapper
-            sections={sections}
-            variant={variant}
-            isSelected={isSelected}
-            onClick={handleClick}
-          />
-        )}
+        <Flex
+          sx={{
+            ...(variant === 'underline'
+              ? {
+                  borderBottom: '3px solid',
+                  borderColor: 'rgba(37, 39, 61, 0.1)',
+                  width: '100%',
+                  mb: 4,
+                }
+              : {}),
+            ...(variant !== 'underline'
+              ? {
+                  display: 'inline-flex',
+                  borderRadius: '58px',
+                  bg: 'backgroundAlt',
+                }
+              : {}),
+          }}
+        >
+          {sections.map((section) => (
+            <Tab
+              key={section.value}
+              value={section.value}
+              label={section.label}
+              selected={isSelected(section)}
+              tag={section.tag}
+              variant={variant}
+              onClick={() => setHash(section.value)}
+            />
+          ))}
+        </Flex>
       </Box>
       <Box sx={{ zIndex: 1 }}>{selectedSection?.content}</Box>
     </Grid>
   )
 }
-
-interface TabsWrapperProps {
-  sections: TabSection[]
-  variant: TabVariant
-  isSelected: (section: TabSection) => boolean
-  onClick: (section: TabSection) => () => void
-}
-
-function UnderlineTabBarWrapper({ sections, variant, isSelected, onClick }: TabsWrapperProps) {
-  return (
-    <Flex
-      sx={{
-        borderBottom: '3px solid',
-        borderColor: 'rgba(37, 39, 61, 0.1)',
-        width: '100%',
-        mb: 4,
-      }}
-    >
-      {sections.map((section) => (
-        <Tab
-          key={section.value}
-          value={section.value}
-          label={section.label}
-          selected={isSelected(section)}
-          tag={section.tag}
-          variant={variant}
-          onClick={onClick(section)}
-        />
-      ))}
-    </Flex>
-  )
-}
-
-function TabBarWrapper({ sections, variant, isSelected, onClick }: TabsWrapperProps) {
-  return (
-    <Flex
-      sx={{
-        display: 'inline-flex',
-        borderRadius: '58px',
-        bg: 'backgroundAlt',
-      }}
-    >
-      {sections.map((section) => (
-        <Tab
-          key={section.value}
-          value={section.value}
-          label={section.label}
-          selected={isSelected(section)}
-          tag={section.tag}
-          variant={variant}
-          onClick={onClick(section)}
-        />
-      ))}
-    </Flex>
-  )
-}
-
-export const selectCustomComponents = (): Partial<SelectComponents<TabSection>> => ({
-  IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => (
-    <Flex
-      sx={{
-        color: 'primary',
-        fontWeight: 'body',
-        fontSize: '18px',
-        backgroundColor: 'white',
-      }}
-    >
-      {children}
-    </Flex>
-  ),
-  SingleValue: ({ data }) => {
-    return (
-      <Flex sx={{ alignItems: 'center' }}>
-        {data.label}
-        {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
-      </Flex>
-    )
-  },
-  Option: ({ innerProps, isSelected, data }) => {
-    return (
-      <Box
-        {...innerProps}
-        sx={{
-          py: 2,
-          px: 3,
-          bg: isSelected ? 'selected' : undefined,
-          cursor: 'pointer',
-          '&:hover': {
-            bg: 'secondaryAlt',
-          },
-        }}
-      >
-        <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}>
-          {data.label}
-          {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
-        </Flex>
-      </Box>
-    )
-  },
-  Menu: ({ innerProps, children }) => (
-    <Card
-      {...innerProps}
-      sx={{
-        boxShadow: 'selectMenu',
-        borderRadius: 'medium',
-        border: 'none',
-        p: 0,
-        position: 'absolute',
-        top: '115%',
-        width: '100%',
-        zIndex: 2,
-      }}
-    >
-      {children}
-    </Card>
-  ),
-  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
-    <Box
-      {...innerProps}
-      sx={{
-        cursor: 'pointer',
-        variant: 'links.nav',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontSize: 3,
-        border: '1px solid',
-        borderColor: '#ccc',
-        borderRadius: 'medium',
-        py: '8px',
-        px: '16px',
-        height: '52px',
-        backgroundColor: 'white',
-      }}
-    >
-      {children}
-      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
-    </Box>
-  ),
-})
