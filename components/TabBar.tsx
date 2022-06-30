@@ -29,7 +29,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
 
   useEffect(() => setHash(sections[0]?.value), [])
   useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
-  const selectComponents = useMemo(() => reactSelectCustomComponents<any>(), [])
+  const selectComponents = useMemo(() => reactSelectCustomComponents(), [])
 
   function isSelected(section: TabSection) {
     return `#${section.value}` === hash
@@ -50,7 +50,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
     <Grid gap={0} sx={{ width: '100%' }}>
       {selectedSection?.topContent && <Box>{selectedSection?.topContent}</Box>}
       {useDropdownOnMobile ? (
-        <Box sx={{ display: ['block', 'none'] }}>
+        <Box sx={{ display: ['block', 'none'], mb: 3 }}>
           <ReactSelect<TabSection>
             options={sections}
             onChange={(option) => setHash((option as TabSection).value)}

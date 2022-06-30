@@ -2,31 +2,54 @@ import React from 'react'
 import { Box, Card, Flex } from 'theme-ui'
 
 import { ChevronUpDown } from './ChevronUpDown'
+import { TabSection } from './TabBar'
+import { VaultTabTag } from './vault/VaultTabTag'
 import { SelectComponents } from 'react-select/src/components'
 
-export const reactSelectCustomComponents = <T extends object>(): Partial<SelectComponents<T>> => ({
+export const reactSelectCustomComponents = (): Partial<SelectComponents<TabSection>> => ({
   IndicatorsContainer: () => null,
   ValueContainer: ({ children }) => (
-    <Flex sx={{ color: 'primary', fontWeight: 'body', fontSize: '18px', backgroundColor: 'white' }}>
-      {children}
-    </Flex>
-  ),
-  SingleValue: ({ children }) => <Box>{children}</Box>,
-  Option: ({ children, innerProps }) => (
-    <Box
-      {...innerProps}
+    <Flex
       sx={{
-        py: 2,
-        px: 3,
-        cursor: 'pointer',
-        '&:hover': {
-          bg: 'secondaryAlt',
-        },
+        color: 'primary',
+        fontWeight: 'body',
+        fontSize: '18px',
+        backgroundColor: 'white',
       }}
     >
       {children}
-    </Box>
+    </Flex>
   ),
+  SingleValue: ({ data, children }) => {
+    return (
+      <Flex sx={{ alignItems: 'center' }}>
+        {data.label}
+        {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+        {children}
+      </Flex>
+    )
+  },
+  Option: ({ innerProps, isSelected, data }) => {
+    return (
+      <Box
+        {...innerProps}
+        sx={{
+          py: 2,
+          px: 3,
+          bg: isSelected ? 'selected' : undefined,
+          cursor: 'pointer',
+          '&:hover': {
+            bg: 'secondaryAlt',
+          },
+        }}
+      >
+        <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}>
+          {data.label}
+          {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+        </Flex>
+      </Box>
+    )
+  },
   Menu: ({ innerProps, children }) => (
     <Card
       {...innerProps}

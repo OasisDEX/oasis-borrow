@@ -56,6 +56,7 @@ export function GeneralManageTabBar({
   return (
     <TabBar
       variant="underline"
+      useDropdownOnMobile
       sections={[
         {
           label: t('system.overview'),
