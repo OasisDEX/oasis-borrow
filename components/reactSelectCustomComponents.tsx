@@ -20,12 +20,11 @@ export const reactSelectCustomComponents = (): Partial<SelectComponents<TabSecti
       {children}
     </Flex>
   ),
-  SingleValue: ({ data, children }) => {
+  SingleValue: ({ data }) => {
     return (
       <Flex sx={{ alignItems: 'center' }}>
         {data.label}
         {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
-        {children}
       </Flex>
     )
   },
