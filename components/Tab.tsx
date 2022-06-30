@@ -1,13 +1,14 @@
 import { Button } from 'theme-ui'
 
-import { TabSection } from './dumb/Tabs'
 import { VaultTabTag } from './vault/VaultTabTag'
 
+export type TabVariant = 'large' | 'medium' | 'small' | 'underline'
+
 interface TabProps {
-  section: Omit<TabSection, 'content'>
-  hash: string
-  variant: 'large' | 'medium' | 'small' | 'underline'
-  tabTagActive?: boolean
+  label: string | JSX.Element
+  value: string
+  variant: TabVariant
+  selected?: boolean
   tag?: {
     include: boolean
     active: boolean
@@ -15,34 +16,33 @@ interface TabProps {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
+// Todo: move to theme-ui
 const styles = {
   large: {
     fontSize: 3,
-    p: '19px',
+    p: 3,
     borderRadius: '58px',
-    paddingLeft: '86px',
-    paddingRight: '86px',
+    px: '40px',
     '&:hover': {
       color: 'primary',
     },
   },
-  largeActive: {
+  largeSelected: {
     color: 'primary',
     bg: 'background',
     boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   medium: {
     fontSize: 3,
-    p: '12px',
+    p: 2,
     borderRadius: '58px',
-    paddingLeft: '32px',
-    paddingRight: '32px',
+    px: 4,
     minWidth: '94px',
     '&:hover': {
       color: 'primary',
     },
   },
-  mediumActive: {
+  mediumSelected: {
     color: 'text.contrast',
     bg: 'primary',
     '&:hover': {
@@ -51,16 +51,15 @@ const styles = {
   },
   small: {
     fontSize: 1,
-    p: '8px',
+    p: 2,
     borderRadius: '40px',
-    paddingLeft: '16px',
-    paddingRight: '16px',
+    px: 3,
     minWidth: '54px',
     '&:hover': {
       color: 'primary',
     },
   },
-  smallActive: {
+  smallSelected: {
     color: 'text.contrast',
     bg: '#575CFE',
     '&:hover': {
@@ -69,35 +68,34 @@ const styles = {
   },
   underline: {
     fontSize: 3,
-    borderBottom: '3px solid',
-    borderColor: '#25273d1a',
+    transform: 'translateY(3px)',
+    borderBottom: '3px solid #e9e9eb',
     borderRadius: '0px',
+    paddingTop: '12px',
+    paddingBottom: '12px',
   },
-  underlineActive: {
+  underlineSelected: {
     color: 'primary',
+    borderBottom: '3px solid',
     borderColor: 'primary',
   },
 }
 
-export function Tab({ section, variant, hash, tag, onClick }: TabProps) {
-  function isSelected(section: Omit<TabSection, 'content'>) {
-    return `#${section.value}` === hash
-  }
-
+export function Tab({ variant, value, label, selected, tag, onClick }: TabProps) {
   return (
     <Button
-      key={section.value}
+      key={value}
       variant={'tab'}
       onClick={onClick}
       sx={{
         ...styles[variant],
-        ...(variant === 'large' && isSelected(section) ? styles.largeActive : {}),
-        ...(variant === 'medium' && isSelected(section) ? styles.mediumActive : {}),
-        ...(variant === 'small' && isSelected(section) ? styles.smallActive : {}),
-        ...(variant === 'underline' && isSelected(section) ? styles.underlineActive : {}),
+        ...(variant === 'large' && selected ? styles.largeSelected : {}),
+        ...(variant === 'medium' && selected ? styles.mediumSelected : {}),
+        ...(variant === 'small' && selected ? styles.smallSelected : {}),
+        ...(variant === 'underline' && selected ? styles.underlineSelected : {}),
       }}
     >
-      {section.label}
+      {label}
       {variant === 'underline' && tag?.include && <VaultTabTag isEnabled={tag.active} />}
     </Button>
   )
