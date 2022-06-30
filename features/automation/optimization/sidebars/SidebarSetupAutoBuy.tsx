@@ -59,11 +59,10 @@ export function SidebarSetupAutoBuy({
   priceInfo,
   context,
   txHelpers,
-}:
-SidebarSetupAutoBuyProps) {
+}: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges/*, txHelpers$, context$*/ } = useAppContext()
+  const { uiChanges /*, txHelpers$, context$*/ } = useAppContext()
   // const [txHelpers] = useObservable(txHelpers$)
   // const [context] = useObservable(context$)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
