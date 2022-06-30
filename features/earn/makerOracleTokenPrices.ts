@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import moment from 'moment'
 import { Observable } from 'rxjs'
@@ -19,7 +20,7 @@ const makerOraclePrice = gql`
 
 export interface MakerOracleTokenPrice {
   token: string
-  price: string
+  price: BigNumber
   timestamp: moment.Moment
 }
 
@@ -37,6 +38,13 @@ export function createMakerOracleTokenPrices$(
         date: timestamp.toISOString(),
       })
     }),
-    map((apiResponse) => apiResponse.makerOracleTokenPrices.tokenPrice),
+    map((apiResponse) => {
+      const respRaw = apiResponse.makerOracleTokenPrices.tokenPrice
+      return {
+        token: respRaw.token,
+        price: new BigNumber(respRaw.price),
+        timestamp: moment(respRaw.timestamp),
+      }
+    }),
   )
 }

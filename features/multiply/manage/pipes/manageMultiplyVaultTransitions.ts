@@ -65,10 +65,10 @@ export type ManageVaultTransitionChange =
       kind: 'clear'
     }
 
-export function applyManageVaultTransition(
+export function applyManageVaultTransition<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: VS,
+): VS {
   if (change.kind === 'toggleEditing') {
     const { stage } = state
 

@@ -474,6 +474,15 @@
       "borrow": "Borrow"
     }
   },
+  "manage-earn-vault": {
+    "overview-earn": "Overview (Earn ID: {{earnId}})",
+    "earnings-to-date": "Earnings to date",
+    "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
+    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals.",
+    "net-apy": "Net APY",
+    "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
+    "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
+  },
   "borrow-to-multiply": {
     "checkmark1": "Multiply your exposure on your {{token}}",
     "checkmark2": "Adjust risk and exposure in 1 click",
@@ -668,6 +677,7 @@
     "liquidation-price": "Liquidation Price",
     "liquidation-ratio": "Liquidation Ratio",
     "buying-power": "Buying Power",
+    "net-value": "Net Value",
     "net-value-pnl": "Net Value & P&L",
     "dust-limit": "Dust Limit",
     "min-coll-ratio": "Min Coll. Ratio",

@@ -4,7 +4,6 @@ import { Box, Grid } from 'theme-ui'
 import { trackingEvents } from '../../../analytics/analytics'
 import { EarnVaultHeaderProps } from '../../../features/earn/guni/common/GuniVaultHeader'
 import { ManageEarnVaultState } from '../../../features/earn/guni/manage/pipes/manageGuniVault'
-import { ManageMultiplyVaultState } from '../../../features/multiply/manage/pipes/manageMultiplyVault'
 import { createManageMultiplyVaultAnalytics$ } from '../../../features/multiply/manage/pipes/manageMultiplyVaultAnalytics'
 import { VaultHistoryEvent } from '../../../features/vaultHistory/vaultHistory'
 import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
@@ -16,8 +15,8 @@ export interface ManageEarnVaultContainerProps {
 
 interface ManageEarnVaultContainerComponents {
   header: (props: EarnVaultHeaderProps) => JSX.Element
-  details: (props: ManageMultiplyVaultState) => JSX.Element
-  form: (props: ManageMultiplyVaultState) => JSX.Element
+  details: (props: ManageEarnVaultState) => JSX.Element
+  form: (props: ManageEarnVaultState) => JSX.Element
   history: (props: { vaultHistory: VaultHistoryEvent[] }) => JSX.Element
 }
 
