@@ -78,6 +78,7 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
     case 'editBasicSell':
       return 'adding-auto-sell'
     case 'addBasicBuy':
+    case 'editBasicBuy':
       return 'adding-auto-buy'
     case 'cancelBasicBuy':
       return 'cancelling-auto-buy'

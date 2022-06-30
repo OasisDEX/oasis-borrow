@@ -151,7 +151,7 @@ export function SidebarSetupAutoBuy({
                   ilkData={ilkData}
                   addTxData={addTxData}
                   basicBuyState={uiState}
-                  isEditing
+                  isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
                   priceInfo={priceInfo}
                 />
@@ -217,6 +217,10 @@ export function SidebarSetupAutoBuy({
             uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
               type: 'current-form',
               currentForm: isAddForm ? 'remove' : 'add',
+            })
+            uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+              type: 'tx-details',
+              txDetails: {},
             })
           },
         },

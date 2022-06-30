@@ -95,6 +95,12 @@ export function SidebarAutoBuyEditingStage({
             type: 'with-threshold',
             withThreshold: toggleStatus,
           })
+          uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+            type: 'max-buy-or-sell-price',
+            maxBuyOrMinSellPrice: !toggleStatus
+              ? undefined
+              : autoBuyTriggerData.maxBuyOrMinSellPrice,
+          })
         }}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
