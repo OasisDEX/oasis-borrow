@@ -21,12 +21,14 @@ interface TabBarProps {
   sections: TabSection[]
   useDropdownOnMobile?: boolean
   variant: TabVariant
+  switchEvent?: { value: string }
 }
 
-export function TabBar({ sections, variant, useDropdownOnMobile }: TabBarProps) {
+export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: TabBarProps) {
   const [hash, setHash] = useHash<string>()
 
-  useEffect(() => setHash(sections[0].value), [])
+  useEffect(() => setHash(sections[0]?.value), [])
+  useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
   const selectComponents = useMemo(() => reactSelectCustomComponents<any>(), [])
 
   function isSelected(section: TabSection) {
@@ -35,6 +37,14 @@ export function TabBar({ sections, variant, useDropdownOnMobile }: TabBarProps) 
 
   const selectedSection = sections.find(isSelected)
   const handleClick = (section: TabSection) => () => setHash(section.value)
+
+  if (sections.length <= 1) {
+    return (
+      <Grid gap={0} sx={{ width: '100%' }}>
+        <Box sx={{ zIndex: 1 }}>{selectedSection?.content}</Box>
+      </Grid>
+    )
+  }
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>

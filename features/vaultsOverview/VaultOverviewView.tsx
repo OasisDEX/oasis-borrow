@@ -383,12 +383,7 @@ export function VaultsOverviewView({
             </>
           )}
           {earnEnabled && (
-            <Card
-              variant="positionsPage"
-              sx={{
-                mb: 5,
-              }}
-            >
+            <Card variant="positionsPage">
               <PositionList positions={positions} />
             </Card>
           )}
