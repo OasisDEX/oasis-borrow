@@ -6,7 +6,7 @@ import {
 } from 'features/automation/protection/common/stopLossTriggerData'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import { isEqual } from 'lodash'
-import { iif, Observable } from 'rxjs'
+import { Observable } from 'rxjs'
 import { combineLatest, of } from 'rxjs'
 import { map } from 'rxjs/internal/operators/map'
 import { distinctUntilChanged, switchMap } from 'rxjs/operators'
@@ -26,20 +26,14 @@ import {
   formatPercent,
 } from '../../helpers/formatters/format'
 import { calculatePNL } from '../../helpers/multiply/calculations'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { zero } from '../../helpers/zero'
 import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
 import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
-import { vaultsWithFilter$, VaultsWithFilters, VaultWithSLData } from './vaultsFilters'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface VaultsOverview {
-  vaults: {
-    borrow: VaultsWithFilters
-    multiply: VaultsWithFilters
-  }
   positions: PositionVM[]
   vaultSummary: VaultSummary | undefined
   ilksWithFilters: IlksWithFilters
@@ -57,9 +51,6 @@ export function createVaultsOverview$(
   vaultHistory$: (vaultId: BigNumber) => Observable<VaultHistoryEvent[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
-  const vaultsAddress$ = vaults$(address)
-
   const vaultsWithHistory$ = vaults$(address).pipe(
     switchMap((vaults) => {
       if (vaults.length === 0) {
@@ -109,37 +100,13 @@ export function createVaultsOverview$(
     }),
   )
 
-  const borrowVaults = (iif(
-    () => stopLossReadEnabled,
-    vaultWithAutomationData$,
-    vaultsAddress$,
-  ).pipe(
-    map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
-    // TODO casting won't be necessary when Automation feature flag will be removed
-  ) as unknown) as Observable<VaultWithSLData>
-
-  const multiplyVaults = (iif(
-    () => stopLossReadEnabled,
-    vaultWithAutomationData$,
-    vaultsAddress$,
-  ).pipe(
-    map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
-    // TODO casting won't be necessary when Automation feature flag will be removed
-  ) as unknown) as Observable<VaultWithSLData>
-
   return combineLatest(
-    vaultsWithFilter$(borrowVaults),
-    vaultsWithFilter$(multiplyVaults),
     vaultWithAutomationData$,
     vaultsAddressWithIlksBalances$.pipe(map(getVaultsSummary)),
     ilksWithFilter$(ilksListWithBalances$),
   ).pipe(
-    map(([borrow, multiply, vaults, vaultSummary, ilksWithFilters]) => {
+    map(([vaults, vaultSummary, ilksWithFilters]) => {
       return {
-        vaults: {
-          borrow,
-          multiply,
-        },
         positions: mapToPositionVM(vaults),
         vaultSummary,
         ilksWithFilters,

@@ -4,6 +4,7 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
@@ -30,6 +31,7 @@ export function useBasicBSstateInitialization(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
+  const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)
 
   console.log('maxBuyOrMinSellPrice.isZero() ', maxBuyOrMinSellPrice.isZero())
 
@@ -48,7 +50,7 @@ export function useBasicBSstateInitialization(
     })
     uiChanges.publish(publishKey, {
       type: 'max-buy-or-sell-price',
-      maxBuyOrMinSellPrice: maxBuyOrMinSellPrice.isZero() ? undefined : maxBuyOrMinSellPrice,
+      maxBuyOrMinSellPrice: maxBuyOrMinSellPriceResolved,
     })
     uiChanges.publish(publishKey, {
       type: 'continuous',

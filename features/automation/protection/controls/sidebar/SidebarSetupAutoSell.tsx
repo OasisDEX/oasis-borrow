@@ -15,6 +15,7 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
   failedStatuses,
   progressStatuses,
@@ -24,24 +25,27 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingState'
+import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
-import { SidebarAutoSellAddStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddStage'
+import { SidebarAutoSellCreationStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellCreationStage'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
+import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupAutoBuyProps {
+interface SidebarSetupAutoSellProps {
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
   autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
   txHelpers?: TxHelpers
   context: Context
@@ -52,14 +56,15 @@ export function SidebarSetupAutoSell({
   ilkData,
   priceInfo,
   autoSellTriggerData,
+  autoBuyTriggerData,
   isAutoSellActive,
   txHelpers,
   context,
-}: SidebarSetupAutoBuyProps) {
+}: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
-  console.log(uiState)
+
   const addTxData = useMemo(
     () =>
       prepareAddBasicBSTriggerData({
@@ -77,6 +82,7 @@ export function SidebarSetupAutoSell({
       uiState.targetCollRatio.toNumber(),
       uiState.maxBuyOrMinSellPrice?.toNumber(),
       uiState.triggerId.toNumber(),
+      vault.collateralizationRatio.toNumber(),
     ],
   )
 
@@ -89,23 +95,26 @@ export function SidebarSetupAutoSell({
   const isAddForm = uiState.currentForm === 'add'
   const isRemoveForm = uiState.currentForm === 'remove'
 
-  const mB = autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
-    ? undefined
-    : autoSellTriggerData.maxBuyOrMinSellPrice
+  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice)
 
   const isEditing =
     !autoSellTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio) ||
     !autoSellTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio) ||
-    (mB?.toNumber() !== uiState.maxBuyOrMinSellPrice?.toNumber() &&
+    (maxBuyOrMinSellPrice?.toNumber() !== uiState.maxBuyOrMinSellPrice?.toNumber() &&
       !autoSellTriggerData.triggerId.isZero()) ||
     isRemoveForm
 
+  const isFirstSetup = autoSellTriggerData.triggerId.isZero()
   const txStatus = uiState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
 
-  const flow = isAddForm ? 'addBasicSell' : 'cancelBasicSell'
+  const flow: SidebarFlow = isRemoveForm
+    ? 'cancelBasicSell'
+    : isFirstSetup
+    ? 'addBasicSell'
+    : 'editBasicSell'
 
   const stage = isSuccessStage
     ? 'txSuccess'
@@ -124,7 +133,6 @@ export function SidebarSetupAutoSell({
         (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
       uiState.execCollRatio.isZero()) &&
     stage !== 'txSuccess'
-  // !isRemoveForm
 
   const sidebarStatus = getSidebarStatus({
     stage,
@@ -134,10 +142,10 @@ export function SidebarSetupAutoSell({
   })
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-
+  const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('auto-sell.form-title'),
+      title: sidebarTitle,
       dropdown: {
         forcePanel: 'autoSell',
         disabled: isDropdownDisabled({ stage }),
@@ -156,20 +164,16 @@ export function SidebarSetupAutoSell({
                   priceInfo={priceInfo}
                   basicSellState={uiState}
                   autoSellTriggerData={autoSellTriggerData}
+                  autoBuyTriggerData={autoBuyTriggerData}
                 />
               )}
               {isRemoveForm && (
-                <SidebarAutoSellCancelEditingStage
-                  vault={vault}
-                  cancelTxData={cancelTxData}
-                  priceInfo={priceInfo}
-                  basicSellState={uiState}
-                />
+                <SidebarAutoSellCancelEditingStage vault={vault} cancelTxData={cancelTxData} />
               )}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoSellAddStage stage={stage} />
+            <SidebarAutoSellCreationStage stage={stage} />
           )}
         </Grid>
       ),
@@ -190,22 +194,10 @@ export function SidebarSetupAutoSell({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(
-                  txHelpers,
-                  addTxData,
-                  uiChanges,
-                  priceInfo.currentEthPrice,
-                  'sell',
-                )
+                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(
-                  txHelpers,
-                  cancelTxData,
-                  uiChanges,
-                  priceInfo.currentEthPrice,
-                  'sell',
-                )
+                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
               }
             }
           }
@@ -219,6 +211,10 @@ export function SidebarSetupAutoSell({
             uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
               type: 'current-form',
               currentForm: isAddForm ? 'remove' : 'add',
+            })
+            uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+              type: 'tx-details',
+              txDetails: {},
             })
           },
         },

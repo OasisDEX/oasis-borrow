@@ -1,40 +1,42 @@
 import { gql, GraphQLClient } from 'graphql-request'
+import moment from 'moment'
 import { Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { first, map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../blockchain/network'
 
-const historicalPriceQuery = gql`
-  query prices($token: String!) {
-    allHistoricTokenPrices(filter: { token: { equalTo: $token } }) {
-      nodes {
+const makerOraclePrice = gql`
+  mutation prices($token: String!, $date: Datetime) {
+    makerOracleTokenPrices(input: { token: $token, date: $date }) {
+      tokenPrice {
         token
         price
-        price7
-        price30
-        price90
+        timestamp
       }
     }
   }
 `
 
-export interface HistoricalTokenPricesApiResponse {
+export interface MakerOracleTokenPrice {
   token: string
   price: string
-  price7: string
-  price30: string
-  price90: string
+  timestamp: moment.Moment
 }
 
 export function createMakerOracleTokenPrices$(
   context$: Observable<Context>,
   token: string,
-): Observable<HistoricalTokenPricesApiResponse> {
+  timestamp: moment.Moment,
+): Observable<MakerOracleTokenPrice> {
   return context$.pipe(
+    first(),
     switchMap(({ cacheApi }) => {
       const apiClient = new GraphQLClient(cacheApi)
-      return apiClient.request(historicalPriceQuery, { token })
+      return apiClient.request(makerOraclePrice, {
+        token,
+        date: timestamp.toISOString(),
+      })
     }),
-    map((apiResponse) => apiResponse.allHistoricTokenPrices.nodes[0]),
+    map((apiResponse) => apiResponse.makerOracleTokenPrices.tokenPrice),
   )
 }

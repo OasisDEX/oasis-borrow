@@ -2,35 +2,19 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import {
-  formatAddress,
-  formatCryptoBalance,
-  formatFiatBalance,
-  formatPercent,
-} from 'helpers/formatters/format'
+import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { ProductCardData } from 'helpers/productCards'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
-import { Box, Card, Flex, Grid, Heading, Text } from 'theme-ui'
+import React from 'react'
+import { Card, Flex, Grid, Heading } from 'theme-ui'
 
-import { Pages, trackingEvents } from '../../analytics/analytics'
-import { CoinTag, getToken } from '../../blockchain/tokensMetadata'
-import { Vault } from '../../blockchain/vaults'
 import { PositionList } from '../../components/dumb/PositionList'
-import { ColumnDef, Table, TableSortHeader } from '../../components/Table'
-import { VaultDetailsAfterPill } from '../../components/vault/VaultDetails'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { useRedirect } from '../../helpers/useRedirect'
 import { zero } from '../../helpers/zero'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
-import { Filters } from './Filters'
-import { Summary } from './Summary'
-import { VaultsFilterState, VaultsWithFilters } from './vaultsFilters'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSuggestions } from './VaultSuggestions'
 
@@ -41,110 +25,6 @@ interface Props {
   ensName: string | null | undefined
   productCardsData: ProductCardData[]
 }
-
-const vaultsColumns: ColumnDef<Vault & StopLossTriggerData, VaultsFilterState>[] = [
-  {
-    headerLabel: 'system.asset',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
-    cell: ({ ilk, token, isStopLossEnabled, debt }) => {
-      const tokenInfo = getToken(token)
-      const { t } = useTranslation()
-
-      return (
-        <Flex>
-          <Icon name={tokenInfo.iconCircle} size="26px" sx={{ verticalAlign: 'sub', mr: 2 }} />
-          <Box sx={{ whiteSpace: 'nowrap' }}>{ilk}</Box>
-          {isStopLossEnabled && !debt.isZero() && (
-            <Box ml={2}>
-              <VaultDetailsAfterPill
-                afterPillColors={{ color: 'onSuccess', bg: 'success' }}
-                sx={{ mt: 0 }}
-              >
-                {t('protection.stop-loss-on')}
-              </VaultDetailsAfterPill>
-            </Box>
-          )}
-        </Flex>
-      )
-    },
-  },
-  {
-    headerLabel: 'system.vault-id',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="id">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ id }) => <Text sx={{ textAlign: 'right' }}>#{id.toString()}</Text>,
-  },
-  {
-    headerLabel: 'system.liquidation-price',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="liquidationPrice">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ liquidationPrice }) => (
-      <Text sx={{ textAlign: 'right' }}>${formatFiatBalance(liquidationPrice)}</Text>
-    ),
-  },
-  {
-    headerLabel: 'system.coll-ratio',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateralizationRatio">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: (vault) => {
-      return (
-        <Text sx={{ textAlign: 'right', color: vault.atRiskLevelDanger ? 'onError' : 'onSuccess' }}>
-          {formatPercent(vault.collateralizationRatio.times(100))}
-        </Text>
-      )
-    },
-  },
-  {
-    headerLabel: 'system.coll-locked',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="collateral">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ lockedCollateral, token }) => (
-      <Text sx={{ textAlign: 'right' }}>
-        {formatCryptoBalance(lockedCollateral)} {token}
-      </Text>
-    ),
-  },
-  {
-    headerLabel: 'system.dai-debt',
-    header: ({ label, ...filters }) => (
-      <TableSortHeader sx={{ ml: 'auto' }} filters={filters} sortBy="debt">
-        {label}
-      </TableSortHeader>
-    ),
-    cell: ({ debt }) => <Text sx={{ textAlign: 'right' }}>{formatCryptoBalance(debt)} DAI</Text>,
-  },
-  {
-    headerLabel: '',
-    header: () => <Text />,
-    cell: ({ id }) => {
-      const { t } = useTranslation()
-      return (
-        <Box sx={{ flexGrow: 1, textAlign: 'right' }}>
-          <AppLink
-            sx={{ width: ['100%', 'inherit'], textAlign: 'center' }}
-            variant="secondary"
-            as={`/${id}`}
-            href={`/[vault]`}
-          >
-            {t('manage-vault.action')}
-          </AppLink>
-        </Box>
-      )
-    },
-  },
-]
 
 function getHeaderTranslationKey(
   connectedAccount: string | undefined,
@@ -169,75 +49,6 @@ function getHeaderTranslationKey(
     : `${HEADERS_PATH}.connected-viewer-withVaults`
 }
 
-function VaultsTable({ vaults }: { vaults: VaultsWithFilters }) {
-  const { data, filters } = vaults
-  const { t } = useTranslation()
-  const { push } = useRedirect()
-
-  return (
-    <Table
-      data={data}
-      primaryKey="address"
-      state={filters}
-      columns={vaultsColumns}
-      noResults={<Box>{t('no-results')}</Box>}
-      deriveRowProps={(row) => {
-        return {
-          onClick: () => {
-            trackingEvents.overviewManage(row.id.toString(), row.ilk)
-            push(`/${row.id}`)
-          },
-        }
-      }}
-    />
-  )
-}
-
-function VaultsOverviewPerType({
-  vaults,
-  heading,
-  multiply,
-}: {
-  vaults: VaultsWithFilters
-  heading: string
-  multiply?: boolean
-}) {
-  const { t } = useTranslation()
-
-  const onVaultSearch = useCallback(
-    (search: string) => {
-      vaults.filters.change({ kind: 'search', search })
-    },
-    [vaults.filters],
-  )
-
-  const onVaultsTagChange = useCallback(
-    (tagFilter: CoinTag | undefined) => {
-      vaults.filters.change({ kind: 'tagFilter', tagFilter })
-    },
-    [vaults.filters],
-  )
-
-  return (
-    <Grid gap={3}>
-      <Heading mb={3} sx={{ fontWeight: 'bold', fontSize: 7 }}>
-        {heading}
-      </Heading>
-      <Filters
-        onSearch={onVaultSearch}
-        search={vaults.filters.search}
-        onTagChange={onVaultsTagChange}
-        tagFilter={vaults.filters.tagFilter}
-        defaultTag="your-vaults"
-        page={Pages.VaultsOverview}
-        searchPlaceholder={t('search-token')}
-        multiply={multiply}
-      />
-      <VaultsTable vaults={vaults} />
-    </Grid>
-  )
-}
-
 export function VaultsOverviewView({
   vaultsOverview,
   context,
@@ -247,10 +58,9 @@ export function VaultsOverviewView({
 }: Props) {
   const { t } = useTranslation()
 
-  const earnEnabled = useFeatureToggle('EarnProduct')
   const { positionsOverviewSummary$ } = useAppContext()
   const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
-  const { positions, vaults, vaultSummary } = vaultsOverview
+  const { positions, vaultSummary } = vaultsOverview
   const numberOfVaults = positions.length
 
   if (vaultSummary === undefined) {
@@ -268,20 +78,18 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
-        {earnEnabled && (
-          <WithErrorHandler error={err}>
-            <WithLoadingIndicator value={positionsOverviewSummary}>
-              {(positionsOverviewSummary) =>
-                positionsOverviewSummary.totalValueUsd.gt(zero) ? (
-                  <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-                ) : (
-                  <></>
-                )
-              }
-            </WithLoadingIndicator>
-          </WithErrorHandler>
-        )}
-        {!earnEnabled && (
+        <WithErrorHandler error={err}>
+          <WithLoadingIndicator value={positionsOverviewSummary}>
+            {(positionsOverviewSummary) =>
+              positionsOverviewSummary.totalValueUsd.gt(zero) ? (
+                <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+              ) : (
+                <></>
+              )
+            }
+          </WithLoadingIndicator>
+        </WithErrorHandler>
+        {!isOwnerViewing && numberOfVaults === 0 && (
           <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
             <Trans
               i18nKey={headerTranslationKey}
@@ -290,52 +98,7 @@ export function VaultsOverviewView({
             />
           </Heading>
         )}
-        {earnEnabled && !isOwnerViewing && numberOfVaults === 0 && (
-          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
-            <Trans
-              i18nKey={headerTranslationKey}
-              values={{ address: formatAddress(address) }}
-              components={[<br />]}
-            />
-          </Heading>
-        )}
-        {!earnEnabled && isOwnerViewing && numberOfVaults === 0 && (
-          <>
-            <Text
-              variant="paragraph1"
-              sx={{ mb: 3, color: 'lavender', textAlign: 'center', mt: 6 }}
-            >
-              <Trans i18nKey="vaults-overview.subheader-no-vaults" components={[<br />]} />
-            </Text>
-            <AppLink
-              href="/"
-              variant="primary"
-              sx={{
-                display: 'flex',
-                margin: '0 auto',
-                px: '40px',
-                py: 2,
-                my: 4,
-                alignItems: 'center',
-                '&:hover svg': {
-                  transform: 'translateX(10px)',
-                },
-              }}
-              hash="product-cards-wrapper"
-            >
-              {t('open-vault.title')}
-              <Icon
-                name="arrow_right"
-                sx={{
-                  ml: 2,
-                  position: 'relative',
-                  left: 2,
-                  transition: '0.2s',
-                }}
-              />
-            </AppLink>
-          </>
-        )}
+
         {context.status === 'connectedReadonly' && numberOfVaults === 0 && (
           <>
             <AppLink
@@ -368,31 +131,14 @@ export function VaultsOverviewView({
         )}
       </Flex>
       {numberOfVaults !== 0 && (
-        <>
-          {!earnEnabled && (
-            <>
-              <Summary summary={vaultSummary} />
-              <Grid gap={5}>
-                <VaultsOverviewPerType vaults={vaults.borrow} heading="Borrow Vaults" />
-                <VaultsOverviewPerType
-                  vaults={vaults.multiply}
-                  heading="Multiply Vaults"
-                  multiply
-                />
-              </Grid>
-            </>
-          )}
-          {earnEnabled && (
-            <Card
-              variant="positionsPage"
-              sx={{
-                mb: 5,
-              }}
-            >
-              <PositionList positions={positions} />
-            </Card>
-          )}
-        </>
+        <Card
+          variant="positionsPage"
+          sx={{
+            mb: 5,
+          }}
+        >
+          <PositionList positions={positions} />
+        </Card>
       )}
       {isOwnerViewing && (
         <VaultSuggestions productCardsData={productCardsData} address={ensName || address} />
