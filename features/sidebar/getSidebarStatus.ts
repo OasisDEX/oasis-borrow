@@ -23,6 +23,7 @@ function getSidebarProgressTxInProgressKey({
     case 'cancelSl':
       return 'protection.cancelling-downside-protection'
     case 'addBasicSell':
+    case 'editBasicSell':
       return 'protection.setting-auto-sell'
     case 'cancelBasicSell':
       return 'protection.cancelling-auto-sell'
@@ -41,6 +42,7 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'adjustSl':
     case 'cancelSl':
     case 'addBasicSell':
+    case 'editBasicSell':
     case 'cancelBasicSell':
       return 'vault-changed'
     default:

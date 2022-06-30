@@ -41,6 +41,7 @@ export function ProtectionFormControl({
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+  const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
@@ -68,6 +69,7 @@ export function ProtectionFormControl({
         ilkData={ilkData}
         priceInfo={priceInfo}
         autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
         isAutoSellActive={isAutoSellActive}
         context={context}
         txHelpers={txHelpers}

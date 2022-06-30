@@ -23,7 +23,7 @@ interface SellInfoSectionProps {
   estimatedTransactionCost: string | JSX.Element
 }
 
-export function AutoSellInfoSection({
+export function AddAutoSellInfoSection({
   token,
   targetCollRatio,
   multipleAfterSell,

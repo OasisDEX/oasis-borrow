@@ -10,11 +10,10 @@ import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
-import { AutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AutoSellInfoSection'
+import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
-  BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
@@ -73,7 +72,7 @@ function AutoSellInfoSectionControl({
   })
 
   return (
-    <AutoSellInfoSection
+    <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
@@ -102,6 +101,7 @@ interface SidebarAutoSellAddEditingStageProps {
   addTxData: AutomationBotAddTriggerData
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -112,16 +112,17 @@ export function SidebarAutoSellAddEditingStage({
   priceInfo,
   basicSellState,
   autoSellTriggerData,
+  autoBuyTriggerData,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
-  const [uiStateBasicBuy] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { t } = useTranslation()
 
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-  const max = uiStateBasicBuy.targetCollRatio ? uiStateBasicBuy.targetCollRatio.toNumber() : 500
-  console.log(basicSellState)
+  const max = autoBuyTriggerData.targetCollRatio
+    ? autoBuyTriggerData.targetCollRatio.toNumber()
+    : 500
 
   return (
     <>

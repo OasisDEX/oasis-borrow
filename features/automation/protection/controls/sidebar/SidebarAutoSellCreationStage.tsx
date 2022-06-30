@@ -7,11 +7,11 @@ import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-interface SidebarAutoSellAddStageProps {
+interface SidebarAutoSellCreationStageProps {
   stage: SidebarVaultStages
 }
 
-export function SidebarAutoSellAddStage({ stage }: SidebarAutoSellAddStageProps) {
+export function SidebarAutoSellCreationStage({ stage }: SidebarAutoSellCreationStageProps) {
   // const { t } = useTranslation()
 
   switch (stage) {
