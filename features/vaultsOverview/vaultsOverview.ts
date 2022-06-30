@@ -20,7 +20,6 @@ import {
   MultiplyPositionVM,
   PositionVM,
 } from '../../components/dumb/PositionList'
-
 import {
   formatCryptoBalance,
   formatFiatBalance,

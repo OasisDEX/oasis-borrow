@@ -10,7 +10,6 @@ import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
 } from '../../../../../components/dumb/RetryableLoadingButton'
-
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
