@@ -211,7 +211,7 @@ import {
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
 import {
   createMakerOracleTokenPrices$,
-  createMakerOracleTokenPricesInDates$,
+  createMakerOracleTokenPricesForDates$,
 } from '../features/earn/makerOracleTokenPrices'
 import { getYieldChange$, getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
@@ -920,8 +920,8 @@ export function setupAppContext() {
     },
   )
 
-  const makerOracleTokenPricesInDates$ = memoize(
-    curry(createMakerOracleTokenPricesInDates$)(context$),
+  const makerOracleTokenPricesForDates$ = memoize(
+    curry(createMakerOracleTokenPricesForDates$)(context$),
     (token: string, timestamps: moment.Moment[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
@@ -929,7 +929,7 @@ export function setupAppContext() {
 
   const yields$ = memoize(
     (ilk: string, date?: moment.Moment) => {
-      return getYields$(makerOracleTokenPricesInDates$, ilkData$, ilk, date)
+      return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
     (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
   )
