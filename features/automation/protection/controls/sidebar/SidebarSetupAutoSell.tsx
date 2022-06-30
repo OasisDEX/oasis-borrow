@@ -38,7 +38,6 @@ import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoBuyProps {
-  //TODO ŁW Auto sell
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo

@@ -1,7 +1,9 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import {
@@ -27,7 +29,6 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -45,7 +46,8 @@ export interface SidebarSetupAutoBuyProps {
   ilkData: IlkData
   // maxGasPercentagePrice?: MaxGasPriceValues
   priceInfo: PriceInfo
-  // context: Context
+  txHelpers?: TxHelpers
+  context: Context
 }
 
 export function SidebarSetupAutoBuy({
@@ -55,15 +57,16 @@ export function SidebarSetupAutoBuy({
   autoBuyTriggerData,
   // maxGasPercentagePrice,
   priceInfo,
-}: // context,
+  context,
+  txHelpers,
+}:
 SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges, txHelpers$, context$ } = useAppContext()
-  const [txHelpers] = useObservable(txHelpers$)
-  const [context] = useObservable(context$)
+  const { uiChanges/*, txHelpers$, context$*/ } = useAppContext()
+  // const [txHelpers] = useObservable(txHelpers$)
+  // const [context] = useObservable(context$)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
 
   const txStatus = uiState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)

@@ -16,20 +16,21 @@ interface OptimizationControlProps {
 }
 
 export function OptimizationControl({ vault, ilkData }: OptimizationControlProps) {
-  const { automationTriggersData$, priceInfo$ } = useAppContext()
+  const { automationTriggersData$, priceInfo$, context$, txHelpers$ } = useAppContext()
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
   const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
-
+  const [txHelpersData] = useObservable(txHelpers$)
+  const [contextData] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
 
   return (
     <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData]}
+        value={[automationTriggersData, priceInfoData, contextData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo]) => (
+        {([automationTriggers, priceInfo, context]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
@@ -44,6 +45,8 @@ export function OptimizationControl({ vault, ilkData }: OptimizationControlProps
                 automationTriggersData={automationTriggers}
                 ilkData={ilkData}
                 priceInfo={priceInfo}
+                txHelpers={txHelpersData}
+                context={context}
               />
             }
           />

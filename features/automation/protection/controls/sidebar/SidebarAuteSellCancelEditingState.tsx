@@ -39,7 +39,7 @@ function AutoSellInfoSectionControl({
     )
   }, [cancelTxData])
 
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$) // remove ~Ł
+  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
   const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
