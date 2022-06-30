@@ -39,11 +39,11 @@ export function createMakerOracleTokenPrices$(
       })
     }),
     map((apiResponse) => {
-      const respRaw = apiResponse.allHistoricTokenPrices.nodes[0]
+      const respRaw = apiResponse.makerOracleTokenPrices.tokenPrice
       return {
         token: respRaw.token,
         price: new BigNumber(respRaw.price),
-        timestamp: respRaw.timestamp,
+        timestamp: moment(respRaw.timestamp),
       }
     }),
   )

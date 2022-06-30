@@ -10,6 +10,7 @@ import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { createHistoryChange$, VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { GasEstimationStatus } from 'helpers/form'
 import { curry } from 'lodash'
+import moment, { Moment } from 'moment'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap, withLatestFrom } from 'rxjs/operators'
 
@@ -44,7 +45,7 @@ import {
   validateWarnings,
 } from '../../../../multiply/manage/pipes/manageMultiplyVaultValidations'
 import { BalanceInfo, balanceInfoChange$ } from '../../../../shared/balanceInfo'
-import { Yield } from '../../../yieldCalculations'
+import { MakerOracleTokenPrice } from '../../../makerOracleTokenPrices'
 import { closeGuniVault } from './guniActionsCalls'
 import { applyGuniCalculations } from './manageGuniVaultCalculations'
 import { applyGuniManageVaultConditions } from './manageGuniVaultConditions'
@@ -173,12 +174,15 @@ export const defaultMutableManageMultiplyVaultState = {
 } as MutableManageMultiplyVaultState
 
 export type ManageEarnVaultState = ManageMultiplyVaultState & {
-    totalValueLocked?: BigNumber
-    earningsToDate?: BigNumber
-    earningsToDateAfterFees?: BigNumber
-    netAPY?: BigNumber
-    historicalTokenPrices: HistoricalTokenPrices
+  totalValueLocked?: BigNumber
+  earningsToDate?: BigNumber
+  earningsToDateAfterFees?: BigNumber
+  netAPY?: BigNumber
+  makerOracleTokenPrices: {
+    today: MakerOracleTokenPrice
+    sevenDaysAgo: MakerOracleTokenPrice
   }
+}
 
 export function createManageGuniVault$(
   context$: Observable<Context>,
@@ -202,7 +206,7 @@ export function createManageGuniVault$(
     token: string,
   ) => Observable<{ sharedAmount0: BigNumber; sharedAmount1: BigNumber }>,
   vaultHistory$: (id: BigNumber) => Observable<VaultHistoryEvent[]>,
-  historicalTokenPrices$: (token: string) => Observable<HistoricalTokenPrices>,
+  historicalTokenPrices$: (token: string, timestamp: Moment) => Observable<MakerOracleTokenPrice>,
   id: BigNumber,
 ): Observable<ManageEarnVaultState> {
   return context$.pipe(
@@ -216,130 +220,147 @@ export function createManageGuniVault$(
             balanceInfo$(vault.token, account),
             ilkData$(vault.ilk),
             account ? proxyAddress$(account) : of(undefined),
+            historicalTokenPrices$(vault.token, moment()),
+            historicalTokenPrices$(vault.token, moment().subtract(7, 'd')),
           ).pipe(
             first(),
-            switchMap(([priceInfo, balanceInfo, ilkData, proxyAddress]) => {
-              const collateralAllowance$ =
-                account && proxyAddress
-                  ? allowance$(vault.token, account, proxyAddress)
-                  : of(undefined)
-              const daiAllowance$ =
-                account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
+            switchMap(
+              ([
+                priceInfo,
+                balanceInfo,
+                ilkData,
+                proxyAddress,
+                tokenPriceToday,
+                tokenPriceSevenDaysAgo,
+              ]) => {
+                const collateralAllowance$ =
+                  account && proxyAddress
+                    ? allowance$(vault.token, account, proxyAddress)
+                    : of(undefined)
+                const daiAllowance$ =
+                  account && proxyAddress ? allowance$('DAI', account, proxyAddress) : of(undefined)
 
-              return combineLatest(collateralAllowance$, daiAllowance$).pipe(
-                first(),
-                switchMap(([collateralAllowance, daiAllowance]) => {
-                  const change$ = new Subject<ManageMultiplyVaultChange>()
+                return combineLatest(collateralAllowance$, daiAllowance$).pipe(
+                  first(),
+                  switchMap(([collateralAllowance, daiAllowance]) => {
+                    const change$ = new Subject<ManageMultiplyVaultChange>()
 
-                  function change(ch: ManageMultiplyVaultChange) {
-                    change$.next(ch)
-                  }
+                    function change(ch: ManageMultiplyVaultChange) {
+                      change$.next(ch)
+                    }
 
-                  // NOTE: Not to be used in production/dev, test only
-                  function injectStateOverride(
-                    stateToOverride: Partial<MutableManageMultiplyVaultState>,
-                  ) {
-                    return change$.next({ kind: 'injectStateOverride', stateToOverride })
-                  }
+                    // NOTE: Not to be used in production/dev, test only
+                    function injectStateOverride(
+                      stateToOverride: Partial<MutableManageMultiplyVaultState>,
+                    ) {
+                      return change$.next({ kind: 'injectStateOverride', stateToOverride })
+                    }
 
-                  const initialTotalSteps = calculateInitialTotalSteps(
-                    proxyAddress,
-                    vault.token,
-                    'skip',
-                  )
+                    const initialTotalSteps = calculateInitialTotalSteps(
+                      proxyAddress,
+                      vault.token,
+                      'skip',
+                    )
 
-                  const initialState: ManageEarnVaultState & GuniTxData = {
-                    ...defaultMutableManageMultiplyVaultState,
-                    ...defaultManageMultiplyVaultCalculations,
-                    ...defaultManageMultiplyVaultConditions,
-                    vault,
-                    priceInfo,
-                    balanceInfo,
-                    ilkData,
-                    account,
-                    proxyAddress,
-                    collateralAllowance,
-                    daiAllowance,
-                    safeConfirmations: context.safeConfirmations,
-                    etherscan: context.etherscan.url,
-                    errorMessages: [],
-                    warningMessages: [],
-                    summary: defaultManageVaultSummary,
-                    slippage: zero,
-                    exchangeError: false,
-                    initialTotalSteps,
-                    totalSteps: initialTotalSteps,
-                    currentStep: 1,
-                    vaultHistory: [],
-                    toggle: (stage) => change({ kind: 'toggleEditing', stage }),
-                    clear: () => change({ kind: 'clear' }),
-                    gasEstimationStatus: GasEstimationStatus.unset,
-                    invalidSlippage: false,
-                    injectStateOverride,
-                  }
+                    const initialState: ManageEarnVaultState & GuniTxData = {
+                      ...defaultMutableManageMultiplyVaultState,
+                      ...defaultManageMultiplyVaultCalculations,
+                      ...defaultManageMultiplyVaultConditions,
+                      vault,
+                      priceInfo,
+                      balanceInfo,
+                      ilkData,
+                      account,
+                      proxyAddress,
+                      collateralAllowance,
+                      daiAllowance,
+                      safeConfirmations: context.safeConfirmations,
+                      etherscan: context.etherscan.url,
+                      errorMessages: [],
+                      warningMessages: [],
+                      summary: defaultManageVaultSummary,
+                      slippage: zero,
+                      exchangeError: false,
+                      initialTotalSteps,
+                      totalSteps: initialTotalSteps,
+                      currentStep: 1,
+                      vaultHistory: [],
+                      toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+                      clear: () => change({ kind: 'clear' }),
+                      gasEstimationStatus: GasEstimationStatus.unset,
+                      invalidSlippage: false,
+                      injectStateOverride,
+                      makerOracleTokenPrices: {
+                        today: tokenPriceToday,
+                        sevenDaysAgo: tokenPriceSevenDaysAgo,
+                      },
+                    }
 
-                  const stateSubject$ = new Subject<ManageMultiplyVaultState>()
-                  const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
+                    const stateSubject$ = new Subject<ManageMultiplyVaultState>()
+                    const stateSubjectShared$ = stateSubject$.pipe(shareReplay(1))
 
-                  const environmentChanges$ = merge(
-                    priceInfoChange$(priceInfo$, vault.token),
-                    balanceInfoChange$(balanceInfo$, vault.token, account),
-                    createIlkDataChange$(ilkData$, vault.ilk),
-                    createVaultChange$(vault$, id, context.chainId),
-                    createHistoryChange$(vaultHistory$, id),
-                  )
+                    const environmentChanges$ = merge(
+                      priceInfoChange$(priceInfo$, vault.token),
+                      balanceInfoChange$(balanceInfo$, vault.token, account),
+                      createIlkDataChange$(ilkData$, vault.ilk),
+                      createVaultChange$(vault$, id, context.chainId),
+                      createHistoryChange$(vaultHistory$, id),
+                    )
 
-                  const guniDataChange$ = environmentChanges$.pipe(
-                    withLatestFrom(stateSubjectShared$),
-                    switchMap(([_, state]) => {
-                      return getProportions$(vault.lockedCollateral, vault.token).pipe(
-                        switchMap(({ sharedAmount0, sharedAmount1 }) => {
-                          const requiredDebt = vault.debt
-                          const { token1 } = getToken(vault.token) // USDC
+                    const guniDataChange$ = environmentChanges$.pipe(
+                      withLatestFrom(stateSubjectShared$),
+                      switchMap(([_, state]) => {
+                        return getProportions$(vault.lockedCollateral, vault.token).pipe(
+                          switchMap(({ sharedAmount0, sharedAmount1 }) => {
+                            const requiredDebt = vault.debt
+                            const { token1 } = getToken(vault.token) // USDC
 
-                          return exchangeQuote$(
-                            token1!,
-                            state.slippage,
-                            sharedAmount1.minus(0.01),
-                            'SELL_COLLATERAL',
-                            'noFeesExchange',
-                          ).pipe(
-                            map((swap) => {
-                              if (swap.status !== 'SUCCESS') {
-                                return of({ kind: 'exchangeError' })
-                              }
+                            return exchangeQuote$(
+                              token1!,
+                              state.slippage,
+                              sharedAmount1.minus(0.01),
+                              'SELL_COLLATERAL',
+                              'noFeesExchange',
+                            ).pipe(
+                              map((swap) => {
+                                if (swap.status !== 'SUCCESS') {
+                                  return of({ kind: 'exchangeError' })
+                                }
 
-                              return {
-                                kind: 'guniTxData',
-                                swap,
-                                sharedAmount0,
-                                sharedAmount1: sharedAmount1.minus(0.01),
-                                requiredDebt,
-                                fromTokenAmount: swap.collateralAmount,
-                                toTokenAmount: swap.daiAmount,
-                                minToTokenAmount: swap.daiAmount.times(one.minus(state.slippage)),
-                              }
-                            }),
-                          )
-                        }),
-                      )
-                    }),
-                  )
+                                return {
+                                  kind: 'guniTxData',
+                                  swap,
+                                  sharedAmount0,
+                                  sharedAmount1: sharedAmount1.minus(0.01),
+                                  requiredDebt,
+                                  fromTokenAmount: swap.collateralAmount,
+                                  toTokenAmount: swap.daiAmount,
+                                  minToTokenAmount: swap.daiAmount.times(one.minus(state.slippage)),
+                                }
+                              }),
+                            )
+                          }),
+                        )
+                      }),
+                    )
 
-                  const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
+                    const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
 
-                  return merge(change$, environmentChanges$, guniDataChange$).pipe(
-                    scan(apply, initialState),
-                    map(validateErrors),
-                    map(validateWarnings),
-                    switchMap(curry(applyGuniManageEstimateGas)(addGasEstimation$)),
-                    map(finalValidation),
-                    map(curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change)),
-                    tap((state) => stateSubject$.next(state)),
-                  )
-                }),
-              )
-            }),
+                    return merge(change$, environmentChanges$, guniDataChange$).pipe(
+                      scan(apply, initialState),
+                      map(validateErrors),
+                      map(validateWarnings),
+                      switchMap(curry(applyGuniManageEstimateGas)(addGasEstimation$)),
+                      map(finalValidation),
+                      map(
+                        curry(addTransitions)(txHelpers$, context, connectedProxyAddress$, change),
+                      ),
+                      tap((state) => stateSubject$.next(state)),
+                    )
+                  }),
+                )
+              },
+            ),
           )
         }),
       )

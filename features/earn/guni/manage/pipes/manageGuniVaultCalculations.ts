@@ -15,7 +15,7 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
     sharedAmount1,
     minToTokenAmount,
     vaultHistory,
-    historicalTokenPrices,
+    makerOracleTokenPrices: { today, sevenDaysAgo },
   } = state
 
   const netValueUSD = lockedCollateralUSD.minus(debt)
@@ -25,10 +25,10 @@ export function applyGuniCalculations(state: ManageEarnVaultState & GuniTxData) 
   const netEarnings = calculateNetEarnings(vaultHistory, netValueUSD)
 
   const netAPY = calculateYield(
-    historicalTokenPrices.price7,
-    historicalTokenPrices.price,
+    sevenDaysAgo.price,
+    today.price,
     state.ilkData.stabilityFee,
-    7,
+    today.timestamp.diff(sevenDaysAgo.timestamp, 'days', true),
     state.multiply,
   )
 
