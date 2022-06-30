@@ -249,6 +249,13 @@ export function VaultLiquidatedNotice({
   const header = isVaultController
     ? t('vault-notices.liquidated.header1')
     : t('vault-notices.liquidated.header2')
+
+  const fallbackSubheader = controller
+    ? `${t('vault-notices.liquidated.subheader3')} ${t('vault-notices.liquidated.subheader4', {
+        address: formatAddress(controller),
+      })}`
+    : t('vault-notices.liquidated.subheader3')
+
   const subheader =
     unlockedCollateral.gt(zero) &&
     (isVaultController ? (
@@ -262,12 +269,8 @@ export function VaultLiquidatedNotice({
         </Text>
         <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
       </>
-    ) : controller ? (
-      `${t('vault-notices.liquidated.subheader3')} ${t('vault-notices.liquidated.subheader4', {
-        address: formatAddress(controller),
-      })}`
     ) : (
-      t('vault-notices.liquidated.subheader3')
+      fallbackSubheader
     ))
 
   return (
@@ -353,8 +356,8 @@ export function VaultNextPriceUpdateCounter({
         // is set to 0 so it goes into finished state immediately.
         useEffect(() => {
           if (hasHitThreshold && remainingTime && remainingTime > 0) {
-            setConfig(({ key }) => ({
-              key: key - 1,
+            setConfig(({ key: _key }) => ({
+              key: _key - 1,
               duration: 0,
             }))
           }
