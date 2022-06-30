@@ -16,10 +16,7 @@ import {
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
-import {
-  failedStatuses,
-  progressStatuses,
-} from 'features/automation/protection/common/consts/txStatues'
+import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import {
   BASIC_SELL_FORM_CHANGE,
