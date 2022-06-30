@@ -20,14 +20,14 @@ interface AutoSellInfoSectionControlProps {
 function AutoSellInfoSectionControl({ cancelTxData, vault }: AutoSellInfoSectionControlProps) {
   const { addGasEstimation$ } = useAppContext()
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
+  const cancelTriggerGasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
       ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
     )
   }, [cancelTxData])
 
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
+  const [addTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
 
   return (

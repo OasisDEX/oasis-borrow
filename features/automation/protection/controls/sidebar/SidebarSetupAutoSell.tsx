@@ -40,7 +40,7 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupAutoBuyProps {
+interface SidebarSetupAutoSellProps {
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
@@ -60,7 +60,7 @@ export function SidebarSetupAutoSell({
   isAutoSellActive,
   txHelpers,
   context,
-}: SidebarSetupAutoBuyProps) {
+}: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
