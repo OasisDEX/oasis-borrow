@@ -1341,6 +1341,84 @@
     }
   },
   "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
+
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
+  },
+
+  "basic-buy-sell-generic": {
+    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
+  },
+
+  "auto-sell": {
+    "sell-title": "Basic Auto Sell Summary",
+    "cancel-summary-title": "Cancel Auto-Sell order summary",
+    "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
+    "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
+    "target-multiple-each-sell": "Target Multiple after each sell",
+    "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
+    "next-sell-prices": "Next sell price(s)",
+    "setup-transaction-cost": "Setup transaction cost",
+    "slippage-limit": "Slippage Limit",
+    "collateral-after-next-sell": "Collateral after next sell",
+    "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
+    "eth-to-be-sold": "ETH to be sold at next sell",
+    "estimated-transaction-cost": "Estimated transaction cost",
+    "title": "Auto sell",
+    "add-form-title": "Auto Sell-Setup",
+    "edit-form-title": "Edit Auto-Sell",
+    "setting-form-title": "Setting Auto-Sell",
+    "cancelling-form-title": "Cancelling Auto-Sell",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Basic-Sell Protection Enabled",
+    "trigger-cancelled": "Basic-Sell cancellation completed",
+    "trigger-updated": "Basic-Sell Protection Updated",
+    "next-sell-price": "Next sell price: {{amount}}",
+    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
+    "target-col-ratio-after-selling": "Target Col. Ratio after selling",
+    "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}",
+    "sell-trigger-ratio": "Sell Trigger Ratio",
+    "target-coll-ratio": "Target Col Ratio (After Sell)",
+    "set-min-sell-price": "Set Min Sell Price",
+    "banner": {
+      "header": "Set up Auto Sell",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Setup Auto Sell"
+    }
+  },
+
+  "auto-buy": {
+    "title": "Auto buy",
+    "form-title": "Auto Buy Setup",
+    "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
+    "min-ratio": "min. ratio with Stop-Loss/basic sell",
+    "next-buy-price": "Next buy price: {{amount}}",
+    "set-max-buy-price": "Set Max Buy Price",
+    "target-col-ratio-after-buying": "Target Col. Ratio after buying",
+    "target-coll-ratio": "Target Col Ratio",
+    "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
+    "trigger-coll-ratio": "Trigger Col Ratio",
+
+    "buy-title": "Basic Auto Sell Summary",
+    "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
+    "target-multiple-each-buy": "Target Multiple after each buy",
+    "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
+    "next-buy-prices": "Next buy price(s)",
+    "total-cost-of-next-buy": "Total cost of next ETH buy",
+    "collateral-after-next-buy": "Collateral after next buy",
+    "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
+    "eth-to-be-purchased": "ETH to be purchased at next buy",
+    "banner": {
+      "header": "Set up Auto Buy",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+      "button": "Setup Auto Buy"
+    },
+    "setting-auto-buy": "Setting up your Auto-Buy",
+    "cancelling-auto-buy": "Cancelling your Auto-Buy"
+  },
   "ref": {
     "banner": "Introducing Refer a Friend. Earn DAI today",
     "ref-a-friend": "Refer a Friend",
@@ -1394,83 +1472,6 @@
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
-    },
-    "simulate-faq": {
-      "contents": "Contents",
-      "learn-more-heading": "Want to know more?",
-      "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
-    },
-
-    "basic-buy-sell-generic": {
-      "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
-      "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
-    },
-
-    "auto-sell": {
-      "sell-title": "Basic Auto Sell Summary",
-      "cancel-summary-title": "Cancel Auto-Sell order summary",
-      "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
-      "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
-      "target-multiple-each-sell": "Target Multiple after each sell",
-      "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
-      "next-sell-prices": "Next sell price(s)",
-      "setup-transaction-cost": "Setup transaction cost",
-      "slippage-limit": "Slippage Limit",
-      "collateral-after-next-sell": "Collateral after next sell",
-      "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
-      "eth-to-be-sold": "ETH to be sold at next sell",
-      "estimated-transaction-cost": "Estimated transaction cost",
-      "title": "Auto sell",
-      "add-form-title": "Auto Sell-Setup",
-      "edit-form-title": "Edit Auto-Sell",
-      "setting-form-title": "Setting Auto-Sell",
-      "cancelling-form-title": "Cancelling Auto-Sell",
-      "cancel-form-title": "Cancellation confirmation",
-      "trigger-added": "Basic-Sell Protection Enabled",
-      "trigger-cancelled": "Basic-Sell cancellation completed",
-      "trigger-updated": "Basic-Sell Protection Updated",
-      "next-sell-price": "Next sell price: {{amount}}",
-      "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
-      "target-col-ratio-after-selling": "Target Col. Ratio after selling",
-      "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}",
-      "sell-trigger-ratio": "Sell Trigger Ratio",
-      "target-coll-ratio": "Target Col Ratio (After Sell)",
-      "set-min-sell-price": "Set Min Sell Price",
-      "banner": {
-        "header": "Set up Auto Sell",
-        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
-        "button": "Setup Auto Sell"
-      }
-    },
-
-    "auto-buy": {
-      "title": "Auto buy",
-      "form-title": "Auto Buy Setup",
-      "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
-      "min-ratio": "min. ratio with Stop-Loss/basic sell",
-      "next-buy-price": "Next buy price: {{amount}}",
-      "set-max-buy-price": "Set Max Buy Price",
-      "target-col-ratio-after-buying": "Target Col. Ratio after buying",
-      "target-coll-ratio": "Target Col Ratio",
-      "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
-      "trigger-coll-ratio": "Trigger Col Ratio",
-
-      "buy-title": "Basic Auto Sell Summary",
-      "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
-      "target-multiple-each-buy": "Target Multiple after each buy",
-      "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
-      "next-buy-prices": "Next buy price(s)",
-      "total-cost-of-next-buy": "Total cost of next ETH buy",
-      "collateral-after-next-buy": "Collateral after next buy",
-      "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
-      "eth-to-be-purchased": "ETH to be purchased at next buy",
-      "banner": {
-        "header": "Set up Auto Buy",
-        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
-        "button": "Setup Auto Buy"
-      },
-      "setting-auto-buy": "Setting up your Auto-Buy",
-      "cancelling-auto-buy": "Cancelling your Auto-Buy"
     }
   }
 }
