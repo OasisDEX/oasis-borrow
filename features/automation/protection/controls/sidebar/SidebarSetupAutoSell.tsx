@@ -199,7 +199,7 @@ export function SidebarSetupAutoSell({
                   addTxData,
                   uiChanges,
                   priceInfo.currentEthPrice,
-                  'sell',
+                  BASIC_SELL_FORM_CHANGE,
                 )
               }
               if (isRemoveForm) {
@@ -208,7 +208,7 @@ export function SidebarSetupAutoSell({
                   cancelTxData,
                   uiChanges,
                   priceInfo.currentEthPrice,
-                  'sell',
+                  BASIC_SELL_FORM_CHANGE,
                 )
               }
             }

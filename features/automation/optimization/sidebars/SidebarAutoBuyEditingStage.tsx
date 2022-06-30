@@ -23,7 +23,6 @@ import { GasEstimationStatus } from 'helpers/form'
 import { handleNumericInput } from 'helpers/input'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
@@ -52,8 +51,6 @@ export function SidebarAutoBuyEditingStage({
 
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-  //   const max = basicBuyState.targetCollRatio ? basicBuyState.targetCollRatio.toNumber() : 500
-  const [uiStateBasicBuy] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
 
   return (
     <>
@@ -71,8 +68,8 @@ export function SidebarAutoBuyEditingStage({
           })
         }}
         value={{
-          value0: uiStateBasicBuy.targetCollRatio.toNumber(),
-          value1: uiStateBasicBuy.execCollRatio.toNumber(),
+          value0: basicBuyState.targetCollRatio.toNumber(),
+          value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
           value1: 'onSuccess',
@@ -83,8 +80,8 @@ export function SidebarAutoBuyEditingStage({
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
-        amount={uiStateBasicBuy.maxBuyOrMinSellPrice}
-        hasAuxiliary={true}
+        amount={basicBuyState.maxBuyOrMinSellPrice}
+        hasAuxiliary={false}
         hasError={false}
         currencyCode="USD"
         onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
@@ -99,11 +96,11 @@ export function SidebarAutoBuyEditingStage({
             withThreshold: toggleStatus,
           })
         }}
-        onAuxiliaryChange={() => {}}
         showToggle={true}
         toggleOnLabel={t('protection.set-no-threshold')}
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
+        defaultToggle={basicBuyState.withThreshold}
       />
 
       <SidebarResetButton
@@ -202,7 +199,6 @@ function AutoBuyInfoSectionControl({
       }}
       ethToBePurchased={collateralDelta.abs()}
       estimatedTransactionCost={gasEstimation}
-      //   token={vault.token}
     />
   )
 }

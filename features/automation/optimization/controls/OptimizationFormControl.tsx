@@ -34,7 +34,6 @@ export function OptimizationFormControl({
   const props: SidebarSetupAutoBuyProps = {
     isAutoBuyOn: basicBuyTriggerData.isTriggerEnabled,
     vault,
-    // maxGasPercentagePrice: uiState.maxGasPercentagePrice,
     priceInfo,
     autoBuyTriggerData: basicBuyTriggerData,
     ilkData: ilkData,

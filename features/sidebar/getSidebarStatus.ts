@@ -27,6 +27,11 @@ function getSidebarProgressTxInProgressKey({
       return 'protection.setting-auto-sell'
     case 'cancelBasicSell':
       return 'protection.cancelling-auto-sell'
+    case 'cancelBasicBuy':
+      return 'auto-buy.cancelling-auto-buy'
+    case 'addBasicBuy':
+    case 'editBasicBuy':
+      return 'auto-buy.setting-auto-buy'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -44,6 +49,9 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'addBasicSell':
     case 'editBasicSell':
     case 'cancelBasicSell':
+    case 'addBasicBuy':
+    case 'editBasicBuy':
+    case 'cancelBasicBuy':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)

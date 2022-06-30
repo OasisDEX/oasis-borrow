@@ -12,6 +12,7 @@ const flowsWithoutProxy = [
   'addBasicBuy',
   'cancelBasicBuy',
   'editBasicSell',
+  'editBasicBuy',
 ]
 const UNREACHABLE_CASE_MESSAGE = ''
 
@@ -43,6 +44,7 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'addBasicBuy':
     case 'cancelBasicBuy':
     case 'editBasicSell':
+    case 'editBasicBuy':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'
@@ -99,6 +101,7 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'addBasicBuy':
     case 'cancelBasicBuy':
     case 'editBasicSell':
+    case 'editBasicBuy':
       return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE

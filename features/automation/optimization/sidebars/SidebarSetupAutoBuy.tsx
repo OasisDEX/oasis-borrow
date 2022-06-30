@@ -15,6 +15,7 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
+import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
   failedStatuses,
   progressStatuses,
@@ -29,13 +30,15 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
+import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoBuyAdditionStage } from './SidebarAutoBuyAdditionStage'
+import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
@@ -44,7 +47,6 @@ export interface SidebarSetupAutoBuyProps {
   vault: Vault
   autoBuyTriggerData: BasicBSTriggerData
   ilkData: IlkData
-  // maxGasPercentagePrice?: MaxGasPriceValues
   priceInfo: PriceInfo
   txHelpers?: TxHelpers
   context: Context
@@ -55,16 +57,13 @@ export function SidebarSetupAutoBuy({
   vault,
   ilkData,
   autoBuyTriggerData,
-  // maxGasPercentagePrice,
   priceInfo,
   context,
   txHelpers,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges /*, txHelpers$, context$*/ } = useAppContext()
-  // const [txHelpers] = useObservable(txHelpers$)
-  // const [context] = useObservable(context$)
+  const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const txStatus = uiState?.txDetails?.txStatus
@@ -97,6 +96,7 @@ export function SidebarSetupAutoBuy({
       uiState.targetCollRatio.toNumber(),
       uiState.maxBuyOrMinSellPrice?.toNumber(),
       uiState.triggerId.toNumber(),
+      vault.collateralizationRatio.toNumber(),
     ],
   )
 
@@ -108,17 +108,38 @@ export function SidebarSetupAutoBuy({
 
   const isAddForm = uiState.currentForm === 'add'
   const isRemoveForm = uiState.currentForm === 'remove'
+  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice)
   const isEditing =
     !autoBuyTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio) ||
-    !autoBuyTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio)
-  !autoBuyTriggerData.triggerId.isZero() || isRemoveForm // TODO ŁW check also maxBuyOrMinSellPrice
+    !autoBuyTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio) ||
+    (maxBuyOrMinSellPrice?.toNumber() !== uiState.maxBuyOrMinSellPrice?.toNumber() &&
+      !autoBuyTriggerData.triggerId.isZero()) ||
+    isRemoveForm
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
-  // TODO ŁW - adjust isDisabled, when min max will be defined, apply validations etc.
   const isDisabled =
-    (isProgressStage !== undefined && isProgressStage) || !isOwner || (isAddForm && !isEditing)
-  const flow = isAddForm ? 'addBasicBuy' : 'cancelBasicBuy'
-  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage }) // TODO ŁW returns setup proxy as no proxy is passed, can't get how the same method returns confirm in basic sell ŁW
+    (isProgressStage ||
+      !isOwner ||
+      !isEditing ||
+      (uiState.withThreshold &&
+        (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
+      uiState.execCollRatio.isZero()) &&
+    stage !== 'txSuccess'
+
+  const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
+  const flow: SidebarFlow = isRemoveForm
+    ? 'cancelBasicBuy'
+    : isFirstSetup
+    ? 'addBasicBuy'
+    : 'editBasicBuy'
+  const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
+
+  const sidebarStatus = getSidebarStatus({
+    stage,
+    txHash: uiState.txDetails?.txHash,
+    flow,
+    etherscan: context.etherscan.url,
+  })
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -149,7 +170,7 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoBuyAdditionStage stage={stage} />
+            <SidebarAutoBuyCreationStage stage={stage} />
           )}
         </Grid>
       ),
@@ -170,7 +191,13 @@ export function SidebarSetupAutoBuy({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'buy')
+                addBasicBSTrigger(
+                  txHelpers,
+                  addTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  BASIC_BUY_FORM_CHANGE,
+                )
               }
               if (isRemoveForm) {
                 removeBasicBSTrigger(
@@ -178,7 +205,7 @@ export function SidebarSetupAutoBuy({
                   cancelTxData,
                   uiChanges,
                   priceInfo.currentEthPrice,
-                  'buy',
+                  BASIC_BUY_FORM_CHANGE,
                 )
               }
             }
@@ -197,6 +224,7 @@ export function SidebarSetupAutoBuy({
           },
         },
       }),
+      status: sidebarStatus,
     }
 
     return <SidebarSection {...sidebarSectionProps} />

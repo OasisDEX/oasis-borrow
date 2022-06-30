@@ -5,11 +5,11 @@ import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-interface SidebarAutoBuyAdditionStageProps {
+interface SidebarAutoBuyCreationStageProps {
   stage: SidebarVaultStages
 }
 
-export function SidebarAutoBuyAdditionStage({ stage }: SidebarAutoBuyAdditionStageProps) {
+export function SidebarAutoBuyCreationStage({ stage }: SidebarAutoBuyCreationStageProps) {
   switch (stage) {
     case 'txInProgress':
       return (

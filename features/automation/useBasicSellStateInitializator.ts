@@ -33,8 +33,6 @@ export function useBasicBSstateInitialization(
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
   const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)
 
-  console.log('maxBuyOrMinSellPrice.isZero() ', maxBuyOrMinSellPrice.isZero())
-
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'trigger-id',
