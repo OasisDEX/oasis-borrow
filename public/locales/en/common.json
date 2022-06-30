@@ -46,6 +46,8 @@
   "balance": "Balance",
   "balance-insufficient": "Not enough Dai in your wallet",
   "balances": "Balances",
+  "adding-auto-buy": "Adding Auto-Buy trigger",
+  "cancelling-auto-buy": "Removing Auto-Buy trigger",
   "buy": "Buy",
   "careers": {
     "heading": "Open Roles",
@@ -1410,6 +1412,8 @@
       "header": "Set up Auto Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
       "button": "Setup Auto Buy"
-    }
+    },
+    "setting-auto-buy": "Setting up your Auto-Buy",
+    "cancelling-auto-buy": "Cancelling your Auto-Buy"
   }
 }

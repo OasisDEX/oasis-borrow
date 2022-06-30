@@ -24,10 +24,10 @@ import { Divider, Flex, Image, Text } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
+import { progressStatuses } from '../../common/txStatues'
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
-import { progressStatuses } from '../common/consts/txStatues'
 
 interface CancelDownsideProtectionInformationProps {
   gasEstimationText: ReactNode
