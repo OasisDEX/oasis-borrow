@@ -1,49 +1,49 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
+import moment from 'moment'
 import { Observable } from 'rxjs'
-import { map, switchMap } from 'rxjs/operators'
+import { first, map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../blockchain/network'
 
-const historicalPriceQuery = gql`
-  query prices($token: String!) {
-    allHistoricTokenPrices(filter: { token: { equalTo: $token } }) {
-      nodes {
+const makerOraclePrice = gql`
+  mutation prices($token: String!, $date: Datetime) {
+    makerOracleTokenPrices(input: { token: $token, date: $date }) {
+      tokenPrice {
         token
         price
-        price7
-        price30
-        price90
+        timestamp
       }
     }
   }
 `
 
-export interface HistoricalTokenPrices {
+export interface MakerOracleTokenPrice {
   token: string
   price: BigNumber
-  price7: BigNumber
-  price30: BigNumber
-  price90: BigNumber
+  timestamp: moment.Moment
 }
 
 export function createMakerOracleTokenPrices$(
   context$: Observable<Context>,
   token: string,
-): Observable<HistoricalTokenPrices> {
+  timestamp: moment.Moment,
+): Observable<MakerOracleTokenPrice> {
   return context$.pipe(
+    first(),
     switchMap(({ cacheApi }) => {
       const apiClient = new GraphQLClient(cacheApi)
-      return apiClient.request(historicalPriceQuery, { token })
+      return apiClient.request(makerOraclePrice, {
+        token,
+        date: timestamp.toISOString(),
+      })
     }),
     map((apiResponse) => {
       const respRaw = apiResponse.allHistoricTokenPrices.nodes[0]
       return {
         token: respRaw.token,
         price: new BigNumber(respRaw.price),
-        price7: new BigNumber(respRaw.price7),
-        price30: new BigNumber(respRaw.price30),
-        price90: new BigNumber(respRaw.price90),
+        timestamp: respRaw.timestamp,
       }
     }),
   )
