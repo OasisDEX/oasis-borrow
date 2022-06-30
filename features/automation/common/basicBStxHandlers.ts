@@ -8,7 +8,10 @@ import {
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxHelpers, UIChanges } from 'components/AppContext'
-import { BASIC_BUY_FORM_CHANGE, BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
@@ -41,11 +44,7 @@ function handleTriggerTx({
       ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
       : zero
 
-  console.log('txState inside handleTriggerTx')
-  console.log(txState)
-// TODO ŁW - handle basic buy
   const changeType = formChanged === 'buy' ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
-  console.log({changeType})
   uiChanges.publish(changeType, {
     type: 'tx-details',
     txDetails: {

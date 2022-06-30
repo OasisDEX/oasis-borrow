@@ -39,8 +39,11 @@ export function OptimizationControl({ vault, ilkData }: OptimizationControlProps
               />
             }
             editForm={
-              <OptimizationFormControl vault={vault} automationTriggersData={automationTriggers}                       ilkData={ilkData}
-              priceInfo={priceInfo}
+              <OptimizationFormControl
+                vault={vault}
+                automationTriggersData={automationTriggers}
+                ilkData={ilkData}
+                priceInfo={priceInfo}
               />
             }
           />

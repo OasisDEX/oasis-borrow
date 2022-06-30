@@ -41,10 +41,6 @@ export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
   action: BasicBSChangeAction,
 ): BasicBSFormChange {
-  console.log('state')
-  console.log(state)
-  console.log('action')
-  console.log(action)
   switch (action.type) {
     case 'trigger-id':
       return { ...state, triggerId: action.triggerId }

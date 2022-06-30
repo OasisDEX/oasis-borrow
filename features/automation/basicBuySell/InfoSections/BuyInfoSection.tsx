@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { DropDownValue } from 'components/infoSection/Item'
 import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -50,7 +49,6 @@ export function BuyInfoSection({
   const { t } = useTranslation()
 
   const ratioToPerformBuyFormatted = formatPercent(execCollRatio, { precision: 2 })
-
 
   return (
     <InfoSection

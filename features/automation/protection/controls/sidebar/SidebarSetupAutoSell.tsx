@@ -37,7 +37,8 @@ import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupAutoBuyProps { //TODO ŁW Auto sell
+interface SidebarSetupAutoBuyProps {
+  //TODO ŁW Auto sell
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
@@ -115,9 +116,6 @@ export function SidebarSetupAutoSell({
     ? 'txFailure'
     : 'editing'
 
-  console.log('stage sell')
-  console.log(stage)
-
   const isOwner = context.status === 'connected' && context.account === vault.controller
   const isDisabled =
     (isProgressStage ||
@@ -193,10 +191,22 @@ export function SidebarSetupAutoSell({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
+                addBasicBSTrigger(
+                  txHelpers,
+                  addTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  'sell',
+                )
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
+                removeBasicBSTrigger(
+                  txHelpers,
+                  cancelTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  'sell',
+                )
               }
             }
           }

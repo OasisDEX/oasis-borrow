@@ -121,7 +121,6 @@ export function SidebarAutoSellAddEditingStage({
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
   const max = uiStateBasicBuy.targetCollRatio ? uiStateBasicBuy.targetCollRatio.toNumber() : 500
-  console.log(basicSellState)
 
   return (
     <>

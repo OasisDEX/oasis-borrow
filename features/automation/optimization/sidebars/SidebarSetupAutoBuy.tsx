@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import { IlkData } from 'blockchain/ilks'
-import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -25,7 +24,6 @@ import {
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
-  CurrentBSForm,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
@@ -35,6 +33,7 @@ import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { useMemo } from 'react'
 import { Grid } from 'theme-ui'
+
 import { SidebarAutoBuyAdditionStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
@@ -44,7 +43,6 @@ export interface SidebarSetupAutoBuyProps {
   vault: Vault
   autoBuyTriggerData: BasicBSTriggerData
   ilkData: IlkData
-  currentForm: CurrentBSForm
   // maxGasPercentagePrice?: MaxGasPriceValues
   priceInfo: PriceInfo
   // context: Context
@@ -55,7 +53,6 @@ export function SidebarSetupAutoBuy({
   vault,
   ilkData,
   autoBuyTriggerData,
-  currentForm,
   // maxGasPercentagePrice,
   priceInfo,
 }: // context,
@@ -69,10 +66,6 @@ SidebarSetupAutoBuyProps) {
   // TODO ŁW move stuff from uiState to props, init uiState in OptimizationFormControl pass props
 
   const txStatus = uiState?.txDetails?.txStatus
-  console.log('uiState buy')
-  console.log(uiState)
-  console.log('txStatus')
-  console.log(txStatus)
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
   const isProgressStage = txStatus && progressStatuses.includes(txStatus)
   const isSuccessStage = txStatus === TxStatus.Success
@@ -84,9 +77,6 @@ SidebarSetupAutoBuyProps) {
     : isFailureStage
     ? 'txFailure'
     : 'editing'
-  // Why stage is not changing !?
-  console.log('stage')
-  console.log(stage)
 
   const addTxData = useMemo(
     () =>
@@ -123,7 +113,8 @@ SidebarSetupAutoBuyProps) {
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
   // TODO ŁW - adjust isDisabled, when min max will be defined, apply validations etc.
-  const isDisabled = (isProgressStage != undefined && isProgressStage) || !isOwner || (isAddForm && !isEditing)
+  const isDisabled =
+    (isProgressStage !== undefined && isProgressStage) || !isOwner || (isAddForm && !isEditing)
   const flow = isAddForm ? 'addBasicBuy' : 'cancelBasicBuy'
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage }) // TODO ŁW returns setup proxy as no proxy is passed, can't get how the same method returns confirm in basic sell ŁW
 
