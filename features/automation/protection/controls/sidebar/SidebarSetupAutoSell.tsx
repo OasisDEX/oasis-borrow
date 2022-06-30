@@ -194,10 +194,22 @@ export function SidebarSetupAutoSell({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
+                addBasicBSTrigger(
+                  txHelpers,
+                  addTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  'sell',
+                )
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice, 'sell')
+                removeBasicBSTrigger(
+                  txHelpers,
+                  cancelTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  'sell',
+                )
               }
             }
           }
