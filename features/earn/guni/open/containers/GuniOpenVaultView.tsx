@@ -22,7 +22,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
         {(openVault) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer
-              header={<GuniVaultHeader {...openVault} />}
+              header={<GuniVaultHeader token={openVault.token} ilk={openVault.ilk} />}
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
               faq={guniFaq}
