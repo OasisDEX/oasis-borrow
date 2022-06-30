@@ -65,7 +65,7 @@ export function createMakerOracleTokenPrices$(
   )
 }
 
-export function createMakerOracleTokenPricesInDates$(
+export function createMakerOracleTokenPricesForDates$(
   context$: Observable<Context>,
   token: string,
   timestamps: moment.Moment[],
