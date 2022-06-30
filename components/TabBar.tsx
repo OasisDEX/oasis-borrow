@@ -1,10 +1,12 @@
-import { reactSelectCustomComponents } from 'components/reactSelectCustomComponents'
 import { useHash } from 'helpers/useHash'
 import React, { useEffect, useMemo } from 'react'
 import ReactSelect from 'react-select'
-import { Box, Flex, Grid } from 'theme-ui'
+import { Box, Card, Flex, Grid } from 'theme-ui'
 
+import { ChevronUpDown } from './ChevronUpDown'
 import { Tab, TabVariant } from './Tab'
+import { VaultTabTag } from './vault/VaultTabTag'
+import { SelectComponents } from 'react-select/src/components'
 
 export type TabSection = {
   value: string
@@ -29,7 +31,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
 
   useEffect(() => setHash(sections[0]?.value), [])
   useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
-  const selectComponents = useMemo(() => reactSelectCustomComponents(), [])
+  const selectComponents = useMemo(() => selectCustomComponents(), [])
 
   function isSelected(section: TabSection) {
     return `#${section.value}` === hash
@@ -145,3 +147,88 @@ function TabBarWrapper({ sections, variant, isSelected, onClick }: TabsWrapperPr
     </Flex>
   )
 }
+
+export const selectCustomComponents = (): Partial<SelectComponents<TabSection>> => ({
+  IndicatorsContainer: () => null,
+  ValueContainer: ({ children }) => (
+    <Flex
+      sx={{
+        color: 'primary',
+        fontWeight: 'body',
+        fontSize: '18px',
+        backgroundColor: 'white',
+      }}
+    >
+      {children}
+    </Flex>
+  ),
+  SingleValue: ({ data }) => {
+    return (
+      <Flex sx={{ alignItems: 'center' }}>
+        {data.label}
+        {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+      </Flex>
+    )
+  },
+  Option: ({ innerProps, isSelected, data }) => {
+    return (
+      <Box
+        {...innerProps}
+        sx={{
+          py: 2,
+          px: 3,
+          bg: isSelected ? 'selected' : undefined,
+          cursor: 'pointer',
+          '&:hover': {
+            bg: 'secondaryAlt',
+          },
+        }}
+      >
+        <Flex sx={{ fontWeight: isSelected ? 'semiBold' : 'body', alignItems: 'center' }}>
+          {data.label}
+          {data.tag && <VaultTabTag isEnabled={data.tag.active} />}
+        </Flex>
+      </Box>
+    )
+  },
+  Menu: ({ innerProps, children }) => (
+    <Card
+      {...innerProps}
+      sx={{
+        boxShadow: 'selectMenu',
+        borderRadius: 'medium',
+        border: 'none',
+        p: 0,
+        position: 'absolute',
+        top: '115%',
+        width: '100%',
+        zIndex: 2,
+      }}
+    >
+      {children}
+    </Card>
+  ),
+  Control: ({ innerProps, children, selectProps: { menuIsOpen } }) => (
+    <Box
+      {...innerProps}
+      sx={{
+        cursor: 'pointer',
+        variant: 'links.nav',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontSize: 3,
+        border: '1px solid',
+        borderColor: '#ccc',
+        borderRadius: 'medium',
+        py: '8px',
+        px: '16px',
+        height: '52px',
+        backgroundColor: 'white',
+      }}
+    >
+      {children}
+      <ChevronUpDown isUp={!!menuIsOpen} variant="select" size="auto" width="13.3px" />
+    </Box>
+  ),
+})

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Button } from 'theme-ui'
 
 import { VaultTabTag } from './vault/VaultTabTag'
