@@ -18,7 +18,6 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
@@ -96,13 +95,9 @@ function Pill(props: PillProps) {
   )
 }
 function Pills({ sx }: { sx?: SxProps }) {
-  const enabled = useFeatureToggle('EarnProduct')
-
-  const pills = enabled ? LANDING_PILLS : LANDING_PILLS.filter((pill) => pill.label !== 'DAI')
-
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {pills.map((pill) => (
+      {LANDING_PILLS.map((pill) => (
         <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
     </Flex>
@@ -155,7 +150,6 @@ function Stats({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
-  const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
@@ -255,28 +249,24 @@ export function HomepageView() {
                         />
                       ),
                     },
-                    ...(isEarnEnabled
-                      ? [
-                          {
-                            tabLabel: t('landing.tabs.earn.tabLabel'),
-                            tabContent: (
-                              <TabContent
-                                paraText={
-                                  <>
-                                    {t('landing.tabs.earn.tabParaContent')}{' '}
-                                    <AppLink href="/multiply" variant="inText">
-                                      {t('landing.tabs.earn.tabParaLinkContent')}
-                                    </AppLink>
-                                  </>
-                                }
-                                type="earn"
-                                renderProductCard={ProductCardEarn}
-                                productCardsData={productCardsData}
-                              />
-                            ),
-                          },
-                        ]
-                      : []),
+                    {
+                      tabLabel: t('landing.tabs.earn.tabLabel'),
+                      tabContent: (
+                        <TabContent
+                          paraText={
+                            <>
+                              {t('landing.tabs.earn.tabParaContent')}{' '}
+                              <AppLink href="/multiply" variant="inText">
+                                {t('landing.tabs.earn.tabParaLinkContent')}
+                              </AppLink>
+                            </>
+                          }
+                          type="earn"
+                          renderProductCard={ProductCardEarn}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
                   ]}
                   narrowTabsSx={{
                     display: ['block', 'none'],

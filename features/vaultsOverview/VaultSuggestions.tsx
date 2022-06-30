@@ -21,7 +21,6 @@ import {
   ProductTypes,
 } from '../../helpers/productCards'
 import { WithChildren } from '../../helpers/types'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 
 function filterCards(props: {
@@ -123,7 +122,6 @@ function TabHeaderParagraph({ children }: WithChildren) {
 export function VaultSuggestions(props: { productCardsData: ProductCardData[]; address: string }) {
   const { t } = useTranslation()
   const { productCardsData, address } = props
-  const isEarnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <>
@@ -172,28 +170,24 @@ export function VaultSuggestions(props: { productCardsData: ProductCardData[]; a
               </TabHeaderParagraph>
             ),
           },
-          ...(isEarnEnabled
-            ? [
-                {
-                  tabLabel: t('landing.tabs.earn.tabLabel'),
-                  tabContent: (
-                    <TabContent
-                      type="earn"
-                      renderProductCard={ProductCardEarn}
-                      productCardsData={productCardsData}
-                    />
-                  ),
-                  tabHeaderPara: (
-                    <TabHeaderParagraph>
-                      {t('landing.tabs.earn.tabParaContent')}{' '}
-                      <AppLink href="/multiply" variant="inText">
-                        {t('landing.tabs.earn.tabParaLinkContent')}
-                      </AppLink>
-                    </TabHeaderParagraph>
-                  ),
-                },
-              ]
-            : []),
+          {
+            tabLabel: t('landing.tabs.earn.tabLabel'),
+            tabContent: (
+              <TabContent
+                type="earn"
+                renderProductCard={ProductCardEarn}
+                productCardsData={productCardsData}
+              />
+            ),
+            tabHeaderPara: (
+              <TabHeaderParagraph>
+                {t('landing.tabs.earn.tabParaContent')}{' '}
+                <AppLink href="/multiply" variant="inText">
+                  {t('landing.tabs.earn.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+          },
         ]}
         narrowTabsSx={{
           display: ['block', 'none'],

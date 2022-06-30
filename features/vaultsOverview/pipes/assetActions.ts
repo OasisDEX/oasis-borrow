@@ -7,7 +7,6 @@ import { ContextConnected } from '../../../blockchain/network'
 import { UIChanges } from '../../../components/AppContext'
 import { getProductCategoryUrl, ProductCategory } from '../../../config/product-categories'
 import { mapTokenToFilter, supportedEarnIlks } from '../../../helpers/productCards'
-import { useFeatureToggle } from '../../../helpers/useFeatureToggle'
 import {
   SWAP_WIDGET_CHANGE_SUBJECT,
   SwapWidgetChangeAction,
@@ -106,8 +105,6 @@ export function createAssetActions$(
     {},
   )
 
-  const earnProductEnabled = useFeatureToggle('EarnProduct')
-
   const assetActions$ = context$.pipe(
     switchMap((context) => {
       // todo: move this to product/ilk config per network, or a stream
@@ -141,7 +138,7 @@ export function createAssetActions$(
     }),
 
     map((assetActions) => {
-      if (earnProductEnabled && token === 'DAI') {
+      if (token === 'DAI') {
         return assetActions.filter((assetAction) => {
           return assetAction.text !== 'Multiply'
         })
