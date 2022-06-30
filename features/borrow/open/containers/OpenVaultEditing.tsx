@@ -35,7 +35,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
       <Box>
         <VaultActionInput
           action="Deposit"
-          token={token}
+          currencyCode={token}
           tokenUsdPrice={currentCollateralPrice}
           showMax={true}
           hasAuxiliary={true}
@@ -72,7 +72,7 @@ export function OpenVaultEditing(props: OpenVaultState) {
                 collapsed
                 action="Generate"
                 amount={generateAmount}
-                token={'DAI'}
+                currencyCode={'DAI'}
                 showMax={true}
                 maxAmount={maxGenerateAmount}
                 maxAmountLabel={'Max'}

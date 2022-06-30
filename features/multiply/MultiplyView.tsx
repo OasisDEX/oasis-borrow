@@ -11,15 +11,12 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
   const tab = window.location.hash.replace(/^#/, '')
-
-  const earnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <Grid
@@ -49,9 +46,7 @@ export function MultiplyView() {
         >
           {([productCardsData]) => (
             <ProductCardsFilter
-              filters={productCardsConfig.multiply.cardsFilters.filter(
-                (f) => !(earnEnabled && f.name === 'UNI LP'),
-              )}
+              filters={productCardsConfig.multiply.cardsFilters.filter((f) => f.name !== 'UNI LP')}
               selectedFilter={tab}
             >
               {(cardsFilter) => {

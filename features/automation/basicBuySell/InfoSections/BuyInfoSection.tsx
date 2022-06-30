@@ -1,20 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { DropDownValue } from 'components/infoSection/Item'
+import { formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface BuyInfoSectionProps {
   colRatioAfterBuy: BigNumber
   multipleAfterBuy: BigNumber
-  ratiotoPeformBuy: BigNumber
-  nextBuyPrice: {
-    value: BigNumber
-    dropDownValues: DropDownValue[]
-  }
-  totalCostOfNextBuy: BigNumber
+  // ratiotoPeformBuy: BigNumber
+  nextBuyPrice: BigNumber
+  execCollRatio: BigNumber
+
+  // nextBuyPrice: {
+  //   value: BigNumber
+  //   dropDownValues: DropDownValue[]
+  // }
+  // totalCostOfNextBuy: BigNumber
   slippageLimit: BigNumber
-  collatAfterNextBuy: {
+  collateralAfterNextBuy: {
     value: BigNumber
     secondaryValue: string
   }
@@ -23,25 +26,29 @@ interface BuyInfoSectionProps {
     secondaryValue: BigNumber
   }
   ethToBePurchased: BigNumber
-  estimatedTransactionCost: {
-    value: BigNumber
-    dropDownValues: DropDownValue[]
-  }
+  // estimatedTransactionCost: {
+  //   value: BigNumber
+  //   dropDownValues: DropDownValue[]
+  // }
+  estimatedTransactionCost: string | JSX.Element
 }
 
 export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
-  ratiotoPeformBuy,
+  // ratiotoPeformBuy,
   nextBuyPrice,
-  totalCostOfNextBuy,
+  // totalCostOfNextBuy,
   slippageLimit,
-  collatAfterNextBuy,
+  collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
   ethToBePurchased,
   estimatedTransactionCost,
+  execCollRatio,
 }: BuyInfoSectionProps) {
   const { t } = useTranslation()
+
+  const ratioToPerformBuyFormatted = formatPercent(execCollRatio, { precision: 2 })
 
   return (
     <InfoSection
@@ -57,17 +64,18 @@ export function BuyInfoSection({
         },
         {
           label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-          value: `${ratiotoPeformBuy}%`,
+          value: ratioToPerformBuyFormatted,
         },
         {
           label: t('auto-buy.next-buy-prices'),
-          value: `$${nextBuyPrice.value}`,
-          dropdownValues: nextBuyPrice.dropDownValues,
+          value: `$${nextBuyPrice}`,
+          // value: `$${nextBuyPrice.value}`,
+          // dropdownValues: nextBuyPrice.dropDownValues,
         },
-        {
-          label: t('auto-buy.setup-transaction-cost'),
-          value: `$${totalCostOfNextBuy}`,
-        },
+        // {
+        //   label: t('auto-buy.setup-transaction-cost'),
+        //   value: `$${totalCostOfNextBuy}`,
+        // },
         {
           label: t('auto-buy.slippage-limit'),
           value: `${slippageLimit}%`,
@@ -87,10 +95,14 @@ export function BuyInfoSection({
           value: `${ethToBePurchased} ETH`,
         },
         {
-          label: t('auto-buy.estimated-transaction-cost'),
-          value: `$${estimatedTransactionCost.value}`,
-          dropdownValues: estimatedTransactionCost.dropDownValues,
+          label: t('auto-sell.estimated-transaction-cost'),
+          value: estimatedTransactionCost,
         },
+        // {
+        //   label: t('auto-buy.estimated-transaction-cost'),
+        //   value: `$${estimatedTransactionCost.value}`,
+        //   dropdownValues: estimatedTransactionCost.dropDownValues,
+        // },
       ]}
     />
   )

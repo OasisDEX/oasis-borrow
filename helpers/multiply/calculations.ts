@@ -99,3 +99,21 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
     .minus(cumulativeDepositUSD)
     .div(cumulativeDepositUSD)
 }
+
+export function calculateGrossEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+
+  return currentNetValueUSD.minus(cumulativeDepositUSD).plus(cumulativeWithdrawnUSD)
+}
+
+export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
+
+  return currentNetValueUSD
+    .minus(cumulativeDepositUSD)
+    .plus(cumulativeWithdrawnUSD)
+    .minus(cumulativeFeesUSD)
+}

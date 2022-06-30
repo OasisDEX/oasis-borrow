@@ -7,9 +7,7 @@ import { mockPriceInfo$, MockPriceInfoProps } from 'helpers/mocks/priceInfo.mock
 import { Observable, of } from 'rxjs'
 
 import { IlkData } from '../../blockchain/ilks'
-import { OraclePriceData } from '../../blockchain/prices'
 import { createOpenGuniVault$ } from '../../features/earn/guni/open/pipes/openGuniVault'
-import { Yield, YieldPeriod } from '../../features/earn/yieldCalculations'
 import { BalanceInfo } from '../../features/shared/balanceInfo'
 import { PriceInfo } from '../../features/shared/priceInfo'
 import { MockExchangeQuote, mockExchangeQuote$ } from './exchangeQuote.mock'
@@ -32,9 +30,6 @@ export interface MockGuniEarnVaultProps {
     amount1: BigNumber
     mintAmount: BigNumber
   }>
-  _getYields$?: Observable<Yield>
-  _collateralLocked$?: Observable<BigNumber>
-  _oraclePriceData$?: Observable<OraclePriceData>
 
   ilkData?: MockIlkDataProps
   priceInfo?: MockPriceInfoProps
@@ -47,9 +42,6 @@ export interface MockGuniEarnVaultProps {
   ilk?: string
   exchangeQuote?: MockExchangeQuote
   gasEstimationUsd?: BigNumber
-  yields?: Yield
-  collateralLocked?: BigNumber
-  oraclePriceData?: OraclePriceData
 }
 
 export function mockGuniOpenEarnVault({
@@ -62,9 +54,6 @@ export function mockGuniOpenEarnVault({
   _txHelpers$,
   _token1Balance$,
   _getGuniMintAmount$,
-  _getYields$,
-  _collateralLocked$,
-  _oraclePriceData$,
 
   ilkData,
   priceInfo = { collateralPrice: new BigNumber(1021) },
@@ -76,11 +65,6 @@ export function mockGuniOpenEarnVault({
   ilk = 'GUNIV3DAIUSDC1-A',
   exchangeQuote,
   gasEstimationUsd,
-  yields,
-  collateralLocked = new BigNumber(42_000),
-  oraclePriceData = {
-    currentPrice: new BigNumber(1_000),
-  } as OraclePriceData,
 }: MockGuniEarnVaultProps = {}) {
   const token = ilk.split('-')[0]
 
@@ -129,39 +113,10 @@ export function mockGuniOpenEarnVault({
     )
   }
 
-  const mockYield: Yield = {
-    ilk: ilk,
-    yields: {
-      [YieldPeriod.Yield7Days]: {
-        days: 7,
-        value: new BigNumber(12.0),
-      },
-      [YieldPeriod.Yield30Days]: {
-        days: 30,
-        value: new BigNumber(18),
-      },
-      [YieldPeriod.Yield90Days]: {
-        days: 90,
-        value: new BigNumber(23.3),
-      },
-    },
-  }
-  function getYield() {
-    return _getYields$ || of(yields || mockYield)
-  }
-
   const txHelpers$ = _txHelpers$ || of(protoTxHelpers)
 
   function gasEstimationMock$<T>(state: T) {
     return addGasEstimationMock(state, gasEstimationUsd)
-  }
-
-  function getCollateralLocked() {
-    return _collateralLocked$ || of(collateralLocked)
-  }
-
-  function getOraclePriceData() {
-    return _oraclePriceData$ || of(oraclePriceData)
   }
 
   return createOpenGuniVault$(
@@ -180,8 +135,5 @@ export function mockGuniOpenEarnVault({
     token1Balance$,
     getGuniMintAmount$,
     slippageLimitMock(),
-    getYield,
-    getCollateralLocked,
-    getOraclePriceData,
   )
 }

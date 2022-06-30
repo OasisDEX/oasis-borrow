@@ -30,13 +30,13 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
+import { failedStatuses, progressStatuses } from '../../common/txStatues'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   DEFAULT_SL_SLIDER_BOUNDARY,
   MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MAX_SL_SLIDER_VALUE_OFFSET,
 } from '../common/consts/automationDefaults'
-import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'

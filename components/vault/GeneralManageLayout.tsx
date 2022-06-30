@@ -4,6 +4,7 @@ import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useStopLossStateInitializator } from 'features/automation/protection/useStopLossStateInitializator'
 import { useBasicBSstateInitialization } from 'features/automation/useBasicSellStateInitializator'
+import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
@@ -11,7 +12,7 @@ import { VaultType } from 'features/generalManageVault/vaultType'
 import { VaultNoticesView } from 'features/notices/VaultsNoticesView'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Card, Grid } from 'theme-ui'
 
 import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
 import { HistoryControl } from './HistoryControl'
@@ -52,7 +53,7 @@ export function GeneralManageLayout({
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
-      <GuniVaultHeader {...generalManageVault.state} token={vault.token} />
+      <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />
     ) : (
       <VaultHeadline
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
@@ -60,6 +61,10 @@ export function GeneralManageLayout({
         priceInfo={priceInfo}
       />
     )
+
+  const positionInfo =
+    generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
+
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultNoticesView id={vault.id} />
@@ -79,8 +84,9 @@ export function GeneralManageLayout({
             balanceInfo={balanceInfo}
           />
         }
-        optimizationControl={<OptimizationControl vault={vault} />}
+        optimizationControl={<OptimizationControl vault={vault} ilkData={ilkData} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
+        positionInfo={positionInfo}
         showProtectionTab={showProtectionTab}
         protectionEnabled={isStopLossEnabled || isBasicSellEnabled}
         optimizationEnabled={isBasicBuyEnabled}

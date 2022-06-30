@@ -1,6 +1,8 @@
 import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -22,6 +24,8 @@ interface ProtectionFormControlProps {
   priceInfo: PriceInfo
   vault: Vault
   balanceInfo: BalanceInfo
+  txHelpers?: TxHelpers
+  context: Context
   account?: string
 }
 
@@ -32,9 +36,12 @@ export function ProtectionFormControl({
   vault,
   account,
   balanceInfo,
+  context,
+  txHelpers,
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+  const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
@@ -54,11 +61,18 @@ export function ProtectionFormControl({
         account={account}
         balanceInfo={balanceInfo}
         isStopLossActive={isStopLossActive}
+        context={context}
+        txHelpers={txHelpers}
       />
       <SidebarSetupAutoSell
         vault={vault}
+        ilkData={ilkData}
+        priceInfo={priceInfo}
         autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
         isAutoSellActive={isAutoSellActive}
+        context={context}
+        txHelpers={txHelpers}
       />
     </>
   )
