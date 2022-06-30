@@ -1,11 +1,14 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
@@ -17,10 +20,15 @@ import {
 } from 'features/automation/common/basicBStxHandlers'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
+  errorsBasicSellValidation,
+  warningsBasicSellValidation,
+} from 'features/automation/common/validators'
+import {
   failedStatuses,
   progressStatuses,
 } from 'features/automation/protection/common/consts/txStatues'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -28,12 +36,15 @@ import {
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutoSellCreationStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellCreationStage'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -44,25 +55,33 @@ interface SidebarSetupAutoSellProps {
   vault: Vault
   ilkData: IlkData
   priceInfo: PriceInfo
+  balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
   isAutoSellActive: boolean
-  txHelpers?: TxHelpers
   context: Context
+  ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
+  txHelpers?: TxHelpers
 }
 
 export function SidebarSetupAutoSell({
   vault,
   ilkData,
   priceInfo,
+  balanceInfo,
   autoSellTriggerData,
   autoBuyTriggerData,
+  stopLossTriggerData,
   isAutoSellActive,
   txHelpers,
   context,
+  ethMarketPrice,
+  tokenMarketPrice,
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
-  const { uiChanges } = useAppContext()
+  const { uiChanges, addGasEstimation$ } = useAppContext()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
 
   const addTxData = useMemo(
@@ -85,6 +104,19 @@ export function SidebarSetupAutoSell({
       vault.collateralizationRatio.toNumber(),
     ],
   )
+
+  const addTriggerGasEstimationData$ = useMemo(() => {
+    return addGasEstimation$(
+      { gasEstimationStatus: GasEstimationStatus.unset },
+      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
+    )
+  }, [addTxData])
+
+  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
+  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
+  const addTriggerGasEstimationUsd =
+    addTriggerGasEstimationData &&
+    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
   const cancelTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
@@ -143,6 +175,21 @@ export function SidebarSetupAutoSell({
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
+
+  const errors = errorsBasicSellValidation({
+    txError: uiState.txDetails?.txError,
+    debt: vault.debt,
+  })
+
+  const warnings = warningsBasicSellValidation({
+    token: vault.token,
+    gasEstimationUsd: addTriggerGasEstimationUsd,
+    ethBalance: balanceInfo.ethBalance,
+    ethPrice: ethMarketPrice,
+    minSellPrice: uiState.maxBuyOrMinSellPrice,
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+  })
+
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
@@ -165,6 +212,10 @@ export function SidebarSetupAutoSell({
                   basicSellState={uiState}
                   autoSellTriggerData={autoSellTriggerData}
                   autoBuyTriggerData={autoBuyTriggerData}
+                  errors={errors}
+                  warnings={warnings}
+                  tokenMarketPrice={tokenMarketPrice}
+                  addTriggerGasEstimation={addTriggerGasEstimation}
                 />
               )}
               {isRemoveForm && (

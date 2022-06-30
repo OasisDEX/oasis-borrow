@@ -47,6 +47,8 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('insufficient-eth-balance')
       case 'currentCollRatioCloseToStopLoss':
         return translate('coll-ratio-close-to-current')
+      case 'noMinSellPriceWhenStopLossEnabled':
+        return translate('no-min-sell-price-when-stop-loss-enabled')
       default:
         throw new UnreachableCaseError(message)
     }
