@@ -120,7 +120,7 @@ export function SidebarAutoSellAddEditingStage({
 
   // TODO to be updated
   const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-  const max = autoBuyTriggerData.targetCollRatio
+  const max = !autoBuyTriggerData.targetCollRatio.isZero()
     ? autoBuyTriggerData.targetCollRatio.toNumber()
     : 500
 
