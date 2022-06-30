@@ -1,13 +1,11 @@
 import { useHash } from 'helpers/useHash'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import ReactSelect from 'react-select'
-import { Box, Card, Flex, Grid } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
 
-import { ChevronUpDown } from './ChevronUpDown'
+import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 import { Tab, TabVariant } from './Tab'
 import { VaultTabTag } from './vault/VaultTabTag'
-import { SelectComponents } from 'react-select/src/components'
-import { reactSelectCustomComponents } from './reactSelectCustomComponents'
 
 export type TabSection = {
   value: string
@@ -32,10 +30,9 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
 
   useEffect(() => setHash(sections[0]?.value), [])
   useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
-  // const selectComponents = useMemo(() => selectCustomComponents(), [])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash
+    return `#${section.value}` === hash || section.value === hash
   }
 
   const selectedSection = sections.find(isSelected)
