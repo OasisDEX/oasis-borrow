@@ -1005,6 +1005,7 @@ export function setupAppContext() {
     yields$,
     totalValueLocked$,
     yieldsChange$,
+    tokenPriceUSD$,
   }
 }
 

@@ -29,6 +29,8 @@
   "update-stop-loss": "Update Stop-Loss",
   "back-to-vault-overview": "Back to Vault Overview",
   "cancel-stop-loss": "Cancel Stop-Loss",
+  "adding-auto-sell": "Adding Auto-Sell",
+  "cancelling-auto-sell": "Cancelling Auto-Sell",
   "adjust-your-position": "Adjust your position",
   "adjust-your-position-additional": "Adjust multiple with this transaction",
   "after": "After",
@@ -99,6 +101,7 @@
   "edit-vault": "Edit vault",
   "edit-allowance": "Edit allowance",
   "reset": "Reset",
+  "finished": "Finished",
   "create-proxy": "Create a proxy",
   "create-proxy-btn": "Create Proxy",
   "create-proxy-desc": "In order to use Savings and other features, you will need a wallet proxy.",
@@ -632,7 +635,7 @@
   },
   "cancel-stoploss": {
     "summary-header": "Cancel Stop-Loss order summary",
-    "stop-loss-coll-ratio":"Stop-Loss Coll. Ratio",
+    "stop-loss-coll-ratio": "Stop-Loss Coll. Ratio",
     "liquidation": "Liquidation price after cancellation",
     "total": "Total transaction cost",
     "max": "Max transaction cost"
@@ -1024,6 +1027,8 @@
     "cancel-downside-protection": "Cancellation confirmation",
     "cancel-downside-protection-desc": "To cancel the Stop-Loss you’ll need to click the button below and confirm the transaction.",
     "setting-downside-protection": "Setting Stop-Loss Protection",
+    "setting-auto-sell": "Setting up your Auto-Sell",
+    "cancelling-auto-sell": "Cancelling your Auto-Sell",
     "cancelling-downside-protection": "Cancelling Stop-Loss",
     "setting-downside-protection-desc": "Your Vault is currently being updated to add Stop-Loss Protection. Your Vault will not be protected from Liquidation until this completes.",
     "cancelling-downside-protection-desc": "The Stop-Loss cancellation is in progress. Once the transaction is done, the Stop-Loss will be removed.",
@@ -1328,14 +1333,15 @@
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
 
-
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend as % of the value of the Vault."
   },
 
   "auto-sell": {
-    "sell.sell-title": "Basic Auto Sell Summary",
+    "sell-title": "Basic Auto Sell Summary",
+    "cancel-summary-title": "Cancel Auto-Sell order summary",
+    "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
     "target-multiple-each-sell": "Target Multiple after each sell",
     "trigger-col-ratio-to-perfrom-sell": "Trigger Col. Ratio to perfrom each automated sell",
@@ -1347,7 +1353,14 @@
     "eth-to-be-sold": "ETH to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "title": "Auto sell",
-    "form-title": "Auto Sell Setup",
+    "add-form-title": "Auto Sell-Setup",
+    "edit-form-title": "Edit Auto-Sell",
+    "setting-form-title": "Setting Auto-Sell",
+    "cancelling-form-title": "Cancelling Auto-Sell",
+    "cancel-form-title": "Cancellation confirmation",
+    "trigger-added": "Basic-Sell Protection Enabled",
+    "trigger-cancelled": "Basic-Sell cancellation completed",
+    "trigger-updated": "Basic-Sell Protection Updated",
     "next-sell-price": "Next sell price: {{amount}}",
     "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
     "target-col-ratio-after-selling": "Target Col. Ratio after selling",
@@ -1389,5 +1402,4 @@
       "button": "Setup Auto Buy"
     }
   }
-
 }
