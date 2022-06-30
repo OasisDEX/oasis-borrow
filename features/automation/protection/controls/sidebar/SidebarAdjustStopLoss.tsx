@@ -1,19 +1,12 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
-import {
-  errorsValidation,
-  warningsValidation,
-} from 'features/automation/protection/common/validation'
-import {
-  AdjustSlFormLayoutProps,
-  slCollRatioNearLiquidationRatio,
-} from 'features/automation/protection/controls/AdjustSlFormLayout'
+import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { extractSidebarTxData } from 'helpers/extractSidebarHelpers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
@@ -30,36 +23,28 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
 
   const {
     addTriggerConfig,
-    collateralizationRatioAtNextPrice,
-    ethBalance,
-    ethPrice,
     firstStopLossSetup,
-    gasEstimationUsd,
-    ilkData,
     isProgressDisabled,
-    redirectToCloseVault,
-    selectedSLValue,
+    isStopLossEnabled,
     stage,
     toggleForms,
     token,
-    txError,
+    vault: { debt },
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
-  const errors = errorsValidation({ txError, selectedSLValue, ilkData })
-  const warnings = warningsValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-    selectedSLValue,
-    collateralizationRatioAtNextPrice,
-  })
   const sidebarTxData = extractSidebarTxData(props)
-  const shouldRedirectToCloseVault = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
+  const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token }),
+    title: getSidebarTitle({ flow, stage, token, debt, isStopLossEnabled }),
+    ...(basicBSEnabled && {
+      dropdown: {
+        forcePanel: 'stopLoss',
+        disabled: isDropdownDisabled({ stage }),
+        items: commonProtectionDropdownItems(uiChanges, t),
+      },
+    }),
     content: (
       <Grid gap={3}>
         {stopLossWriteEnabled ? (
@@ -78,23 +63,13 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         {(stage === 'txSuccess' || stage === 'txInProgress') && (
           <SidebarAdjustStopLossAddStage {...props} />
         )}
-        {stage === 'stopLossEditing' && !selectedSLValue.isZero() && stopLossWriteEnabled && (
-          <>
-            <VaultErrors errorMessages={errors} ilkData={ilkData} />
-            <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-          </>
-        )}
       </Grid>
     ),
     primaryButton: {
-      label: getPrimaryButtonLabel({ flow, stage, token, shouldRedirectToCloseVault }),
+      label: getPrimaryButtonLabel({ flow, stage, token }),
       disabled: isProgressDisabled,
       isLoading: stage === 'txInProgress',
       action: () => {
-        if (shouldRedirectToCloseVault) {
-          redirectToCloseVault()
-          return
-        }
         if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)
         else backToVaultOverview(uiChanges)
       },

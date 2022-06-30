@@ -1,6 +1,6 @@
+import { DefaultVaultLayout } from 'components/vault/DefaultVaultLayout'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Container } from 'theme-ui'
 
 import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
 import { VaultType } from '../../features/generalManageVault/vaultType'
@@ -67,9 +67,5 @@ export function VaultInformationControl({ generalManageVault }: VaultInformation
 
   const vaultInfoItems = isGuniVault ? guniItems : isInstiVault ? instiItems : defaultItems
 
-  return (
-    <Container variant="vaultPageContainer">
-      <VaultInformation items={vaultInfoItems} />
-    </Container>
-  )
+  return <DefaultVaultLayout detailsViewControl={<VaultInformation items={vaultInfoItems} />} />
 }

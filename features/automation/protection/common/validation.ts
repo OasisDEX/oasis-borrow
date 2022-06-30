@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { slCollRatioNearLiquidationRatio } from 'features/automation/protection/controls/AdjustSlFormLayout'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -11,14 +10,10 @@ export function warningsValidation({
   gasEstimationUsd,
   ethBalance,
   ethPrice,
-  selectedSLValue,
-  collateralizationRatioAtNextPrice,
 }: {
   token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
-  selectedSLValue: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
   gasEstimationUsd?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -28,32 +23,14 @@ export function warningsValidation({
     ethPrice,
   })
 
-  const nextCollateralizationPriceAlertRange = 3
-  const nextCollateralizationPriceFloor = collateralizationRatioAtNextPrice
-    .times(100)
-    .decimalPlaces(0)
-    .minus(nextCollateralizationPriceAlertRange)
-
-  const nextCollRatioCloseToCurrentSl = selectedSLValue.gte(nextCollateralizationPriceFloor)
-
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
-    nextCollRatioCloseToCurrentSl,
   })
 }
 
-export function errorsValidation({
-  txError,
-  selectedSLValue,
-  ilkData,
-}: {
-  selectedSLValue: BigNumber
-  ilkData: IlkData
-  txError?: TxError
-}) {
+export function errorsValidation({ txError, debt }: { txError?: TxError; debt: BigNumber }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 
-  const stopLossOnNearLiquidationRatio = slCollRatioNearLiquidationRatio(selectedSLValue, ilkData)
-
-  return errorMessagesHandler({ insufficientEthFundsForTx, stopLossOnNearLiquidationRatio })
+  return errorMessagesHandler({ insufficientEthFundsForTx, maxDebtForSettingStopLoss })
 }

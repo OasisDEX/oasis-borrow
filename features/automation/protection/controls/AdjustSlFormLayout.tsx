@@ -8,7 +8,6 @@ import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingBut
 import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { TxStatusSection } from 'components/dumb/TxStatusSection'
 import { AppLink } from 'components/Links'
-import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
@@ -21,10 +20,9 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image, Text } from 'theme-ui'
+import { Divider, Flex, Image } from 'theme-ui'
 import { OpenVaultAnimation } from 'theme/animations'
 
-import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
 import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
 import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
@@ -121,17 +119,8 @@ export function SetDownsideProtectionInformation({
   tokenPrice,
   ethPrice,
   isCollateralActive,
-  collateralizationRatioAtNextPrice,
-  selectedSLValue,
-  gasEstimationUsd,
-  ethBalance,
-  txError,
-  currentCollateralRatio,
 }: SetDownsideProtectionInformationProps) {
   const { t } = useTranslation()
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  const currentCollateralizationPriceAlertRange = 3
 
   const afterDynamicStopLossPrice = vault.liquidationPrice
     .div(ilkData.liquidationRatio)
@@ -166,20 +155,6 @@ export function SetDownsideProtectionInformation({
       .dividedBy(new BigNumber(10).pow(9)),
   )
 
-  const currentCollateralizationPriceFloor = currentCollateralRatio
-    .times(100)
-    .decimalPlaces(0)
-    .minus(currentCollateralizationPriceAlertRange)
-
-  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
-
-  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-
   return (
     <VaultChangesInformationContainer title={t('protection.on-stop-loss-trigger')}>
       <VaultChangesInformationItem
@@ -203,54 +178,8 @@ export function SetDownsideProtectionInformation({
         value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
-      <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
-      {!newComponentsEnabled && (
-        <>
-          <Box sx={{ fontSize: 2 }}>
-            <Text sx={{ mt: 3, fontWeight: 'semiBold' }}>{t('protection.not-guaranteed')}</Text>
-            <Text sx={{ mb: 3 }}>
-              {t('protection.guarantee-factors')}{' '}
-              <AppLink
-                href="https://kb.oasis.app/help/stop-loss-protection"
-                sx={{ fontWeight: 'body' }}
-              >
-                {t('protection.learn-more-about-automation')}
-              </AppLink>
-            </Text>
-          </Box>
-          {selectedSLValue.gte(currentCollateralizationPriceFloor) && (
-            <MessageCard
-              messages={[t('protection.coll-ratio-close-to-current')]}
-              type="warning"
-              withBullet={false}
-            />
-          )}
-          {slRatioHigherThanCurrentOrNext(
-            selectedSLValue,
-            collateralizationRatioAtNextPrice,
-            currentCollateralRatio,
-          ) && (
-            <MessageCard
-              messages={[t('vault-errors.stop-loss-near-liquidation-ratio')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
-          {potentialInsufficientEthFundsForTx && (
-            <MessageCard
-              messages={[t('vault-warnings.insufficient-eth-balance')]}
-              type="warning"
-              withBullet={false}
-            />
-          )}
-          {insufficientEthFundsForTx && (
-            <MessageCard
-              messages={[t('vault-errors.insufficient-eth-balance')]}
-              type="error"
-              withBullet={false}
-            />
-          )}
-        </>
+      {gasEstimation && (
+        <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
       )}
     </VaultChangesInformationContainer>
   )
@@ -286,6 +215,7 @@ export interface AdjustSlFormLayoutProps {
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   redirectToCloseVault: () => void
+  isStopLossEnabled: boolean
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
@@ -340,17 +270,27 @@ export function AdjustSlFormLayout({
         txSuccess={txState === TxStatus.Success}
         translations={{
           editing: {
-            header: t('protection.set-downside-protection'),
-            description: stopLossWriteEnabled ? (
-              <>
-                {t('protection.set-downside-protection-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-                  {t('here')}.
-                </AppLink>
-              </>
-            ) : (
-              "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
-            ),
+            header: !vault.debt.isZero()
+              ? t('protection.set-downside-protection')
+              : t('protection.closed-vault-existing-sl-header'),
+            description:
+              stopLossWriteEnabled || vault.debt.isZero() ? (
+                !vault.debt.isZero() ? (
+                  <>
+                    {t('protection.set-downside-protection-desc')}{' '}
+                    <AppLink
+                      href="https://kb.oasis.app/help/stop-loss-protection"
+                      sx={{ fontSize: 2 }}
+                    >
+                      {t('here')}.
+                    </AppLink>
+                  </>
+                ) : (
+                  <>{t('protection.closed-vault-existing-sl-description')}</>
+                )
+              ) : (
+                "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
+              ),
           },
           progressing: {
             header: t('protection.setting-downside-protection'),
@@ -376,12 +316,16 @@ export function AdjustSlFormLayout({
       {txProgressing && <OpenVaultAnimation />}
       {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
         <>
-          <Box mt={3}>
-            <SliderValuePicker {...slValuePickerConfig} />
-          </Box>
-          <Box>
-            <PickCloseState {...closePickerConfig} />
-          </Box>
+          {!vault.debt.isZero() && (
+            <>
+              <Box mt={3}>
+                <SliderValuePicker {...slValuePickerConfig} />
+              </Box>
+              <Box>
+                <PickCloseState {...closePickerConfig} />
+              </Box>
+            </>
+          )}
           {isEditing && (
             <>
               <Box>

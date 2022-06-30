@@ -1,10 +1,9 @@
+import { ManageVaultForm } from 'features/borrow/manage/containers/ManageVaultForm'
+import { SidebarManageGuniVault } from 'features/earn/guni/manage/sidebars/SidebarManageGuniVault'
+import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { VaultType } from 'features/generalManageVault/vaultType'
+import { ManageMultiplyVaultForm } from 'features/multiply/manage/containers/ManageMultiplyVaultForm'
 import React from 'react'
-
-import { ManageVaultForm } from '../../features/borrow/manage/containers/ManageVaultForm'
-import { GuniManageMultiplyVaultForm } from '../../features/earn/guni/manage/containers/GuniManageMultiplyVaultForm'
-import { GeneralManageVaultState } from '../../features/generalManageVault/generalManageVault'
-import { VaultType } from '../../features/generalManageVault/vaultType'
-import { ManageMultiplyVaultForm } from '../../features/multiply/manage/containers/ManageMultiplyVaultForm'
 
 interface GeneralVaultFormControlProps {
   generalManageVault: GeneralManageVaultState
@@ -18,7 +17,7 @@ export function GeneralVaultFormControl({ generalManageVault }: GeneralVaultForm
       const vaultIlk = generalManageVault.state.ilkData.ilk
 
       return ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(vaultIlk) ? (
-        <GuniManageMultiplyVaultForm {...generalManageVault.state} />
+        <SidebarManageGuniVault {...generalManageVault.state} />
       ) : (
         <ManageMultiplyVaultForm {...generalManageVault.state} />
       )

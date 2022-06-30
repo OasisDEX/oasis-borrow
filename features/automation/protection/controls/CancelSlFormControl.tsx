@@ -5,62 +5,43 @@ import {
   AutomationBotRemoveTriggerData,
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
-  failedStatuses,
-  progressStatuses,
-} from 'features/automation/protection/common/consts/txStatues'
+  prepareRemoveStopLossTriggerData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
 import {
   ADD_FORM_CHANGE,
   AddFormChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
-import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
-import { CancelSlFormLayout, CancelSlFormLayoutProps } from './CancelSlFormLayout'
-
-function prepareRemoveTriggerData(
-  vaultData: Vault,
-  triggerId: number,
-  removeAllowance: boolean,
-): AutomationBotRemoveTriggerData {
-  const baseTriggerData = prepareTriggerData(vaultData, false, new BigNumber(0))
-
-  return {
-    ...baseTriggerData,
-    kind: TxMetaKind.removeTrigger,
-    triggerId,
-    removeAllowance,
-  }
-}
+import { CancelSlFormLayoutProps } from './CancelSlFormLayout'
 
 interface CancelSlFormControlProps {
   vault: Vault
   ilkData: IlkData
-  triggerData: TriggersData
+  triggerData: StopLossTriggerData
   ctx: Context
   toggleForms: () => void
   accountIsController: boolean
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
-  collateralizationRatioAtNextPrice: BigNumber
   tx?: TxHelpers
 }
 
@@ -70,21 +51,21 @@ export function CancelSlFormControl({
   ctx,
   toggleForms,
   accountIsController,
-  collateralPrices,
+  priceInfo,
   balanceInfo,
   ilkData,
-  collateralizationRatioAtNextPrice,
   tx,
 }: CancelSlFormControlProps) {
-  const { triggerId, isStopLossEnabled } = extractStopLossData(triggerData)
+  const { triggerId, isStopLossEnabled } = triggerData
   const { addGasEstimation$, uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
-  const txData = useMemo(() => prepareRemoveTriggerData(vault, triggerId, removeAllowance), [
-    triggerId,
-  ])
+  const txData = useMemo(
+    () => prepareRemoveStopLossTriggerData(vault, triggerId, removeAllowance),
+    [triggerId],
+  )
 
   const gasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
@@ -118,7 +99,9 @@ export function CancelSlFormControl({
               : zero
             const totalCost =
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
-                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(tokenPrice)
+                ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
+                    priceInfo.currentCollateralPrice,
+                  )
                 : zero
 
             uiChanges.publish(REMOVE_FORM_CHANGE, {
@@ -168,8 +151,6 @@ export function CancelSlFormControl({
   const isProgressDisabled = !!(!isOwner || isProgressStage)
 
   const { token } = vault
-  const tokenPrice = collateralPrices.data.find((x) => x.token === token)?.currentPrice!
-  const ethPrice = collateralPrices.data.find((x) => x.token === 'ETH')?.currentPrice!
   const etherscan = ctx.etherscan.url
 
   const gasEstimationUsd =
@@ -177,7 +158,7 @@ export function CancelSlFormControl({
 
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
-    tokenPrice,
+    tokenPrice: priceInfo.currentCollateralPrice,
     removeTriggerConfig: removeTriggerConfig,
     txState: uiState?.txDetails?.txStatus,
     txHash: uiState?.txDetails?.txHash,
@@ -188,21 +169,16 @@ export function CancelSlFormControl({
     actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
-    ethPrice,
+    ethPrice: priceInfo.currentEthPrice,
     ethBalance: balanceInfo.ethBalance,
     stage,
     token,
     ilkData,
-    collateralizationRatioAtNextPrice,
+    currentCollateralRatio: vault.collateralizationRatio,
     selectedSLValue: addSlUiState.selectedSLValue,
     isProgressDisabled,
+    vault,
   }
 
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  return newComponentsEnabled ? (
-    <SidebarCancelStopLoss {...props} />
-  ) : (
-    <CancelSlFormLayout {...props} />
-  )
+  return <SidebarCancelStopLoss {...props} />
 }

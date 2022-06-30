@@ -322,8 +322,6 @@ export function createOpenGuniVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    // const totalSteps = calculateInitialTotalSteps(proxyAddress, token, allowance)
-
                     const initialState: OpenGuniVaultState = {
                       ...defaultFormState,
                       ...defaultAllowanceState,

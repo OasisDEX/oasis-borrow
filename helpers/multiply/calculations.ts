@@ -30,6 +30,8 @@ function getCumulativeDepositUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.depositDai)
     case 'MOVE_DEST':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_SRC':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
@@ -54,6 +56,8 @@ function getCumulativeWithdrawnUSD(total: BigNumber, event: VaultEvent) {
       return total.plus(event.exitDai)
     case 'MOVE_SRC':
       return total.plus(event.collateralAmount.times(event.oraclePrice))
+    case 'MOVE_DEST':
+      return total.plus(event.daiAmount.abs())
     default:
       return total
   }
@@ -94,4 +98,22 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
     .minus(cumulativeFeesUSD)
     .minus(cumulativeDepositUSD)
     .div(cumulativeDepositUSD)
+}
+
+export function calculateGrossEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+
+  return currentNetValueUSD.minus(cumulativeDepositUSD).plus(cumulativeWithdrawnUSD)
+}
+
+export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
+  const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
+  const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const cumulativeFeesUSD = events.reduce(getCumulativeFeesUSD, zero)
+
+  return currentNetValueUSD
+    .minus(cumulativeDepositUSD)
+    .plus(cumulativeWithdrawnUSD)
+    .minus(cumulativeFeesUSD)
 }

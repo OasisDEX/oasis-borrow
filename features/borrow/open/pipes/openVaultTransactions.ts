@@ -1,4 +1,7 @@
 import { TxStatus } from '@oasisdex/transactions'
+import { createDsProxy } from 'blockchain/calls/proxy'
+import { OpenData } from 'blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
+import { VaultActionsLogicInterface } from 'blockchain/calls/proxyActions/vaultActionsLogic'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { VaultType } from 'features/generalManageVault/vaultType'
@@ -6,11 +9,8 @@ import { saveVaultUsingApi$ } from 'features/shared/vaultApi'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import { iif, Observable, of } from 'rxjs'
 
-import { createDsProxy } from '../../../../blockchain/calls/proxy'
-import { OpenData } from '../../../../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
-import { VaultActionsLogicInterface } from '../../../../blockchain/calls/proxyActions/vaultActionsLogic'
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
 import { OpenVaultChange, OpenVaultState } from './openVault'
 
@@ -64,6 +64,14 @@ export function applyOpenVaultTransaction(
     }
   }
 
+  if (change.kind === 'openVaultConfirming') {
+    const { openVaultConfirmations } = change
+    return {
+      ...state,
+      openVaultConfirmations,
+    }
+  }
+
   if (change.kind === 'txFailure') {
     const { txError } = change
     return {
@@ -84,7 +92,16 @@ export function openVault(
   { sendWithGasEstimation }: TxHelpers,
   vaultActions: VaultActionsLogicInterface,
   change: (ch: OpenVaultChange) => void,
-  { generateAmount, depositAmount, proxyAddress, ilk, account, token }: OpenVaultState,
+  {
+    generateAmount,
+    depositAmount,
+    proxyAddress,
+    ilk,
+    account,
+    token,
+    openFlowWithStopLoss,
+    openVaultSafeConfirmations,
+  }: OpenVaultState,
 ) {
   sendWithGasEstimation(vaultActions.open, {
     kind: TxMetaKind.open,
@@ -122,11 +139,26 @@ export function openVault(
             ).subscribe()
           }
 
+          if (openFlowWithStopLoss) {
+            return iif(
+              () => (txState as any).confirmations < openVaultSafeConfirmations,
+              of({
+                kind: 'openVaultConfirming',
+                openVaultConfirmations: (txState as any).confirmations,
+              }),
+              of({
+                kind: 'stopLossTxWaitingForConfirmation',
+                id: id!,
+              }),
+            )
+          }
+
           return of({
             kind: 'txSuccess',
             id: id!,
           })
         },
+        !openFlowWithStopLoss ? undefined : openVaultSafeConfirmations,
       ),
     )
     .subscribe((ch) => change(ch))

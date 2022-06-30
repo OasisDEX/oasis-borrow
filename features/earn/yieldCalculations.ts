@@ -1,27 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { gql, GraphQLClient } from 'graphql-request'
-import { isEqual, memoize } from 'lodash'
+import { isEqual } from 'lodash'
+import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { IlkData } from '../../blockchain/ilks'
-import { Context } from '../../blockchain/network'
-import { one } from '../../helpers/zero'
-import { fetchWithOperationId } from '../vaultHistory/vaultHistory'
-
-const historicalPriceQuery = gql`
-  query prices($token: String!) {
-    allHistoricTokenPrices(filter: { token: { equalTo: $token } }) {
-      nodes {
-        token
-        price
-        price7
-        price30
-        price90
-      }
-    }
-  }
-`
+import { one, zero } from '../../helpers/zero'
+import { MakerOracleTokenPrice } from './makerOracleTokenPrices'
 
 export enum YieldPeriod {
   Yield7Days,
@@ -29,52 +14,100 @@ export enum YieldPeriod {
   Yield90Days,
 }
 
+export interface YieldValue {
+  days: number
+  value: BigNumber
+}
+
 export interface Yield {
   ilk: string
   yields: {
-    [key in YieldPeriod]?: {
-      days: number
-      value: BigNumber
-    }
+    [key in YieldPeriod]?: YieldValue
+  }
+}
+
+export interface YieldChange {
+  yieldValue: BigNumber
+  change: BigNumber
+  days: number
+}
+
+export interface YieldChanges {
+  ilk: string
+  currentDate: moment.Moment
+  previousDate: moment.Moment
+  changes: {
+    [key in YieldPeriod]?: YieldChange
   }
 }
 
 export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 export function getYields$(
-  context$: Observable<Context>,
+  makerOracleTokenPricesInDates$: (
+    token: string,
+    timestamps: moment.Moment[],
+  ) => Observable<MakerOracleTokenPrice[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
+  date?: moment.Moment,
 ): Observable<Yield> {
   if (!SupportedIlkForYieldsCalculations.includes(ilk)) {
-    return of({ ilk: ilk, yields: {} })
+    throw new Error(`${ilk} is not supported for Yields calculations`)
   }
 
-  const createClient = memoize(
-    (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
-  )
+  const referenceDate = date || moment()
 
-  return combineLatest(context$, ilkData$(ilk)).pipe(
-    switchMap(([{ cacheApi }, { ilk, token, stabilityFee, liquidationRatio }]) => {
-      const apiClient = createClient(cacheApi)
-      return combineLatest(getPrices(apiClient, token), of({ ilk, stabilityFee, liquidationRatio }))
+  const timestampsWithPeriods = [
+    {
+      period: YieldPeriod.Yield7Days,
+      date: referenceDate.clone().subtract(7, 'day'),
+      days: 7,
+    },
+    {
+      period: YieldPeriod.Yield30Days,
+      date: referenceDate.clone().subtract(30, 'day'),
+      days: 30,
+    },
+    {
+      period: YieldPeriod.Yield90Days,
+      date: referenceDate.clone().subtract(90, 'day'),
+      days: 90,
+    },
+  ]
+
+  const timestamps = [referenceDate, ...timestampsWithPeriods.map((t) => t.date)]
+
+  return ilkData$(ilk).pipe(
+    switchMap(({ ilk, token, stabilityFee, liquidationRatio }) => {
+      return combineLatest(
+        makerOracleTokenPricesInDates$(token, timestamps),
+        of({ ilk, stabilityFee, liquidationRatio }),
+      )
     }),
     map(([prices, { ilk, stabilityFee, liquidationRatio }]) => {
-      const result = [
-        { period: YieldPeriod.Yield7Days, days: 7, price: prices.price7 },
-        { period: YieldPeriod.Yield30Days, days: 30, price: prices.price30 },
-        { period: YieldPeriod.Yield90Days, days: 90, price: prices.price90 },
-      ]
+      const currentPrice = prices.find((price) =>
+        price.requestedTimestamp.isSame(referenceDate, 'day'),
+      )!.price
+      const result = timestampsWithPeriods.map((timestampWithPeriod) => {
+        const price = prices.find((price) =>
+          price.requestedTimestamp.isSame(timestampWithPeriod.date, 'day'),
+        )
+        return {
+          ...timestampWithPeriod,
+          price: price!.price,
+        }
+      })
 
       return result
         .map(({ period, days, price }) => {
-          const multiply = one.div(liquidationRatio.minus(one))
+          const multiple = one.div(liquidationRatio.minus(one))
           const value = calculateYield(
             new BigNumber(price),
-            new BigNumber(prices.price),
+            new BigNumber(currentPrice),
             stabilityFee,
             days,
-            multiply,
+            multiple,
           )
           return { period, days, value }
         })
@@ -99,20 +132,50 @@ export function getYields$(
   )
 }
 
-interface HistoricalTokenPricesApiResponse {
-  token: string
-  price: string
-  price7: string
-  price30: string
-  price90: string
+function calculateChange(current?: YieldValue, previous?: YieldValue): YieldChange {
+  if (!current || !previous) {
+    return { yieldValue: zero, change: zero, days: 0 }
+  }
+  const yieldValue = current.value
+  const change = yieldValue.minus(previous.value)
+  const days = current.days
+  return { change, yieldValue, days }
 }
 
-async function getPrices(
-  client: GraphQLClient,
-  token: string,
-): Promise<HistoricalTokenPricesApiResponse> {
-  const data = await client.request(historicalPriceQuery, { token: token })
-  return data.allHistoricTokenPrices.nodes[0]
+export function getYieldChange$(
+  getYields$: (ilk: string, referenceDate: moment.Moment) => Observable<Yield>,
+  currentDate: moment.Moment,
+  previousDate: moment.Moment,
+  ilk: string,
+): Observable<YieldChanges> {
+  if (!SupportedIlkForYieldsCalculations.includes(ilk)) {
+    throw new Error(`${ilk} is not supported for Yields calculations`)
+  }
+
+  return combineLatest(getYields$(ilk, currentDate), getYields$(ilk, previousDate)).pipe(
+    map(([currentYields, previousYields]) => {
+      const changes = {
+        [YieldPeriod.Yield7Days]: calculateChange(
+          currentYields.yields[YieldPeriod.Yield7Days],
+          previousYields.yields[YieldPeriod.Yield7Days],
+        ),
+        [YieldPeriod.Yield30Days]: calculateChange(
+          currentYields.yields[YieldPeriod.Yield30Days],
+          previousYields.yields[YieldPeriod.Yield30Days],
+        ),
+        [YieldPeriod.Yield90Days]: calculateChange(
+          currentYields.yields[YieldPeriod.Yield90Days],
+          previousYields.yields[YieldPeriod.Yield90Days],
+        ),
+      }
+      return {
+        ilk,
+        currentDate,
+        previousDate,
+        changes,
+      }
+    }),
+  )
 }
 
 export function calculateYield(
@@ -120,14 +183,14 @@ export function calculateYield(
   endPrice: BigNumber,
   stabilityFee: BigNumber,
   days: number,
-  multiply: BigNumber,
+  multiple: BigNumber,
 ): BigNumber {
   const priceIncreasePercentage = endPrice.minus(startPrice).div(startPrice)
   const percentageYieldFromPriceIncreasePeriod = priceIncreasePercentage
-    .times(multiply)
+    .times(multiple)
     .times(365 / days)
 
-  const feeForYear = stabilityFee.times(multiply.minus(1))
+  const feeForYear = stabilityFee.times(multiple.minus(1))
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
 }

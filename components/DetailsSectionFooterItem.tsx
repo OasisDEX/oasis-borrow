@@ -18,7 +18,7 @@ export function DetailsSectionFooterItemWrapper({ children }: { children: ReactN
       as="ul"
       sx={{
         mx: -1,
-        mt: -3,
+        mt: [0, null, null, -3],
         mb: [0, null, null, -3],
         p: 0,
         flexWrap: 'wrap',

@@ -1,23 +1,23 @@
 import BigNumber from 'bignumber.js'
 import { UIChanges } from 'components/AppContext'
 import { VaultViewMode } from 'components/VaultTabSwitch'
+import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,
 } from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
   selectedSLValue,
-  startingSlRatio,
   stopLossLevel,
   collateralActive,
   isToCollateral,
 }: {
   isStopLossEnabled: boolean
   selectedSLValue: BigNumber
-  startingSlRatio: BigNumber
   stopLossLevel: BigNumber
   collateralActive?: boolean
   isToCollateral?: boolean
@@ -30,7 +30,6 @@ export function getIsEditingProtection({
   }
 
   return (
-    (!isStopLossEnabled && !selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
     collateralActive !== isToCollateral
   )
@@ -57,4 +56,55 @@ export function backToVaultOverview(uiChanges: UIChanges) {
     currentMode: AutomationFromKind.ADJUST,
     type: 'change-mode',
   })
+}
+
+export function getSliderPercentageFill({
+  value,
+  min,
+  max,
+}: {
+  value: BigNumber
+  min: BigNumber
+  max: BigNumber
+}) {
+  return value
+    .minus(min.times(100))
+    .div(max.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(min))
+}
+
+export function getActiveProtectionFeature({
+  isAutoSellOn,
+  isStopLossOn,
+  section,
+  currentProtectionFeature,
+}: {
+  isAutoSellOn: boolean
+  isStopLossOn: boolean
+  section: 'form' | 'details'
+  currentProtectionFeature?: AutomationProtectionFeatures
+}) {
+  const basicBSEnabled = useFeatureToggle('BasicBS')
+
+  if (section === 'form') {
+    return {
+      isAutoSellActive:
+        (isAutoSellOn && !isStopLossOn && currentProtectionFeature !== 'stopLoss') ||
+        currentProtectionFeature === 'autoSell',
+      isStopLossActive:
+        (isStopLossOn && currentProtectionFeature !== 'autoSell') ||
+        currentProtectionFeature === 'stopLoss',
+    }
+  }
+
+  if (section === 'details') {
+    return {
+      isAutoSellActive: isAutoSellOn || currentProtectionFeature === 'autoSell',
+      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !basicBSEnabled,
+    }
+  }
+
+  return {
+    isAutoSellActive: false,
+    isStopLossActive: false,
+  }
 }

@@ -9,17 +9,14 @@ import { Box, Flex, Text } from 'theme-ui'
 
 import { getPriceChangeColor } from './VaultDetails'
 
-function VaultHeadlineDetails({
-  label,
-  value,
-  sub,
-  subColor,
-}: {
+export interface HeadlineDetailsProp {
   label: string
   value: string
   sub?: string
   subColor?: string
-}) {
+}
+
+export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDetailsProp) {
   return (
     <Box
       sx={{

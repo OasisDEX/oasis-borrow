@@ -4,6 +4,7 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import {
   SaveVaultType,
@@ -24,7 +25,6 @@ import {
 import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
-import { StopLossTriggerData } from '../../../automation/protection/common/StopLossTriggerDataExtractor'
 import {
   createStopLossDataChange$,
   TriggersData,

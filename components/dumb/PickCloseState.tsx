@@ -1,7 +1,4 @@
-import { Grid } from '@theme-ui/components'
-import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { FixedSizeArray } from 'helpers/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import React from 'react'
@@ -17,9 +14,9 @@ export interface PickCloseStateProps {
 }
 
 export function PickCloseState(props: PickCloseStateProps) {
+  // eslint-disable-next-line
   const [isActive, setIsActive] = useState(props.isCollateralActive)
   const [option, setOption] = useState(props.isCollateralActive ? 'collateral' : 'dai')
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const { t } = useTranslation()
 
   const onClickHandler = (op: string) => {
@@ -28,7 +25,7 @@ export function PickCloseState(props: PickCloseStateProps) {
     props.onclickHandler(op)
   }
 
-  return newComponentsEnabled ? (
+  return (
     <ActionPills
       active={option}
       items={[
@@ -48,22 +45,5 @@ export function PickCloseState(props: PickCloseStateProps) {
         },
       ]}
     />
-  ) : (
-    <Grid columns={2} sx={{ pt: 3 }}>
-      <CloseVaultCard
-        text={`Close to ${props.collateralTokenSymbol}`}
-        icon={props.collateralTokenIconCircle}
-        onClick={onClickHandler}
-        isActive={isActive}
-        optionName={props.optionNames[0]}
-      />
-      <CloseVaultCard
-        text="Close to DAI"
-        icon="dai_circle_color"
-        onClick={onClickHandler}
-        isActive={!isActive}
-        optionName={props.optionNames[1]}
-      />
-    </Grid>
   )
 }

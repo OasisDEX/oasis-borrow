@@ -1,5 +1,6 @@
-import { zero } from '../../../helpers/zero'
-import { DsProxy } from '../../../types/web3-v1-contracts/ds-proxy'
+import { zero } from 'helpers/zero'
+import { DsProxy } from 'types/web3-v1-contracts/ds-proxy'
+
 import dsProxy from '../../abi/ds-proxy.json'
 import { contractDesc } from '../../config'
 import { ContextConnected } from '../../network'

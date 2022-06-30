@@ -1,6 +1,5 @@
 import { WithWalletConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
-import { GuniOpenVaultView } from 'features/earn/guni/open/containers/GuniOpenVaultView'
 import { OpenMultiplyVaultView } from 'features/multiply/open/containers/OpenMultiplyVaultView'
 import { Survey } from 'features/survey'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
@@ -28,23 +27,13 @@ export async function getStaticProps(ctx: GetServerSidePropsContext & { params: 
   }
 }
 
-const multiplyContainerMap: Record<string, (ilk: string) => JSX.Element> = {
-  'GUNIV3DAIUSDC1-A': (ilk) => <GuniOpenVaultView ilk={ilk} />,
-  'GUNIV3DAIUSDC2-A': (ilk) => <GuniOpenVaultView ilk={ilk} />,
-}
 function OpenVault({ ilk }: { ilk: string }) {
   return (
     <WithWalletConnection>
       <WithTermsOfService>
         <BackgroundLight />
-        {multiplyContainerMap[ilk] ? (
-          multiplyContainerMap[ilk](ilk)
-        ) : (
-          <>
-            <OpenMultiplyVaultView ilk={ilk} />
-            <Survey for="multiply" />
-          </>
-        )}
+        <OpenMultiplyVaultView ilk={ilk} />
+        <Survey for="multiply" />
       </WithTermsOfService>
     </WithWalletConnection>
   )

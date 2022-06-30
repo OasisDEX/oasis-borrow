@@ -2,6 +2,7 @@
 
 schema {
     query: Query
+    mutation: Mutation
 }
 
 "An object with a globally unique `ID`."
@@ -41,6 +42,28 @@ type ActiveTriggersEdge {
     node: ActiveTrigger
 }
 
+"The output of our `getHistoricalTokenPrices` mutation."
+type GetHistoricalTokenPricesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    results: [GetHistoricalTokenPricesRecord]
+}
+
+"The return type of our `getHistoricalTokenPrices` mutation."
+type GetHistoricalTokenPricesRecord {
+    absoluteDate: Date
+    daysAgo: Int
+    price: BigFloat
+    referenceDate: Date
+    token: String
+}
+
 type HistoricTokenPrice {
     price: BigFloat
     price30: BigFloat
@@ -67,6 +90,48 @@ type HistoricTokenPricesEdge {
     cursor: Cursor
     "The `HistoricTokenPrice` at the end of the edge."
     node: HistoricTokenPrice
+}
+
+"The output of our `makerOracleTokenPricesInDates` mutation."
+type MakerOracleTokenPricesInDatesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    tokenPrices: [TokenPrice]
+}
+
+"The output of our `makerOracleTokenPrices` mutation."
+type MakerOracleTokenPricesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    tokenPrice: TokenPrice
+}
+
+"The root mutation type which contains root level fields which mutate data."
+type Mutation {
+    getHistoricalTokenPrices(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: GetHistoricalTokenPricesInput!
+    ): GetHistoricalTokenPricesPayload
+    makerOracleTokenPrices(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: MakerOracleTokenPricesInput!
+    ): MakerOracleTokenPricesPayload
+    makerOracleTokenPricesInDates(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: MakerOracleTokenPricesInDatesInput!
+    ): MakerOracleTokenPricesInDatesPayload
 }
 
 type OraclePrice {
@@ -286,6 +351,13 @@ type Query implements Node {
     which can only query top level fields if they are in a particular form.
     """
     query: Query!
+}
+
+type TokenPrice {
+    price: BigFloat
+    requestedTimestamp: Datetime
+    timestamp: Datetime
+    token: String
 }
 
 type TriggerEvent {
@@ -780,6 +852,9 @@ scalar BigFloat
 "A location in a connection that can be used for resuming pagination."
 scalar Cursor
 
+"The day, does not include a time."
+scalar Date
+
 """
 
 A point in time as described by the [ISO
@@ -889,6 +964,19 @@ input DatetimeFilter {
     notIn: [Datetime!]
 }
 
+"All input for the `getHistoricalTokenPrices` mutation."
+input GetHistoricalTokenPricesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    days: [Int]
+    referenceDate: Date
+    token: String
+}
+
 """
 
 A condition to be used against `HistoricTokenPrice` object types. All fields are
@@ -951,6 +1039,30 @@ input IntFilter {
     notEqualTo: Int
     "Not included in the specified list."
     notIn: [Int!]
+}
+
+"All input for the `makerOracleTokenPricesInDates` mutation."
+input MakerOracleTokenPricesInDatesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    dates: [Datetime]
+    token: String
+}
+
+"All input for the `makerOracleTokenPrices` mutation."
+input MakerOracleTokenPricesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    date: Datetime
+    token: String
 }
 
 """

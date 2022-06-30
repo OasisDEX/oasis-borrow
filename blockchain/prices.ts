@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { zero } from 'helpers/zero'
 import { isEqual } from 'lodash'
-import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of } from 'rxjs'
+import { bindNodeCallback, combineLatest, forkJoin, iif, Observable, of, timer } from 'rxjs'
 import { ajax, AjaxResponse } from 'rxjs/ajax'
 import {
   catchError,
@@ -97,15 +97,19 @@ export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['res
   }).pipe(map(({ response }) => response))
 }
 
-export function coinPaprikaTicker$(ticker: string): Observable<BigNumber> {
-  return ajax({
-    url: `https://api.coinpaprika.com/v1/tickers/${ticker}`,
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(map(({ response }) => new BigNumber(response.quotes.USD.price)))
-}
+export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
+  switchMap(() =>
+    ajax({
+      url: `${window.location.origin}/api/tokensPrices`,
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+    }),
+  ),
+  map(({ response }) => response),
+  shareReplay(1),
+)
 
 export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
   return ajax({
@@ -120,12 +124,12 @@ export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
 export function createTokenPriceInUSD$(
   every10Seconds$: Observable<any>,
   coinbaseOrderBook$: (ticker: string) => Observable<CoinbaseOrderBook>,
-  coinpaprikaTicker$: (ticker: string) => Observable<BigNumber>,
+  coinpaprikaTicker$: Observable<Ticker>,
   coinGeckoTicker$: (ticker: string) => Observable<BigNumber>,
   tokens: Array<string>,
 ): Observable<Ticker> {
-  return every10Seconds$.pipe(
-    switchMap(() =>
+  return combineLatest(every10Seconds$, coinpaprikaTicker$).pipe(
+    switchMap(([, ticker]) =>
       forkJoin(
         tokens.map((token) => {
           const { coinbaseTicker, coinpaprikaTicker, coinGeckoTicker } = getToken(token)
@@ -144,15 +148,9 @@ export function createTokenPriceInUSD$(
               }),
             )
           } else if (coinpaprikaTicker) {
-            return coinpaprikaTicker$(coinpaprikaTicker).pipe(
-              map((price) => ({
-                [token]: price,
-              })),
-              catchError((error) => {
-                console.log(error)
-                return of({})
-              }),
-            )
+            return of({
+              [token]: ticker[coinpaprikaTicker],
+            })
           } else if (coinGeckoTicker) {
             return coinGeckoTicker$(coinGeckoTicker).pipe(
               map((price) => ({

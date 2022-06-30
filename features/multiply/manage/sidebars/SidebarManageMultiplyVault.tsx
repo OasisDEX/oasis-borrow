@@ -3,8 +3,6 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultSLTriggered } from 'components/vault/sidebar/SidebarVaultSLTriggered'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { SidebarManageMultiplyVaultManageStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultManageStage'
 import { SidebarManageMultiplyVaultTransitionStage } from 'features/multiply/manage/sidebars/SidebarManageMultiplyVaultTransitionStage'
@@ -129,6 +127,7 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
           panel: 'transition',
           action: () => {
             toggle!('borrowTransitionEditing')
+            setOtherAction!('depositCollateral')
           },
         },
         {
@@ -154,8 +153,6 @@ export function SidebarManageMultiplyVault(props: ManageMultiplyVaultState) {
             )}
             {isBorrowTransitionStage && <SidebarManageMultiplyVaultTransitionStage stage={stage} />}
             {isManageStage && <SidebarManageMultiplyVaultManageStage {...props} />}
-            <VaultErrors {...props} />
-            <VaultWarnings {...props} />
           </>
         ) : (
           <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />

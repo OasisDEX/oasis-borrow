@@ -1,4 +1,4 @@
-import { slideInAnimation } from './animations'
+import { fadeInAnimation } from './animations'
 import { icons } from './icons'
 
 // Duplication from theme as exporting const from package library is breaking dai-ui website and theme-ui doesn't support yet transitions tokens :(
@@ -148,6 +148,10 @@ const oasisBaseTheme = {
       // deprecated, use header4
       variant: 'text.header4',
     },
+    header5: {
+      variant: 'text.header4',
+      fontSize: 3,
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -250,7 +254,6 @@ const oasisBaseTheme = {
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
-    vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
@@ -299,7 +302,7 @@ const oasisBaseTheme = {
       maxWidth: ['400px', '1232px'],
       zIndex: 1,
       position: 'relative',
-      ...slideInAnimation,
+      ...fadeInAnimation,
     },
     announcement: {
       maxWidth: '792px',
@@ -394,14 +397,18 @@ const oasisBaseTheme = {
       padding: '24px',
       pb: 3,
     },
-    positionsOverview: {
+    positionsPage: {
       boxSizing: 'border-box',
-      maxWidth: '789px',
       backgroundColor: 'background',
-      opacity: '0.8',
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
       borderRadius: 'large',
       padding: '32px',
+    },
+    faq: {
+      variant: 'cards.primary',
+      p: 4,
+      borderRadius: 'mediumLarge',
+      maxWidth: '711px',
     },
   },
   badges: {
@@ -475,28 +482,31 @@ const oasisBaseTheme = {
     vaultTab: {
       variant: 'text.paragraph2',
       cursor: 'pointer',
-      bg: 'unset',
-      transition: 'background 0.2s ease-in',
       fontWeight: 'semiBold',
-      color: 'primary',
+      color: 'text.subtitle',
       px: 3,
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-    },
-    vaultTabInactive: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      bg: 'unset',
-      transition: 'background 0.2s ease-in',
-      fontWeight: 'semiBold',
-      color: 'text.subtitle',
+      background: 'unset',
+      transition: 'color 200ms',
       '&:hover': {
         color: 'primary',
       },
-      px: 3,
-      display: 'flex',
-      alignItems: 'center',
+    },
+    vaultTabActive: {
+      variant: 'buttons.vaultTab',
+      color: 'primary',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: '100%',
+        right: 0,
+        left: 0,
+        height: '3px',
+        backgroundColor: 'primary',
+        ...fadeInAnimation,
+      },
     },
     outline: {
       variant: 'text.paragraph2',
@@ -545,6 +555,9 @@ const oasisBaseTheme = {
       '&:disabled': {
         pointerEvents: 'none',
         opacity: 0.5,
+      },
+      '&:hover': {
+        backgroundColor: 'grey.darker',
       },
     },
     tertiary: {
@@ -1076,6 +1089,12 @@ const oasisBaseTheme = {
       gap: '0px',
     },
   },
+  separator: {
+    borderTop: '1px solid',
+    borderColor: 'border',
+    height: '1px',
+    width: '100%',
+  },
   styles: {
     root: {
       fontFamily: 'body',
@@ -1114,7 +1133,10 @@ const oasisBaseTheme = {
       variant: 'text.header3',
     },
     h4: {
-      variant: 'text.microHeading',
+      variant: 'text.header4',
+    },
+    h5: {
+      variant: 'text.header5',
     },
     a: {
       variant: 'text.paragraph3',

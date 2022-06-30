@@ -1,7 +1,10 @@
+import { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
+import { extractGenerateErrors } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ChangeEvent } from 'react'
@@ -12,11 +15,11 @@ type VaultState = OpenMultiplyVaultState | ManageMultiplyVaultState
 interface SidebarSliderAdjustMultiplyProps {
   collapsed?: boolean
   disabled?: boolean
-  max?: number
-  min?: number
+  max?: BigNumber
+  min: BigNumber
   onChange: (e: ChangeEvent<HTMLInputElement>) => void
   state: VaultState
-  value: number
+  value: BigNumber
 }
 
 export function SidebarSliderAdjustMultiply({
@@ -30,22 +33,14 @@ export function SidebarSliderAdjustMultiply({
 }: SidebarSliderAdjustMultiplyProps) {
   const { t } = useTranslation()
 
-  const {
-    afterLiquidationPrice,
-    afterCollateralizationRatio,
-    multiply,
-    maxCollRatio,
-    requiredCollRatio,
-    ilkData: { liquidationRatio },
-  } = state
+  const { afterLiquidationPrice, afterCollateralizationRatio, multiply } = state
 
   const {
     theme: { colors },
   } = useThemeUI()
 
-  const slider = requiredCollRatio
-    ? maxCollRatio?.minus(requiredCollRatio)?.div(maxCollRatio.minus(liquidationRatio)).times(100)
-    : zero
+  const slider = value ? max?.minus(value).div(max.minus(min)).times(100) : zero
+
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
@@ -105,9 +100,9 @@ export function SidebarSliderAdjustMultiply({
           }}
           disabled={disabled}
           step={0.05}
-          min={min}
-          max={max}
-          value={value}
+          min={min.toNumber()}
+          max={max?.toNumber()}
+          value={value.toNumber()}
           onChange={onChange}
         />
       </Box>
@@ -121,6 +116,11 @@ export function SidebarSliderAdjustMultiply({
         <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>
         <Text as="span">{t('slider.adjust-multiply.right-footer')}</Text>
       </Flex>
+      <VaultErrors
+        errorMessages={extractGenerateErrors(state.errorMessages)}
+        ilkData={state.ilkData}
+        maxGenerateAmount={state.maxGenerateAmount}
+      />
     </Grid>
   )
 }

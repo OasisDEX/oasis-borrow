@@ -412,6 +412,13 @@
       "collateral-locked-oracles": "Usamos el precio actual del oráculo de Maker para calcular este valor. El precio actual de mercado de su colateral puede diferir de este precio."
     }
   },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "El ID del Vault es un identificador único para su Vault de Maker en Oasis.app",
@@ -541,7 +548,10 @@
   "one-of-some": "{{one}} de {{some}}",
   "onramp-leave-message": "Al hacer clic en comprar, saldrá de Oasis y será redirigido a un sitio web de terceros donde completará el proceso de compra.",
   "open-new-vault": "Abrir un nuevo Vault",
-  "open-vault": "Abrir Vault",
+  "open-vault": {
+    "title": "Abrir Vault",
+    "simulate": "Simulate"
+  },
   "or": "o",
   "outstanding-debt": "Deuda pendiente",
   "paste": "Pegar",
@@ -669,7 +679,8 @@
     "overview": "Visión general",
     "protection": "Protección",
     "history": "Historial",
-    "vault-info": "Información del Vault"
+    "vault-info": "Información del Vault",
+    "position-info": "Información de la Posición"
   },
   "token-balance": "Saldo de {{token}} ",
   "token-depositing": "Depositando {{amount}} {{token}}",
@@ -1142,7 +1153,10 @@
     "lowest-stabilityFee-and-cheapest": "El Vault más barato y con la menor Tasa de Estabilidad para préstamos contra {{token}}",
     "staking-rewards": "Perfecto para pedir préstamos o multiplicar exposición mientras gana recompensas por staking.",
     "great-borrowing-and-multiplying": "Perfecto para pedir préstamos o multiplicar su exposición a {{token}}",
-    "guni": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 1bps de UNI V3",
+      "GUNIV3DAIUSDC1-A": "Gane rendimientos a partir de su Dai con exposición al pool DAI/USDC 5bps de UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "La menor tasa para préstamos",
       "staking-rewards": "Recompensas de staking",
@@ -1155,7 +1169,10 @@
     "borrow": "Tome un préstamo de hasta {{value}} Dai",
     "multiply": "Obtenga una exposición de hasta {{value}} {{token}}",
     "earn": "Gane {{value}} {{token}} por año",
-    "guni": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 1bps",
+      "GUNIV3DAIUSDC1-A": "Obtenga una exposición de hasta {{value}} a la pool DAI/USDC UNI V3 5bps"
+    }
   },
   "product-page": {
     "multiply": {
@@ -1223,5 +1240,10 @@
     "claim-button": {
       "claim-rewards": "Reclamar recompensas"
     }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

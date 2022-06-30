@@ -409,6 +409,9 @@ export function calculateMultiply({
   debt: BigNumber
   lockedCollateralUSD: BigNumber
 }) {
+  if (lockedCollateralUSD.eq(zero)) {
+    return zero
+  }
   return lockedCollateralUSD.div(lockedCollateralUSD.minus(debt))
 }
 
@@ -479,9 +482,7 @@ export function getVaultChange({
   }
 }
 
-export function applyManageVaultCalculations(
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+export function applyManageVaultCalculations<VS extends ManageMultiplyVaultState>(state: VS): VS {
   const {
     balanceInfo: { collateralBalance, daiBalance },
     ilkData: { liquidationRatio, ilkDebtAvailable, debtFloor },
@@ -707,7 +708,8 @@ export function applyManageVaultCalculations(
     ? zero
     : afterLockedCollateralUSD.div(afterDebt)
 
-  const multiply = vaultHasZeroCollateral ? zero : calculateMultiply({ debt, lockedCollateralUSD })
+  const multiply = calculateMultiply({ debt, lockedCollateralUSD })
+
   const afterMultiply =
     vaultHasZeroCollateral && afterDebt.isZero()
       ? zero

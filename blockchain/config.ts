@@ -1,9 +1,9 @@
 import { ContractDesc } from '@oasisdex/web3-context'
+import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
-import { Abi } from '../helpers/types'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
 import * as eth from './abi/ds-eth-token.json'
@@ -105,6 +105,13 @@ export const supportedIlks = [
   ...cropJoinIlks,
 ] as const
 
+export const ilksNotSupportedOnGoerli = [
+  'GUNIV3DAIUSDC1-A',
+  'GUNIV3DAIUSDC2-A',
+  ...charterIlks,
+  ...cropJoinIlks,
+] as const
+
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
@@ -125,6 +132,7 @@ const protoMain = {
   infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
   collaterals: getCollaterals(mainnetAddresses, supportedIlks),
   tokens: tokensMainnet,
@@ -202,6 +210,7 @@ const kovan: NetworkConfig = {
   infuraUrl: `https://kovan.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
   collaterals: getCollaterals(kovanAddresses, supportedIlks),
   tokens: {
@@ -276,6 +285,7 @@ const goerli: NetworkConfig = {
   infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
   collaterals: getCollaterals(goerliAddresses, supportedIlks),
   tokens: {
@@ -283,7 +293,8 @@ const goerli: NetworkConfig = {
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
     MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
-    stETH: contractDesc(erc20, goerliAddresses['STETH']),
+    STETH: contractDesc(erc20, goerliAddresses['STETH']),
+    USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
   },
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
@@ -324,10 +335,9 @@ const goerli: NetworkConfig = {
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
   serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
-  // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  noFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  lowerFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  noFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
   etherscan: {

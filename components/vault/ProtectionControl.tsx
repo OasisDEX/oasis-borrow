@@ -1,19 +1,19 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
+import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
+import { VaultBanner } from 'features/banners/VaultsBannersView'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Container } from 'theme-ui'
 
-import { IlkData } from '../../blockchain/ilks'
-import { Vault } from '../../blockchain/vaults'
-import { ProtectionDetailsControl } from '../../features/automation/protection/controls/ProtectionDetailsControl'
-import { ProtectionFormControl } from '../../features/automation/protection/controls/ProtectionFormControl'
-import { VaultBanner } from '../../features/banners/VaultsBannersView'
-import { BalanceInfo } from '../../features/shared/balanceInfo'
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
 import { useAppContext } from '../AppContextProvider'
 import { AppLink } from '../Links'
 import { DefaultVaultLayout } from './DefaultVaultLayout'
@@ -61,27 +61,28 @@ interface ProtectionControlProps {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   account?: string
-  collateralizationRatioAtNextPrice: BigNumber
 }
 
 function getZeroDebtProtectionBannerProps({
   stopLossWriteEnabled,
   isVaultDebtZero,
   isVaultDebtBelowDustLumit,
+  vaultHasNoProtection,
 }: {
   stopLossWriteEnabled: boolean
   isVaultDebtZero: boolean
   isVaultDebtBelowDustLumit: boolean
+  vaultHasNoProtection?: boolean
 }): ZeroDebtProtectionBannerProps {
   if (stopLossWriteEnabled) {
-    if (isVaultDebtZero) {
+    if (isVaultDebtZero && vaultHasNoProtection) {
       return {
         header: 'protection.zero-debt-heading',
         description: 'protection.zero-debt-description',
       }
     } else if (isVaultDebtBelowDustLumit) {
       return {
-        header: 'protection.below-dust-limit',
+        header: 'protection.below-dust-limit-heading',
         description: 'protection.zero-debt-description',
       }
     } else
@@ -105,44 +106,55 @@ export function ProtectionControl({
   vault,
   ilkData,
   account,
-  collateralizationRatioAtNextPrice,
   balanceInfo,
 }: ProtectionControlProps) {
-  const { automationTriggersData$, collateralPrices$ } = useAppContext()
+  const { automationTriggersData$, priceInfo$, context$, txHelpers$ } = useAppContext()
+  const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
+  const [contextData, contextError] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
-  const [collateralPrices, collateralPricesError] = useObservable(collateralPrices$)
+  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
+  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
   const dustLimit = ilkData.debtFloor
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
-  return !vault.debt.isZero() &&
-    vault.debt.gt(dustLimit) &&
-    (automationTriggersData?.triggers?.length || stopLossWriteEnabled) ? (
-    <WithErrorHandler error={[automationTriggersError, collateralPricesError]}>
+  const stopLossData = automationTriggersData
+    ? extractStopLossData(automationTriggersData)
+    : undefined
+  const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled
+
+  return vaultHasActiveTrigger ||
+    (!vault.debt.isZero() &&
+      vault.debt.gt(dustLimit) &&
+      (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
+    <WithErrorHandler
+      error={[automationTriggersError, priceInfoError, txHelpersError, contextError]}
+    >
       <WithLoadingIndicator
-        value={[automationTriggersData, collateralPrices]}
+        value={[automationTriggersData, priceInfoData, contextData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggersData, collateralPrices]) => {
+        {([automationTriggers, priceInfo, context]) => {
           return (
             <DefaultVaultLayout
               detailsViewControl={
                 <ProtectionDetailsControl
                   vault={vault}
-                  automationTriggersData={automationTriggersData}
-                  collateralPrices={collateralPrices}
+                  automationTriggersData={automationTriggers}
+                  priceInfo={priceInfo}
                   ilkData={ilkData}
                 />
               }
               editForm={
                 <ProtectionFormControl
                   ilkData={ilkData}
-                  automationTriggersData={automationTriggersData}
-                  collateralPrices={collateralPrices}
+                  automationTriggersData={automationTriggers}
+                  priceInfo={priceInfo}
                   vault={vault}
                   account={account}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   balanceInfo={balanceInfo}
+                  txHelpers={txHelpersData}
+                  context={context}
                 />
               }
             />
@@ -157,6 +169,7 @@ export function ProtectionControl({
           stopLossWriteEnabled,
           isVaultDebtZero: vault.debt.isZero(),
           isVaultDebtBelowDustLumit: vault.debt <= dustLimit,
+          vaultHasNoProtection: !vaultHasActiveTrigger,
         })}
       />
     </Container>

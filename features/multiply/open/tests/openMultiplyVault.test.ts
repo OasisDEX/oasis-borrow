@@ -42,7 +42,7 @@ describe('open multiply vault', () => {
       expect(state()).to.be.undefined
       _ilks$.next(['WBTC-A'])
       expect(state().ilk).to.deep.equal('WBTC-A')
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should throw error if ilk is not valid', () => {
@@ -58,7 +58,7 @@ describe('open multiply vault', () => {
     it('should start by default at the editing stage', () => {
       const state = getStateUnpacker(mockOpenMultiplyVault())
       expect(state().stage).to.deep.equal('editing')
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should update depositAmount', () => {
@@ -107,6 +107,24 @@ describe('open multiply vault', () => {
       expect(state().depositAmountUSD!).to.deep.equal(depositAmountUSD)
     })
 
+    it('should update stop loss type', () => {
+      const closeVaultType = 'collateral'
+      const defaultCloseVaultType = 'dai'
+      const state = getStateUnpacker(mockOpenMultiplyVault())
+      expect(state().stopLossCloseType!).to.equal(defaultCloseVaultType)
+      state().setStopLossCloseType(closeVaultType)
+      expect(state().stopLossCloseType).to.equal(closeVaultType)
+    })
+
+    it('should update stop loss level', () => {
+      const stopLossLevel = new BigNumber(2)
+      const defaultStopLossLevel = zero
+      const state = getStateUnpacker(mockOpenMultiplyVault())
+      expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
+      state().setStopLossLevel(stopLossLevel)
+      expect(state().stopLossLevel).to.deep.equal(stopLossLevel)
+    })
+
     it('should progress to proxy flow from editing when without proxy', () => {
       const depositAmount = new BigNumber('100')
 
@@ -118,6 +136,7 @@ describe('open multiply vault', () => {
     })
 
     it('should create proxy and progress for non ETH ilk', () => {
+      const depositAmount = new BigNumber('100')
       const _proxyAddress$ = new Subject<string>()
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
@@ -130,7 +149,8 @@ describe('open multiply vault', () => {
       )
 
       _proxyAddress$.next()
-      expect(state().totalSteps).to.deep.equal(4)
+      state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(5)
       state().progress!()
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
       state().progress!()
@@ -141,7 +161,7 @@ describe('open multiply vault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
       expect(state().currentStep).to.deep.equal(3)
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(5)
     })
 
     it('should handle proxy failure and back to editing after', () => {
@@ -179,7 +199,7 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().progress!()
       expect(state().stage).to.not.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      expect(state().stage).to.deep.equal('stopLossEditing')
     })
 
     it('should progress to allowance flow from editing when allowance is insufficent and ilk is not ETH-*', () => {
@@ -269,7 +289,7 @@ describe('open multiply vault', () => {
       )
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
 
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
@@ -282,7 +302,7 @@ describe('open multiply vault', () => {
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceSuccess')
       expect(state().allowance!).to.be.deep.equal(customAllowanceAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should progress to open vault tx flow from editing with proxyAddress and validAllowance', () => {
@@ -299,6 +319,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
       state().updateDeposit!(depositAmount)
       state().progress!()
+      state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
@@ -319,10 +340,11 @@ describe('open multiply vault', () => {
       )
       state().updateDeposit!(depositAmount)
       state().progress!()
+      state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().stage).to.deep.equal('txSuccess')
       expect(state().id!).to.deep.equal(new BigNumber('3281'))
+      expect(state().stage).to.deep.equal('txSuccess')
       state().progress!()
       expect(state().stage).to.deep.equal('editing')
     })
@@ -362,7 +384,7 @@ describe('open multiply vault', () => {
       expect(state().totalSteps).to.deep.equal(2)
 
       state().updateDeposit!(depositAmount)
-      expect(state().totalSteps).to.deep.equal(3)
+      expect(state().totalSteps).to.deep.equal(4)
     })
 
     it('should handle set allowance failure and regress allowance', () => {
@@ -396,6 +418,7 @@ describe('open multiply vault', () => {
     it('should clear form values and go to editing stage', () => {
       const depositAmount = new BigNumber('100')
       const requiredCollRatio = new BigNumber('2')
+      const stopLossLevel = new BigNumber('1.7')
 
       const state = getStateUnpacker(
         mockOpenMultiplyVault({
@@ -408,13 +431,14 @@ describe('open multiply vault', () => {
       state().updateDeposit!(depositAmount)
       state().updateRequiredCollRatio!(requiredCollRatio)
       state().progress!()
-      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
-
+      expect(state().stage).to.deep.equal('stopLossEditing')
+      state().setStopLossLevel(stopLossLevel)
       state().clear()
       expect(state().stage).to.deep.equal('editing')
       expect(state().depositAmount).to.be.undefined
       expect(state().depositAmountUSD).to.be.undefined
       expect(state().requiredCollRatio).to.be.undefined
+      expect(state().stopLossLevel).to.be.deep.equal(zero)
     })
   })
 
@@ -683,6 +707,87 @@ describe('open multiply vault', () => {
       const stateSnap = state()
 
       expect(stateSnap.maxCollRatio).to.deep.eq(new BigNumber(5))
+    })
+
+    it('should skip stop loss step', () => {
+      const depositAmount = new BigNumber('100')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      expect(state().totalSteps).to.deep.equal(3)
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossEditing')
+      state().skipStopLoss!()
+      expect(state().stopLossSkipped).to.deep.equal(true)
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+    })
+
+    it('should add stop loss successfully', () => {
+      const depositAmount = new BigNumber('100')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxSuccess')
+    })
+
+    it('should handle add stop loss failure', () => {
+      const depositAmount = new BigNumber('100')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenMultiplyVault({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => {
+              if (meta.kind === 'multiply') {
+                return mockTxState(meta, TxStatus.Success, newCDPTxReceipt)
+              }
+              return mockTxState(meta, TxStatus.Failure)
+            },
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      state().stage = 'stopLossTxWaitingForConfirmation'
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxFailure')
     })
   })
 })

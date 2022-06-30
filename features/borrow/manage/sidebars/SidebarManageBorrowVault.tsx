@@ -4,8 +4,6 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultSLTriggered } from 'components/vault/sidebar/SidebarVaultSLTriggered'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ManageStandardBorrowVaultState } from 'features/borrow/manage/pipes/manageVault'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -137,8 +135,6 @@ export function SidebarManageBorrowVault(props: ManageStandardBorrowVaultState) 
               <SidebarManageBorrowVaultTransitionStage stage={stage} token={token} />
             )}
             {isManageStage && <SidebarManageBorrowVaultManageStage {...props} />}
-            <VaultErrors {...props} />
-            <VaultWarnings {...props} />
           </>
         ) : (
           <SidebarVaultSLTriggered closeEvent={vaultHistory[0]} />
