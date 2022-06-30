@@ -44,10 +44,10 @@ export interface YieldChanges {
 export const SupportedIlkForYieldsCalculations = ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A']
 
 export function getYields$(
-  makerOracleTokenPrices$: (
+  makerOracleTokenPricesInDates$: (
     token: string,
-    timestamp: moment.Moment,
-  ) => Observable<MakerOracleTokenPrice>,
+    timestamps: moment.Moment[],
+  ) => Observable<MakerOracleTokenPrice[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   ilk: string,
   date?: moment.Moment,
@@ -58,59 +58,75 @@ export function getYields$(
 
   const referenceDate = date || moment()
 
+  const timestampsWithPeriods = [
+    {
+      period: YieldPeriod.Yield7Days,
+      date: referenceDate.clone().subtract(7, 'day'),
+      days: 7,
+    },
+    {
+      period: YieldPeriod.Yield30Days,
+      date: referenceDate.clone().subtract(30, 'day'),
+      days: 30,
+    },
+    {
+      period: YieldPeriod.Yield90Days,
+      date: referenceDate.clone().subtract(90, 'day'),
+      days: 90,
+    },
+  ]
+
+  const timestamps = [referenceDate, ...timestampsWithPeriods.map((t) => t.date)]
+
   return ilkData$(ilk).pipe(
     switchMap(({ ilk, token, stabilityFee, liquidationRatio }) => {
       return combineLatest(
-        makerOracleTokenPrices$(token, referenceDate),
-        makerOracleTokenPrices$(token, referenceDate.clone().subtract(7, 'day')),
-        makerOracleTokenPrices$(token, referenceDate.clone().subtract(30, 'day')),
-        makerOracleTokenPrices$(token, referenceDate.clone().subtract(90, 'day')),
+        makerOracleTokenPricesInDates$(token, timestamps),
         of({ ilk, stabilityFee, liquidationRatio }),
       )
     }),
-    map(
-      ([
-        currentPrice,
-        sevenDaysPrice,
-        thirtyDaysPrice,
-        ninetyDaysPrice,
-        { ilk, stabilityFee, liquidationRatio },
-      ]) => {
-        const result = [
-          { period: YieldPeriod.Yield7Days, days: 7, price: sevenDaysPrice.price },
-          { period: YieldPeriod.Yield30Days, days: 30, price: thirtyDaysPrice.price },
-          { period: YieldPeriod.Yield90Days, days: 90, price: ninetyDaysPrice.price },
-        ]
+    map(([prices, { ilk, stabilityFee, liquidationRatio }]) => {
+      const currentPrice = prices.find((price) =>
+        price.requestedTimestamp.isSame(referenceDate, 'day'),
+      )!.price
+      const result = timestampsWithPeriods.map((timestampWithPeriod) => {
+        const price = prices.find((price) =>
+          price.requestedTimestamp.isSame(timestampWithPeriod.date, 'day'),
+        )
+        return {
+          ...timestampWithPeriod,
+          price: price!.price,
+        }
+      })
 
-        return result
-          .map(({ period, days, price }) => {
-            const multiple = one.div(liquidationRatio.minus(one))
-            const value = calculateYield(
-              new BigNumber(price),
-              new BigNumber(currentPrice.price),
-              stabilityFee,
-              days,
-              multiple,
-            )
-            return { period, days, value }
-          })
-          .reduce(
-            (acc, { period, days, value }) => {
-              return {
-                ...acc,
-                yields: {
-                  ...acc.yields,
-                  [period]: {
-                    days: days,
-                    value: value,
-                  },
-                },
-              }
-            },
-            { ilk: ilk, yields: {} },
+      return result
+        .map(({ period, days, price }) => {
+          const multiple = one.div(liquidationRatio.minus(one))
+          const value = calculateYield(
+            new BigNumber(price),
+            new BigNumber(currentPrice),
+            stabilityFee,
+            days,
+            multiple,
           )
-      },
-    ),
+          return { period, days, value }
+        })
+        .reduce(
+          (acc, { period, days, value }) => {
+            return {
+              ...acc,
+              yields: {
+                ...acc.yields,
+                [period]: {
+                  days: days,
+                  value: value,
+                },
+              },
+            }
+          },
+          { ilk: ilk, yields: {} },
+        )
+    }),
     catchError(() => of({ ilk: ilk, yields: {} })),
     distinctUntilChanged(isEqual),
   )
