@@ -5,9 +5,9 @@ import { of } from 'rxjs'
 import { Box, Container, Text } from 'theme-ui'
 
 import {
-  VaultLiquidatedBanner,
-  VaultLiquidatingBanner,
+  VaultLiquidatedNotice,
   VaultLiquidatingNextPriceNotice,
+  VaultLiquidatingNotice,
   VaultOwnershipBanner,
 } from '../VaultsNoticesView'
 
@@ -17,7 +17,7 @@ export const VaultLiquidated = () => (
     <Container>
       <Box sx={{ mb: 3 }}>
         <Text>Owner viewing vault</Text>
-        <VaultLiquidatedBanner
+        <VaultLiquidatedNotice
           token="ETH"
           unlockedCollateral={new BigNumber(100)}
           controller="0x00"
@@ -27,7 +27,7 @@ export const VaultLiquidated = () => (
       </Box>
       <Text>Other user viewing vault</Text>
       <Box sx={{ mb: 3 }}>
-        <VaultLiquidatedBanner
+        <VaultLiquidatedNotice
           token="ETH"
           unlockedCollateral={new BigNumber(100)}
           controller="0x00"
@@ -80,7 +80,7 @@ export const VaultLiquidating = () => (
     <Container>
       <Box sx={{ mb: 3 }}>
         <Text>Owner viewing vault</Text>
-        <VaultLiquidatingBanner
+        <VaultLiquidatingNotice
           token="ETH"
           controller="0x00"
           id={new BigNumber(1)}
@@ -89,7 +89,7 @@ export const VaultLiquidating = () => (
       </Box>
       <Text>Other user viewing vault</Text>
       <Box sx={{ mb: 3 }}>
-        <VaultLiquidatingBanner
+        <VaultLiquidatingNotice
           token="ETH"
           controller="0x00"
           id={new BigNumber(1)}
