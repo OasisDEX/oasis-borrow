@@ -8,7 +8,6 @@ import {
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TxHelpers, UIChanges } from 'components/AppContext'
-import { BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
@@ -23,10 +22,12 @@ function handleTriggerTx({
   txState,
   ethPrice,
   uiChanges,
+  formChanged,
 }: {
   txState: TxState<TxMeta>
   ethPrice: BigNumber
   uiChanges: UIChanges
+  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE'
 }) {
   const gasUsed =
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero
@@ -39,7 +40,7 @@ function handleTriggerTx({
       ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
       : zero
 
-  uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
+  uiChanges.publish(formChanged, {
     type: 'tx-details',
     txDetails: {
       txHash: (txState as any).txHash,
@@ -55,10 +56,11 @@ export function addBasicBSTrigger(
   txData: AutomationBotAddTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
+  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE',
 ) {
   sendWithGasEstimation(addAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, formChanged }))
 }
 
 export function removeBasicBSTrigger(
@@ -66,8 +68,9 @@ export function removeBasicBSTrigger(
   txData: AutomationBotRemoveTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
+  formChanged: 'BASIC_BUY_FORM_CHANGE' | 'BASIC_SELL_FORM_CHANGE',
 ) {
   sendWithGasEstimation(removeAutomationBotTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges, formChanged }))
 }

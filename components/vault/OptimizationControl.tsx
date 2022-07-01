@@ -1,3 +1,4 @@
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
@@ -11,23 +12,25 @@ import { DefaultVaultLayout } from './DefaultVaultLayout'
 
 interface OptimizationControlProps {
   vault: Vault
+  ilkData: IlkData
 }
 
-export function OptimizationControl({ vault }: OptimizationControlProps) {
-  const { automationTriggersData$, priceInfo$ } = useAppContext()
+export function OptimizationControl({ vault, ilkData }: OptimizationControlProps) {
+  const { automationTriggersData$, priceInfo$, context$, txHelpers$ } = useAppContext()
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
   const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
-
+  const [txHelpersData] = useObservable(txHelpers$)
+  const [contextData] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
 
   return (
     <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData]}
+        value={[automationTriggersData, priceInfoData, contextData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo]) => (
+        {([automationTriggers, priceInfo, context]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
@@ -37,7 +40,14 @@ export function OptimizationControl({ vault }: OptimizationControlProps) {
               />
             }
             editForm={
-              <OptimizationFormControl vault={vault} automationTriggersData={automationTriggers} />
+              <OptimizationFormControl
+                vault={vault}
+                automationTriggersData={automationTriggers}
+                ilkData={ilkData}
+                priceInfo={priceInfo}
+                txHelpers={txHelpersData}
+                context={context}
+              />
             }
           />
         )}

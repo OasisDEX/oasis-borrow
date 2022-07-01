@@ -9,7 +9,10 @@ const flowsWithoutProxy = [
   'cancelSl',
   'addBasicSell',
   'cancelBasicSell',
+  'addBasicBuy',
+  'cancelBasicBuy',
   'editBasicSell',
+  'editBasicBuy',
 ]
 const UNREACHABLE_CASE_MESSAGE = ''
 
@@ -38,7 +41,10 @@ function getPrimaryButtonLabelEditingTranslationKey({
     case 'manageMultiply':
     case 'addBasicSell':
     case 'cancelBasicSell':
+    case 'addBasicBuy':
+    case 'cancelBasicBuy':
     case 'editBasicSell':
+    case 'editBasicBuy':
       return 'confirm'
     case 'manageGuni':
       return 'close-vault'
@@ -66,10 +72,16 @@ function getPrimaryButtonLabelTxInProgressTranslationKey({ flow }: { flow: Sideb
     case 'cancelSl':
       return 'cancel-stop-loss'
     case 'addBasicSell':
-    case 'editBasicSell':
       return 'adding-auto-sell'
     case 'cancelBasicSell':
       return 'cancelling-auto-sell'
+    case 'editBasicSell':
+      return 'adding-auto-sell'
+    case 'addBasicBuy':
+    case 'editBasicBuy':
+      return 'adding-auto-buy'
+    case 'cancelBasicBuy':
+      return 'cancelling-auto-buy'
     default:
       return UNREACHABLE_CASE_MESSAGE
   }
@@ -86,8 +98,11 @@ function getPrimaryButtonLabelTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'cancelSl':
       return 'back-to-vault-overview'
     case 'addBasicSell':
-    case 'editBasicSell':
     case 'cancelBasicSell':
+    case 'addBasicBuy':
+    case 'cancelBasicBuy':
+    case 'editBasicSell':
+    case 'editBasicBuy':
       return 'finished'
     default:
       return UNREACHABLE_CASE_MESSAGE

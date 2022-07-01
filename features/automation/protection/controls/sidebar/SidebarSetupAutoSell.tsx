@@ -23,10 +23,7 @@ import {
   errorsBasicSellValidation,
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
-import {
-  failedStatuses,
-  progressStatuses,
-} from 'features/automation/protection/common/consts/txStatues'
+import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -245,10 +242,22 @@ export function SidebarSetupAutoSell({
               })
             } else {
               if (isAddForm) {
-                addBasicBSTrigger(txHelpers, addTxData, uiChanges, priceInfo.currentEthPrice)
+                addBasicBSTrigger(
+                  txHelpers,
+                  addTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  BASIC_SELL_FORM_CHANGE,
+                )
               }
               if (isRemoveForm) {
-                removeBasicBSTrigger(txHelpers, cancelTxData, uiChanges, priceInfo.currentEthPrice)
+                removeBasicBSTrigger(
+                  txHelpers,
+                  cancelTxData,
+                  uiChanges,
+                  priceInfo.currentEthPrice,
+                  BASIC_SELL_FORM_CHANGE,
+                )
               }
             }
           }

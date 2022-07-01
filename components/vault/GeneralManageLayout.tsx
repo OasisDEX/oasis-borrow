@@ -84,7 +84,7 @@ export function GeneralManageLayout({
             balanceInfo={balanceInfo}
           />
         }
-        optimizationControl={<OptimizationControl vault={vault} />}
+        optimizationControl={<OptimizationControl vault={vault} ilkData={ilkData} />}
         vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         positionInfo={positionInfo}
         showProtectionTab={showProtectionTab}
