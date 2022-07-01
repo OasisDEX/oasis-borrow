@@ -10,11 +10,6 @@ interface BuyInfoSectionProps {
   multipleAfterBuy: BigNumber
   nextBuyPrice: BigNumber
   execCollRatio: BigNumber
-  // nextBuyPrice: {
-  //   value: BigNumber
-  //   dropDownValues: DropDownValue[]
-  // }
-  // totalCostOfNextBuy: BigNumber
   slippageLimit: BigNumber
   collateralAfterNextBuy: {
     value: BigNumber
@@ -32,7 +27,6 @@ export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
   nextBuyPrice,
-  // totalCostOfNextBuy,
   slippageLimit,
   collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
