@@ -11,7 +11,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
+import { AutoSellFormControl } from 'features/automation/protection/controls/AutoSellFormControl'
 import { StopLossFormControl } from 'features/automation/protection/controls/StopLossFormControl'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -70,7 +70,7 @@ export function ProtectionFormControl({
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
       />
-      <SidebarSetupAutoSell
+      <AutoSellFormControl
         vault={vault}
         ilkData={ilkData}
         priceInfo={priceInfo}

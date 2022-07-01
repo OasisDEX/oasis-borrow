@@ -1,5 +1,4 @@
 import { BigNumber } from 'bignumber.js'
-import { AutomationBotAddTriggerData } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -27,7 +26,6 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
 interface AutoSellInfoSectionControlProps {
-  addTxData: AutomationBotAddTriggerData
   priceInfo: PriceInfo
   vault: Vault
   basicSellState: BasicBSFormChange
@@ -84,7 +82,6 @@ interface SidebarAutoSellAddEditingStageProps {
   ilkData: IlkData
   priceInfo: PriceInfo
   isEditing: boolean
-  addTxData: AutomationBotAddTriggerData
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -98,7 +95,6 @@ export function SidebarAutoSellAddEditingStage({
   vault,
   ilkData,
   isEditing,
-  addTxData,
   priceInfo,
   basicSellState,
   autoSellTriggerData,
@@ -207,7 +203,6 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <AutoSellInfoSectionControl
-          addTxData={addTxData}
           priceInfo={priceInfo}
           basicSellState={basicSellState}
           vault={vault}

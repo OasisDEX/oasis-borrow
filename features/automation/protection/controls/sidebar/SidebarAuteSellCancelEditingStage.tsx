@@ -1,52 +1,46 @@
-import {
-  AutomationBotRemoveTriggerData,
-  removeAutomationBotTrigger,
-} from 'blockchain/calls/automationBot'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelAutoSellInfoSection'
-import { GasEstimationStatus } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { ReactNode } from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
-  cancelTxData: AutomationBotRemoveTriggerData
   vault: Vault
+  cancelTriggerGasEstimation: ReactNode
 }
 
-function AutoSellInfoSectionControl({ cancelTxData, vault }: AutoSellInfoSectionControlProps) {
-  const { addGasEstimation$ } = useAppContext()
-
-  const cancelTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
-    )
-  }, [cancelTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
-  const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-
+function AutoSellInfoSectionControl({
+  vault,
+  cancelTriggerGasEstimation,
+}: AutoSellInfoSectionControlProps) {
   return (
     <CancelAutoSellInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
-      estimatedTransactionCost={gasEstimation}
+      estimatedTransactionCost={cancelTriggerGasEstimation}
     />
   )
 }
 
 interface SidebarAutoSellCancelEditingStageProps {
   vault: Vault
-  cancelTxData: AutomationBotRemoveTriggerData
+  ilkData: IlkData
+  errors: VaultErrorMessage[]
+  warnings: VaultWarningMessage[]
+  cancelTriggerGasEstimation: ReactNode
 }
 
 export function SidebarAutoSellCancelEditingStage({
   vault,
-  cancelTxData,
+  ilkData,
+  errors,
+  warnings,
+  cancelTriggerGasEstimation,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
 
@@ -55,7 +49,12 @@ export function SidebarAutoSellCancelEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
         {t('auto-sell.cancel-summary-description')}
       </Text>
-      <AutoSellInfoSectionControl cancelTxData={cancelTxData} vault={vault} />
+      <VaultErrors errorMessages={errors} ilkData={ilkData} />
+      <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+      <AutoSellInfoSectionControl
+        vault={vault}
+        cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+      />
     </>
   )
 }

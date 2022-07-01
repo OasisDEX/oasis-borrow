@@ -1,35 +1,17 @@
-import { TriggerType } from '@oasisdex/automation'
-import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
-import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
-import {
-  BasicBSTriggerData,
-  prepareAddBasicBSTriggerData,
-  prepareRemoveBasicBSTriggerData,
-} from 'features/automation/common/basicBSTriggerData'
-import {
-  addBasicBSTrigger,
-  removeBasicBSTrigger,
-} from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   errorsBasicSellValidation,
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
-import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import {
-  BASIC_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutoSellCreationStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellCreationStage'
@@ -39,13 +21,10 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
-import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
-import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
+import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { extractCancelAutoSellWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { ReactNode } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoSellProps {
@@ -60,7 +39,18 @@ interface SidebarSetupAutoSellProps {
   context: Context
   ethMarketPrice: BigNumber
   tokenMarketPrice: BigNumber
-  txHelpers?: TxHelpers
+  basicSellState: BasicBSFormChange
+  txHandler: () => void
+  textButtonHandler: () => void
+  stage: SidebarVaultStages
+  gasEstimationUsd?: BigNumber
+  addTriggerGasEstimation: ReactNode
+  cancelTriggerGasEstimation: ReactNode
+  isAddForm: boolean
+  isRemoveForm: boolean
+  isEditing: boolean
+  isDisabled: boolean
+  isFirstSetup: boolean
 }
 
 export function SidebarSetupAutoSell({
@@ -68,76 +58,32 @@ export function SidebarSetupAutoSell({
   ilkData,
   priceInfo,
   balanceInfo,
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  stopLossTriggerData,
-  isAutoSellActive,
-  txHelpers,
   context,
   ethMarketPrice,
   tokenMarketPrice,
+
+  autoSellTriggerData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
+
+  isAutoSellActive,
+  basicSellState,
+  txHandler,
+  textButtonHandler,
+  stage,
+
+  gasEstimationUsd,
+  addTriggerGasEstimation,
+  cancelTriggerGasEstimation,
+
+  isAddForm,
+  isRemoveForm,
+  isEditing,
+  isDisabled,
+  isFirstSetup,
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
-  const { uiChanges, addGasEstimation$ } = useAppContext()
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
-
-  const addTxData = useMemo(
-    () =>
-      prepareAddBasicBSTriggerData({
-        vaultData: vault,
-        triggerType: TriggerType.BasicSell,
-        execCollRatio: uiState.execCollRatio,
-        targetCollRatio: uiState.targetCollRatio,
-        maxBuyOrMinSellPrice: uiState.withThreshold ? uiState.maxBuyOrMinSellPrice || zero : zero, // todo we will need here validation that this field cant be empty
-        continuous: uiState.continuous,
-        deviation: uiState.deviation,
-        replacedTriggerId: uiState.triggerId,
-      }),
-    [
-      uiState.execCollRatio.toNumber(),
-      uiState.targetCollRatio.toNumber(),
-      uiState.maxBuyOrMinSellPrice?.toNumber(),
-      uiState.triggerId.toNumber(),
-      vault.collateralizationRatio.toNumber(),
-    ],
-  )
-
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-  const addTriggerGasEstimationUsd =
-    addTriggerGasEstimationData &&
-    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
-
-  const cancelTxData = prepareRemoveBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicSell,
-    triggerId: uiState.triggerId,
-  })
-
-  const isAddForm = uiState.currentForm === 'add'
-  const isRemoveForm = uiState.currentForm === 'remove'
-
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice)
-
-  const isEditing =
-    !autoSellTriggerData.targetCollRatio.isEqualTo(uiState.targetCollRatio) ||
-    !autoSellTriggerData.execCollRatio.isEqualTo(uiState.execCollRatio) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== uiState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoSellTriggerData.triggerId.isZero()) ||
-    isRemoveForm
-
-  const isFirstSetup = autoSellTriggerData.triggerId.isZero()
-  const txStatus = uiState?.txDetails?.txStatus
-  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
-  const isSuccessStage = txStatus === TxStatus.Success
+  const { uiChanges } = useAppContext()
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicSell'
@@ -145,27 +91,9 @@ export function SidebarSetupAutoSell({
     ? 'addBasicSell'
     : 'editBasicSell'
 
-  const stage = isSuccessStage
-    ? 'txSuccess'
-    : isProgressStage
-    ? 'txInProgress'
-    : isFailureStage
-    ? 'txFailure'
-    : 'editing'
-
-  const isOwner = context.status === 'connected' && context.account === vault.controller
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (uiState.withThreshold &&
-        (uiState.maxBuyOrMinSellPrice === undefined || uiState.maxBuyOrMinSellPrice?.isZero())) ||
-      uiState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
-
   const sidebarStatus = getSidebarStatus({
     stage,
-    txHash: uiState.txDetails?.txHash,
+    txHash: basicSellState.txDetails?.txHash,
     flow,
     etherscan: context.etherscan.url,
   })
@@ -174,18 +102,20 @@ export function SidebarSetupAutoSell({
   const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
 
   const errors = errorsBasicSellValidation({
-    txError: uiState.txDetails?.txError,
+    txError: basicSellState.txDetails?.txError,
     debt: vault.debt,
   })
 
   const warnings = warningsBasicSellValidation({
     token: vault.token,
-    gasEstimationUsd: addTriggerGasEstimationUsd,
+    gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
-    minSellPrice: uiState.maxBuyOrMinSellPrice,
+    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
   })
+
+  const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -204,9 +134,8 @@ export function SidebarSetupAutoSell({
                   vault={vault}
                   ilkData={ilkData}
                   isEditing={isEditing}
-                  addTxData={addTxData}
                   priceInfo={priceInfo}
-                  basicSellState={uiState}
+                  basicSellState={basicSellState}
                   autoSellTriggerData={autoSellTriggerData}
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
@@ -216,7 +145,13 @@ export function SidebarSetupAutoSell({
                 />
               )}
               {isRemoveForm && (
-                <SidebarAutoSellCancelEditingStage vault={vault} cancelTxData={cancelTxData} />
+                <SidebarAutoSellCancelEditingStage
+                  vault={vault}
+                  ilkData={ilkData}
+                  errors={errors}
+                  warnings={cancelAutoSellWarnings}
+                  cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+                />
               )}
             </>
           )}
@@ -229,54 +164,13 @@ export function SidebarSetupAutoSell({
         label: primaryButtonLabel,
         disabled: isDisabled,
         isLoading: stage === 'txInProgress',
-        action: () => {
-          if (txHelpers) {
-            if (stage === 'txSuccess') {
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'tx-details',
-                txDetails: {},
-              })
-              uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-                type: 'current-form',
-                currentForm: 'add',
-              })
-            } else {
-              if (isAddForm) {
-                addBasicBSTrigger(
-                  txHelpers,
-                  addTxData,
-                  uiChanges,
-                  priceInfo.currentEthPrice,
-                  BASIC_SELL_FORM_CHANGE,
-                )
-              }
-              if (isRemoveForm) {
-                removeBasicBSTrigger(
-                  txHelpers,
-                  cancelTxData,
-                  uiChanges,
-                  priceInfo.currentEthPrice,
-                  BASIC_SELL_FORM_CHANGE,
-                )
-              }
-            }
-          }
-        },
+        action: () => txHandler(),
       },
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: uiState.triggerId.isZero(),
-          action: () => {
-            uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-              type: 'current-form',
-              currentForm: isAddForm ? 'remove' : 'add',
-            })
-            uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-              type: 'tx-details',
-              txDetails: {},
-            })
-          },
+          hidden: basicSellState.triggerId.isZero(),
+          action: () => textButtonHandler(),
         },
       }),
       status: sidebarStatus,
