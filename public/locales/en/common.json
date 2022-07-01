@@ -1363,7 +1363,7 @@
     "slippage-limit": "Slippage Limit",
     "collateral-after-next-sell": "Collateral after next sell",
     "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
-    "eth-to-be-sold": "ETH to be sold at next sell",
+    "col-to-be-sold": "{{token}} to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "title": "Auto sell",
     "add-form-title": "Auto Sell-Setup",
@@ -1408,7 +1408,7 @@
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
-    "eth-to-be-purchased": "ETH to be purchased at next buy",
+    "col-to-be-purchased": "{{token}} to be purchased at next buy",
     "banner": {
       "header": "Set up Auto Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
