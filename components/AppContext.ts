@@ -144,6 +144,7 @@ import {
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
+import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -179,7 +180,7 @@ import {
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
-import { getCollateralLocked$ } from '../blockchain/collateral'
+import { getCollateralLocked$, getTotalValueLocked$ } from '../blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -205,7 +206,7 @@ import {
   ManageInstiVaultState,
 } from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { getYields$ } from '../features/earn/common/calculateYields'
+import { getYieldChange$, getYields$ } from '../features/earn/common/yieldCalculations'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -215,6 +216,10 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import {
+  createMakerOracleTokenPrices$,
+  createMakerOracleTokenPricesForDates$,
+} from '../features/earn/makerOracleTokenPrices'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -831,9 +836,7 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        yields$,
-        collateralLocked$,
-        oraclePriceData$,
+        makerOracleTokenPrices$,
         id,
       ),
     bigNumberTostring,
@@ -919,9 +922,40 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
+  const makerOracleTokenPrices$ = memoize(
+    curry(createMakerOracleTokenPrices$)(context$),
+    (token: string, timestamp: moment.Moment) => {
+      return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
+    },
+  )
 
-  const collateralLocked$ = memoize(curry(getCollateralLocked$)(connectedContext$, balance$))
+  const makerOracleTokenPricesForDates$ = memoize(
+    curry(createMakerOracleTokenPricesForDates$)(context$),
+    (token: string, timestamps: moment.Moment[]) => {
+      return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
+    },
+  )
+
+  const yields$ = memoize(
+    (ilk: string, date?: moment.Moment) => {
+      return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
+    },
+    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+  )
+
+  const yieldsChange$ = memoize(
+    curry(getYieldChange$)(yields$),
+    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+      `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
+  )
+
+  const collateralLocked$ = memoize(
+    curry(getCollateralLocked$)(connectedContext$, ilkToToken$, balance$),
+  )
+
+  const totalValueLocked$ = memoize(
+    curry(getTotalValueLocked$)(collateralLocked$, oraclePriceData$),
+  )
 
   const openGuniVault$ = memoize((ilk: string) =>
     createOpenGuniVault$(
@@ -940,9 +974,6 @@ export function setupAppContext() {
       token1Balance$,
       getGuniMintAmount$,
       userSettings$,
-      yields$,
-      collateralLocked$,
-      oraclePriceData$,
     ),
   )
 
@@ -994,6 +1025,9 @@ export function setupAppContext() {
     priceInfo$,
     yields$,
     daiEthTokenPrice$,
+    totalValueLocked$,
+    yieldsChange$,
+    tokenPriceUSD$,
   }
 }
 

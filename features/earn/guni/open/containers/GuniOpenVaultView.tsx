@@ -31,7 +31,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
         {([openVault, gasPrice, daiEthTokenPrice]) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer
-              header={<GuniVaultHeader {...openVault} />}
+              header={<GuniVaultHeader token={openVault.token} ilk={openVault.ilk} />}
               details={
                 <GuniOpenMultiplyVaultDetails {...openVault} {...gasPrice} {...daiEthTokenPrice} />
               }

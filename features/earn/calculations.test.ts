@@ -3,7 +3,9 @@ import { expect } from 'chai'
 
 import { amountFromRay } from '../../blockchain/utils'
 import { SECONDS_PER_YEAR } from '../../components/constants'
-import { calculateBreakeven, calculateEarnings, calculateYield } from './common/calculateYields'
+import { calculateBreakeven } from './common/calculateBreakeven'
+import { calculateEarnings } from './common/calculateEarnings'
+import { calculateYield } from './common/yieldCalculations'
 
 describe('Yield Calculations', async () => {
   const stabilityFee = amountFromRay(new BigNumber('1000000000015850933588756013'))

@@ -1,7 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
-import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { formatFiatBalance } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
@@ -13,12 +14,10 @@ import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
@@ -96,13 +95,9 @@ function Pill(props: PillProps) {
   )
 }
 function Pills({ sx }: { sx?: SxProps }) {
-  const enabled = useFeatureToggle('EarnProduct')
-
-  const pills = enabled ? LANDING_PILLS : LANDING_PILLS.filter((pill) => pill.label !== 'DAI')
-
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {pills.map((pill) => (
+      {LANDING_PILLS.map((pill) => (
         <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
     </Flex>
@@ -139,15 +134,15 @@ function Stats({ sx }: { sx?: SxProps }) {
     <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
       <StatCell
         label={t('landing.stats.30-day-volume')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.monthlyVolume))}`}
       />
       <StatCell
         label={t('landing.stats.managed-on-oasis')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.managedOnOasis))}`}
       />
       <StatCell
         label={t('landing.stats.median-vault')}
-        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
+        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.medianVaultSize))}`}
       />
     </Grid>
   )
@@ -155,7 +150,6 @@ function Stats({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
-  const isEarnEnabled = useFeatureToggle('EarnProduct')
   const { context$, productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
@@ -217,11 +211,14 @@ export function HomepageView() {
           >
             {([productCardsData]) => {
               return (
-                <TabSwitcher
-                  tabs={[
+                <TabBar
+                  variant="large"
+                  useDropdownOnMobile
+                  sections={[
                     {
-                      tabLabel: t('landing.tabs.multiply.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.multiply.tabLabel'),
+                      value: 'multiply',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -238,8 +235,9 @@ export function HomepageView() {
                       ),
                     },
                     {
-                      tabLabel: t('landing.tabs.borrow.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.borrow.tabLabel'),
+                      value: 'borrow',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -255,34 +253,27 @@ export function HomepageView() {
                         />
                       ),
                     },
-                    ...(isEarnEnabled
-                      ? [
-                          {
-                            tabLabel: t('landing.tabs.earn.tabLabel'),
-                            tabContent: (
-                              <TabContent
-                                paraText={
-                                  <>
-                                    {t('landing.tabs.earn.tabParaContent')}{' '}
-                                    <AppLink href="/multiply" variant="inText">
-                                      {t('landing.tabs.earn.tabParaLinkContent')}
-                                    </AppLink>
-                                  </>
-                                }
-                                type="earn"
-                                renderProductCard={ProductCardEarn}
-                                productCardsData={productCardsData}
-                              />
-                            ),
-                          },
-                        ]
-                      : []),
+
+                    {
+                      label: t('landing.tabs.earn.tabLabel'),
+                      value: 'earn',
+                      content: (
+                        <TabContent
+                          paraText={
+                            <>
+                              {t('landing.tabs.earn.tabParaContent')}{' '}
+                              <AppLink href="/multiply" variant="inText">
+                                {t('landing.tabs.earn.tabParaLinkContent')}
+                              </AppLink>
+                            </>
+                          }
+                          type="earn"
+                          renderProductCard={ProductCardEarn}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
                   ]}
-                  narrowTabsSx={{
-                    display: ['block', 'none'],
-                    width: '100%',
-                  }}
-                  wideTabsSx={{ display: ['none', 'block'] }}
                 />
               )
             }}
