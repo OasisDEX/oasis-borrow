@@ -108,7 +108,15 @@ export function ProtectionControl({
   account,
   balanceInfo,
 }: ProtectionControlProps) {
-  const { automationTriggersData$, priceInfo$, context$, txHelpers$ } = useAppContext()
+  const {
+    automationTriggersData$,
+    priceInfo$,
+    context$,
+    txHelpers$,
+    tokenPriceUSD$,
+  } = useAppContext()
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
+  const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
@@ -128,13 +136,19 @@ export function ProtectionControl({
       vault.debt.gt(dustLimit) &&
       (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
     <WithErrorHandler
-      error={[automationTriggersError, priceInfoError, txHelpersError, contextError]}
+      error={[
+        automationTriggersError,
+        priceInfoError,
+        txHelpersError,
+        contextError,
+        ethAndTokenPricesError,
+      ]}
     >
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData, contextData]}
+        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo, context]) => {
+        {([automationTriggers, priceInfo, context, ethAndTokenPrices]) => {
           return (
             <DefaultVaultLayout
               detailsViewControl={
@@ -155,6 +169,8 @@ export function ProtectionControl({
                   balanceInfo={balanceInfo}
                   txHelpers={txHelpersData}
                   context={context}
+                  ethMarketPrice={ethAndTokenPrices['ETH']}
+                  tokenMarketPrice={ethAndTokenPrices[vault.token]}
                 />
               }
             />

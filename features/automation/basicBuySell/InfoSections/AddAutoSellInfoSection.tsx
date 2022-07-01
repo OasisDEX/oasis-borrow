@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 interface SellInfoSectionProps {
   token: string
@@ -20,7 +20,7 @@ interface SellInfoSectionProps {
     secondaryValue: BigNumber
   }
   ethToBeSoldAtNextSell: BigNumber
-  estimatedTransactionCost: string | JSX.Element
+  estimatedTransactionCost: ReactNode
 }
 
 export function AddAutoSellInfoSection({
