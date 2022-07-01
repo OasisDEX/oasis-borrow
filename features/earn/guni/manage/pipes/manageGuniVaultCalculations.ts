@@ -1,10 +1,11 @@
+import { calculateYield } from 'helpers/earn/calculations'
+
 import {
   calculateGrossEarnings,
   calculateNetEarnings,
   calculatePNL,
 } from '../../../../../helpers/multiply/calculations'
 import { zero } from '../../../../../helpers/zero'
-import { calculateYield } from '../../../yieldCalculations'
 import { GuniTxData, ManageEarnVaultState } from './manageGuniVault'
 
 // this method extends / overwrites  applyManageVaultCalculations

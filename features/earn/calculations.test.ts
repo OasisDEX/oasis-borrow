@@ -3,9 +3,9 @@ import { expect } from 'chai'
 
 import { amountFromRay } from '../../blockchain/utils'
 import { SECONDS_PER_YEAR } from '../../components/constants'
-import { calculateBreakeven } from './common/calculateBreakeven'
-import { calculateEarnings } from './common/calculateEarnings'
-import { calculateYield } from './common/yieldCalculations'
+import { calculateBreakeven } from '../../helpers/earn/calculations'
+import { calculateEarnings } from '../../helpers/earn/calculations'
+import { calculateYield } from '../../helpers/earn/calculations'
 
 describe('Yield Calculations', async () => {
   const stabilityFee = amountFromRay(new BigNumber('1000000000015850933588756013'))
@@ -48,8 +48,7 @@ describe('Breakeven Calculations', async () => {
     const entryFees = new BigNumber(4000)
 
     const result = calculateBreakeven({ depositAmount, entryFees, apy })
-
-    const expected = new BigNumber(27.5) // days
+    const expected = new BigNumber(146.0) // days
 
     expect(result.toFixed(precision)).to.be.eq(expected.toFixed(precision))
   })

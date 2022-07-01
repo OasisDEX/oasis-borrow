@@ -206,7 +206,6 @@ import {
   ManageInstiVaultState,
 } from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
-import { getYieldChange$, getYields$ } from '../features/earn/common/yieldCalculations'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -229,6 +228,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
