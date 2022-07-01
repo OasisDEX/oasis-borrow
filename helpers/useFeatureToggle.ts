@@ -23,7 +23,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossWrite: true,
   StopLossOpenFlow: false,
   BasicBS: false,
-  Referrals: true,
+  Referrals: false,
   // your feature here....
 }
 
