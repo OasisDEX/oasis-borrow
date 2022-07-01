@@ -4,7 +4,7 @@ import { GasPriceParams } from 'blockchain/prices'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
-import { ContentFooterItemsEarn } from 'components/vault/detailsSection/ContentFooterItemsEarn'
+import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { calculateBreakeven, calculateEarnings } from 'helpers/earn/calculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
@@ -132,7 +132,7 @@ export function GuniOpenMultiplyVaultDetails(
         }
         footer={
           <DetailsSectionFooterItemWrapper>
-            <ContentFooterItemsEarn
+            <ContentFooterItemsEarnSimulate
               token={`DAI`}
               breakeven={breakeven}
               entryFees={entryFees}
