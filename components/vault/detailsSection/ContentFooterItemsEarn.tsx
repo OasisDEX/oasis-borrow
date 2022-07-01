@@ -1,35 +1,71 @@
 import BigNumber from 'bignumber.js'
+import { ChangeVariantType } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItem } from 'components/DetailsSectionFooterItem'
-import { zero } from 'helpers/zero'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentFooterItemsEarnProps {
+interface ContentFooterItemsMultiplyProps {
   token: string
-  breakeven: BigNumber
-  entryFees: BigNumber
-  apy: BigNumber
+  debt: BigNumber
+  lockedCollateral: BigNumber
+  multiply: BigNumber
+  afterDebt: BigNumber
+  afterLockedCollateral: BigNumber
+  afterMultiply: BigNumber
+  changeVariant?: ChangeVariantType
+  stabilityFee: BigNumber
 }
 
 export function ContentFooterItemsEarn({
   token,
-  breakeven,
-  entryFees,
-  apy,
-}: ContentFooterItemsEarnProps) {
+  debt,
+  lockedCollateral,
+  multiply,
+  afterDebt,
+  afterLockedCollateral,
+  afterMultiply,
+  changeVariant,
+  stabilityFee,
+}: ContentFooterItemsMultiplyProps) {
   const { t } = useTranslation()
 
   const formatted = {
-    breakeven: breakeven.gt(zero) ? breakeven.toFixed(2) : '-',
-    entryFees: entryFees.gt(zero) ? `${entryFees.toFixed(2)} ${token}` : '-',
-    apy: apy.toFixed(2),
+    debt: `${formatAmount(debt, 'DAI')} DAI`,
+    lockedCollateral: `${formatCryptoBalance(lockedCollateral)} ${token}`,
+    multiply: multiply?.toFixed(2),
+    afterDebt: `${formatAmount(afterDebt, 'DAI')} DAI`,
+    afterLockedCollateral: `${formatCryptoBalance(afterLockedCollateral)} ${token}`,
+    afterMultiply: afterMultiply?.toFixed(2),
+    stabilityFee: `${formatPercent(stabilityFee.times(100), { precision: 2 })}`,
   }
 
   return (
     <>
-      <DetailsSectionFooterItem title={t('system.est-break-even')} value={formatted.breakeven} />
-      <DetailsSectionFooterItem title={t('system.est-entry-fees')} value={formatted.entryFees} />
-      <DetailsSectionFooterItem title={t('system.apy')} value={`${formatted.apy}%`} />
+      <DetailsSectionFooterItem
+        title={t('system.total-collateral')}
+        value={formatted.lockedCollateral}
+        {...(changeVariant && {
+          change: {
+            value: `${formatted.afterLockedCollateral} ${t('system.cards.common.after')}`,
+            variant: changeVariant,
+          },
+        })}
+      />
+      <DetailsSectionFooterItem
+        title={t('system.vault-dai-debt')}
+        value={formatted.debt}
+        {...(changeVariant && {
+          change: {
+            value: `${formatted.afterDebt} ${t('system.cards.common.after')}`,
+            variant: changeVariant,
+          },
+        })}
+      />
+      <DetailsSectionFooterItem
+        title={t('system.variable-annual-fee')}
+        value={formatted.stabilityFee}
+      />
     </>
   )
 }

@@ -115,12 +115,6 @@ import {
 import { createOpenVault$ } from 'features/borrow/open/pipes/openVault'
 import { createCollateralPrices$ } from 'features/collateralPrices/collateralPrices'
 import { currentContent } from 'features/content'
-import {
-  EARN_TAB_CHANGE_SUBJECT,
-  EarnTabChange,
-  EarnTabChangeAction,
-  earnTabChangeReducer,
-} from 'features/earn/guni/common/UITypes/TabChange'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
@@ -297,7 +291,6 @@ export type SupportedUIChangeType =
   | AddFormChange
   | RemoveFormChange
   | TabChange
-  | EarnTabChange
   | ProtectionModeChange
   | MultiplyPillChange
   | SwapWidgetState
@@ -308,7 +301,6 @@ export type LegalUiChanges = {
   BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
-  EarnTabChange: EarnTabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
@@ -398,9 +390,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
-  uiChangesSubject.configureSubject(EARN_TAB_CHANGE_SUBJECT, earnTabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
-
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)

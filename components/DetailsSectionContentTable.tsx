@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import ReactSelect from 'react-select'
 import { oasisBaseTheme } from 'theme'
 import { Box, Card, Flex, Grid, Text } from 'theme-ui'

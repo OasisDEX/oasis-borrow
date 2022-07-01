@@ -15,25 +15,31 @@ import { GuniOpenMultiplyVaultDetails } from './GuniOpenMultiplyVaultDetails'
 import { GuniOpenMultiplyVaultForm } from './GuniOpenMultiplyVaultForm'
 
 export function GuniOpenVaultView({ ilk }: { ilk: string }) {
-  const { openGuniVault$, gasPrice$, daiEthTokenPrice$ } = useAppContext()
+  const { openGuniVault$, gasPrice$, daiEthTokenPrice$, yields$ } = useAppContext()
   const [openVault, openVaultError] = useObservable(openGuniVault$(ilk))
+  const [yields, yieldsError] = useObservable(yields$(ilk))
   const [gasPrice, gasPriceError] = useObservable(gasPrice$)
   const [daiEthTokenPrice, daiEthTokenPriceError] = useObservable(
     daiEthTokenPrice$ as Observable<{ ETH: BigNumber; DAI: BigNumber }>,
   )
 
   return (
-    <WithErrorHandler error={[openVaultError, gasPriceError, daiEthTokenPriceError]}>
+    <WithErrorHandler error={[openVaultError, gasPriceError, daiEthTokenPriceError, yieldsError]}>
       <WithLoadingIndicator
-        value={[openVault, gasPrice, daiEthTokenPrice]}
+        value={[openVault, gasPrice, daiEthTokenPrice, yields]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([openVault, gasPrice, daiEthTokenPrice]) => (
+        {([openVault, gasPrice, daiEthTokenPrice, yields]) => (
           <Container variant="vaultPageContainer">
             <OpenMultiplyVaultContainer
               header={<GuniVaultHeader token={openVault.token} ilk={openVault.ilk} />}
               details={
-                <GuniOpenMultiplyVaultDetails {...openVault} {...gasPrice} {...daiEthTokenPrice} />
+                <GuniOpenMultiplyVaultDetails
+                  {...openVault}
+                  {...gasPrice}
+                  {...daiEthTokenPrice}
+                  {...yields}
+                />
               }
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
               faq={guniFaq}
