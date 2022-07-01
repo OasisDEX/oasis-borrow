@@ -1,11 +1,14 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
+import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { calculateBreakeven, calculateEarnings } from 'helpers/earn/calculations'
+import { EarnSimulateViewMode } from 'components/vault/EarnVaultSimulateTabBar'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { calculateBreakeven, calculateEarnings, Yield } from 'helpers/earn/calculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -43,8 +46,9 @@ function calculateEntryFees(
 }
 
 export function GuniOpenMultiplyVaultDetails(
-  props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber },
+  props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber } & Yield,
 ) {
+  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const { token, yields } = props
 
@@ -91,17 +95,17 @@ export function GuniOpenMultiplyVaultDetails(
 
   const contentRowData: [string, string, string][] = [
     [
-      t('open-earn-vault.simulate.rowlabel1'),
+      t('earn-vault.simulate.rowlabel1'),
       `${formatCryptoBalance(earnings30.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings30.netValue)} DAI`,
     ],
     [
-      t('open-earn-vault.simulate.rowlabel2'),
+      t('earn-vault.simulate.rowlabel2'),
       `${formatCryptoBalance(earnings90.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings90.netValue)} DAI`,
     ],
     [
-      'open-earn-vault.simulate.rowlabel3',
+      t('earn-vault.simulate.rowlabel3'),
       `${formatCryptoBalance(earnings1yr.earningsAfterFees)} DAI`,
       `${formatCryptoBalance(earnings1yr.netValue)} DAI`,
     ],
@@ -115,16 +119,16 @@ export function GuniOpenMultiplyVaultDetails(
           <>
             <DetailsSectionContentTable
               headers={[
-                t('open-earn-vault.simulate.header1'),
-                t('open-earn-vault.simulate.header2'),
-                t('open-earn-vault.simulate.header3'),
+                t('earn-vault.simulate.header1'),
+                t('earn-vault.simulate.header2'),
+                t('earn-vault.simulate.header3'),
               ]}
               rows={contentRowData}
               footnote={
                 <>
-                  {t('open-earn-vault.simulate.footnote1')}
+                  {t('earn-vault.simulate.footnote1')}
                   <br />
-                  {t('open-earn-vault.simulate.footnote2')}
+                  {t('earn-vault.simulate.footnote2')}
                 </>
               }
             />
@@ -147,7 +151,12 @@ export function GuniOpenMultiplyVaultDetails(
         description={t('vault-banners.what-are-the-risks.content')}
         button={{
           text: t('vault-banners.what-are-the-risks.button'),
-          action: () => null,
+          action: () => {
+            uiChanges.publish(TAB_CHANGE_SUBJECT, {
+              type: 'change-tab',
+              currentMode: EarnSimulateViewMode.FAQ,
+            })
+          },
         }}
         image={{
           src: '/static/img/setup-banner/stop-loss.svg',
