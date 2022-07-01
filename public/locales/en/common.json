@@ -338,7 +338,7 @@
       }
     },
     "cookie-banner": {
-      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
+      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <1>Privacy Policy</1>.",
       "settings-toggle": "Manage settings",
       "accept": "Accept",
       "reject": "Reject",
@@ -1106,6 +1106,7 @@
     "placeholder": "Email Address",
     "button": "Subscribe",
     "success": "Thank you for subscribing the newsletter!",
+    "gdpr": "By entering your email address, you acknowledge that Oazo Apps Limited will collect and process your personal data for marketing purposes (e.g. newsletter, updates). For more information please refer to our <1>Privacy Policy.</1>",
     "errors": {
       "unknown": "Something went wrong. Please try again.",
       "email-is-invalid": "Please enter a valid email address",

@@ -1,8 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { isAppContextAvailable } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { AppSpinner } from 'helpers/AppSpinner'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React, { FormEvent, useState } from 'react'
 import { useEffect } from 'react'
 import { GRADIENTS } from 'theme'
@@ -103,6 +104,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
       sx={{
         width: '100%',
         mx: 'auto',
+        mb: '1.3em',
       }}
     >
       <Flex
@@ -172,11 +174,25 @@ function NewsletterForm({ small }: { small?: boolean }) {
           )}
         </Button>
       </Flex>
-      <Box sx={{ mt: 2, minHeight: '1.3em' }}>
+      <Box sx={{ mt: 2 }}>
         {showError && (
-          <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2 }}>
+          <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2, ml: 3 }}>
             {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
           </Text>
+        )}
+      </Box>
+      <Box sx={{ mt: small ? '16px' : '12px', minHeight: '1.3em' }}>
+        {inputOnFocus && (
+          <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondaryAlt">
+            <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
+              <Trans
+                i18nKey="newsletter.gdpr"
+                components={{
+                  1: <AppLink href="/privacy" variant="inText" />,
+                }}
+              ></Trans>
+            </Text>
+          </Box>
         )}
       </Box>
     </Box>
