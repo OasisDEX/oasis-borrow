@@ -28,7 +28,12 @@ interface TabBarProps {
 export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: TabBarProps) {
   const [hash, setHash] = useHash<string>()
 
-  useEffect(() => setHash(sections[0]?.value), [])
+  useEffect(() => {
+    if(!hash) {
+      setHash(sections[0]?.value)
+    }
+  }, [])
+  
   useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
 
   function isSelected(section: TabSection) {
