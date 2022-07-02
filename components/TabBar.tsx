@@ -26,7 +26,7 @@ interface TabBarProps {
 }
 
 export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBarProps) {
-  const [hash, setHash] = useHash<string>()
+  const [hash, setHash] = useHash()
 
   useEffect(() => {
     if(!hash) {
@@ -37,10 +37,10 @@ export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBar
   useEffect(() => {if (value) { setHash(value)}}, [value])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash || section.value === hash
+    return section.value === hash
   }
 
-  const selectedSection = sections.find(isSelected)
+  const selectedSection = sections.find(isSelected) || sections[0]
 
   if (sections.length <= 1) {
     return (
