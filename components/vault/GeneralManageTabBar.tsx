@@ -113,7 +113,7 @@ export function GeneralManageTabBar({
           content: <HistoryControl vaultHistory={vaultHistory} />,
         },
       ]}
-      switchEvent={{ value: mode }}
+      value={mode}
     />
   )
 }
