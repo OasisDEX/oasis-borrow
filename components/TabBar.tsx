@@ -29,12 +29,16 @@ export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBar
   const [hash, setHash] = useHash()
 
   useEffect(() => {
-    if(!hash) {
+    if (!hash) {
       setHash(sections[0]?.value)
     }
   }, [])
-  
-  useEffect(() => {if (value) { setHash(value)}}, [value])
+
+  useEffect(() => {
+    if (value) {
+      setHash(value)
+    }
+  }, [value])
 
   function isSelected(section: TabSection) {
     return section.value === hash

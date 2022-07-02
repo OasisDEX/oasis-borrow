@@ -42,7 +42,9 @@ export function GeneralManageTabBar({
 }: GeneralManageTabBarProps): JSX.Element {
   const { ilkData, vault, account, balanceInfo, vaultHistory } = generalManageVault.state
   const [hash] = useHash()
-  const initialMode = Object.values<string>(VaultViewMode).includes(hash) ? hash as VaultViewMode : VaultViewMode.Overview
+  const initialMode = Object.values<string>(VaultViewMode).includes(hash)
+    ? (hash as VaultViewMode)
+    : VaultViewMode.Overview
   const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
