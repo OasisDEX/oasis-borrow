@@ -10,6 +10,7 @@ import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
@@ -17,6 +18,7 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
@@ -35,6 +37,8 @@ interface SidebarAutoBuyEditingStageProps {
   isEditing: boolean
   autoBuyTriggerData: BasicBSTriggerData
   priceInfo: PriceInfo
+  errors: VaultErrorMessage[]
+
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -45,6 +49,7 @@ export function SidebarAutoBuyEditingStage({
   basicBuyState,
   autoBuyTriggerData,
   priceInfo,
+  errors,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -108,6 +113,12 @@ export function SidebarAutoBuyEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={basicBuyState.withThreshold}
       />
+            {isEditing && (
+        <>
+          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          {/* <VaultWarnings warningMessages={warnings} ilkData={ilkData} /> */}
+        </>
+      )}
 
       <SidebarResetButton
         clear={() => {

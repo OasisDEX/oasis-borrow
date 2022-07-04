@@ -5,6 +5,7 @@ import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/co
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
+import { zero } from 'helpers/zero'
 
 export function warningsBasicSellValidation({
   token,
@@ -57,4 +58,15 @@ export function errorsBasicSellValidation({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
   })
+}
+
+export function errorsAddBasicBuyValidation({
+  maxBuyPrice,
+  withThreshold,
+}: {
+  maxBuyPrice?: BigNumber
+  withThreshold: boolean
+}) {
+  const autoBuyMaxBuyPriceNotSpecified = withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
+  return errorMessagesHandler({autoBuyMaxBuyPriceNotSpecified})
 }

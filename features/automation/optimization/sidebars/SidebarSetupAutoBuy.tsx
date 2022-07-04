@@ -17,6 +17,7 @@ import {
 } from 'features/automation/common/basicBStxHandlers'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
+import { errorsAddBasicBuyValidation as createBasicBuyErrorsValidation } from 'features/automation/common/validators'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -130,6 +131,12 @@ export function SidebarSetupAutoBuy({
     ? 'addBasicBuy'
     : 'editBasicBuy'
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
+  const creationErrors = createBasicBuyErrorsValidation({
+    maxBuyPrice: uiState.maxBuyOrMinSellPrice,
+    withThreshold: uiState.withThreshold
+  })
+  console.log('errors')
+  console.log(creationErrors)
 
   const sidebarStatus = getSidebarStatus({
     stage,
@@ -154,6 +161,7 @@ export function SidebarSetupAutoBuy({
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
                   priceInfo={priceInfo}
+                  errors={creationErrors}
                 />
               )}
               {isRemoveForm && (
@@ -162,6 +170,8 @@ export function SidebarSetupAutoBuy({
                   cancelTxData={cancelTxData}
                   priceInfo={priceInfo}
                   basicBuyState={uiState}
+                  ilkData={ilkData}
+                  errors={creationErrors}
                 />
               )}
             </>
@@ -173,7 +183,7 @@ export function SidebarSetupAutoBuy({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled,
+        disabled: isDisabled || !!creationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
           if (txHelpers) {

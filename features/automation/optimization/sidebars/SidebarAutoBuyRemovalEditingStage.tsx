@@ -2,11 +2,14 @@ import {
   AutomationBotRemoveTriggerData,
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
+import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus } from 'helpers/form'
@@ -21,6 +24,8 @@ interface SidebarAutoBuyRemovalEditingStageProps {
   priceInfo: PriceInfo
   cancelTxData: AutomationBotRemoveTriggerData
   basicBuyState: BasicBSFormChange
+  ilkData: IlkData
+  errors: VaultErrorMessage[]
 }
 
 export function SidebarAutoBuyRemovalEditingStage({
@@ -28,6 +33,8 @@ export function SidebarAutoBuyRemovalEditingStage({
   cancelTxData,
   priceInfo,
   basicBuyState,
+  ilkData,
+  errors,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   // TODO dummy changes information for now
   return (
@@ -35,6 +42,8 @@ export function SidebarAutoBuyRemovalEditingStage({
       <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
         To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
       </Text>
+      {/* <VaultErrors errorMessages={errors} ilkData={ilkData} /> */}
+      {/* <VaultWarnings warningMessages={warnings} ilkData={ilkData} /> */}
       <AutoBuyInfoSectionControl
         cancelTxData={cancelTxData}
         priceInfo={priceInfo}
