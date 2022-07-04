@@ -51,11 +51,11 @@ function AutoSellInfoSectionControl({
       slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.minus(collateralDelta.abs()),
+        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterSell={{
         value: vault.debt,
-        secondaryValue: vault.debt.minus(debtDelta.abs()),
+        secondaryValue: vault.debt.plus(debtDelta),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
