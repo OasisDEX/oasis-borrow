@@ -80,7 +80,7 @@ export function createAutomationTriggersChange$(
     : []
 }
 
-export interface StopLossChange {
+export interface AutomationTriggersChange {
   kind: 'automationTriggersData'
   stopLossData: StopLossTriggerData
   basicSellData: BasicBSTriggerData
