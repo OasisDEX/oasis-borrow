@@ -9,8 +9,8 @@ import { Box, Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
-import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
+import { VaultNoticesView } from '../../features/notices/VaultsNoticesView'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
@@ -47,7 +47,7 @@ function Vault({ id }: { id: string }) {
             <BackgroundLight />
             {isValidVaultId ? (
               <>
-                <VaultBannersView id={vaultId} />
+                <VaultNoticesView id={vaultId} />
                 <GeneralManageVaultView id={vaultId} />
               </>
             ) : (

@@ -9,12 +9,12 @@ import { one } from 'helpers/zero'
 import moment from 'moment'
 import { of } from 'rxjs/internal/observable/of'
 
-import { createVaultsBanners$ } from './vaultsBanners'
+import { createVaultsNotices$ } from './vaultsNotices'
 
-describe('createVaultBanners$', () => {
+describe('createVaultNotices$', () => {
   it('should assign ownership banner', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () => mockVault$().vault$,
@@ -33,7 +33,7 @@ describe('createVaultBanners$', () => {
     })
     const priceInfo = getStateUnpacker(priceInfo$)
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => priceInfo$,
         () =>
@@ -52,7 +52,7 @@ describe('createVaultBanners$', () => {
 
   it('should assign liquidating banner', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () =>
@@ -70,7 +70,7 @@ describe('createVaultBanners$', () => {
 
   it('should assign liquidated banner', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () => mockVault$().vault$,
@@ -97,7 +97,7 @@ describe('createVaultBanners$', () => {
 
   it('should assign liquidated banner for LIQ 2.0', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () => mockVault$().vault$,
@@ -125,7 +125,7 @@ describe('createVaultBanners$', () => {
 
   it('should not assign liquidated banner for vault liquidated more than week earlier', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () => mockVault$().vault$,
@@ -152,7 +152,7 @@ describe('createVaultBanners$', () => {
 
   it('should assign liquidating banner even when vault was liquidated last week', () => {
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => mockPriceInfo$(),
         () =>
@@ -190,7 +190,7 @@ describe('createVaultBanners$', () => {
     })
     const priceInfo = getStateUnpacker(priceInfo$)
     const state = getStateUnpacker(
-      createVaultsBanners$(
+      createVaultsNotices$(
         of(mockContextConnected),
         () => priceInfo$,
         () =>

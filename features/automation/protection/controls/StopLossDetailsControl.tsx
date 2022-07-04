@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
+import { Banner, bannerGradientPresets } from 'components/Banner'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { StopLossDetailsLayout } from 'features/automation/protection/controls/StopLossDetailsLayout'
@@ -64,18 +64,22 @@ export function StopLossDetailsControl({
       {isStopLossActive ? (
         <StopLossDetailsLayout {...props} />
       ) : (
-        <SetupBanner
-          header={t('vault-banners.setup-stop-loss.header')}
-          content={t('vault-banners.setup-stop-loss.content', { token: vault.token })}
-          button={t('vault-banners.setup-stop-loss.button')}
-          backgroundImage="/static/img/setup-banner/stop-loss.svg"
-          backgroundColor={setupBannerGradientPresets.stopLoss[0]}
-          backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
-          handleClick={() => {
-            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              type: 'Protection',
-              currentProtectionFeature: 'stopLoss',
-            })
+        <Banner
+          title={t('vault-banners.setup-stop-loss.header')}
+          description={t('vault-banners.setup-stop-loss.content', { token: vault.token })}
+          image={{
+            src: '/static/img/setup-banner/stop-loss.svg',
+            backgroundColor: bannerGradientPresets.stopLoss[0],
+            backgroundColorEnd: bannerGradientPresets.stopLoss[1],
+          }}
+          button={{
+            action: () => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Protection',
+                currentProtectionFeature: 'stopLoss',
+              })
+            },
+            text: t('vault-banners.setup-stop-loss.button'),
           }}
         />
       )}

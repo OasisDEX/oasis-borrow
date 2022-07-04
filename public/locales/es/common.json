@@ -808,7 +808,7 @@
     "vaults-at-risk": "Vaults en riesgo",
     "your-vaults": "Sus Vaults"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "Está viendo el Vault de {{address}}",
       "subheader1": "Por favor conecte su cartera para abrir, manejar o ver sus Vaults",
@@ -828,9 +828,6 @@
       "subheader2": "Puede recuperar {{ amount }} {{ collateral }}",
       "subheader3": "Este Vault de Maker fue liquidado. Una parte del colateral se subastó para pagar la deuda en Dai.",
       "subheader4": "Si este es su Vault, conéctese con la dirección {{ address }} para recuperar el colateral restante."
-    },
-    "debt-ceiling-rise": {
-      "header": "El 24 de Enero el techo de deuda de este tipo de Vault pasó de {{from}} a {{to}}. Por lo tanto, las ganancias de esta posición pueden reducirse significativamente. Más información en nuestro blog."
     }
   },
   "view": "Ver",

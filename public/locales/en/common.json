@@ -894,7 +894,7 @@
     "total-assets": "Total Assets",
     "total-assets-subheader": "Calculated using the <0>Oasis curated token list →</0>"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "You are viewing {{address}} Vault",
       "subheader1": "Please connect your wallet to open, manage or view your Vaults.",
@@ -914,10 +914,9 @@
       "subheader2": "You can reclaim {{ amount }} {{ collateral }}",
       "subheader3": "This Maker Vault has been liquidated. A portion of collateral has been auctioned to pay back the Dai debt.",
       "subheader4": "If this is your vault, connect with address: {{ address }} to reclaim the remaining collateral."
-    },
-    "debt-ceiling-rise": {
-      "header": "On January 24th the debt ceiling of this vault type was raised from {{from}} -> {{to}}. Therefore the earnings from this position may shrink significantly. Read more on the blog "
-    },
+    }
+  },
+  "vault-banners": {
     "setup-stop-loss": {
       "header": "Get vault protection",
       "content": "Set up a Stop-Loss protection to allow us to automatically stop you out of your position when your vault drops below a chosen collateralization ratio. You can stop both to {{token}} or to DAI.",
