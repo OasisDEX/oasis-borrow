@@ -431,22 +431,22 @@ export function daiAllowanceProgressionDisabledValidator({
   )
 }
 
-export function afterCollRatioBelowStopLossRatioValidator({
+export function afterCollRatioBelowThresholdRatioValidator({
   afterCollateralizationRatio,
   afterCollateralizationRatioAtNextPrice,
-  stopLossRatio,
+  threshold,
 }: {
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
-  stopLossRatio: BigNumber
+  threshold: BigNumber
 }) {
   if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
     return false
   }
 
   return (
-    afterCollateralizationRatio.lt(stopLossRatio) ||
-    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
+    afterCollateralizationRatio.lt(threshold) ||
+    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(threshold)
   )
 }
 

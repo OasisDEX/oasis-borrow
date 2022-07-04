@@ -63,10 +63,12 @@ export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>
     }
   }
 
-  if (change.kind === 'stopLossData') {
+  if (change.kind === 'automationTriggersData') {
     return {
       ...state,
       stopLossData: change.stopLossData,
+      basicSellData: change.basicSellData,
+      basicBuyData: change.basicBuyData,
     }
   }
 

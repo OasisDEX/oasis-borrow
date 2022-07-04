@@ -5,6 +5,7 @@ import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
@@ -23,7 +24,7 @@ import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
 import {
-  createStopLossDataChange$,
+  createAutomationTriggersChange$,
   TriggersData,
 } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -260,6 +261,8 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
+    basicBuyData?: BasicBSTriggerData
+    basicSellData?: BasicBSTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -543,6 +546,8 @@ export function createManageMultiplyVault$(
                     priceInfo,
                     vaultHistory: [],
                     stopLossData: undefined,
+                    basicBuyData: undefined,
+                    basicSellData: undefined,
                     balanceInfo,
                     ilkData,
                     account,
@@ -578,7 +583,7 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
-                    createStopLossDataChange$(automationTriggersData$, id),
+                    createAutomationTriggersChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
