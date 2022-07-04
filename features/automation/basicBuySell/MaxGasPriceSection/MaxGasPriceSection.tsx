@@ -39,7 +39,7 @@ export function MaxGasPriceSection({ onChange, defaultValue = '100' }: MaxGasPri
                   {
                     id: '100',
                     label: '100 Gwei',
-                    action: () => { 
+                    action: () => {
                       handleChange('100')
                     },
                   },
