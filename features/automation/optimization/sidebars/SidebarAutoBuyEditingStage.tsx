@@ -36,6 +36,7 @@ interface SidebarAutoBuyEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
+  slippageLimit?: BigNumber
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -47,6 +48,7 @@ export function SidebarAutoBuyEditingStage({
   priceInfo,
   errors,
   warnings,
+  slippageLimit,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -146,8 +148,8 @@ export function SidebarAutoBuyEditingStage({
           priceInfo={priceInfo}
           basicBuyState={basicBuyState}
           vault={vault}
-          addTriggerGasEstimation={addAutomationBotTrigger}
-        />
+          addTriggerGasEstimation={addAutomationBotTrigger} 
+          slippageLimit={slippageLimit}        />
       )}
     </>
   )
@@ -158,6 +160,7 @@ interface AutoBuyInfoSectionControlProps {
   vault: Vault
   basicBuyState: BasicBSFormChange
   addTriggerGasEstimation: ReactNode
+  slippageLimit?: BigNumber
 }
 
 function AutoBuyInfoSectionControl({
@@ -165,6 +168,7 @@ function AutoBuyInfoSectionControl({
   vault,
   basicBuyState,
   addTriggerGasEstimation,
+  slippageLimit,
 }: AutoBuyInfoSectionControlProps) {
   const { tokenPriceUSD$ } = useAppContext()
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
@@ -175,7 +179,7 @@ function AutoBuyInfoSectionControl({
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
     marketPrice: marketPrice,
-    slippage: basicBuyState.deviation.div(100),
+    slippage: slippageLimit?.lte(basicBuyState.deviation.div(100)) ? slippageLimit : basicBuyState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
     requiredCollRatio: basicBuyState.targetCollRatio.div(100),

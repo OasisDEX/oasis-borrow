@@ -24,6 +24,7 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
     context$,
     txHelpers$,
     tokenPriceUSD$,
+    userSettings$,
   } = useAppContext()
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
   const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
@@ -33,14 +34,18 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
+  const [userSettingsData, userSettingsError] = useObservable(userSettings$)
+
+  console.log('userSettingsData')
+  console.log(userSettingsData)
 
   return (
-    <WithErrorHandler error={[automationTriggersError, priceInfoError, ethAndTokenPricesError]}>
+    <WithErrorHandler error={[automationTriggersError, priceInfoError, ethAndTokenPricesError, userSettingsError]}>
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData]}
+        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData, userSettingsData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo, context, ethAndTokenPrices]) => (
+        {([automationTriggers, priceInfo, context, ethAndTokenPrices, userSettings]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
@@ -59,6 +64,7 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
                 context={context}
                 balanceInfo={balanceInfo}
                 ethMarketPrice={ethAndTokenPrices['ETH']}
+                slippageLimit={userSettings.slippage}
               />
             }
           />

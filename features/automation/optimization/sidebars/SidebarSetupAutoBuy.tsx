@@ -60,6 +60,7 @@ export interface SidebarSetupAutoBuyProps {
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
+  slippageLimit: BigNumber
 }
 
 export function SidebarSetupAutoBuy({
@@ -72,6 +73,7 @@ export function SidebarSetupAutoBuy({
   txHelpers,
   balanceInfo,
   ethMarketPrice,
+  slippageLimit,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
@@ -216,8 +218,8 @@ export function SidebarSetupAutoBuy({
                   priceInfo={priceInfo}
                   errors={errors}
                   warnings={warnings}
-                  addTriggerGasEstimation={addTriggerGasEstimation}
-                />
+                  addTriggerGasEstimation={addTriggerGasEstimation} 
+                  slippageLimit={slippageLimit}                />
               )}
               {isRemoveForm && (
                 <SidebarAutoBuyRemovalEditingStage
