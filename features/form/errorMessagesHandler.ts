@@ -34,7 +34,6 @@ export type VaultErrorMessage =
   | 'stopLossHigherThanCurrentOrNext'
   | 'maxDebtForSettingStopLoss'
   | 'targetCollRatioExceededDustLimitCollRatio'
-  | 'targetCollRatioBelowCurrentCollRatio'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -71,7 +70,6 @@ interface ErrorMessagesHandler {
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
   targetCollRatioExceededDustLimitCollRatio?: boolean
-  targetCollRatioBelowCurrentCollRatio?: boolean
 }
 
 export function errorMessagesHandler({
@@ -109,7 +107,6 @@ export function errorMessagesHandler({
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
   targetCollRatioExceededDustLimitCollRatio,
-  targetCollRatioBelowCurrentCollRatio,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -247,10 +244,6 @@ export function errorMessagesHandler({
 
   if (targetCollRatioExceededDustLimitCollRatio) {
     errorMessages.push('targetCollRatioExceededDustLimitCollRatio')
-  }
-
-  if (targetCollRatioBelowCurrentCollRatio) {
-    errorMessages.push('targetCollRatioBelowCurrentCollRatio')
   }
 
   return errorMessages

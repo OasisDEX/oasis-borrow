@@ -41,13 +41,11 @@ export function errorsBasicSellValidation({
   vault,
   ilkData,
   debtDelta,
-  targetCollRatio,
 }: {
   txError?: TxError
   vault: Vault
   ilkData: IlkData
   debtDelta: BigNumber
-  targetCollRatio: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
@@ -55,13 +53,8 @@ export function errorsBasicSellValidation({
     vault.debt.minus(debtDelta.abs()),
   )
 
-  const targetCollRatioBelowCurrentCollRatio = targetCollRatio.lt(
-    vault.collateralizationRatio.times(100),
-  )
-
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
-    targetCollRatioBelowCurrentCollRatio,
   })
 }

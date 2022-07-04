@@ -109,7 +109,6 @@ export function SidebarSetupAutoSell({
     ilkData,
     vault,
     debtDelta,
-    targetCollRatio: basicSellState.targetCollRatio,
   })
 
   const warnings = warningsBasicSellValidation({
