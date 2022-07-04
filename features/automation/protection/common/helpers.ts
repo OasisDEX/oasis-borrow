@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { UIChanges } from 'components/AppContext'
-import { VaultViewMode } from 'components/VaultTabSwitch'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'

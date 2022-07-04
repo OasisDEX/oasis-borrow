@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import React from 'react'
 
 import { amountFromWei } from '../../../../blockchain/utils'
 import { useAppContext } from '../../../../components/AppContextProvider'
-import { VaultViewMode } from '../../../../components/VaultTabSwitch'
 import { calculatePriceImpact } from '../../../shared/priceImpact'
 import {
   CloseVaultExitCollateralMultipleEvent,
