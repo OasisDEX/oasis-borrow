@@ -1,9 +1,9 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { WithChildren } from 'helpers/types'
 import React, { useLayoutEffect, useState } from 'react'
-import { Box, Flex, IconButton, SxProps, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
+import { Notice } from './Notice'
 import { WithArrow } from './WithArrow'
 
 function Separator() {
@@ -24,75 +24,7 @@ function Separator() {
     </Text>
   )
 }
-
-function Closeable({
-  children,
-  onClose,
-  ommit = false,
-}: { onClose?: () => void; ommit?: boolean } & WithChildren) {
-  return ommit ? (
-    children
-  ) : (
-    <Box sx={{ position: 'relative' }}>
-      {children}
-      <IconButton
-        onClick={onClose}
-        sx={{
-          cursor: 'pointer',
-          height: 3,
-          width: 3,
-          padding: 0,
-          position: 'absolute',
-          top: 3,
-          right: 3,
-          zIndex: 1,
-          color: 'onSurface',
-          '&:hover': {
-            color: 'primary',
-          },
-        }}
-      >
-        <Icon name="close_squared" size={14} />
-      </IconButton>
-    </Box>
-  )
-}
-
-export function Announcement({ children, sx }: WithChildren & SxProps) {
-  return (
-    <Flex
-      sx={{
-        alignItems: 'center',
-        px: [3, 4],
-        py: [2, 3],
-        borderRadius: 'large',
-        background: 'rgba(255,255,255, 0.65)',
-        width: ['100%', 'fit-content'],
-        justifySelf: 'center',
-        ...sx,
-      }}
-    >
-      <Flex
-        sx={{
-          height: '36px',
-          width: ' 36px',
-          background: 'surface',
-          boxShadow: 'banner',
-          borderRadius: 'roundish',
-          mr: 3,
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <Icon name="announcement" height="25px" width="25px" />
-      </Flex>
-      {children}
-    </Flex>
-  )
-}
-
-interface GenericAnnouncementProps {
+interface AnnouncementProps {
   text: string
   discordLink?: string
   link?: string
@@ -100,13 +32,7 @@ interface GenericAnnouncementProps {
   disableClosing?: boolean
 }
 
-export function GenericAnnouncement({
-  text,
-  discordLink,
-  link,
-  linkText,
-  disableClosing = false,
-}: GenericAnnouncementProps) {
+export function Announcement({ text, discordLink, link, linkText }: AnnouncementProps) {
   const [shouldRender, setShouldRender] = useState(true)
 
   useLayoutEffect(() => {
@@ -114,19 +40,42 @@ export function GenericAnnouncement({
   }, [])
 
   return shouldRender ? (
-    <Closeable
-      ommit={disableClosing}
-      onClose={() => {
+    <Notice
+      close={() => {
         setShouldRender(false)
         sessionStorage.setItem('isAnnouncementHidden', 'true')
       }}
+      sx={{ mx: 3 }}
     >
-      <Announcement sx={{ my: 3, textAlign: 'left' }}>
+      <Flex
+        sx={{
+          alignItems: 'center',
+          borderRadius: 'large',
+          background: 'rgba(255,255,255, 0.65)',
+          width: ['100%', 'fit-content'],
+          justifySelf: 'center',
+          textAlign: 'left',
+        }}
+      >
+        <Box sx={{ mr: 4, flexShrink: 0 }}>
+          <Flex
+            sx={{
+              border: 'bold',
+              borderRadius: 'circle',
+              width: '56px',
+              height: '56px',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Icon name="announcement" size="auto" width="24" height="24" />
+          </Flex>
+        </Box>
         <Box>
           <Box sx={{ mb: 2 }}>
             <Text
               variant="paragraph3"
-              sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3, pr: 2 }}
+              sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3, pr: 2, color: 'lavender' }}
             >
               {text}
             </Text>
@@ -151,7 +100,7 @@ export function GenericAnnouncement({
             )}
           </Flex>
         </Box>
-      </Announcement>
-    </Closeable>
+      </Flex>
+    </Notice>
   ) : null
 }

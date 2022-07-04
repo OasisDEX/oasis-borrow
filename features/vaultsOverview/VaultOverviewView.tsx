@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { VaultOverviewOwnershipBanner } from 'features/banners/VaultsBannersView'
+import { VaultOverviewOwnershipNotice } from 'features/notices/VaultsNoticesView'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
@@ -75,7 +75,7 @@ export function VaultsOverviewView({
   return (
     <Grid sx={{ flex: 1, zIndex: 1, gap: '39px' }}>
       {connectedAccount && address !== connectedAccount && (
-        <VaultOverviewOwnershipBanner account={connectedAccount} controller={address} />
+        <VaultOverviewOwnershipNotice account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         <WithErrorHandler error={err}>

@@ -16,6 +16,7 @@ import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingBut
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
 import {
@@ -49,6 +50,7 @@ interface AdjustSlFormControlProps {
   priceInfo: PriceInfo
   ilkData: IlkData
   triggerData: StopLossTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   ctx: Context
   accountIsController: boolean
   toggleForms: () => void
@@ -62,6 +64,7 @@ export function AdjustSlFormControl({
   priceInfo: { currentCollateralPrice, nextCollateralPrice },
   ilkData,
   triggerData,
+  autoSellTriggerData,
   ctx,
   accountIsController,
   toggleForms,
@@ -138,11 +141,17 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
+  const max = autoSellTriggerData.isTriggerEnabled
+    ? autoSellTriggerData.execCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
+    : vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET)
+
   const sliderPercentageFill = getSliderPercentageFill({
     value: uiState.selectedSLValue,
     min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
-    max: vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
+    max,
   })
+
+  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)
@@ -155,12 +164,7 @@ export function AdjustSlFormControl({
     leftBoundry: uiState.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     lastValue: uiState.selectedSLValue,
-    maxBoundry: new BigNumber(
-      vault.collateralizationRatioAtNextPrice
-        .minus(MAX_SL_SLIDER_VALUE_OFFSET)
-        .multipliedBy(100)
-        .toFixed(0, BigNumber.ROUND_DOWN),
-    ),
+    maxBoundry,
     minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
     onChange: (slCollRatio) => {
       if (uiState.collateralActive === undefined) {

@@ -46,7 +46,6 @@ interface AutoSellFormControlProps {
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
@@ -62,7 +61,6 @@ export function AutoSellFormControl({
   txHelpers,
   context,
   ethMarketPrice,
-  tokenMarketPrice,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -209,7 +207,7 @@ export function AutoSellFormControl({
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: tokenMarketPrice,
+    marketPrice: priceInfo.nextCollateralPrice,
     slippage: basicSellState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,

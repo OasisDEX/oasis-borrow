@@ -144,6 +144,15 @@ export function VaultErrors({
           1: <strong />,
         }}
       />)
+      case 'minimumSellPriceNotProvided':
+        return (
+          <Trans
+            i18nKey="vault-errors.minimum-sell-price-not-provided"
+            components={{
+              1: <strong />,
+            }}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }

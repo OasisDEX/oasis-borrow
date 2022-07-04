@@ -1,5 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
-import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
+import { Banner, bannerGradientPresets } from 'components/Banner'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/controls/BasicSellDetailsLayout'
@@ -37,18 +37,22 @@ export function BasicSellDetailsControl({
           basicSellTriggerData={basicSellTriggerData}
         />
       ) : (
-        <SetupBanner
-          header={t('auto-sell.banner.header')}
-          content={t('auto-sell.banner.content')}
-          button={t('auto-sell.banner.button')}
-          backgroundImage="/static/img/setup-banner/auto-sell.svg"
-          backgroundColor={setupBannerGradientPresets.autoSell[0]}
-          backgroundColorEnd={setupBannerGradientPresets.autoSell[1]}
-          handleClick={() => {
-            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              type: 'Protection',
-              currentProtectionFeature: 'autoSell',
-            })
+        <Banner
+          title={t('auto-sell.banner.header')}
+          description={t('auto-sell.banner.content')}
+          image={{
+            src: '/static/img/setup-banner/auto-sell.svg',
+            backgroundColor: bannerGradientPresets.autoSell[0],
+            backgroundColorEnd: bannerGradientPresets.autoSell[1],
+          }}
+          button={{
+            action: () => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Protection',
+                currentProtectionFeature: 'autoSell',
+              })
+            },
+            text: t('auto-sell.banner.button'),
           }}
         />
       )}

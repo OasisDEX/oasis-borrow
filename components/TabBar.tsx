@@ -58,7 +58,13 @@ export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBar
     <Grid gap={0} sx={{ width: '100%' }}>
       {selectedSection?.topContent && <Box>{selectedSection?.topContent}</Box>}
       {useDropdownOnMobile ? (
-        <Box sx={{ display: ['block', 'none'], mb: 3 }}>
+        <Box
+          sx={{
+            display: ['block', 'none'],
+            mb: 3,
+            zIndex: 2,
+          }}
+        >
           <ReactSelect<TabSection>
             options={sections}
             onChange={(option) => setHash((option as TabSection).value)}
