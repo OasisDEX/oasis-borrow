@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
+import { content as cookieContent } from './cookie/cookie'
 import { content as privacyContent } from './privacy/privacy'
 import { content as supportContent, ContentTypeSupport } from './support/support'
 import { content as tosContent } from './tos/tos'
@@ -18,6 +19,7 @@ export interface Content {
   tos: ContentVersioned
   privacy: ContentVersioned
   support: ContentVersioned
+  cookie: ContentVersioned
 }
 
 const v1: Content = {
@@ -33,6 +35,10 @@ const v1: Content = {
     version: 'ver-4.11.2020',
     content: supportContent,
   },
+  cookie: {
+    version: 'ver-1.7.2022',
+    content: <TranslatedContent content={cookieContent} />,
+  },
 }
 
 export function TranslatedContent({ content }: { content: ContentType }) {
@@ -41,7 +47,7 @@ export function TranslatedContent({ content }: { content: ContentType }) {
   } = useTranslation()
   const ContentComp = content[language] || content.en
 
-  return <ContentComp />
+  return <ContentComp sx={{ table: { background: '1px solid black !important' } }} />
 }
 
 export const currentContent: Content = v1
