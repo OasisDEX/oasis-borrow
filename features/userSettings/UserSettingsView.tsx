@@ -31,6 +31,7 @@ import { UnreachableCaseError } from 'ts-essentials'
 
 import {
   SLIPPAGE_OPTIONS,
+  USER_SETTINGS_CHANGE_SUBJECT,
   UserSettingsErrorMessages,
   UserSettingsState,
   UserSettingsWarningMessages,
@@ -118,7 +119,8 @@ function SlippageLimitMessages({
 }
 
 function SlippageSettingsForm() {
-  const { userSettings$ } = useAppContext()
+  // const [uiState] = useUIChanges<UserSettingsState>(USER_SETTINGS_CHANGE_SUBJECT)
+  const { userSettings$, uiChanges } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()
   const [customOpened, setCustomOpened] = useState(false)
@@ -207,7 +209,14 @@ function SlippageSettingsForm() {
       {!slippage.eq(slippageInput) && (
         <Button
           disabled={!canProgress || stage === 'inProgress'}
-          onClick={saveSettings}
+          onClick={() => {
+            uiChanges.publish(USER_SETTINGS_CHANGE_SUBJECT, {
+              type: 'slippage',
+              slippage: userSettings.slippageInput,
+            })
+
+            saveSettings
+          }}
           sx={{ mt: 2, width: '100%' }}
         >
           <Flex sx={{ alignItems: 'center', justifyContent: 'center' }}>

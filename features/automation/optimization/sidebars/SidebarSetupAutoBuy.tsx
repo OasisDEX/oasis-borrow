@@ -127,7 +127,6 @@ export function SidebarSetupAutoBuy({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
-
   const cancelTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
@@ -158,6 +157,7 @@ export function SidebarSetupAutoBuy({
     isRemoveForm
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
+  // const slippageLimit =
   const isDisabled =
     (isProgressStage ||
       !isOwner ||
@@ -218,8 +218,9 @@ export function SidebarSetupAutoBuy({
                   priceInfo={priceInfo}
                   errors={errors}
                   warnings={warnings}
-                  addTriggerGasEstimation={addTriggerGasEstimation} 
-                  slippageLimit={slippageLimit}                />
+                  addTriggerGasEstimation={addTriggerGasEstimation}
+                  slippageLimit={slippageLimit}
+                />
               )}
               {isRemoveForm && (
                 <SidebarAutoBuyRemovalEditingStage

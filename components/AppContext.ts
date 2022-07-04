@@ -131,7 +131,13 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
-import { createUserSettings$ } from 'features/userSettings/userSettings'
+import {
+  createUserSettings$,
+  USER_SETTINGS_CHANGE_SUBJECT,
+  UserSettingsChangeAction,
+  userSettingsReducer,
+  UserSettingsState,
+} from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
@@ -232,6 +238,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+// import { UserSettingsChange, UserSettingsChangeAction, userSettingsReducer, USER_SETTINGS_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/UserSettingsChange'
 
 export type TxData =
   | OpenData
@@ -295,6 +302,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
+  | UserSettingsState
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -305,6 +313,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  UserSettingsChangeAction: UserSettingsChangeAction
 }
 
 export type UIChanges = {
@@ -395,6 +404,9 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  // TODO either use uiChanges or try with existing solution ~ŁW
+  // uiChangesSubject.configureSubject(USER_SETTINGS_CHANGE_SUBJECT, userSettingsReducer)
+  uiChangesSubject.configureSubject(USER_SETTINGS_CHANGE_SUBJECT, userSettingsReducer)
 
   return uiChangesSubject
 }

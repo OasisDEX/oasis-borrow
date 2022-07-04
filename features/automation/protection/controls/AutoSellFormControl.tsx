@@ -97,8 +97,6 @@ export function AutoSellFormControl({
     )
   }, [addTxData])
 
-
-
   const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
   const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
   const addTriggerGasEstimationUsd =
