@@ -7,7 +7,14 @@ import { SelectComponents } from 'react-select/src/components'
 export const reactSelectCustomComponents = <T extends object>(): Partial<SelectComponents<T>> => ({
   IndicatorsContainer: () => null,
   ValueContainer: ({ children }) => (
-    <Flex sx={{ color: 'primary', fontWeight: 'body', fontSize: '18px', backgroundColor: 'white' }}>
+    <Flex
+      sx={{
+        color: 'primary',
+        fontWeight: 'body',
+        fontSize: '18px',
+        backgroundColor: 'white',
+      }}
+    >
       {children}
     </Flex>
   ),
