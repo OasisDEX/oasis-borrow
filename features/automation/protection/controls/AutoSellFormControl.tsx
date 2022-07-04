@@ -25,9 +25,11 @@ import {
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
+import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
@@ -205,6 +207,21 @@ export function AutoSellFormControl({
 
   const isFirstSetup = autoSellTriggerData.triggerId.isZero()
 
+  const { debtDelta, collateralDelta } = getVaultChange({
+    currentCollateralPrice: priceInfo.currentCollateralPrice,
+    marketPrice: tokenMarketPrice,
+    slippage: basicSellState.deviation.div(100),
+    debt: vault.debt,
+    lockedCollateral: vault.lockedCollateral,
+    requiredCollRatio: basicSellState.targetCollRatio.div(100),
+    depositAmount: zero,
+    paybackAmount: zero,
+    generateAmount: zero,
+    withdrawAmount: zero,
+    OF: OAZO_FEE,
+    FF: LOAN_FEE,
+  })
+
   return (
     <SidebarSetupAutoSell
       vault={vault}
@@ -217,7 +234,6 @@ export function AutoSellFormControl({
       isAutoSellActive={isAutoSellActive}
       context={context}
       ethMarketPrice={ethMarketPrice}
-      tokenMarketPrice={tokenMarketPrice}
       basicSellState={basicSellState}
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
@@ -230,6 +246,8 @@ export function AutoSellFormControl({
       isEditing={isEditing}
       isDisabled={isDisabled}
       isFirstSetup={isFirstSetup}
+      debtDelta={debtDelta}
+      collateralDelta={collateralDelta}
     />
   )
 }
