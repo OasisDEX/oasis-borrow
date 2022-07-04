@@ -3,7 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { UIChanges } from 'components/AppContext'
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { DEFAULT_BASIC_BS_MAX_SLIDER_BOUNDARY } from 'features/automation/protection/common/consts/automationDefaults'
+import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
@@ -139,12 +139,12 @@ export function getBasicSellMinMaxValues({
   if (stopLossTriggerData.isStopLossEnabled) {
     return {
       min: stopLossTriggerData.stopLossLevel.times(100).plus(5),
-      max: DEFAULT_BASIC_BS_MAX_SLIDER_BOUNDARY.times(100),
+      max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
     }
   }
 
   return {
     min: ilkData.liquidationRatio.times(100).plus(5),
-    max: DEFAULT_BASIC_BS_MAX_SLIDER_BOUNDARY.times(100),
+    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
   }
 }
