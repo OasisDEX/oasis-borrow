@@ -51,11 +51,11 @@ function AutoSellInfoSectionControl({
       slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.minus(collateralDelta.abs()),
+        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterSell={{
         value: vault.debt,
-        secondaryValue: vault.debt.minus(debtDelta.abs()),
+        secondaryValue: vault.debt.plus(debtDelta),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
@@ -125,10 +125,12 @@ export function SidebarAutoSellAddEditingStage({
           value1: uiStateBasicSell.targetCollRatio.toNumber(),
         }}
         valueColors={{
-          value1: 'onSuccess',
+          value0: 'onWarning',
+          value1: 'primary',
         }}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
+        leftThumbColor="onWarning"
         rightThumbColor="primary"
       />
       <VaultActionInput

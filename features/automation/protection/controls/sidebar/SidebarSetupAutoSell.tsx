@@ -22,7 +22,7 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { extractCancelAutoSellWarnings } from 'helpers/messageMappers'
+import { extractCancelAutoSellErrors, extractCancelAutoSellWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Grid } from 'theme-ui'
@@ -109,6 +109,9 @@ export function SidebarSetupAutoSell({
     ilkData,
     vault,
     debtDelta,
+    targetCollRatio: basicSellState.targetCollRatio,
+    withThreshold: basicSellState.withThreshold,
+    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
   })
 
   const warnings = warningsBasicSellValidation({
@@ -121,6 +124,7 @@ export function SidebarSetupAutoSell({
   })
 
   const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
+  const cancelAutoSellErrors = extractCancelAutoSellErrors(errors)
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -155,7 +159,7 @@ export function SidebarSetupAutoSell({
                 <SidebarAutoSellCancelEditingStage
                   vault={vault}
                   ilkData={ilkData}
-                  errors={errors}
+                  errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
                   cancelTriggerGasEstimation={cancelTriggerGasEstimation}
                 />
