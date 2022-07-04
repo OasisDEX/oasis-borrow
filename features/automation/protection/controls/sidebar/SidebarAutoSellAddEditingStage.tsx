@@ -125,10 +125,12 @@ export function SidebarAutoSellAddEditingStage({
           value1: uiStateBasicSell.targetCollRatio.toNumber(),
         }}
         valueColors={{
-          value1: 'onSuccess',
+          value0: 'onWarning',
+          value1: 'primary',
         }}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
+        leftThumbColor="onWarning"
         rightThumbColor="primary"
       />
       <VaultActionInput
