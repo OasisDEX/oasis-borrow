@@ -1,16 +1,13 @@
 import BigNumber from 'bignumber.js'
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
@@ -19,37 +16,37 @@ import {
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus } from 'helpers/form'
 import { handleNumericInput } from 'helpers/input'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 interface SidebarAutoBuyEditingStageProps {
   vault: Vault
   ilkData: IlkData
-  addTxData: AutomationBotAddTriggerData
   basicBuyState: BasicBSFormChange
   isEditing: boolean
   autoBuyTriggerData: BasicBSTriggerData
   priceInfo: PriceInfo
   errors: VaultErrorMessage[]
-
+  warnings: VaultWarningMessage[]
+  addTriggerGasEstimation: ReactNode
 }
 
 export function SidebarAutoBuyEditingStage({
   vault,
   ilkData,
   isEditing,
-  addTxData,
   basicBuyState,
   autoBuyTriggerData,
   priceInfo,
   errors,
+  warnings,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -113,10 +110,10 @@ export function SidebarAutoBuyEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={basicBuyState.withThreshold}
       />
-            {isEditing && (
+      {isEditing && (
         <>
           <VaultErrors errorMessages={errors} ilkData={ilkData} />
-          {/* <VaultWarnings warningMessages={warnings} ilkData={ilkData} /> */}
+          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
 
@@ -146,10 +143,10 @@ export function SidebarAutoBuyEditingStage({
       />
       {isEditing && (
         <AutoBuyInfoSectionControl
-          addTxData={addTxData}
           priceInfo={priceInfo}
           basicBuyState={basicBuyState}
           vault={vault}
+          addTriggerGasEstimation={addAutomationBotTrigger}
         />
       )}
     </>
@@ -157,32 +154,23 @@ export function SidebarAutoBuyEditingStage({
 }
 
 interface AutoBuyInfoSectionControlProps {
-  addTxData: AutomationBotAddTriggerData
   priceInfo: PriceInfo
   vault: Vault
   basicBuyState: BasicBSFormChange
+  addTriggerGasEstimation: ReactNode
 }
 
 function AutoBuyInfoSectionControl({
-  addTxData,
   priceInfo,
   vault,
   basicBuyState,
+  addTriggerGasEstimation,
 }: AutoBuyInfoSectionControlProps) {
-  const { addGasEstimation$, tokenPriceUSD$ } = useAppContext()
+  const { tokenPriceUSD$ } = useAppContext()
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
@@ -216,7 +204,7 @@ function AutoBuyInfoSectionControl({
         secondaryValue: vault.debt.plus(debtDelta),
       }}
       collateralToBePurchased={collateralDelta}
-      estimatedTransactionCost={gasEstimation}
+      estimatedTransactionCost={addTriggerGasEstimation}
     />
   )
 }

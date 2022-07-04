@@ -49,6 +49,8 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('coll-ratio-close-to-current')
       case 'noMinSellPriceWhenStopLossEnabled':
         return translate('no-min-sell-price-when-stop-loss-enabled')
+      case 'settingAutoBuyTriggerWithNoThreshold':
+        return translate('auto-buy-with-no-max-price-threshold')
       default:
         throw new UnreachableCaseError(message)
     }

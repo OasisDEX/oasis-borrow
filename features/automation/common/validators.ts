@@ -5,7 +5,6 @@ import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/co
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
-import { zero } from 'helpers/zero'
 
 export function warningsBasicSellValidation({
   token,
@@ -68,12 +67,44 @@ export function errorsBasicSellValidation({
 }
 
 export function errorsAddBasicBuyValidation({
+  txError,
   maxBuyPrice,
   withThreshold,
 }: {
+  txError?: TxError
   maxBuyPrice?: BigNumber
   withThreshold: boolean
 }) {
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
   const autoBuyMaxBuyPriceNotSpecified = withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
-  return errorMessagesHandler({autoBuyMaxBuyPriceNotSpecified})
+  return errorMessagesHandler({ insufficientEthFundsForTx, autoBuyMaxBuyPriceNotSpecified })
+}
+
+export function warningsBasicBuyValidation({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  withThreshold,
+}: {
+  token: string
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  withThreshold: boolean
+}) {
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const settingAutoBuyTriggerWithNoThreshold = !withThreshold
+
+  return warningMessagesHandler({
+    potentialInsufficientEthFundsForTx,
+    settingAutoBuyTriggerWithNoThreshold,
+  })
 }

@@ -255,7 +255,7 @@ export function errorMessagesHandler({
     errorMessages.push('minimumSellPriceNotProvided')
   }
 
-  if(autoBuyMaxBuyPriceNotSpecified) {
+  if (autoBuyMaxBuyPriceNotSpecified) {
     errorMessages.push('autoBuyMaxBuyPriceNotSpecified')
   }
 
