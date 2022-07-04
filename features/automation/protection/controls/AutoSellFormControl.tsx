@@ -116,7 +116,7 @@ export function AutoSellFormControl({
       { gasEstimationStatus: GasEstimationStatus.unset },
       ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
     )
-  }, [cancelTxData])
+  }, [addTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)

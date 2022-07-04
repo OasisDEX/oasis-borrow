@@ -125,6 +125,7 @@ export function SidebarSetupAutoBuy({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
+
   const cancelTxData = prepareRemoveBasicBSTriggerData({
     vaultData: vault,
     triggerType: TriggerType.BasicBuy,
