@@ -1,6 +1,10 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { UIChanges } from 'components/AppContext'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   AutomationFromKind,
@@ -106,5 +110,41 @@ export function getActiveProtectionFeature({
   return {
     isAutoSellActive: false,
     isStopLossActive: false,
+  }
+}
+
+export function getBasicSellMinMaxValues({
+  ilkData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
+}: {
+  ilkData: IlkData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+}) {
+  if (autoBuyTriggerData.isTriggerEnabled && stopLossTriggerData.isStopLossEnabled) {
+    return {
+      min: stopLossTriggerData.stopLossLevel.times(100).plus(5),
+      max: autoBuyTriggerData.execCollRatio.minus(5),
+    }
+  }
+
+  if (autoBuyTriggerData.isTriggerEnabled) {
+    return {
+      min: ilkData.liquidationRatio.times(100).plus(5),
+      max: autoBuyTriggerData.execCollRatio.minus(5),
+    }
+  }
+
+  if (stopLossTriggerData.isStopLossEnabled) {
+    return {
+      min: stopLossTriggerData.stopLossLevel.times(100).plus(5),
+      max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
+    }
+  }
+
+  return {
+    min: ilkData.liquidationRatio.times(100).plus(5),
+    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
   }
 }

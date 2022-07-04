@@ -4,8 +4,8 @@ import { AppLink } from 'components/Links'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
-  errorsValidation,
-  warningsValidation,
+  errorsStopLossValidation,
+  warningsStopLossValidation,
 } from 'features/automation/protection/common/validation'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -52,8 +52,8 @@ export function SidebarAdjustStopLossEditingStage({
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
-  const errors = errorsValidation({ txError, debt })
-  const warnings = warningsValidation({
+  const errors = errorsStopLossValidation({ txError, debt })
+  const warnings = warningsStopLossValidation({
     token,
     gasEstimationUsd,
     ethBalance,

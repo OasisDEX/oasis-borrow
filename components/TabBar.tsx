@@ -22,20 +22,29 @@ interface TabBarProps {
   sections: TabSection[]
   useDropdownOnMobile?: boolean
   variant: TabVariant
-  switchEvent?: { value: string }
+  value?: string
 }
 
-export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: TabBarProps) {
-  const [hash, setHash] = useHash<string>()
+export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBarProps) {
+  const [hash, setHash] = useHash()
 
-  useEffect(() => setHash(sections[0]?.value), [])
-  useEffect(() => switchEvent && setHash(switchEvent.value), [switchEvent])
+  useEffect(() => {
+    if (!hash) {
+      setHash(sections[0]?.value)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (value) {
+      setHash(value)
+    }
+  }, [value])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash || section.value === hash
+    return section.value === hash
   }
 
-  const selectedSection = sections.find(isSelected)
+  const selectedSection = sections.find(isSelected) || sections[0]
 
   if (sections.length <= 1) {
     return (
@@ -49,7 +58,13 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
     <Grid gap={0} sx={{ width: '100%' }}>
       {selectedSection?.topContent && <Box>{selectedSection?.topContent}</Box>}
       {useDropdownOnMobile ? (
-        <Box sx={{ display: ['block', 'none'], mb: 3 }}>
+        <Box
+          sx={{
+            display: ['block', 'none'],
+            mb: 3,
+            zIndex: 2,
+          }}
+        >
           <ReactSelect<TabSection>
             options={sections}
             onChange={(option) => setHash((option as TabSection).value)}

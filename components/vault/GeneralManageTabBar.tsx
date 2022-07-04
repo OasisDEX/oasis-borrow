@@ -7,6 +7,7 @@ import {
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
 import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect, useState } from 'react'
 
@@ -40,8 +41,11 @@ export function GeneralManageTabBar({
   optimizationEnabled,
 }: GeneralManageTabBarProps): JSX.Element {
   const { ilkData, vault, account, balanceInfo, vaultHistory } = generalManageVault.state
-
-  const [mode, setMode] = useState<VaultViewMode>(VaultViewMode.Overview)
+  const [hash] = useHash()
+  const initialMode = Object.values<string>(VaultViewMode).includes(hash)
+    ? (hash as VaultViewMode)
+    : VaultViewMode.Overview
+  const [mode, setMode] = useState<VaultViewMode>(initialMode)
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const basicBSEnabled = useFeatureToggle('BasicBS')
@@ -49,7 +53,7 @@ export function GeneralManageTabBar({
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
     const subscription = uiChanges$.subscribe((value) => {
-      setMode(() => value.currentMode as VaultViewMode)
+      setMode(() => value.currentMode)
     })
     return () => {
       subscription.unsubscribe()
@@ -63,7 +67,7 @@ export function GeneralManageTabBar({
       sections={[
         {
           label: t('system.overview'),
-          value: 'overview',
+          value: VaultViewMode.Overview,
           content: <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />,
         },
         ...(showProtectionTab
@@ -87,7 +91,7 @@ export function GeneralManageTabBar({
           ? [
               {
                 label: t('system.optimization'),
-                value: 'optimization',
+                value: VaultViewMode.Optimization,
                 tag: { include: true, active: optimizationEnabled },
                 content: <OptimizationControl vault={vault} ilkData={ilkData} />,
               },
@@ -95,25 +99,25 @@ export function GeneralManageTabBar({
           : []),
         {
           label: t('system.vaultinfo'),
-          value: 'vaultinfo',
+          value: VaultViewMode.VaultInfo,
           content: <VaultInformationControl generalManageVault={generalManageVault} />,
         },
         ...(positionInfo
           ? [
               {
                 label: t('system.position-info'),
-                value: 'position-info',
+                value: VaultViewMode.PositionInfo,
                 content: positionInfo,
               },
             ]
           : []),
         {
           label: t('system.history'),
-          value: 'history',
+          value: VaultViewMode.History,
           content: <HistoryControl vaultHistory={vaultHistory} />,
         },
       ]}
-      switchEvent={{ value: mode }}
+      value={mode}
     />
   )
 }
