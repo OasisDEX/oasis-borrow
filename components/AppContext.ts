@@ -238,7 +238,6 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-// import { UserSettingsChange, UserSettingsChangeAction, userSettingsReducer, USER_SETTINGS_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/UserSettingsChange'
 
 export type TxData =
   | OpenData
@@ -404,8 +403,6 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
-  // TODO either use uiChanges or try with existing solution ~ŁW
-  // uiChangesSubject.configureSubject(USER_SETTINGS_CHANGE_SUBJECT, userSettingsReducer)
   uiChangesSubject.configureSubject(USER_SETTINGS_CHANGE_SUBJECT, userSettingsReducer)
 
   return uiChangesSubject

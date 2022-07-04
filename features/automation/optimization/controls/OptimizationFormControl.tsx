@@ -49,6 +49,7 @@ export function OptimizationFormControl({
     context,
     balanceInfo,
     ethMarketPrice,
+    slippageLimit,
   }
 
   return <SidebarSetupAutoBuy {...props} />

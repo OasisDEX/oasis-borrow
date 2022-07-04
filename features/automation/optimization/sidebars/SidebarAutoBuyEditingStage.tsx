@@ -177,7 +177,7 @@ function AutoBuyInfoSectionControl({
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
   const slippage =
-    slippageLimit !== undefined ? slippageLimit.times(100) : basicBuyState.deviation.div(100)
+    slippageLimit !== undefined ? slippageLimit.times(100) : basicBuyState.deviation.div(100) //TODO ŁW clarify requirement
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
