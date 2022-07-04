@@ -137,7 +137,13 @@ export function VaultErrors({
       case 'targetCollRatioExceededDustLimitCollRatio':
         return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
       case 'autoBuyMaxBuyPriceNotSpecified':
-        return translate('auto-buy-max-price-requred')  
+        return (
+        <Trans
+        i18nKey="vault-errors.auto-buy-max-price-requred"
+        components={{
+          1: <strong />,
+        }}
+      />)
       default:
         throw new UnreachableCaseError(message)
     }
