@@ -1403,7 +1403,7 @@
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Trigger Col Ratio",
 
-    "buy-title": "Basic Auto Sell Summary",
+    "buy-title": "Basic Auto Buy Summary",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",

@@ -101,7 +101,7 @@ function AutoBuyInfoSectionControl({
         value: vault.debt,
         secondaryValue: vault.debt.minus(debtDelta.abs()),
       }}
-      collateralToBePurchased={collateralDelta}
+      collateralToBePurchased={collateralDelta.abs()}
       estimatedTransactionCost={cancelTriggerGasEstimation}
       token={vault.token}
     />
