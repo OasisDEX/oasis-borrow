@@ -10,18 +10,18 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
@@ -29,32 +29,19 @@ interface AutoSellInfoSectionControlProps {
   priceInfo: PriceInfo
   vault: Vault
   basicSellState: BasicBSFormChange
-  tokenMarketPrice: BigNumber
   addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 function AutoSellInfoSectionControl({
   priceInfo,
   vault,
   basicSellState,
-  tokenMarketPrice,
   addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
 }: AutoSellInfoSectionControlProps) {
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: tokenMarketPrice,
-    slippage: basicSellState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicSellState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
-  })
-
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
@@ -85,10 +72,12 @@ interface SidebarAutoSellAddEditingStageProps {
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  tokenMarketPrice: BigNumber
   addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -99,26 +88,28 @@ export function SidebarAutoSellAddEditingStage({
   basicSellState,
   autoSellTriggerData,
   autoBuyTriggerData,
+  stopLossTriggerData,
   errors,
   warnings,
-  tokenMarketPrice,
   addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
 
-  // TODO to be updated
-  const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-  const max = !autoBuyTriggerData.targetCollRatio.isZero()
-    ? autoBuyTriggerData.targetCollRatio.toNumber()
-    : 500
+  const { min, max } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+  })
 
   return (
     <>
       <MultipleRangeSlider
-        min={min}
-        max={max}
+        min={min.toNumber()}
+        max={max.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'execution-coll-ratio',
@@ -206,8 +197,9 @@ export function SidebarAutoSellAddEditingStage({
           priceInfo={priceInfo}
           basicSellState={basicSellState}
           vault={vault}
-          tokenMarketPrice={tokenMarketPrice}
           addTriggerGasEstimation={addTriggerGasEstimation}
+          debtDelta={debtDelta}
+          collateralDelta={collateralDelta}
         />
       )}
     </>
