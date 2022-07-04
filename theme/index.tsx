@@ -290,6 +290,17 @@ const oasisBaseTheme = {
       variant: 'layout.appContainer',
       maxWidth: '712px',
       mt: 5,
+      table: {
+        border: '1px solid black',
+        borderCollapse: 'collapse',
+        width: '100%',
+      },
+      th: {
+        border: '1px solid black',
+      },
+      td: {
+        border: '1px solid black',
+      },
     },
     modal: {
       variant: 'layout.appContainer',

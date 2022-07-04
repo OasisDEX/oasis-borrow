@@ -31,6 +31,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.team', url: '/about' },
       { labelKey: 'nav.careers', url: '/careers' },
       { labelKey: 'nav.privacy', url: '/privacy' },
+      { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
       { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
