@@ -5,16 +5,20 @@ import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
 
-export function warningsStopLossValidation({
+export function warningsBasicSellValidation({
   token,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
+  minSellPrice,
+  isStopLossEnabled,
 }: {
   token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
+  isStopLossEnabled: boolean
+  minSellPrice?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -22,13 +26,16 @@ export function warningsStopLossValidation({
     ethBalance,
     ethPrice,
   })
+  const noMinSellPriceWhenStopLossEnabled =
+    (minSellPrice?.isZero() || !minSellPrice) && isStopLossEnabled
 
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
+    noMinSellPriceWhenStopLossEnabled,
   })
 }
 
-export function errorsStopLossValidation({
+export function errorsBasicSellValidation({
   txError,
   debt,
 }: {

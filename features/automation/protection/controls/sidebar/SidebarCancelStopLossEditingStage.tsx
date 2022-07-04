@@ -3,8 +3,8 @@ import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
-  errorsValidation,
-  warningsValidation,
+  errorsStopLossValidation,
+  warningsStopLossValidation,
 } from 'features/automation/protection/common/validation'
 import {
   CancelDownsideProtectionInformation,
@@ -29,8 +29,8 @@ export function SidebarCancelStopLossEditingStage({
   const { t } = useTranslation()
 
   const gasEstimationText = getEstimatedGasFeeText(gasEstimation)
-  const errors = errorsValidation({ txError, debt: debt })
-  const warnings = warningsValidation({
+  const errors = errorsStopLossValidation({ txError, debt: debt })
+  const warnings = warningsStopLossValidation({
     token,
     gasEstimationUsd,
     ethBalance,

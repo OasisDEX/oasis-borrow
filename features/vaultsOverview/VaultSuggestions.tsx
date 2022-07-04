@@ -1,3 +1,4 @@
+import { TabBar } from 'components/TabBar'
 import uniqBy from 'lodash/uniqBy'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -8,7 +9,6 @@ import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { TabSwitcher } from '../../components/TabSwitcher'
 import { formatAddress } from '../../helpers/formatters/format'
 import {
   borrowPageCardsData,
@@ -93,9 +93,89 @@ function TabContent(props: {
   )
 }
 
+export function VaultSuggestions(props: { productCardsData: ProductCardData[]; address: string }) {
+  const { t } = useTranslation()
+  const { productCardsData, address } = props
+
+  return (
+    <Box mt={5}>
+      <Heading variant="header2" sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
+        <Trans
+          i18nKey="vaults-overview.headers.vault-suggestions"
+          values={{ address: formatAddress(address) }}
+          components={[<br />]}
+        />
+      </Heading>
+      <TabBar
+        variant="large"
+        useDropdownOnMobile
+        sections={[
+          {
+            label: t('landing.tabs.multiply.tabLabel'),
+            value: 'multiply',
+            topContent: (
+              <TabHeaderParagraph>
+                {t('landing.tabs.multiply.tabParaContent')}{' '}
+                <AppLink href="/multiply" variant="inText">
+                  {t('landing.tabs.multiply.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+            content: (
+              <TabContent
+                type="multiply"
+                renderProductCard={ProductCardMultiply}
+                productCardsData={productCardsData}
+              />
+            ),
+          },
+          {
+            label: t('landing.tabs.borrow.tabLabel'),
+            value: 'borrow',
+            topContent: (
+              <TabHeaderParagraph>
+                <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                <AppLink href="/borrow" variant="inText">
+                  {t('landing.tabs.borrow.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+            content: (
+              <TabContent
+                type="borrow"
+                renderProductCard={ProductCardBorrow}
+                productCardsData={productCardsData}
+              />
+            ),
+          },
+          {
+            label: t('landing.tabs.earn.tabLabel'),
+            value: 'earn',
+            topContent: (
+              <TabHeaderParagraph>
+                {t('landing.tabs.earn.tabParaContent')}{' '}
+                <AppLink href="/multiply" variant="inText">
+                  {t('landing.tabs.earn.tabParaLinkContent')}
+                </AppLink>
+              </TabHeaderParagraph>
+            ),
+            content: (
+              <TabContent
+                type="earn"
+                renderProductCard={ProductCardEarn}
+                productCardsData={productCardsData}
+              />
+            ),
+          },
+        ]}
+      />
+    </Box>
+  )
+}
+
 function TabHeaderParagraph({ children }: WithChildren) {
   return (
-    <Flex sx={{ flexDirection: 'column', alignItems: 'center' }}>
+    <Flex sx={{ flexDirection: 'column', alignItems: 'center', my: 3 }}>
       <Box
         sx={{
           ...slideInAnimation,
@@ -104,7 +184,6 @@ function TabHeaderParagraph({ children }: WithChildren) {
         <Text
           variant="paragraph2"
           sx={{
-            mt: 2,
             color: 'lavender',
             maxWidth: 617,
             textAlign: 'center',
@@ -116,85 +195,5 @@ function TabHeaderParagraph({ children }: WithChildren) {
         </Text>
       </Box>
     </Flex>
-  )
-}
-
-export function VaultSuggestions(props: { productCardsData: ProductCardData[]; address: string }) {
-  const { t } = useTranslation()
-  const { productCardsData, address } = props
-
-  return (
-    <>
-      <Heading variant="header2" sx={{ textAlign: 'center', fontWeight: 'regular' }} as="h1">
-        <Trans
-          i18nKey="vaults-overview.headers.vault-suggestions"
-          values={{ address: formatAddress(address) }}
-          components={[<br />]}
-        />
-      </Heading>
-      <TabSwitcher
-        tabs={[
-          {
-            tabLabel: t('landing.tabs.multiply.tabLabel'),
-            tabContent: (
-              <TabContent
-                type="multiply"
-                renderProductCard={ProductCardMultiply}
-                productCardsData={productCardsData}
-              />
-            ),
-            tabHeaderPara: (
-              <TabHeaderParagraph>
-                {t('landing.tabs.multiply.tabParaContent')}{' '}
-                <AppLink href="/multiply" variant="inText">
-                  {t('landing.tabs.multiply.tabParaLinkContent')}
-                </AppLink>
-              </TabHeaderParagraph>
-            ),
-          },
-          {
-            tabLabel: t('landing.tabs.borrow.tabLabel'),
-            tabContent: (
-              <TabContent
-                type="borrow"
-                renderProductCard={ProductCardBorrow}
-                productCardsData={productCardsData}
-              />
-            ),
-            tabHeaderPara: (
-              <TabHeaderParagraph>
-                <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
-                <AppLink href="/borrow" variant="inText">
-                  {t('landing.tabs.borrow.tabParaLinkContent')}
-                </AppLink>
-              </TabHeaderParagraph>
-            ),
-          },
-          {
-            tabLabel: t('landing.tabs.earn.tabLabel'),
-            tabContent: (
-              <TabContent
-                type="earn"
-                renderProductCard={ProductCardEarn}
-                productCardsData={productCardsData}
-              />
-            ),
-            tabHeaderPara: (
-              <TabHeaderParagraph>
-                {t('landing.tabs.earn.tabParaContent')}{' '}
-                <AppLink href="/multiply" variant="inText">
-                  {t('landing.tabs.earn.tabParaLinkContent')}
-                </AppLink>
-              </TabHeaderParagraph>
-            ),
-          },
-        ]}
-        narrowTabsSx={{
-          display: ['block', 'none'],
-          width: '100%',
-        }}
-        wideTabsSx={{ display: ['none', 'block'] }}
-      />
-    </>
   )
 }

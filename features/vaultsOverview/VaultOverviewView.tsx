@@ -134,7 +134,7 @@ export function VaultsOverviewView({
         <Card
           variant="positionsPage"
           sx={{
-            mb: 5,
+            mb: 4,
           }}
         >
           <PositionList positions={positions} />

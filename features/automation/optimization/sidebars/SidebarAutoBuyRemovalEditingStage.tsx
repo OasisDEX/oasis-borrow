@@ -97,15 +97,15 @@ function AutoBuyInfoSectionControl({
       slippageLimit={basicBuyState.deviation}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.minus(collateralDelta.abs()).toFixed(2),
+        secondaryValue: vault.lockedCollateral.minus(collateralDelta),
       }}
       outstandingDebtAfterNextBuy={{
         value: vault.debt,
         secondaryValue: vault.debt.minus(debtDelta.abs()),
       }}
-      ethToBePurchased={collateralDelta.abs()}
+      collateralToBePurchased={collateralDelta}
       estimatedTransactionCost={gasEstimation}
-      // TODO ŁW info section to be precised in other story
+      token={vault.token}
     />
   )
 }

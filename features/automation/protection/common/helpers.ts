@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { UIChanges } from 'components/AppContext'
-import { VaultViewMode } from 'components/VaultTabSwitch'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
   AutomationFromKind,

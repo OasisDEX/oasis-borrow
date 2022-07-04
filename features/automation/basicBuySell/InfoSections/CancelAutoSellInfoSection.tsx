@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 interface CancelAutoSellInfoSectionProps {
   collateralizationRatio: BigNumber
   liquidationPrice: BigNumber
-  estimatedTransactionCost: string | JSX.Element
+  estimatedTransactionCost: ReactNode
 }
 
 export function CancelAutoSellInfoSection({

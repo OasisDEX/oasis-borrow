@@ -1,7 +1,7 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultViewMode } from 'components/VaultTabSwitch'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
