@@ -119,7 +119,6 @@ function SlippageLimitMessages({
 }
 
 function SlippageSettingsForm() {
-  // const [uiState] = useUIChanges<UserSettingsState>(USER_SETTINGS_CHANGE_SUBJECT)
   const { userSettings$, uiChanges } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
   const { t } = useTranslation()

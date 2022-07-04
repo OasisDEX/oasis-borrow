@@ -23,7 +23,7 @@ interface OptimizationFormControlProps {
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
-  slippageLimit: BigNumber
+  slippageLimit?: BigNumber
 }
 
 export function OptimizationFormControl({
@@ -49,7 +49,6 @@ export function OptimizationFormControl({
     context,
     balanceInfo,
     ethMarketPrice,
-    slippageLimit,
   }
 
   return <SidebarSetupAutoBuy {...props} />

@@ -37,6 +37,7 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { USER_SETTINGS_CHANGE_SUBJECT, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { extractCancelAutoBuyErrors, extractCancelAutoBuyWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
@@ -60,7 +61,6 @@ export interface SidebarSetupAutoBuyProps {
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
-  slippageLimit: BigNumber
 }
 
 export function SidebarSetupAutoBuy({
@@ -73,12 +73,12 @@ export function SidebarSetupAutoBuy({
   txHelpers,
   balanceInfo,
   ethMarketPrice,
-  slippageLimit,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const [userSettingsUiState] = useUIChanges<UserSettingsState>(USER_SETTINGS_CHANGE_SUBJECT)
 
   const txStatus = uiState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
@@ -157,7 +157,6 @@ export function SidebarSetupAutoBuy({
     isRemoveForm
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
-  // const slippageLimit =
   const isDisabled =
     (isProgressStage ||
       !isOwner ||
@@ -219,7 +218,7 @@ export function SidebarSetupAutoBuy({
                   errors={errors}
                   warnings={warnings}
                   addTriggerGasEstimation={addTriggerGasEstimation}
-                  slippageLimit={slippageLimit}
+                  slippageLimit={userSettingsUiState?.slippage}
                 />
               )}
               {isRemoveForm && (

@@ -10,7 +10,7 @@ interface BuyInfoSectionProps {
   multipleAfterBuy: BigNumber
   nextBuyPrice: BigNumber
   execCollRatio: BigNumber
-  slippageLimit: BigNumber
+  slippageLimit?: BigNumber
   collateralAfterNextBuy: {
     value: BigNumber
     secondaryValue: BigNumber

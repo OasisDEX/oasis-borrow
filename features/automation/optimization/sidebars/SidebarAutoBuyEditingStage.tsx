@@ -176,16 +176,13 @@ function AutoBuyInfoSectionControl({
 
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  // TODO ŁW uichanges for slippage?
-  console.log('slippageLimit SidebarAutoBuyEditingStage')
-  console.log(slippageLimit?.toFixed(3))
+  const slippage =
+    slippageLimit !== undefined ? slippageLimit.times(100) : basicBuyState.deviation.div(100)
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
     marketPrice: marketPrice,
-    slippage: slippageLimit?.lte(basicBuyState.deviation.div(100))
-      ? slippageLimit
-      : basicBuyState.deviation.div(100),
+    slippage: slippage,
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
     requiredCollRatio: basicBuyState.targetCollRatio.div(100),
@@ -204,7 +201,7 @@ function AutoBuyInfoSectionControl({
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
       nextBuyPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicBuyState.deviation}
+      slippageLimit={slippage}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
