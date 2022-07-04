@@ -38,7 +38,6 @@ interface SidebarSetupAutoSellProps {
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
   basicSellState: BasicBSFormChange
   txHandler: () => void
   textButtonHandler: () => void
@@ -51,6 +50,8 @@ interface SidebarSetupAutoSellProps {
   isEditing: boolean
   isDisabled: boolean
   isFirstSetup: boolean
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 export function SidebarSetupAutoSell({
@@ -60,7 +61,6 @@ export function SidebarSetupAutoSell({
   balanceInfo,
   context,
   ethMarketPrice,
-  tokenMarketPrice,
 
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -81,6 +81,9 @@ export function SidebarSetupAutoSell({
   isEditing,
   isDisabled,
   isFirstSetup,
+
+  debtDelta,
+  collateralDelta,
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -103,7 +106,9 @@ export function SidebarSetupAutoSell({
 
   const errors = errorsBasicSellValidation({
     txError: basicSellState.txDetails?.txError,
-    debt: vault.debt,
+    ilkData,
+    vault,
+    debtDelta,
   })
 
   const warnings = warningsBasicSellValidation({
@@ -138,10 +143,12 @@ export function SidebarSetupAutoSell({
                   basicSellState={basicSellState}
                   autoSellTriggerData={autoSellTriggerData}
                   autoBuyTriggerData={autoBuyTriggerData}
+                  stopLossTriggerData={stopLossTriggerData}
                   errors={errors}
                   warnings={warnings}
-                  tokenMarketPrice={tokenMarketPrice}
                   addTriggerGasEstimation={addTriggerGasEstimation}
+                  debtDelta={debtDelta}
+                  collateralDelta={collateralDelta}
                 />
               )}
               {isRemoveForm && (
@@ -162,7 +169,7 @@ export function SidebarSetupAutoSell({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled,
+        disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

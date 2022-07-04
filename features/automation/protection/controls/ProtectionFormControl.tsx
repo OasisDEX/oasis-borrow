@@ -4,6 +4,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
+import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -17,7 +18,7 @@ import { TriggersData } from 'features/automation/protection/triggers/Automation
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 interface ProtectionFormControlProps {
   ilkData: IlkData
@@ -48,6 +49,7 @@ export function ProtectionFormControl({
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const { uiChanges } = useAppContext()
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
     currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
@@ -55,6 +57,15 @@ export function ProtectionFormControl({
     isStopLossOn: stopLossTriggerData.isStopLossEnabled,
     section: 'form',
   })
+
+  useEffect(() => {
+    if (isAutoSellActive) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Protection',
+        currentProtectionFeature: 'autoSell',
+      })
+    }
+  }, [])
 
   return (
     <>
