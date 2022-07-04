@@ -110,6 +110,8 @@ export function SidebarSetupAutoSell({
     vault,
     debtDelta,
     targetCollRatio: basicSellState.targetCollRatio,
+    withThreshold: basicSellState.withThreshold,
+    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
   })
 
   const warnings = warningsBasicSellValidation({
