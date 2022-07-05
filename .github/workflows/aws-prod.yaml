@@ -47,7 +47,6 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker pull $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG
         docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
                      --build-arg API_HOST=${{ secrets.API_HOST }} \
                      --build-arg MIXPANEL_ENV=production \
