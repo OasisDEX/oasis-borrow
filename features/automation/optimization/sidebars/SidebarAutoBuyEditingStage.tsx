@@ -171,13 +171,12 @@ function AutoBuyInfoSectionControl({
 
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  // TODO ŁW Target Ratio With Deviation : 198%-202%
-  // (1-deviation)*targeCollRatio - (1+deviation)*targetCollRatio
+  const deviationPercent = basicBuyState.deviation.div(100)
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
     marketPrice: marketPrice,
-    slippage: basicBuyState.deviation.div(100),
+    slippage: deviationPercent,
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
     requiredCollRatio: basicBuyState.targetCollRatio.div(100),
@@ -188,6 +187,9 @@ function AutoBuyInfoSectionControl({
     OF: OAZO_FEE,
     FF: LOAN_FEE,
   })
+
+  const targetRatioWithDeviationFloor = (one.minus(deviationPercent)).times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = (one.plus(deviationPercent)).times(basicBuyState.targetCollRatio)
 
   return (
     <BuyInfoSection
@@ -205,6 +207,8 @@ function AutoBuyInfoSectionControl({
         secondaryValue: vault.debt.plus(debtDelta),
       }}
       collateralToBePurchased={collateralDelta.abs()}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
       estimatedTransactionCost={addTriggerGasEstimation}
     />
   )

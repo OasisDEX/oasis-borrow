@@ -1410,6 +1410,7 @@
     "next-buy-prices": "Next buy price(s)",
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
+    "target-ratio-with-deviation": "Target Ratio With Deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
     "banner": {

@@ -20,6 +20,8 @@ interface BuyInfoSectionProps {
     secondaryValue: BigNumber
   }
   collateralToBePurchased: BigNumber
+  targetRatioWithDeviationFloor: BigNumber
+  targetRatioWithDeviationCeiling: BigNumber
   estimatedTransactionCost: ReactNode
 }
 
@@ -34,6 +36,8 @@ export function BuyInfoSection({
   estimatedTransactionCost,
   execCollRatio,
   token,
+  targetRatioWithDeviationFloor,
+  targetRatioWithDeviationCeiling,
 }: BuyInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -45,6 +49,8 @@ export function BuyInfoSection({
     outstandingDebtAfterNextBuy.secondaryValue,
   )
   const collateralToBePurchasedFormatted = formatCryptoBalance(collateralToBePurchased)
+  const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
+  const targetRatioWithDeviationCeilingFormatted = formatPercent(targetRatioWithDeviationCeiling)
   return (
     <InfoSection
       title={t('auto-buy.buy-title')}
@@ -74,6 +80,10 @@ export function BuyInfoSection({
         {
           label: t('vault-changes.slippage-limit'),
           value: `${slippageLimit}%`,
+        },
+        {
+          label: t('auto-buy.target-ratio-with-deviation'),
+          value:  `${targetRatioWithDeviationFloorFormatted} : ${targetRatioWithDeviationCeilingFormatted}`,
         },
         {
           label: t('auto-buy.collateral-after-next-buy'),
