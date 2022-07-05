@@ -35,7 +35,6 @@ export function EarnVaultSimulateTabBar({
       subscription.unsubscribe()
     }
   }, [])
-  console.log('mode', mode)
   return (
     <TabBar
       variant="underline"

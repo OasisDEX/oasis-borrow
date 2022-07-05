@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 
-export function useHash(): [string, (newHash: string) => void] {
-  const [hash, setHash] = useState(window?.location.hash)
+export function useHash<T extends string>(): [string, (newHash: T) => void] {
+  const [hash, setHash] = useState<T>(window?.location.hash.replace('#', '') as T)
 
   const hashChange = useCallback(() => {
-    setHash(window?.location.hash)
+    setHash(window?.location.hash as T)
   }, [])
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export function useHash(): [string, (newHash: string) => void] {
   }, [])
 
   const updateHash = useCallback(
-    (newHash) => {
+    (newHash: T) => {
       if (newHash !== hash) {
         window.location.hash = newHash
       }
@@ -23,5 +23,5 @@ export function useHash(): [string, (newHash: string) => void] {
     [hash],
   )
 
-  return [hash.replace('#', ''), updateHash]
+  return [hash, updateHash]
 }
