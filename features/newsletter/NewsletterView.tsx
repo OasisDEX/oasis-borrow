@@ -173,26 +173,28 @@ function NewsletterForm({ small }: { small?: boolean }) {
           )}
         </Button>
       </Flex>
-      <Box sx={{ mt: small ? 1 : 2 }}>
-        {showError && (
-          <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2, ml: 3 }}>
-            {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
-          </Text>
-        )}
-      </Box>
-      <Box sx={{ mt: '12px', minHeight: small ? '137px' : '97px' }}>
-        {inputOnFocus && (
-          <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondaryAlt">
-            <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
-              <Trans
-                i18nKey="newsletter.gdpr"
-                components={{
-                  1: <AppLink href="/privacy" variant="inText" />,
-                }}
-              ></Trans>
+      <Box sx={{ minHeight: small ? '137px' : '128px', mt: small ? 1 : 2 }}>
+        <Box sx={{ mt: small ? 1 : 2 }}>
+          {showError && (
+            <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2, ml: 3 }}>
+              {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
             </Text>
-          </Box>
-        )}
+          )}
+        </Box>
+        <Box sx={{ mt: small ? 1 : 2 }}>
+          {(inputOnFocus || showError) && (
+            <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondaryAlt">
+              <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
+                <Trans
+                  i18nKey="newsletter.gdpr"
+                  components={{
+                    1: <AppLink href="/privacy" variant="inText" />,
+                  }}
+                ></Trans>
+              </Text>
+            </Box>
+          )}
+        </Box>
       </Box>
     </Box>
   )
