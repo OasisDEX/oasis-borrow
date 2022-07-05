@@ -70,6 +70,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
 
 function NewsletterForm({ small }: { small?: boolean }) {
   const [inputOnFocus, setInputOnFocus] = useState(false)
+  const [gdprBoxOnHover, setGdprBoxOnHover] = useState(false)
   const [newsletterForm, setNewsletterForm] = useState<NewsletterState | undefined>(undefined)
   const { t } = useTranslation()
 
@@ -181,8 +182,12 @@ function NewsletterForm({ small }: { small?: boolean }) {
             </Text>
           )}
         </Box>
-        <Box sx={{ mt: small ? 1 : 2 }}>
-          {(inputOnFocus || showError) && (
+        <Box
+          sx={{ mt: small ? 1 : 2 }}
+          onMouseEnter={() => setGdprBoxOnHover(true)}
+          onMouseLeave={() => setGdprBoxOnHover(false)}
+        >
+          {(inputOnFocus || showError || gdprBoxOnHover) && (
             <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondaryAlt">
               <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
                 <Trans
