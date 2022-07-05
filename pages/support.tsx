@@ -78,7 +78,8 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
     <Flex sx={{ alignItems: 'center', justifyContent: 'center', flexDirection: ['column', 'row'] }}>
       {navigation.map(({ title, id }) => (
         <AppLink
-          href={`/support#${id}`}
+          href="/support"
+          hash={id}
           key={id}
           sx={{
             mr: [0, 4],
