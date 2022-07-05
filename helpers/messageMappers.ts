@@ -52,6 +52,7 @@ const commonErrors = [
   'invalidSlippage',
   'afterCollRatioBelowStopLossRatio',
   'afterCollRatioBelowBasicSellRatio',
+  'afterCollRatioAboveBasicBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
 
