@@ -29,7 +29,7 @@ export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
   nextBuyPrice,
-  slippageLimit,
+  // slippageLimit,
   collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
   collateralToBePurchased,
@@ -77,10 +77,10 @@ export function BuyInfoSection({
         //   label: t('auto-buy.setup-transaction-cost'),
         //   value: `$${totalCostOfNextBuy}`,
         // },
-        {
-          label: t('vault-changes.slippage-limit'),
-          value: `${slippageLimit}%`,
-        },
+        // {
+        //   label: t('vault-changes.slippage-limit'),
+        //   value: `${slippageLimit}%`,
+        // },
         {
           label: t('auto-buy.target-ratio-with-deviation'),
           value:  `${targetRatioWithDeviationFloorFormatted} : ${targetRatioWithDeviationCeilingFormatted}`,
