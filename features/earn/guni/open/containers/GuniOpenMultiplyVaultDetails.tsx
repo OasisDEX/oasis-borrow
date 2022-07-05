@@ -7,7 +7,12 @@ import { DetailsSectionContentTable } from 'components/DetailsSectionContentTabl
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
-import { calculateBreakeven, calculateEarnings, Yield } from 'helpers/earn/calculations'
+import {
+  calculateBreakeven,
+  calculateEarnings,
+  Yield,
+  YieldPeriod,
+} from 'helpers/earn/calculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -20,9 +25,9 @@ import { OpenGuniVaultState } from '../pipes/openGuniVault'
 import { GuniVaultDetailsTitle } from './GuniVaultDetailsTitle'
 
 const examplePosition = {
-  usdcSwapAmount: new BigNumber(`2018064.22`),
-  gasUsed: new BigNumber(`1000000`),
-  depositAmount: new BigNumber(`150000`),
+  usdcSwapAmount: new BigNumber(3_750_000),
+  gasUsed: new BigNumber(1_400_000),
+  depositAmount: new BigNumber(150_000),
 }
 
 export enum EarnSimulateViewMode {
@@ -40,8 +45,7 @@ function calculateEntryFees(
   const oazoFee = daiAmountToSwapForUsdc.times(OAZO_LOWER_FEE)
 
   if (actualGasCostInDai) {
-    const daiGasFee = actualGasCostInDai
-    return daiGasFee.plus(oazoFee)
+    return actualGasCostInDai.plus(oazoFee)
   }
 
   return oazoFee.plus(
@@ -57,8 +61,9 @@ export function GuniOpenMultiplyVaultDetails(
   const { token, yields } = props
 
   let breakeven = zero
-  const apy30 = yields[1]?.value || zero
-  const apy90 = yields[2]?.value || zero
+  const apy7 = yields[YieldPeriod.Yield7Days]?.value || zero
+  const apy30 = yields[YieldPeriod.Yield30Days]?.value || zero
+  const apy90 = yields[YieldPeriod.Yield90Days]?.value || zero
 
   const depositAmount = props.depositAmount?.gt(zero)
     ? props.depositAmount
@@ -72,11 +77,11 @@ export function GuniOpenMultiplyVaultDetails(
     props.gasEstimationDai,
   )
 
-  if (depositAmount.gt(zero) && apy30.gt(zero)) {
+  if (depositAmount.gt(zero) && apy7.gt(zero)) {
     breakeven = calculateBreakeven({
       depositAmount,
       entryFees: entryFees,
-      apy: apy30,
+      apy: apy7,
     })
   }
 
@@ -144,7 +149,7 @@ export function GuniOpenMultiplyVaultDetails(
               token={`DAI`}
               breakeven={breakeven}
               entryFees={entryFees}
-              apy={apy30.times(100)}
+              apy={apy7.times(100)}
             />
           </DetailsSectionFooterItemWrapper>
         }

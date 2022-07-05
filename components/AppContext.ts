@@ -930,7 +930,7 @@ export function setupAppContext() {
     (ilk: string, date?: moment.Moment) => {
       return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
-    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
   )
 
   const yieldsChange$ = memoize(

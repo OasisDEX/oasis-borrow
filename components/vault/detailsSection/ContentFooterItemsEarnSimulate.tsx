@@ -22,14 +22,17 @@ export function ContentFooterItemsEarnSimulate({
   const { t } = useTranslation()
 
   const formatted = {
-    breakeven: breakeven.gt(zero) ? breakeven.toFixed(0, BigNumber.ROUND_UP) : '-',
+    breakeven: breakeven.gt(zero) ? breakeven.toFixed(0, BigNumber.ROUND_UP) : '1',
     entryFees: entryFees.gt(zero) ? `${formatCryptoBalance(entryFees)} ${token}` : '-',
     apy: formatPercent(apy, { precision: 2 }),
   }
 
   return (
     <>
-      <DetailsSectionFooterItem title={t('system.est-break-even')} value={formatted.breakeven} />
+      <DetailsSectionFooterItem
+        title={t('system.est-break-even')}
+        value={t('system.est-break-even-value', { days: formatted.breakeven })}
+      />
       <DetailsSectionFooterItem title={t('system.est-entry-fees')} value={formatted.entryFees} />
       <DetailsSectionFooterItem title={t('system.apy')} value={formatted.apy} />
     </>
