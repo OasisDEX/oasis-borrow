@@ -81,3 +81,46 @@ export function errorsBasicSellValidation({
     minimumSellPriceNotProvided,
   })
 }
+
+export function errorsAddBasicBuyValidation({
+  txError,
+  maxBuyPrice,
+  withThreshold,
+}: {
+  txError?: TxError
+  maxBuyPrice?: BigNumber
+  withThreshold: boolean
+}) {
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
+  const autoBuyMaxBuyPriceNotSpecified = withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
+  return errorMessagesHandler({ insufficientEthFundsForTx, autoBuyMaxBuyPriceNotSpecified })
+}
+
+export function warningsBasicBuyValidation({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  withThreshold,
+}: {
+  token: string
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  withThreshold: boolean
+}) {
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const settingAutoBuyTriggerWithNoThreshold = !withThreshold
+
+  return warningMessagesHandler({
+    potentialInsufficientEthFundsForTx,
+    settingAutoBuyTriggerWithNoThreshold,
+  })
+}

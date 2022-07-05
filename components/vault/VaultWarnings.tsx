@@ -57,6 +57,8 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('stop-loss-trigger-close-to-auto-sell-trigger')
       // case 'basicBuyTriggerCloseToBasicSell':
         
+      case 'settingAutoBuyTriggerWithNoThreshold':
+        return translate('auto-buy-with-no-max-price-threshold')
       default:
         throw new UnreachableCaseError(message)
     }
