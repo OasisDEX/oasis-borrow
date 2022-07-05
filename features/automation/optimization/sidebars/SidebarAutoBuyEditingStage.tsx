@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
@@ -47,6 +46,7 @@ export function SidebarAutoBuyEditingStage({
   priceInfo,
   errors,
   warnings,
+  addTriggerGasEstimation,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -147,7 +147,7 @@ export function SidebarAutoBuyEditingStage({
           priceInfo={priceInfo}
           basicBuyState={basicBuyState}
           vault={vault}
-          addTriggerGasEstimation={addAutomationBotTrigger}
+          addTriggerGasEstimation={addTriggerGasEstimation}
         />
       )}
     </>
@@ -172,6 +172,7 @@ function AutoBuyInfoSectionControl({
 
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
+
   const deviationPercent = basicBuyState.deviation.div(100)
 
   const { debtDelta, collateralDelta } = getVaultChange({
@@ -189,8 +190,12 @@ function AutoBuyInfoSectionControl({
     FF: LOAN_FEE,
   })
 
-  const targetRatioWithDeviationFloor = (one.minus(deviationPercent)).times(basicBuyState.targetCollRatio)
-  const targetRatioWithDeviationCeiling = (one.plus(deviationPercent)).times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
 
   return (
     <BuyInfoSection

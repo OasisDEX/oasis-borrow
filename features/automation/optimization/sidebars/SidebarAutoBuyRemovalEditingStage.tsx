@@ -87,8 +87,12 @@ function AutoBuyInfoSectionControl({
   })
 
   const deviationPercent = basicBuyState.deviation.div(100)
-  const targetRatioWithDeviationFloor = (one.minus(deviationPercent)).times(basicBuyState.targetCollRatio)
-  const targetRatioWithDeviationCeiling = (one.plus(deviationPercent)).times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
 
   return (
     <BuyInfoSection

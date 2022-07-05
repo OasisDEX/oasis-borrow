@@ -83,7 +83,7 @@ export function BuyInfoSection({
         // },
         {
           label: t('auto-buy.target-ratio-with-deviation'),
-          value:  `${targetRatioWithDeviationFloorFormatted} : ${targetRatioWithDeviationCeilingFormatted}`,
+          value: `${targetRatioWithDeviationFloorFormatted} : ${targetRatioWithDeviationCeilingFormatted}`,
         },
         {
           label: t('auto-buy.collateral-after-next-buy'),
