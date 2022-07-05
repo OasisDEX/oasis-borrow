@@ -134,6 +134,8 @@ export function VaultErrors({
         return translate('stop-loss-near-liquidation-ratio')
       case 'maxDebtForSettingStopLoss':
         return translate('stop-loss-max-debt')
+      case 'targetCollRatioExceededDustLimitCollRatio':
+        return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
       default:
         throw new UnreachableCaseError(message)
     }

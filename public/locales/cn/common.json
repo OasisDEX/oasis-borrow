@@ -557,7 +557,7 @@
     "vaults-at-risk": "风险金库",
     "your-vaults": "你的金库"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "你正在查看 {{address}}  地址下的金库。",
       "subheader1": "请连接你的钱包开启，管理并查看你的所有金库。",

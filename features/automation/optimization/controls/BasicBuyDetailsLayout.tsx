@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
-import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -67,18 +67,22 @@ export function BasicBuyDetailsLayout({
           }
         />
       ) : (
-        <SetupBanner
-          header={t('auto-buy.banner.header')}
-          content={t('auto-buy.banner.content')}
-          button={t('auto-buy.banner.button')}
-          backgroundImage="/static/img/setup-banner/auto-buy.svg"
-          backgroundColor={setupBannerGradientPresets.autoBuy[0]}
-          backgroundColorEnd={setupBannerGradientPresets.autoBuy[1]}
-          handleClick={() => {
-            uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-              type: 'Optimization',
-              currentOptimizationFeature: 'autoBuy',
-            })
+        <Banner
+          title={t('auto-buy.banner.header')}
+          description={t('auto-buy.banner.content')}
+          image={{
+            src: '/static/img/setup-banner/auto-buy.svg',
+            backgroundColor: bannerGradientPresets.autoBuy[0],
+            backgroundColorEnd: bannerGradientPresets.autoBuy[1],
+          }}
+          button={{
+            action: () => {
+              uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+                type: 'Optimization',
+                currentOptimizationFeature: 'autoBuy',
+              })
+            },
+            text: t('auto-buy.banner.button'),
           }}
         />
       )}

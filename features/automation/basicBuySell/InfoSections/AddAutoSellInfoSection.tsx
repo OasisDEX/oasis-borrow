@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 interface SellInfoSectionProps {
   token: string
@@ -20,7 +20,7 @@ interface SellInfoSectionProps {
     secondaryValue: BigNumber
   }
   ethToBeSoldAtNextSell: BigNumber
-  estimatedTransactionCost: string | JSX.Element
+  estimatedTransactionCost: ReactNode
 }
 
 export function AddAutoSellInfoSection({
@@ -36,7 +36,7 @@ export function AddAutoSellInfoSection({
   estimatedTransactionCost,
 }: SellInfoSectionProps) {
   const { t } = useTranslation()
-  const ethToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
+  const collateralToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
   const multipleAfterSellFormatted = multipleAfterSell.toFixed(2)
   const outstandingDebtAfterSellFormatted = formatCryptoBalance(outstandingDebtAfterSell.value)
   const nextOutstandingDebtAfterSellFormatted = formatCryptoBalance(
@@ -86,8 +86,8 @@ export function AddAutoSellInfoSection({
           secondaryValue: `${nextOutstandingDebtAfterSellFormatted} DAI`,
         },
         {
-          label: t('auto-sell.eth-to-be-sold'),
-          value: `${ethToBeSoldAtNextSellFormatted} ${token}`,
+          label: t('auto-sell.col-to-be-sold', { token }),
+          value: `${collateralToBeSoldAtNextSellFormatted} ${token}`,
         },
         {
           label: t('auto-sell.estimated-transaction-cost'),

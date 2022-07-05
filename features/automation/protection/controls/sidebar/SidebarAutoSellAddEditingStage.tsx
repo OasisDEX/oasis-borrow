@@ -1,76 +1,47 @@
 import { BigNumber } from 'bignumber.js'
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus } from 'helpers/form'
 import { handleNumericInput } from 'helpers/input'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { one, zero } from 'helpers/zero'
+import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { ReactNode } from 'react'
 
 interface AutoSellInfoSectionControlProps {
-  addTxData: AutomationBotAddTriggerData
   priceInfo: PriceInfo
   vault: Vault
   basicSellState: BasicBSFormChange
+  addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 function AutoSellInfoSectionControl({
-  addTxData,
   priceInfo,
   vault,
   basicSellState,
+  addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
 }: AutoSellInfoSectionControlProps) {
-  const { addGasEstimation$, tokenPriceUSD$ } = useAppContext()
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
-
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const [tokenPriceData] = useObservable(_tokenPriceUSD$)
-  const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: marketPrice,
-    slippage: basicSellState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicSellState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
-  })
-
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
@@ -87,7 +58,7 @@ function AutoSellInfoSectionControl({
         secondaryValue: vault.debt.minus(debtDelta.abs()),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
-      estimatedTransactionCost={gasEstimation}
+      estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
     />
   )
@@ -98,37 +69,47 @@ interface SidebarAutoSellAddEditingStageProps {
   ilkData: IlkData
   priceInfo: PriceInfo
   isEditing: boolean
-  addTxData: AutomationBotAddTriggerData
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+  errors: VaultErrorMessage[]
+  warnings: VaultWarningMessage[]
+  addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 export function SidebarAutoSellAddEditingStage({
   vault,
   ilkData,
   isEditing,
-  addTxData,
   priceInfo,
   basicSellState,
   autoSellTriggerData,
   autoBuyTriggerData,
+  stopLossTriggerData,
+  errors,
+  warnings,
+  addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
 
-  // TODO to be updated
-  const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
-  const max = !autoBuyTriggerData.targetCollRatio.isZero()
-    ? autoBuyTriggerData.targetCollRatio.toNumber()
-    : 500
+  const { min, max } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+  })
 
   return (
     <>
       <MultipleRangeSlider
-        min={min}
-        max={max}
+        min={min.toNumber()}
+        max={max.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'execution-coll-ratio',
@@ -180,6 +161,13 @@ export function SidebarAutoSellAddEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
+      {isEditing && (
+        <>
+          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+        </>
+      )}
+
       <SidebarResetButton
         clear={() => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
@@ -196,20 +184,22 @@ export function SidebarAutoSellAddEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasPercentagePrice) => {
+        onChange={(maxGasGweiPrice) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-            type: 'max-gas-percentage-price',
-            maxGasPercentagePrice,
+            type: 'max-gas-gwei-price',
+            maxGasGweiPrice,
           })
         }}
         defaultValue={uiStateBasicSell.maxGasPercentagePrice}
       />
       {isEditing && (
         <AutoSellInfoSectionControl
-          addTxData={addTxData}
           priceInfo={priceInfo}
           basicSellState={basicSellState}
           vault={vault}
+          addTriggerGasEstimation={addTriggerGasEstimation}
+          debtDelta={debtDelta}
+          collateralDelta={collateralDelta}
         />
       )}
     </>

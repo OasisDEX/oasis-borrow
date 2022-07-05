@@ -14,8 +14,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
-import { VaultViewMode } from 'components/VaultTabSwitch'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
 import {
@@ -53,18 +53,20 @@ interface AdjustSlFormControlProps {
   accountIsController: boolean
   toggleForms: () => void
   balanceInfo: BalanceInfo
+  ethMarketPrice: BigNumber
   tx?: TxHelpers
 }
 
 export function AdjustSlFormControl({
   vault,
-  priceInfo: { currentEthPrice, currentCollateralPrice, nextCollateralPrice },
+  priceInfo: { currentCollateralPrice, nextCollateralPrice },
   ilkData,
   triggerData,
   ctx,
   accountIsController,
   toggleForms,
   tx,
+  ethMarketPrice,
   balanceInfo,
 }: AdjustSlFormControlProps) {
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
@@ -221,7 +223,7 @@ export function AdjustSlFormControl({
             const totalCost =
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                    currentEthPrice,
+                    ethMarketPrice,
                   )
                 : zero
 
@@ -299,7 +301,7 @@ export function AdjustSlFormControl({
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice: currentCollateralPrice,
-    ethPrice: currentEthPrice,
+    ethPrice: ethMarketPrice,
     vault,
     ilkData,
     etherscan,

@@ -125,10 +125,10 @@ export function SidebarAutoBuyEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasPercentagePrice) => {
+        onChange={(maxGasGweiPrice) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'max-gas-percentage-price',
-            maxGasPercentagePrice,
+            type: 'max-gas-gwei-price',
+            maxGasGweiPrice,
           })
         }}
         defaultValue={basicBuyState.maxGasPercentagePrice}
@@ -190,6 +190,7 @@ function AutoBuyInfoSectionControl({
 
   return (
     <BuyInfoSection
+      token={vault.token}
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
@@ -197,13 +198,13 @@ function AutoBuyInfoSectionControl({
       slippageLimit={basicBuyState.deviation}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.minus(collateralDelta.abs()).toFixed(2),
+        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
       }}
       outstandingDebtAfterNextBuy={{
         value: vault.debt,
-        secondaryValue: vault.debt.minus(debtDelta.abs()),
+        secondaryValue: vault.debt.plus(debtDelta),
       }}
-      ethToBePurchased={collateralDelta.abs()}
+      collateralToBePurchased={collateralDelta}
       estimatedTransactionCost={gasEstimation}
     />
   )
