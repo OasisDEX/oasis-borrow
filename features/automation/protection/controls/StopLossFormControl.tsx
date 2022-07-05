@@ -5,6 +5,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers, UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useSharedUI } from 'components/SharedUIProvider'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -31,6 +32,7 @@ interface StopLossFormsProps {
   balanceInfo: BalanceInfo
   accountIsController: boolean
   stopLossTriggerData: StopLossTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   ethMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
@@ -46,6 +48,7 @@ function StopLossForms({
   txHelpers,
   accountIsController,
   stopLossTriggerData,
+  autoSellTriggerData,
   ethMarketPrice,
 }: StopLossFormsProps) {
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
@@ -72,6 +75,7 @@ function StopLossForms({
       priceInfo={priceInfo}
       ilkData={ilkData}
       triggerData={stopLossTriggerData}
+      autoSellTriggerData={autoSellTriggerData}
       tx={txHelpers}
       ctx={context}
       accountIsController={accountIsController}
@@ -90,6 +94,7 @@ function StopLossForms({
 interface StopLossFormControlProps {
   ilkData: IlkData
   stopLossTriggerData: StopLossTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   priceInfo: PriceInfo
   vault: Vault
   balanceInfo: BalanceInfo
@@ -103,6 +108,7 @@ interface StopLossFormControlProps {
 export function StopLossFormControl({
   ilkData,
   stopLossTriggerData,
+  autoSellTriggerData,
   priceInfo,
   vault,
   account,
@@ -142,6 +148,7 @@ export function StopLossFormControl({
         balanceInfo={balanceInfo}
         accountIsController={accountIsController}
         stopLossTriggerData={stopLossTriggerData}
+        autoSellTriggerData={autoSellTriggerData}
         ethMarketPrice={ethMarketPrice}
       />
     ) : (
@@ -159,6 +166,7 @@ export function StopLossFormControl({
       balanceInfo={balanceInfo}
       accountIsController={accountIsController}
       stopLossTriggerData={stopLossTriggerData}
+      autoSellTriggerData={autoSellTriggerData}
       ethMarketPrice={ethMarketPrice}
     />
   )
