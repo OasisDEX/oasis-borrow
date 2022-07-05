@@ -4,7 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
-import { VaultBanner } from 'features/banners/VaultsBannersView'
+import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -34,7 +34,7 @@ function ZeroDebtProtectionBanner({
   const { t } = useTranslation()
 
   return (
-    <VaultBanner
+    <VaultNotice
       status={<Icon size="34px" name="warning" />}
       withClose={false}
       header={useTranslationKeys ? t(header) : header}

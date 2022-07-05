@@ -23,7 +23,7 @@ export type BasicBSChangeAction =
   | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'continuous'; continuous: boolean }
   | { type: 'deviation'; deviation: BigNumber }
-  | { type: 'max-gas-percentage-price'; maxGasPercentagePrice: MaxGasPriceValues }
+  | { type: 'max-gas-gwei-price'; maxGasGweiPrice: MaxGasPriceValues }
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
@@ -54,8 +54,8 @@ export function basicBSFormChangeReducer(
       return { ...state, continuous: action.continuous }
     case 'deviation':
       return { ...state, deviation: action.deviation }
-    case 'max-gas-percentage-price':
-      return { ...state, maxGasPercentagePrice: action.maxGasPercentagePrice }
+    case 'max-gas-gwei-price':
+      return { ...state, maxGasPercentagePrice: action.maxGasGweiPrice }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }
     case 'with-threshold':

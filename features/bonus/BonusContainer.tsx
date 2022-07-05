@@ -1,10 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { Banner } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Button, Card, Heading, Text } from 'theme-ui'
+import { Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { AppSpinner } from '../../helpers/AppSpinner'
 import { useObservable } from '../../helpers/observableHook'
 import { ClaimTxnState } from './bonusPipe'
 
@@ -30,64 +31,36 @@ export function BonusContainer(props: BonusContainerProps) {
     }
 
     return (
-      <Card sx={{ borderRadius: 'large', border: 'lightMuted', mt: 3, padding: 3 }}>
-        <Box sx={{ margin: 2 }}>
-          <Heading
-            variant="header4"
-            sx={{ fontSize: '18px', lineHeight: '28px', fontWeight: '600', color: '#25273D' }}
-          >
-            {t('claim-rewards.title', { bonusTokenName: bonus.name })}
-          </Heading>
-          <Text
-            mt={3}
-            sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
-          >
-            {t('claim-rewards.for-this-position', {
-              bonusTokenName: bonus.name,
-            })}{' '}
-            {t('claim-rewards.more-info.text1')}{' '}
-            <a href={bonus.moreInfoLink} target="_blank">
-              {t('claim-rewards.more-info.link-text')}
-            </a>
-            {t('claim-rewards.more-info.text2')}
-          </Text>
-          <Text
-            mt={3}
-            sx={{ fontWeight: '400', fontSize: '14px', color: 'lavender', lineHeight: '22px' }}
-          >
-            {t(bonusInstructionSnippet, bonus)}
-          </Text>
-          <Button
-            disabled={
-              !claimAll ||
-              claimTxnState === ClaimTxnState.PENDING ||
-              claimTxnState === ClaimTxnState.SUCCEEDED
-            }
-            variant="secondary"
-            mt={3}
-            onClick={claimAll}
-            sx={{
-              height: '40px',
-              width: '160px',
-            }}
-          >
-            {claimTxnState === ClaimTxnState.PENDING ? (
-              <AppSpinner
-                variant="styles.spinner.medium"
-                size={20}
-                sx={{
-                  color: 'black',
-                  boxSizing: 'content-box',
-                }}
-              />
-            ) : claimTxnState === ClaimTxnState.SUCCEEDED ? (
-              'Success'
-            ) : (
-              t('claim-rewards.claim-button.claim-rewards')
-            )}
-          </Button>
-        </Box>
-      </Card>
+      <Banner
+        title={t('claim-rewards.title', { bonusTokenName: bonus.name })}
+        description={
+          <>
+            <Text mt={3}>
+              {t('claim-rewards.for-this-position', {
+                bonusTokenName: bonus.name,
+              })}{' '}
+              {t('claim-rewards.more-info.text1')}{' '}
+              <AppLink sx={{ ml: '1px' }} href={bonus.moreInfoLink} target="_blank">
+                {t('claim-rewards.more-info.link-text')}
+              </AppLink>
+              {t('claim-rewards.more-info.text2')}
+            </Text>
+            <Text mt={3}>{t(bonusInstructionSnippet, bonus)}</Text>
+          </>
+        }
+        button={{
+          disabled:
+            !claimAll ||
+            claimTxnState === ClaimTxnState.PENDING ||
+            claimTxnState === ClaimTxnState.SUCCEEDED,
+          action: claimAll,
+          isLoading: claimTxnState === ClaimTxnState.PENDING,
+          text:
+            claimTxnState === ClaimTxnState.SUCCEEDED
+              ? 'Success'
+              : t('claim-rewards.claim-button.claim-rewards'),
+        }}
+      />
     )
   }
   return null
