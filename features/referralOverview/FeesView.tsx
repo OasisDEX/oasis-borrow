@@ -115,7 +115,9 @@ export function FeesView({ userReferral }: Props) {
             <Button
               variant="outline"
               disabled={
-                !userReferral.claims || userReferral.claimTxnState === ClaimTxnState.PENDING || userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
+                !userReferral.claims ||
+                userReferral.claimTxnState === ClaimTxnState.PENDING ||
+                userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
               }
               onClick={() =>
                 userReferral.performClaimMultiple ? userReferral.performClaimMultiple() : null
