@@ -86,6 +86,10 @@ function AutoBuyInfoSectionControl({
     FF: LOAN_FEE,
   })
 
+  const deviationPercent = basicBuyState.deviation.div(100)
+  const targetRatioWithDeviationFloor = (one.minus(deviationPercent)).times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = (one.plus(deviationPercent)).times(basicBuyState.targetCollRatio)
+
   return (
     <BuyInfoSection
       colRatioAfterBuy={basicBuyState.targetCollRatio}
@@ -103,6 +107,8 @@ function AutoBuyInfoSectionControl({
       }}
       collateralToBePurchased={collateralDelta.abs()}
       estimatedTransactionCost={cancelTriggerGasEstimation}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
       token={vault.token}
     />
   )
