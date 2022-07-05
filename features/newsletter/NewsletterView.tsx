@@ -104,7 +104,6 @@ function NewsletterForm({ small }: { small?: boolean }) {
       sx={{
         width: '100%',
         mx: 'auto',
-        mb: '1.3em',
       }}
     >
       <Flex
@@ -181,7 +180,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           </Text>
         )}
       </Box>
-      <Box sx={{ mt: '12px', minHeight: '1.3em' }}>
+      <Box sx={{ mt: '12px', minHeight: small ? '137px' : '97px' }}>
         {inputOnFocus && (
           <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondaryAlt">
             <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
