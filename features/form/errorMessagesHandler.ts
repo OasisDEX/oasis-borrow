@@ -29,6 +29,8 @@ export type VaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
+  | 'afterCollRatioBelowBasicSellRatio'
+  | 'afterCollRatioAboveBasicBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
@@ -68,6 +70,8 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
+  afterCollRatioBelowBasicSellRatio?: boolean
+  afterCollRatioAboveBasicBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
@@ -107,6 +111,8 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
+  afterCollRatioBelowBasicSellRatio,
+  afterCollRatioAboveBasicBuyRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
@@ -230,6 +236,14 @@ export function errorMessagesHandler({
 
   if (afterCollRatioBelowStopLossRatio) {
     errorMessages.push('afterCollRatioBelowStopLossRatio')
+  }
+
+  if (afterCollRatioBelowBasicSellRatio) {
+    errorMessages.push('afterCollRatioBelowBasicSellRatio')
+  }
+
+  if (afterCollRatioAboveBasicBuyRatio) {
+    errorMessages.push('afterCollRatioAboveBasicBuyRatio')
   }
 
   if (insufficientEthFundsForTx) {

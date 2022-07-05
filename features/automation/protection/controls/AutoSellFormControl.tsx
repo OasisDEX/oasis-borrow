@@ -103,18 +103,22 @@ export function AutoSellFormControl({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
-  const cancelTxData = prepareRemoveBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicSell,
-    triggerId: basicSellState.triggerId,
-  })
+  const cancelTxData = useMemo(
+    () =>
+      prepareRemoveBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicSell,
+        triggerId: basicSellState.triggerId,
+      }),
+    [basicSellState.triggerId.toNumber()],
+  )
 
   const cancelTriggerGasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
       ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
     )
-  }, [addTxData])
+  }, [cancelTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
