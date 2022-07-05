@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import {
   extractStopLossData,
   StopLossTriggerData,
@@ -19,7 +20,6 @@ import {
   MultiplyPositionVM,
   PositionVM,
 } from '../../components/dumb/PositionList'
-import { VaultViewMode } from '../../components/VaultTabSwitch'
 import {
   formatCryptoBalance,
   formatFiatBalance,

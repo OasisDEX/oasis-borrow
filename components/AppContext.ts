@@ -108,7 +108,6 @@ import {
   tabChangeReducer,
 } from 'features/automation/protection/common/UITypes/TabChange'
 import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -123,6 +122,7 @@ import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
+import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
@@ -903,7 +903,7 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
 
