@@ -5,7 +5,7 @@ import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
-import { formatFiatBalance } from 'helpers/formatters/format'
+import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
@@ -140,15 +140,15 @@ function Stats({ sx }: { sx?: SxProps }) {
     <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
       <StatCell
         label={t('landing.stats.30-day-volume')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.monthlyVolume))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
       />
       <StatCell
         label={t('landing.stats.managed-on-oasis')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.managedOnOasis))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
       />
       <StatCell
         label={t('landing.stats.median-vault')}
-        value={`$${formatFiatBalance(new BigNumber(oasisStatsValue.medianVaultSize))}`}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
       />
     </Grid>
   )
