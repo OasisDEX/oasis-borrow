@@ -31,6 +31,7 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'txError'
   | 'vault'
   | 'isAutoSellEnabled'
+  | 'isAutoBuyEnabled'
 >
 
 export function SidebarAdjustStopLossEditingStage({
@@ -51,6 +52,7 @@ export function SidebarAdjustStopLossEditingStage({
   vault,
   vault: { debt },
   isAutoSellEnabled,
+  isAutoBuyEnabled,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
@@ -63,6 +65,7 @@ export function SidebarAdjustStopLossEditingStage({
     sliderMax: slValuePickerConfig.maxBoundry,
     triggerRatio: selectedSLValue,
     isAutoSellEnabled,
+    isAutoBuyEnabled,
   })
 
   return (

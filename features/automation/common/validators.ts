@@ -103,12 +103,24 @@ export function warningsBasicBuyValidation({
   ethBalance,
   ethPrice,
   withThreshold,
+  isStopLossEnabled,
+  isAutoSellEnabled,
+  basicBuyState,
+  minSellPrice,
+  sliderMin,
+  sliderMax,
 }: {
   token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   gasEstimationUsd?: BigNumber
   withThreshold: boolean
+  isStopLossEnabled: boolean
+  isAutoSellEnabled: boolean
+  basicBuyState: BasicBSFormChange
+  minSellPrice?: BigNumber
+  sliderMin: BigNumber
+  sliderMax: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -122,5 +134,7 @@ export function warningsBasicBuyValidation({
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     settingAutoBuyTriggerWithNoThreshold,
+    // basicSellTriggerCloseToStopLossTrigger,
+    // basicSellTargetCloseToAutoBuyTrigger,
   })
 }

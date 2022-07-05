@@ -13,6 +13,7 @@ export function warningsStopLossValidation({
   sliderMax,
   isAutoSellEnabled,
   triggerRatio,
+  isAutoBuyEnabled,
 }: {
   token: string
   ethBalance: BigNumber
@@ -21,6 +22,7 @@ export function warningsStopLossValidation({
   triggerRatio?: BigNumber
   isAutoSellEnabled?: boolean
   gasEstimationUsd?: BigNumber
+  isAutoBuyEnabled?: boolean
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
     token,
@@ -31,9 +33,13 @@ export function warningsStopLossValidation({
   const stopLossTriggerCloseToAutoSellTrigger =
     isAutoSellEnabled && sliderMax && triggerRatio?.isEqualTo(sliderMax)
 
+  const stopLossTriggerCloseToAutoBuyTrigger =
+    isAutoBuyEnabled && sliderMax && triggerRatio?.isEqualTo(sliderMax)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     stopLossTriggerCloseToAutoSellTrigger,
+    stopLossTriggerCloseToAutoBuyTrigger,
   })
 }
 

@@ -217,6 +217,7 @@ export interface AdjustSlFormLayoutProps {
   redirectToCloseVault: () => void
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
+  isAutoBuyEnabled: boolean
 }
 
 export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {

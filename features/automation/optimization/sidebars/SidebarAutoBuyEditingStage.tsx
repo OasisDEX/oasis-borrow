@@ -35,6 +35,8 @@ interface SidebarAutoBuyEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
+  // sliderMin: BigNumber
+  // sliderMax: BigNumber
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -47,7 +49,10 @@ export function SidebarAutoBuyEditingStage({
   errors,
   warnings,
   addTriggerGasEstimation,
-}: SidebarAutoBuyEditingStageProps) {
+}: // TODO ŁW What should be min and max for basic buy ??
+// sliderMin,
+// sliderMax,
+SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
