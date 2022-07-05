@@ -2,8 +2,8 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
-import { Banner } from './Banner'
 import { AppLink } from './Links'
+import { Notice } from './Notice'
 
 interface ReferralBannerProps {
   heading: string
@@ -12,7 +12,7 @@ interface ReferralBannerProps {
 const handleClose = () => null
 export function ReferralBanner({ heading, link }: ReferralBannerProps) {
   return (
-    <Banner
+    <Notice
       close={() => {
         handleClose()
       }}
@@ -98,6 +98,6 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
           </Flex>
         </Flex>
       </AppLink>
-    </Banner>
+    </Notice>
   )
 }
