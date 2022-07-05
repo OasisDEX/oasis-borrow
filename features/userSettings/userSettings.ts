@@ -5,8 +5,6 @@ import { catchError, map, scan, shareReplay, startWith, switchMap } from 'rxjs/o
 
 type UserSettingsStage = 'editing' | 'inProgress' | 'success' | 'failure'
 
-export const USER_SETTINGS_CHANGE_SUBJECT = 'USER_SETTINGS_CHANGE_SUBJECT'
-
 export type UserSettingsErrorMessages = 'invalidSlippage'
 
 export type UserSettingsWarningMessages = 'highSlippage'
@@ -23,27 +21,10 @@ export interface UserSettingsState {
   canProgress: boolean
 }
 
-export type UserSettingsChange =
+type UserSettingsChange =
   | { kind: 'stage'; stage: UserSettingsStage }
   | { kind: 'settingsSaved'; slippageInput: BigNumber }
   | { kind: 'slippageInput'; slippageInput: BigNumber }
-
-export type UserSettingsChangeAction = { type: 'slippage'; slippage: BigNumber }
-
-export function userSettingsReducer(
-  state: UserSettingsState,
-  action: UserSettingsChangeAction,
-): UserSettingsState {
-  console.log('user reducer')
-  console.log(state)
-  console.log(action)
-  switch (action.type) {
-    case 'slippage':
-      return { ...state, slippage: action.slippage }
-    default:
-      return state
-  }
-}
 
 export const SLIPPAGE_DEFAULT = new BigNumber(0.005)
 const SLIPPAGE_LOW = new BigNumber(0.005)

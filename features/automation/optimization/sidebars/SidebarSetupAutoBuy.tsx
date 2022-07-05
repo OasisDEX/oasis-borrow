@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -60,7 +60,6 @@ export interface SidebarSetupAutoBuyProps {
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
-  slippageLimit?: BigNumber
 }
 
 export function SidebarSetupAutoBuy({
@@ -73,7 +72,6 @@ export function SidebarSetupAutoBuy({
   txHelpers,
   balanceInfo,
   ethMarketPrice,
-  slippageLimit,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
@@ -127,18 +125,22 @@ export function SidebarSetupAutoBuy({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
-  const cancelTxData = prepareRemoveBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicBuy,
-    triggerId: uiState.triggerId,
-  })
+  const cancelTxData = useMemo(
+    () =>
+      prepareRemoveBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicBuy,
+        triggerId: uiState.triggerId,
+      }),
+    [uiState.triggerId.toNumber(), vault.collateralizationRatio.toNumber()],
+  )
 
   const cancelTriggerGasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
+      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
     )
-  }, [addTxData])
+  }, [cancelTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
@@ -218,7 +220,6 @@ export function SidebarSetupAutoBuy({
                   errors={errors}
                   warnings={warnings}
                   addTriggerGasEstimation={addTriggerGasEstimation}
-                  slippageLimit={slippageLimit}
                 />
               )}
               {isRemoveForm && (

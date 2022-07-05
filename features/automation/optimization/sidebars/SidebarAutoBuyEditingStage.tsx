@@ -36,7 +36,6 @@ interface SidebarAutoBuyEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
-  slippageLimit?: BigNumber
 }
 
 export function SidebarAutoBuyEditingStage({
@@ -48,7 +47,6 @@ export function SidebarAutoBuyEditingStage({
   priceInfo,
   errors,
   warnings,
-  slippageLimit,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
@@ -149,7 +147,6 @@ export function SidebarAutoBuyEditingStage({
           basicBuyState={basicBuyState}
           vault={vault}
           addTriggerGasEstimation={addAutomationBotTrigger}
-          slippageLimit={slippageLimit}
         />
       )}
     </>
@@ -161,7 +158,6 @@ interface AutoBuyInfoSectionControlProps {
   vault: Vault
   basicBuyState: BasicBSFormChange
   addTriggerGasEstimation: ReactNode
-  slippageLimit?: BigNumber
 }
 
 function AutoBuyInfoSectionControl({
@@ -169,20 +165,19 @@ function AutoBuyInfoSectionControl({
   vault,
   basicBuyState,
   addTriggerGasEstimation,
-  slippageLimit,
 }: AutoBuyInfoSectionControlProps) {
   const { tokenPriceUSD$ } = useAppContext()
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
 
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  const slippage =
-    slippageLimit !== undefined ? slippageLimit.times(100) : basicBuyState.deviation.div(100) //TODO ŁW clarify requirement
+  // TODO ŁW Target Ratio With Deviation : 198%-202%
+  // (1-deviation)*targeCollRatio - (1+deviation)*targetCollRatio
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
     marketPrice: marketPrice,
-    slippage: slippage,
+    slippage: basicBuyState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
     requiredCollRatio: basicBuyState.targetCollRatio.div(100),
@@ -201,7 +196,6 @@ function AutoBuyInfoSectionControl({
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
       nextBuyPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={slippage}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),

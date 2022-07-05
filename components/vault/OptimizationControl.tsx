@@ -4,11 +4,9 @@ import { useAppContext } from 'components/AppContextProvider'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { USER_SETTINGS_CHANGE_SUBJECT, UserSettingsState } from 'features/userSettings/userSettings'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useMemo } from 'react'
 
 import { DefaultVaultLayout } from './DefaultVaultLayout'
@@ -35,8 +33,6 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
   const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
-
-  const [userSettingsUiState] = useUIChanges<UserSettingsState>(USER_SETTINGS_CHANGE_SUBJECT)
 
   return (
     <WithErrorHandler
@@ -71,7 +67,6 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
                 context={context}
                 balanceInfo={balanceInfo}
                 ethMarketPrice={ethAndTokenPrices['ETH']}
-                slippageLimit={userSettingsUiState?.slippage}
               />
             }
           />

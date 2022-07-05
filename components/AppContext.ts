@@ -131,13 +131,7 @@ import {
   checkAcceptanceFromApi$,
   saveAcceptanceFromApi$,
 } from 'features/termsOfService/termsAcceptanceApi'
-import {
-  createUserSettings$,
-  USER_SETTINGS_CHANGE_SUBJECT,
-  UserSettingsChangeAction,
-  userSettingsReducer,
-  UserSettingsState,
-} from 'features/userSettings/userSettings'
+import { createUserSettings$ } from 'features/userSettings/userSettings'
 import {
   checkUserSettingsLocalStorage$,
   saveUserSettingsLocalStorage$,
@@ -301,7 +295,6 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
-  | UserSettingsState
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -312,7 +305,6 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
-  UserSettingsChangeAction: UserSettingsChangeAction
 }
 
 export type UIChanges = {
@@ -403,7 +395,6 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
-  uiChangesSubject.configureSubject(USER_SETTINGS_CHANGE_SUBJECT, userSettingsReducer)
 
   return uiChangesSubject
 }
