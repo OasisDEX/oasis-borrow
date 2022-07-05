@@ -6,7 +6,6 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
-import { EarnSimulateViewMode } from 'components/vault/EarnVaultSimulateTabBar'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import { calculateBreakeven, calculateEarnings, Yield } from 'helpers/earn/calculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
@@ -24,6 +23,11 @@ const examplePosition = {
   usdcSwapAmount: new BigNumber(`2018064.22`),
   gasUsed: new BigNumber(`1000000`),
   depositAmount: new BigNumber(`150000`),
+}
+
+export enum EarnSimulateViewMode {
+  Simulate = 'simulate',
+  FAQ = 'faq',
 }
 
 function calculateEntryFees(

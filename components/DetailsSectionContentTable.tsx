@@ -8,8 +8,8 @@ import { ChevronUpDown } from './ChevronUpDown'
 import { SelectComponents } from 'react-select/src/components'
 
 interface ContentTableProps {
-  headers: [string, string, string]
-  rows: [string, string, string][]
+  headers: string[]
+  rows: string[][]
   footnote?: string | JSX.Element
 }
 

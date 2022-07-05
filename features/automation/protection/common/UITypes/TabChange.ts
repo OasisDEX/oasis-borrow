@@ -1,5 +1,6 @@
-import { EarnSimulateViewMode } from 'components/vault/EarnVaultSimulateTabBar'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+
+import { EarnSimulateViewMode } from '../../../../earn/guni/open/containers/GuniOpenMultiplyVaultDetails'
 
 export const TAB_CHANGE_SUBJECT = 'tabChange'
 

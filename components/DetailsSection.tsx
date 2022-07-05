@@ -1,4 +1,3 @@
-import { isString } from 'lodash'
 import React from 'react'
 import { Box, Card, Flex } from 'theme-ui'
 
@@ -21,8 +20,10 @@ export function DetailsSection({ title, badge, buttons, content, footer }: Detai
         border: 'lightMuted',
       }}
     >
-      {title && isString(title) && <TitleWrapper title={title} badge={badge} buttons={buttons} />}
-      {title && !isString(title) && title}
+      {title && typeof title === 'string' && (
+        <TitleWrapper title={title} badge={badge} buttons={buttons} />
+      )}
+      {title && typeof title !== 'string' && title}
       <Box
         sx={{
           px: [3, null, '24px'],
@@ -82,8 +83,8 @@ function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
             mt: [2, null, 0],
           }}
         >
-          {buttons?.map((button, i) => (
-            <ExpandableButton button={button} key={i} />
+          {buttons?.map((button) => (
+            <ExpandableButton button={button} key={button.label} />
           ))}
         </Flex>
       )}
