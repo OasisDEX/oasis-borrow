@@ -128,6 +128,7 @@ export function SidebarAutoSellAddEditingStage({
           value0: 'onWarning',
           value1: 'primary',
         }}
+        step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
         leftThumbColor="onWarning"

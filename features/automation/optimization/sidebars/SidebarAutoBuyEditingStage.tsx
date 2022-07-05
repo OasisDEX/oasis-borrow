@@ -74,6 +74,7 @@ export function SidebarAutoBuyEditingStage({
         valueColors={{
           value1: 'onSuccess',
         }}
+        step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
         minDescription={`(${t('auto-buy.min-ratio')})`}
