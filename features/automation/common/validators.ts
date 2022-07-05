@@ -41,20 +41,27 @@ export function errorsBasicSellValidation({
   vault,
   ilkData,
   debtDelta,
+  targetCollRatio,
+  withThreshold,
+  minSellPrice,
 }: {
   txError?: TxError
   vault: Vault
   ilkData: IlkData
   debtDelta: BigNumber
+  targetCollRatio: BigNumber
+  withThreshold: boolean
+  minSellPrice?: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const targetCollRatioExceededDustLimitCollRatio =
+    !targetCollRatio.isZero() && ilkData.debtFloor.gt(vault.debt.plus(debtDelta))
 
-  const targetCollRatioExceededDustLimitCollRatio = ilkData.debtFloor.gt(
-    vault.debt.minus(debtDelta.abs()),
-  )
+  const minimumSellPriceNotProvided = withThreshold && (!minSellPrice || minSellPrice.isZero())
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
+    minimumSellPriceNotProvided,
   })
 }
