@@ -40,13 +40,21 @@ function AutoSellInfoSectionControl({
   debtDelta,
   collateralDelta,
 }: AutoSellInfoSectionControlProps) {
+  const deviationPercent = basicSellState.deviation.div(100)
+
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
       nextSellPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -58,6 +66,8 @@ function AutoSellInfoSectionControl({
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
     />
   )
 }
