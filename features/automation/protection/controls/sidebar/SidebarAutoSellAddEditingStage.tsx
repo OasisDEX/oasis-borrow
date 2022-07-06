@@ -10,8 +10,6 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -42,13 +40,21 @@ function AutoSellInfoSectionControl({
   debtDelta,
   collateralDelta,
 }: AutoSellInfoSectionControlProps) {
+  const deviationPercent = basicSellState.deviation.div(100)
+
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
       nextSellPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -60,6 +66,8 @@ function AutoSellInfoSectionControl({
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
     />
   )
 }
@@ -71,13 +79,13 @@ interface SidebarAutoSellAddEditingStageProps {
   isEditing: boolean
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  sliderMin: BigNumber
+  sliderMax: BigNumber
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -87,29 +95,23 @@ export function SidebarAutoSellAddEditingStage({
   priceInfo,
   basicSellState,
   autoSellTriggerData,
-  autoBuyTriggerData,
-  stopLossTriggerData,
   errors,
   warnings,
   addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
+  sliderMin,
+  sliderMax,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
 
-  const { min, max } = getBasicSellMinMaxValues({
-    autoBuyTriggerData,
-    stopLossTriggerData,
-    ilkData,
-  })
-
   return (
     <>
       <MultipleRangeSlider
-        min={min.toNumber()}
-        max={max.toNumber()}
+        min={sliderMin.toNumber()}
+        max={sliderMax.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'execution-coll-ratio',

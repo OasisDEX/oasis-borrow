@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
+import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -11,14 +12,22 @@ export function warningsBasicSellValidation({
   gasEstimationUsd,
   ethBalance,
   ethPrice,
+  sliderMin,
+  sliderMax,
   minSellPrice,
   isStopLossEnabled,
+  isAutoBuyEnabled,
+  basicSellState,
 }: {
   token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
+  sliderMin: BigNumber
+  sliderMax: BigNumber
   gasEstimationUsd?: BigNumber
   isStopLossEnabled: boolean
+  isAutoBuyEnabled: boolean
+  basicSellState: BasicBSFormChange
   minSellPrice?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -30,9 +39,16 @@ export function warningsBasicSellValidation({
   const noMinSellPriceWhenStopLossEnabled =
     (minSellPrice?.isZero() || !minSellPrice) && isStopLossEnabled
 
+  const basicSellTriggerCloseToStopLossTrigger =
+    isStopLossEnabled && basicSellState.execCollRatio.isEqualTo(sliderMin)
+  const basicSellTargetCloseToAutoBuyTrigger =
+    isAutoBuyEnabled && basicSellState.targetCollRatio.isEqualTo(sliderMax)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     noMinSellPriceWhenStopLossEnabled,
+    basicSellTriggerCloseToStopLossTrigger,
+    basicSellTargetCloseToAutoBuyTrigger,
   })
 }
 

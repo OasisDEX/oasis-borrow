@@ -13,6 +13,9 @@ export type VaultWarningMessage =
   | 'currentCollRatioCloseToStopLoss'
   | 'noMinSellPriceWhenStopLossEnabled'
   | 'settingAutoBuyTriggerWithNoThreshold'
+  | 'basicSellTriggerCloseToStopLossTrigger'
+  | 'basicSellTargetCloseToAutoBuyTrigger'
+  | 'stopLossTriggerCloseToAutoSellTrigger'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -27,6 +30,9 @@ interface WarningMessagesHandler {
   currentCollRatioCloseToStopLoss?: boolean
   noMinSellPriceWhenStopLossEnabled?: boolean
   settingAutoBuyTriggerWithNoThreshold?: boolean
+  basicSellTriggerCloseToStopLossTrigger?: boolean
+  basicSellTargetCloseToAutoBuyTrigger?: boolean
+  stopLossTriggerCloseToAutoSellTrigger?: boolean
 }
 
 export function warningMessagesHandler({
@@ -40,6 +46,9 @@ export function warningMessagesHandler({
   currentCollRatioCloseToStopLoss,
   noMinSellPriceWhenStopLossEnabled,
   settingAutoBuyTriggerWithNoThreshold,
+  basicSellTriggerCloseToStopLossTrigger,
+  basicSellTargetCloseToAutoBuyTrigger,
+  stopLossTriggerCloseToAutoSellTrigger,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -81,6 +90,17 @@ export function warningMessagesHandler({
 
   if (settingAutoBuyTriggerWithNoThreshold) {
     warningMessages.push('settingAutoBuyTriggerWithNoThreshold')
+  }
+  if (basicSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('basicSellTriggerCloseToStopLossTrigger')
+  }
+
+  if (basicSellTargetCloseToAutoBuyTrigger) {
+    warningMessages.push('basicSellTargetCloseToAutoBuyTrigger')
+  }
+
+  if (stopLossTriggerCloseToAutoSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToAutoSellTrigger')
   }
 
   // if (highSlippage) {

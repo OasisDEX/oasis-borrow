@@ -52,6 +52,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
       <Grid sx={{ py: 1 }}>
         {anchors.map((anchor) => (
           <Link
+            key={anchor.id}
             variant="nav"
             sx={{
               '&, &:hover': { color: sectionId === anchor.id ? 'primary' : 'textAlt' },
