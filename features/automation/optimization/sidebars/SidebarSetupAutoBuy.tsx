@@ -225,8 +225,6 @@ export function SidebarSetupAutoBuy({
               {isRemoveForm && (
                 <SidebarAutoBuyRemovalEditingStage
                   vault={vault}
-                  priceInfo={priceInfo}
-                  basicBuyState={uiState}
                   ilkData={ilkData}
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}

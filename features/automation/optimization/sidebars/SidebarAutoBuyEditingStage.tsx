@@ -20,10 +20,9 @@ import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVau
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { useObservable } from 'helpers/observableHook'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useMemo } from 'react'
+import React, { ReactNode } from 'react'
 
 interface SidebarAutoBuyEditingStageProps {
   vault: Vault
@@ -167,17 +166,11 @@ function AutoBuyInfoSectionControl({
   basicBuyState,
   addTriggerGasEstimation,
 }: AutoBuyInfoSectionControlProps) {
-  const { tokenPriceUSD$ } = useAppContext()
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
-
-  const [tokenPriceData] = useObservable(_tokenPriceUSD$)
-  const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-
   const deviationPercent = basicBuyState.deviation.div(100)
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: marketPrice,
+    marketPrice: priceInfo.nextCollateralPrice,
     slippage: deviationPercent,
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,

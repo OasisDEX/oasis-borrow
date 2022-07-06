@@ -4,17 +4,19 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
-interface CancelAutoSellInfoSectionProps {
+interface CancelAutoBSInfoSectionProps {
   collateralizationRatio: BigNumber
   liquidationPrice: BigNumber
   estimatedTransactionCost: ReactNode
+  title: string
 }
 
-export function CancelAutoSellInfoSection({
+export function CancelAutoBSInfoSection({
   collateralizationRatio,
   liquidationPrice,
   estimatedTransactionCost,
-}: CancelAutoSellInfoSectionProps) {
+  title,
+}: CancelAutoBSInfoSectionProps) {
   const { t } = useTranslation()
 
   const liquidationPriceFormatted = formatAmount(liquidationPrice, 'USD')
@@ -24,7 +26,7 @@ export function CancelAutoSellInfoSection({
 
   return (
     <InfoSection
-      title={t('auto-sell.cancel-summary-title')}
+      title={title}
       items={[
         {
           label: t('system.collateral-ratio'),

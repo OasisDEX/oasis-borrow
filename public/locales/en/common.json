@@ -1395,6 +1395,7 @@
 
   "auto-buy": {
     "title": "Auto buy",
+    "cancel-summary-title": "Cancel Auto-Buy order summary",
     "form-title": "Auto Buy Setup",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
     "min-ratio": "min. ratio with Stop-Loss/basic sell",
