@@ -113,6 +113,7 @@ export function SidebarSetupAutoSell({
     targetCollRatio: basicSellState.targetCollRatio,
     withThreshold: basicSellState.withThreshold,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+    isRemoveForm,
   })
 
   const { min, max } = getBasicSellMinMaxValues({

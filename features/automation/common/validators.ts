@@ -59,6 +59,7 @@ export function errorsBasicSellValidation({
   debtDelta,
   targetCollRatio,
   withThreshold,
+  isRemoveForm,
   minSellPrice,
 }: {
   txError?: TxError
@@ -67,13 +68,15 @@ export function errorsBasicSellValidation({
   debtDelta: BigNumber
   targetCollRatio: BigNumber
   withThreshold: boolean
+  isRemoveForm: boolean
   minSellPrice?: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
   const targetCollRatioExceededDustLimitCollRatio =
     !targetCollRatio.isZero() && ilkData.debtFloor.gt(vault.debt.plus(debtDelta))
 
-  const minimumSellPriceNotProvided = withThreshold && (!minSellPrice || minSellPrice.isZero())
+  const minimumSellPriceNotProvided =
+    !isRemoveForm && withThreshold && (!minSellPrice || minSellPrice.isZero())
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
