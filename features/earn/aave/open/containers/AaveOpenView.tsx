@@ -10,7 +10,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useTranslation } from 'next-i18next'
 
 export function AaveOpenView() {
-  const [openAave, openAaveError] = [{/* pipeline */}, []]
+  const [openAave, openAaveError] = [{/* pipeline */}, [/* errors */]]
   const { t } = useTranslation()
   
   return (
@@ -18,6 +18,7 @@ export function AaveOpenView() {
       <WithLoadingIndicator value={openAave} customLoader={<VaultContainerSpinner />}>
         {(openAave) => (
           <Container variant="vaultPageContainer">
+            [HEADER]
             <TabBar
               variant="underline"
               sections={[
