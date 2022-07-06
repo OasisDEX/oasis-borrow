@@ -84,6 +84,21 @@ export function getCumulativeFeesUSD(total: BigNumber, event: VaultEvent) {
   }
 }
 
+export function getCumulativeOasisFeeUSD(total: BigNumber, event: VaultEvent) {
+  switch (event.kind) {
+    case 'OPEN_MULTIPLY_VAULT':
+    case 'OPEN_MULTIPLY_GUNI_VAULT':
+    case 'DECREASE_MULTIPLE':
+    case 'INCREASE_MULTIPLE':
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+    case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_GUNI_VAULT_TO_DAI':
+      return total.plus(event.oazoFee)
+    default:
+      return total
+  }
+}
+
 export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber) {
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
@@ -103,8 +118,11 @@ export function calculatePNL(events: VaultEvent[], currentNetValueUSD: BigNumber
 export function calculateGrossEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
   const cumulativeDepositUSD = events.reduce(getCumulativeDepositUSD, zero)
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
+  const oasisFee = events.reduce(getCumulativeOasisFeeUSD, zero)
 
-  return currentNetValueUSD.minus(cumulativeDepositUSD).plus(cumulativeWithdrawnUSD)
+  const earnings = currentNetValueUSD.minus(cumulativeDepositUSD).plus(cumulativeWithdrawnUSD).plus(oasisFee)
+
+  return earnings.gte(zero) ? earnings : zero
 }
 
 export function calculateNetEarnings(events: VaultEvent[], currentNetValueUSD: BigNumber) {
