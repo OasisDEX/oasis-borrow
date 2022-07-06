@@ -852,9 +852,13 @@
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
     "no-min-sell-price-when-stop-loss-enabled": "Not setting a Min. Sell Price with Stop-Loss enabled would cause your Stop-Loss to never be triggered",
     "auto-buy-with-no-max-price-threshold": "WARNING: You are setting an auto buy trigger with no maximum buy price threshold",
-    "basic-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
-    "basic-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
-    "stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first."
+    "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
+    "auto-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
+    "stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
+    "auto-buy-target-close-to-stop-loss-trigger": "Setting a lower Target Ratio would trigger your existing Stop-Loss. If you want to use a lower target ratio, please adjust your Stop-Loss trigger first.",
+    "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
+    "auto-buy-triggered-immediately": "Your Auto Buy will be triggered immediately",
+    "auto-sell-triggered-immediately": "Your Auto Sell will be triggered immediately"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",

@@ -113,6 +113,7 @@ export function SidebarSetupAutoSell({
     targetCollRatio: basicSellState.targetCollRatio,
     withThreshold: basicSellState.withThreshold,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+    isRemoveForm,
   })
 
   const { min, max } = getBasicSellMinMaxValues({
@@ -122,7 +123,7 @@ export function SidebarSetupAutoSell({
   })
 
   const warnings = warningsBasicSellValidation({
-    token: vault.token,
+    vault,
     gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
