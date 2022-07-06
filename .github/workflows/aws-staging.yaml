@@ -51,6 +51,7 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         REPO_NAME: ${{ github.event.repository.name }}
         DOCKERHUB_ORG: "oasisdexorg"
+        DOCKER_BUILDKIT: 1
       run: |
         # Build a docker container and
         # push it to ECR so that it can
