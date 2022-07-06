@@ -15,7 +15,7 @@ function CookiePage() {
   return (
     <>
       <PageSEONoFollow />
-      <Box>{currentContent.cookie.content}</Box>
+      <Box sx={{ width: '100%' }}>{currentContent.cookie.content}</Box>
     </>
   )
 }
