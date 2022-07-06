@@ -120,7 +120,10 @@ export function calculateGrossEarnings(events: VaultEvent[], currentNetValueUSD:
   const cumulativeWithdrawnUSD = events.reduce(getCumulativeWithdrawnUSD, zero)
   const oasisFee = events.reduce(getCumulativeOasisFeeUSD, zero)
 
-  const earnings = currentNetValueUSD.minus(cumulativeDepositUSD).plus(cumulativeWithdrawnUSD).plus(oasisFee)
+  const earnings = currentNetValueUSD
+    .minus(cumulativeDepositUSD)
+    .plus(cumulativeWithdrawnUSD)
+    .plus(oasisFee)
 
   return earnings.gte(zero) ? earnings : zero
 }
