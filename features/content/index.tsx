@@ -47,7 +47,7 @@ export function TranslatedContent({ content }: { content: ContentType }) {
   } = useTranslation()
   const ContentComp = content[language] || content.en
 
-  return <ContentComp sx={{ table: { background: '1px solid black !important' } }} />
+  return <ContentComp />
 }
 
 export const currentContent: Content = v1
