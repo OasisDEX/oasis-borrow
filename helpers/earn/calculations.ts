@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
+import { MakerOracleTokenPrice } from 'features/earn/makerOracleTokenPrices'
 import { isEqual } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, distinctUntilChanged, map, switchMap } from 'rxjs/operators'
 
 import { IlkData } from '../../blockchain/ilks'
-import { one, zero } from '../../helpers/zero'
-import { MakerOracleTokenPrice } from './makerOracleTokenPrices'
+import { one, zero } from '../zero'
 
 export enum YieldPeriod {
   Yield7Days,
@@ -193,4 +193,30 @@ export function calculateYield(
   const feeForYear = stabilityFee.times(multiple.minus(1))
 
   return percentageYieldFromPriceIncreasePeriod.minus(feeForYear)
+}
+
+interface CalculateEarnings {
+  depositAmount: BigNumber
+  apy: BigNumber
+  days: BigNumber
+}
+
+export function calculateEarnings({ depositAmount, apy, days }: CalculateEarnings) {
+  const earningsAfterFees = depositAmount.times(apy.div(365).times(days).plus(one))
+
+  return {
+    earningsAfterFees: earningsAfterFees.minus(depositAmount),
+    netValue: earningsAfterFees,
+  }
+}
+
+interface CalculateBreakeven {
+  depositAmount: BigNumber
+  entryFees: BigNumber
+  apy: BigNumber
+}
+
+export function calculateBreakeven({ depositAmount, entryFees, apy }: CalculateBreakeven) {
+  const earningsPerDay = depositAmount.times(apy.plus(one)).minus(depositAmount).div(365)
+  return entryFees.div(earningsPerDay)
 }

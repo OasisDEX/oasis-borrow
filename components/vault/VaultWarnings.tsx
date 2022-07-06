@@ -49,6 +49,12 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('coll-ratio-close-to-current')
       case 'noMinSellPriceWhenStopLossEnabled':
         return translate('no-min-sell-price-when-stop-loss-enabled')
+      case 'basicSellTriggerCloseToStopLossTrigger':
+        return translate('basic-sell-trigger-close-to-stop-loss-trigger')
+      case 'basicSellTargetCloseToAutoBuyTrigger':
+        return translate('basic-sell-target-close-to-auto-buy-trigger')
+      case 'stopLossTriggerCloseToAutoSellTrigger':
+        return translate('stop-loss-trigger-close-to-auto-sell-trigger')
       default:
         throw new UnreachableCaseError(message)
     }

@@ -132,20 +132,22 @@ export function MultipleRangeSlider({
     }
   }, [middleMark?.value])
 
+  const dotsSpace = 5
+
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>, slider: number) => {
       const newValue = Number(e.target.value)
 
       if (
         slider === 0 &&
-        (newValue > value1 - step || (middleMark && newValue > middleMark.value - step))
+        (newValue > value1 - dotsSpace || (middleMark && newValue > middleMark.value - dotsSpace))
       ) {
         return
       }
 
       if (
         slider === 1 &&
-        (newValue < value0 + step || (middleMark && newValue < middleMark.value + step))
+        (newValue < value0 + dotsSpace || (middleMark && newValue < middleMark.value + dotsSpace))
       ) {
         return
       }

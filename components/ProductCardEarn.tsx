@@ -1,10 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
+import { YieldPeriod } from 'helpers/earn/calculations'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
-import { YieldPeriod } from '../features/earn/yieldCalculations'
 import { WithLoadingIndicator } from '../helpers/AppSpinner'
 import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'

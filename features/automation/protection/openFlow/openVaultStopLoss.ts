@@ -137,6 +137,7 @@ export function getDataForStopLoss(
     ethBalance,
     gasEstimation: null,
     currentCollateralRatio: afterCollateralizationRatio,
+    isAutoSellEnabled: false,
   }
 
   return sidebarProps

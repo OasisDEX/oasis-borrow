@@ -138,6 +138,7 @@
     "ts-node": "^7.0.1",
     "typechain": "^4.0.3",
     "url-loader": "^4.1.0",
+    "usehooks-ts": "^2.6.0",
     "uuid": "^8.3.0",
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",

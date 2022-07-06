@@ -51,6 +51,8 @@ const commonErrors = [
   'hasToDepositCollateralOnEmptyVault',
   'invalidSlippage',
   'afterCollRatioBelowStopLossRatio',
+  'afterCollRatioBelowBasicSellRatio',
+  'afterCollRatioAboveBasicBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
 

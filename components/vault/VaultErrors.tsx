@@ -126,6 +126,10 @@ export function VaultErrors({
         return translate('invalid-slippage')
       case 'afterCollRatioBelowStopLossRatio':
         return translate('after-coll-ratio-below-stop-loss-ratio')
+      case 'afterCollRatioBelowBasicSellRatio':
+        return translate('after-coll-ratio-below-basic-sell-ratio')
+      case 'afterCollRatioAboveBasicBuyRatio':
+        return translate('after-coll-ratio-above-basic-buy-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':

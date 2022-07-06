@@ -9,6 +9,7 @@ coverage
 yalc.lock
 .vscode
 .idea
+.run
 .log
 .DS_Store
 .sentryclirc
@@ -28,3 +29,4 @@ storybook-static
 storybook-static/*
 cache
 next-env.d.ts
+
