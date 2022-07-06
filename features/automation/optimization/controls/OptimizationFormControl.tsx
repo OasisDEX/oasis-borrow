@@ -1,4 +1,5 @@
 import { TriggerType } from '@oasisdex/automation'
+import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -9,6 +10,7 @@ import {
   SidebarSetupAutoBuyProps,
 } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import React from 'react'
 
@@ -19,6 +21,8 @@ interface OptimizationFormControlProps {
   priceInfo: PriceInfo
   txHelpers?: TxHelpers
   context: Context
+  balanceInfo: BalanceInfo
+  ethMarketPrice: BigNumber
 }
 
 export function OptimizationFormControl({
@@ -28,6 +32,8 @@ export function OptimizationFormControl({
   priceInfo,
   txHelpers,
   context,
+  balanceInfo,
+  ethMarketPrice,
 }: OptimizationFormControlProps) {
   const basicBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
 
@@ -39,6 +45,8 @@ export function OptimizationFormControl({
     ilkData: ilkData,
     txHelpers,
     context,
+    balanceInfo,
+    ethMarketPrice,
   }
 
   return <SidebarSetupAutoBuy {...props} />

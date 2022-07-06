@@ -12,6 +12,7 @@ export type VaultWarningMessage =
   | 'vaultWillRemainUnderMinActiveColRatio'
   | 'currentCollRatioCloseToStopLoss'
   | 'noMinSellPriceWhenStopLossEnabled'
+  | 'settingAutoBuyTriggerWithNoThreshold'
   | 'basicSellTriggerCloseToStopLossTrigger'
   | 'basicSellTargetCloseToAutoBuyTrigger'
   | 'stopLossTriggerCloseToAutoSellTrigger'
@@ -28,6 +29,7 @@ interface WarningMessagesHandler {
   customSlippageOverridden?: boolean
   currentCollRatioCloseToStopLoss?: boolean
   noMinSellPriceWhenStopLossEnabled?: boolean
+  settingAutoBuyTriggerWithNoThreshold?: boolean
   basicSellTriggerCloseToStopLossTrigger?: boolean
   basicSellTargetCloseToAutoBuyTrigger?: boolean
   stopLossTriggerCloseToAutoSellTrigger?: boolean
@@ -43,6 +45,7 @@ export function warningMessagesHandler({
   potentialInsufficientEthFundsForTx,
   currentCollRatioCloseToStopLoss,
   noMinSellPriceWhenStopLossEnabled,
+  settingAutoBuyTriggerWithNoThreshold,
   basicSellTriggerCloseToStopLossTrigger,
   basicSellTargetCloseToAutoBuyTrigger,
   stopLossTriggerCloseToAutoSellTrigger,
@@ -85,6 +88,9 @@ export function warningMessagesHandler({
     warningMessages.push('noMinSellPriceWhenStopLossEnabled')
   }
 
+  if (settingAutoBuyTriggerWithNoThreshold) {
+    warningMessages.push('settingAutoBuyTriggerWithNoThreshold')
+  }
   if (basicSellTriggerCloseToStopLossTrigger) {
     warningMessages.push('basicSellTriggerCloseToStopLossTrigger')
   }

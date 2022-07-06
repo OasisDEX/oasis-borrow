@@ -1,11 +1,14 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
+import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
@@ -18,6 +21,10 @@ import {
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
+  errorsAddBasicBuyValidation,
+  warningsBasicBuyValidation,
+} from 'features/automation/common/validators'
+import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
@@ -25,10 +32,14 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { SidebarFlow } from 'features/types/vaults/sidebarLabels'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { extractCancelAutoBuyErrors, extractCancelAutoBuyWarnings } from 'helpers/messageMappers'
+import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -47,6 +58,8 @@ export interface SidebarSetupAutoBuyProps {
   priceInfo: PriceInfo
   txHelpers?: TxHelpers
   context: Context
+  balanceInfo: BalanceInfo
+  ethMarketPrice: BigNumber
 }
 
 export function SidebarSetupAutoBuy({
@@ -57,10 +70,12 @@ export function SidebarSetupAutoBuy({
   priceInfo,
   context,
   txHelpers,
+  balanceInfo,
+  ethMarketPrice,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges } = useAppContext()
+  const { uiChanges, addGasEstimation$ } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const txStatus = uiState?.txDetails?.txStatus
@@ -97,11 +112,41 @@ export function SidebarSetupAutoBuy({
     ],
   )
 
-  const cancelTxData = prepareRemoveBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicBuy,
-    triggerId: uiState.triggerId,
-  })
+  const addTriggerGasEstimationData$ = useMemo(() => {
+    return addGasEstimation$(
+      { gasEstimationStatus: GasEstimationStatus.unset },
+      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
+    )
+  }, [addTxData])
+
+  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
+  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
+  const addTriggerGasEstimationUsd =
+    addTriggerGasEstimationData &&
+    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
+
+  const cancelTxData = useMemo(
+    () =>
+      prepareRemoveBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicBuy,
+        triggerId: uiState.triggerId,
+      }),
+    [uiState.triggerId.toNumber(), vault.collateralizationRatio.toNumber()],
+  )
+
+  const cancelTriggerGasEstimationData$ = useMemo(() => {
+    return addGasEstimation$(
+      { gasEstimationStatus: GasEstimationStatus.unset },
+      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
+    )
+  }, [cancelTxData])
+
+  const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
+  const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
+  const cancelTriggerGasEstimationUsd =
+    cancelTriggerGasEstimationData &&
+    (cancelTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
   const isAddForm = uiState.currentForm === 'add'
   const isRemoveForm = uiState.currentForm === 'remove'
@@ -131,6 +176,25 @@ export function SidebarSetupAutoBuy({
     : 'editBasicBuy'
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
+  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
+
+  const errors = errorsAddBasicBuyValidation({
+    txError: uiState.txDetails?.txError,
+    maxBuyPrice: uiState.maxBuyOrMinSellPrice,
+    withThreshold: uiState.withThreshold,
+  })
+
+  const warnings = warningsBasicBuyValidation({
+    token: vault.token,
+    ethBalance: balanceInfo.ethBalance,
+    ethPrice: ethMarketPrice,
+    gasEstimationUsd,
+    withThreshold: uiState.withThreshold,
+  })
+
+  const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
+  const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
+
   const sidebarStatus = getSidebarStatus({
     stage,
     txHash: uiState.txDetails?.txHash,
@@ -149,19 +213,22 @@ export function SidebarSetupAutoBuy({
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
-                  addTxData={addTxData}
                   basicBuyState={uiState}
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
                   priceInfo={priceInfo}
+                  errors={errors}
+                  warnings={warnings}
+                  addTriggerGasEstimation={addTriggerGasEstimation}
                 />
               )}
               {isRemoveForm && (
                 <SidebarAutoBuyRemovalEditingStage
                   vault={vault}
-                  cancelTxData={cancelTxData}
-                  priceInfo={priceInfo}
-                  basicBuyState={uiState}
+                  ilkData={ilkData}
+                  errors={cancelAutoBuyErrors}
+                  warnings={cancelAutoBuyWarnings}
+                  cancelTriggerGasEstimation={cancelTriggerGasEstimation}
                 />
               )}
             </>
@@ -173,7 +240,7 @@ export function SidebarSetupAutoBuy({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled,
+        disabled: isDisabled || !!errors.length,
         isLoading: stage === 'txInProgress',
         action: () => {
           if (txHelpers) {
