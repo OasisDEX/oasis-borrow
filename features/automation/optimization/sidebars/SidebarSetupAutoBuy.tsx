@@ -135,8 +135,6 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
-  console.log(errors)
-
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
