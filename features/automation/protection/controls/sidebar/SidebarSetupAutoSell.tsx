@@ -123,7 +123,7 @@ export function SidebarSetupAutoSell({
   })
 
   const warnings = warningsBasicSellValidation({
-    token: vault.token,
+    vault,
     gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,

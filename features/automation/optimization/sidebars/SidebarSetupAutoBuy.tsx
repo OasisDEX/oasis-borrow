@@ -120,7 +120,7 @@ export function SidebarSetupAutoBuy({
   })
 
   const warnings = warningsBasicBuyValidation({
-    token: vault.token,
+    vault,
     gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,

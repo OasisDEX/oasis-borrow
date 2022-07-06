@@ -61,6 +61,10 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('auto-buy-target-close-to-stop-loss-trigger')
       case 'autoBuyTargetCloseToAutoSellTrigger':
         return translate('auto-buy-target-close-to-auto-sell-trigger')
+      case 'autoBuyTriggeredImmediately':
+        return translate('auto-buy-triggered-immediately')
+      case 'autoSellTriggeredImmediately':
+        return translate('auto-sell-triggered-immediately')
       default:
         throw new UnreachableCaseError(message)
     }

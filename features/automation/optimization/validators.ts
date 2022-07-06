@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -6,7 +7,7 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
 
 export function warningsBasicBuyValidation({
-  token,
+  vault,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -16,7 +17,7 @@ export function warningsBasicBuyValidation({
   basicBuyState,
   withThreshold,
 }: {
-  token: string
+  vault: Vault
   ethBalance: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
@@ -28,7 +29,7 @@ export function warningsBasicBuyValidation({
   withThreshold: boolean
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token,
+    token: vault.token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -42,11 +43,16 @@ export function warningsBasicBuyValidation({
 
   const settingAutoBuyTriggerWithNoThreshold = !withThreshold
 
+  const autoBuyTriggeredImmediately = basicBuyState.execCollRatio
+    .div(100)
+    .lte(vault.collateralizationRatioAtNextPrice)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     settingAutoBuyTriggerWithNoThreshold,
     autoBuyTargetCloseToStopLossTrigger,
     autoBuyTargetCloseToAutoSellTrigger,
+    autoBuyTriggeredImmediately,
   })
 }
 

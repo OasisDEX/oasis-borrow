@@ -8,7 +8,7 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
 
 export function warningsBasicSellValidation({
-  token,
+  vault,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -19,7 +19,7 @@ export function warningsBasicSellValidation({
   isAutoBuyEnabled,
   basicSellState,
 }: {
-  token: string
+  vault: Vault
   ethBalance: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
@@ -31,7 +31,7 @@ export function warningsBasicSellValidation({
   minSellPrice?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token,
+    token: vault.token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -44,11 +44,16 @@ export function warningsBasicSellValidation({
   const basicSellTargetCloseToAutoBuyTrigger =
     isAutoBuyEnabled && basicSellState.targetCollRatio.isEqualTo(sliderMax)
 
+  const autoSellTriggeredImmediately = basicSellState.execCollRatio
+    .div(100)
+    .gte(vault.collateralizationRatioAtNextPrice)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     noMinSellPriceWhenStopLossEnabled,
     basicSellTriggerCloseToStopLossTrigger,
     basicSellTargetCloseToAutoBuyTrigger,
+    autoSellTriggeredImmediately,
   })
 }
 
@@ -82,48 +87,5 @@ export function errorsBasicSellValidation({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
-  })
-}
-
-export function errorsAddBasicBuyValidation({
-  txError,
-  maxBuyPrice,
-  withThreshold,
-}: {
-  txError?: TxError
-  maxBuyPrice?: BigNumber
-  withThreshold: boolean
-}) {
-  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
-
-  const autoBuyMaxBuyPriceNotSpecified = withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
-  return errorMessagesHandler({ insufficientEthFundsForTx, autoBuyMaxBuyPriceNotSpecified })
-}
-
-export function warningsBasicBuyValidation({
-  token,
-  gasEstimationUsd,
-  ethBalance,
-  ethPrice,
-  withThreshold,
-}: {
-  token: string
-  ethBalance: BigNumber
-  ethPrice: BigNumber
-  gasEstimationUsd?: BigNumber
-  withThreshold: boolean
-}) {
-  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-  })
-
-  const settingAutoBuyTriggerWithNoThreshold = !withThreshold
-
-  return warningMessagesHandler({
-    potentialInsufficientEthFundsForTx,
-    settingAutoBuyTriggerWithNoThreshold,
   })
 }
