@@ -43,7 +43,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       maxBuyOrMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).div(
         new BigNumber(10).pow(18),
       ),
-      continuous: continuous,
+      continuous,
       deviation: new BigNumber(deviation.toString()).div(1000),
       isTriggerEnabled: true,
     } as BasicBSTriggerData

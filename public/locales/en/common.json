@@ -1391,6 +1391,7 @@
     "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
+    "target-ratio-with-deviation": "Target Ratio With Deviation",
     "title": "Auto sell",
     "add-form-title": "Auto Sell-Setup",
     "edit-form-title": "Edit Auto-Sell",
