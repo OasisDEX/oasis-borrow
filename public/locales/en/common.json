@@ -395,6 +395,16 @@
       "yield-7": "7 day net APY",
       "yield-90": "90 day net APY",
       "total-value-locked": "Total value locked"
+    },
+    "simulate": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Previous 30 days*",
+      "rowlabel2": "Previous 90 days*",
+      "rowlabel3": "Previous 1 year**",
+      "footnote1": "*Past performance is not indicative of future results.",
+      "footnote2": "**Prior year estimates use the 90 day APY."
     }
   },
   "manage-insti-vault": {
@@ -661,6 +671,10 @@
     "exposure": "exposure",
     "total-collateral": "Total collateral",
     "multiple": "Multiple",
+    "est-break-even": "Est. break-even",
+    "est-break-even-value": "{{days}} days",
+    "est-entry-fees": "Est. entry fees",
+    "apy": "APY",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
@@ -672,6 +686,7 @@
     "dai-available": "Dai Available",
     "dai-debt": "Dai Debt",
     "deposited": "Deposited",
+    "faq": "FAQ",
     "in-my-wallet": "In My Wallet",
     "in-your-wallet": "In Your Wallet",
     "liquidation-penalty": "Liquidation Penalty",
@@ -932,6 +947,11 @@
       "header": "Get vault protection",
       "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
       "button": "Protect your Vault"
+    },
+    "what-are-the-risks": {
+      "header": "What are the risks",
+      "content": "Find out about the underlying creation of the position, the risks, where your capital is at and more in the FAQ section.",
+      "button": "Learn more"
     }
   },
   "view": "View",

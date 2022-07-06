@@ -53,7 +53,7 @@ export function GeneralManageTabBar({
   useEffect(() => {
     const uiChanges$ = uiChanges.subscribe<TabChange>(TAB_CHANGE_SUBJECT)
     const subscription = uiChanges$.subscribe((value) => {
-      setMode(() => value.currentMode)
+      setMode(() => value.currentMode as VaultViewMode)
     })
     return () => {
       subscription.unsubscribe()
@@ -117,7 +117,7 @@ export function GeneralManageTabBar({
           content: <HistoryControl vaultHistory={vaultHistory} />,
         },
       ]}
-      value={mode}
+      switchEvent={{ value: mode }}
     />
   )
 }

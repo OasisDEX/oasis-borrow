@@ -38,6 +38,8 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
         flexDirection: 'column',
         flexBasis: ['100%', null, null, '25%'],
         p: 3,
+        pl: 0,
+        pr: 4,
         '&:nth-child(-n+3)': {
           flexGrow: 1,
         },
