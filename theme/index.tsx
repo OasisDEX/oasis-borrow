@@ -292,7 +292,7 @@ const oasisBaseTheme = {
       table: {
         border: '1px solid black',
         borderCollapse: 'collapse',
-        width: '100%',
+        fontSize: ['2vw', '14px'],
       },
       th: {
         border: '1px solid black',
