@@ -18,7 +18,6 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -40,13 +39,21 @@ function AutoSellInfoSectionControl({
   debtDelta,
   collateralDelta,
 }: AutoSellInfoSectionControlProps) {
+  const deviationPercent = basicSellState.deviation.div(100)
+
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
       nextSellPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -58,6 +65,8 @@ function AutoSellInfoSectionControl({
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
     />
   )
 }
@@ -94,7 +103,6 @@ export function SidebarAutoSellAddEditingStage({
   sliderMax,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
-  const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
 
   return (
@@ -113,8 +121,8 @@ export function SidebarAutoSellAddEditingStage({
           })
         }}
         value={{
-          value0: uiStateBasicSell.execCollRatio.toNumber(),
-          value1: uiStateBasicSell.targetCollRatio.toNumber(),
+          value0: basicSellState.execCollRatio.toNumber(),
+          value1: basicSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
           value0: 'onWarning',
@@ -128,7 +136,7 @@ export function SidebarAutoSellAddEditingStage({
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
-        amount={uiStateBasicSell.maxBuyOrMinSellPrice}
+        amount={basicSellState.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}
         currencyCode="USD"
@@ -185,7 +193,7 @@ export function SidebarAutoSellAddEditingStage({
             maxGasGweiPrice,
           })
         }}
-        defaultValue={uiStateBasicSell.maxGasPercentagePrice}
+        defaultValue={basicSellState.maxGasPercentagePrice}
       />
       {isEditing && (
         <AutoSellInfoSectionControl

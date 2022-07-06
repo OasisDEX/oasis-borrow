@@ -213,7 +213,6 @@ import {
   createMakerOracleTokenPrices$,
   createMakerOracleTokenPricesForDates$,
 } from '../features/earn/makerOracleTokenPrices'
-import { getYieldChange$, getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -223,6 +222,7 @@ import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
@@ -391,7 +391,6 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
-
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
@@ -931,7 +930,7 @@ export function setupAppContext() {
     (ilk: string, date?: moment.Moment) => {
       return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
-    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
   )
 
   const yieldsChange$ = memoize(
@@ -991,6 +990,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    gasPrice$,
     automationTriggersData$,
     accountData$,
     vaultHistory$,
@@ -1014,6 +1014,7 @@ export function setupAppContext() {
     positionsOverviewSummary$,
     priceInfo$,
     yields$,
+    daiEthTokenPrice$,
     totalValueLocked$,
     yieldsChange$,
     tokenPriceUSD$,

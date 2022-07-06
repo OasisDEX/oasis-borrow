@@ -10,7 +10,9 @@ interface SellInfoSectionProps {
   multipleAfterSell: BigNumber
   execCollRatio: BigNumber
   nextSellPrice: BigNumber
-  slippageLimit: BigNumber
+  slippageLimit?: BigNumber
+  targetRatioWithDeviationFloor: BigNumber
+  targetRatioWithDeviationCeiling: BigNumber
   collateralAfterNextSell: {
     value: BigNumber
     secondaryValue: BigNumber
@@ -29,11 +31,12 @@ export function AddAutoSellInfoSection({
   multipleAfterSell,
   execCollRatio,
   nextSellPrice,
-  slippageLimit,
   collateralAfterNextSell,
   outstandingDebtAfterSell,
   ethToBeSoldAtNextSell,
   estimatedTransactionCost,
+  targetRatioWithDeviationFloor,
+  targetRatioWithDeviationCeiling,
 }: SellInfoSectionProps) {
   const { t } = useTranslation()
   const collateralToBeSoldAtNextSellFormatted = formatCryptoBalance(ethToBeSoldAtNextSell)
@@ -47,9 +50,11 @@ export function AddAutoSellInfoSection({
     collateralAfterNextSell.secondaryValue,
   )
   const nextSellPriceFormatted = formatAmount(nextSellPrice, 'USD')
-  const slippageLimitFormatted = formatPercent(slippageLimit, { precision: 1 })
   const colRatioAfterSellFormatted = formatPercent(targetCollRatio, { precision: 2 })
   const ratioToPerformSellFormatted = formatPercent(execCollRatio, { precision: 2 })
+
+  const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
+  const targetRatioWithDeviationCeilingFormatted = formatPercent(targetRatioWithDeviationCeiling)
 
   return (
     <InfoSection
@@ -72,8 +77,8 @@ export function AddAutoSellInfoSection({
           value: `$${nextSellPriceFormatted}`,
         },
         {
-          label: t('auto-sell.slippage-limit'),
-          value: slippageLimitFormatted,
+          label: t('auto-sell.target-ratio-with-deviation'),
+          value: `${targetRatioWithDeviationFloorFormatted} - ${targetRatioWithDeviationCeilingFormatted}`,
         },
         {
           label: t('auto-sell.collateral-after-next-sell'),
