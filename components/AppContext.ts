@@ -78,6 +78,12 @@ import {
   automationChangeFeatureReducer,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSChangeAction,
+  basicBSFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
   MultiplyPillChangeAction,
@@ -102,7 +108,6 @@ import {
   tabChangeReducer,
 } from 'features/automation/protection/common/UITypes/TabChange'
 import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -117,6 +122,7 @@ import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
+import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
@@ -132,6 +138,7 @@ import {
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { isEqual, mapValues, memoize } from 'lodash'
+import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
@@ -167,6 +174,7 @@ import {
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
+import { getCollateralLocked$, getTotalValueLocked$ } from '../blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -201,7 +209,11 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
-import { getYields$ } from '../features/earn/yieldCalculations'
+import {
+  createMakerOracleTokenPrices$,
+  createMakerOracleTokenPricesForDates$,
+} from '../features/earn/makerOracleTokenPrices'
+import { getYieldChange$, getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
@@ -286,6 +298,7 @@ export type SupportedUIChangeType =
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
+  BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
@@ -373,6 +386,8 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
@@ -716,26 +731,6 @@ export function setupAppContext() {
   const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
   const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
-  const openGuniVault$ = memoize((ilk: string) =>
-    createOpenGuniVault$(
-      connectedContext$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilks$,
-      ilkData$,
-      psmExchangeQuote$,
-      onEveryBlock$,
-      addGasEstimation$,
-      ilk,
-      token1Balance$,
-      getGuniMintAmount$,
-      userSettings$,
-    ),
-  )
-
   const manageVault$ = memoize(
     (id: BigNumber) =>
       createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -832,6 +827,7 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
+        makerOracleTokenPrices$,
         id,
       ),
     bigNumberTostring,
@@ -907,7 +903,7 @@ export function setupAppContext() {
   )
 
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
 
@@ -917,7 +913,60 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const yields$ = memoize(curry(getYields$)(context$, ilkData$))
+  const makerOracleTokenPrices$ = memoize(
+    curry(createMakerOracleTokenPrices$)(context$),
+    (token: string, timestamp: moment.Moment) => {
+      return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
+    },
+  )
+
+  const makerOracleTokenPricesForDates$ = memoize(
+    curry(createMakerOracleTokenPricesForDates$)(context$),
+    (token: string, timestamps: moment.Moment[]) => {
+      return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
+    },
+  )
+
+  const yields$ = memoize(
+    (ilk: string, date?: moment.Moment) => {
+      return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
+    },
+    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+  )
+
+  const yieldsChange$ = memoize(
+    curry(getYieldChange$)(yields$),
+    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+      `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
+  )
+
+  const collateralLocked$ = memoize(
+    curry(getCollateralLocked$)(connectedContext$, ilkToToken$, balance$),
+  )
+
+  const totalValueLocked$ = memoize(
+    curry(getTotalValueLocked$)(collateralLocked$, oraclePriceData$),
+  )
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      psmExchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
+      userSettings$,
+    ),
+  )
 
   return {
     web3Context$,
@@ -965,6 +1014,9 @@ export function setupAppContext() {
     positionsOverviewSummary$,
     priceInfo$,
     yields$,
+    totalValueLocked$,
+    yieldsChange$,
+    tokenPriceUSD$,
   }
 }
 

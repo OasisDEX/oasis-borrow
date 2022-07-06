@@ -123,6 +123,7 @@ export interface MutableOpenVaultState {
   selectedAllowanceRadio: AllowanceOption
   allowanceAmount?: BigNumber
   stopLossSkipped: boolean
+  stopLossLevel: BigNumber
   id?: BigNumber
 }
 
@@ -313,6 +314,7 @@ export const defaultMutableOpenVaultState: MutableOpenVaultState = {
   depositAmountUSD: undefined,
   generateAmount: undefined,
   stopLossSkipped: false,
+  stopLossLevel: zero,
 }
 
 export function createOpenVault$(
@@ -369,10 +371,10 @@ export function createOpenVault$(
                       return change$.next({ kind: 'injectStateOverride', stateToOverride })
                     }
 
-                    const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
+                    const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
 
                     const network = getNetworkName()
-                    const withStopLossStage = stopLossOpenFlowEnabled
+                    const withStopLossStage = stopLossWriteEnabled
                       ? isSupportedAutomationIlk(network, ilk)
                       : false
 

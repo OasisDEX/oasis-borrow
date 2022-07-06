@@ -17,6 +17,7 @@ import {
   extractPaybackErrors,
   extractWithdrawErrors,
 } from 'helpers/messageMappers'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import { pick } from 'ramda'
 import React from 'react'
@@ -76,6 +77,7 @@ interface FieldDepositDaiProps extends FieldProps {
 }
 
 interface FieldGenerateDaiProps extends FieldProps {
+  debt?: BigNumber
   debtFloor?: BigNumber
   generateAmount?: BigNumber
   maxGenerateAmount?: BigNumber
@@ -239,7 +241,7 @@ export function FieldDepositCollateral({
         onChange={handleNumericInput(updateDeposit! || updateDepositAmount!)}
         onSetMax={updateDepositMax! || updateDepositAmountMax!}
         showMax={true}
-        token={token}
+        currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
         disabled={disabled}
       />
@@ -285,7 +287,7 @@ export function FieldWithdrawCollateral({
         onChange={handleNumericInput(updateWithdraw! || updateWithdrawAmount!)}
         onSetMax={updateWithdrawMax! || updateWithdrawAmountMax!}
         showMax={true}
-        token={token}
+        currencyCode={token}
         tokenUsdPrice={currentCollateralPrice}
       />
       <VaultErrors
@@ -318,7 +320,7 @@ export function FieldDepositDai({
       <VaultActionInput
         action={action}
         amount={depositDaiAmount}
-        token="DAI"
+        currencyCode="DAI"
         showMax={true}
         maxAmount={maxDepositDaiAmount}
         maxAmountLabel={t(maxAmountLabelKey)}
@@ -335,6 +337,7 @@ export function FieldDepositDai({
 
 export function FieldGenerateDai({
   action = 'Generate',
+  debt = zero,
   debtFloor,
   generateAmount,
   maxGenerateAmount,
@@ -356,8 +359,9 @@ export function FieldGenerateDai({
         disabled={disabled}
         hasError={false}
         maxAmount={maxGenerateAmount}
-        minAmount={debtFloor}
-        minAmountLabel={t('from')}
+        maxAmountLabel={!debt ? '' : t('max')}
+        minAmount={debt.isZero() ? debtFloor : zero}
+        minAmountLabel={t('field-from')}
         onChange={handleNumericInput(updateGenerate! || updateGenerateAmount!)}
         onSetMin={() => {
           if (updateGenerate) updateGenerate(debtFloor)
@@ -365,8 +369,8 @@ export function FieldGenerateDai({
         }}
         onSetMax={updateGenerateMax! || updateGenerateAmountMax!}
         showMax={true}
-        showMin={true}
-        token={'DAI'}
+        showMin={debt.isZero()}
+        currencyCode={'DAI'}
       />
       <VaultErrors
         errorMessages={extractGenerateErrors(errorMessages)}
@@ -403,7 +407,7 @@ export function FieldPaybackDai({
         onChange={handleNumericInput(updatePayback! || updatePaybackAmount!)}
         onSetMax={updatePaybackMax! || updatePaybackAmountMax!}
         showMax={true}
-        token="DAI"
+        currencyCode="DAI"
       />
       <VaultErrors errorMessages={extractPaybackErrors(errorMessages)} ilkData={ilkData} />
     </>

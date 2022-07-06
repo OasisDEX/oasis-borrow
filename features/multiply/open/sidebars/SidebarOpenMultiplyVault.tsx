@@ -3,8 +3,6 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { SidebarVaultAllowanceStage } from 'components/vault/sidebar/SidebarVaultAllowanceStage'
 import { SidebarVaultProxyStage } from 'components/vault/sidebar/SidebarVaultProxyStage'
 import { SidebarVaultStopLossStage } from 'components/vault/sidebar/SidebarVaultStopLossStage'
-import { VaultErrors } from 'components/vault/VaultErrors'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { SidebarAdjustStopLossEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAdjustStopLossEditingStage'
 import { getDataForStopLoss } from 'features/automation/protection/openFlow/openVaultStopLoss'
 import { OpenMultiplyVaultState } from 'features/multiply/open/pipes/openMultiplyVault'
@@ -22,7 +20,6 @@ import {
   extractSidebarTxData,
 } from 'helpers/extractSidebarHelpers'
 import { isFirstCdp } from 'helpers/isFirstCdp'
-import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -62,7 +59,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const gasData = extractGasDataFromState(props)
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
-  const stopLossData = getDataForStopLoss(props)
+  const stopLossData = getDataForStopLoss(props, 'multiply')
 
   const sidebarSectionProps: SidebarSectionProps = {
     title: getSidebarTitle({ flow, stage, token, openFlowWithStopLoss }),
@@ -74,8 +71,6 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
         {isAllowanceStage && <SidebarVaultAllowanceStage {...props} />}
         {isOpenStage && <SidebarOpenMultiplyVaultOpenStage {...props} />}
         {isAddStopLossStage && <SidebarVaultStopLossStage {...props} />}
-        <VaultErrors {...props} errorMessages={extractCommonErrors(props.errorMessages)} />
-        <VaultWarnings {...props} warningMessages={extractCommonWarnings(props.warningMessages)} />
       </Grid>
     ),
     ...(isStopLossEditingStage && {

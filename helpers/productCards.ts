@@ -15,7 +15,6 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
-import { useFeatureToggle } from './useFeatureToggle'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -82,16 +81,11 @@ export const supportedBorrowIlks = [
   'RENBTC-A',
   'LINK-A',
   'GUSD-A',
-  'UNI-A',
   'YFI-A',
   'MANA-A',
   'MATIC-A',
-  'UNIV2DAIETH-A',
-  'UNIV2WBTCETH-A',
   'UNIV2USDCETH-A',
   'UNIV2DAIUSDC-A',
-  'UNIV2UNIETH-A',
-  'UNIV2WBTCDAI-A',
   'CRVV1ETHSTETH-A',
   'WSTETH-B',
 ]
@@ -106,7 +100,6 @@ export const supportedMultiplyIlks = [
   'WBTC-C',
   'RENBTC-A',
   'LINK-A',
-  'UNI-A',
   'YFI-A',
   'MANA-A',
   'MATIC-A',
@@ -139,7 +132,6 @@ const genericFilters = {
     tokens: ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2'],
   },
   link: { name: 'LINK', icon: 'link_circle', urlFragment: 'link', tokens: ['LINK'] },
-  uni: { name: 'UNI', icon: 'uni_circle', urlFragment: 'uni', tokens: ['UNI'] },
   yfi: { name: 'YFI', icon: 'yfi_circle', urlFragment: 'yfi', tokens: ['YFI'] },
   mana: { name: 'MANA', icon: 'mana_circle', urlFragment: 'mana', tokens: ['MANA'] },
   matic: { name: 'MATIC', icon: 'matic_circle', urlFragment: 'matic', tokens: ['MATIC'] },
@@ -180,7 +172,6 @@ export const productCardsConfig: {
       genericFilters.btc,
       genericFilters.unilp,
       genericFilters.link,
-      genericFilters.uni,
       genericFilters.yfi,
       genericFilters.mana,
       genericFilters.matic,
@@ -207,7 +198,6 @@ export const productCardsConfig: {
       genericFilters.btc,
       genericFilters.unilp,
       genericFilters.link,
-      genericFilters.uni,
       genericFilters.yfi,
       genericFilters.mana,
       genericFilters.matic,
@@ -342,11 +332,6 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
       name: 'Maker (YFI-A)',
     },
-    'UNI-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_5813529831231652792943692',
-      name: 'Maker (UNI-A)',
-    },
     'GUNIV3DAIUSDC1-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
@@ -357,32 +342,12 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Gelato/Uniswap',
     },
-    'UNIV2DAIETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
-    },
-    'UNIV2WBTCETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
-    },
     'UNIV2USDCETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Uniswap',
     },
     'UNIV2DAIUSDC-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
-    },
-    'UNIV2UNIETH-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
-      name: 'Maker/Uniswap',
-    },
-    'UNIV2WBTCDAI-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Uniswap',
@@ -403,7 +368,16 @@ function ethProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
 }
 
-const notSupportedAnymoreLpTokens = ['UNIV2ETHUSDT', 'UNIV2LINKETH', 'UNIV2AAVEETH', 'UNIV2DAIUSDT']
+const notSupportedAnymoreLpTokens = [
+  'UNIV2ETHUSDT',
+  'UNIV2LINKETH',
+  'UNIV2AAVEETH',
+  'UNIV2DAIUSDT',
+  'UNIV2DAIETH',
+  'UNIV2WBTCETH',
+  'UNIV2UNIETH',
+  'UNIV2WBTCDAI',
+]
 
 export function uniLpProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter(
@@ -421,18 +395,9 @@ export function landingPageCardsData({
   productCardsData: ProductCardData[]
   product?: ProductTypes
 }) {
-  const earnEnabled = useFeatureToggle('EarnProduct')
-
-  return productCardsData.filter((ilk) => {
-    if (product === 'multiply') {
-      return getMultiplyFeaturedCardsDependsOnEarnToggle(
-        productCardsConfig.landing.featuredCards[product],
-        earnEnabled,
-      ).includes(ilk.ilk)
-    } else {
-      return productCardsConfig.landing.featuredCards[product].includes(ilk.ilk)
-    }
-  })
+  return productCardsData.filter((ilk) =>
+    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
+  )
 }
 
 export function pageCardsDataByProduct({
@@ -473,15 +438,6 @@ function sortCards(
   return productCardsData
 }
 
-function getMultiplyFeaturedCardsDependsOnEarnToggle(cards: Ilk[], earnEnabled: boolean) {
-  if (earnEnabled) {
-    return cards
-  }
-  const featuredGUNI = 'GUNIV3DAIUSDC2-A'
-
-  return [...cards.slice(0, -1), featuredGUNI]
-}
-
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
   return productCardsData.filter((data) =>
     ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
@@ -495,7 +451,6 @@ export function multiplyPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
-  const earnEnabled = useFeatureToggle('EarnProduct')
   productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
 
   const multiplyTokens = productCardsData.filter((ilk) =>
@@ -504,10 +459,7 @@ export function multiplyPageCardsData({
 
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
-      getMultiplyFeaturedCardsDependsOnEarnToggle(
-        productCardsConfig.multiply.featuredCards,
-        earnEnabled,
-      ).includes(ilk.ilk),
+      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
     )
   }
 

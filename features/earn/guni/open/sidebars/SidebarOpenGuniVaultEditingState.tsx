@@ -1,6 +1,13 @@
 import { FieldDepositDai } from 'components/vault/sidebar/SidebarFields'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniOpenMultiplyVaultChangesInformation } from 'features/earn/guni/open/containers/GuniOpenMultiplyVaultChangesInformation'
 import { OpenGuniVaultState } from 'features/earn/guni/open/pipes/openGuniVault'
+import {
+  extractCommonErrors,
+  extractCommonWarnings,
+  extractGenerateErrors,
+} from 'helpers/messageMappers'
 import { Trans } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -9,13 +16,14 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
   const {
     balanceInfo: { daiBalance },
     depositAmount,
+    errorMessages,
+    ilkData,
     maxMultiple,
     token,
     updateDeposit,
     updateDepositMax,
-    errorMessages,
     warningMessages,
-    ilkData,
+    maxGenerateAmount,
   } = props
 
   return (
@@ -39,6 +47,15 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
         warningMessages={warningMessages}
         ilkData={ilkData}
       />
+      <VaultErrors
+        {...props}
+        errorMessages={[
+          ...extractCommonErrors(errorMessages),
+          ...extractGenerateErrors(errorMessages),
+        ]}
+        maxGenerateAmount={maxGenerateAmount}
+      />
+      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
         {maxMultiple.toNumber().toFixed(2)}x {token}
       </Text>

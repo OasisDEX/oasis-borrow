@@ -1,4 +1,5 @@
 import { Box, Button } from '@theme-ui/components'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -9,7 +10,6 @@ import {
   RetryableLoadingButton,
   RetryableLoadingButtonProps,
 } from '../../../../../components/dumb/RetryableLoadingButton'
-import { VaultViewMode } from '../../../../../components/VaultTabSwitch'
 import {
   AutomationFromKind,
   PROTECTION_MODE_CHANGE_SUBJECT,

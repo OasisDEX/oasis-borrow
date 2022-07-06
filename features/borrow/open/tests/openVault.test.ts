@@ -395,7 +395,7 @@ describe('openVault', () => {
     })
 
     it('should skip stop loss step', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      localStorage.setItem('features', '{"StopLossWrite":true}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
 
@@ -419,7 +419,7 @@ describe('openVault', () => {
     })
 
     it('should add stop loss successfully', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      localStorage.setItem('features', '{"StopLossWrite":true}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
       const stopLossLevel = new BigNumber('2')
@@ -450,7 +450,7 @@ describe('openVault', () => {
     })
 
     it('should handle add stop loss failure', () => {
-      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
+      localStorage.setItem('features', '{"StopLossWrite":true}')
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
       const stopLossLevel = new BigNumber('2')

@@ -5,7 +5,6 @@ import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
-import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -15,77 +14,65 @@ import { useAppContext } from 'components/AppContextProvider'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
-import { VaultViewMode } from 'components/VaultTabSwitch'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
+import {
+  prepareAddStopLossTriggerData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
+import { failedStatuses, progressStatuses } from '../../common/txStatues'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import {
   DEFAULT_SL_SLIDER_BOUNDARY,
   MAX_DEBT_FOR_SETTING_STOP_LOSS,
   MAX_SL_SLIDER_VALUE_OFFSET,
 } from '../common/consts/automationDefaults'
-import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
-import { extractStopLossData, prepareTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import { AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
-
-export function prepareAddTriggerData(
-  vaultData: Vault,
-  isCloseToCollateral: boolean,
-  stopLossLevel: BigNumber,
-  replacedTriggerId: number,
-): AutomationBotAddTriggerData {
-  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
-
-  return {
-    ...baseTriggerData,
-    replacedTriggerId,
-    kind: TxMetaKind.addTrigger,
-  }
-}
 
 interface AdjustSlFormControlProps {
   vault: Vault
   priceInfo: PriceInfo
   ilkData: IlkData
-  triggerData: TriggersData
+  triggerData: StopLossTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   ctx: Context
   accountIsController: boolean
-  collateralizationRatioAtNextPrice: BigNumber
   toggleForms: () => void
   balanceInfo: BalanceInfo
+  ethMarketPrice: BigNumber
   tx?: TxHelpers
 }
 
 export function AdjustSlFormControl({
   vault,
-  priceInfo: { currentEthPrice, currentCollateralPrice, nextCollateralPrice },
+  priceInfo: { currentCollateralPrice, nextCollateralPrice },
   ilkData,
   triggerData,
+  autoSellTriggerData,
   ctx,
   accountIsController,
   toggleForms,
   tx,
+  ethMarketPrice,
   balanceInfo,
 }: AdjustSlFormControlProps) {
-  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(
-    triggerData,
-  )
+  const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
   const { addGasEstimation$, uiChanges } = useAppContext()
@@ -101,7 +88,7 @@ export function AdjustSlFormControl({
 
   const txData = useMemo(
     () =>
-      prepareAddTriggerData(
+      prepareAddStopLossTriggerData(
         vault,
         uiState.collateralActive,
         uiState.selectedSLValue,
@@ -154,11 +141,17 @@ export function AdjustSlFormControl({
     collateralTokenIconCircle: tokenData.iconCircle,
   }
 
+  const max = autoSellTriggerData.isTriggerEnabled
+    ? autoSellTriggerData.execCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
+    : vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET)
+
   const sliderPercentageFill = getSliderPercentageFill({
     value: uiState.selectedSLValue,
     min: ilkData.liquidationRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY),
-    max: vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET),
+    max,
   })
+
+  const maxBoundry = new BigNumber(max.multipliedBy(100).toFixed(0, BigNumber.ROUND_DOWN))
 
   const afterNewLiquidationPrice = uiState.selectedSLValue
     .dividedBy(100)
@@ -171,12 +164,7 @@ export function AdjustSlFormControl({
     leftBoundry: uiState.selectedSLValue,
     rightBoundry: afterNewLiquidationPrice,
     lastValue: uiState.selectedSLValue,
-    maxBoundry: new BigNumber(
-      vault.collateralizationRatioAtNextPrice
-        .minus(MAX_SL_SLIDER_VALUE_OFFSET)
-        .multipliedBy(100)
-        .toFixed(0, BigNumber.ROUND_DOWN),
-    ),
+    maxBoundry,
     minBoundry: liqRatio.plus(DEFAULT_SL_SLIDER_BOUNDARY).multipliedBy(100),
     onChange: (slCollRatio) => {
       if (uiState.collateralActive === undefined) {
@@ -239,7 +227,7 @@ export function AdjustSlFormControl({
             const totalCost =
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                    currentEthPrice,
+                    ethMarketPrice,
                   )
                 : zero
 
@@ -317,7 +305,7 @@ export function AdjustSlFormControl({
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
     tokenPrice: currentCollateralPrice,
-    ethPrice: currentEthPrice,
+    ethPrice: ethMarketPrice,
     vault,
     ilkData,
     etherscan,
@@ -334,11 +322,5 @@ export function AdjustSlFormControl({
     isStopLossEnabled,
   }
 
-  const newComponentsEnabled = useFeatureToggle('NewComponents')
-
-  return newComponentsEnabled ? (
-    <SidebarAdjustStopLoss {...props} />
-  ) : (
-    <AdjustSlFormLayout {...props} />
-  )
+  return <SidebarAdjustStopLoss {...props} />
 }

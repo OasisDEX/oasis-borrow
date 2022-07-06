@@ -37,7 +37,6 @@ const oasisBaseTheme = {
     grey: {
       darker: '#E6E9EB',
     },
-
     text: {
       focused: '#272940',
       muted: '#708390',
@@ -148,6 +147,10 @@ const oasisBaseTheme = {
       // deprecated, use header4
       variant: 'text.header4',
     },
+    header5: {
+      variant: 'text.header4',
+      fontSize: 3,
+    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -250,7 +253,6 @@ const oasisBaseTheme = {
     banner: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     sliderThumb: '0px 1px 6px rgba(0, 0, 0, 0.15)',
     vaultEditingController: '0px 1px 6px rgba(37, 39, 61, 0.15)',
-    vaultHistoryItem: '0px 1px 4px rgba(37, 39, 61, 0.12)',
     tooltipVaultHeader: '0px 4px 8px rgba(0, 0, 0, 0.15)',
     buttonMenu: '0px 0px 8px rgba(0, 0, 0, 0.1)',
     vaultDetailsCard: '0px 1px 8px rgba(37, 39, 61, 0.1)',
@@ -401,6 +403,12 @@ const oasisBaseTheme = {
       borderRadius: 'large',
       padding: '32px',
     },
+    faq: {
+      variant: 'cards.primary',
+      p: 4,
+      borderRadius: 'mediumLarge',
+      maxWidth: '711px',
+    },
   },
   badges: {
     dsr: {
@@ -432,71 +440,6 @@ const oasisBaseTheme = {
       },
       '&:focus': {
         outline: 'none',
-      },
-    },
-    tab: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      fontWeight: 'semiBold',
-      paddingTop: '5px',
-      paddingBottom: '5px',
-      borderRadius: 'round',
-      lineHeight: 'buttons',
-      color: 'text.contrast',
-      transition: 'background 0.2s ease-in',
-      '&:focus-visible': {
-        bg: 'primaryEmphasis',
-      },
-      '&:disabled': {
-        bg: 'primaryAlt',
-        pointerEvents: 'none',
-      },
-      '&:focus': {
-        outline: 'none',
-      },
-    },
-    tabInactive: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      paddingTop: '5px',
-      paddingBottom: '5px',
-      fontWeight: 'semiBold',
-      borderRadius: 'round',
-      lineHeight: 'buttons',
-      color: 'text.subtitle',
-      transition: 'background 0.2s ease-in',
-      bg: 'unset',
-      '&:hover': {
-        color: 'maritimeBlue',
-      },
-    },
-    vaultTab: {
-      variant: 'text.paragraph2',
-      cursor: 'pointer',
-      fontWeight: 'semiBold',
-      color: 'text.subtitle',
-      px: 3,
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center',
-      background: 'unset',
-      transition: 'color 200ms',
-      '&:hover': {
-        color: 'primary',
-      },
-    },
-    vaultTabActive: {
-      variant: 'buttons.vaultTab',
-      color: 'primary',
-      '&::after': {
-        content: '""',
-        position: 'absolute',
-        top: '100%',
-        right: 0,
-        left: 0,
-        height: '3px',
-        backgroundColor: 'primary',
-        ...fadeInAnimation,
       },
     },
     outline: {
@@ -723,36 +666,16 @@ const oasisBaseTheme = {
         color: 'primary',
       },
     },
-    tabSwitcherTabActive: {
+    tab: {
+      display: 'flex',
+      alignItems: 'center',
       fontFamily: 'body',
-      fontSize: 3,
-      fontWeight: 'semiBold',
-      lineHeight: 'body',
-      bg: 'background',
-      p: 3,
-      color: 'primary',
-      boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
-      borderRadius: 'inherit',
-      cursor: 'pointer',
-      paddingLeft: '2em',
-      paddingRight: '2em',
-      transition: TRANSITIONS.global,
-    },
-    tabSwitcherTabInactive: {
-      fontFamily: 'body',
-      fontSize: 3,
       fontWeight: 'semiBold',
       lineHeight: 'body',
       bg: 'transparent',
-      p: 3,
       color: 'text.subtitle',
       cursor: 'pointer',
       transition: TRANSITIONS.global,
-      '&:hover': {
-        color: 'primary',
-      },
-      paddingLeft: '2em',
-      paddingRight: '2em',
     },
     menuButton: {
       variant: 'buttons.secondary',
@@ -1076,6 +999,12 @@ const oasisBaseTheme = {
       gap: '0px',
     },
   },
+  separator: {
+    borderTop: '1px solid',
+    borderColor: 'border',
+    height: '1px',
+    width: '100%',
+  },
   styles: {
     root: {
       fontFamily: 'body',
@@ -1114,7 +1043,10 @@ const oasisBaseTheme = {
       variant: 'text.header3',
     },
     h4: {
-      variant: 'text.microHeading',
+      variant: 'text.header4',
+    },
+    h5: {
+      variant: 'text.header5',
     },
     a: {
       variant: 'text.paragraph3',

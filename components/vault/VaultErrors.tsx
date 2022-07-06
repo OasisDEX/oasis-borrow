@@ -134,6 +134,17 @@ export function VaultErrors({
         return translate('stop-loss-near-liquidation-ratio')
       case 'maxDebtForSettingStopLoss':
         return translate('stop-loss-max-debt')
+      case 'targetCollRatioExceededDustLimitCollRatio':
+        return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
+      case 'minimumSellPriceNotProvided':
+        return (
+          <Trans
+            i18nKey="vault-errors.minimum-sell-price-not-provided"
+            components={{
+              1: <strong />,
+            }}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }

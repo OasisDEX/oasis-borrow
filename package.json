@@ -1,6 +1,6 @@
 {
   "name": "oasis-borrow",
-  "version": "4.9.0",
+  "version": "4.10.0",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
@@ -45,9 +45,9 @@
     "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/bundle-analyzer": "^12.0.4",
     "@next/mdx": "^12.0.4",
-    "@oasisdex/automation": "^1.0.6",
+    "@oasisdex/automation": "^1.0.12",
     "@oasisdex/connectors": "^0.1.0",
-    "@oasisdex/multiply": "^0.2.8",
+    "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
@@ -99,6 +99,7 @@
     "lodash": "^4.17.15",
     "mixpanel": "^0.13.0",
     "mixpanel-browser": "^2.29.1",
+    "mkdirp": "^0.5.5",
     "mock-local-storage": "^1.1.15",
     "moment": "^2.26.0",
     "moment-locales-webpack-plugin": "^1.2.0",
@@ -125,7 +126,6 @@
     "react-spring": "^8.0.27",
     "react-text-mask": "^5.4.1",
     "release-it": "^14.12.1",
-    "request": "^2.88.2",
     "rxjs": "^6.2.0",
     "rxjs-take-while-inclusive": "^2.1.0",
     "sass": "^1.49.4",
@@ -145,6 +145,11 @@
     "zod": "^1.5.0"
   },
   "resolutions": {
+    "ejs": "^3.1.7",
+    "minimist": "^1.2.6",
+    "mixin-deep": "^1.3.2",
+    "mkdirp": "^0.5.5",
+    "set-value": "^2.0.1",
     "webpack": "5"
   },
   "devDependencies": {
@@ -202,6 +207,7 @@
     "codecov": "^3.7.2",
     "crypto-browserify": "^3.12.0",
     "earljs": "^0.0.11",
+    "ejs": "^3.1.7",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^7.10.0",
@@ -220,12 +226,15 @@
     "hardhat": "^2.1.2",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
+    "minimist": "^1.2.6",
+    "mixin-deep": "^1.3.2",
     "mocha": "^9.1.2",
     "node-sass": "^6.0.1",
-    "patch-package": "^6.2.2",
+    "patch-package": "^6.4.7",
     "prettier": "^2.0.1",
     "prisma": "^3.14.0",
     "react-i18next": "^11.16.2",
+    "set-value": "^2.0.1",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
     "stream-browserify": "^3.0.0",

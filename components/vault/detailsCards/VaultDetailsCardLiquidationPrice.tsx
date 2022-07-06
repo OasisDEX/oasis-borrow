@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
 
-import { extractStopLossData } from '../../../features/automation/protection/common/StopLossTriggerDataExtractor'
 import { StopLossBannerControl } from '../../../features/automation/protection/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from '../../../helpers/formatters/format'
 import { ModalProps, useModal } from '../../../helpers/modalHook'
@@ -144,24 +144,6 @@ export function VaultDetailsCardLiquidationPrice({
             liquidationPriceCurrentPriceDifference,
             vaultId,
             isStopLossEnabled: slData?.isStopLossEnabled,
-          })
-        }
-      />
-    )
-  }
-
-  // TODO this condition should be removed on automation release
-  if (vaultId) {
-    return (
-      <VaultDetailsCard
-        {...cardDetailsData}
-        openModal={() =>
-          openModal(VaultDetailsLiquidationModal, {
-            liquidationPrice,
-            liquidationRatio,
-            liquidationPriceCurrentPriceDifference,
-            vaultId,
-            isStopLossEnabled: false,
           })
         }
       />

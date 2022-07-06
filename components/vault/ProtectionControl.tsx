@@ -1,11 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
-import { VaultBanner } from 'features/banners/VaultsBannersView'
+import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
@@ -35,7 +34,7 @@ function ZeroDebtProtectionBanner({
   const { t } = useTranslation()
 
   return (
-    <VaultBanner
+    <VaultNotice
       status={<Icon size="34px" name="warning" />}
       withClose={false}
       header={useTranslationKeys ? t(header) : header}
@@ -62,7 +61,6 @@ interface ProtectionControlProps {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   account?: string
-  collateralizationRatioAtNextPrice: BigNumber
 }
 
 function getZeroDebtProtectionBannerProps({
@@ -108,10 +106,19 @@ export function ProtectionControl({
   vault,
   ilkData,
   account,
-  collateralizationRatioAtNextPrice,
   balanceInfo,
 }: ProtectionControlProps) {
-  const { automationTriggersData$, priceInfo$ } = useAppContext()
+  const {
+    automationTriggersData$,
+    priceInfo$,
+    context$,
+    txHelpers$,
+    tokenPriceUSD$,
+  } = useAppContext()
+  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$(['ETH', vault.token]), [vault.token])
+  const [ethAndTokenPricesData, ethAndTokenPricesError] = useObservable(_tokenPriceUSD$)
+  const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
+  const [contextData, contextError] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
   const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
   const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
@@ -128,12 +135,20 @@ export function ProtectionControl({
     (!vault.debt.isZero() &&
       vault.debt.gt(dustLimit) &&
       (vaultHasActiveTrigger || stopLossWriteEnabled)) ? (
-    <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
+    <WithErrorHandler
+      error={[
+        automationTriggersError,
+        priceInfoError,
+        txHelpersError,
+        contextError,
+        ethAndTokenPricesError,
+      ]}
+    >
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData]}
+        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo]) => {
+        {([automationTriggers, priceInfo, context, ethAndTokenPrices]) => {
           return (
             <DefaultVaultLayout
               detailsViewControl={
@@ -151,8 +166,10 @@ export function ProtectionControl({
                   priceInfo={priceInfo}
                   vault={vault}
                   account={account}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   balanceInfo={balanceInfo}
+                  txHelpers={txHelpersData}
+                  context={context}
+                  ethMarketPrice={ethAndTokenPrices['ETH']}
                 />
               }
             />

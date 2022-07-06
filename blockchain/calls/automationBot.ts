@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import dsProxy from 'blockchain/abi/ds-proxy.json'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
@@ -9,7 +10,7 @@ import { TxMetaKind } from './txMeta'
 
 export type AutomationBaseTriggerData = {
   cdpId: BigNumber
-  triggerType: BigNumber
+  triggerType: TriggerType
   triggerData: string
   proxyAddress: string
 }
@@ -49,7 +50,7 @@ export const addAutomationBotTrigger: TransactionDef<AutomationBotAddTriggerData
     getAddAutomationTriggerCallData(data, context).encodeABI(),
   ],
 }
-// TODO ŁW refactor use template method pattern and getAddAutomationTriggerCallData
+
 function getRemoveAutomationTriggerCallData(
   data: AutomationBotRemoveTriggerData,
   context: ContextConnected,

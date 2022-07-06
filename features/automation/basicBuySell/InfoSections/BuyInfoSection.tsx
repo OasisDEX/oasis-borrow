@@ -1,48 +1,50 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { DropDownValue } from 'components/infoSection/Item'
+import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface BuyInfoSectionProps {
+  token: string
   colRatioAfterBuy: BigNumber
   multipleAfterBuy: BigNumber
-  ratiotoPeformBuy: BigNumber
-  nextBuyPrice: {
-    value: BigNumber
-    dropDownValues: DropDownValue[]
-  }
-  totalCostOfNextBuy: BigNumber
+  nextBuyPrice: BigNumber
+  execCollRatio: BigNumber
   slippageLimit: BigNumber
-  collatAfterNextBuy: {
+  collateralAfterNextBuy: {
     value: BigNumber
-    secondaryValue: string
+    secondaryValue: BigNumber
   }
   outstandingDebtAfterNextBuy: {
     value: BigNumber
     secondaryValue: BigNumber
   }
-  ethToBePurchased: BigNumber
-  estimatedTransactionCost: {
-    value: BigNumber
-    dropDownValues: DropDownValue[]
-  }
+  collateralToBePurchased: BigNumber
+  estimatedTransactionCost: string | JSX.Element
 }
 
 export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
-  ratiotoPeformBuy,
   nextBuyPrice,
-  totalCostOfNextBuy,
   slippageLimit,
-  collatAfterNextBuy,
+  collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
-  ethToBePurchased,
+  collateralToBePurchased,
   estimatedTransactionCost,
+  execCollRatio,
+  token,
 }: BuyInfoSectionProps) {
   const { t } = useTranslation()
 
+  const ratioToPerformBuyFormatted = formatPercent(execCollRatio, { precision: 2 })
+  const collateralAfterNextBuyFormatted = formatCryptoBalance(collatAfterNextBuy.value)
+  const nextCollateralAfterNextBuyFormatted = formatCryptoBalance(collatAfterNextBuy.secondaryValue)
+  const outstandingDebtAfterBuyFormatted = formatCryptoBalance(outstandingDebtAfterNextBuy.value)
+  const nextOutstandingDebtAfterBuyFormatted = formatCryptoBalance(
+    outstandingDebtAfterNextBuy.secondaryValue,
+  )
+  const collateralToBePurchasedFormatted = formatCryptoBalance(collateralToBePurchased)
   return (
     <InfoSection
       title={t('auto-buy.buy-title')}
@@ -53,43 +55,43 @@ export function BuyInfoSection({
         },
         {
           label: t('auto-buy.target-multiple-each-buy'),
-          value: `${multipleAfterBuy}x`,
+          value: `${multipleAfterBuy.toFixed(2)}x`,
         },
         {
           label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-          value: `${ratiotoPeformBuy}%`,
+          value: ratioToPerformBuyFormatted,
         },
         {
           label: t('auto-buy.next-buy-prices'),
-          value: `$${nextBuyPrice.value}`,
-          dropdownValues: nextBuyPrice.dropDownValues,
+          value: `$${nextBuyPrice}`,
+          // value: `$${nextBuyPrice.value}`,
+          // dropdownValues: nextBuyPrice.dropDownValues,
         },
+        // {
+        //   label: t('auto-buy.setup-transaction-cost'),
+        //   value: `$${totalCostOfNextBuy}`,
+        // },
         {
-          label: t('auto-buy.setup-transaction-cost'),
-          value: `$${totalCostOfNextBuy}`,
-        },
-        {
-          label: t('auto-buy.slippage-limit'),
+          label: t('vault-changes.slippage-limit'),
           value: `${slippageLimit}%`,
         },
         {
           label: t('auto-buy.collateral-after-next-buy'),
-          value: collatAfterNextBuy.value,
-          secondaryValue: `${collatAfterNextBuy.secondaryValue} ETH`,
+          value: collateralAfterNextBuyFormatted,
+          secondaryValue: `${nextCollateralAfterNextBuyFormatted} ${token}`,
         },
         {
           label: t('auto-buy.outstanding-debt-after-next-buy'),
-          value: outstandingDebtAfterNextBuy.value,
-          secondaryValue: `${outstandingDebtAfterNextBuy.secondaryValue} DAI`,
+          value: outstandingDebtAfterBuyFormatted,
+          secondaryValue: `${nextOutstandingDebtAfterBuyFormatted} DAI`,
         },
         {
-          label: t('auto-buy.eth-to-be-purchased'),
-          value: `${ethToBePurchased} ETH`,
+          label: t('auto-buy.col-to-be-purchased', { token }),
+          value: `${collateralToBePurchasedFormatted} ${token}`,
         },
         {
-          label: t('auto-buy.estimated-transaction-cost'),
-          value: `$${estimatedTransactionCost.value}`,
-          dropdownValues: estimatedTransactionCost.dropDownValues,
+          label: t('auto-sell.estimated-transaction-cost'),
+          value: estimatedTransactionCost,
         },
       ]}
     />

@@ -1,14 +1,26 @@
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
 import { useTranslation } from 'next-i18next'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
-export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
+export type MaxGasPriceValues = '100' | '300' | '500' | 'NO_LIMIT'
 
-// Future TODO: Will need to add the correct props to the component.
-export function MaxGasPriceSection() {
+interface MaxGasPriceSectionProps {
+  onChange: (item: MaxGasPriceValues) => void
+  defaultValue?: MaxGasPriceValues
+}
+
+export function MaxGasPriceSection({ onChange, defaultValue = '100' }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
-  const [active, setActiveItem] = useState('FIVE' as GAS_PERCENTAGE_TYPES)
+  const [active, setActiveItem] = useState<MaxGasPriceValues>(defaultValue)
+
+  const handleChange = useCallback(
+    (item: MaxGasPriceValues) => {
+      setActiveItem(item)
+      onChange(item)
+    },
+    [onChange],
+  )
 
   return (
     <Item
@@ -25,31 +37,31 @@ export function MaxGasPriceSection() {
                 variant="secondary"
                 items={[
                   {
-                    id: 'FIVE',
-                    label: '5%',
+                    id: '100',
+                    label: '100 Gwei',
                     action: () => {
-                      setActiveItem('FIVE')
+                      handleChange('100')
                     },
                   },
                   {
-                    id: 'TEN',
-                    label: '10%',
+                    id: '300',
+                    label: '300 Gwei',
                     action: () => {
-                      setActiveItem('TEN')
+                      handleChange('300')
                     },
                   },
                   {
-                    id: 'TWELVE_POINT_FIVE',
-                    label: '12.5%',
+                    id: '500',
+                    label: '500 Gwei',
                     action: () => {
-                      setActiveItem('TWELVE_POINT_FIVE')
+                      handleChange('500')
                     },
                   },
                   {
                     id: 'NO_LIMIT',
                     label: 'No Limit',
                     action: () => {
-                      setActiveItem('NO_LIMIT')
+                      handleChange('NO_LIMIT')
                     },
                   },
                 ]}

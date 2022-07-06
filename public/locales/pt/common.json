@@ -308,6 +308,13 @@
       "collateral-locked-oracles": "Nós usamos o preço atual dos oráculos do Maker para calcular este valor. O preço de mercado atual do seu colateral pode ser diferente deste preço."
     }
   },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "O ID do seu Cofre (Vault) é uma referência única do seu Cofre Maker no Oasis.app.",
@@ -363,6 +370,7 @@
   "open-new-vault": "Abrir novo Cofre",
   "open-vault": {
     "title": "Abrir Cofre",
+    "simulate": "Simulate",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "O mínimo em Dai necessário para abrir um Cofre é {{debtFloor}}. Por favor, adicione mais colateral para gerar ao menos {{debtFloor}} Dai",
       "vault-will-be-at-risk-level-danger": "Com essa ação, seu Cofre estará em um Ratio de Colateralização muito próximo ao mínimo necessário",
@@ -476,7 +484,8 @@
     "vault-id": "Cofre ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
-    "max-multiple": "Max Multiple"
+    "max-multiple": "Max Multiple",
+    "position-info": "Position Info"
   },
   "token-balance": "Saldo {{token}}",
   "token-depositing": "{{token}} depositando {{amount}}",
@@ -551,7 +560,7 @@
     "vaults-at-risk": "Cofres em risco",
     "your-vaults": "Seus Cofres"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "Você está vendo o Cofre {{address}}",
       "subheader1": "Por favor, conecte sua carteira para abrir, gerir ou ver seus Cofres.",
@@ -834,5 +843,10 @@
       "description": "Put your crypto assets to work today. Start generating the best yields. Select your Earn product below.",
       "link": "Learn more about Earn ->"
     }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

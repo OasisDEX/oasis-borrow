@@ -176,7 +176,7 @@ export function DetailsSectionContentCard({
         <Text
           as="p"
           variant="label"
-          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto', fontSize: '12px' }}
           {...hightlightableItemEvents}
         >
           {footnote}

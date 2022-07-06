@@ -1,8 +1,11 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { getToken } from 'blockchain/tokensMetadata'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { GuniManageMultiplyVaultChangesInformation } from 'features/earn/guni/manage/containers/GuniManageMultiplyVaultChangesInformation'
 import { ManageMultiplyVaultState } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { formatCryptoBalance } from 'helpers/formatters/format'
+import { extractCommonErrors, extractCommonWarnings } from 'helpers/messageMappers'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -12,15 +15,17 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
 
   const {
     afterCloseToDai,
+    errorMessages,
     stage,
     toggle,
     vault: { debt, token },
+    warningMessages,
   } = props
 
   return (
     <Grid gap={3}>
       {stage === 'adjustPosition' && (
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
           <Trans
             i18nKey={'vault-info-messages.earn-overview'}
             values={{ token }}
@@ -40,7 +45,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
       )}
       {stage === 'otherActions' && (
         <>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
             {t('vault-info-messages.closing')}
           </Text>
           {!debt.isZero() && (
@@ -64,11 +69,13 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
                 </Text>
                 <Text as="span">{formatCryptoBalance(afterCloseToDai)} DAI</Text>
               </Text>
-              <GuniManageMultiplyVaultChangesInformation {...props} />
             </>
           )}
         </>
       )}
+      <VaultErrors {...props} errorMessages={extractCommonErrors(errorMessages)} />
+      <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
+      <GuniManageMultiplyVaultChangesInformation {...props} />
     </Grid>
   )
 }

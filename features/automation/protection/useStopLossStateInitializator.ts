@@ -2,12 +2,12 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
 import { getStartingSlRatio } from './common/helpers'
-import { extractStopLossData } from './common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
