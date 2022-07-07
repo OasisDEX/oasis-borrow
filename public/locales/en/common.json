@@ -490,7 +490,7 @@
     "overview-earn": "Overview (Earn ID: {{earnId}})",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
-    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals.",
+    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
@@ -718,7 +718,7 @@
     "protection": "Protection",
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
-    "basic-sell": "Basic Sell",
+    "basic-sell": "Auto-Sell",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -1423,11 +1423,11 @@
   },
 
   "auto-buy": {
-    "title": "Auto buy",
+    "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
-    "form-title": "Auto Buy Setup",
+    "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
-    "min-ratio": "min. ratio with Stop-Loss/basic sell",
+    "min-ratio": "min. ratio with Stop-Loss/Auto-Sell",
     "next-buy-price": "Next buy price: {{amount}}",
     "set-max-buy-price": "Set Max Buy Price",
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
@@ -1435,7 +1435,7 @@
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Trigger Col Ratio",
 
-    "buy-title": "Basic Auto Buy Summary",
+    "buy-title": "Basic Auto-Buy Summary",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
@@ -1446,7 +1446,7 @@
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
     "banner": {
-      "header": "Set up Auto Buy",
+      "header": "Set up Auto-Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
       "button": "Setup Auto Buy"
     },
