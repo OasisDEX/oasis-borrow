@@ -25,12 +25,6 @@ function getSidebarTitleEditingTranslationKey({ flow }: { flow: SidebarFlow }) {
       return 'protection.set-downside-protection'
     case 'cancelSl':
       return 'protection.cancel-downside-protection'
-    case 'addBasicSell':
-      return 'auto-sell.add-form-title'
-    case 'cancelBasicSell':
-      return 'auto-sell.cancel-form-title'
-    case 'editBasicSell':
-      return 'auto-sell.edit-form-title'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -48,12 +42,6 @@ function getSidebarTitleTxSuccessTranslationKey({ flow }: { flow: SidebarFlow })
       return 'protection.downside-protection-updated'
     case 'cancelSl':
       return 'protection.cancel-protection-complete'
-    case 'addBasicSell':
-      return 'auto-sell.trigger-added'
-    case 'editBasicSell':
-      return 'auto-sell.trigger-updated'
-    case 'cancelBasicSell':
-      return 'auto-sell.trigger-cancelled'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -77,11 +65,6 @@ function getSidebarTitleTxInProgressTranslationKey({
     case 'addSl':
     case 'adjustSl':
       return 'protection.setting-downside-protection'
-    case 'addBasicSell':
-    case 'editBasicSell':
-      return 'auto-sell.setting-form-title'
-    case 'cancelBasicSell':
-      return 'auto-sell.cancelling-form-title'
     case 'cancelSl':
       return 'protection.cancelling-downside-protection'
     default:
@@ -100,11 +83,6 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
       return 'protection.set-downside-protection'
     case 'cancelSl':
       return 'protection.cancel-downside-protection'
-    case 'addBasicSell':
-    case 'editBasicSell':
-      return 'auto-sell.setting-form-title'
-    case 'cancelBasicSell':
-      return 'auto-sell.cancelling-form-title'
     default:
       throw new UnreachableCaseError(flow)
   }

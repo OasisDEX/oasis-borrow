@@ -22,11 +22,6 @@ function getSidebarProgressTxInProgressKey({
       return 'protection.setting-downside-protection'
     case 'cancelSl':
       return 'protection.cancelling-downside-protection'
-    case 'addBasicSell':
-    case 'editBasicSell':
-      return 'protection.setting-auto-sell'
-    case 'cancelBasicSell':
-      return 'protection.cancelling-auto-sell'
     default:
       throw new UnreachableCaseError(flow)
   }
@@ -41,9 +36,6 @@ function getSidebarSuccessTxSuccessData({ flow }: { flow: SidebarFlow }) {
     case 'addSl':
     case 'adjustSl':
     case 'cancelSl':
-    case 'addBasicSell':
-    case 'editBasicSell':
-    case 'cancelBasicSell':
       return 'vault-changed'
     default:
       throw new UnreachableCaseError(flow)

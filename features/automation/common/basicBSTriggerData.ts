@@ -44,7 +44,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
         new BigNumber(10).pow(18),
       ),
       continuous: continuous,
-      deviation: new BigNumber(deviation.toString()).div(1000),
+      deviation: new BigNumber(deviation.toString()),
       isTriggerEnabled: true,
     } as BasicBSTriggerData
   })
@@ -56,7 +56,7 @@ const defaultBasicSellData = {
   targetCollRatio: zero,
   maxBuyOrMinSellPrice: zero,
   continuous: false,
-  deviation: new BigNumber(1),
+  deviation: zero,
   isTriggerEnabled: false,
 }
 
@@ -96,7 +96,7 @@ export function prepareBasicBSTriggerData({
     targetCollRatio.times(100).toString(),
     maxBuyOrMinSellPrice.times(new BigNumber(10).pow(18)).toString(),
     continuous.toString(),
-    deviation.times(1000).toString(),
+    deviation.toString(),
   ]
 
   return {

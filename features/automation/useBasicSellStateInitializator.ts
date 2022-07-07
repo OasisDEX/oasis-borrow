@@ -4,7 +4,6 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
@@ -31,7 +30,6 @@ export function useBasicBSstateInitialization(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
-  const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
@@ -48,7 +46,7 @@ export function useBasicBSstateInitialization(
     })
     uiChanges.publish(publishKey, {
       type: 'max-buy-or-sell-price',
-      maxBuyOrMinSellPrice: maxBuyOrMinSellPriceResolved,
+      maxBuyOrMinSellPrice,
     })
     uiChanges.publish(publishKey, {
       type: 'continuous',
@@ -63,21 +61,18 @@ export function useBasicBSstateInitialization(
       maxGasPercentagePrice: 'FIVE',
     })
     uiChanges.publish(publishKey, {
-      type: 'with-threshold',
-      withThreshold: !maxBuyOrMinSellPrice.isZero() || triggerId.isZero(),
+      type: 'current-form',
+      currentForm: 'add',
     })
-  }, [triggerId.toNumber(), collateralizationRatio])
-
-  useEffect(() => {
+    uiChanges.publish(publishKey, {
+      type: 'with-threshold',
+      withThreshold: true,
+    })
     uiChanges.publish(publishKey, {
       type: 'tx-details',
       txDetails: {},
     })
-    uiChanges.publish(publishKey, {
-      type: 'current-form',
-      currentForm: 'add',
-    })
-  }, [collateralizationRatio])
+  }, [collateralizationRatio, triggerId.toNumber()])
 
   return isTriggerEnabled
 }

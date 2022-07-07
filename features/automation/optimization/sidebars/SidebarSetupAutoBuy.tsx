@@ -82,7 +82,7 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn, vault, stage }: SidebarSetupA
                     execCollRatio: new BigNumber(value.value1),
                   })
                 }}
-                value={{
+                defaultValue={{
                   value0: uiState.targetCollRatio.toNumber(),
                   value1: uiState.execCollRatio.toNumber(),
                 }}
