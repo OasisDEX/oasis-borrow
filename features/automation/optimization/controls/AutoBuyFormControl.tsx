@@ -10,6 +10,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
+  maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
@@ -75,17 +76,19 @@ export function AutoBuyFormControl({
         execCollRatio: basicBuyState.execCollRatio,
         targetCollRatio: basicBuyState.targetCollRatio,
         maxBuyOrMinSellPrice: basicBuyState.withThreshold
-          ? basicBuyState.maxBuyOrMinSellPrice || zero
-          : zero,
+          ? basicBuyState.maxBuyOrMinSellPrice || maxUint256
+          : maxUint256,
         continuous: basicBuyState.continuous, // leave as default
         deviation: basicBuyState.deviation,
         replacedTriggerId: basicBuyState.triggerId,
+        maxBaseFeeInGwei: basicBuyState.maxBaseFeeInGwei,
       }),
     [
       basicBuyState.execCollRatio.toNumber(),
       basicBuyState.targetCollRatio.toNumber(),
       basicBuyState.maxBuyOrMinSellPrice?.toNumber(),
       basicBuyState.triggerId.toNumber(),
+      basicBuyState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
@@ -193,6 +196,7 @@ export function AutoBuyFormControl({
   const isEditing =
     !autoBuyTriggerData.targetCollRatio.isEqualTo(basicBuyState.targetCollRatio) ||
     !autoBuyTriggerData.execCollRatio.isEqualTo(basicBuyState.execCollRatio) ||
+    !autoBuyTriggerData.maxBaseFeeInGwei.isEqualTo(basicBuyState.maxBaseFeeInGwei) ||
     (maxBuyOrMinSellPrice?.toNumber() !== basicBuyState.maxBuyOrMinSellPrice?.toNumber() &&
       !autoBuyTriggerData.triggerId.isZero()) ||
     isRemoveForm

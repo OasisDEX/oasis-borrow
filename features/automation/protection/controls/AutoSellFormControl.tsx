@@ -80,12 +80,14 @@ export function AutoSellFormControl({
         continuous: basicSellState.continuous,
         deviation: basicSellState.deviation,
         replacedTriggerId: basicSellState.triggerId,
+        maxBaseFeeInGwei: basicSellState.maxBaseFeeInGwei,
       }),
     [
       basicSellState.execCollRatio.toNumber(),
       basicSellState.targetCollRatio.toNumber(),
       basicSellState.maxBuyOrMinSellPrice?.toNumber(),
       basicSellState.triggerId.toNumber(),
+      basicSellState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
@@ -193,6 +195,7 @@ export function AutoSellFormControl({
   const isEditing =
     !autoSellTriggerData.targetCollRatio.isEqualTo(basicSellState.targetCollRatio) ||
     !autoSellTriggerData.execCollRatio.isEqualTo(basicSellState.execCollRatio) ||
+    !autoSellTriggerData.maxBaseFeeInGwei.isEqualTo(basicSellState.maxBaseFeeInGwei) ||
     (maxBuyOrMinSellPrice?.toNumber() !== basicSellState.maxBuyOrMinSellPrice?.toNumber() &&
       !autoSellTriggerData.triggerId.isZero()) ||
     isRemoveForm

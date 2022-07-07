@@ -9,7 +9,7 @@ import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
@@ -18,7 +18,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
-import { one } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
@@ -103,6 +103,8 @@ export function SidebarAutoBuyEditingStage({
             type: 'max-buy-or-sell-price',
             maxBuyOrMinSellPrice: !toggleStatus
               ? undefined
+              : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+              ? zero
               : autoBuyTriggerData.maxBuyOrMinSellPrice,
           })
         }}
@@ -127,6 +129,7 @@ export function SidebarAutoBuyEditingStage({
               targetCollRatio: autoBuyTriggerData.targetCollRatio,
               execCollRatio: autoBuyTriggerData.execCollRatio,
               maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
+              maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
               withThreshold:
                 !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
                 autoBuyTriggerData.triggerId.isZero(),
@@ -135,13 +138,13 @@ export function SidebarAutoBuyEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasGweiPrice) => {
+        onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'max-gas-gwei-price',
-            maxGasGweiPrice,
+            type: 'max-gas-fee-in-gwei',
+            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
         }}
-        defaultValue={basicBuyState.maxGasPercentagePrice}
+        value={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
         <AutoBuyInfoSectionControl

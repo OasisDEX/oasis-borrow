@@ -122,7 +122,8 @@ export function Item({
             gap={2}
             sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 2, listStyle: 'none' }}
           >
-            {dropdownValues && dropdownValues.map((item) => <Item {...item} key={item.label} />)}
+            {dropdownValues &&
+              dropdownValues.map((item, idx) => <Item {...item} key={item.label || idx} />)}
           </Grid>
         </>
       )}
