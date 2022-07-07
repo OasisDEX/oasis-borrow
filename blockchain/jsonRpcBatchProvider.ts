@@ -14,6 +14,7 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
   _pendingBatch: PendingBatch | null = null
 
   send(method: string, params: Array<any>): Promise<any> {
+    console.log('send JSON RPC', JSON.stringify(params))
     const request = {
       method: method,
       params: params,
