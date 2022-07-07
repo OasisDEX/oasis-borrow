@@ -190,7 +190,6 @@ function AutoBuyInfoSectionControl({
 
   return (
     <BuyInfoSection
-      token={vault.token}
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
@@ -198,13 +197,13 @@ function AutoBuyInfoSectionControl({
       slippageLimit={basicBuyState.deviation}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
-        secondaryValue: vault.lockedCollateral.plus(collateralDelta),
+        secondaryValue: vault.lockedCollateral.minus(collateralDelta.abs()).toFixed(2),
       }}
       outstandingDebtAfterNextBuy={{
         value: vault.debt,
-        secondaryValue: vault.debt.plus(debtDelta),
+        secondaryValue: vault.debt.minus(debtDelta.abs()),
       }}
-      collateralToBePurchased={collateralDelta}
+      ethToBePurchased={collateralDelta.abs()}
       estimatedTransactionCost={gasEstimation}
     />
   )
