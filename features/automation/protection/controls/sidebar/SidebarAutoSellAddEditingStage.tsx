@@ -10,6 +10,8 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -69,13 +71,13 @@ interface SidebarAutoSellAddEditingStageProps {
   isEditing: boolean
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
-  sliderMin: BigNumber
-  sliderMax: BigNumber
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -85,23 +87,29 @@ export function SidebarAutoSellAddEditingStage({
   priceInfo,
   basicSellState,
   autoSellTriggerData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
   errors,
   warnings,
   addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
-  sliderMin,
-  sliderMax,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
 
+  const { min, max } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+  })
+
   return (
     <>
       <MultipleRangeSlider
-        min={sliderMin.toNumber()}
-        max={sliderMax.toNumber()}
+        min={min.toNumber()}
+        max={max.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'execution-coll-ratio',

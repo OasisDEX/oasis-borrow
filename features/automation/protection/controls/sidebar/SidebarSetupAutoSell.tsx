@@ -10,7 +10,6 @@ import {
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
-import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
@@ -115,12 +114,6 @@ export function SidebarSetupAutoSell({
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
   })
 
-  const { min, max } = getBasicSellMinMaxValues({
-    autoBuyTriggerData,
-    stopLossTriggerData,
-    ilkData,
-  })
-
   const warnings = warningsBasicSellValidation({
     token: vault.token,
     gasEstimationUsd,
@@ -128,10 +121,6 @@ export function SidebarSetupAutoSell({
     ethPrice: ethMarketPrice,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
-    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
-    basicSellState,
-    sliderMin: min,
-    sliderMax: max,
   })
 
   const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
@@ -157,13 +146,13 @@ export function SidebarSetupAutoSell({
                   priceInfo={priceInfo}
                   basicSellState={basicSellState}
                   autoSellTriggerData={autoSellTriggerData}
+                  autoBuyTriggerData={autoBuyTriggerData}
+                  stopLossTriggerData={stopLossTriggerData}
                   errors={errors}
                   warnings={warnings}
                   addTriggerGasEstimation={addTriggerGasEstimation}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
-                  sliderMin={min}
-                  sliderMax={max}
                 />
               )}
               {isRemoveForm && (

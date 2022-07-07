@@ -320,7 +320,6 @@ export function AdjustSlFormControl({
     redirectToCloseVault,
     currentCollateralRatio: vault.collateralizationRatio,
     isStopLossEnabled,
-    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
   }
 
   return <SidebarAdjustStopLoss {...props} />
