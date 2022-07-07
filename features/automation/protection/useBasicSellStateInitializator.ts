@@ -3,7 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
@@ -27,7 +27,6 @@ export function useBasicBSstateInitialization(
     continuous,
     deviation,
     isTriggerEnabled,
-    maxBaseFeeInGwei,
   } = extractBasicBSData(autoTriggersData, type)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
@@ -60,14 +59,12 @@ export function useBasicBSstateInitialization(
       deviation,
     })
     uiChanges.publish(publishKey, {
-      type: 'max-gas-fee-in-gwei',
-      maxBaseFeeInGwei,
+      type: 'max-gas-gwei-price',
+      maxGasGweiPrice: '100',
     })
     uiChanges.publish(publishKey, {
       type: 'with-threshold',
-      withThreshold:
-        (!maxBuyOrMinSellPrice.isZero() && !maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
-        triggerId.isZero(),
+      withThreshold: !maxBuyOrMinSellPrice.isZero() || triggerId.isZero(),
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 

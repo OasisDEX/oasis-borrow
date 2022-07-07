@@ -179,7 +179,6 @@ export function SidebarAutoSellAddEditingStage({
               targetCollRatio: autoSellTriggerData.targetCollRatio,
               execCollRatio: autoSellTriggerData.execCollRatio,
               maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
-              maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
               withThreshold:
                 !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
                 autoSellTriggerData.triggerId.isZero(),
@@ -188,13 +187,13 @@ export function SidebarAutoSellAddEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxBaseFeeInGwei) => {
+        onChange={(maxGasGweiPrice) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-            type: 'max-gas-fee-in-gwei',
-            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+            type: 'max-gas-gwei-price',
+            maxGasGweiPrice,
           })
         }}
-        value={basicSellState.maxBaseFeeInGwei.toNumber()}
+        defaultValue={basicSellState.maxGasPercentagePrice}
       />
       {isEditing && (
         <AutoSellInfoSectionControl

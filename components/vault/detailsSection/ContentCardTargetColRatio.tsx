@@ -4,7 +4,6 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -12,7 +11,7 @@ import React from 'react'
 interface ContentCardTargetColRatioProps {
   targetColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
-  threshold: BigNumber
+  threshold?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
@@ -37,9 +36,7 @@ export function ContentCardTargetColRatio({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    threshold: threshold.isEqualTo(maxUint256)
-      ? t('unlimited')
-      : `$${formatAmount(threshold, 'USD')}`,
+    threshold: threshold && `$${formatAmount(threshold, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {

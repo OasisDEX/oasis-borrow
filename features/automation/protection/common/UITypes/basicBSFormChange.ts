@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { MaxGasPriceValues } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { TxError } from 'helpers/types'
 
@@ -10,7 +11,7 @@ export type CurrentBSForm = 'add' | 'remove'
 
 export type BasicBSTriggerResetData = Pick<
   BasicBSTriggerData,
-  'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice' | 'maxBaseFeeInGwei'
+  'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice'
 > & {
   withThreshold: boolean
 }
@@ -22,7 +23,7 @@ export type BasicBSChangeAction =
   | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'continuous'; continuous: boolean }
   | { type: 'deviation'; deviation: BigNumber }
-  | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
+  | { type: 'max-gas-gwei-price'; maxGasGweiPrice: MaxGasPriceValues }
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
@@ -53,8 +54,8 @@ export function basicBSFormChangeReducer(
       return { ...state, continuous: action.continuous }
     case 'deviation':
       return { ...state, deviation: action.deviation }
-    case 'max-gas-fee-in-gwei':
-      return { ...state, maxBaseFeeInGwei: action.maxBaseFeeInGwei }
+    case 'max-gas-gwei-price':
+      return { ...state, maxGasPercentagePrice: action.maxGasGweiPrice }
     case 'current-form':
       return { ...state, currentForm: action.currentForm }
     case 'with-threshold':
@@ -76,7 +77,7 @@ export interface BasicBSFormChange {
   continuous: boolean
   deviation: BigNumber
   withThreshold: boolean
-  maxBaseFeeInGwei: BigNumber
+  maxGasPercentagePrice?: MaxGasPriceValues
   currentForm: CurrentBSForm
   resetData: BasicBSTriggerResetData
   txDetails?: {

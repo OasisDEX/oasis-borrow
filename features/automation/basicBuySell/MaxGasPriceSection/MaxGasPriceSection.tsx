@@ -1,19 +1,22 @@
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
-import { maxUint32 } from 'features/automation/common/basicBSTriggerData'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
+
+export type MaxGasPriceValues = '100' | '300' | '500' | 'NO_LIMIT'
 
 interface MaxGasPriceSectionProps {
-  onChange: (item: number) => void
-  value: number
+  onChange: (item: MaxGasPriceValues) => void
+  defaultValue?: MaxGasPriceValues
 }
 
-export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps) {
+export function MaxGasPriceSection({ onChange, defaultValue = '100' }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
+  const [active, setActiveItem] = useState<MaxGasPriceValues>(defaultValue)
 
   const handleChange = useCallback(
-    (item: number) => {
+    (item: MaxGasPriceValues) => {
+      setActiveItem(item)
       onChange(item)
     },
     [onChange],
@@ -30,35 +33,35 @@ export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps)
           value: (
             <>
               <ActionPills
-                active={value.toString()}
+                active={active}
                 variant="secondary"
                 items={[
                   {
                     id: '100',
                     label: '100 Gwei',
                     action: () => {
-                      handleChange(100)
+                      handleChange('100')
                     },
                   },
                   {
                     id: '300',
                     label: '300 Gwei',
                     action: () => {
-                      handleChange(300)
+                      handleChange('300')
                     },
                   },
                   {
                     id: '500',
                     label: '500 Gwei',
                     action: () => {
-                      handleChange(500)
+                      handleChange('500')
                     },
                   },
                   {
-                    id: maxUint32.toString(),
+                    id: 'NO_LIMIT',
                     label: 'No Limit',
                     action: () => {
-                      handleChange(maxUint32.toNumber())
+                      handleChange('NO_LIMIT')
                     },
                   },
                 ]}
