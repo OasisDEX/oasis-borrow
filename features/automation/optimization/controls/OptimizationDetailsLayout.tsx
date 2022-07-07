@@ -1,67 +1,48 @@
 import BigNumber from 'bignumber.js'
+import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  BASIC_BUY_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-export interface BasicBuyDetailsLayoutProps {
-  token: string
-  triggerColRatio: BigNumber
-  nextBuyPrice: BigNumber
-  targetColRatio: BigNumber
-  threshold: BigNumber
-  basicBuyTriggerData: BasicBSTriggerData
+export interface OptimizationDetailsLayoutProps {
+  isAutoBuyOn: boolean
+  vault: Vault
 }
 
-export function BasicBuyDetailsLayout({
-  token,
-  triggerColRatio,
-  basicBuyTriggerData,
-  nextBuyPrice,
-  threshold,
-  targetColRatio,
-}: BasicBuyDetailsLayoutProps) {
+export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const isAutoBuyOn = basicBuyTriggerData.isTriggerEnabled
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
+  const { token } = vault
 
   return (
     <Grid>
       {isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy' ? (
         <DetailsSection
           title={t('auto-buy.title')}
-          badge={isAutoBuyOn}
+          badge={false}
           content={
             <DetailsSectionContentCardWrapper>
               <ContentCardTriggerColRatio
                 token={token}
-                triggerColRatio={triggerColRatio}
-                afterTriggerColRatio={uiState.execCollRatio}
-                nextBuyPrice={nextBuyPrice}
-                changeVariant="positive"
+                triggerColRatio={new BigNumber(Math.random() * 100)}
+                nextBuyPrice={new BigNumber(Math.random() * 1000)}
               />
               <ContentCardTargetColRatio
-                targetColRatio={targetColRatio}
-                afterTargetColRatio={uiState.targetCollRatio}
-                threshold={threshold}
-                changeVariant="positive"
+                token={token}
+                targetColRatio={new BigNumber(Math.random() * 100)}
+                threshold={new BigNumber(Math.random() * 1000)}
               />
             </DetailsSectionContentCardWrapper>
           }

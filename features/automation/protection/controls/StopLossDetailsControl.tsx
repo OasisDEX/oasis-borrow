@@ -3,7 +3,6 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { StopLossDetailsLayout } from 'features/automation/protection/controls/StopLossDetailsLayout'
 import { PriceInfo } from 'features/shared/priceInfo'
@@ -13,6 +12,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { getIsEditingProtection } from '../common/helpers'
+import { StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 
 interface StopLossDetailsControlProps {

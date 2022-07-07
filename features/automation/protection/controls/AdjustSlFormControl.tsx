@@ -5,6 +5,7 @@ import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
 } from 'blockchain/calls/automationBot'
+import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { getToken } from 'blockchain/tokensMetadata'
@@ -18,10 +19,6 @@ import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation
 import { VaultViewMode } from 'components/VaultTabSwitch'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
-import {
-  prepareAddStopLossTriggerData,
-  StopLossTriggerData,
-} from 'features/automation/protection/common/stopLossTriggerData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
@@ -38,11 +35,27 @@ import {
 } from '../common/consts/automationDefaults'
 import { failedStatuses, progressStatuses } from '../common/consts/txStatues'
 import { getIsEditingProtection, getSliderPercentageFill } from '../common/helpers'
+import { prepareTriggerData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 import { AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
+
+export function prepareAddTriggerData(
+  vaultData: Vault,
+  isCloseToCollateral: boolean,
+  stopLossLevel: BigNumber,
+  replacedTriggerId: number,
+): AutomationBotAddTriggerData {
+  const baseTriggerData = prepareTriggerData(vaultData, isCloseToCollateral, stopLossLevel)
+
+  return {
+    ...baseTriggerData,
+    replacedTriggerId,
+    kind: TxMetaKind.addTrigger,
+  }
+}
 
 interface AdjustSlFormControlProps {
   vault: Vault
@@ -83,7 +96,7 @@ export function AdjustSlFormControl({
 
   const txData = useMemo(
     () =>
-      prepareAddStopLossTriggerData(
+      prepareAddTriggerData(
         vault,
         uiState.collateralActive,
         uiState.selectedSLValue,

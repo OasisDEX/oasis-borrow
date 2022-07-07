@@ -1,26 +1,14 @@
 import { ActionPills } from 'components/ActionPills'
 import { Item } from 'components/infoSection/Item'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useState } from 'react'
+import React, { useState } from 'react'
 
-export type MaxGasPriceValues = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
+export type GAS_PERCENTAGE_TYPES = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
 
-interface MaxGasPriceSectionProps {
-  onChange: (item: MaxGasPriceValues) => void
-  defaultValue?: MaxGasPriceValues
-}
-
-export function MaxGasPriceSection({ onChange, defaultValue = 'FIVE' }: MaxGasPriceSectionProps) {
+// Future TODO: Will need to add the correct props to the component.
+export function MaxGasPriceSection() {
   const { t } = useTranslation()
-  const [active, setActiveItem] = useState<MaxGasPriceValues>(defaultValue)
-
-  const handleChange = useCallback(
-    (item: MaxGasPriceValues) => {
-      setActiveItem(item)
-      onChange(item)
-    },
-    [onChange],
-  )
+  const [active, setActiveItem] = useState('FIVE' as GAS_PERCENTAGE_TYPES)
 
   return (
     <Item
@@ -40,28 +28,28 @@ export function MaxGasPriceSection({ onChange, defaultValue = 'FIVE' }: MaxGasPr
                     id: 'FIVE',
                     label: '5%',
                     action: () => {
-                      handleChange('FIVE')
+                      setActiveItem('FIVE')
                     },
                   },
                   {
                     id: 'TEN',
                     label: '10%',
                     action: () => {
-                      handleChange('TEN')
+                      setActiveItem('TEN')
                     },
                   },
                   {
                     id: 'TWELVE_POINT_FIVE',
                     label: '12.5%',
                     action: () => {
-                      handleChange('TWELVE_POINT_FIVE')
+                      setActiveItem('TWELVE_POINT_FIVE')
                     },
                   },
                   {
                     id: 'NO_LIMIT',
                     label: 'No Limit',
                     action: () => {
-                      handleChange('NO_LIMIT')
+                      setActiveItem('NO_LIMIT')
                     },
                   },
                 ]}

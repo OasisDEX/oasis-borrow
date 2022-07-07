@@ -17,7 +17,7 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'

@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 
 interface ContentCardTargetSellColRatioProps {
+  token: string
   targetColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
   threshold?: BigNumber
@@ -16,6 +17,7 @@ interface ContentCardTargetSellColRatioProps {
 }
 
 export function ContentCardTargetSellColRatio({
+  token,
   targetColRatio,
   afterTargetColRatio,
   threshold,
@@ -44,7 +46,7 @@ export function ContentCardTargetSellColRatio({
     value: formatted.targetColRatio,
   }
 
-  if (afterTargetColRatio && !targetColRatio?.isEqualTo(afterTargetColRatio) && changeVariant)
+  if (afterTargetColRatio && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterTargetColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
@@ -52,6 +54,7 @@ export function ContentCardTargetSellColRatio({
   if (threshold)
     contentCardSettings.footnote = t('auto-sell.continual-sell-threshold', {
       amount: formatted.threshold,
+      token,
     })
 
   return <DetailsSectionContentCard {...contentCardSettings} />

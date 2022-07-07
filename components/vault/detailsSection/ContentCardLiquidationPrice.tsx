@@ -5,15 +5,16 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
 import { StopLossBannerControl } from 'features/automation/protection/controls/StopLossBannerControl'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
-import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Grid, Heading, Text } from 'theme-ui'
+
+import { zero } from '../../../helpers/zero'
 
 interface ContentCardLiquidationPriceModalProps {
   liquidationPrice: BigNumber

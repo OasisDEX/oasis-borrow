@@ -1,11 +1,7 @@
 import { Vault } from 'blockchain/vaults'
-import { useAppContext } from 'components/AppContextProvider'
 import { OptimizationDetailsControl } from 'features/automation/optimization/controls/OptimizationDetailsControl'
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
-import React, { useMemo } from 'react'
+import React, { useState } from 'react'
 
 import { DefaultVaultLayout } from './DefaultVaultLayout'
 
@@ -14,34 +10,12 @@ interface OptimizationControlProps {
 }
 
 export function OptimizationControl({ vault }: OptimizationControlProps) {
-  const { automationTriggersData$, priceInfo$ } = useAppContext()
-  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
-  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
-
-  const autoTriggersData$ = automationTriggersData$(vault.id)
-  const [automationTriggersData, automationTriggersError] = useObservable(autoTriggersData$)
+  const [isAutoBuyOn] = useState<boolean>(false) // should be taken from pipeline or triggers, probably on component level, not here
 
   return (
-    <WithErrorHandler error={[automationTriggersError, priceInfoError]}>
-      <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData]}
-        customLoader={<VaultContainerSpinner />}
-      >
-        {([automationTriggers, priceInfo]) => (
-          <DefaultVaultLayout
-            detailsViewControl={
-              <OptimizationDetailsControl
-                vault={vault}
-                automationTriggersData={automationTriggers}
-                priceInfo={priceInfo}
-              />
-            }
-            editForm={
-              <OptimizationFormControl vault={vault} automationTriggersData={automationTriggers} />
-            }
-          />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <DefaultVaultLayout
+      detailsViewControl={<OptimizationDetailsControl isAutoBuyOn={isAutoBuyOn} vault={vault} />}
+      editForm={<OptimizationFormControl isAutoBuyOn={isAutoBuyOn} vault={vault} />}
+    />
   )
 }

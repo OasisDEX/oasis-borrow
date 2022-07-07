@@ -3,12 +3,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardTargetSellColRatio } from 'components/vault/detailsSection/ContentCardTargetSellColRatio'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import {
-  BASIC_SELL_FORM_CHANGE,
-  BasicBSFormChange,
-} from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { AutoSellTriggerData } from 'features/automation/protection/autoSellTriggerDataExtractor'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -18,7 +13,7 @@ interface BasicSellDetailsLayoutProps {
   nextSellPrice: BigNumber
   targetColRatio: BigNumber
   threshold: BigNumber
-  basicSellTriggerData: BasicBSTriggerData
+  autoSellTriggerData: AutoSellTriggerData
 }
 
 export function BasicSellDetailsLayout({
@@ -27,29 +22,25 @@ export function BasicSellDetailsLayout({
   nextSellPrice,
   targetColRatio,
   threshold,
-  basicSellTriggerData,
+  autoSellTriggerData,
 }: BasicSellDetailsLayoutProps) {
   const { t } = useTranslation()
-  const [uiState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
 
   return (
     <DetailsSection
       title={t('auto-sell.title')}
-      badge={basicSellTriggerData.isTriggerEnabled}
+      badge={autoSellTriggerData.isAutoSellEnabled}
       content={
         <DetailsSectionContentCardWrapper>
           <ContentCardSellTriggerCollRatio
             token={token}
             triggerColRatio={triggerColRatio}
-            afterTriggerColRatio={uiState.execCollRatio}
             nextSellPrice={nextSellPrice}
-            changeVariant="positive"
           />
           <ContentCardTargetSellColRatio
+            token={token}
             targetColRatio={targetColRatio}
-            afterTargetColRatio={uiState.targetCollRatio}
             threshold={threshold}
-            changeVariant="positive"
           />
         </DetailsSectionContentCardWrapper>
       }
