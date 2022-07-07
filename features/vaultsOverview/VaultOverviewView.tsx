@@ -78,17 +78,20 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipNotice account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
-        <WithErrorHandler error={err}>
-          <WithLoadingIndicator value={positionsOverviewSummary}>
-            {(positionsOverviewSummary) =>
-              positionsOverviewSummary.totalValueUsd.gt(zero) ? (
-                <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-              ) : (
-                <></>
-              )
-            }
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+        {connectedAccount && (
+          <WithErrorHandler error={err}>
+            <WithLoadingIndicator value={positionsOverviewSummary}>
+              {(positionsOverviewSummary) =>
+                positionsOverviewSummary.totalValueUsd.gt(zero) ? (
+                  <AssetsAndPositionsOverview {...positionsOverviewSummary} />
+                ) : (
+                  <></>
+                )
+              }
+            </WithLoadingIndicator>
+          </WithErrorHandler>
+        )}
+
         {!isOwnerViewing && numberOfVaults === 0 && (
           <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
             <Trans
