@@ -4,18 +4,16 @@ import { maxUint32 } from 'features/automation/common/basicBSTriggerData'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 
-export type MaxGasPriceValues = number
-
 interface MaxGasPriceSectionProps {
-  onChange: (item: MaxGasPriceValues) => void
-  value: MaxGasPriceValues
+  onChange: (item: number) => void
+  value: number
 }
 
 export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
 
   const handleChange = useCallback(
-    (item: MaxGasPriceValues) => {
+    (item: number) => {
       onChange(item)
     },
     [onChange],
