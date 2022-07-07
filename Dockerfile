@@ -7,6 +7,7 @@ RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 COPY .next/ /usr/src/app/.next
+COPY public/ /usr/src/app/public
 COPY dist/ /usr/src/app/dist
 COPY server/database/migrations/ /usr/src/app/server/database/migrations
 
