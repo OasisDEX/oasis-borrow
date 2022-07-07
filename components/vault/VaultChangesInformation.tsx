@@ -41,7 +41,6 @@ export function VaultChangesInformationItem({
         fontSize: 1,
         fontWeight: 'semiBold',
         cursor: tooltip ? 'pointer' : 'inherit',
-        position: 'relative',
       }}
       onClick={handleClick}
     >
@@ -53,11 +52,7 @@ export function VaultChangesInformationItem({
         {label}
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
-      {tooltip && tooltipOpen && (
-        <Tooltip sx={{ transform: 'translateY(60%)', top: -230, right: ['0px', 'auto'] }}>
-          {tooltip}
-        </Tooltip>
-      )}
+      {tooltip && tooltipOpen && <Tooltip sx={{ transform: 'translateY(60%)' }}>{tooltip}</Tooltip>}
       <Box sx={{ color: 'primary' }}>{value}</Box>
     </Flex>
   )
