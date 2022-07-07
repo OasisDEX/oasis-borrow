@@ -11,7 +11,10 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
-import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
+import {
+  failedStatuses,
+  progressStatuses,
+} from 'features/automation/protection/common/consts/txStatues'
 import {
   prepareRemoveStopLossTriggerData,
   StopLossTriggerData,
