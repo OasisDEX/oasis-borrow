@@ -5,7 +5,7 @@ import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
 
-export function warningsStopLossValidation({
+export function warningsValidation({
   token,
   gasEstimationUsd,
   ethBalance,
@@ -28,13 +28,7 @@ export function warningsStopLossValidation({
   })
 }
 
-export function errorsStopLossValidation({
-  txError,
-  debt,
-}: {
-  txError?: TxError
-  debt: BigNumber
-}) {
+export function errorsValidation({ txError, debt }: { txError?: TxError; debt: BigNumber }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
   const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 

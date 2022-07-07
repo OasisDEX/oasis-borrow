@@ -1,5 +1,4 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -11,7 +10,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { AutoSellFormControl } from 'features/automation/protection/controls/AutoSellFormControl'
+import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
 import { StopLossFormControl } from 'features/automation/protection/controls/StopLossFormControl'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -27,8 +26,6 @@ interface ProtectionFormControlProps {
   balanceInfo: BalanceInfo
   txHelpers?: TxHelpers
   context: Context
-  ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
   account?: string
 }
 
@@ -41,8 +38,6 @@ export function ProtectionFormControl({
   balanceInfo,
   context,
   txHelpers,
-  ethMarketPrice,
-  tokenMarketPrice,
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
@@ -68,21 +63,16 @@ export function ProtectionFormControl({
         isStopLossActive={isStopLossActive}
         context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
       />
-      <AutoSellFormControl
+      <SidebarSetupAutoSell
         vault={vault}
         ilkData={ilkData}
         priceInfo={priceInfo}
-        balanceInfo={balanceInfo}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
-        stopLossTriggerData={stopLossTriggerData}
         isAutoSellActive={isAutoSellActive}
         context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
-        tokenMarketPrice={tokenMarketPrice}
       />
     </>
   )

@@ -42,7 +42,6 @@ interface CancelSlFormControlProps {
   accountIsController: boolean
   priceInfo: PriceInfo
   balanceInfo: BalanceInfo
-  ethMarketPrice: BigNumber
   tx?: TxHelpers
 }
 
@@ -56,7 +55,6 @@ export function CancelSlFormControl({
   balanceInfo,
   ilkData,
   tx,
-  ethMarketPrice,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = triggerData
   const { addGasEstimation$, uiChanges } = useAppContext()
@@ -102,7 +100,7 @@ export function CancelSlFormControl({
             const totalCost =
               !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
                 ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(
-                    ethMarketPrice,
+                    priceInfo.currentCollateralPrice,
                   )
                 : zero
 
@@ -171,7 +169,7 @@ export function CancelSlFormControl({
     actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
     etherscan,
-    ethPrice: ethMarketPrice,
+    ethPrice: priceInfo.currentEthPrice,
     ethBalance: balanceInfo.ethBalance,
     stage,
     token,

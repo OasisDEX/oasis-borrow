@@ -89,9 +89,3 @@ const commonWarnings = [
 export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => commonWarnings.includes(message))
 }
-
-const cancelAutoSellWarnings = ['potentialInsufficientEthFundsForTx']
-
-export function extractCancelAutoSellWarnings(warningMessages: VaultWarningMessage[]) {
-  return warningMessages.filter((message) => cancelAutoSellWarnings.includes(message))
-}

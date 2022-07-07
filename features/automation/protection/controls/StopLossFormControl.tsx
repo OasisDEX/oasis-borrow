@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -31,7 +30,6 @@ interface StopLossFormsProps {
   balanceInfo: BalanceInfo
   accountIsController: boolean
   stopLossTriggerData: StopLossTriggerData
-  ethMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
@@ -46,7 +44,6 @@ function StopLossForms({
   txHelpers,
   accountIsController,
   stopLossTriggerData,
-  ethMarketPrice,
 }: StopLossFormsProps) {
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
     <CancelSlFormControl
@@ -64,7 +61,6 @@ function StopLossForms({
       }}
       priceInfo={priceInfo}
       balanceInfo={balanceInfo}
-      ethMarketPrice={ethMarketPrice}
     />
   ) : (
     <AdjustSlFormControl
@@ -82,7 +78,6 @@ function StopLossForms({
         })
       }}
       balanceInfo={balanceInfo}
-      ethMarketPrice={ethMarketPrice}
     />
   )
 }
@@ -96,7 +91,6 @@ interface StopLossFormControlProps {
   isStopLossActive: boolean
   txHelpers?: TxHelpers
   context: Context
-  ethMarketPrice: BigNumber
   account?: string
 }
 
@@ -110,7 +104,6 @@ export function StopLossFormControl({
   balanceInfo,
   context,
   txHelpers,
-  ethMarketPrice,
 }: StopLossFormControlProps) {
   const { uiChanges } = useAppContext()
   const { setVaultFormOpened } = useSharedUI()
@@ -142,7 +135,6 @@ export function StopLossFormControl({
         balanceInfo={balanceInfo}
         accountIsController={accountIsController}
         stopLossTriggerData={stopLossTriggerData}
-        ethMarketPrice={ethMarketPrice}
       />
     ) : (
       <></>
@@ -159,7 +151,6 @@ export function StopLossFormControl({
       balanceInfo={balanceInfo}
       accountIsController={accountIsController}
       stopLossTriggerData={stopLossTriggerData}
-      ethMarketPrice={ethMarketPrice}
     />
   )
 }
