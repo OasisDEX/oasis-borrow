@@ -46,7 +46,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
             borderRadius: '50%',
           }}
         >
-          <Icon name="checkmark" color="surface" size={small ? 16 : 21} />
+          <Icon name="checkmark" color="neutral10" size={small ? 16 : 21} />
         </Flex>
         <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
           <Text

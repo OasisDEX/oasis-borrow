@@ -128,7 +128,7 @@ export function DetailsSectionContentCard({
         alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'surface',
+        backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'neutral10',
         transition: 'background-color 200ms',
         wordWrap: 'break-word',
       }}

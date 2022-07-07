@@ -102,7 +102,7 @@ export function SidebarSectionHeaderSelect({
           mt: 2,
           px: 0,
           py: '12px',
-          backgroundColor: 'surface',
+          backgroundColor: 'neutral10',
           borderRadius: 'medium',
           boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
           opacity: isExpanded ? 1 : 0,

@@ -806,7 +806,7 @@ function DisconnectedHeader() {
               href="/connect"
               sx={{
                 boxShadow: 'cardLanding',
-                bg: 'surface',
+                bg: 'neutral10',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
