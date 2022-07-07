@@ -789,6 +789,7 @@
   "trezor-select-address": "Select an address",
   "try-again": "Try again",
   "unlimited-allowance": "Unlimited Allowance",
+  "unlimited": "unlimited",
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
