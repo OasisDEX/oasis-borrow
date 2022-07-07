@@ -36,7 +36,6 @@ export type VaultErrorMessage =
   | 'stopLossHigherThanCurrentOrNext'
   | 'maxDebtForSettingStopLoss'
   | 'targetCollRatioExceededDustLimitCollRatio'
-  | 'autoBuyMaxBuyPriceNotSpecified'
   | 'minimumSellPriceNotProvided'
 
 interface ErrorMessagesHandler {
@@ -76,7 +75,6 @@ interface ErrorMessagesHandler {
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
   targetCollRatioExceededDustLimitCollRatio?: boolean
-  autoBuyMaxBuyPriceNotSpecified?: boolean
   minimumSellPriceNotProvided?: boolean
 }
 
@@ -117,7 +115,6 @@ export function errorMessagesHandler({
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
   targetCollRatioExceededDustLimitCollRatio,
-  autoBuyMaxBuyPriceNotSpecified,
   minimumSellPriceNotProvided,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
@@ -267,10 +264,6 @@ export function errorMessagesHandler({
   }
   if (minimumSellPriceNotProvided) {
     errorMessages.push('minimumSellPriceNotProvided')
-  }
-
-  if (autoBuyMaxBuyPriceNotSpecified) {
-    errorMessages.push('autoBuyMaxBuyPriceNotSpecified')
   }
 
   return errorMessages
