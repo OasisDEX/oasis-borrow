@@ -45,7 +45,7 @@
     "@myetherwallet/mewconnect-connector": "^0.1.8",
     "@next/bundle-analyzer": "^12.0.4",
     "@next/mdx": "^12.0.4",
-    "@oasisdex/automation": "^1.0.12",
+    "@oasisdex/automation": "^1.1.1",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
     "@oasisdex/transactions": "^0.1.0",

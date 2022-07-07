@@ -5083,10 +5083,10 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@oasisdex/automation@^1.0.12":
-  version "1.0.12"
-  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.0.12.tgz#18e90580f4ea67d6289ace5a6518d20774596719"
-  integrity sha512-GLjyPnuhWBmHxpI2Frcijp/8gspCtjxjMP01ZGXQVe/nTk/naJJxUspB0gK+UgcN8fsiqKF5rSLbhkxe5Yt4yQ==
+"@oasisdex/automation@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@oasisdex/automation/-/automation-1.1.1.tgz#ad696788a9f51693b228ef30df20f789b689b613"
+  integrity sha512-9zvUFNSNswT60Uyhy+Tvp45yTu8Zn9iLuM0MLZGquCYymAs+xO2nFTWhDvK9JuH3COJxdyqpH+JAftAvubewNw==
   dependencies:
     ethers "^5.6.2"
 
