@@ -4,7 +4,7 @@ import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
 import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
-import { TabBar, TabSection } from 'components/TabBar'
+import { TabSwitcher, TabSwitcherTab } from 'components/TabSwitcher'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
 import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -40,13 +40,11 @@ function TabContent(props: {
     )
 
   return (
-    <Box mt={5}>
-      <ProductCardsWrapper>
-        {filteredCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
-    </Box>
+    <ProductCardsWrapper>
+      {filteredCards.map((cardData) => (
+        <ProductCard cardData={cardData} key={cardData.ilk} />
+      ))}
+    </ProductCardsWrapper>
   )
 }
 export function AssetView({ content }: { content: AssetPageContent }) {
@@ -56,9 +54,8 @@ export function AssetView({ content }: { content: AssetPageContent }) {
 
   const tabs = (productCardsData: ProductCardData[]) => {
     const borrowTab = content.borrowIlks && {
-      label: t('landing.tabs.borrow.tabLabel'),
-      value: 'borrow',
-      content: (
+      tabLabel: t('landing.tabs.borrow.tabLabel'),
+      tabContent: (
         <TabContent
           ilks={content.borrowIlks}
           type="borrow"
@@ -69,9 +66,8 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     }
 
     const multiplyTab = content.multiplyIlks && {
-      label: t('landing.tabs.multiply.tabLabel'),
-      value: 'multiply',
-      content: (
+      tabLabel: t('landing.tabs.multiply.tabLabel'),
+      tabContent: (
         <TabContent
           ilks={content.multiplyIlks}
           type="multiply"
@@ -82,9 +78,8 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     }
 
     const earnTab = content.earnIlks && {
-      label: t('landing.tabs.earn.tabLabel'),
-      value: 'earn',
-      content: (
+      tabLabel: t('landing.tabs.earn.tabLabel'),
+      tabContent: (
         <TabContent
           ilks={content.earnIlks}
           type="earn"
@@ -94,7 +89,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       ),
     }
 
-    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSection[]
+    return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSwitcherTab[]
   }
 
   return (
@@ -125,7 +120,16 @@ export function AssetView({ content }: { content: AssetPageContent }) {
           <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
             {([productCardsData]) => {
               return (
-                <TabBar useDropdownOnMobile variant="large" sections={tabs(productCardsData)} />
+                <TabSwitcher
+                  narrowTabsSx={{
+                    display: ['block', 'none'],
+                    maxWidth: '343px',
+                    width: '100%',
+                    mb: 4,
+                  }}
+                  wideTabsSx={{ display: ['none', 'block'], mb: 5 }}
+                  tabs={tabs(productCardsData)}
+                />
               )
             }}
           </WithLoadingIndicator>

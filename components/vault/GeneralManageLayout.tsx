@@ -8,13 +8,18 @@ import { VaultBannersView } from 'features/banners/VaultsBannersView'
 import { guniFaq } from 'features/content/faqs/guni'
 import { GuniVaultHeader } from 'features/earn/guni/common/GuniVaultHeader'
 import { GeneralManageVaultState } from 'features/generalManageVault/generalManageVault'
+import { GeneralManageVaultViewAutomation } from 'features/generalManageVault/GeneralManageVaultView'
 import { VaultType } from 'features/generalManageVault/vaultType'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Card, Grid } from 'theme-ui'
+import { Card, Grid } from 'theme-ui'
 
-import { GeneralManageTabBar } from './GeneralManageTabBar'
+import { VaultTabSwitch, VaultViewMode } from '../VaultTabSwitch'
+import { HistoryControl } from './HistoryControl'
+import { OptimizationControl } from './OptimizationControl'
+import { ProtectionControl } from './ProtectionControl'
 import { VaultHeadline } from './VaultHeadline'
+import { VaultInformationControl } from './VaultInformationControl'
 
 interface GeneralManageLayoutProps {
   generalManageVault: GeneralManageVaultState
@@ -26,7 +31,7 @@ export function GeneralManageLayout({
   autoTriggersData,
 }: GeneralManageLayoutProps) {
   const { t } = useTranslation()
-  const { ilkData, vault, priceInfo } = generalManageVault.state
+  const { ilkData, vault, account, priceInfo, balanceInfo, vaultHistory } = generalManageVault.state
 
   const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
@@ -43,6 +48,9 @@ export function GeneralManageLayout({
     TriggerType.BasicBuy,
   )
 
+  const vaultHeadingKey =
+    generalManageVault.type === VaultType.Insti ? 'vault.insti-header' : 'vault.header'
+
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
       <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />
@@ -54,21 +62,34 @@ export function GeneralManageLayout({
       />
     )
 
-  const protectionEnabled = isStopLossEnabled || isBasicSellEnabled
-  const optimizationEnabled = isBasicBuyEnabled
   const positionInfo =
     generalManageVault.type === VaultType.Earn ? <Card variant="faq">{guniFaq}</Card> : undefined
 
   return (
     <Grid gap={0} sx={{ width: '100%' }}>
       <VaultBannersView id={vault.id} />
-      <Box sx={{ zIndex: 0, mt: 4 }}>{headlineElement}</Box>
-      <GeneralManageTabBar
+      <VaultTabSwitch
+        defaultMode={VaultViewMode.Overview}
+        heading={t(vaultHeadingKey, { ilk: vault.ilk, id: vault.id })}
+        headline={headlineElement}
+        overViewControl={
+          <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />
+        }
+        historyControl={<HistoryControl vaultHistory={vaultHistory} />}
+        protectionControl={
+          <ProtectionControl
+            vault={vault}
+            ilkData={ilkData}
+            account={account}
+            balanceInfo={balanceInfo}
+          />
+        }
+        optimizationControl={<OptimizationControl vault={vault} ilkData={ilkData} />}
+        vaultInfo={<VaultInformationControl generalManageVault={generalManageVault} />}
         positionInfo={positionInfo}
-        generalManageVault={generalManageVault}
         showProtectionTab={showProtectionTab}
-        protectionEnabled={protectionEnabled}
-        optimizationEnabled={optimizationEnabled}
+        protectionEnabled={isStopLossEnabled || isBasicSellEnabled}
+        optimizationEnabled={isBasicBuyEnabled}
       />
     </Grid>
   )

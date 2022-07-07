@@ -1,4 +1,4 @@
-import { TabBar } from 'components/TabBar'
+import { UnderlineTabs } from 'components/dumb/Tabs'
 import { useTranslation } from 'next-i18next'
 import React, { ReactElement, useEffect } from 'react'
 import { Box, Card, Grid } from 'theme-ui'
@@ -32,8 +32,7 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
     <>
       {header}
       {faq ? (
-        <TabBar
-          variant="underline"
+        <UnderlineTabs
           sections={[
             {
               value: 'simulate',
