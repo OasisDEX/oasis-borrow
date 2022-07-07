@@ -28,8 +28,6 @@ export function validateErrors(
     depositCollateralOnVaultUnderDebtFloor,
     ledgerWalletContractDataDisabled,
     afterCollRatioBelowStopLossRatio,
-    afterCollRatioBelowBasicSellRatio,
-    afterCollRatioAboveBasicBuyRatio,
     insufficientEthFundsForTx,
   } = state
 
@@ -52,8 +50,6 @@ export function validateErrors(
         withdrawCollateralOnVaultUnderDebtFloor,
         depositCollateralOnVaultUnderDebtFloor,
         afterCollRatioBelowStopLossRatio,
-        afterCollRatioBelowBasicSellRatio,
-        afterCollRatioAboveBasicBuyRatio,
       }),
     )
   }

@@ -1,12 +1,11 @@
 import { isNullish } from 'helpers/functions'
-import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
-  afterCollRatioThresholdRatioValidator,
+  afterCollRatioBelowStopLossRatioValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -214,8 +213,6 @@ export interface ManageVaultConditions {
 
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
-  afterCollRatioBelowBasicSellRatio: boolean
-  afterCollRatioAboveBasicBuyRatio: boolean
 
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
@@ -274,8 +271,6 @@ export const defaultManageVaultConditions: ManageVaultConditions = {
 
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
-  afterCollRatioBelowBasicSellRatio: false,
-  afterCollRatioAboveBasicBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -321,8 +316,6 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     txError,
     vaultHistory,
     stopLossData,
-    basicSellData,
-    basicBuyData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -507,30 +500,10 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
 
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
-    afterCollRatioThresholdRatioValidator({
+    afterCollRatioBelowStopLossRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
-      threshold: stopLossData.stopLossLevel,
-      type: 'below',
-      margin: STOP_LOSS_MARGIN,
-    })
-
-  const afterCollRatioBelowBasicSellRatio =
-    !!basicSellData?.isTriggerEnabled &&
-    afterCollRatioThresholdRatioValidator({
-      afterCollateralizationRatio,
-      afterCollateralizationRatioAtNextPrice,
-      threshold: basicSellData.execCollRatio.div(100),
-      type: 'below',
-    })
-
-  const afterCollRatioAboveBasicBuyRatio =
-    !!basicBuyData?.isTriggerEnabled &&
-    afterCollRatioThresholdRatioValidator({
-      afterCollateralizationRatio,
-      afterCollateralizationRatioAtNextPrice,
-      threshold: basicBuyData.execCollRatio.div(100),
-      type: 'above',
+      stopLossRatio: stopLossData.stopLossLevel,
     })
 
   const editingProgressionDisabled =
@@ -551,9 +524,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
       paybackAmountExceedsVaultDebt ||
       withdrawCollateralOnVaultUnderDebtFloor ||
       depositCollateralOnVaultUnderDebtFloor ||
-      afterCollRatioBelowStopLossRatio ||
-      afterCollRatioBelowBasicSellRatio ||
-      afterCollRatioAboveBasicBuyRatio)
+      afterCollRatioBelowStopLossRatio)
 
   const collateralAllowanceProgressionDisabled = collateralAllowanceProgressionDisabledValidator({
     isCollateralAllowanceStage,
@@ -655,7 +626,5 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
 
     stopLossTriggered,
     afterCollRatioBelowStopLossRatio,
-    afterCollRatioBelowBasicSellRatio,
-    afterCollRatioAboveBasicBuyRatio,
   }
 }

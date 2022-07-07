@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -103,22 +103,18 @@ export function AutoSellFormControl({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
-  const cancelTxData = useMemo(
-    () =>
-      prepareRemoveBasicBSTriggerData({
-        vaultData: vault,
-        triggerType: TriggerType.BasicSell,
-        triggerId: basicSellState.triggerId,
-      }),
-    [basicSellState.triggerId.toNumber()],
-  )
+  const cancelTxData = prepareRemoveBasicBSTriggerData({
+    vaultData: vault,
+    triggerType: TriggerType.BasicSell,
+    triggerId: basicSellState.triggerId,
+  })
 
   const cancelTriggerGasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
+      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
     )
-  }, [cancelTxData])
+  }, [addTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)

@@ -4,7 +4,6 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import {
@@ -27,7 +26,7 @@ import { MakerVaultType } from '../../../../blockchain/calls/vaultResolver'
 import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { TxError } from '../../../../helpers/types'
 import {
-  createAutomationTriggersChange$,
+  createStopLossDataChange$,
   TriggersData,
 } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -170,8 +169,6 @@ export type GenericManageBorrowVaultState<V extends Vault> = MutableManageVaultS
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
-    basicBuyData?: BasicBSTriggerData
-    basicSellData?: BasicBSTriggerData
   } & HasGasEstimation
 
 export type ManageStandardBorrowVaultState = GenericManageBorrowVaultState<Vault>
@@ -445,7 +442,7 @@ export function createManageVault$<V extends Vault, VS extends ManageStandardBor
                     createIlkDataChange$(ilkData$, vault.ilk),
                     createVaultChange$(vault$, id, context.chainId),
                     createHistoryChange$(vaultHistory$, id),
-                    createAutomationTriggersChange$(automationTriggersData$, id),
+                    createStopLossDataChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)

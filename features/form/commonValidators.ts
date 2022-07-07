@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
+import { STOP_LOSS_MARGIN } from '../../helpers/multiply/calculations'
 import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
@@ -430,37 +431,23 @@ export function daiAllowanceProgressionDisabledValidator({
   )
 }
 
-export function afterCollRatioThresholdRatioValidator({
+export function afterCollRatioBelowStopLossRatioValidator({
   afterCollateralizationRatio,
   afterCollateralizationRatioAtNextPrice,
-  threshold,
-  margin = new BigNumber(0.02),
-  type,
+  stopLossRatio,
 }: {
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
-  threshold: BigNumber
-  margin?: BigNumber
-  type: 'below' | 'above'
+  stopLossRatio: BigNumber
 }) {
   if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
     return false
   }
 
-  switch (type) {
-    case 'below':
-      return (
-        afterCollateralizationRatio.lt(threshold) ||
-        afterCollateralizationRatioAtNextPrice.minus(margin).lte(threshold)
-      )
-    case 'above':
-      return (
-        afterCollateralizationRatio.gt(threshold) ||
-        afterCollateralizationRatioAtNextPrice.plus(margin).gte(threshold)
-      )
-    default:
-      return false
-  }
+  return (
+    afterCollateralizationRatio.lt(stopLossRatio) ||
+    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
+  )
 }
 
 export function stopLossCloseToCollRatioValidator({

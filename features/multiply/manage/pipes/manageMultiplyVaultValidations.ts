@@ -30,8 +30,6 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
     ledgerWalletContractDataDisabled,
     invalidSlippage,
     afterCollRatioBelowStopLossRatio,
-    afterCollRatioBelowBasicSellRatio,
-    afterCollRatioAboveBasicBuyRatio,
     insufficientEthFundsForTx,
   } = state
 
@@ -58,8 +56,6 @@ export function validateErrors(state: ManageMultiplyVaultState): ManageMultiplyV
         shouldShowExchangeError,
         invalidSlippage,
         afterCollRatioBelowStopLossRatio,
-        afterCollRatioBelowBasicSellRatio,
-        afterCollRatioAboveBasicBuyRatio,
       }),
     )
   }

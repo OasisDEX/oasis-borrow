@@ -3,7 +3,7 @@ import { VaultChange } from 'blockchain/vaults'
 import { PriceInfoChange } from 'features/shared/priceInfo'
 import { SlippageChange } from 'features/userSettings/userSettings'
 
-import { AutomationTriggersChange } from '../../../automation/protection/triggers/AutomationTriggersData'
+import { StopLossChange } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfoChange } from '../../../shared/balanceInfo'
 import { VaultHistoryChange } from '../../../vaultHistory/vaultHistory'
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -15,7 +15,7 @@ export type ManageVaultEnvironmentChange =
   | VaultChange
   | VaultHistoryChange
   | SlippageChange
-  | AutomationTriggersChange
+  | StopLossChange
 
 export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
@@ -63,12 +63,10 @@ export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>
     }
   }
 
-  if (change.kind === 'automationTriggersData') {
+  if (change.kind === 'stopLossData') {
     return {
       ...state,
       stopLossData: change.stopLossData,
-      basicSellData: change.basicSellData,
-      basicBuyData: change.basicBuyData,
     }
   }
 
