@@ -10,7 +10,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -23,7 +23,10 @@ export interface OptimizationDetailsLayoutProps {
 export function OptimizationDetailsLayout({ isAutoBuyOn, vault }: OptimizationDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
-  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const [activeAutomationFeature] = useObservable(
+    uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
+  )
+
   const { token } = vault
 
   return (

@@ -1,4 +1,5 @@
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
@@ -7,7 +8,7 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { useObservable } from 'helpers/observableHook'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -19,11 +20,14 @@ interface SidebarSetupAutoBuyProps {
 
 export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const { uiChanges } = useAppContext()
+  const [activeAutomationFeature] = useObservable(
+    uiChanges.subscribe<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE),
+  )
 
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('auto-buy.form-title'),
+      title: 'Auto Buy Setup',
       content: (
         <Grid gap={3}>
           <MultipleRangeSlider
@@ -51,9 +55,9 @@ export function SidebarSetupAutoBuy({ isAutoBuyOn }: SidebarSetupAutoBuyProps) {
             onChange={(e) => console.log(e.target.value)}
             onAuxiliaryChange={() => {}}
             showToggle={true}
-            toggleOnLabel={t('protection.set-no-threshold')}
-            toggleOffLabel={t('protection.set-threshold')}
-            toggleOffPlaceholder={t('protection.no-threshold')}
+            toggleOnLabel={t('auto-buy.set-no-threshold')}
+            toggleOffLabel={t('auto-buy.set-threshold')}
+            toggleOffPlaceholder={t('auto-buy.no-threshold')}
           />
           <SidebarResetButton
             clear={() => {

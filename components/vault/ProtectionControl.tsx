@@ -1,4 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { extractStopLossData } from 'features/automation/protection/common/StopLossTriggerDataExtractor'
@@ -61,6 +62,7 @@ interface ProtectionControlProps {
   ilkData: IlkData
   balanceInfo: BalanceInfo
   account?: string
+  collateralizationRatioAtNextPrice: BigNumber
 }
 
 function getZeroDebtProtectionBannerProps({
@@ -106,6 +108,7 @@ export function ProtectionControl({
   vault,
   ilkData,
   account,
+  collateralizationRatioAtNextPrice,
   balanceInfo,
 }: ProtectionControlProps) {
   const { automationTriggersData$, priceInfo$ } = useAppContext()
@@ -148,6 +151,7 @@ export function ProtectionControl({
                   priceInfo={priceInfo}
                   vault={vault}
                   account={account}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                   balanceInfo={balanceInfo}
                 />
               }

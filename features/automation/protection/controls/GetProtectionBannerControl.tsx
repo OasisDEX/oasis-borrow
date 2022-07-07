@@ -35,7 +35,6 @@ export function GetProtectionBannerControl({
 
   const newComponentsEnabled = useFeatureToggle('NewComponents')
   const isAllowedForAutomation = isSupportedAutomationIlk(getNetworkName(), ilk)
-  const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
@@ -58,21 +57,9 @@ export function GetProtectionBannerControl({
         />
       ) : (
         <SetupBanner
-          header={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.header')
-              : t('vault-banners.get-protection.header')
-          }
-          content={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.content', { token })
-              : t('vault-banners.get-protection.content', { token })
-          }
-          button={
-            !basicBSEnabled
-              ? t('vault-banners.setup-stop-loss.button')
-              : t('vault-banners.get-protection.button')
-          }
+          header={t('vault-banners.setup-stop-loss.header')}
+          content={t('vault-banners.setup-stop-loss.content', { token })}
+          button={t('vault-banners.setup-stop-loss.button')}
           backgroundImage="/static/img/setup-banner/stop-loss.svg"
           backgroundColor={setupBannerGradientPresets.stopLoss[0]}
           backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
