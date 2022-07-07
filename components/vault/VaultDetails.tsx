@@ -56,7 +56,7 @@ export function getAfterPillColors(collRatioColor: CollRatioColor) {
   if (collRatioColor === 'primary') {
     return {
       color: 'onSuccess',
-      bg: 'success',
+      bg: 'success10',
     }
   }
 
@@ -74,7 +74,7 @@ export function VaultDetailsAfterPill({
   return (
     <Card
       sx={{
-        bg: 'success',
+        bg: 'success10',
         color: 'onSuccess',
         fontWeight: 'semiBold',
         border: 'none',

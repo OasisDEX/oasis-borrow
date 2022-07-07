@@ -20,7 +20,7 @@ function Checkbox({
       sx={{
         border: '1px solid',
         borderColor: checked ? 'onSuccess' : 'lavender_o25',
-        backgroundColor: checked ? 'success' : 'surface',
+        backgroundColor: checked ? 'success10' : 'surface',
         width: '20px',
         height: '20px',
         borderRadius: '5px',

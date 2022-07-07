@@ -40,7 +40,7 @@ export function SidebarSectionStatus({
       icon: <Spinner size={20} color="onWarning" />,
     },
     success: {
-      bg: 'success',
+      bg: 'success10',
       color: 'onSuccess',
       icon: <Icon name="checkmark" size={20} color="onSuccess" />,
     },

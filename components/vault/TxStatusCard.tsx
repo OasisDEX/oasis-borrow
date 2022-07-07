@@ -41,7 +41,7 @@ export function TxStatusCardSuccess({
 }) {
   const { t } = useTranslation()
   return (
-    <Card sx={{ backgroundColor: 'success', border: 'none', p: 2, borderRadius: 'round' }}>
+    <Card sx={{ backgroundColor: 'success10', border: 'none', p: 2, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
         <Icon name="checkmark" size={20} color="onSuccess" />
         <Grid pl={2} gap={0}>

@@ -121,7 +121,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 justifyContent: 'center',
                 transition: 'background ease-in 0.2s',
                 ...(checked && {
-                  bg: 'success',
+                  bg: 'success10',
                 }),
               }}
             >
