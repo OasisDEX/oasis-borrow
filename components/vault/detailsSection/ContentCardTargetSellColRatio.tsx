@@ -52,6 +52,7 @@ export function ContentCardTargetSellColRatio({
   if (threshold)
     contentCardSettings.footnote = t('auto-sell.continual-sell-threshold', {
       amount: formatted.threshold,
+      // TODO ŁW - token mising?
     })
 
   return <DetailsSectionContentCard {...contentCardSettings} />

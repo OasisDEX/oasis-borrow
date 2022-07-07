@@ -1415,7 +1415,8 @@
     "sell-trigger-ratio": "Sell Trigger Ratio",
     "target-coll-ratio": "Target Col Ratio (After Sell)",
     "set-min-sell-price": "Set Min Sell Price",
-    "set-trigger-description": "You are setting a recurring automated sell action at a Target Collateral Ratio of {targetCollRatio} and a trigger to sell more ETH at your Collateral Ratio Trigger of {triggerCollRatio}. Your first buy being [$1925.00 ETH/USD], limited to a price of [$2100.00 ETH/USD]   Learn More ",
+    "set-trigger-description": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}} and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{triggerCollRatio}}. Your first buy being {{executionPrice}} {{token}}/USD], limited to a price of {{minSellPrice}} {{token}}/USD   Learn More ",
+    "set-trigger-description-no-threshold": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}} and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{triggerCollRatio}}. With no min sell price Learn More ",
     "banner": {
       "header": "Set up Auto Sell",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
