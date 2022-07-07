@@ -76,6 +76,7 @@
     "@web3-react/types": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.13",
+    "@xstate/react": "^3.0.0",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.22.0",
     "bignumber.js": "9.0.1",
@@ -144,6 +145,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "whatwg-fetch": "2.0.3",
+    "xstate": "^4.32.1",
     "zod": "^1.5.0"
   },
   "resolutions": {
@@ -201,6 +203,7 @@
     "@types/socket.io-client": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "@xstate/test": "^0.5.1",
     "autoprefixer": "7.1.6",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "10.0.0",
