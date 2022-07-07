@@ -95,9 +95,3 @@ const cancelAutoSellWarnings = ['potentialInsufficientEthFundsForTx']
 export function extractCancelAutoSellWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => cancelAutoSellWarnings.includes(message))
 }
-
-const cancelAutoSellErrors = ['insufficientEthFundsForTx']
-
-export function extractCancelAutoSellErrors(errorMessages: VaultErrorMessage[]) {
-  return errorMessages.filter((message) => cancelAutoSellErrors.includes(message))
-}

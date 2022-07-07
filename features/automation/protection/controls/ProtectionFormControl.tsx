@@ -29,6 +29,7 @@ interface ProtectionFormControlProps {
   txHelpers?: TxHelpers
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   account?: string
 }
 
@@ -42,6 +43,7 @@ export function ProtectionFormControl({
   context,
   txHelpers,
   ethMarketPrice,
+  tokenMarketPrice,
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
@@ -70,7 +72,6 @@ export function ProtectionFormControl({
       <StopLossFormControl
         ilkData={ilkData}
         stopLossTriggerData={stopLossTriggerData}
-        autoSellTriggerData={autoSellTriggerData}
         priceInfo={priceInfo}
         vault={vault}
         account={account}
@@ -92,6 +93,7 @@ export function ProtectionFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
+        tokenMarketPrice={tokenMarketPrice}
       />
     </>
   )
