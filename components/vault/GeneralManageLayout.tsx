@@ -53,7 +53,7 @@ export function GeneralManageLayout({
 
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
-      <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />
+      <GuniVaultHeader {...generalManageVault.state} token={vault.token} />
     ) : (
       <VaultHeadline
         header={t('vault.header', { ilk: vault.ilk, id: vault.id })}
