@@ -35,13 +35,13 @@ export function OpenMultiplyVaultContainer(props: OpenMultiplyVaultContainerProp
         <UnderlineTabs
           sections={[
             {
-              value: 'simulate',
+              value: 'Simulate',
               label: t('open-vault.simulate'),
               content: detailsAndForm,
             },
             {
-              value: 'position-info',
-              label: t('system.position-info'),
+              value: 'FAQ',
+              label: t('nav.faq'),
               content: <Card variant="faq">{faq}</Card>,
             },
           ]}

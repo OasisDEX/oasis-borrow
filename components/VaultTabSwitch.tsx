@@ -19,7 +19,6 @@ export enum VaultViewMode {
   Protection = 'Protection',
   Optimization = 'Optimization',
   History = 'History',
-  PositionInfo = 'PositionInfo',
   VaultInfo = 'VaultInfo',
 }
 
@@ -78,7 +77,6 @@ export function VaultTabSwitch({
   protectionControl,
   optimizationControl,
   vaultInfo,
-  positionInfo,
   showProtectionTab,
   protectionEnabled,
   optimizationEnabled,
@@ -91,7 +89,6 @@ export function VaultTabSwitch({
   protectionControl: JSX.Element
   optimizationControl: JSX.Element
   vaultInfo: JSX.Element
-  positionInfo?: JSX.Element
   showProtectionTab: boolean
   protectionEnabled: boolean
   optimizationEnabled: boolean
@@ -209,14 +206,6 @@ export function VaultTabSwitch({
           >
             {t('system.vaultinfo')}
           </Button>
-          {positionInfo ? (
-            <Button
-              onClick={() => setMode(VaultViewMode.PositionInfo)}
-              variant={getVariant(mode, VaultViewMode.PositionInfo)}
-            >
-              {t('system.position-info')}
-            </Button>
-          ) : null}
           <Button
             onClick={() => setMode(VaultViewMode.History)}
             variant={getVariant(mode, VaultViewMode.History)}
@@ -232,7 +221,6 @@ export function VaultTabSwitch({
             Protection: protectionControl,
             Optimization: optimizationControl,
             History: historyControl,
-            PositionInfo: positionInfo,
             VaultInfo: vaultInfo,
           }[mode]
         }

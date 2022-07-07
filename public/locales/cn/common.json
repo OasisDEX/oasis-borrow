@@ -480,8 +480,7 @@
     "vault-id": "金库 ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
-    "max-multiple": "Max Multiple",
-    "position-info": "Position Info"
+    "max-multiple": "Max Multiple"
   },
   "to-the-following-address": "至此地址",
   "token-balance": "{{token}} 余额",
