@@ -21,7 +21,7 @@ export const defaultManageVaultSummary: ManageVaultSummary = {
   afterCollateralBalance: zero,
 }
 
-export function applyManageVaultSummary<VS extends ManageMultiplyVaultState>(state: VS): VS {
+export function applyManageVaultSummary(state: ManageMultiplyVaultState) {
   const {
     isManageStage,
     balanceInfo: { collateralBalance },

@@ -17,10 +17,10 @@ export type ManageVaultEnvironmentChange =
   | SlippageChange
   | StopLossChange
 
-export function applyManageVaultEnvironment<VS extends ManageMultiplyVaultState>(
+export function applyManageVaultEnvironment(
   change: ManageMultiplyVaultChange,
-  state: VS,
-): VS {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (change.kind === 'priceInfo') {
     return {
       ...state,

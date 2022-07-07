@@ -45,10 +45,7 @@ export type ExchangeQuoteChanges =
   | ExchangeSwapSuccessChange
   | ExchangeSwapFailureChange
 
-export function applyExchange<VS extends ManageMultiplyVaultState>(
-  change: ManageMultiplyVaultChange,
-  state: VS,
-) {
+export function applyExchange(change: ManageMultiplyVaultChange, state: ManageMultiplyVaultState) {
   if (change.kind === 'quoteError' || change.kind === 'swapError') {
     return {
       ...state,

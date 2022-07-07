@@ -265,7 +265,7 @@ export function ContentCardNetValue({
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('system.net-value'),
+    title: t('system.net-value-pnl'),
     value: formatted.netValueUSD,
     modal: <ContentCardNetValueModal {...contentCardModalSettings} />,
   }

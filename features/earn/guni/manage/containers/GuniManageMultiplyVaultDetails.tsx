@@ -5,21 +5,17 @@ import {
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentCardNetValue } from 'components/vault/detailsSection/ContentCardNetValue'
+import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
 
-import { ContentCardEarningsToDate } from '../../../../../components/vault/detailsSection/ContentCardEarningsToDate'
-import { ContentCardMultiple } from '../../../../../components/vault/detailsSection/ContentCardMultiple'
-import { ContentCardNetAPY } from '../../../../../components/vault/detailsSection/ContentCardNetAPY'
-import { ContentFooterItemsEarn } from '../../../../../components/vault/detailsSection/ContentFooterItemsEarn'
-import { ManageEarnVaultState } from '../pipes/manageGuniVault'
+import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/manageMultiplyVault'
 
-export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
+export function GuniManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const { t } = useTranslation()
   const {
-    vault: { debt, token, lockedCollateral, lockedCollateralUSD, id },
-    ilkData: { stabilityFee },
+    vault: { debt, token, lockedCollateral, lockedCollateralUSD },
     inputAmountsEmpty,
     stage,
     netValueUSD,
@@ -32,9 +28,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
     afterDebt,
     afterLockedCollateral,
     afterMultiply,
-    earningsToDate,
-    earningsToDateAfterFees,
-    netAPY,
   } = props
   const afterCollRatioColor = 'onSuccess'
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
@@ -44,7 +37,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
   return (
     <Box>
       <DetailsSection
-        title={t('manage-earn-vault.overview-earn', { earnId: id })}
+        title={t('system.overview')}
         content={
           <DetailsSectionContentCardWrapper>
             <ContentCardNetValue
@@ -60,18 +53,11 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
               debt={debt}
               changeVariant={changeVariant}
             />
-            <ContentCardEarningsToDate
-              earningsToDate={earningsToDate}
-              earningsToDateAfterFees={earningsToDateAfterFees}
-            />
-
-            <ContentCardNetAPY netAPY={netAPY} token={token} />
-            <ContentCardMultiple multiple={multiply} />
           </DetailsSectionContentCardWrapper>
         }
         footer={
           <DetailsSectionFooterItemWrapper>
-            <ContentFooterItemsEarn
+            <ContentFooterItemsMultiply
               token={token}
               debt={debt}
               lockedCollateral={lockedCollateral}
@@ -80,7 +66,6 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
               afterLockedCollateral={afterLockedCollateral}
               afterMultiply={afterMultiply}
               changeVariant={changeVariant}
-              stabilityFee={stabilityFee}
             />
           </DetailsSectionFooterItemWrapper>
         }

@@ -97,10 +97,10 @@ export type ManageVaultTransactionChange =
   | DaiAllowanceChange
   | ManageChange
 
-export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>(
+export function applyManageVaultTransaction(
   change: ManageMultiplyVaultChange,
-  state: VS,
-): VS {
+  state: ManageMultiplyVaultState,
+): ManageMultiplyVaultState {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,

@@ -824,7 +824,6 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        makerOracleTokenPrices$,
         id,
       ),
     bigNumberTostring,
