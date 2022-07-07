@@ -6,8 +6,7 @@ import { TxError } from 'helpers/types'
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
 export const BASIC_BUY_FORM_CHANGE = 'BASIC_BUY_FORM_CHANGE'
 
-export type CurrentBSForm = 'add' | 'remove'
-
+/* End of section */
 export type BasicBSChangeAction =
   | { type: 'trigger-id'; triggerId: BigNumber }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
@@ -16,7 +15,6 @@ export type BasicBSChangeAction =
   | { type: 'continuous'; continuous: boolean }
   | { type: 'deviation'; deviation: BigNumber }
   | { type: 'max-gas-percentage-price'; maxGasPercentagePrice: MaxGasPriceValues }
-  | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'with-threshold'; withThreshold: boolean }
   | {
       type: 'tx-details'
@@ -47,8 +45,6 @@ export function basicBSFormChangeReducer(
       return { ...state, deviation: action.deviation }
     case 'max-gas-percentage-price':
       return { ...state, maxGasPercentagePrice: action.maxGasPercentagePrice }
-    case 'current-form':
-      return { ...state, currentForm: action.currentForm }
     case 'with-threshold':
       return { ...state, withThreshold: action.withThreshold }
     case 'tx-details':
@@ -67,7 +63,6 @@ export interface BasicBSFormChange {
   deviation: BigNumber
   withThreshold: boolean
   maxGasPercentagePrice?: MaxGasPriceValues
-  currentForm: CurrentBSForm
   txDetails?: {
     txStatus?: TxStatus
     txError?: TxError
