@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { IlkData } from 'blockchain/ilks'
-import { Vault } from 'blockchain/vaults'
+import { MAX_DEBT_FOR_SETTING_STOP_LOSS } from 'features/automation/protection/common/consts/automationDefaults'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -38,23 +37,13 @@ export function warningsBasicSellValidation({
 
 export function errorsBasicSellValidation({
   txError,
-  vault,
-  ilkData,
-  debtDelta,
+  debt,
 }: {
   txError?: TxError
-  vault: Vault
-  ilkData: IlkData
-  debtDelta: BigNumber
+  debt: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
 
-  const targetCollRatioExceededDustLimitCollRatio = ilkData.debtFloor.gt(
-    vault.debt.minus(debtDelta.abs()),
-  )
-
-  return errorMessagesHandler({
-    insufficientEthFundsForTx,
-    targetCollRatioExceededDustLimitCollRatio,
-  })
+  return errorMessagesHandler({ insufficientEthFundsForTx, maxDebtForSettingStopLoss })
 }
