@@ -30,4 +30,3 @@ storybook-static/*
 cache
 next-env.d.ts
 
-/.parcel-cache

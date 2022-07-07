@@ -6,17 +6,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v1
+
       - name: Cache YARN dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v1
         with:
           path: node_modules
           key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-yarn-cache-
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --no-progress --non-interactive
+      - name: Install
+        run: yarn --no-progress --non-interactive --frozen-lockfile
 
       - name: Lint
         run: yarn lint
@@ -29,6 +30,7 @@ jobs:
 
       - name: Typecheck
         run: yarn typecheck
+
 #  test-e2e:
 #    runs-on: ubuntu-latest
 #    steps:
@@ -55,6 +57,6 @@ jobs:
 #        run: yarn test:e2e
 
 # Few tips github actions
-# - name: Setup SSH debug session
-#   uses: mxschmitt/action-tmate@v2
+  # - name: Setup SSH debug session
+  #   uses: mxschmitt/action-tmate@v2
 

@@ -7,14 +7,12 @@
   },
   "scripts": {
     "start": "next dev",
-    "start:prod": "yarn migrate:prod && next start",
+    "start:prod": "yarn migrate && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
-    "migrate:prod": "node ./dist/migrate.js",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
-    "build:app": "next build && node sitemapGenerator.js",
-    "build:server": "parcel build ./server/database/migrate.ts --no-source-maps",
-    "build": "concurrently \"npm:build:server\" \"npm:build:app\"",
+    "build": "next build && node sitemapGenerator.js",
+    "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
     "lint": "eslint --ext .ts --ext .tsx .",
@@ -36,9 +34,6 @@
     "build:storybook": "build-storybook",
     "publish:storybook": "storybook-to-aws-s3",
     "release": "release-it"
-  },
-  "targets": {
-    "default": {"includeNodeModules": true}
   },
   "dependencies": {
     "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
@@ -211,7 +206,6 @@
     "chai": "^4.2.0",
     "chai-subset": "^1.6.0",
     "codecov": "^3.7.2",
-    "concurrently": "^7.2.2",
     "crypto-browserify": "^3.12.0",
     "earljs": "^0.0.11",
     "ejs": "^3.1.7",
@@ -247,7 +241,6 @@
     "stream-browserify": "^3.0.0",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
-    "typescript": "^4.4.3",
-    "parcel": "^2.6.2"
+    "typescript": "^4.4.3"
   }
 }
