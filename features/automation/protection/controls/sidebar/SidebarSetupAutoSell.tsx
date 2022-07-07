@@ -105,7 +105,7 @@ export function SidebarSetupAutoSell({
                 amount={uiState.maxBuyOrMinSellPrice}
                 hasAuxiliary={false}
                 hasError={false}
-                currencyCode="USD"
+                token={vault.token}
                 onChange={handleNumericInput((maxBuyOrMinSellPrice) => {
                   uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
                     type: 'max-buy-or-sell-price',

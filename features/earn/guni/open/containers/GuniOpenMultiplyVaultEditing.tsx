@@ -25,7 +25,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
       <Grid gap={4}>
         <VaultActionInput
           action="Deposit"
-          currencyCode="DAI"
+          token="DAI"
           showMax={true}
           hasAuxiliary={false}
           onSetMax={updateDepositMax!}
