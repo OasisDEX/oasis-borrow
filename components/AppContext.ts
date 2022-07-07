@@ -167,7 +167,6 @@ import {
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
 import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
-import { getCollateralLocked$ } from '../blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -717,6 +716,26 @@ export function setupAppContext() {
   const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
   const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
 
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      psmExchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
+      userSettings$,
+    ),
+  )
+
   const manageVault$ = memoize(
     (id: BigNumber) =>
       createManageVault$<Vault, ManageStandardBorrowVaultState>(
@@ -813,9 +832,6 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        yields$,
-        collateralLocked$,
-        oraclePriceData$,
         id,
       ),
     bigNumberTostring,
@@ -902,31 +918,6 @@ export function setupAppContext() {
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const yields$ = memoize(curry(getYields$)(context$, ilkData$))
-
-  const collateralLocked$ = memoize(curry(getCollateralLocked$)(connectedContext$, balance$))
-
-  const openGuniVault$ = memoize((ilk: string) =>
-    createOpenGuniVault$(
-      connectedContext$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilks$,
-      ilkData$,
-      psmExchangeQuote$,
-      onEveryBlock$,
-      addGasEstimation$,
-      ilk,
-      token1Balance$,
-      getGuniMintAmount$,
-      userSettings$,
-      yields$,
-      collateralLocked$,
-      oraclePriceData$,
-    ),
-  )
 
   return {
     web3Context$,
