@@ -22,11 +22,11 @@ interface TabBarProps {
   sections: TabSection[]
   useDropdownOnMobile?: boolean
   variant: TabVariant
-  switchEvent?: { value: string }
+  value?: string
 }
 
-export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: TabBarProps) {
-  const [hash, setHash] = useHash<string>()
+export function TabBar({ sections, variant, useDropdownOnMobile, value }: TabBarProps) {
+  const [hash, setHash] = useHash()
 
   useEffect(() => {
     if (!hash) {
@@ -35,11 +35,13 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
   }, [])
 
   useEffect(() => {
-    return switchEvent && setHash(switchEvent.value)
-  }, [switchEvent?.value])
+    if (value) {
+      setHash(value)
+    }
+  }, [value])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash || section.value === hash
+    return section.value === hash
   }
 
   const selectedSection = sections.find(isSelected) || sections[0]

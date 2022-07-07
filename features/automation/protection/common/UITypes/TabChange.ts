@@ -1,16 +1,11 @@
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 
-import { EarnSimulateViewMode } from '../../../../earn/guni/open/containers/GuniOpenMultiplyVaultDetails'
-
 export const TAB_CHANGE_SUBJECT = 'tabChange'
 
-export type TabChangeAction = {
-  type: 'change-tab'
-  currentMode: VaultViewMode | EarnSimulateViewMode
-}
+export type TabChangeAction = { type: 'change-tab'; currentMode: VaultViewMode }
 
 export interface TabChange {
-  currentMode: VaultViewMode | EarnSimulateViewMode
+  currentMode: VaultViewMode
 }
 
 export function tabChangeReducer(state: TabChange, action: TabChangeAction): TabChange {
