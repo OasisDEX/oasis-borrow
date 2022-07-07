@@ -71,21 +71,6 @@ export type AddStopLossChange =
   | {
       kind: 'stopLossTxSuccess'
     }
-
-export type AddBasicBuyChange =
-  | { kind: 'basicBuyTxWaitingForApproval' }
-  | { kind: 'basicBuyTxWaitingForConfirmation'; id: BigNumber }
-  | {
-      kind: 'basicBuyTxInProgress'
-      basicBuyTxHash: string
-    }
-  | {
-      kind: 'basicBuyTxFailure'
-      txError?: TxError
-    }
-  | {
-      kind: 'basicBuyTxSuccess'
-    }
 export type OpenVaultTransactionChange =
   | ProxyChange
   | AllowanceChange
