@@ -140,6 +140,15 @@ export function VaultErrors({
         return translate('stop-loss-max-debt')
       case 'targetCollRatioExceededDustLimitCollRatio':
         return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
+      case 'autoBuyMaxBuyPriceNotSpecified':
+        return (
+          <Trans
+            i18nKey="vault-errors.auto-buy-max-price-requred"
+            components={{
+              1: <strong />,
+            }}
+          />
+        )
       case 'minimumSellPriceNotProvided':
         return (
           <Trans

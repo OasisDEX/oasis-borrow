@@ -93,7 +93,9 @@ export function GeneralManageTabBar({
                 label: t('system.optimization'),
                 value: VaultViewMode.Optimization,
                 tag: { include: true, active: optimizationEnabled },
-                content: <OptimizationControl vault={vault} ilkData={ilkData} />,
+                content: (
+                  <OptimizationControl vault={vault} ilkData={ilkData} balanceInfo={balanceInfo} />
+                ),
               },
             ]
           : []),
