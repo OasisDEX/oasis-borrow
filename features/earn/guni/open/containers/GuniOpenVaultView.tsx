@@ -1,6 +1,7 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { guniFaq } from 'features/content/faqs/guni'
 import { Survey } from 'features/survey'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 import { Container } from 'theme-ui'
 
@@ -16,6 +17,8 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
   const { openGuniVault$ } = useAppContext()
   const [openVault, openVaultError] = useObservable(openGuniVault$(ilk))
 
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
   return (
     <WithErrorHandler error={openVaultError}>
       <WithLoadingIndicator value={openVault} customLoader={<VaultContainerSpinner />}>
@@ -25,7 +28,7 @@ export function GuniOpenVaultView({ ilk }: { ilk: string }) {
               header={<GuniVaultHeader {...openVault} />}
               details={<GuniOpenMultiplyVaultDetails {...openVault} />}
               form={<GuniOpenMultiplyVaultForm {...openVault} />}
-              faq={guniFaq}
+              faq={newComponentsEnabled ? guniFaq : undefined}
               clear={openVault.clear}
             />
             <Survey for="earn" />

@@ -48,7 +48,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
   } = props
   const { t } = useTranslation()
   const collRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const stopLossOpenFlowEnabled = useFeatureToggle('StopLossOpenFlow')
 
   // starting zero balance for UI to show arrows
   const zeroBalance = formatCryptoBalance(zero)
@@ -173,7 +173,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           <VaultChangesInformationEstimatedGasFee {...props} />
         </Grid>
       )}
-      {stopLossWriteEnabled && stopLossLevel.gt(zero) && !stopLossSkipped && (
+      {stopLossOpenFlowEnabled && stopLossLevel.gt(zero) && !stopLossSkipped && (
         <>
           <Box as="li" sx={{ listStyle: 'none' }}>
             <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

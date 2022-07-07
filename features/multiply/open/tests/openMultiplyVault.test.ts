@@ -343,8 +343,8 @@ describe('open multiply vault', () => {
       state().skipStopLoss!()
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
       state().progress!()
-      expect(state().id!).to.deep.equal(new BigNumber('3281'))
       expect(state().stage).to.deep.equal('txSuccess')
+      expect(state().id!).to.deep.equal(new BigNumber('3281'))
       state().progress!()
       expect(state().stage).to.deep.equal('editing')
     })
@@ -710,6 +710,7 @@ describe('open multiply vault', () => {
     })
 
     it('should skip stop loss step', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
 
       const state = getStateUnpacker(
@@ -730,6 +731,7 @@ describe('open multiply vault', () => {
     })
 
     it('should add stop loss successfully', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
       const stopLossLevel = new BigNumber('2')
 
@@ -757,6 +759,7 @@ describe('open multiply vault', () => {
     })
 
     it('should handle add stop loss failure', () => {
+      localStorage.setItem('features', '{"StopLossOpenFlow":true}')
       const depositAmount = new BigNumber('100')
       const stopLossLevel = new BigNumber('2')
 

@@ -5,6 +5,7 @@ import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
@@ -62,13 +63,18 @@ export function VaultChangesInformationContainer({
   title,
   children,
 }: { title: string } & WithChildren) {
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
   return (
     <Grid
       as="ul"
       sx={{
-        p: 3,
-        backgroundColor: 'secondaryAlt',
-        borderRadius: 'medium',
+        p: 0,
+        ...(newComponentsEnabled && {
+          p: 3,
+          backgroundColor: 'secondaryAlt',
+          borderRadius: 'medium',
+        }),
       }}
     >
       <Box as="li" sx={{ listStyle: 'none' }}>

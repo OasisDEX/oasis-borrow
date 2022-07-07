@@ -24,6 +24,7 @@ import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { zero } from 'helpers/zero'
 import React, { useMemo, useState } from 'react'
 
@@ -39,7 +40,7 @@ import { prepareTriggerData, StopLossTriggerData } from '../common/StopLossTrigg
 import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
 import { MULTIPLY_VAULT_PILL_CHANGE_SUBJECT } from '../common/UITypes/MultiplyVaultPillChange'
 import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
-import { AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
+import { AdjustSlFormLayout, AdjustSlFormLayoutProps } from './AdjustSlFormLayout'
 import { SidebarAdjustStopLoss } from './sidebar/SidebarAdjustStopLoss'
 
 export function prepareAddTriggerData(
@@ -329,5 +330,11 @@ export function AdjustSlFormControl({
     isStopLossEnabled,
   }
 
-  return <SidebarAdjustStopLoss {...props} />
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
+
+  return newComponentsEnabled ? (
+    <SidebarAdjustStopLoss {...props} />
+  ) : (
+    <AdjustSlFormLayout {...props} />
+  )
 }

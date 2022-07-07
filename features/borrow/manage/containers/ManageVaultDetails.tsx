@@ -6,6 +6,10 @@ import {
   getChangeVariant,
 } from 'components/DetailsSectionContentCard'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
+import { VaultDetailsCardCollateralLocked } from 'components/vault/detailsCards/VaultDetailsCardCollateralLocked'
+import { VaultDetailsCardCollateralizationRatio } from 'components/vault/detailsCards/VaultDetailsCardCollaterlizationRatio'
+import { VaultDetailsCardCurrentPrice } from 'components/vault/detailsCards/VaultDetailsCardCurrentPrice'
+import { VaultDetailsCardLiquidationPrice } from 'components/vault/detailsCards/VaultDetailsCardLiquidationPrice'
 import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardCollateralLocked } from 'components/vault/detailsSection/ContentCardCollateralLocked'
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
@@ -13,6 +17,7 @@ import { ContentCardLiquidationPrice } from 'components/vault/detailsSection/Con
 import { ContentFooterItemsBorrow } from 'components/vault/detailsSection/ContentFooterItemsBorrow'
 import {
   AfterPillProps,
+  getAfterPillColors,
   getCollRatioColor,
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
@@ -27,6 +32,7 @@ import { Grid } from 'theme-ui'
 
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 // import { GetProtectionBannerControl } from '../../../automation/protection/controls/GetProtectionBannerControl'
+import { StopLossBannerControl } from '../../../automation/protection/controls/StopLossBannerControl'
 import { StopLossTriggeredBannerControl } from '../../../automation/protection/controls/StopLossTriggeredBannerControl'
 import { BonusContainer } from '../../../bonus/BonusContainer'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -139,68 +145,121 @@ export function ManageVaultDetails(
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
   const afterCollRatioColor = getCollRatioColor(props, afterCollateralizationRatio)
+  const afterPillColors = getAfterPillColors(afterCollRatioColor)
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined
   const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const newComponentsEnabled = useFeatureToggle('NewComponents')
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
   return (
     <Grid>
-      {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBannerControl />}</>}
-      <DetailsSection
-        title={t('system.overview')}
-        content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
+      {stopLossReadEnabled && (
+        <>
+          {stopLossTriggered && <StopLossTriggeredBannerControl />}
+          {!newComponentsEnabled && stopLossWriteEnabled && (
+            <GetProtectionBannerControl vaultId={id} ilk={ilk} debt={debt} />
+          )}
+          {!newComponentsEnabled && (
+            <StopLossBannerControl
+              vaultId={id}
+              liquidationPrice={liquidationPrice}
+              liquidationRatio={liquidationRatio}
+              afterLiquidationPrice={afterLiquidationPrice}
+              showAfterPill={showAfterPill}
+            />
+          )}
+        </>
+      )}
+      {!newComponentsEnabled ? (
+        <>
+          <Grid variant="vaultDetailsCardsContainer">
+            <VaultDetailsCardLiquidationPrice
               liquidationPrice={liquidationPrice}
               liquidationRatio={liquidationRatio}
               liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
               afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
               vaultId={id}
             />
-            <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-              afterCollateralizationRatio={afterCollateralizationRatio}
-              changeVariant={changeVariant}
+            <VaultDetailsCardCollateralizationRatio
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
+              {...props}
             />
-            <ContentCardCollateralLocked
+
+            <VaultDetailsCardCurrentPrice {...props.priceInfo} />
+            <VaultDetailsCardCollateralLocked
+              depositAmountUSD={lockedCollateralUSD}
+              afterDepositAmountUSD={afterLockedCollateralUSD}
+              depositAmount={lockedCollateral}
               token={token}
-              lockedCollateralUSD={lockedCollateralUSD}
-              lockedCollateral={lockedCollateral}
-              afterLockedCollateralUSD={afterLockedCollateralUSD}
-              changeVariant={changeVariant}
+              afterPillColors={afterPillColors}
+              showAfterPill={showAfterPill}
             />
-            {slData && slData.isStopLossEnabled && (
-              <ContentCardDynamicStopPriceWithColRatio
-                slData={slData}
+          </Grid>
+          <ManageVaultDetailsSummary
+            {...props}
+            afterPillColors={afterPillColors}
+            showAfterPill={showAfterPill}
+          />
+        </>
+      ) : (
+        <DetailsSection
+          title={t('system.overview')}
+          content={
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
                 liquidationPrice={liquidationPrice}
-                afterLiquidationPrice={afterLiquidationPrice}
                 liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardCollateralizationRatio
+                collateralizationRatio={collateralizationRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                afterCollateralizationRatio={afterCollateralizationRatio}
                 changeVariant={changeVariant}
               />
-            )}
-          </DetailsSectionContentCardWrapper>
-        }
-        footer={
-          <DetailsSectionFooterItemWrapper>
-            <ContentFooterItemsBorrow
-              token={token}
-              debt={debt}
-              freeCollateral={freeCollateral}
-              afterDebt={afterDebt}
-              afterFreeCollateral={afterFreeCollateral}
-              daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
-              daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
-              changeVariant={changeVariant}
-            />
-          </DetailsSectionFooterItemWrapper>
-        }
-      />
-
-      {stopLossReadEnabled && stopLossWriteEnabled && (
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+              {slData && slData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={slData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          }
+          footer={
+            <DetailsSectionFooterItemWrapper>
+              <ContentFooterItemsBorrow
+                token={token}
+                debt={debt}
+                freeCollateral={freeCollateral}
+                afterDebt={afterDebt}
+                afterFreeCollateral={afterFreeCollateral}
+                daiYieldFromLockedCollateral={daiYieldFromLockedCollateral}
+                daiYieldFromTotalCollateral={daiYieldFromTotalCollateral}
+                changeVariant={changeVariant}
+              />
+            </DetailsSectionFooterItemWrapper>
+          }
+        />
+      )}
+      {stopLossReadEnabled && stopLossWriteEnabled && newComponentsEnabled && (
         <GetProtectionBannerControl vaultId={id} token={token} ilk={ilk} debt={debt} />
       )}
       <BonusContainer cdpId={props.vault.id} />
