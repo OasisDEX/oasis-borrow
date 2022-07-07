@@ -104,13 +104,6 @@ export const supportedIlks = [
   ...cropJoinIlks,
 ] as const
 
-export const ilksNotSupportedOnGoerli = [
-  'GUNIV3DAIUSDC1-A',
-  'GUNIV3DAIUSDC2-A',
-  ...charterIlks,
-  ...cropJoinIlks,
-] as const
-
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
   GUNIV3DAIUSDC1: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC1']),
@@ -290,8 +283,7 @@ const goerli: NetworkConfig = {
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
     MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
-    STETH: contractDesc(erc20, goerliAddresses['STETH']),
-    USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
+    stETH: contractDesc(erc20, goerliAddresses['STETH']),
   },
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
