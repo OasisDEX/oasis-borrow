@@ -6,6 +6,7 @@ type ConfiguredFeatures = Record<Feature, boolean>
 export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
+  | 'EarnProduct'
   | 'Automation'
   | 'AutomationBasicBuyAndSell'
   | 'StopLossRead'
@@ -15,6 +16,7 @@ export type Feature =
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
+  EarnProduct: true,
   Automation: true,
   AutomationBasicBuyAndSell: false,
   StopLossRead: true,

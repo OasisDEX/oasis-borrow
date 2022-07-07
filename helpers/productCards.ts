@@ -15,6 +15,7 @@ import {
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
+import { useFeatureToggle } from './useFeatureToggle'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -395,9 +396,18 @@ export function landingPageCardsData({
   productCardsData: ProductCardData[]
   product?: ProductTypes
 }) {
-  return productCardsData.filter((ilk) =>
-    productCardsConfig.landing.featuredCards[product].includes(ilk.ilk),
-  )
+  const earnEnabled = useFeatureToggle('EarnProduct')
+
+  return productCardsData.filter((ilk) => {
+    if (product === 'multiply') {
+      return getMultiplyFeaturedCardsDependsOnEarnToggle(
+        productCardsConfig.landing.featuredCards[product],
+        earnEnabled,
+      ).includes(ilk.ilk)
+    } else {
+      return productCardsConfig.landing.featuredCards[product].includes(ilk.ilk)
+    }
+  })
 }
 
 export function pageCardsDataByProduct({
@@ -438,6 +448,15 @@ function sortCards(
   return productCardsData
 }
 
+function getMultiplyFeaturedCardsDependsOnEarnToggle(cards: Ilk[], earnEnabled: boolean) {
+  if (earnEnabled) {
+    return cards
+  }
+  const featuredGUNI = 'GUNIV3DAIUSDC2-A'
+
+  return [...cards.slice(0, -1), featuredGUNI]
+}
+
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
   return productCardsData.filter((data) =>
     ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
@@ -451,6 +470,7 @@ export function multiplyPageCardsData({
   productCardsData: ProductCardData[]
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
+  const earnEnabled = useFeatureToggle('EarnProduct')
   productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
 
   const multiplyTokens = productCardsData.filter((ilk) =>
@@ -459,7 +479,10 @@ export function multiplyPageCardsData({
 
   if (cardsFilter === 'Featured') {
     return productCardsData.filter((ilk) =>
-      productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
+      getMultiplyFeaturedCardsDependsOnEarnToggle(
+        productCardsConfig.multiply.featuredCards,
+        earnEnabled,
+      ).includes(ilk.ilk),
     )
   }
 
