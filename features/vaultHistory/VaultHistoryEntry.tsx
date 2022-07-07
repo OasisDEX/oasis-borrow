@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
-import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
 import {
@@ -10,7 +9,6 @@ import {
   formatFiatBalance,
   formatPercent,
 } from 'helpers/formatters/format'
-import { interpolate } from 'helpers/interpolate'
 import { WithChildren } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import moment from 'moment'
@@ -18,6 +16,8 @@ import { TFunction, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Box, Flex, Text } from 'theme-ui'
 
+import { DefinitionList, DefinitionListItem } from '../../components/DefinitionList'
+import { interpolate } from '../../helpers/interpolate'
 import { VaultHistoryEvent } from './vaultHistory'
 
 export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
