@@ -8,7 +8,7 @@ import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
 import { TxError } from 'helpers/types'
 
 export function warningsBasicSellValidation({
-  vault,
+  token,
   gasEstimationUsd,
   ethBalance,
   ethPrice,
@@ -19,7 +19,7 @@ export function warningsBasicSellValidation({
   isAutoBuyEnabled,
   basicSellState,
 }: {
-  vault: Vault
+  token: string
   ethBalance: BigNumber
   ethPrice: BigNumber
   sliderMin: BigNumber
@@ -31,7 +31,7 @@ export function warningsBasicSellValidation({
   minSellPrice?: BigNumber
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
-    token: vault.token,
+    token,
     gasEstimationUsd,
     ethBalance,
     ethPrice,
@@ -44,16 +44,11 @@ export function warningsBasicSellValidation({
   const basicSellTargetCloseToAutoBuyTrigger =
     isAutoBuyEnabled && basicSellState.targetCollRatio.isEqualTo(sliderMax)
 
-  const autoSellTriggeredImmediately = basicSellState.execCollRatio
-    .div(100)
-    .gte(vault.collateralizationRatioAtNextPrice)
-
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     noMinSellPriceWhenStopLossEnabled,
     basicSellTriggerCloseToStopLossTrigger,
     basicSellTargetCloseToAutoBuyTrigger,
-    autoSellTriggeredImmediately,
   })
 }
 
@@ -64,7 +59,6 @@ export function errorsBasicSellValidation({
   debtDelta,
   targetCollRatio,
   withThreshold,
-  isRemoveForm,
   minSellPrice,
 }: {
   txError?: TxError
@@ -73,19 +67,60 @@ export function errorsBasicSellValidation({
   debtDelta: BigNumber
   targetCollRatio: BigNumber
   withThreshold: boolean
-  isRemoveForm: boolean
   minSellPrice?: BigNumber
 }) {
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
   const targetCollRatioExceededDustLimitCollRatio =
     !targetCollRatio.isZero() && ilkData.debtFloor.gt(vault.debt.plus(debtDelta))
 
-  const minimumSellPriceNotProvided =
-    !isRemoveForm && withThreshold && (!minSellPrice || minSellPrice.isZero())
+  const minimumSellPriceNotProvided = withThreshold && (!minSellPrice || minSellPrice.isZero())
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
+  })
+}
+
+export function errorsAddBasicBuyValidation({
+  txError,
+  maxBuyPrice,
+  withThreshold,
+}: {
+  txError?: TxError
+  maxBuyPrice?: BigNumber
+  withThreshold: boolean
+}) {
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+
+  const autoBuyMaxBuyPriceNotSpecified = withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
+  return errorMessagesHandler({ insufficientEthFundsForTx, autoBuyMaxBuyPriceNotSpecified })
+}
+
+export function warningsBasicBuyValidation({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  withThreshold,
+}: {
+  token: string
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  gasEstimationUsd?: BigNumber
+  withThreshold: boolean
+}) {
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const settingAutoBuyTriggerWithNoThreshold = !withThreshold
+
+  return warningMessagesHandler({
+    potentialInsufficientEthFundsForTx,
+    settingAutoBuyTriggerWithNoThreshold,
   })
 }
