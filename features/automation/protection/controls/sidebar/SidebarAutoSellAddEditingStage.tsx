@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -21,6 +22,7 @@ import { handleNumericInput } from 'helpers/input'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
+import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
   priceInfo: PriceInfo
@@ -107,6 +109,12 @@ export function SidebarAutoSellAddEditingStage({
 
   return (
     <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        {t('auto-sell.set-trigger-description')}{' '}
+        {/* <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+          {t('here')}.
+        </AppLink> */}
+      </Text>{' '}
       <MultipleRangeSlider
         min={sliderMin.toNumber()}
         max={sliderMax.toNumber()}
@@ -170,7 +178,6 @@ export function SidebarAutoSellAddEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-
       <SidebarResetButton
         clear={() => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
