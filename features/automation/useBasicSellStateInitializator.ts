@@ -59,8 +59,8 @@ export function useBasicBSstateInitialization(
       deviation,
     })
     uiChanges.publish(publishKey, {
-      type: 'max-gas-gwei-price',
-      maxGasGweiPrice: '100',
+      type: 'max-gas-percentage-price',
+      maxGasPercentagePrice: 'FIVE',
     })
     uiChanges.publish(publishKey, {
       type: 'with-threshold',

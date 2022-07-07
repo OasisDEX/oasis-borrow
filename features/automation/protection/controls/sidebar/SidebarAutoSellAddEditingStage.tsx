@@ -184,10 +184,10 @@ export function SidebarAutoSellAddEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasGweiPrice) => {
+        onChange={(maxGasPercentagePrice) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-            type: 'max-gas-gwei-price',
-            maxGasGweiPrice,
+            type: 'max-gas-percentage-price',
+            maxGasPercentagePrice,
           })
         }}
         defaultValue={uiStateBasicSell.maxGasPercentagePrice}

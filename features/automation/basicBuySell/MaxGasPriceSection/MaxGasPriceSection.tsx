@@ -3,14 +3,14 @@ import { Item } from 'components/infoSection/Item'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useState } from 'react'
 
-export type MaxGasPriceValues = '100' | '300' | '500' | 'NO_LIMIT'
+export type MaxGasPriceValues = 'FIVE' | 'TEN' | 'TWELVE_POINT_FIVE' | 'NO_LIMIT'
 
 interface MaxGasPriceSectionProps {
   onChange: (item: MaxGasPriceValues) => void
   defaultValue?: MaxGasPriceValues
 }
 
-export function MaxGasPriceSection({ onChange, defaultValue = '100' }: MaxGasPriceSectionProps) {
+export function MaxGasPriceSection({ onChange, defaultValue = 'FIVE' }: MaxGasPriceSectionProps) {
   const { t } = useTranslation()
   const [active, setActiveItem] = useState<MaxGasPriceValues>(defaultValue)
 
@@ -37,24 +37,24 @@ export function MaxGasPriceSection({ onChange, defaultValue = '100' }: MaxGasPri
                 variant="secondary"
                 items={[
                   {
-                    id: '100',
-                    label: '100 Gwei',
+                    id: 'FIVE',
+                    label: '5%',
                     action: () => {
-                      handleChange('100')
+                      handleChange('FIVE')
                     },
                   },
                   {
-                    id: '300',
-                    label: '300 Gwei',
+                    id: 'TEN',
+                    label: '10%',
                     action: () => {
-                      handleChange('300')
+                      handleChange('TEN')
                     },
                   },
                   {
-                    id: '500',
-                    label: '500 Gwei',
+                    id: 'TWELVE_POINT_FIVE',
+                    label: '12.5%',
                     action: () => {
-                      handleChange('500')
+                      handleChange('TWELVE_POINT_FIVE')
                     },
                   },
                   {
