@@ -10,7 +10,7 @@ import { BackgroundLight } from 'theme/BackgroundLight'
 import { BackgroundLighter } from 'theme/BackgroundLighter'
 
 import { ProductBackground } from '../theme/ProductBackground'
-import { Announcement } from './Announcement'
+import { GenericAnnouncement } from './Announcement'
 import { ModalTrezorMetamaskEIP1559 } from './Modal'
 
 interface BasicLayoutProps extends WithChildren {
@@ -63,8 +63,9 @@ export function WithAnnouncementLayout({
       {header}
       {showAnnouncement && (
         <Container variant="announcement">
-          <Announcement
-            text="Welcome to the new Oasis.app. We are thrilled to have you here."
+          <GenericAnnouncement
+            text="Welcome to the new Oasis.app. We are thrilled to have you here. Please check the new stuff. How long can it go is that I
+        m curious"
             discordLink="https://discord.gg/oasisapp"
             link="https://blog.ethereum.org/2015/11/15/merkling-in-ethereum/"
             linkText="Check blog post"

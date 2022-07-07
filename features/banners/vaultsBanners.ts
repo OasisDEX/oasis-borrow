@@ -10,7 +10,7 @@ import { map, startWith, switchMap } from 'rxjs/operators'
 
 type BannerTypes = 'ownership' | 'liquidating' | 'liquidated' | 'liquidatingNextPrice'
 
-export type VaultNoticesState = Pick<
+export type VaultBannersState = Pick<
   Vault,
   | 'id'
   | 'token'
@@ -26,7 +26,7 @@ export type VaultNoticesState = Pick<
     isVaultController: boolean
   }
 
-function assignBanner(state: VaultNoticesState): VaultNoticesState {
+function assignBanner(state: VaultBannersState): VaultBannersState {
   const {
     hasBeenLiquidated,
     account,
@@ -74,13 +74,13 @@ function eventsFromLastWeek(event: VaultHistoryEvent) {
   return moment(event.timestamp).isAfter(moment().subtract(1, 'weeks'))
 }
 
-export function createVaultsNotices$(
+export function createVaultsBanners$(
   context$: Observable<Context>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   vaultHistory$: (id: BigNumber, chainId: number) => Observable<VaultHistoryEvent[]>,
   id: BigNumber,
-): Observable<VaultNoticesState> {
+): Observable<VaultBannersState> {
   return context$.pipe(
     switchMap((context) => {
       return combineLatest(
@@ -124,7 +124,7 @@ export function createVaultsNotices$(
             }
 
             if (context.status !== 'connected') {
-              return of(state as VaultNoticesState)
+              return of(state as VaultBannersState)
             }
 
             return priceInfo$(token).pipe(

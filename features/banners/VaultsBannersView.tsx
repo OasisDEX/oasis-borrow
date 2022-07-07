@@ -1,8 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { Banner } from 'components/Banner'
 import { AppLink } from 'components/Links'
-import { Notice } from 'components/Notice'
 import { ReclaimCollateralButton } from 'features/reclaimCollateral/reclaimCollateralView'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
@@ -15,9 +15,9 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Box, Flex, Grid, Heading, SxStyleProp, Text } from 'theme-ui'
 
 import { useTheme } from '../../theme/useThemeUI'
-import { VaultNoticesState } from './vaultsNotices'
+import { VaultBannersState } from './vaultsBanners'
 
-type VaultNoticeProps = {
+type VaultBannerProps = {
   status?: JSX.Element
   header: JSX.Element | string
   subheader?: JSX.Element | string | false
@@ -41,20 +41,19 @@ function StatusFrame({ children, sx }: WithChildren & { sx?: SxStyleProp }) {
     </Flex>
   )
 }
-
-export function VaultNotice({
+export function VaultBanner({
   status,
   header,
   subheader,
   color,
   withClose = true,
-}: VaultNoticeProps & { color: string }) {
+}: VaultBannerProps & { color: string }) {
   const [isVisible, setIsVisible] = useState(true)
 
   return (
     <>
       {isVisible && (
-        <Notice close={() => setIsVisible(false)} withClose={withClose}>
+        <Banner close={() => setIsVisible(false)} withClose={withClose}>
           <Flex sx={{ py: 2, pr: [2, 5] }}>
             {status && <Box sx={{ mr: 4, flexShrink: 0 }}>{status}</Box>}
             <Grid gap={2} sx={{ alignItems: 'center' }}>
@@ -68,20 +67,20 @@ export function VaultNotice({
               )}
             </Grid>
           </Flex>
-        </Notice>
+        </Banner>
       )}
     </>
   )
 }
 
-export function VaultLiquidatingNextPriceNotice({
+export function VaultLiquidatingNextPriceBanner({
   id,
   token,
   isVaultController,
   controller,
   dateNextCollateralPrice,
 }: Pick<
-  VaultNoticesState,
+  VaultBannersState,
   'id' | 'token' | 'isVaultController' | 'controller' | 'dateNextCollateralPrice'
 >) {
   const { t } = useTranslation()
@@ -92,7 +91,7 @@ export function VaultLiquidatingNextPriceNotice({
   }
 
   return (
-    <VaultNotice
+    <VaultBanner
       status={useMemo(
         () => (
           <VaultNextPriceUpdateCounter
@@ -115,15 +114,15 @@ export function VaultLiquidatingNextPriceNotice({
       )}
       header={`${
         isVaultController
-          ? t('vault-notices.liquidating.header1', headerTranslationOptions)
-          : t('vault-notices.liquidating.header2', headerTranslationOptions)
+          ? t('vault-banners.liquidating.header1', headerTranslationOptions)
+          : t('vault-banners.liquidating.header2', headerTranslationOptions)
       }`}
       subheader={`
-        ${t('vault-notices.liquidating.subheader1', { collateral: token.toUpperCase() })}
+        ${t('vault-banners.liquidating.subheader1', { collateral: token.toUpperCase() })}
         ${
           !isVaultController && controller
-            ? t('vault-notices.liquidating.subheader2', { address: formatAddress(controller) })
-            : t('vault-notices.liquidating.subheader1')
+            ? t('vault-banners.liquidating.subheader2', { address: formatAddress(controller) })
+            : t('vault-banners.liquidating.subheader1')
         }
       `}
       color="banner.warning"
@@ -134,24 +133,24 @@ export function VaultLiquidatingNextPriceNotice({
 export function VaultOwnershipBanner({
   controller,
   account,
-}: Pick<VaultNoticesState, 'controller' | 'account'>) {
+}: Pick<VaultBannersState, 'controller' | 'account'>) {
   const { t } = useTranslation()
 
   if (!controller) return null
   return (
-    <VaultNotice
+    <VaultBanner
       status={
         <StatusFrame>
           <Icon size="auto" width="24" height="24" name="bannerWallet" />
         </StatusFrame>
       }
-      header={t('vault-notices.ownership.header', { address: formatAddress(controller) })}
+      header={t('vault-banners.ownership.header', { address: formatAddress(controller) })}
       subheader={
         !account ? (
-          `${t('vault-notices.ownership.subheader1')}`
+          `${t('vault-banners.ownership.subheader1')}`
         ) : (
           <Text>
-            {t('vault-notices.ownership.subheader2')}{' '}
+            {t('vault-banners.ownership.subheader2')}{' '}
             <AppLink href={`/owner/${account}`} target="_blank">
               {t('here')}
             </AppLink>
@@ -163,7 +162,7 @@ export function VaultOwnershipBanner({
   )
 }
 
-export function VaultOverviewOwnershipNotice({
+export function VaultOverviewOwnershipBanner({
   controller,
   account,
 }: {
@@ -173,7 +172,7 @@ export function VaultOverviewOwnershipNotice({
   const { t } = useTranslation()
 
   return (
-    <VaultNotice
+    <VaultBanner
       status={
         <StatusFrame>
           <Icon size="auto" width="24" height="24" name="bannerWallet" />
@@ -193,12 +192,12 @@ export function VaultOverviewOwnershipNotice({
   )
 }
 
-export function VaultLiquidatingNotice({
+export function VaultLiquidatingBanner({
   id,
   token,
   isVaultController,
   controller,
-}: Pick<VaultNoticesState, 'id' | 'token' | 'isVaultController' | 'controller'>) {
+}: Pick<VaultBannersState, 'id' | 'token' | 'isVaultController' | 'controller'>) {
   const { t } = useTranslation()
 
   const headerTranslationOptions = {
@@ -207,15 +206,15 @@ export function VaultLiquidatingNotice({
   }
 
   const header = isVaultController
-    ? t('vault-notices.liquidating.header1', headerTranslationOptions)
-    : t('vault-notices.liquidating.header2', headerTranslationOptions)
+    ? t('vault-banners.liquidating.header1', headerTranslationOptions)
+    : t('vault-banners.liquidating.header2', headerTranslationOptions)
 
   const subheader = isVaultController
-    ? t('vault-notices.liquidating.subheader3')
-    : t('vault-notices.liquidating.subheader2', { address: controller })
+    ? t('vault-banners.liquidating.subheader3')
+    : t('vault-banners.liquidating.subheader2', { address: controller })
 
   return (
-    <VaultNotice
+    <VaultBanner
       status={
         <>
           <StatusFrame
@@ -234,47 +233,44 @@ export function VaultLiquidatingNotice({
   )
 }
 
-export function VaultLiquidatedNotice({
+export function VaultLiquidatedBanner({
   unlockedCollateral,
   isVaultController,
   controller,
   token,
   id,
 }: Pick<
-  VaultNoticesState,
+  VaultBannersState,
   'unlockedCollateral' | 'controller' | 'token' | 'id' | 'isVaultController'
 >) {
   const { t } = useTranslation()
 
   const header = isVaultController
-    ? t('vault-notices.liquidated.header1')
-    : t('vault-notices.liquidated.header2')
-
-  const fallbackSubheader = controller
-    ? `${t('vault-notices.liquidated.subheader3')} ${t('vault-notices.liquidated.subheader4', {
-        address: formatAddress(controller),
-      })}`
-    : t('vault-notices.liquidated.subheader3')
-
+    ? t('vault-banners.liquidated.header1')
+    : t('vault-banners.liquidated.header2')
   const subheader =
     unlockedCollateral.gt(zero) &&
     (isVaultController ? (
       <>
         <Text sx={{ mb: 3 }}>
-          {t('vault-notices.liquidated.subheader1')}{' '}
-          {t('vault-notices.liquidated.subheader2', {
+          {t('vault-banners.liquidated.subheader1')}{' '}
+          {t('vault-banners.liquidated.subheader2', {
             amount: formatCryptoBalance(unlockedCollateral),
             collateral: token.toUpperCase(),
           })}
         </Text>
         <ReclaimCollateralButton {...{ token, id, amount: unlockedCollateral }} />
       </>
+    ) : controller ? (
+      `${t('vault-banners.liquidated.subheader3')} ${t('vault-banners.liquidated.subheader4', {
+        address: formatAddress(controller),
+      })}`
     ) : (
-      fallbackSubheader
+      t('vault-banners.liquidated.subheader3')
     ))
 
   return (
-    <VaultNotice
+    <VaultBanner
       status={
         <>
           <StatusFrame
@@ -356,8 +352,8 @@ export function VaultNextPriceUpdateCounter({
         // is set to 0 so it goes into finished state immediately.
         useEffect(() => {
           if (hasHitThreshold && remainingTime && remainingTime > 0) {
-            setConfig(({ key: _key }) => ({
-              key: _key - 1,
+            setConfig(({ key }) => ({
+              key: key - 1,
               duration: 0,
             }))
           }
@@ -378,7 +374,7 @@ export function VaultNextPriceUpdateCounter({
   )
 }
 
-export function VaultNoticesView({ id }: { id: BigNumber }) {
+export function VaultBannersView({ id }: { id: BigNumber }) {
   const { vaultBanners$ } = useAppContext()
   const [vaultBanners] = useObservable(vaultBanners$(id))
 
@@ -397,7 +393,7 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
   switch (banner) {
     case 'liquidated':
       return (
-        <VaultLiquidatedNotice
+        <VaultLiquidatedBanner
           {...{
             unlockedCollateral,
             token,
@@ -408,12 +404,12 @@ export function VaultNoticesView({ id }: { id: BigNumber }) {
         />
       )
     case 'liquidating':
-      return <VaultLiquidatingNotice {...{ token, id, controller, isVaultController }} />
+      return <VaultLiquidatingBanner {...{ token, id, controller, isVaultController }} />
     case 'ownership':
       return <VaultOwnershipBanner {...{ account, controller }} />
     case 'liquidatingNextPrice':
       return (
-        <VaultLiquidatingNextPriceNotice
+        <VaultLiquidatingNextPriceBanner
           {...{ token, id, dateNextCollateralPrice, isVaultController, controller }}
         />
       )

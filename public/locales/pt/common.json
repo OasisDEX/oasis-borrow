@@ -560,7 +560,7 @@
     "vaults-at-risk": "Cofres em risco",
     "your-vaults": "Seus Cofres"
   },
-  "vault-notices": {
+  "vault-banners": {
     "ownership": {
       "header": "Você está vendo o Cofre {{address}}",
       "subheader1": "Por favor, conecte sua carteira para abrir, gerir ou ver seus Cofres.",

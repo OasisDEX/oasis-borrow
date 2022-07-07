@@ -2,8 +2,8 @@ import { getNetworkName } from '@oasisdex/web3-context'
 import { BigNumber } from 'bignumber.js'
 import { isSupportedAutomationIlk } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
-import { Banner, bannerGradientPresets } from 'components/Banner'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { SetupBanner, setupBannerGradientPresets } from 'components/vault/SetupBanner'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -37,32 +37,30 @@ export function GetProtectionBannerControl({
 
   return !slData?.isStopLossEnabled && isAllowedForAutomation && !debt.isZero() ? (
     <>
-      <Banner
-        title={
+      <SetupBanner
+        header={
           !basicBSEnabled
             ? t('vault-banners.setup-stop-loss.header')
             : t('vault-banners.get-protection.header')
         }
-        description={
+        content={
           !basicBSEnabled
             ? t('vault-banners.setup-stop-loss.content', { token })
             : t('vault-banners.get-protection.content', { token })
         }
-        image={{
-          src: '/static/img/setup-banner/stop-loss.svg',
-          backgroundColor: bannerGradientPresets.stopLoss[0],
-          backgroundColorEnd: bannerGradientPresets.stopLoss[1],
-        }}
-        button={{
-          action: () => {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Protection,
-            })
-          },
-          text: !basicBSEnabled
+        button={
+          !basicBSEnabled
             ? t('vault-banners.setup-stop-loss.button')
-            : t('vault-banners.get-protection.button'),
+            : t('vault-banners.get-protection.button')
+        }
+        backgroundImage="/static/img/setup-banner/stop-loss.svg"
+        backgroundColor={setupBannerGradientPresets.stopLoss[0]}
+        backgroundColorEnd={setupBannerGradientPresets.stopLoss[1]}
+        handleClick={() => {
+          uiChanges.publish(TAB_CHANGE_SUBJECT, {
+            type: 'change-tab',
+            currentMode: VaultViewMode.Protection,
+          })
         }}
       />
     </>
