@@ -3,7 +3,6 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { handleNumericInput } from 'helpers/input'
-import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Divider, Flex, Grid, Slider, Text, useThemeUI } from 'theme-ui'
 
@@ -51,8 +50,6 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
         } 100%)`
       : 'primaryAlt'
 
-  const { t } = useTranslation()
-
   return (
     <Grid gap={4}>
       <Grid gap={2}>
@@ -70,7 +67,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
           onAuxiliaryChange={handleNumericInput(updateDepositUSD!)}
           maxAmount={maxDepositAmount}
           maxAuxiliaryAmount={maxDepositAmountUSD}
-          maxAmountLabel={t('balance')}
+          maxAmountLabel={'Balance'} // TODO add translation
           hasError={false}
         />
       </Grid>

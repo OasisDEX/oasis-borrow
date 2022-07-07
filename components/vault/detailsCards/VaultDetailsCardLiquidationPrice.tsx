@@ -150,6 +150,24 @@ export function VaultDetailsCardLiquidationPrice({
     )
   }
 
+  // TODO this condition should be removed on automation release
+  if (vaultId) {
+    return (
+      <VaultDetailsCard
+        {...cardDetailsData}
+        openModal={() =>
+          openModal(VaultDetailsLiquidationModal, {
+            liquidationPrice,
+            liquidationRatio,
+            liquidationPriceCurrentPriceDifference,
+            vaultId,
+            isStopLossEnabled: false,
+          })
+        }
+      />
+    )
+  }
+
   return (
     <VaultDetailsCard
       {...cardDetailsData}

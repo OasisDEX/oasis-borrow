@@ -13,6 +13,7 @@ import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTrig
 // TODO - ŁW - Implement tests for this file
 
 async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Promise<TriggersData> {
+  // TODO: ŁW what's wrong with GraphQLClient
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
     vaultId.toFixed(0),
