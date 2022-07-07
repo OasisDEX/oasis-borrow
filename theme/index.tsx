@@ -148,10 +148,6 @@ const oasisBaseTheme = {
       // deprecated, use header4
       variant: 'text.header4',
     },
-    header5: {
-      variant: 'text.header4',
-      fontSize: 3,
-    },
     paragraph1: {
       fontFamily: 'body',
       fontWeight: 'body',
@@ -404,12 +400,6 @@ const oasisBaseTheme = {
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
       borderRadius: 'large',
       padding: '32px',
-    },
-    faq: {
-      variant: 'cards.primary',
-      p: 4,
-      borderRadius: 'mediumLarge',
-      maxWidth: '711px',
     },
   },
   badges: {
@@ -1086,12 +1076,6 @@ const oasisBaseTheme = {
       gap: '0px',
     },
   },
-  separator: {
-    borderTop: '1px solid',
-    borderColor: 'border',
-    height: '1px',
-    width: '100%',
-  },
   styles: {
     root: {
       fontFamily: 'body',
@@ -1130,10 +1114,7 @@ const oasisBaseTheme = {
       variant: 'text.header3',
     },
     h4: {
-      variant: 'text.header4',
-    },
-    h5: {
-      variant: 'text.header5',
+      variant: 'text.microHeading',
     },
     a: {
       variant: 'text.paragraph3',
