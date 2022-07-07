@@ -1,10 +1,12 @@
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
 import { GasPriceParams } from 'blockchain/prices'
+import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentTable } from 'components/DetailsSectionContentTable'
 import { DetailsSectionFooterItemWrapper } from 'components/DetailsSectionFooterItem'
 import { ContentFooterItemsEarnSimulate } from 'components/vault/detailsSection/ContentFooterItemsEarnSimulate'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
 import {
   calculateBreakeven,
   calculateEarnings,
@@ -12,7 +14,6 @@ import {
   YieldPeriod,
 } from 'helpers/earn/calculations'
 import { OAZO_LOWER_FEE } from 'helpers/multiply/calculations'
-import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box } from 'theme-ui'
@@ -31,7 +32,7 @@ const examplePosition = {
 
 export enum EarnSimulateViewMode {
   Simulate = 'simulate',
-  FAQ = 'position-info',
+  FAQ = 'faq',
 }
 
 function calculateEntryFees(
@@ -55,7 +56,7 @@ function calculateEntryFees(
 export function GuniOpenMultiplyVaultDetails(
   props: OpenGuniVaultState & GasPriceParams & { ETH: BigNumber; DAI: BigNumber } & Yield,
 ) {
-  const setHash = useHash()[1]
+  const { uiChanges } = useAppContext()
   const { t } = useTranslation()
   const { token, yields } = props
 
@@ -159,7 +160,12 @@ export function GuniOpenMultiplyVaultDetails(
         description={t('vault-banners.what-are-the-risks.content')}
         button={{
           text: t('vault-banners.what-are-the-risks.button'),
-          action: () => setHash(EarnSimulateViewMode.FAQ),
+          action: () => {
+            uiChanges.publish(TAB_CHANGE_SUBJECT, {
+              type: 'change-tab',
+              currentMode: EarnSimulateViewMode.FAQ,
+            })
+          },
         }}
         image={{
           src: '/static/img/setup-banner/stop-loss.svg',
