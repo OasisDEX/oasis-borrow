@@ -82,11 +82,16 @@ export const supportedBorrowIlks = [
   'RENBTC-A',
   'LINK-A',
   'GUSD-A',
+  'UNI-A',
   'YFI-A',
   'MANA-A',
   'MATIC-A',
+  'UNIV2DAIETH-A',
+  'UNIV2WBTCETH-A',
   'UNIV2USDCETH-A',
   'UNIV2DAIUSDC-A',
+  'UNIV2UNIETH-A',
+  'UNIV2WBTCDAI-A',
   'CRVV1ETHSTETH-A',
   'WSTETH-B',
 ]
@@ -101,6 +106,7 @@ export const supportedMultiplyIlks = [
   'WBTC-C',
   'RENBTC-A',
   'LINK-A',
+  'UNI-A',
   'YFI-A',
   'MANA-A',
   'MATIC-A',
@@ -133,6 +139,7 @@ const genericFilters = {
     tokens: ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2'],
   },
   link: { name: 'LINK', icon: 'link_circle', urlFragment: 'link', tokens: ['LINK'] },
+  uni: { name: 'UNI', icon: 'uni_circle', urlFragment: 'uni', tokens: ['UNI'] },
   yfi: { name: 'YFI', icon: 'yfi_circle', urlFragment: 'yfi', tokens: ['YFI'] },
   mana: { name: 'MANA', icon: 'mana_circle', urlFragment: 'mana', tokens: ['MANA'] },
   matic: { name: 'MATIC', icon: 'matic_circle', urlFragment: 'matic', tokens: ['MATIC'] },
@@ -173,6 +180,7 @@ export const productCardsConfig: {
       genericFilters.btc,
       genericFilters.unilp,
       genericFilters.link,
+      genericFilters.uni,
       genericFilters.yfi,
       genericFilters.mana,
       genericFilters.matic,
@@ -199,6 +207,7 @@ export const productCardsConfig: {
       genericFilters.btc,
       genericFilters.unilp,
       genericFilters.link,
+      genericFilters.uni,
       genericFilters.yfi,
       genericFilters.mana,
       genericFilters.matic,
@@ -333,6 +342,11 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_4996750151161652792936142',
       name: 'Maker (YFI-A)',
     },
+    'UNI-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_5813529831231652792943692',
+      name: 'Maker (UNI-A)',
+    },
     'GUNIV3DAIUSDC1-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
@@ -343,12 +357,32 @@ export const productCardsConfig: {
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Gelato/Uniswap',
     },
+    'UNIV2DAIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
     'UNIV2USDCETH-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Uniswap',
     },
     'UNIV2DAIUSDC-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2UNIETH-A': {
+      link:
+        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      name: 'Maker/Uniswap',
+    },
+    'UNIV2WBTCDAI-A': {
       link:
         'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
       name: 'Maker/Uniswap',
@@ -369,16 +403,7 @@ function ethProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
 }
 
-const notSupportedAnymoreLpTokens = [
-  'UNIV2ETHUSDT',
-  'UNIV2LINKETH',
-  'UNIV2AAVEETH',
-  'UNIV2DAIUSDT',
-  'UNIV2DAIETH',
-  'UNIV2WBTCETH',
-  'UNIV2UNIETH',
-  'UNIV2WBTCDAI',
-]
+const notSupportedAnymoreLpTokens = ['UNIV2ETHUSDT', 'UNIV2LINKETH', 'UNIV2AAVEETH', 'UNIV2DAIUSDT']
 
 export function uniLpProductCards(productCardsData: ProductCardData[]) {
   return productCardsData.filter(
