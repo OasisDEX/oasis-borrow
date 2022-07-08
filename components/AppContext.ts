@@ -219,8 +219,10 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
@@ -866,15 +868,13 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      context$,
-      vaultWithValue$,
-      ilksWithBalance$,
-      automationTriggersData$,
-      vaultHistory$,
-    ),
+  const vaultsHistory$ = memoize(curry(vaultsWithHistory$)(context$, vaults$))
+
+  const positionsList$ = memoize(
+    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistory$, 1000 * 60 * 5),
   )
+
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(

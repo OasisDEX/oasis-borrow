@@ -2,8 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
-import flatten from 'lodash/flatten'
+import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
@@ -243,6 +242,28 @@ function addReclaimFlag(events: VaultHistoryEvent[]) {
   })
 }
 
+export function flatEvents([events, automationEvents]: [
+  ReturnedEvent[],
+  ReturnedAutomationEvent[],
+]) {
+  return flatten(
+    [...events, ...automationEvents]
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
+      .map(parseBigNumbersFields),
+  )
+}
+
+function mapEventsToVaultEvents(
+  events$: Observable<[ReturnedEvent[], ReturnedAutomationEvent[]]>,
+): Observable<VaultEvent[]> {
+  return events$.pipe(
+    map(([returnedEvents, returnedAutomationEvents]) =>
+      flatEvents([returnedEvents, returnedAutomationEvents]),
+    ),
+  )
+}
+
 export function createVaultHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
@@ -263,14 +284,7 @@ export function createVaultHistory$(
             getVaultAutomationHistory(apiClient, id),
           )
         }),
-        map(([returnedEvents, returnedAutomationEvents]) =>
-          flatten(
-            [...returnedEvents, ...returnedAutomationEvents]
-              .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-              .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields),
-          ),
-        ),
+        mapEventsToVaultEvents,
         map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
         map(addReclaimFlag),
         catchError(() => of([])),

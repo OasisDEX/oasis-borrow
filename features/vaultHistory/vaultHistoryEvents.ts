@@ -294,6 +294,7 @@ export interface ReturnedEvent {
   txId: string
   blockId: string
   rate: string
+  urn: string
 }
 
 export interface ReturnedAutomationEvent {
