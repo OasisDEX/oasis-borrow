@@ -1468,8 +1468,8 @@
     "cancelling-auto-buy": "Cancelling your Auto-Buy"
   },
   "optimization": {
-    "zero-debt-heading": "You need to generate Dai before you can set up Optimization",
-    "zero-debt-description": "Oasis Optimization allows you to set up a dynamic Auto-Buy for your Vault based on the Collateralisation Ratio. In the case of a sharp upturn in the price of the Vaults collateral, have your Vault automatically maintained on specified Collateralisation Ratio (target) by setting Auto-Buy order using Execution Trigger Ratio. Learn more about how it works",
+    "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
+    "zero-debt-description": "Oasis.app Optimization allows you to set up a dynamic Auto-Buy Strategy on your vault based on the collateralization ratio. This will increase your exposure to the collateral asset as the price increased. Learn more about how it works",
     "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
     "unable-to-access-auto-buy": "Unable to access Optimization"
