@@ -32,6 +32,7 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'txError'
   | 'vault'
   | 'isAutoSellEnabled'
+  | 'isStopLossEnabled'
 >
 
 export function SidebarAdjustStopLossEditingStage({
@@ -52,6 +53,7 @@ export function SidebarAdjustStopLossEditingStage({
   vault,
   vault: { debt },
   isAutoSellEnabled,
+  isStopLossEnabled,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
@@ -65,6 +67,16 @@ export function SidebarAdjustStopLossEditingStage({
     triggerRatio: selectedSLValue,
     isAutoSellEnabled,
   })
+  const isVaultEmpty = vault.debt.isZero()
+
+  if (isVaultEmpty && !isStopLossEnabled) {
+    return (
+      <SidebarFormInfo
+        title={t('protection.closed-vault-not-existing-trigger-header')}
+        description={t('protection.closed-vault-not-existing-trigger-description')}
+      />
+    )
+  }
 
   return (
     <>

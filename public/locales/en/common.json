@@ -1133,7 +1133,9 @@
     "no-threshold": "No threshold set",
     "set-no-threshold": "Set No Threshold",
     "set-threshold": "Set Threshold",
-    "unable-to-access-protection": "Unable to access Protection"
+    "unable-to-access-protection": "Unable to access Protection",
+    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
+    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
