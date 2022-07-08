@@ -6,6 +6,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -19,6 +20,7 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -109,6 +111,36 @@ export function SidebarAutoSellAddEditingStage({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
+  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const isVaultEmpty = vault.debt.isZero()
+
+  if (readOnlyBasicBSEnabled && !isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-sell.adding-new-triggers-disabled')}
+        description={t('auto-sell.adding-new-triggers-disabled-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty && autoSellTriggerData.isTriggerEnabled) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-sell.closed-vault-existing-trigger-header')}
+        description={t('auto-sell.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-sell.closed-vault-not-existing-trigger-header')}
+        description={t('auto-sell.closed-vault-not-existing-trigger-description')}
+      />
+    )
+  }
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>

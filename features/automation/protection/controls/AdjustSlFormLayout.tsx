@@ -1,31 +1,21 @@
 import { TxStatus } from '@oasisdex/transactions'
-import { Box, Grid } from '@theme-ui/components'
+import { Box } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { PickCloseState, PickCloseStateProps } from 'components/dumb/PickCloseState'
+import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
-import { SliderValuePicker, SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
-import { TxStatusSection } from 'components/dumb/TxStatusSection'
-import { AppLink } from 'components/Links'
+import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
-import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { TxError } from 'helpers/types'
-import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
-import { Divider, Flex, Image } from 'theme-ui'
-import { OpenVaultAnimation } from 'theme/animations'
-
-import { isTxStatusFailed } from '../common/AutomationTransactionPlunger'
-import { AutomationFormButtons } from '../common/components/AutomationFormButtons'
-import { AutomationFormHeader } from '../common/components/AutomationFormHeader'
+import { Flex } from 'theme-ui'
 
 interface AdjustSlFormInformationProps {
   tokenPrice: BigNumber
@@ -217,179 +207,4 @@ export interface AdjustSlFormLayoutProps {
   redirectToCloseVault: () => void
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
-}
-
-export function slCollRatioNearLiquidationRatio(selectedSLValue: BigNumber, ilkData: IlkData) {
-  const margin = 5
-  return selectedSLValue.lte(ilkData.liquidationRatio.multipliedBy(100).plus(margin))
-}
-
-export function slRatioHigherThanCurrentOrNext(
-  selectedSLValue: BigNumber,
-  collateralizationRatioAtNextPrice: BigNumber,
-  currentCollateralRatio: BigNumber,
-) {
-  return (
-    selectedSLValue.gte(collateralizationRatioAtNextPrice.multipliedBy(100)) ||
-    selectedSLValue.gte(currentCollateralRatio.multipliedBy(100))
-  )
-}
-
-export function AdjustSlFormLayout({
-  token,
-  txProgressing,
-  txState,
-  txHash,
-  txError,
-  txCost,
-  slValuePickerConfig,
-  closePickerConfig,
-  accountIsController,
-  addTriggerConfig,
-  tokenPrice,
-  ethPrice,
-  vault,
-  ilkData,
-  gasEstimation,
-  etherscan,
-  toggleForms,
-  selectedSLValue,
-  firstStopLossSetup,
-  isEditing,
-  collateralizationRatioAtNextPrice,
-  ethBalance,
-  gasEstimationUsd,
-  currentCollateralRatio,
-}: AdjustSlFormLayoutProps) {
-  const { t } = useTranslation()
-  const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-
-  return (
-    <Grid columns={[1]}>
-      <AutomationFormHeader
-        txProgressing={txProgressing}
-        txSuccess={txState === TxStatus.Success}
-        translations={{
-          editing: {
-            header: !vault.debt.isZero()
-              ? t('protection.set-downside-protection')
-              : t('protection.closed-vault-existing-sl-header'),
-            description:
-              stopLossWriteEnabled || vault.debt.isZero() ? (
-                !vault.debt.isZero() ? (
-                  <>
-                    {t('protection.set-downside-protection-desc')}{' '}
-                    <AppLink
-                      href="https://kb.oasis.app/help/stop-loss-protection"
-                      sx={{ fontSize: 2 }}
-                    >
-                      {t('here')}.
-                    </AppLink>
-                  </>
-                ) : (
-                  <>{t('protection.closed-vault-existing-sl-description')}</>
-                )
-              ) : (
-                "Due to extreme adversarial market conditions we have currently disabled setting up new stop loss triggers, as they might not result in the expected outcome for our users. Please use the 'close vault' option if you want to close your vault right now."
-              ),
-          },
-          progressing: {
-            header: t('protection.setting-downside-protection'),
-            description: t('protection.setting-downside-protection-desc'),
-          },
-          success: {
-            header: t(
-              firstStopLossSetup
-                ? 'protection.downside-protection-complete'
-                : 'protection.downside-protection-updated',
-            ),
-            description: (
-              <>
-                {t('protection.downside-protection-complete-desc')}{' '}
-                <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
-                  {t('here')}.
-                </AppLink>
-              </>
-            ),
-          },
-        }}
-      />
-      {txProgressing && <OpenVaultAnimation />}
-      {stopLossWriteEnabled && !txProgressing && txState !== TxStatus.Success && (
-        <>
-          {!vault.debt.isZero() && (
-            <>
-              <Box mt={3}>
-                <SliderValuePicker {...slValuePickerConfig} />
-              </Box>
-              <Box>
-                <PickCloseState {...closePickerConfig} />
-              </Box>
-            </>
-          )}
-          {isEditing && (
-            <>
-              <Box>
-                <Divider variant="styles.hrVaultFormBottom" mb={3} />
-              </Box>
-              <Box>
-                <SetDownsideProtectionInformation
-                  token={token}
-                  vault={vault}
-                  ilkData={ilkData}
-                  gasEstimation={gasEstimation}
-                  gasEstimationUsd={gasEstimationUsd}
-                  afterStopLossRatio={selectedSLValue}
-                  tokenPrice={tokenPrice}
-                  ethPrice={ethPrice}
-                  isCollateralActive={closePickerConfig.isCollateralActive}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-                  selectedSLValue={selectedSLValue}
-                  ethBalance={ethBalance}
-                  txError={txError}
-                  currentCollateralRatio={currentCollateralRatio}
-                />
-              </Box>
-            </>
-          )}
-        </>
-      )}
-
-      {txState === TxStatus.Success && (
-        <>
-          <Box>
-            <Flex sx={{ justifyContent: 'center', transform: 'translateX(5%)', mb: 4 }}>
-              <Image src={staticFilesRuntimeUrl('/static/img/protection_complete.svg')} />
-            </Flex>
-            <Divider variant="styles.hrVaultFormBottom" mb={4} />
-            <ProtectionCompleteInformation
-              token={token}
-              txState={txState}
-              afterStopLossRatio={selectedSLValue}
-              tokenPrice={tokenPrice}
-              vault={vault}
-              ilkData={ilkData}
-              isCollateralActive={closePickerConfig.isCollateralActive}
-              txCost={txCost!}
-            />
-          </Box>
-          <Box>
-            <VaultChangesWithADelayCard />
-          </Box>
-        </>
-      )}
-      <Box>
-        <TxStatusSection txStatus={txState} txHash={txHash} etherscan={etherscan} />
-      </Box>
-      {accountIsController && !txProgressing && (
-        <AutomationFormButtons
-          triggerConfig={addTriggerConfig}
-          toggleForms={toggleForms}
-          toggleKey="protection.navigate-cancel"
-          txSuccess={txState === TxStatus.Success}
-          txError={txState && isTxStatusFailed(txState)}
-        />
-      )}
-    </Grid>
-  )
 }

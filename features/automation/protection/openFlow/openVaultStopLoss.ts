@@ -138,6 +138,7 @@ export function getDataForStopLoss(
     gasEstimation: null,
     currentCollateralRatio: afterCollateralizationRatio,
     isAutoSellEnabled: false,
+    isStopLossEnabled: false,
   }
 
   return sidebarProps
