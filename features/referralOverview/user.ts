@@ -1,4 +1,5 @@
 import { TxState, TxStatus } from '@oasisdex/transactions'
+import { amountFromWei } from '@oasisdex/utils'
 import { Web3Context } from '@oasisdex/web3-context'
 import { User, WeeklyClaim } from '@prisma/client'
 import BigNumber from 'bignumber.js'
@@ -6,8 +7,8 @@ import { claimMultiple, ClaimMultipleData } from 'blockchain/calls/merkleRedeeme
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { networksById } from 'blockchain/config'
 import { TxHelpers } from 'components/AppContext'
-import { ethers } from 'ethers'
 import { gql, GraphQLClient } from 'graphql-request'
+import { formatAmount } from 'helpers/formatters/format'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
 
@@ -80,8 +81,8 @@ export function createUserReferral$(
           )
 
           const claimsOut = {
-            weeks: filteredWeeklyClaims?.map((item) => ethers.BigNumber.from(item.week_number)),
-            amounts: filteredWeeklyClaims?.map((item) => ethers.BigNumber.from(item.amount)),
+            weeks: filteredWeeklyClaims?.map((item) => new BigNumber(item.week_number)),
+            amounts: filteredWeeklyClaims?.map((item) => new BigNumber(item.amount)),
             proofs: filteredWeeklyClaims?.map((item) => item.proof),
           }
 
@@ -148,15 +149,14 @@ export function createUserReferral$(
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,
-              totalAmount: new BigNumber(
-                ethers.utils.formatEther(ethers.BigNumber.from(user.total_amount)),
-              ).toFixed(2),
+              totalAmount: formatAmount(amountFromWei(new BigNumber(user.total_amount)), 'USD'),
               totalClaim: claimsOut.amounts
-                ? new BigNumber(
-                    ethers.utils.formatEther(
-                      claimsOut.amounts.reduce((p, c) => p.add(c), ethers.BigNumber.from('0')),
+                ? formatAmount(
+                    amountFromWei(
+                      claimsOut.amounts.reduce((p, c) => p.plus(c), new BigNumber('0')),
                     ),
-                  ).toFixed(2)
+                    'USD',
+                  )
                 : '0.00',
             }),
           ).pipe(
