@@ -759,7 +759,7 @@
         "footnote": "{{amount}} on next price"
       },
       "stop-loss-collateral-ratio": {
-        "footnote": "{{amount}} Next Collateral Ratio"
+        "footnote": "{{amount}} below Current Collateral Ratio"
       },
       "dynamic-stop-price": {
         "footnote": "{{amount}} S/L Coll. Ratio"

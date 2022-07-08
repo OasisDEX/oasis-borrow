@@ -1,3 +1,4 @@
+import { Icon } from '@makerdao/dai-ui-icons'
 import { BigNumber } from 'bignumber.js'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultErrors } from 'components/vault/VaultErrors'
@@ -41,6 +42,8 @@ export function SidebarSliderAdjustMultiply({
 
   const slider = value ? max?.minus(value).div(max.minus(min)).times(100) : zero
 
+  const currentCollaterizationRatio = 'vault' in state ? state.vault.collateralizationRatio : zero
+
   const collRatioColor = getCollRatioColor(state, afterCollateralizationRatio)
   const sliderBackground =
     multiply && !multiply.isNaN() && slider
@@ -82,12 +85,26 @@ export function SidebarSliderAdjustMultiply({
           </Text>
         </Grid>
         <Grid as="p" gap={2}>
-          <Text as="span">{t('system.collateral-ratio')}</Text>
+          <Text as="span" sx={{ textAlign: 'right' }}>
+            {t('system.collateral-ratio')}
+          </Text>
           <Text
             as="span"
             variant="paragraph1"
             sx={{ fontWeight: 'semiBold', textAlign: 'right', color: collRatioColor }}
           >
+            {!currentCollaterizationRatio.isEqualTo(afterCollateralizationRatio) && (
+              <>
+                <Text
+                  as="span"
+                  variant="paragraph1"
+                  sx={{ fontWeight: 'semiBold', color: 'primary' }}
+                >
+                  {formatPercent(currentCollaterizationRatio.times(100))}
+                  <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />
+                </Text>
+              </>
+            )}
             {formatPercent(afterCollateralizationRatio.times(100))}
           </Text>
         </Grid>
