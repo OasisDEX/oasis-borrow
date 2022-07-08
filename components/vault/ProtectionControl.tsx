@@ -89,8 +89,8 @@ function getZeroDebtProtectionBannerProps({
       }
     } else
       return {
-        header: 'Unable to access stop loss',
-        description: 'Please try again later',
+        header: 'protection.unable-to-access-protection',
+        description: 'please-try-again-later',
         showLink: false,
       }
   } else {
