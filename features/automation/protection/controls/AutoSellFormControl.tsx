@@ -231,7 +231,6 @@ export function AutoSellFormControl({
     <SidebarSetupAutoSell
       vault={vault}
       ilkData={ilkData}
-      priceInfo={priceInfo}
       balanceInfo={balanceInfo}
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
