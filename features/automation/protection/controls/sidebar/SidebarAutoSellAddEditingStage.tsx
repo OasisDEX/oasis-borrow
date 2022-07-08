@@ -107,7 +107,7 @@ export function SidebarAutoSellAddEditingStage({
   const executionPrice = collateralPriceAtRatio({
     colRatio: basicSellState.execCollRatio.div(100),
     collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt, // TODO ŁW debt or debtDelta? Calculate usd value of debt at exec coll ratio?
+    vaultDebt: vault.debt,
   })
   return (
     <>
@@ -126,8 +126,8 @@ export function SidebarAutoSellAddEditingStage({
               execCollRatio: basicSellState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
             })}{' '}
-        {/* TODO ŁW link to kb */}
-        <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+        {/* TODO ŁW link to article in kb */}
+        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
           {t('here')}.
         </AppLink>
       </Text>{' '}

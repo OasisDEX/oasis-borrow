@@ -1409,7 +1409,7 @@
     "trigger-cancelled": "Basic-Sell cancellation completed",
     "trigger-updated": "Basic-Sell Protection Updated",
     "next-sell-price": "Next sell price: {{amount}}",
-    "continual-sell-threshold": "Continual sell, Sell down to {{amount}} {{token}}",
+    "continual-sell-threshold": "Continual sell, Sell down to {{amount}}",
     "target-col-ratio-after-selling": "Target Col. Ratio after selling",
     "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}",
     "sell-trigger-ratio": "Sell Trigger Ratio",
