@@ -3,6 +3,7 @@ import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoBSInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelAutoBSInfoSection'
+import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -15,6 +16,7 @@ interface SidebarAutoBuyRemovalEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   cancelTriggerGasEstimation: ReactNode
+  basicBuyState: BasicBSFormChange
 }
 
 export function SidebarAutoBuyRemovalEditingStage({
@@ -23,6 +25,7 @@ export function SidebarAutoBuyRemovalEditingStage({
   errors,
   warnings,
   cancelTriggerGasEstimation,
+  basicBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   return (
     <>
@@ -34,6 +37,7 @@ export function SidebarAutoBuyRemovalEditingStage({
       <AutoBuyInfoSectionControl
         vault={vault}
         cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+        basicBuyState={basicBuyState}
       />
     </>
   )
@@ -42,11 +46,13 @@ export function SidebarAutoBuyRemovalEditingStage({
 interface AutoBuyInfoSectionControlProps {
   vault: Vault
   cancelTriggerGasEstimation: ReactNode
+  basicBuyState: BasicBSFormChange
 }
 
 function AutoBuyInfoSectionControl({
   vault,
   cancelTriggerGasEstimation,
+  basicBuyState,
 }: AutoBuyInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
@@ -55,6 +61,8 @@ function AutoBuyInfoSectionControl({
       liquidationPrice={vault.liquidationPrice}
       estimatedTransactionCost={cancelTriggerGasEstimation}
       title={t('auto-buy.cancel-summary-title')}
+      basicBSState={basicBuyState}
+      debt={vault.debt}
     />
   )
 }

@@ -127,6 +127,7 @@
   "creating-proxy-contract": "Creating your smart proxy contract",
   "currency": "Currency",
   "custom": "Custom",
+  "please-try-again-later": "Please try again later",
   "dai-being-generated": "Dai being generated",
   "dai-paying-back": "Dai paying back ({{amount}})",
   "dai-depositing": "Dai depositing ({{amount}})",
@@ -250,8 +251,8 @@
     "sold": "Sold",
     "total-fees": "Total fees",
     "stop-loss": "Stop-Loss trigger",
-    "basic-buy": "Basic-Buy trigger",
-    "basic-sell": "Basic-Sell trigger"
+    "basic-buy": "Auto-Buy trigger",
+    "basic-sell": "Auto-Sell trigger"
   },
   "triggers": {
     "added": "added",
@@ -831,8 +832,8 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
-    "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your Vault which take it below your Basic-Sell Col. Ratio at current or next collateral price",
-    "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your Vault which take it above your Basic-Buy Col. Ratio at current or next collateral price",
+    "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Sell at the current or next price. Please adjust your Auto-Sell Trigger ratio first",
+    "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your vault that would trigger your Auto-Buy at the current or next price. Please adjust your Auto-Buy Trigger ratio first",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI",
@@ -858,8 +859,8 @@
     "stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
     "auto-buy-target-close-to-stop-loss-trigger": "Setting a lower Target Ratio would trigger your existing Stop-Loss. If you want to use a lower target ratio, please adjust your Stop-Loss trigger first.",
     "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
-    "auto-buy-triggered-immediately": "Your Auto Buy will be triggered immediately",
-    "auto-sell-triggered-immediately": "Your Auto Sell will be triggered immediately"
+    "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
+    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1094,8 +1095,8 @@
     "total-cost": "Total transaction cost",
     "max-cost": "Max transaction cost",
     "token-on-stop-loss-trigger": "{{token}} on Stop-Loss trigger",
-    "zero-debt-heading": "You need to generate Dai before you can set up Stop-Loss Protection",
-    "zero-debt-description": "Oasis Stop-Loss Protection allows you to set up a dynamic Stop-Loss for your Vault based on the Collateralisation Ratio. In the case of a sharp downturn in the price of the Vaults collateral, have your Vault automatically closed to collateral or Dai by Oasis.app's advanced automation features to help protect your Vault from liquidation or big losses. Learn more about how it works",
+    "zero-debt-heading": "You need to Generate DAI before you can set up Automated Protection",
+    "zero-debt-description": "Oasis.app Automated Protection allows you to set up a dynamic Stop-Loss or Auto-Sell Strategy on your vault based on the collateralization ratio. This can protect your vault from liquidation or reduce your exposure to the collateral asset in the case of a sharp downturn in price. Learn more about how it works",
     "below-dust-limit-heading": "You need to generate Dai above the minimum debt limit to set up Stop-Loss Protection",
     "summary-of-protection": "Summary of protection",
     "on-stop-loss-trigger": "On Stop-Loss trigger",
@@ -1131,7 +1132,10 @@
     "stop-loss-information": "Stop-Loss Information",
     "no-threshold": "No threshold set",
     "set-no-threshold": "Set No Threshold",
-    "set-threshold": "Set Threshold"
+    "set-threshold": "Set Threshold",
+    "unable-to-access-protection": "Unable to access Protection",
+    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Stop-Loss",
+    "closed-vault-not-existing-trigger-description": "To enable Stop-Loss you need to generate Dai in overview tab"
   },
   "newsletter": {
     "title": "Stay up to date with Oasis.app",
@@ -1415,6 +1419,12 @@
     "sell-trigger-ratio": "Sell Trigger Ratio",
     "target-coll-ratio": "Target Col Ratio (After Sell)",
     "set-min-sell-price": "Set Min Sell Price",
+    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Sell is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Sell here or deposit into your vault in overview tab",
+    "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Auto-Sell",
+    "closed-vault-not-existing-trigger-description": "To enable Auto-Sell you need to generate Dai in overview tab",
+    "adding-new-triggers-disabled": "Creation of the new Auto-Sell trigger is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Sell triggers",
     "banner": {
       "header": "Set up Auto Sell",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
@@ -1445,6 +1455,10 @@
     "target-ratio-with-deviation": "Target Ratio With Deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
+    "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Buy is still active",
+    "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Buy here or deposit into your vault in overview tab",
+    "adding-new-triggers-disabled": "Creation of the new Auto-Buy trigger is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Auto-Buy triggers",
     "banner": {
       "header": "Set up Auto-Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
@@ -1452,5 +1466,12 @@
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy"
+  },
+  "optimization": {
+    "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
+    "zero-debt-description": "Oasis.app Optimization allows you to set up a dynamic Auto-Buy Strategy on your vault based on the collateralization ratio. This will increase your exposure to the collateral asset as the price increased. Learn more about how it works",
+    "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
+    "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
+    "unable-to-access-auto-buy": "Unable to access Optimization"
   }
 }

@@ -1,6 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ProtectionDetailsControl } from 'features/automation/protection/controls/ProtectionDetailsControl'
 import { ProtectionFormControl } from 'features/automation/protection/controls/ProtectionFormControl'
@@ -87,8 +89,8 @@ function getZeroDebtProtectionBannerProps({
       }
     } else
       return {
-        header: 'Unable to access stop loss',
-        description: 'Please try again later',
+        header: 'protection.unable-to-access-protection',
+        description: 'please-try-again-later',
         showLink: false,
       }
   } else {
@@ -129,7 +131,10 @@ export function ProtectionControl({
   const stopLossData = automationTriggersData
     ? extractStopLossData(automationTriggersData)
     : undefined
-  const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled
+  const basicSellData = automationTriggersData
+    ? extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+    : undefined
+  const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled || basicSellData?.isTriggerEnabled
 
   return vaultHasActiveTrigger ||
     (!vault.debt.isZero() &&
