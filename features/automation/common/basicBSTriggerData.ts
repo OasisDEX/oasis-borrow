@@ -52,7 +52,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
         ? maxUint256
         : new BigNumber(maxBuyOrMinSellPrice.toString()).div(new BigNumber(10).pow(18)),
       continuous,
-      deviation: new BigNumber(deviation.toString()).div(1000),
+      deviation: new BigNumber(deviation.toString()).div(100),
       maxBaseFeeInGwei: maxBaseFeeInGwei
         ? new BigNumber(maxBaseFeeInGwei.toString())
         : new BigNumber(100), // handling for old command address
@@ -112,7 +112,7 @@ export function prepareBasicBSTriggerData({
       ? maxUint256.toString()
       : maxBuyOrMinSellPrice.times(new BigNumber(10).pow(18)).toString(),
     continuous.toString(),
-    deviation.times(1000).toString(),
+    deviation.times(100).toString(),
     maxBaseFeeInGwei.toString(),
   ]
 
