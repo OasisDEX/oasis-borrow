@@ -5,7 +5,7 @@ on:
     branches: [ dev ]
     inputs:
       commit_hash:
-        description: 'Enter the commit hash you want to roll back to.'
+        description: 'Enter the commit short hash from dev branch you want to roll back to.'
         default: '<hash>'
         required: true
         type: string
