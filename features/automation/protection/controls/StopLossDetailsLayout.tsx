@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
@@ -23,6 +24,7 @@ export interface ProtectionDetailsLayoutProps {
   isCollateralActive: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+  collateralizationRatio: BigNumber
 }
 
 export function StopLossDetailsLayout({
@@ -38,6 +40,7 @@ export function StopLossDetailsLayout({
   isCollateralActive,
   isEditing,
   collateralizationRatioAtNextPrice,
+  collateralizationRatio,
 }: ProtectionDetailsLayoutProps) {
   const { t } = useTranslation()
 
@@ -56,8 +59,12 @@ export function StopLossDetailsLayout({
                   isStopLossEnabled={isStopLossEnabled}
                   isEditing={isEditing}
                   slRatio={slRatio}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  collateralizationRatio={collateralizationRatio}
                   afterSlRatio={afterSlRatio}
+                />
+                <ContentCardCollateralizationRatio
+                  collateralizationRatio={collateralizationRatio}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
                 <ContentCardDynamicStopPrice
                   isStopLossEnabled={isStopLossEnabled}

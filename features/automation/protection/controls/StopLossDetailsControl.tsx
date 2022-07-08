@@ -57,6 +57,7 @@ export function StopLossDetailsControl({
       collateralActive: lastUIState.collateralActive,
       isToCollateral: stopLossTriggerData.isToCollateral,
     }),
+    collateralizationRatio: vault.collateralizationRatio,
   }
 
   return (
