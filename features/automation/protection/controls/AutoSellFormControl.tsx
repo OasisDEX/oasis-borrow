@@ -1,7 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger } from 'blockchain/calls/automationBot'
+import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -80,12 +80,14 @@ export function AutoSellFormControl({
         continuous: basicSellState.continuous,
         deviation: basicSellState.deviation,
         replacedTriggerId: basicSellState.triggerId,
+        maxBaseFeeInGwei: basicSellState.maxBaseFeeInGwei,
       }),
     [
       basicSellState.execCollRatio.toNumber(),
       basicSellState.targetCollRatio.toNumber(),
       basicSellState.maxBuyOrMinSellPrice?.toNumber(),
       basicSellState.triggerId.toNumber(),
+      basicSellState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
@@ -103,18 +105,22 @@ export function AutoSellFormControl({
     addTriggerGasEstimationData &&
     (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
-  const cancelTxData = prepareRemoveBasicBSTriggerData({
-    vaultData: vault,
-    triggerType: TriggerType.BasicSell,
-    triggerId: basicSellState.triggerId,
-  })
+  const cancelTxData = useMemo(
+    () =>
+      prepareRemoveBasicBSTriggerData({
+        vaultData: vault,
+        triggerType: TriggerType.BasicSell,
+        triggerId: basicSellState.triggerId,
+      }),
+    [basicSellState.triggerId.toNumber()],
+  )
 
   const cancelTriggerGasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
+      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
     )
-  }, [addTxData])
+  }, [cancelTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
   const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
@@ -189,6 +195,7 @@ export function AutoSellFormControl({
   const isEditing =
     !autoSellTriggerData.targetCollRatio.isEqualTo(basicSellState.targetCollRatio) ||
     !autoSellTriggerData.execCollRatio.isEqualTo(basicSellState.execCollRatio) ||
+    !autoSellTriggerData.maxBaseFeeInGwei.isEqualTo(basicSellState.maxBaseFeeInGwei) ||
     (maxBuyOrMinSellPrice?.toNumber() !== basicSellState.maxBuyOrMinSellPrice?.toNumber() &&
       !autoSellTriggerData.triggerId.isZero()) ||
     isRemoveForm

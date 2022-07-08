@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 interface BuyInfoSectionProps {
   token: string
@@ -10,7 +10,7 @@ interface BuyInfoSectionProps {
   multipleAfterBuy: BigNumber
   nextBuyPrice: BigNumber
   execCollRatio: BigNumber
-  slippageLimit: BigNumber
+  slippageLimit?: BigNumber
   collateralAfterNextBuy: {
     value: BigNumber
     secondaryValue: BigNumber
@@ -20,20 +20,23 @@ interface BuyInfoSectionProps {
     secondaryValue: BigNumber
   }
   collateralToBePurchased: BigNumber
-  estimatedTransactionCost: string | JSX.Element
+  targetRatioWithDeviationFloor: BigNumber
+  targetRatioWithDeviationCeiling: BigNumber
+  estimatedTransactionCost: ReactNode
 }
 
 export function BuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
   nextBuyPrice,
-  slippageLimit,
   collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
   collateralToBePurchased,
   estimatedTransactionCost,
   execCollRatio,
   token,
+  targetRatioWithDeviationFloor,
+  targetRatioWithDeviationCeiling,
 }: BuyInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -45,6 +48,8 @@ export function BuyInfoSection({
     outstandingDebtAfterNextBuy.secondaryValue,
   )
   const collateralToBePurchasedFormatted = formatCryptoBalance(collateralToBePurchased)
+  const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
+  const targetRatioWithDeviationCeilingFormatted = formatPercent(targetRatioWithDeviationCeiling)
   return (
     <InfoSection
       title={t('auto-buy.buy-title')}
@@ -67,13 +72,9 @@ export function BuyInfoSection({
           // value: `$${nextBuyPrice.value}`,
           // dropdownValues: nextBuyPrice.dropDownValues,
         },
-        // {
-        //   label: t('auto-buy.setup-transaction-cost'),
-        //   value: `$${totalCostOfNextBuy}`,
-        // },
         {
-          label: t('vault-changes.slippage-limit'),
-          value: `${slippageLimit}%`,
+          label: t('auto-buy.target-ratio-with-deviation'),
+          value: `${targetRatioWithDeviationFloorFormatted} - ${targetRatioWithDeviationCeilingFormatted}`,
         },
         {
           label: t('auto-buy.collateral-after-next-buy'),

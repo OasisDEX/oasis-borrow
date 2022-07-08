@@ -133,7 +133,6 @@ export function openGuniVault<S extends TxStateDependencies>(
         { kind: 'txWaitingForApproval' },
         (txState) => of({ kind: 'txInProgress', openTxHash: (txState as any).txHash as string }),
         (txState) => {
-          console.log('txState', txState)
           return of({
             kind: 'txFailure',
             txError:

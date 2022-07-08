@@ -29,11 +29,14 @@ export type VaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
+  | 'afterCollRatioBelowBasicSellRatio'
+  | 'afterCollRatioAboveBasicBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
   | 'maxDebtForSettingStopLoss'
   | 'targetCollRatioExceededDustLimitCollRatio'
+  | 'autoBuyMaxBuyPriceNotSpecified'
   | 'minimumSellPriceNotProvided'
 
 interface ErrorMessagesHandler {
@@ -67,10 +70,13 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
+  afterCollRatioBelowBasicSellRatio?: boolean
+  afterCollRatioAboveBasicBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
   targetCollRatioExceededDustLimitCollRatio?: boolean
+  autoBuyMaxBuyPriceNotSpecified?: boolean
   minimumSellPriceNotProvided?: boolean
 }
 
@@ -105,10 +111,13 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
+  afterCollRatioBelowBasicSellRatio,
+  afterCollRatioAboveBasicBuyRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
   targetCollRatioExceededDustLimitCollRatio,
+  autoBuyMaxBuyPriceNotSpecified,
   minimumSellPriceNotProvided,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
@@ -229,6 +238,14 @@ export function errorMessagesHandler({
     errorMessages.push('afterCollRatioBelowStopLossRatio')
   }
 
+  if (afterCollRatioBelowBasicSellRatio) {
+    errorMessages.push('afterCollRatioBelowBasicSellRatio')
+  }
+
+  if (afterCollRatioAboveBasicBuyRatio) {
+    errorMessages.push('afterCollRatioAboveBasicBuyRatio')
+  }
+
   if (insufficientEthFundsForTx) {
     errorMessages.push('insufficientEthFundsForTx')
   }
@@ -250,6 +267,10 @@ export function errorMessagesHandler({
   }
   if (minimumSellPriceNotProvided) {
     errorMessages.push('minimumSellPriceNotProvided')
+  }
+
+  if (autoBuyMaxBuyPriceNotSpecified) {
+    errorMessages.push('autoBuyMaxBuyPriceNotSpecified')
   }
 
   return errorMessages

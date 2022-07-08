@@ -10,8 +10,6 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -20,7 +18,6 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
-import { useUIChanges } from 'helpers/uiChangesHook'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -42,13 +39,21 @@ function AutoSellInfoSectionControl({
   debtDelta,
   collateralDelta,
 }: AutoSellInfoSectionControlProps) {
+  const deviationPercent = basicSellState.deviation.div(100)
+
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicSellState.targetCollRatio)
+
   return (
     <AddAutoSellInfoSection
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
       nextSellPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicSellState.deviation}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -60,6 +65,8 @@ function AutoSellInfoSectionControl({
       ethToBeSoldAtNextSell={collateralDelta.abs()}
       estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
     />
   )
 }
@@ -71,13 +78,13 @@ interface SidebarAutoSellAddEditingStageProps {
   isEditing: boolean
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  sliderMin: BigNumber
+  sliderMax: BigNumber
 }
 
 export function SidebarAutoSellAddEditingStage({
@@ -87,29 +94,22 @@ export function SidebarAutoSellAddEditingStage({
   priceInfo,
   basicSellState,
   autoSellTriggerData,
-  autoBuyTriggerData,
-  stopLossTriggerData,
   errors,
   warnings,
   addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
+  sliderMin,
+  sliderMax,
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
-  const [uiStateBasicSell] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { t } = useTranslation()
-
-  const { min, max } = getBasicSellMinMaxValues({
-    autoBuyTriggerData,
-    stopLossTriggerData,
-    ilkData,
-  })
 
   return (
     <>
       <MultipleRangeSlider
-        min={min.toNumber()}
-        max={max.toNumber()}
+        min={sliderMin.toNumber()}
+        max={sliderMax.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'execution-coll-ratio',
@@ -121,13 +121,14 @@ export function SidebarAutoSellAddEditingStage({
           })
         }}
         value={{
-          value0: uiStateBasicSell.execCollRatio.toNumber(),
-          value1: uiStateBasicSell.targetCollRatio.toNumber(),
+          value0: basicSellState.execCollRatio.toNumber(),
+          value1: basicSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
           value0: 'onWarning',
           value1: 'primary',
         }}
+        step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
         leftThumbColor="onWarning"
@@ -135,7 +136,7 @@ export function SidebarAutoSellAddEditingStage({
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
-        amount={uiStateBasicSell.maxBuyOrMinSellPrice}
+        amount={basicSellState.maxBuyOrMinSellPrice}
         hasAuxiliary={false}
         hasError={false}
         currencyCode="USD"
@@ -178,6 +179,7 @@ export function SidebarAutoSellAddEditingStage({
               targetCollRatio: autoSellTriggerData.targetCollRatio,
               execCollRatio: autoSellTriggerData.execCollRatio,
               maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
+              maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
               withThreshold:
                 !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
                 autoSellTriggerData.triggerId.isZero(),
@@ -186,13 +188,13 @@ export function SidebarAutoSellAddEditingStage({
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasGweiPrice) => {
+        onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-            type: 'max-gas-gwei-price',
-            maxGasGweiPrice,
+            type: 'max-gas-fee-in-gwei',
+            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
         }}
-        defaultValue={uiStateBasicSell.maxGasPercentagePrice}
+        value={basicSellState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
         <AutoSellInfoSectionControl

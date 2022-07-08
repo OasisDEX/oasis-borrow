@@ -395,6 +395,16 @@
       "yield-7": "7 day net APY",
       "yield-90": "90 day net APY",
       "total-value-locked": "Total value locked"
+    },
+    "simulate": {
+      "header1": "Duration",
+      "header2": "Earnings after fees",
+      "header3": "Net value",
+      "rowlabel1": "Previous 30 days*",
+      "rowlabel2": "Previous 90 days*",
+      "rowlabel3": "Previous 1 year**",
+      "footnote1": "*Past performance is not indicative of future results.",
+      "footnote2": "**Prior year estimates use the 90 day APY."
     }
   },
   "manage-insti-vault": {
@@ -480,7 +490,7 @@
     "overview-earn": "Overview (Earn ID: {{earnId}})",
     "earnings-to-date": "Earnings to date",
     "earnings-to-date-after-fees": "After fees {{ afterFees }} {{ symbol }}",
-    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals.",
+    "earnings-to-date-modal": "The earnings to date of the position. Calculated as the current net value of the position, minus the cumulative deposits, plus the cumulative withdrawals, and not accounting for the Oasis fees. The 'After fees' value is accounting for the earnings including the Oasis fee, and the Ethereum Gas fees.",
     "net-apy": "Net APY",
     "net-apy-modal": "The annual percentage yield, accounting for fees.  Calculated as the percentage price increase of the {{ token }} token over the last 7 days, annualised, and subtracting the variable annual fee.",
     "exposure-modal": "The total exposure of the position, expressed as a multiple of the capital deployed."
@@ -662,6 +672,10 @@
     "exposure": "exposure",
     "total-collateral": "Total collateral",
     "multiple": "Multiple",
+    "est-break-even": "Est. break-even",
+    "est-break-even-value": "{{days}} days",
+    "est-entry-fees": "Est. entry fees",
+    "apy": "APY",
     "available-to-generate": "Available to Generate",
     "coll-locked": "Coll. Locked",
     "coll-ratio": "Coll. Ratio",
@@ -673,6 +687,7 @@
     "dai-available": "Dai Available",
     "dai-debt": "Dai Debt",
     "deposited": "Deposited",
+    "faq": "FAQ",
     "in-my-wallet": "In My Wallet",
     "in-your-wallet": "In Your Wallet",
     "liquidation-penalty": "Liquidation Penalty",
@@ -704,7 +719,7 @@
     "protection": "Protection",
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
-    "basic-sell": "Basic Sell",
+    "basic-sell": "Auto-Sell",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -775,6 +790,7 @@
   "trezor-select-address": "Select an address",
   "try-again": "Try again",
   "unlimited-allowance": "Unlimited Allowance",
+  "unlimited": "unlimited",
   "vault": {
     "current-price": "Current {{token}}/USD Price in {{time}}",
     "header": "{{ilk}} Vault {{id}}",
@@ -816,10 +832,13 @@
     "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)",
     "invalid-slippage": "Custom slippage set too high for this transaction, please reduce your slippage setting",
     "after-coll-ratio-below-stop-loss-ratio": "You cannot make adjustments to your Vault which take it below your Stop-Loss Col. Ratio at current or next collateral price",
+    "after-coll-ratio-below-basic-sell-ratio": "You cannot make adjustments to your Vault which take it below your Basic-Sell Col. Ratio at current or next collateral price",
+    "after-coll-ratio-above-basic-buy-ratio": "You cannot make adjustments to your Vault which take it above your Basic-Buy Col. Ratio at current or next collateral price",
     "vault-will-be-taken-under-min-active-col-ratio": "You cannot make adjustments to your vault which take it below your minimum active coll. ratio at current or next collateral price",
     "stop-loss-near-liquidation-ratio": "Your Stop-Loss Trigger Col. Ratio would cause closing vault immediately. If this is intended, close your vault",
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI",
     "target-coll-ratio-exceeded-dust-limit-coll-ratio": "You cannot select a higher Target Collateralization Ratio, as it would result in the vault hitting the dust limit",
+    "auto-buy-max-price-requred": "Please enter a maximum buy price or select <1>Set No Threshold<1>",
     "minimum-sell-price-not-provided": "Please enter a minimum sell price or select <1>Set No Threshold<1>"
   },
   "vault-warnings": {
@@ -833,7 +852,15 @@
     "vault-will-remain-under-min-active-col-ratio": "You are decreasing risk of this position, but it will remain under the minimum active col ratio.",
     "insufficient-eth-balance": "Your ETH balance is potentially too low to pay for this transaction",
     "coll-ratio-close-to-current": "Your Stop-Loss Trigger Col. Ratio is very close to your current Col. Ratio. Only continue if this is intended and understand your Vault could be closed with a small price change.",
-    "no-min-sell-price-when-stop-loss-enabled": "Not setting a Min. Sell Price with Stop-Loss enabled would cause your Stop-Loss to never be triggered"
+    "no-min-sell-price-when-stop-loss-enabled": "Not setting a Min. Sell Price with Stop-Loss enabled would cause your Stop-Loss to never be triggered",
+    "auto-buy-with-no-max-price-threshold": "WARNING: You are setting an auto buy trigger with no maximum buy price threshold",
+    "auto-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first.",
+    "auto-sell-target-close-to-auto-buy-trigger": "Setting a higher Target Ratio would trigger your existing Auto-Buy. If you want to use a higher trigger ratio, please adjust your Auto-Buy trigger first.",
+    "stop-loss-trigger-close-to-auto-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Auto-Sell. If you want to use a higher trigger ratio, please adjust your Auto-Sell trigger first.",
+    "auto-buy-target-close-to-stop-loss-trigger": "Setting a lower Target Ratio would trigger your existing Stop-Loss. If you want to use a lower target ratio, please adjust your Stop-Loss trigger first.",
+    "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
+    "auto-buy-triggered-immediately": "Your Auto Buy will be triggered immediately",
+    "auto-sell-triggered-immediately": "Your Auto Sell will be triggered immediately"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -928,6 +955,11 @@
       "header": "Get vault protection",
       "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
       "button": "Protect your Vault"
+    },
+    "what-are-the-risks": {
+      "header": "What are the risks",
+      "content": "Find out about the underlying creation of the position, the risks, where your capital is at and more in the FAQ section.",
+      "button": "Learn more"
     }
   },
   "view": "View",
@@ -1369,6 +1401,7 @@
     "outstanding-debt-after-next-sell": "Outstanding Debt after next sell",
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
+    "target-ratio-with-deviation": "Target Ratio With Deviation",
     "title": "Auto sell",
     "add-form-title": "Auto Sell-Setup",
     "edit-form-title": "Edit Auto-Sell",
@@ -1393,10 +1426,11 @@
   },
 
   "auto-buy": {
-    "title": "Auto buy",
-    "form-title": "Auto Buy Setup",
+    "title": "Auto-Buy",
+    "cancel-summary-title": "Cancel Auto-Buy order summary",
+    "form-title": "Auto-Buy Setup",
     "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
-    "min-ratio": "min. ratio with Stop-Loss/basic sell",
+    "min-ratio": "min. ratio with Stop-Loss/Auto-Sell",
     "next-buy-price": "Next buy price: {{amount}}",
     "set-max-buy-price": "Set Max Buy Price",
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
@@ -1404,17 +1438,18 @@
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
     "trigger-coll-ratio": "Trigger Col Ratio",
 
-    "buy-title": "Basic Auto Sell Summary",
+    "buy-title": "Basic Auto-Buy Summary",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
     "trigger-col-ratio-to-perfrom-buy": "Trigger Col. Ratio to perfrom each automated buy",
     "next-buy-prices": "Next buy price(s)",
     "total-cost-of-next-buy": "Total cost of next ETH buy",
     "collateral-after-next-buy": "Collateral after next buy",
+    "target-ratio-with-deviation": "Target Ratio With Deviation",
     "outstanding-debt-after-next-buy": "Outstanding Debt after next buy",
     "col-to-be-purchased": "{{token}} to be purchased at next buy",
     "banner": {
-      "header": "Set up Auto Buy",
+      "header": "Set up Auto-Buy",
       "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
       "button": "Setup Auto Buy"
     },

@@ -2,7 +2,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { CancelAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelAutoSellInfoSection'
+import { CancelAutoBSInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelAutoBSInfoSection'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -18,11 +18,13 @@ function AutoSellInfoSectionControl({
   vault,
   cancelTriggerGasEstimation,
 }: AutoSellInfoSectionControlProps) {
+  const { t } = useTranslation()
   return (
-    <CancelAutoSellInfoSection
+    <CancelAutoBSInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
       estimatedTransactionCost={cancelTriggerGasEstimation}
+      title={t('auto-sell.cancel-summary-title')}
     />
   )
 }
