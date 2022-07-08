@@ -1,5 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
@@ -17,7 +18,6 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -25,21 +25,21 @@ import React, { ReactNode } from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
-  priceInfo: PriceInfo
   vault: Vault
   basicSellState: BasicBSFormChange
   addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  executionPrice: BigNumber
 }
 
 function AutoSellInfoSectionControl({
-  priceInfo,
   vault,
   basicSellState,
   addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
+  executionPrice,
 }: AutoSellInfoSectionControlProps) {
   const deviationPercent = basicSellState.deviation.div(100)
 
@@ -55,7 +55,7 @@ function AutoSellInfoSectionControl({
       targetCollRatio={basicSellState.targetCollRatio}
       multipleAfterSell={one.div(basicSellState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicSellState.execCollRatio}
-      nextSellPrice={priceInfo.nextCollateralPrice}
+      nextSellPrice={executionPrice}
       collateralAfterNextSell={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -76,7 +76,6 @@ function AutoSellInfoSectionControl({
 interface SidebarAutoSellAddEditingStageProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   isEditing: boolean
   basicSellState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
@@ -93,7 +92,6 @@ export function SidebarAutoSellAddEditingStage({
   vault,
   ilkData,
   isEditing,
-  priceInfo,
   basicSellState,
   autoSellTriggerData,
   errors,
@@ -106,14 +104,32 @@ export function SidebarAutoSellAddEditingStage({
 }: SidebarAutoSellAddEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
-
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicSellState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt, // TODO ŁW debt or debtDelta? Calculate usd value of debt at exec coll ratio?
+  })
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-        {t('auto-sell.set-trigger-description')}{' '}
-        {/* <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
+        {basicSellState.maxBuyOrMinSellPrice !== undefined
+          ? t('auto-sell.set-trigger-description', {
+              targetCollRatio: basicSellState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicSellState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+              minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+            })
+          : t('auto-sell.set-trigger-description-no-threshold', {
+              targetCollRatio: basicSellState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicSellState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+            })}{' '}
+        {/* TODO ŁW link to kb */}
+        <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
           {t('here')}.
-        </AppLink> */}
+        </AppLink>
       </Text>{' '}
       <MultipleRangeSlider
         min={sliderMin.toNumber()}
@@ -205,12 +221,12 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <AutoSellInfoSectionControl
-          priceInfo={priceInfo}
           basicSellState={basicSellState}
           vault={vault}
           addTriggerGasEstimation={addTriggerGasEstimation}
           debtDelta={debtDelta}
           collateralDelta={collateralDelta}
+          executionPrice={executionPrice}
         />
       )}
     </>
