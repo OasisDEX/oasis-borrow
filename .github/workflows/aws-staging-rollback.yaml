@@ -1,4 +1,4 @@
-name: Rollback Production
+name: Rollback Staging
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ on:
 jobs:
   rollback-deployment:
     env:
-      AWS_REGION: us-east-1
+      AWS_REGION: eu-central-1
       ECR_REPO_NAME: oasis-borrow-staging
       SERVICE_NAME: oasis-borrow-staging
       CLUSTER_NAME: oasis-borrow-staging
