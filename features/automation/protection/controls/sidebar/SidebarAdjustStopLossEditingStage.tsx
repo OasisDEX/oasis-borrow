@@ -1,6 +1,7 @@
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
@@ -79,9 +80,10 @@ export function SidebarAdjustStopLossEditingStage({
           <SliderValuePicker {...slValuePickerConfig} />
         </Grid>
       ) : (
-        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          {t('protection.closed-vault-existing-sl-description')}
-        </Text>
+        <SidebarFormInfo
+          title={t('protection.closed-vault-existing-sl-header')}
+          description={t('protection.closed-vault-existing-sl-description')}
+        />
       )}
       {isEditing && (
         <Grid>

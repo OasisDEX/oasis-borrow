@@ -166,6 +166,7 @@ export function SidebarSetupAutoBuy({
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
                   cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+                  basicBuyState={basicBuyState}
                 />
               )}
             </>

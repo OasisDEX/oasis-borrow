@@ -7,7 +7,6 @@ interface GetSidebarTitleParams {
   flow: SidebarFlow
   stage: SidebarVaultStages
   token: string
-  debt?: BigNumber
   isSLPanelVisible?: boolean
   openFlowWithStopLoss?: boolean
   isStopLossEnabled?: boolean
@@ -111,15 +110,12 @@ function getSidebarTitleTxFailureTranslationKey({ flow }: { flow: SidebarFlow })
 }
 
 function getSidebarTitleStopLossEditingKey({
-  debt,
   isStopLossEnabled,
 }: {
   debt?: BigNumber
   isStopLossEnabled: boolean
 }) {
-  if (debt?.isZero()) {
-    return 'protection.closed-vault-existing-sl-header'
-  } else if (isStopLossEnabled) {
+  if (isStopLossEnabled) {
     return 'protection.edit-stop-loss'
   } else {
     return 'protection.enable-stop-loss'
@@ -130,7 +126,6 @@ export function getSidebarTitle({
   flow,
   stage,
   token,
-  debt,
   isSLPanelVisible = false,
   openFlowWithStopLoss = false,
   isStopLossEnabled = false,
@@ -146,7 +141,7 @@ export function getSidebarTitle({
 
       return t(editingKey, { token: token.toUpperCase() })
     case 'stopLossEditing':
-      const stopLossEditingKey = getSidebarTitleStopLossEditingKey({ debt, isStopLossEnabled })
+      const stopLossEditingKey = getSidebarTitleStopLossEditingKey({ isStopLossEnabled })
 
       return t(stopLossEditingKey)
     case 'proxyInProgress':

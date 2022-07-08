@@ -4,6 +4,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
@@ -18,6 +19,7 @@ import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { handleNumericInput } from 'helpers/input'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -55,6 +57,26 @@ export function SidebarAutoBuyEditingStage({
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const isVaultEmpty = vault.debt.isZero()
+
+  if (readOnlyBasicBSEnabled && !isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-buy.adding-new-triggers-disabled')}
+        description={t('auto-buy.adding-new-triggers-disabled-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-buy.closed-vault-existing-trigger-header')}
+        description={t('auto-buy.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
 
   return (
     <>
@@ -81,6 +103,7 @@ export function SidebarAutoBuyEditingStage({
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
+        leftThumbColor="primary"
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}

@@ -174,6 +174,7 @@ export function SidebarSetupAutoSell({
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
                   cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+                  basicSellState={basicSellState}
                 />
               )}
             </>
