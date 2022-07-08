@@ -118,11 +118,20 @@ export function SidebarAutoSellAddEditingStage({
     )
   }
 
-  if (isVaultEmpty) {
+  if (isVaultEmpty && autoSellTriggerData.isTriggerEnabled) {
     return (
       <SidebarFormInfo
         title={t('auto-sell.closed-vault-existing-trigger-header')}
         description={t('auto-sell.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-sell.closed-vault-not-existing-trigger-header')}
+        description={t('auto-sell.closed-vault-not-existing-trigger-description')}
       />
     )
   }
