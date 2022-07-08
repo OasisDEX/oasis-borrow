@@ -3,6 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { AppLink } from 'components/Links'
 import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
@@ -69,7 +70,14 @@ export function BasicBuyDetailsLayout({
       ) : (
         <Banner
           title={t('auto-buy.banner.header')}
-          description={t('auto-buy.banner.content')}
+          description={
+            <>
+              {t('auto-buy.banner.content')}{' '}
+              <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
           image={{
             src: '/static/img/setup-banner/auto-buy.svg',
             backgroundColor: bannerGradientPresets.autoBuy[0],

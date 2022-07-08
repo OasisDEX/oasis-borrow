@@ -180,7 +180,11 @@ export function SidebarSetupAutoSell({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoSellCreationStage stage={stage} />
+            <SidebarAutoSellCreationStage
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
           )}
         </Grid>
       ),
