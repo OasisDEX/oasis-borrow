@@ -175,8 +175,8 @@ export function FeesView({ userReferral }: Props) {
                           overflowWrap: 'break-word',
                           fontSize: 2,
                           ml: ['0px', '8px'],
+                          fontVariantLigatures: 'no-contextual',
                         }}
-                        variant="subtitle"
                       >
                         {item}{' '}
                       </Text>
@@ -217,8 +217,8 @@ export function FeesView({ userReferral }: Props) {
                         overflowWrap: 'break-word',
                         fontSize: 2,
                         ml: ['0px', '8px'],
+                        fontVariantLigatures: 'no-contextual',
                       }}
-                      variant="subtitle"
                     >
                       {t('ref.not-referred-yet')}
                     </Text>
