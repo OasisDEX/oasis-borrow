@@ -4,7 +4,7 @@ import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { catchError, debounceTime, distinctUntilChanged, first, map, timeout } from 'rxjs/operators'
+import { catchError, debounceTime, distinctUntilChanged, map, timeout } from 'rxjs/operators'
 
 import { AssetAction } from './assetActions'
 
@@ -77,7 +77,7 @@ export function createPositionsOverviewSummary$(
     }),
   )
 
-  const positions$ = createPositions$(address).pipe(first())
+  const positions$ = createPositions$(address)
 
   // merge and sort
   const flattenedTokensAndPositions$ = combineLatest(tokenBalances$, positions$).pipe(
