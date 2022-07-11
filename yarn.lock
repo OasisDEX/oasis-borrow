@@ -11409,7 +11409,7 @@ bind-decorator@^1.0.11:
   resolved "https://registry.yarnpkg.com/bind-decorator/-/bind-decorator-1.0.11.tgz#e41bc06a1f65dd9cec476c91c5daf3978488252f"
   integrity sha1-5BvAah9l3ZzsR2yRxdrzl4SIJS8=
 
-bindings@1.5.0, bindings@^1.2.1, bindings@^1.4.0, bindings@^1.5.0:
+bindings@^1.2.1, bindings@^1.4.0, bindings@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz#10353c9e945334bc0511a6d90b38fbc7c9c504df"
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
@@ -19758,14 +19758,6 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-libpq@^1.7.0:
-  version "1.8.9"
-  resolved "https://registry.yarnpkg.com/libpq/-/libpq-1.8.9.tgz#6e0c6eecb176f6656ad092d67cc0131980cba897"
-  integrity sha512-herU0STiW3+/XBoYRycKKf49O9hBKK0JbdC2QmvdC5pyCSu8prb9idpn5bUSbxj8XwcEsWPWWWwTDZE9ZTwJ7g==
-  dependencies:
-    bindings "1.5.0"
-    nan "^2.14.0"
-
 lie@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
@@ -22586,15 +22578,6 @@ pg-int8@1.0.1:
   resolved "https://registry.yarnpkg.com/pg-int8/-/pg-int8-1.0.1.tgz#943bd463bf5b71b4170115f80f8efc9a0c0eb78c"
   integrity sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw==
 
-pg-native@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pg-native/-/pg-native-3.0.0.tgz#20c64e651e20b28f5c060b3823522d1c8c4429c3"
-  integrity sha512-qZZyywXJ8O4lbiIN7mn6vXIow1fd3QZFqzRe+uET/SZIXvCa3HBooXQA4ZU8EQX8Ae6SmaYtDGLp5DwU+8vrfg==
-  dependencies:
-    libpq "^1.7.0"
-    pg-types "^1.12.1"
-    readable-stream "1.0.31"
-
 pg-packet-stream@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/pg-packet-stream/-/pg-packet-stream-1.1.0.tgz#e45c3ae678b901a2873af1e17b92d787962ef914"
@@ -22614,17 +22597,6 @@ pg-protocol@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/pg-protocol/-/pg-protocol-1.2.4.tgz#3139cac0e51347f1e21e03954b1bb9fe2c20962e"
   integrity sha512-/8L/G+vW/VhWjTGXpGh8XVkXOFx1ZDY+Yuz//Ab8CfjInzFkreI+fDG3WjCeSra7fIZwAFxzbGptNbm8xSXenw==
-
-pg-types@^1.12.1:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/pg-types/-/pg-types-1.13.0.tgz#75f490b8a8abf75f1386ef5ec4455ecf6b345c63"
-  integrity sha512-lfKli0Gkl/+za/+b6lzENajczwZHc7D5kiUCZfgm914jipD2kIOIvEkAhZ8GrW3/TUoP9w8FHjwpPObBye5KQQ==
-  dependencies:
-    pg-int8 "1.0.1"
-    postgres-array "~1.0.0"
-    postgres-bytea "~1.0.0"
-    postgres-date "~1.0.0"
-    postgres-interval "^1.1.0"
 
 pg-types@^2.1.0:
   version "2.2.0"
@@ -23022,11 +22994,6 @@ postcss@^8.2.15:
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
 
-postgres-array@~1.0.0:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/postgres-array/-/postgres-array-1.0.3.tgz#c561fc3b266b21451fc6555384f4986d78ec80f5"
-  integrity sha512-5wClXrAP0+78mcsNX3/ithQ5exKvCyK5lr5NEEEeGwwM6NJdQgzIJBVxLvRW+huFpX92F2QnZ5CcokH0VhK2qQ==
-
 postgres-array@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/postgres-array/-/postgres-array-2.0.0.tgz#48f8fce054fbc69671999329b8834b772652d82e"
@@ -23036,11 +23003,6 @@ postgres-bytea@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/postgres-bytea/-/postgres-bytea-1.0.0.tgz#027b533c0aa890e26d172d47cf9ccecc521acd35"
   integrity sha1-AntTPAqokOJtFy1Hz5zOzFIazTU=
-
-postgres-date@~1.0.0:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/postgres-date/-/postgres-date-1.0.7.tgz#51bc086006005e5061c591cee727f2531bf641a8"
-  integrity sha512-suDmjLVQg78nMK2UZ454hAG+OAW+HQPZ6n++TNDUX+L0+uUlLywnoxJKDou51Zm+zTCjrCl0Nq6J9C5hP9vK/Q==
 
 postgres-date@~1.0.4:
   version "1.0.5"
@@ -24028,16 +23990,6 @@ read-pkg@^5.2.0:
     normalize-package-data "^2.5.0"
     parse-json "^5.0.0"
     type-fest "^0.6.0"
-
-readable-stream@1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-1.0.31.tgz#8f2502e0bc9e3b0da1b94520aabb4e2603ecafae"
-  integrity sha512-tco/Dwv1f/sgIgN6CWdj/restacPKNskK6yps1981ivH2ZmLYcs5o5rVzL3qaO/cSkhN8hYOMWs7+glzOLSgRg==
-  dependencies:
-    core-util-is "~1.0.0"
-    inherits "~2.0.1"
-    isarray "0.0.1"
-    string_decoder "~0.10.x"
 
 readable-stream@1.1.x, readable-stream@^1.0.33:
   version "1.1.14"

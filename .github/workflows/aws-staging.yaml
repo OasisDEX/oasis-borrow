@@ -18,14 +18,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache YARN dependencies
+        id: cache-yarn
         uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
         with:
           path: node_modules
           key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.OS }}-yarn-cache-
 
-      - name: Install dependencies
+      - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
+        name: Install dependencies
         run: yarn install --frozen-lockfile --no-progress --non-interactive
 
       - name: Build project
