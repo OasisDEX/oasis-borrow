@@ -98,12 +98,14 @@ export function SidebarAutoBuyEditingStage({
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
+          value0: 'onWarning',
           value1: 'onSuccess',
         }}
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="primary"
+        leftThumbColor="onWarning"
+        rightThumbColor="onSuccess"
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
