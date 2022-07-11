@@ -183,10 +183,10 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
             header: t('protection.cancelling-downside-protection'),
             description: (
               <>
-                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'neutral80' }}>
                   {t('protection.cancelling-downside-protection-desc')}
                 </Text>
-                <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'lavender' }}>
+                <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>
                   {t('protection.position-again-at-risk')}
                 </Text>
               </>
@@ -196,7 +196,7 @@ export function CancelSlFormLayout(props: CancelSlFormLayoutProps) {
             header: t('protection.cancel-protection-complete'),
             description: (
               <>
-                <Text variant="paragraph3" sx={{ mb: '24px', color: 'lavender' }}>
+                <Text variant="paragraph3" sx={{ mb: '24px', color: 'neutral80' }}>
                   {t('protection.cancel-protection-complete-desc')}
                 </Text>
                 <AppLink

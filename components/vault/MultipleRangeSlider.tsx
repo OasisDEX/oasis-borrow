@@ -92,8 +92,8 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
-  leftThumbColor = 'onWarning',
-  rightThumbColor = 'onSuccess',
+  leftThumbColor = 'warning',
+  rightThumbColor = 'success',
   leftDescription,
   rightDescription,
   minDescription = '',
@@ -281,7 +281,7 @@ export function MultipleRangeSlider({
                   width: '3px',
                   height: '30px',
                   transform: 'translateX(-50%)',
-                  backgroundColor: 'sliderActiveFill',
+                  backgroundColor: 'interactive50',
                   left: `${middleMarkPercentagePosition}%`,
                 }}
               />

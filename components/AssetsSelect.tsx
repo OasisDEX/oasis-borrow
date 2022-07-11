@@ -15,7 +15,7 @@ function OptionWithIcon({ innerProps, isSelected, data }: OptionProps<AssetsSele
       sx={{
         py: 2,
         px: 3,
-        bg: isSelected ? 'selected' : undefined,
+        bg: isSelected ? 'interactive10' : undefined,
         cursor: 'pointer',
         '&:hover': {
           bg: 'neutral30',

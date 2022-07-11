@@ -198,7 +198,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
       >
         {t('vaults-overview.total-assets')}
       </Text>
-      <Text variant="paragraph2" sx={{ color: 'lavender', mt: '7px' }}>
+      <Text variant="paragraph2" sx={{ color: 'neutral80', mt: '7px' }}>
         <Trans
           i18nKey="vaults-overview.total-assets-subheader"
           components={[

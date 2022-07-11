@@ -19,7 +19,7 @@ export function SidebarAutoSellAddStage({ stage }: SidebarAutoSellAddStageProps)
       return (
         <>
           <AddingStopLossAnimation />
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus
             blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.
           </Text>
@@ -33,7 +33,7 @@ export function SidebarAutoSellAddStage({ stage }: SidebarAutoSellAddStageProps)
               <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
             </Flex>
           </Box>
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus
             blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.
           </Text>

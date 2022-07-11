@@ -63,7 +63,7 @@ export function StopLossSummaryInformation({
   const impact = (
     <>
       {formatFiatBalance(tokenPrice)}
-      <Text as="span" sx={{ color: 'lavender', ml: 1 }}>
+      <Text as="span" sx={{ color: 'neutral80', ml: 1 }}>
         ({formatPercent(priceImpact, { precision: 2 })})
       </Text>
     </>

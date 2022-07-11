@@ -19,7 +19,7 @@ function Checkbox({
       onClick={onClick}
       sx={{
         border: '1px solid',
-        borderColor: checked ? 'onSuccess' : 'lavender_o25',
+        borderColor: checked ? 'success' : 'lavender_o25',
         backgroundColor: checked ? 'success10' : 'neutral10',
         width: '20px',
         height: '20px',

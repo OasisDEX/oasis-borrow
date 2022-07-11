@@ -3,7 +3,7 @@ import { Card, Grid, SxStyleProp, Text } from 'theme-ui'
 
 export function Label({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>) {
   return (
-    <Text variant="paragraph3" sx={{ color: 'mutedAlt', whiteSpace: 'nowrap', ...sx }}>
+    <Text variant="paragraph3" sx={{ color: 'neutral80Alt', whiteSpace: 'nowrap', ...sx }}>
       {children}
     </Text>
   )

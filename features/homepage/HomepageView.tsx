@@ -40,7 +40,7 @@ function TabContent(props: {
         variant="paragraph2"
         sx={{
           mt: 4,
-          color: 'lavender',
+          color: 'neutral80',
           maxWidth: 617,
           textAlign: 'center',
           mb: 5,
@@ -443,7 +443,7 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       <AppLink

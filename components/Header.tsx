@@ -79,11 +79,11 @@ export function BackArrow() {
     <Box
       sx={{
         cursor: 'pointer',
-        color: 'onBackground',
+        color: 'neutral70',
         fontSize: '0',
         transition: TRANSITIONS.global,
         '&:hover': {
-          color: 'onSurface',
+          color: 'neutral80',
         },
       }}
     >
@@ -129,7 +129,7 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <PositionsLink sx={{ position: 'relative', ...sx }}>
-      <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
+      <Button variant="menuButtonRound" sx={{ color: 'neutral80', ':hover': { color: 'primary' } }}>
         <Icon name="home" size="auto" width="20" />
       </Button>
       {vaultCount && (
@@ -140,8 +140,8 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
             right: '-7px',
             width: '24px',
             height: '24px',
-            bg: 'link',
-            color: 'onPrimary',
+            bg: 'interactive',
+            color: 'neutral10',
             borderRadius: '50%',
             justifyContent: 'center',
             alignItems: 'center',
@@ -190,7 +190,7 @@ function ButtonDropdown({
             outline: isOpen ? '1px solid' : null,
             outlineColor: 'primary',
           },
-          color: 'lavender',
+          color: 'neutral80',
           ':hover': { color: 'primary' },
         }}
       >
@@ -290,7 +290,7 @@ function UserDesktopMenu() {
                 outline: widgetOpen ? '1px solid' : null,
                 outlineColor: 'primary',
               },
-              color: 'lavender',
+              color: 'neutral80',
               ':hover': { color: 'primary' },
             }}
           >
@@ -365,7 +365,7 @@ function MobileSettings() {
         <Button
           variant="menuButton"
           onClick={() => setOpened(true)}
-          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'lavender' }}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'neutral80' }}
         >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
@@ -419,7 +419,7 @@ function MobileSettings() {
 }
 
 function navLinkColor(isActive: boolean) {
-  return isActive ? 'primary' : 'lavender'
+  return isActive ? 'primary' : 'neutral80'
 }
 
 const LINKS = {
@@ -515,7 +515,7 @@ function ConnectedHeader() {
                     outline: widgetOpen ? '1px solid' : null,
                     outlineColor: 'primary',
                   },
-                  color: 'lavender',
+                  color: 'neutral80',
                   ':hover': { color: 'primary' },
                 }}
               >
@@ -741,7 +741,7 @@ export function MobileMenu() {
         </Grid>
         <Box
           sx={{
-            color: 'lavender',
+            color: 'neutral80',
             ':hover': { color: 'primary' },
             position: 'absolute',
             bottom: 5,

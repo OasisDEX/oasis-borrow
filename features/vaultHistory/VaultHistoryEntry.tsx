@@ -283,7 +283,7 @@ export function VaultHistoryEntry({
             <AppLink sx={{ textDecoration: 'none' }} href={`${etherscan?.url}/tx/${item.hash}`}>
               <WithArrow
                 sx={{
-                  color: 'link',
+                  color: 'interactive',
                   mr: 4,
                   mb: [1, null, null, 0],
                   fontSize: 1,
@@ -295,7 +295,7 @@ export function VaultHistoryEntry({
             </AppLink>
             {ethtx && (
               <AppLink sx={{ textDecoration: 'none' }} href={`${ethtx.url}/${item.hash}`}>
-                <WithArrow sx={{ color: 'link', fontSize: 1, fontWeight: 'semiBold' }}>
+                <WithArrow sx={{ color: 'interactive', fontSize: 1, fontWeight: 'semiBold' }}>
                   {t('view-on-ethtx')}
                 </WithArrow>
               </AppLink>

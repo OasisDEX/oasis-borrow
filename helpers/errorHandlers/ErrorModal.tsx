@@ -43,7 +43,7 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
           </Button>
           <Button
             variant="textual"
-            sx={{ width: '80%', justifySelf: 'center', color: 'lavender' }}
+            sx={{ width: '80%', justifySelf: 'center', color: 'neutral80' }}
             onClick={onClickDetails}
           >
             {t('error-button')}

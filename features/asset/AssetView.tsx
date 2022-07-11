@@ -112,8 +112,8 @@ export function AssetView({ content }: { content: AssetPageContent }) {
             {t(content.descriptionKey)}
           </Text>
           <AppLink href={t(content.link)}>
-            <WithArrow sx={{ display: 'inline', color: 'link', ml: 2 }}>
-              <Text sx={{ display: 'inline', color: 'link' }} variant="paragraph1">
+            <WithArrow sx={{ display: 'inline', color: 'interactive', ml: 2 }}>
+              <Text sx={{ display: 'inline', color: 'interactive' }} variant="paragraph1">
                 {t('learn-more-about')} {content.symbol}
               </Text>
             </WithArrow>

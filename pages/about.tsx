@@ -84,7 +84,7 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
           </Box>
           <Box sx={{ pt: 3 }}>
             <Text sx={{ color: 'primary', mb: 1 }}>{member.name}</Text>
-            <Text variant="paragraph3" sx={{ color: 'lavender' }}>
+            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
               {member.title}
             </Text>
           </Box>

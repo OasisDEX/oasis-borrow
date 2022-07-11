@@ -110,7 +110,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           borderRadius: '2em',
           bg: ['transparent', 'bgPrimaryAlt'],
           border: 'secondary100',
-          borderColor: 'newsletterInputBorder',
+          borderColor: 'secondary',
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
           px: 2,
@@ -174,7 +174,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
       </Flex>
       <Box sx={{ mt: 2, minHeight: '1.3em' }}>
         {showError && (
-          <Text sx={{ textAlign: 'left', color: 'onError', fontSize: 2 }}>
+          <Text sx={{ textAlign: 'left', color: 'critical', fontSize: 2 }}>
             {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
           </Text>
         )}

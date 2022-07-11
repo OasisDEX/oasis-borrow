@@ -164,7 +164,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
         {
           header: <Header name="collateral-ratio" />,
           info: (
-            <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
+            <Text sx={{ color: position.inDanger ? '#D94A1E' : 'success' }}>
               {position.collateralRatio}
             </Text>
           ),

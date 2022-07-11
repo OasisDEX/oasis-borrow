@@ -92,7 +92,7 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return <Text sx={{ color: 'critical' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {

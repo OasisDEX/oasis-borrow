@@ -125,7 +125,7 @@ export function SidebarAutoSellAddEditingStage({
           value1: basicSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'onWarning',
+          value0: 'warning',
           value1: 'primary',
         }}
         step={1}

@@ -94,7 +94,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
               ) : (
                 <Text>
                   ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-                  <Text as="span" sx={{ color: 'onError' }}>
+                  <Text as="span" sx={{ color: 'critical' }}>
                     ({formatPercent(impact, { precision: 2 })})
                   </Text>
                 </Text>

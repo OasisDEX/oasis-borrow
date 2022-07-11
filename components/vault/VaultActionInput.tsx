@@ -221,7 +221,7 @@ export function VaultActionInput({
           border: '1px solid',
           borderRadius: 'medium',
           alignItems: 'center',
-          borderColor: hasError ? 'onError' : 'neutral20',
+          borderColor: hasError ? 'critical' : 'neutral20',
           transition: `
             box-shadow 200ms,
             border-color 200ms
@@ -230,7 +230,7 @@ export function VaultActionInput({
           ...(!disabled &&
             toggleStatus && {
               '&:hover, &:focus-within': {
-                borderColor: hasError ? 'onError' : 'neutral70',
+                borderColor: hasError ? 'critical' : 'neutral70',
               },
             }),
         }}

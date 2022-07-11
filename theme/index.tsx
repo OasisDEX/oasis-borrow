@@ -16,7 +16,7 @@ export const oasisBaseTheme = {
   useBodyStyles: true,
   breakpoints: ['48em', '60em', '68em'],
   colors: {
-    // new design system
+    // new design system colors
     interactive: '#575CFE',
     interactive50: '#878BFC',
     interactive30: '#D8D9FE',
@@ -39,23 +39,8 @@ export const oasisBaseTheme = {
     critical: '#D94A1E',
     critical10: '#FFEEE9',
 
-    // deprecated names
-
-    link: 'interactive',
-    textAlt: 'primary60',
-    onBackground: 'neutral70',
-    onPrimary: 'neutral10',
-    onSurface: 'neutral80',
-    muted: 'neutral80',
-    mutedAlt: 'primary60',
-    error: 'critical10',
-    onError: 'critical',
-    dimError: 'critical10',
-    dimSuccess: 'secondary60',
-    onSuccess: 'success',
-    onWarning: 'warning',
-    lavender: 'neutral80',
-    lavender_o25: 'secondary',
+    // special colors for some components
+    lavender_o25: '#787a9b40',
     banner: {
       warning: '#FF6A16',
       danger: '#FE4343',
@@ -67,15 +52,7 @@ export const oasisBaseTheme = {
       secondary: '#FEB343',
       surface: '#FFDBC7',
     },
-    bull: 'success',
-    bear: 'critical',
-    sliderTrackFill: 'neutral70',
-    sliderActiveFill: 'interactive50',
-    actionInputHover: 'secondary',
-    selected: 'interactive10',
-    fogBlue: 'interactive30',
-    maritimeBlue: 'primary',
-    newsletterInputBorder: 'secondary',
+    sliderTrackFill: '#9DA3DA',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',
@@ -186,7 +163,7 @@ export const oasisBaseTheme = {
     },
     tableHead: {
       variant: 'text.paragraph3',
-      color: 'muted',
+      color: 'neutral80',
       fontWeight: 'semiBold',
     },
     strong: {
@@ -194,7 +171,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
     },
     light: {
-      color: 'lavender',
+      color: 'neutral80',
       fontSize: 4,
       lineHeight: 'bodyLoose',
       a: {
@@ -329,7 +306,7 @@ export const oasisBaseTheme = {
       cursor: 'pointer',
       transition: '150ms cubic-bezier(0.215,0.61,0.355,1)',
       '&:hover': {
-        borderColor: 'mutedAlt',
+        borderColor: 'primary60',
         boxShadow: 'surface',
       },
     },
@@ -345,12 +322,12 @@ export const oasisBaseTheme = {
     },
     danger: {
       variant: 'cards.primary',
-      borderColor: 'onError',
-      bg: 'error',
+      borderColor: 'critical',
+      bg: 'critical10',
     },
     warning: {
       variant: 'cards.primary',
-      borderColor: 'onWarning',
+      borderColor: 'warning',
       bg: 'warning',
     },
     vaultFormContainer: {
@@ -498,7 +475,7 @@ export const oasisBaseTheme = {
       whiteSpace: 'nowrap',
       transition: 'background-color 200ms',
       '&:hover': {
-        bg: 'actionInputHover',
+        bg: 'secondary',
       },
       '&:focus': {
         outline: 'none',
@@ -576,7 +553,7 @@ export const oasisBaseTheme = {
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
-      color: 'link',
+      color: 'interactive',
       cursor: 'pointer',
       background: 'none',
       transition: 'opacity 200ms',
@@ -611,7 +588,7 @@ export const oasisBaseTheme = {
       lineHeight: 1.25,
       position: 'relative',
       '&:hover': {
-        bg: 'actionInputHover',
+        bg: 'secondary',
       },
       transition: 'background-color 200ms',
     },
@@ -723,8 +700,8 @@ export const oasisBaseTheme = {
     actionActiveGreen: {
       variant: 'buttons.action',
       border: 'none',
-      bg: 'onSuccess',
-      color: 'onPrimary',
+      bg: 'success',
+      color: 'neutral10',
     },
     pill: {
       px: '24px',
@@ -746,9 +723,9 @@ export const oasisBaseTheme = {
     pillActive: {
       variant: 'buttons.pill',
       color: 'neutral10',
-      backgroundColor: 'link',
+      backgroundColor: 'interactive',
       '&:hover': {
-        backgroundColor: 'link',
+        backgroundColor: 'interactive',
       },
     },
   },
@@ -789,7 +766,7 @@ export const oasisBaseTheme = {
         outline: 'none',
       },
       '&:hover, &:focus-visible': {
-        color: 'lavender',
+        color: 'neutral80',
       },
     },
     navFooter: {
@@ -799,7 +776,7 @@ export const oasisBaseTheme = {
     },
     navHeader: {
       variant: 'links.nav',
-      color: 'lavender',
+      color: 'neutral80',
       '&:hover, &:focus-visible': {
         color: 'primary',
       },
@@ -841,10 +818,10 @@ export const oasisBaseTheme = {
   radio: {
     color: 'neutral60',
     'input:checked ~ &': {
-      color: 'onSuccess',
+      color: 'success',
     },
     'input:focus ~ &': {
-      color: 'onSuccess',
+      color: 'success',
     },
   },
   chevronUpDown: {
@@ -868,8 +845,8 @@ export const oasisBaseTheme = {
       outline: 'none',
       borderRadius: 'large',
       border: 'secondary100',
-      borderColor: 'muted',
-      color: 'onSurface',
+      borderColor: 'neutral80',
+      color: 'neutral80',
       fontWeight: 'body',
       fontFamily: 'body',
       p: 3,
@@ -886,9 +863,9 @@ export const oasisBaseTheme = {
     },
     inputError: {
       variant: 'forms.input',
-      borderColor: 'onError',
+      borderColor: 'critical',
       '&:focus': {
-        borderColor: 'onError',
+        borderColor: 'critical',
       },
     },
     inputSecondary: {
@@ -1047,7 +1024,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       textDecoration: 'none',
       cursor: 'pointer',
-      color: 'link',
+      color: 'interactive',
     },
     hr: {
       borderBottom: 'lightMuted',

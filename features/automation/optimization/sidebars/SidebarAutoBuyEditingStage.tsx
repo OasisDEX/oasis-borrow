@@ -76,7 +76,7 @@ export function SidebarAutoBuyEditingStage({
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
-          value1: 'onSuccess',
+          value1: 'success',
         }}
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}

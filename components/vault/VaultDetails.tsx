@@ -7,7 +7,7 @@ import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
-export type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
+export type CollRatioColor = 'primary' | 'critical' | 'warning' | 'success'
 
 export type AfterPillProps = {
   showAfterPill?: boolean
@@ -36,10 +36,10 @@ export function getCollRatioColor(
   return collateralizationRatio.isZero()
     ? 'primary'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
-    ? 'onError'
+    ? 'critical'
     : vaultWillBeAtRiskLevelWarning
-    ? 'onWarning'
-    : 'onSuccess'
+    ? 'warning'
+    : 'success'
 }
 
 export function getPriceChangeColor({
@@ -48,14 +48,14 @@ export function getPriceChangeColor({
   return collateralPricePercentageChange.isZero()
     ? 'neutral80'
     : collateralPricePercentageChange.gt(zero)
-    ? 'onSuccess'
-    : 'onError'
+    ? 'success'
+    : 'critical'
 }
 
 export function getAfterPillColors(collRatioColor: CollRatioColor) {
   if (collRatioColor === 'primary') {
     return {
-      color: 'onSuccess',
+      color: 'success',
       bg: 'success10',
     }
   }
@@ -75,7 +75,7 @@ export function VaultDetailsAfterPill({
     <Card
       sx={{
         bg: 'success10',
-        color: 'onSuccess',
+        color: 'success',
         fontWeight: 'semiBold',
         border: 'none',
         px: 2,

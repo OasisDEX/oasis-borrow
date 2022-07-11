@@ -395,7 +395,7 @@ export function UniswapWidget(props: { token?: string }) {
           borderRadius: 'medium',
           ':hover': { bg: 'neutral10' },
           ':focus': { borderColor: 'primary' },
-          '::placeholder': { color: 'text.lavender' },
+          '::placeholder': { color: 'neutral80' },
         },
         [tokenSel.scrollbar]: {
           '::-webkit-scrollbar-thumb': {

@@ -12,7 +12,7 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const KbLink = (
-  <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
+  <AppLink sx={{ color: 'critical' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
 )
 
 interface VaultErrorsProps {

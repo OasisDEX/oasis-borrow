@@ -123,7 +123,7 @@ function RoleCount({ count, sx }: { count: number; sx?: SxStyleProp }) {
         ...sx,
       }}
     >
-      <Text sx={{ fontSize: 1, fontWeight: 'semiBold', color: 'onPrimary' }}>{count}</Text>
+      <Text sx={{ fontSize: 1, fontWeight: 'semiBold', color: 'neutral10' }}>{count}</Text>
     </Flex>
   )
 }

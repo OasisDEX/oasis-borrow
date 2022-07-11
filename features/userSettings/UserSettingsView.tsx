@@ -104,12 +104,12 @@ function SlippageLimitMessages({
   return (
     <Grid gap={2} mb={2}>
       {warnings.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onWarning' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'warning' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
       {errors.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onError' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'critical' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
@@ -226,12 +226,12 @@ function SlippageSettingsForm() {
         </Button>
       )}
       {stage === 'success' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'success' }}>
           {t('user-settings.update-success')}
         </Text>
       )}
       {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'critical' }}>
           {t('user-settings.update-failure')}
         </Text>
       )}
@@ -271,7 +271,7 @@ function WalletInfo() {
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'link', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
+              sx={{ color: 'interactive', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}

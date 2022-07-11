@@ -145,7 +145,7 @@ export function ManageVaultFormHeader(
                       sx={{ fontSize: 2 }}
                     />
                   ),
-                  2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
+                  2: <WithArrow sx={{ display: 'inline', color: 'interactive', fontWeight: 'body' }} />,
                 }}
               />
             ) : isCollateralAllowanceStage ? (

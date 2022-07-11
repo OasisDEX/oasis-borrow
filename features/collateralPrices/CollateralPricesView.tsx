@@ -18,7 +18,7 @@ import {
 } from './collateralPricesWithFilters'
 
 function getPercentageColor(percentageChange: BigNumber) {
-  return percentageChange.isEqualTo(zero) ? 'text' : percentageChange.gt(zero) ? 'bull' : 'bear'
+  return percentageChange.isEqualTo(zero) ? 'text' : percentageChange.gt(zero) ? 'success' : 'critical'
 }
 
 function CellOracleUpdate({ update }: { update?: Date }) {

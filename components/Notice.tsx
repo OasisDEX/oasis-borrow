@@ -38,7 +38,7 @@ export function Notice({ children, close, sx, withClose = true }: NoticeProps) {
             top: 3,
             right: 3,
             zIndex: 1,
-            color: 'onSurface',
+            color: 'neutral80',
             '&:hover': {
               color: 'primary',
             },

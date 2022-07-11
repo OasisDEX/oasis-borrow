@@ -31,7 +31,7 @@ export interface ContentCardProps {
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
-  return collRatioColor === 'primary' || collRatioColor === 'onSuccess' ? 'positive' : 'negative'
+  return collRatioColor === 'primary' || collRatioColor === 'success' ? 'positive' : 'negative'
 }
 
 export function DetailsSectionContentCardChangePill({
@@ -46,12 +46,12 @@ export function DetailsSectionContentCardChangePill({
         px: 3,
         py: 1,
         ...(variant === 'positive' && {
-          color: 'onSuccess',
-          backgroundColor: 'dimSuccess',
+          color: 'success',
+          backgroundColor: 'secondary60',
         }),
         ...(variant === 'negative' && {
-          color: 'onError',
-          backgroundColor: 'dimError',
+          color: 'critical',
+          backgroundColor: 'critical10',
         }),
         borderRadius: 'mediumLarge',
       }}
@@ -66,14 +66,14 @@ function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionCon
     <>
       {url && (
         <AppLink href={url} sx={{ mt: 2 }}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive' }}>
             {label}
           </WithArrow>
         </AppLink>
       )}
       {action && (
         <Text as="span" sx={{ mt: 2, cursor: 'pointer' }} onClick={action}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive' }}>
             {label}
           </WithArrow>
         </Text>

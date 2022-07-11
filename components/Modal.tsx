@@ -34,7 +34,7 @@ interface ModalCloseIconProps extends ModalProps<WithChildren> {
   color?: string
 }
 
-export function ModalCloseIcon({ close, sx, size = 3, color = 'onSurface' }: ModalCloseIconProps) {
+export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: ModalCloseIconProps) {
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
     if (keyCode === 27) {
@@ -217,7 +217,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           height: '98px',
           borderRadius: '50%',
           border: '2px solid',
-          borderColor: 'onError',
+          borderColor: 'critical',
           alignItems: 'center',
           justifyContent: 'center',
           mx: 'auto',
