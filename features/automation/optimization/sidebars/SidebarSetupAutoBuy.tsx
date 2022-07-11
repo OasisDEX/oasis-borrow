@@ -16,7 +16,6 @@ import {
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
@@ -33,7 +32,6 @@ import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditin
 export interface SidebarSetupAutoBuyProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -60,7 +58,6 @@ export interface SidebarSetupAutoBuyProps {
 export function SidebarSetupAutoBuy({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   context,
   ethMarketPrice,
@@ -148,7 +145,6 @@ export function SidebarSetupAutoBuy({
                   ilkData={ilkData}
                   basicBuyState={basicBuyState}
                   isEditing={isEditing}
-                  priceInfo={priceInfo}
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
                   warnings={warnings}
