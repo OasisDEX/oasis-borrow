@@ -1,7 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
@@ -23,11 +25,11 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
+import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyEditingStageProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   isEditing: boolean
   basicBuyState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
@@ -44,7 +46,6 @@ export function SidebarAutoBuyEditingStage({
   vault,
   ilkData,
   isEditing,
-  priceInfo,
   basicBuyState,
   autoBuyTriggerData,
   errors,
@@ -59,6 +60,11 @@ export function SidebarAutoBuyEditingStage({
   const { t } = useTranslation()
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const isVaultEmpty = vault.debt.isZero()
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicBuyState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
 
   if (readOnlyBasicBSEnabled && !isVaultEmpty) {
     return (
@@ -80,6 +86,26 @@ export function SidebarAutoBuyEditingStage({
 
   return (
     <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        {basicBuyState.maxBuyOrMinSellPrice !== undefined
+          ? t('auto-buy.set-trigger-description', {
+              targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicBuyState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+              minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
+            })
+          : t('auto-buy.set-trigger-description-no-threshold', {
+              targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicBuyState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+            })}{' '}
+        {/* TODO ŁW link to article in kb */}
+        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+          {t('here')}.
+        </AppLink>
+      </Text>{' '}
       <MultipleRangeSlider
         min={sliderMin.toNumber()}
         max={sliderMax.toNumber()}
@@ -143,7 +169,6 @@ export function SidebarAutoBuyEditingStage({
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
-
       <SidebarResetButton
         clear={() => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
@@ -171,7 +196,7 @@ export function SidebarAutoBuyEditingStage({
       />
       {isEditing && (
         <AutoBuyInfoSectionControl
-          priceInfo={priceInfo}
+          executionPrice={executionPrice}
           basicBuyState={basicBuyState}
           vault={vault}
           addTriggerGasEstimation={addTriggerGasEstimation}
@@ -184,7 +209,7 @@ export function SidebarAutoBuyEditingStage({
 }
 
 interface AutoBuyInfoSectionControlProps {
-  priceInfo: PriceInfo
+  executionPrice: BigNumber
   vault: Vault
   basicBuyState: BasicBSFormChange
   addTriggerGasEstimation: ReactNode
@@ -193,7 +218,7 @@ interface AutoBuyInfoSectionControlProps {
 }
 
 function AutoBuyInfoSectionControl({
-  priceInfo,
+  executionPrice,
   vault,
   basicBuyState,
   addTriggerGasEstimation,
@@ -215,7 +240,7 @@ function AutoBuyInfoSectionControl({
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
-      nextBuyPrice={priceInfo.nextCollateralPrice}
+      nextBuyPrice={executionPrice}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
