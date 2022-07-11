@@ -27,7 +27,7 @@ function Question({ question, answer }: ContentQuestion) {
   return (
     <Box
       sx={{
-        borderBottom: 'secondary100',
+        borderBottom: 'light',
         mb: 3,
         py: 1,
         '&:last-child': {

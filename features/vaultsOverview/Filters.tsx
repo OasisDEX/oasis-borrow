@@ -104,7 +104,7 @@ function Filters_({
             Control: ({ children, innerProps }) => (
               <Flex
                 sx={{
-                  border: 'secondary100',
+                  border: 'light',
                   px: 2,
                   py: 3,
                   borderRadius: 'medium',

@@ -114,7 +114,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 top: '8px',
                 width: '25px',
                 height: '25px',
-                border: 'secondary100',
+                border: 'light',
                 borderColor: 'success',
                 borderRadius: 'small',
                 alignItems: 'center',

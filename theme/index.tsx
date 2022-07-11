@@ -377,6 +377,7 @@ export const oasisBaseTheme = {
     faq: {
       variant: 'cards.primary',
       p: 4,
+      border: ['none', 'lightMuted'],
       borderRadius: 'mediumLarge',
       maxWidth: '711px',
     },
@@ -546,7 +547,7 @@ export const oasisBaseTheme = {
         textDecoration: 'underline',
       },
       '&[data-selected="true"]': {
-        border: 'secondary100',
+        border: 'light',
         color: 'primary',
       },
     },
@@ -844,7 +845,7 @@ export const oasisBaseTheme = {
     input: {
       outline: 'none',
       borderRadius: 'large',
-      border: 'secondary100',
+      border: 'light',
       borderColor: 'neutral80',
       color: 'neutral80',
       fontWeight: 'body',

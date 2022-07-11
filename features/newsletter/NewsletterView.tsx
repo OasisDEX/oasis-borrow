@@ -109,7 +109,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
         sx={{
           borderRadius: '2em',
           bg: ['transparent', 'bgPrimaryAlt'],
-          border: 'secondary100',
+          border: 'light',
           borderColor: 'secondary',
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',

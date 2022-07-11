@@ -48,7 +48,7 @@ export function ActivityItem({
             width: '42px',
             height: '42px',
             borderRadius: '50%',
-            border: 'secondary100',
+            border: 'light',
             color: iconColor || 'primary',
             borderColor: iconColor || 'primary',
             mr: 3,

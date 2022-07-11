@@ -39,7 +39,7 @@ export function VaultIlkDetailsItem({
       sx={{
         px: [0, 4],
         alignItems: 'center',
-        borderRight: ['none', 'secondary100'],
+        borderRight: ['none', 'light'],
         cursor: 'pointer',
         '&:first-child': {
           pl: 0,
