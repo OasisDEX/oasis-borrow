@@ -67,7 +67,7 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
               5%
             </Text>
           </Flex>
-          <Flex sx={{ flexDirection: ['column', 'row', 'row', 'row'], mr: '8px' }}>
+          <Flex sx={{ flexDirection: ['column', 'row', 'row', 'row'], mr: '7px' }}>
             <Text
               variant="text.paragraph3"
               sx={{ zIndex: 1, fontWeight: 'semiBold', wordBreak: 'normal' }}
@@ -77,9 +77,13 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
             <Flex>
               <Text
                 variant="text.paragraph3"
-                sx={{ zIndex: 1, fontWeight: 'semiBold', wordBreak: 'normal' }}
+                sx={{
+                  zIndex: 1,
+                  fontWeight: 'semiBold',
+                  wordBreak: 'normal',
+                  whiteSpace: [null, 'pre'],
+                }}
               >
-                {' '}
                 {` ${heading.split('.')[1]}`}
               </Text>
               <Icon
