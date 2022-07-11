@@ -536,7 +536,7 @@ export function setupAppContext() {
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = curry(createIlkToToken$)(context$)
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
