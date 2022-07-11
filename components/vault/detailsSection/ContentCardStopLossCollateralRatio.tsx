@@ -14,7 +14,7 @@ interface ContentCardStopLossCollateralRatioProps {
   isStopLossEnabled: boolean
   isEditing: boolean
   slRatio: BigNumber
-  collateralizationRatioAtNextPrice: BigNumber
+  collateralizationRatio: BigNumber
   afterSlRatio: BigNumber
 }
 
@@ -44,8 +44,8 @@ export function ContentCardStopLossCollateralRatio({
   isStopLossEnabled,
   isEditing,
   slRatio,
-  collateralizationRatioAtNextPrice,
   afterSlRatio,
+  collateralizationRatio,
 }: ContentCardStopLossCollateralRatioProps) {
   const { t } = useTranslation()
 
@@ -53,7 +53,7 @@ export function ContentCardStopLossCollateralRatio({
     slRatio: formatPercent(slRatio.times(100), {
       precision: 2,
     }),
-    collateralizationRatioAtNextPrice: formatPercent(collateralizationRatioAtNextPrice.times(100), {
+    belowCurrentCollRatio: formatPercent(collateralizationRatio.minus(slRatio).times(100), {
       precision: 2,
     }),
     afterSlRatio: formatPercent(afterSlRatio.times(100), {
@@ -69,7 +69,7 @@ export function ContentCardStopLossCollateralRatio({
   const contentCardSettings: ContentCardProps = {
     title: t('manage-multiply-vault.card.stop-loss-coll-ratio'),
     footnote: t('system.cards.stop-loss-collateral-ratio.footnote', {
-      amount: formatted.collateralizationRatioAtNextPrice,
+      amount: formatted.belowCurrentCollRatio,
     }),
     modal: <ContentCardStopLossCollateralRatioModal {...contentCardModalSettings} />,
   }

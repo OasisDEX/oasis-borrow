@@ -21,7 +21,7 @@ export function OptimizationDetailsControl({
 
   return (
     <BasicBuyDetailsControl
-      token={vault.token}
+      vault={vault}
       basicBuyTriggerData={basicBuyTriggerData}
       priceInfo={priceInfo}
     />

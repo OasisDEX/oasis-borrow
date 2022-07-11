@@ -20,21 +20,14 @@ export function SidebarCancelStopLoss(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const {
-    isProgressDisabled,
-    removeTriggerConfig,
-    stage,
-    toggleForms,
-    token,
-    vault: { debt },
-  } = props
+  const { isProgressDisabled, removeTriggerConfig, stage, toggleForms, token } = props
 
   const flow: SidebarFlow = 'cancelSl'
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, debt }),
+    title: getSidebarTitle({ flow, stage, token }),
     ...(basicBSEnabled && {
       dropdown: {
         forcePanel: 'stopLoss',
