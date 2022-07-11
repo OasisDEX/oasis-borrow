@@ -166,7 +166,7 @@ function SlippageSettingsForm() {
         </Box>
         <Box my={3}>
           <Flex
-            sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
+            sx={{ color: 'primary60', cursor: 'pointer' }}
             onClick={() => setCustomOpened(!customOpened)}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
@@ -214,7 +214,7 @@ function SlippageSettingsForm() {
             {stage === 'inProgress' && (
               <AppSpinner
                 variant="styles.spinner.large"
-                sx={{ color: 'surface', display: 'flex', mr: 2 }}
+                sx={{ color: 'neutral10', display: 'flex', mr: 2 }}
               />
             )}
             <Text>
@@ -326,8 +326,8 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         }}
         onClick={() => disconnect(web3Context)}
       >
-        <Icon name="sign_out" color="primaryEmphasis" size="auto" width={20} />
-        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primaryEmphasis', ml: 2 }}>
+        <Icon name="sign_out" color="primary60" size="auto" width={20} />
+        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>
       </Button>

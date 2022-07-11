@@ -72,7 +72,7 @@ export function VaultChangesInformationContainer({
       as="ul"
       sx={{
         p: 3,
-        backgroundColor: 'secondaryAlt',
+        backgroundColor: 'neutral30',
         borderRadius: 'medium',
       }}
     >

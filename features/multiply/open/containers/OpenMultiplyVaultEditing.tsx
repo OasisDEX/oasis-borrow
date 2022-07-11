@@ -46,10 +46,10 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
           colors?.sliderTrackFill
-        } ${slider.toNumber()}%, ${colors?.primaryAlt} ${slider.toNumber()}%, ${
-          colors?.primaryAlt
+        } ${slider.toNumber()}%, ${colors?.neutral60} ${slider.toNumber()}%, ${
+          colors?.neutral60
         } 100%)`
-      : 'primaryAlt'
+      : 'neutral60'
 
   const { t } = useTranslation()
 

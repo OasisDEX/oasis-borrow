@@ -40,12 +40,8 @@ export const oasisBaseTheme = {
     critical10: '#FFEEE9',
 
     // deprecated names
-    primaryAlt: 'neutral60',
-    primaryEmphasis: 'primary60',
-    secondaryAlt: 'neutral30',
     background: 'neutral10',
     backgroundAlt: 'secondary60',
-    surface: 'neutral10',
     fadedWhite: 'neutral10',
     light: 'secondary100',
     lightIcon: 'neutral60',
@@ -338,12 +334,12 @@ export const oasisBaseTheme = {
       borderColor: 'light',
       p: 3,
       borderRadius: 'roundish',
-      bg: 'surface',
+      bg: 'neutral10',
     },
     surface: {
       p: 3,
       borderRadius: 'roundish',
-      bg: 'surface',
+      bg: 'neutral10',
       boxShadow: 'surface',
     },
     primaryWithHover: {
@@ -402,12 +398,12 @@ export const oasisBaseTheme = {
     },
     vaultDetailsCardModal: {
       p: 3,
-      bg: 'secondaryAlt',
+      bg: 'neutral30',
       borderRadius: 'large',
     },
     cookieBanner: {
       boxShadow: 'fixedBanner',
-      bg: 'surface',
+      bg: 'neutral10',
       borderRadius: '16px 16px 0 0',
       padding: '24px',
       pb: 3,
@@ -448,10 +444,10 @@ export const oasisBaseTheme = {
       color: 'text.contrast',
       transition: 'background 200ms',
       '&:hover, &:focus-visible': {
-        bg: 'primaryEmphasis',
+        bg: 'primary60',
       },
       '&:disabled': {
-        bg: 'primaryAlt',
+        bg: 'neutral60',
         pointerEvents: 'none',
       },
       '&:focus': {
@@ -853,7 +849,7 @@ export const oasisBaseTheme = {
       },
     },
     settings: {
-      color: 'primaryEmphasis',
+      color: 'primary60',
       fontWeight: 'medium',
       fontSize: 1,
       textDecoration: 'none',
@@ -921,7 +917,7 @@ export const oasisBaseTheme = {
       p: 2,
       fontSize: 2,
       lineHeight: 'bodyLoose',
-      borderColor: 'primaryAlt',
+      borderColor: 'neutral60',
     },
     search: {
       fontFamily: 'body',
@@ -949,7 +945,7 @@ export const oasisBaseTheme = {
     textareaError: { variant: 'forms.inputError' },
     slider: {
       color: 'primary',
-      backgroundColor: 'primaryAlt',
+      backgroundColor: 'neutral60',
       height: 1,
       borderRadius: 'small',
       '&::-webkit-slider-thumb': {

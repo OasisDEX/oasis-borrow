@@ -247,8 +247,8 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
           slider.toNumber() || 0
-        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-      : 'primaryAlt'
+        }%, ${colors?.neutral60} ${slider.toNumber() || 0}%, ${colors?.neutral60} 100%)`
+      : 'neutral60'
 
   return (
     <Grid

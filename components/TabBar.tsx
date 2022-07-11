@@ -86,7 +86,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
                       bg: isSelected ? 'selected' : undefined,
                       cursor: 'pointer',
                       '&:hover': {
-                        bg: 'secondaryAlt',
+                        bg: 'neutral30',
                       },
                     }}
                   >

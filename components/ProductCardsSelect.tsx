@@ -20,7 +20,7 @@ function OptionWithIcon({ innerProps, data, isSelected }: OptionProps<ProductLan
         bg: isSelected ? 'selected' : undefined,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'secondaryAlt',
+          bg: 'neutral30',
         },
       }}
     >

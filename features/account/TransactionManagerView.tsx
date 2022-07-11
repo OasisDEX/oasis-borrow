@@ -140,7 +140,7 @@ function RecentTransaction<A extends TxMeta>({ transaction }: { transaction: TxM
         timestamp: lastChange,
         label,
         icon: isFailed ? ICONS_RECENT_TRANSACTIONS.error : getRecentTransactionIcon(transaction),
-        iconColor: 'primaryEmphasis',
+        iconColor: 'primary60',
       }}
     />
   )

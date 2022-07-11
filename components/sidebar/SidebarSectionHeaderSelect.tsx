@@ -78,7 +78,7 @@ export function SidebarSectionHeaderSelect({
               width: 26,
               height: 26,
               m: '3px 7px 3px 3px',
-              backgroundColor: 'secondaryAlt',
+              backgroundColor: 'neutral30',
               borderRadius: 'circle',
             }}
           />

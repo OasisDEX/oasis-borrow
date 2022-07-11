@@ -53,9 +53,9 @@ function getSliderBackgroundGradient({
   value1InPercent: number
 }) {
   const { colors } = theme
-  return `linear-gradient(to right, ${colors.primaryAlt}  0%, ${colors.primaryAlt} ${value0InPercent}%,
+  return `linear-gradient(to right, ${colors.neutral60}  0%, ${colors.neutral60} ${value0InPercent}%,
     ${colors.sliderTrackFill} ${value0InPercent}%,  ${colors.sliderTrackFill} ${value1InPercent}%,
-    ${colors.primaryAlt} ${value1InPercent}%, ${colors.primaryAlt} 100%)`
+    ${colors.neutral60} ${value1InPercent}%, ${colors.neutral60} 100%)`
 }
 
 interface SliderValues {

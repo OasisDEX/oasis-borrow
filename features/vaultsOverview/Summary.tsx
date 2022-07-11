@@ -71,7 +71,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                         padding: 2,
                         borderRadius: 'small',
                         transform: 'translate(-50%, 0)',
-                        boxShadow: 'surface',
+                        boxShadow: 'neutral10',
                         fontFamily: 'body',
                         fontWeight: 'body',
                         lineHeight: 'body',

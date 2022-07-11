@@ -27,7 +27,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         px: 3,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'secondaryAlt',
+          bg: 'neutral30',
         },
       }}
     >

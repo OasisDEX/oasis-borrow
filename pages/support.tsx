@@ -43,7 +43,7 @@ function Question({ question, answer }: ContentQuestion) {
           justifyContent: 'space-between',
           transition: TRANSITIONS.global,
           '&:hover': {
-            color: 'primaryEmphasis',
+            color: 'primary60',
           },
         }}
         onClick={() => setOpened(!opened)}
@@ -86,7 +86,7 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
             textDecoration: 'none',
             fontSize: 3,
             fontWeight: 'heading',
-            color: 'primaryEmphasis',
+            color: 'primary60',
             cursor: 'pointer',
             position: 'relative',
             '&:hover': {
