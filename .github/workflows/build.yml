@@ -6,36 +6,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Cache YARN dependencies
-        id: cache-yarn
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: node_modules
-          key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.OS }}-yarn-cache-
+    - uses: actions/checkout@v3
+    - name: Cache YARN dependencies
+      id: cache-yarn
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.OS }}-yarn-cache-
 
-      - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
-          name: Install dependencies
-          run: yarn install --frozen-lockfile --no-progress --non-interactive
+    - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
+        name: Install dependencies
+        run: yarn install --frozen-lockfile --no-progress --non-interactive
 
-      - name: Lint
-        run: yarn lint
+    - name: Lint
+      run: yarn lint
 
-      - name: Prettier
-        run: yarn format
+    - name: Prettier
+      run: yarn format
 
-      - name: Test
-        run: CI=true yarn coverage
+    - name: Test
+      run: CI=true yarn coverage
 
-      - name: Typecheck
-        run: yarn typecheck
+    - name: Typecheck
+      run: yarn typecheck
 
-      - name: Build
-        run: yarn build
+    - name: Build
+      run: yarn build
 #  test-e2e:
 #    runs-on: ubuntu-latest
 #    steps:
