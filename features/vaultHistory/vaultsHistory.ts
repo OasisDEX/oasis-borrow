@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
-import moment from 'moment'
 import { combineLatest, from, Observable, timer } from 'rxjs'
 import { shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
@@ -84,7 +83,6 @@ async function getDataFromCache(
   urns: string[],
   cdpIds: BigNumber[],
 ): Promise<CacheResult> {
-  console.log(`${moment().format('HH:mm:ss')} Fetching vault histories from cache`)
   const data = await client.request(query, { urns, cdpIds: cdpIds.map((id) => id.toNumber()) })
 
   return {
