@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
 import { memoize } from 'lodash'
-import { combineLatest, from, Observable } from 'rxjs'
+import moment from 'moment'
+import { combineLatest, from, Observable, timer } from 'rxjs'
 import { shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -83,7 +84,9 @@ async function getDataFromCache(
   urns: string[],
   cdpIds: BigNumber[],
 ): Promise<CacheResult> {
+  console.log(`${moment().format('HH:mm:ss')} Fetching vault histories from cache`)
   const data = await client.request(query, { urns, cdpIds: cdpIds.map((id) => id.toNumber()) })
+
   return {
     events: data.allVaultMultiplyHistories.nodes,
     automationEvents: data.allTriggerEvents.nodes,
@@ -129,18 +132,20 @@ function mapToVaultWithHistory(
 export function vaultsWithHistory$(
   context$: Observable<Context>,
   vaults$: (address: string) => Observable<VaultWithValue<VaultWithType>[]>,
+  refreshInterval: number,
   address: string,
 ): Observable<VaultWithHistory[]> {
   const makeClient = memoize(
     (url: string) => new GraphQLClient(url, { fetch: fetchWithOperationId }),
   )
-  return combineLatest(context$, vaults$(address)).pipe(
+  return timer(0, refreshInterval).pipe(
+    switchMap(() => combineLatest(context$, vaults$(address))),
     switchMap(([{ cacheApi }, vaults]) => {
       const apiClient = makeClient(cacheApi)
       return from(
         getDataFromCache(
           apiClient,
-          vaults.map((vault) => vault.address),
+          vaults.map((vault) => vault.address.toLowerCase()),
           vaults.map((vault) => vault.id),
         ),
       ).pipe(map((cacheResult) => mapToVaultWithHistory(vaults, cacheResult)))

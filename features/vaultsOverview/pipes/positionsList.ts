@@ -1,4 +1,4 @@
-import { combineLatest, Observable, timer } from 'rxjs'
+import { combineLatest, Observable } from 'rxjs'
 import { shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
@@ -15,11 +15,9 @@ export function createPositionsList$(
   context$: Observable<Context>,
   ilksListWithBalances$: Observable<IlkWithBalance[]>,
   vaultsWithHistory$: (address: string) => Observable<VaultWithHistory[]>,
-  refreshInterval: number,
   address: string,
 ): Observable<PositionDetails[]> {
-  return timer(0, refreshInterval).pipe(
-    switchMap(() => vaultsWithHistory$(address)),
+  return vaultsWithHistory$(address).pipe(
     switchMap((vaultsWithHistory) =>
       combineLatest(context$, ilksListWithBalances$).pipe(
         map(([context, ilksListWithBalances]) => {

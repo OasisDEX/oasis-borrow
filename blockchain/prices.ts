@@ -88,13 +88,18 @@ type CoinbaseOrderBook = {
 }
 
 export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['response']> {
-  return ajax({
-    url: `https://api.pro.coinbase.com/products/${ticker}/book`,
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(map(({ response }) => response))
+  return timer(0, 1000 * 10).pipe(
+    switchMap(() =>
+      ajax({
+        url: `https://api.pro.coinbase.com/products/${ticker}/book`,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      }).pipe(map(({ response }) => response)),
+    ),
+    shareReplay(1),
+  )
 }
 
 export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
@@ -112,13 +117,18 @@ export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
 )
 
 export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
-  return ajax({
-    url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-    },
-  }).pipe(map(({ response }) => new BigNumber(response[ticker].usd)))
+  return timer(0, 1000 * 10).pipe(
+    switchMap(() =>
+      ajax({
+        url: `https://api.coingecko.com/api/v3/simple/price?ids=${ticker}&vs_currencies=usd`,
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+        },
+      }).pipe(map(({ response }) => new BigNumber(response[ticker].usd))),
+    ),
+    shareReplay(1),
+  )
 }
 
 export function createTokenPriceInUSD$(

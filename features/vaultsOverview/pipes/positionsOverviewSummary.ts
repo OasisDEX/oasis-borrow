@@ -4,7 +4,7 @@ import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
+import { catchError, debounceTime, distinctUntilChanged, first, map, timeout } from 'rxjs/operators'
 
 import { AssetAction } from './assetActions'
 
@@ -62,6 +62,7 @@ export function createPositionsOverviewSummary$(
         createTokenPriceInUSD$([t]),
         createAssetActions$(t),
       ).pipe(
+        first(),
         map(([balance, token, priceData, assetActions]) => {
           return {
             balanceUsd: balance.multipliedBy(priceData[token] || zero),
@@ -77,7 +78,7 @@ export function createPositionsOverviewSummary$(
     }),
   )
 
-  const positions$ = createPositions$(address)
+  const positions$ = createPositions$(address).pipe(first())
 
   // merge and sort
   const flattenedTokensAndPositions$ = combineLatest(tokenBalances$, positions$).pipe(
@@ -168,5 +169,7 @@ export function createPositionsOverviewSummary$(
     })),
     debounceTime(500),
     distinctUntilChanged(isEqual),
+    timeout(1000 * 10),
+    catchError(() => of({ assetsAndPositions: [], percentageOther: zero, totalValueUsd: zero })),
   )
 }
