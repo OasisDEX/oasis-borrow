@@ -44,6 +44,15 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       maxBaseFeeInGwei,
     ] = trigger.result
 
+    /*
+     * TRANSFORMATION INFO:
+     * execCollRatio - 200% -> (20000 / 100 = 200%)
+     * targetCollRatio - 250% -> (25000 / 100 = 250%)
+     * deviation - 1% -> (100 / 100 =  1%)
+     * maxBaseFeeInGwei - 500 gwei -> (500 = 500 gwei)
+     * maxBuyOrMinSellPrice - 2000$ -> (2000 * 10^18 / 10^18 = 2000$)
+     */
+
     return {
       triggerId: new BigNumber(trigger.triggerId),
       execCollRatio: new BigNumber(execCollRatio.toString()).div(100),

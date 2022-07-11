@@ -1,6 +1,7 @@
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
+import { AppLink } from 'components/Links'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/controls/BasicSellDetailsLayout'
@@ -51,7 +52,14 @@ export function BasicSellDetailsControl({
       ) : (
         <Banner
           title={t('auto-sell.banner.header')}
-          description={t('auto-sell.banner.content')}
+          description={
+            <>
+              {t('auto-sell.banner.content')}{' '}
+              <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                {t('here')}.
+              </AppLink>
+            </>
+          }
           image={{
             src: '/static/img/setup-banner/auto-sell.svg',
             backgroundColor: bannerGradientPresets.autoSell[0],
