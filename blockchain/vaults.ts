@@ -4,7 +4,7 @@ import { Context } from 'blockchain/network'
 import { checkMultipleVaultsFromApi$ } from 'features/shared/vaultApi'
 import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap, tap } from 'rxjs/operators'
+import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import { ExchangeAction, ExchangeType, Quote } from '../features/exchange/exchange'
 import { UserSettingsState } from '../features/userSettings/userSettings'
@@ -75,9 +75,6 @@ export function createVaults$(
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-        tap((vaults) => {
-          console.log(`Vaults: ${vaults.length}`)
-        }),
       ),
     ),
     shareReplay(1),

@@ -62,7 +62,6 @@ export function createPositionsOverviewSummary$(
         createTokenPriceInUSD$([t]),
         createAssetActions$(t),
       ).pipe(
-        first(),
         map(([balance, token, priceData, assetActions]) => {
           return {
             balanceUsd: balance.multipliedBy(priceData[token] || zero),

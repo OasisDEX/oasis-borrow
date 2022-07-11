@@ -453,12 +453,15 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const coninbasePrices$ = memoize(coinbaseOrderBook$)
+  const coinGeckoPrices$ = memoize(coinGeckoTicker$)
+
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(
       every10Seconds$,
-      coinbaseOrderBook$,
+      coninbasePrices$,
       coinPaprikaTicker$,
-      coinGeckoTicker$,
+      coinGeckoPrices$,
     ),
   )
 
