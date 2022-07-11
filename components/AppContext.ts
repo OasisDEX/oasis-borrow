@@ -463,6 +463,7 @@ export function setupAppContext() {
       coinPaprikaTicker$,
       coinGeckoPrices$,
     ),
+    (tokens: string[]) => tokens.sort().join(','),
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])

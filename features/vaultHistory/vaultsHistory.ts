@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { gql, GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
+import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'
-import { shareReplay } from 'rxjs/internal/operators'
+import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
 import { Context } from '../../blockchain/network'
@@ -138,7 +138,8 @@ export function vaultsWithHistory$(
   )
   return timer(0, refreshInterval).pipe(
     switchMap(() => combineLatest(context$, vaults$(address))),
-    switchMap(([{ cacheApi }, vaults]) => {
+    distinctUntilChanged(isEqual),
+    switchMap(([{ cacheApi }, vaults]: [Context, VaultWithValue<VaultWithType>[]]) => {
       const apiClient = makeClient(cacheApi)
       return from(
         getDataFromCache(
