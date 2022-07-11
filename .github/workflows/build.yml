@@ -19,8 +19,8 @@ jobs:
           ${{ runner.OS }}-yarn-cache-
 
     - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
-        name: Install dependencies
-        run: yarn install --frozen-lockfile --no-progress --non-interactive
+      name: Install dependencies
+      run: yarn install --frozen-lockfile --no-progress --non-interactive
 
     - name: Lint
       run: yarn lint
