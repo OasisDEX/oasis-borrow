@@ -79,10 +79,10 @@ function Pill(props: PillProps) {
         borderRadius: 'round',
         variant: 'text.paragraph2',
         fontWeight: 'semiBold',
-        color: 'text.subtitle',
+        color: 'neutral80',
         py: 2,
         border: '1px solid',
-        borderColor: 'border',
+        borderColor: 'neutral20',
         transition: 'background 0.2s ease-in-out',
         '&:hover': {
           background: 'rgba(255, 255, 255, 0.8)',
@@ -109,7 +109,7 @@ function StatCell({ label, value }: { label: string; value: string }) {
     <Box sx={{ mb: [3, 1, 1] }}>
       <Text
         variant="paragraph2"
-        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'text.muted' }}
+        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'neutral80' }}
       >
         {label}
       </Text>

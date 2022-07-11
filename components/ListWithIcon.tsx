@@ -35,7 +35,7 @@ export function ListWithIcon({
             sx={{
               position: 'relative',
               pl: 4,
-              color: 'text.subtitle',
+              color: 'neutral80',
               ...itemStyle,
             }}
           >

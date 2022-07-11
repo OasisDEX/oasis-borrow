@@ -267,7 +267,7 @@ export function MobileSidePanel({
           bottom: 0,
           transition: ['0.3s transform ease-in-out', '0s'],
           transform: [`translateX(${vaultFormOpened ? '0' : '100'}%)`, 'translateX(0)'],
-          bg: ['background', 'transparent'],
+          bg: ['neutral10', 'transparent'],
           p: [3, 0],
           pt: [0, 0],
           overflowX: ['hidden', 'visible'],

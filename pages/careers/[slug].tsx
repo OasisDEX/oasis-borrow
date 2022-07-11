@@ -21,11 +21,11 @@ function CareerPage({ career }: { career: Career }) {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          color: 'text.focused',
+          color: 'primary',
         }}
       >
         <Icon name="arrow_left" size={3} sx={{ mr: 1 }} />
-        <Text variant="paragraph2" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
+        <Text variant="paragraph2" sx={{ color: 'primary', fontWeight: 'semiBold' }}>
           {t('careers.back-link')}
         </Text>
       </AppLink>

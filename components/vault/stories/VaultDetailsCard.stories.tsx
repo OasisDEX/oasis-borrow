@@ -135,7 +135,7 @@ export const CollaterizationRatio = ({ hasAfter, hasBottom }: CardsControl) => {
               <Text as="span" sx={{ color: 'onSuccess' }}>
                 105.09%{' '}
               </Text>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 {t('manage-multiply-vault.card.on-next-price')}
               </Text>
             </>

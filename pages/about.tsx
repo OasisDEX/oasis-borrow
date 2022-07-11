@@ -29,9 +29,9 @@ function AboutPage({ members }: { members: TeamMember[] }) {
       </Box>
       <AppLink
         href="/careers"
-        sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}
+        sx={{ color: 'primary', display: 'flex', alignItems: 'center', mt: 3 }}
       >
-        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
+        <Text variant="paragraph1" sx={{ color: 'primary', fontWeight: 'semiBold' }}>
           {t('about.careers-link')}
         </Text>
         <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />

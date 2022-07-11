@@ -40,25 +40,7 @@ export const oasisBaseTheme = {
     critical10: '#FFEEE9',
 
     // deprecated names
-    background: 'neutral10',
-    backgroundAlt: 'secondary60',
-    fadedWhite: 'neutral10',
-    light: 'secondary100',
-    lightIcon: 'neutral60',
-    border: 'neutral20',
-    borderSelected: 'neutral70',
-    offBlue: 'neutral60',
-    offWhite: 'neutral30',
-    grey: {
-      darker: 'secondary100',
-    },
-    text: {
-      focused: 'primary',
-      muted: 'neutral80',
-      off: 'primary60',
-      subtitle: 'neutral80',
-      contrast: 'neutral10',
-    },
+
     link: 'interactive',
     textAlt: 'primary60',
     onBackground: 'neutral70',
@@ -193,7 +175,7 @@ export const oasisBaseTheme = {
     },
     subheader: {
       variant: 'text.paragraph2',
-      color: 'text.subtitle',
+      color: 'neutral80',
     },
     caption: {
       variant: 'text.paragraph4',
@@ -217,7 +199,7 @@ export const oasisBaseTheme = {
       lineHeight: 'bodyLoose',
       a: {
         variant: 'text.paragraph1',
-        color: 'text.focused',
+        color: 'primary',
       },
     },
     address: {
@@ -230,7 +212,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       lineHeight: 'body',
       fontSize: 1,
-      color: 'text.subtitle',
+      color: 'neutral80',
     },
   },
   borders: {
@@ -331,7 +313,7 @@ export const oasisBaseTheme = {
   cards: {
     primary: {
       border: '1px solid',
-      borderColor: 'light',
+      borderColor: 'secondary100',
       p: 3,
       borderRadius: 'roundish',
       bg: 'neutral10',
@@ -355,7 +337,7 @@ export const oasisBaseTheme = {
       p: 3,
       borderRadius: 'roundish',
       border: 'none',
-      bg: 'offWhite',
+      bg: 'neutral30',
     },
     secondaryRounded: {
       variant: 'cards.secondary',
@@ -410,7 +392,7 @@ export const oasisBaseTheme = {
     },
     positionsPage: {
       boxSizing: 'border-box',
-      backgroundColor: 'background',
+      backgroundColor: 'neutral10',
       boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)',
       borderRadius: 'large',
       padding: '32px',
@@ -441,7 +423,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       borderRadius: 'round',
       lineHeight: 'buttons',
-      color: 'text.contrast',
+      color: 'neutral10',
       transition: 'background 200ms',
       '&:hover, &:focus-visible': {
         bg: 'primary60',
@@ -460,7 +442,7 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'light',
+      borderColor: 'secondary100',
       borderRadius: 'round',
       color: 'primary',
       fontWeight: 'semiBold',
@@ -475,7 +457,7 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'light',
+      borderColor: 'secondary100',
       borderRadius: 'mediumLarge',
       '&:focus': {
         outline: 'none',
@@ -486,7 +468,7 @@ export const oasisBaseTheme = {
       whiteSpace: 'nowrap',
       cursor: 'pointer',
       fontWeight: 'semiBold',
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       color: 'primary',
       borderRadius: 'round',
       px: 4,
@@ -499,7 +481,7 @@ export const oasisBaseTheme = {
         opacity: 0.5,
       },
       '&:hover': {
-        backgroundColor: 'grey.darker',
+        backgroundColor: 'secondary100',
       },
     },
     tertiary: {
@@ -510,7 +492,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       lineHeight: '20px',
       cursor: 'pointer',
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       color: 'primary',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
@@ -533,7 +515,7 @@ export const oasisBaseTheme = {
       py: 3,
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'light',
+      borderColor: 'secondary100',
       '&:focus': {
         outline: 'none',
       },
@@ -571,7 +553,7 @@ export const oasisBaseTheme = {
     filter: {
       borderRadius: 'round',
       background: 'none',
-      color: 'text.muted',
+      color: 'neutral80',
       fontFamily: 'body',
       fontWeight: 'semiBold',
       cursor: 'pointer',
@@ -587,7 +569,7 @@ export const oasisBaseTheme = {
         textDecoration: 'underline',
       },
       '&[data-selected="true"]': {
-        border: 'light',
+        border: 'secondary100',
         color: 'primary',
       },
     },
@@ -622,7 +604,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       color: 'primary',
       userSelect: 'none',
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       px: 2,
       py: 1,
       borderRadius: 'round',
@@ -659,7 +641,7 @@ export const oasisBaseTheme = {
       fontSize: 3,
       fontWeight: 'semiBold',
       lineHeight: 'body',
-      bg: 'background',
+      bg: 'neutral10',
       p: 3,
       color: 'primary',
       boxShadow: 'vaultEditingController',
@@ -671,7 +653,7 @@ export const oasisBaseTheme = {
       fontSize: 3,
       fontWeight: 'semiBold',
       bg: 'transparent',
-      color: 'text.subtitle',
+      color: 'neutral80',
       cursor: 'pointer',
       transition: TRANSITIONS.global,
       '&:hover': {
@@ -685,13 +667,13 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       lineHeight: 'body',
       bg: 'transparent',
-      color: 'text.subtitle',
+      color: 'neutral80',
       cursor: 'pointer',
       transition: TRANSITIONS.global,
     },
     menuButton: {
       variant: 'buttons.secondary',
-      bg: 'background',
+      bg: 'neutral10',
       boxShadow: 'buttonMenu',
       fontSize: [1, 2],
       minHeight: ['40px', 'auto'],
@@ -725,7 +707,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       lineHeight: '18px',
       color: 'primary',
-      backgroundColor: 'background',
+      backgroundColor: 'neutral10',
       border: 'lightMuted',
       borderRadius: 'rounder',
       cursor: 'pointer',
@@ -747,7 +729,7 @@ export const oasisBaseTheme = {
     pill: {
       px: '24px',
       py: '12px',
-      color: 'text.subtitle',
+      color: 'neutral80',
       fontFamily: 'body',
       fontSize: 3,
       fontWeight: 'semiBold',
@@ -757,13 +739,13 @@ export const oasisBaseTheme = {
       backgroundColor: 'transparent',
       cursor: 'pointer',
       '&:hover': {
-        backgroundColor: 'border',
+        backgroundColor: 'neutral20',
       },
       transition: 'color 200ms, background-color 200ms',
     },
     pillActive: {
       variant: 'buttons.pill',
-      color: 'background',
+      color: 'neutral10',
       backgroundColor: 'link',
       '&:hover': {
         backgroundColor: 'link',
@@ -857,7 +839,7 @@ export const oasisBaseTheme = {
   },
   icons,
   radio: {
-    color: 'offBlue',
+    color: 'neutral60',
     'input:checked ~ &': {
       color: 'onSuccess',
     },
@@ -885,7 +867,7 @@ export const oasisBaseTheme = {
     input: {
       outline: 'none',
       borderRadius: 'large',
-      border: 'light',
+      border: 'secondary100',
       borderColor: 'muted',
       color: 'onSurface',
       fontWeight: 'body',
@@ -898,7 +880,7 @@ export const oasisBaseTheme = {
         color: 'primary',
       },
       '&:disabled': {
-        bg: 'background',
+        bg: 'neutral10',
         pointerEvents: 'none',
       },
     },
@@ -911,9 +893,9 @@ export const oasisBaseTheme = {
     },
     inputSecondary: {
       variant: 'forms.input',
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       borderRadius: 'small',
-      color: 'text.subtitle',
+      color: 'neutral80',
       p: 2,
       fontSize: 2,
       lineHeight: 'bodyLoose',
@@ -996,7 +978,7 @@ export const oasisBaseTheme = {
       alignItems: 'flex-start',
     },
     vaultEditingControllerContainer: {
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       borderRadius: '2em',
       gap: '0px',
     },
@@ -1006,14 +988,14 @@ export const oasisBaseTheme = {
       mb: 3,
     },
     tabSwitcher: {
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       borderRadius: '2em',
       gap: '0px',
     },
   },
   separator: {
     borderTop: '1px solid',
-    borderColor: 'border',
+    borderColor: 'neutral20',
     height: '1px',
     width: '100%',
   },

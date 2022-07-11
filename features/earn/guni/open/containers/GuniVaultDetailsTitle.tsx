@@ -44,7 +44,7 @@ export function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetails
         </Heading>
         <Text
           variant="paragraph3"
-          color="text.subtitle"
+          color="neutral80"
           sx={{
             fontWeight: 'semiBold',
           }}

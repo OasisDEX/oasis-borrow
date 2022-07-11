@@ -53,7 +53,7 @@ export function Item({
           <Text
             sx={{
               mr: 'auto',
-              color: labelColorPrimary ? 'primary' : theme.colors.text.subtitle,
+              color: labelColorPrimary ? 'primary' : theme.colors.neutral80,
             }}
             as="p"
           >
@@ -111,7 +111,7 @@ export function Item({
             <Text
               sx={{
                 fontWeight: 400,
-                color: theme.colors.text.subtitle,
+                color: theme.colors.neutral80,
               }}
             >
               {subLabel}

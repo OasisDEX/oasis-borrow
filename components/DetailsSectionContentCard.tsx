@@ -142,7 +142,7 @@ export function DetailsSectionContentCard({
         {title}
         {modal && (
           <Icon
-            color={isHighlighted ? 'primary' : 'text.subtitle'}
+            color={isHighlighted ? 'primary' : 'neutral80'}
             name="question_o"
             size="auto"
             width="14px"

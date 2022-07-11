@@ -127,7 +127,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
               ? {
                   display: 'inline-flex',
                   borderRadius: '58px',
-                  bg: 'backgroundAlt',
+                  bg: 'secondary60',
                 }
               : {}),
           }}

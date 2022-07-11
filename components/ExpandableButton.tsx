@@ -75,7 +75,7 @@ export function ExpandableButton({ button }: { button: ButtonWithAction | Button
                 backgroundColor: 'transparent',
                 transition: 'background-color 150ms',
                 '&:hover': {
-                  backgroundColor: 'border',
+                  backgroundColor: 'neutral20',
                 },
                 cursor: 'pointer',
               }}

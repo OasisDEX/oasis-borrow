@@ -81,7 +81,7 @@ export function TrezorAccountSelection({ web3Context, cancel }: TrezorAccountSel
               <Grid columns={[2, 'auto 1fr']} sx={{ alignItems: 'center' }}>
                 <Box
                   sx={{
-                    border: 'light',
+                    border: 'secondary100',
                     borderRadius: '50%',
                     width: 4,
                     height: 4,

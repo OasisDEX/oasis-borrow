@@ -46,7 +46,7 @@ export function VaultChangesInformationItem({
       onClick={handleClick}
     >
       <Flex
-        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        sx={{ color: 'neutral80', justifyContent: 'flex-end' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -107,7 +107,7 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
       const textPending = 'Pending...'
 
       return (
-        <Text sx={{ color: 'text.subtitle' }}>
+        <Text sx={{ color: 'neutral80' }}>
           {withBrackets ? `(${textPending})` : textPending}
         </Text>
       )

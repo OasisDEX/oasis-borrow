@@ -84,7 +84,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
               fontWeight: 'semiBold',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Grid gap={2}>
@@ -128,7 +128,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             sx={{
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Text>Decrease risk</Text>

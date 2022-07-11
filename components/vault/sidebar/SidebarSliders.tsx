@@ -72,7 +72,7 @@ export function SidebarSliderAdjustMultiply({
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
         }}
       >
         <Grid as="p" gap={2}>
@@ -110,7 +110,7 @@ export function SidebarSliderAdjustMultiply({
         sx={{
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
-          color: 'text.subtitle',
+          color: 'neutral80',
         }}
       >
         <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>

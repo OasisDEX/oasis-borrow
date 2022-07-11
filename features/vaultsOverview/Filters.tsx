@@ -104,7 +104,7 @@ function Filters_({
             Control: ({ children, innerProps }) => (
               <Flex
                 sx={{
-                  border: 'light',
+                  border: 'secondary100',
                   px: 2,
                   py: 3,
                   borderRadius: 'medium',
@@ -127,13 +127,13 @@ function Filters_({
           ml: 'auto',
           alignItems: 'center',
           mt: [3, 3, 0],
-          color: 'text.off',
+          color: 'primary60',
           '& input::placeholder': {
-            color: 'text.off',
+            color: 'primary60',
             fontWeight: 'heading',
           },
           '&:focus-within': {
-            color: 'text.focused',
+            color: 'primary',
           },
         }}
       >

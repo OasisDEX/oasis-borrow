@@ -70,7 +70,7 @@ export function SidebarAdjustStopLossEditingStage({
       {!vault.debt.isZero() ? (
         <Grid>
           <PickCloseState {...closePickerConfig} />
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.set-downside-protection-desc')}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
@@ -79,7 +79,7 @@ export function SidebarAdjustStopLossEditingStage({
           <SliderValuePicker {...slValuePickerConfig} />
         </Grid>
       ) : (
-        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           {t('protection.closed-vault-existing-sl-description')}
         </Text>
       )}

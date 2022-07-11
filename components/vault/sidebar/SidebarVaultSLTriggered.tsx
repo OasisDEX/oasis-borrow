@@ -40,7 +40,7 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.your-stop-loss-triggered-desc')}
       </Text>
       <StopLossSummaryInformation

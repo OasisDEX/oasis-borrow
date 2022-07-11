@@ -58,7 +58,7 @@ export function WithVaultFormStepIndicator({
       <Box sx={{ flex: 1 }}>{children}</Box>
       <Box
         sx={{
-          color: 'text.subtitle',
+          color: 'neutral80',
           fontSize: 1,
           fontWeight: 'semiBold',
           border: 'lightMuted',

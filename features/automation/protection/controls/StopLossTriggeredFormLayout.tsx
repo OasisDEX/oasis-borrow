@@ -50,7 +50,7 @@ export function StopLossSummaryInformation({
   const tokenSold = (
     <>
       {formatAmount(tokensSold, token)} {token}
-      <Text as="span" sx={{ color: 'text.subtitle', ml: 1 }}>
+      <Text as="span" sx={{ color: 'neutral80', ml: 1 }}>
         (${formatAmount(tokensSold.multipliedBy(tokenPrice), 'USD')})
       </Text>
     </>

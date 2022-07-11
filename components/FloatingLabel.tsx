@@ -23,7 +23,7 @@ export function FloatingLabel({ text, flexSx = {}, textSx = {} }: FloatingLabelP
         ...flexSx,
       }}
     >
-      <Text sx={{ color: 'text.contrast', fontSize: 1, fontWeight: 'heading', ...textSx }}>
+      <Text sx={{ color: 'neutral10', fontSize: 1, fontWeight: 'heading', ...textSx }}>
         {text}
       </Text>
     </Flex>

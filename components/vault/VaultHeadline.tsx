@@ -34,7 +34,7 @@ export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDe
           width: '1px',
           height: '16px',
           margin: 'auto',
-          backgroundColor: 'lightIcon',
+          backgroundColor: 'neutral60',
         },
         ':first-child': {
           ml: 0,
@@ -45,7 +45,7 @@ export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDe
         },
       }}
     >
-      <Text as="span" sx={{ color: 'text.subtitle' }}>
+      <Text as="span" sx={{ color: 'neutral80' }}>
         {label}
       </Text>
       <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary' }}>

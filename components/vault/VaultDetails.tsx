@@ -46,7 +46,7 @@ export function getPriceChangeColor({
   collateralPricePercentageChange,
 }: Pick<PriceInfo, 'collateralPricePercentageChange'>) {
   return collateralPricePercentageChange.isZero()
-    ? 'text.muted'
+    ? 'neutral80'
     : collateralPricePercentageChange.gt(zero)
     ? 'onSuccess'
     : 'onError'
@@ -119,7 +119,7 @@ export function VaultDetailsCard({
         display: 'flex',
         opacity: relevant ? 1 : 0.5,
         svg: {
-          color: 'text.subtitle',
+          color: 'neutral80',
         },
         ...(openModal && {
           cursor: 'pointer',
@@ -205,7 +205,7 @@ export function VaultDetailsSummaryItem({
 }: { label: ReactNode; value: ReactNode; valueAfter?: ReactNode } & AfterPillProps) {
   return (
     <Grid gap={1}>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', fontWeight: 'semiBold' }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', fontWeight: 'semiBold' }}>
         {label}
       </Text>
       <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

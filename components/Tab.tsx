@@ -49,7 +49,7 @@ const styles = {
   },
   largeSelected: {
     color: 'primary',
-    bg: 'background',
+    bg: 'neutral10',
     boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
   medium: {
@@ -63,10 +63,10 @@ const styles = {
     },
   },
   mediumSelected: {
-    color: 'text.contrast',
+    color: 'neutral10',
     bg: 'primary',
     '&:hover': {
-      color: 'text.contrast',
+      color: 'neutral10',
     },
   },
   small: {
@@ -80,7 +80,7 @@ const styles = {
     },
   },
   smallSelected: {
-    color: 'text.contrast',
+    color: 'neutral10',
     bg: '#575CFE',
     '&:hover': {
       color: 'text.constrast',

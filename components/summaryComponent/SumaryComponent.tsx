@@ -9,7 +9,7 @@ interface SummaryComponentProps {
 export function SummaryComponent({ text }: SummaryComponentProps) {
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {text}
       </Text>
       <Flex sx={{ justifyContent: 'center' }}>

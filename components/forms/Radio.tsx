@@ -10,7 +10,7 @@ export function Radio({ children, checked, onChange, name }: React.PropsWithChil
   return (
     <Label
       sx={{
-        border: 'light',
+        border: 'secondary100',
         borderRadius: 'mediumLarge',
         display: 'flex',
         alignItems: 'center',

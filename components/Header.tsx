@@ -214,7 +214,7 @@ function ButtonDropdown({
           right: 0,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
-          bg: 'background',
+          bg: 'neutral10',
           boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
@@ -385,7 +385,7 @@ function MobileSettings() {
             bottom: 0,
             transition: '0.3s transform ease-in-out',
             transform: `translateY(${opened ? '0' : '100'}%)`,
-            bg: 'background',
+            bg: 'neutral10',
             p: 3,
             pt: 0,
             zIndex: 'modal',
@@ -688,7 +688,7 @@ export function MobileMenu() {
       )}
       <Box
         sx={{
-          backgroundColor: 'background',
+          backgroundColor: 'neutral10',
           position: 'fixed',
           top: 0,
           left: 0,

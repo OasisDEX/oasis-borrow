@@ -78,7 +78,7 @@ const LangSelectComponents: Partial<SelectComponents<{
         pr: 5,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'background',
+          bg: 'neutral10',
         },
       }}
     >

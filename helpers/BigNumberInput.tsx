@@ -56,7 +56,7 @@ export const BigNumberInput = ({
           sx={{
             color: 'primary',
             fontWeight: 'semiBold',
-            '&::placeholder': { color: 'text.subtitle' },
+            '&::placeholder': { color: 'neutral80' },
             ...sx,
           }}
         />

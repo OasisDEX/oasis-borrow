@@ -18,7 +18,7 @@ export function SidebarManageBorrowVaultTransitionStage({
     <Grid gap={3}>
       {stage === 'multiplyTransitionEditing' ? (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.header.multiply-transition', { token })}
           </Text>
           <ListWithIcon
@@ -36,16 +36,16 @@ export function SidebarManageBorrowVaultTransitionStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'primary', fontWeight: 'semiBold' }}>
             {t('borrow-to-multiply.subheader2')}
           </Text>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('borrow-to-multiply.paragraph2')}
           </Text>
         </>
       ) : (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.header.go-to-multiply')}
           </Text>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.confirm')}
           </Text>
           <Icon name="multiply_transition" size="auto" />

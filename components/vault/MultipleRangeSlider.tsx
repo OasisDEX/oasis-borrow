@@ -197,7 +197,7 @@ export function MultipleRangeSlider({
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
           mb: '24px',
           lineHeight: 'tight',
         }}
@@ -307,7 +307,7 @@ export function MultipleRangeSlider({
           sx={{
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
-            color: 'text.subtitle',
+            color: 'neutral80',
             fontWeight: 'medium',
           }}
         >

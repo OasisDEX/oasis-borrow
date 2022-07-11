@@ -45,7 +45,7 @@ export function SidebarSectionStatus({
       icon: <Icon name="checkmark" size={20} color="onSuccess" />,
     },
     waiting: {
-      bg: 'backgroundAlt',
+      bg: 'secondary60',
       color: 'subtitle',
       icon: <Icon name={icon || 'clock'} size={20} color="subtitle" />,
       opacity: 0.5,

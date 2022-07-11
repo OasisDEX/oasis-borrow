@@ -56,7 +56,7 @@ function CareersPage({ careers }: { careers: Career[] }) {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
-                      backgroundColor: 'background',
+                      backgroundColor: 'neutral10',
                       boxShadow: 'table',
                       borderRadius: 8,
                       p: 3,

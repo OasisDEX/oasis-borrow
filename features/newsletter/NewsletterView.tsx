@@ -28,7 +28,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
       <Box
         sx={{
           display: 'inline-flex',
-          bg: 'backgroundAlt',
+          bg: 'secondary60',
           borderRadius: '3em',
           px: 4,
           py: 3,
@@ -51,7 +51,7 @@ function NewsletterFormSuccess({ small }: { small?: boolean }) {
         <Box sx={{ flex: 1, ml: 3, textAlign: 'center' }}>
           <Text
             sx={{
-              color: 'text.subtitle',
+              color: 'neutral80',
               fontSize: small ? 1 : 3,
               py: 1,
               maxWidth: '32em',
@@ -109,7 +109,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
         sx={{
           borderRadius: '2em',
           bg: ['transparent', 'bgPrimaryAlt'],
-          border: 'light',
+          border: 'secondary100',
           borderColor: 'newsletterInputBorder',
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
@@ -203,7 +203,7 @@ export function NewsletterSection({ small }: { small?: boolean }) {
         <Heading variant="header2" sx={{ fontWeight: 'body', fontSize: small ? 4 : 7 }}>
           {t('newsletter.title')}
         </Heading>
-        {small && <Text sx={{ color: 'text.subtitle' }}>{t('newsletter.subtitle')}</Text>}
+        {small && <Text sx={{ color: 'neutral80' }}>{t('newsletter.subtitle')}</Text>}
       </Grid>
       {isAppContextAvailable() ? <NewsletterForm small={small} /> : null}
     </Box>

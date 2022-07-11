@@ -66,7 +66,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             <Text>
               {formatCryptoBalance(buyingCollateral)} {token}
               {` `}
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 (${formatAmount(buyingCollateralUSD, 'USD')})
               </Text>
             </Text>

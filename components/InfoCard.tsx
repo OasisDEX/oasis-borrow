@@ -17,7 +17,7 @@ function CardContent({
   return (
     <Box sx={{ position: 'relative', zIndex: 2 }}>
       <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary' }}>{title}</Heading>
-      <Text sx={{ mb: 3, color: 'text.subtitle', minHeight: '3em', maxWidth: ['unset', '320px'] }}>
+      <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em', maxWidth: ['unset', '320px'] }}>
         {subtitle}
       </Text>
       {children}

@@ -15,7 +15,7 @@ export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState)
       return (
         <>
           {openFlowWithStopLoss && (
-            <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+            <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
               {t('open-vault-two-tx-setup-requirement')}
             </Text>
           )}
@@ -32,7 +32,7 @@ export function SidebarOpenMultiplyVaultOpenStage(props: OpenMultiplyVaultState)
     default:
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
           <OpenMultiplyVaultChangesInformation {...props} />

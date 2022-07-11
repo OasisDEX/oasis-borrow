@@ -142,7 +142,7 @@ function SlippageSettingsForm() {
     <>
       <Box>
         <Box>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', mb: -1 }}>
             {t('user-settings.slippage-limit.preset-description')}
           </Text>
           <Link href="/support#using-multiply" passHref>
@@ -288,7 +288,7 @@ function WalletInfo() {
             {accountData && accountData.daiBalance && (
               <>
                 <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
-                <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
+                <Text variant="caption" sx={{ ml: 1, color: 'neutral80' }}>
                   {formatCryptoBalance(accountData.daiBalance)}
                 </Text>
               </>

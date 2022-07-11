@@ -130,7 +130,7 @@ export function ManageVaultFormHeader(
                 : t('vault-form.header.go-to-multiply')}
             </Text>
           </WithVaultFormStepIndicator>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
             {isProxyStage ? (
               <Trans
                 i18nKey={

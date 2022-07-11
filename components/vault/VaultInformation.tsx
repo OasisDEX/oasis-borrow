@@ -15,7 +15,7 @@ interface VaultInformationItemProps {
 function VaultInformationItem({ text, value }: VaultInformationItemProps) {
   return (
     <DefinitionListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Text as="span" sx={{ color: 'text.subtitle' }}>
+      <Text as="span" sx={{ color: 'neutral80' }}>
         {text}
       </Text>
       <Text as="span" sx={{ color: 'primary' }}>

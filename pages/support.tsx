@@ -27,7 +27,7 @@ function Question({ question, answer }: ContentQuestion) {
   return (
     <Box
       sx={{
-        borderBottom: 'light',
+        borderBottom: 'secondary100',
         mb: 3,
         py: 1,
         '&:last-child': {
@@ -98,7 +98,7 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
               position: 'absolute',
               width: '4px',
               height: '4px',
-              bg: 'light',
+              bg: 'secondary100',
               right: -3,
               top: '50%',
               borderRadius: '50%',

@@ -55,7 +55,7 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
       <Text
         as="span"
         sx={{
-          color: 'text.subtitle',
+          color: 'neutral80',
           pr: 2,
         }}
       >
@@ -256,7 +256,7 @@ export function VaultHistoryEntry({
         </Text>
         <Text
           as="time"
-          sx={{ color: 'text.subtitle', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}
+          sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}
         >
           {date.format('MMM DD, YYYY, h:mma')}
         </Text>
@@ -265,7 +265,7 @@ export function VaultHistoryEntry({
           size="auto"
           width="12px"
           height="7px"
-          color="text.subtitle"
+          color="neutral80"
           sx={{ position: 'absolute', top: '24px', right: 2 }}
         />
       </Flex>

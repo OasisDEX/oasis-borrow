@@ -130,10 +130,10 @@ export function SidebarSectionHeaderSelect({
               fontSize: 1,
               fontWeight: 'semiBold',
               backgroundColor: 'transparent',
-              color: item === activeItem ? 'primary' : 'text.muted',
+              color: item === activeItem ? 'primary' : 'neutral80',
               transition: 'background-color 150ms',
               '&:hover': {
-                backgroundColor: 'border',
+                backgroundColor: 'neutral20',
               },
               cursor: 'pointer',
               whiteSpace: 'pre',

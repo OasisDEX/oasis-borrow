@@ -30,7 +30,7 @@ export function DefinitionListItem({ children, sx }: VaultListItemProps) {
         listStyle: 'none',
         fontWeight: 'semiBold',
         borderBottom: '1px solid',
-        borderBottomColor: 'border',
+        borderBottomColor: 'neutral20',
         '&:last-child': {
           borderBottom: 'none',
         },

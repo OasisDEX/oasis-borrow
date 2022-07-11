@@ -39,7 +39,7 @@ export function SidebarCancelStopLossEditingStage({
 
   return (
     <Grid>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('protection.cancel-downside-protection-desc')}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />

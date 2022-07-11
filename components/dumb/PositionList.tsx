@@ -12,7 +12,7 @@ import { AppLink, AppLinkProps } from '../Links'
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'semiBold' }}>{label}</Text>
+      <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>{label}</Text>
       {tooltip && (
         <StatefulTooltip
           tooltip={
@@ -34,7 +34,7 @@ function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element |
             maxWidth: '480px',
           }}
         >
-          <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
+          <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="neutral80" />
         </StatefulTooltip>
       )}
     </Flex>
