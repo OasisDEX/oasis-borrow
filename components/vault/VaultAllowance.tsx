@@ -62,7 +62,7 @@ export function VaultAllowance({
                 sx={{
                   p: 1,
                   borderRadius: 'small',
-                  borderColor: 'secondary100',
+                  borderColor: 'secondary',
                   width: '100px',
                   fontSize: 1,
                   px: 3,

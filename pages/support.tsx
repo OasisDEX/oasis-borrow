@@ -98,7 +98,7 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
               position: 'absolute',
               width: '4px',
               height: '4px',
-              bg: 'secondary100',
+              bg: 'secondary',
               right: -3,
               top: '50%',
               borderRadius: '50%',

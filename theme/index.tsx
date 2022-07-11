@@ -290,7 +290,7 @@ export const oasisBaseTheme = {
   cards: {
     primary: {
       border: '1px solid',
-      borderColor: 'secondary100',
+      borderColor: 'secondary',
       p: 3,
       borderRadius: 'roundish',
       bg: 'neutral10',
@@ -420,7 +420,7 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary100',
+      borderColor: 'secondary',
       borderRadius: 'round',
       color: 'primary',
       fontWeight: 'semiBold',
@@ -435,7 +435,7 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary100',
+      borderColor: 'secondary',
       borderRadius: 'mediumLarge',
       '&:focus': {
         outline: 'none',
@@ -459,7 +459,7 @@ export const oasisBaseTheme = {
         opacity: 0.5,
       },
       '&:hover': {
-        backgroundColor: 'secondary100',
+        backgroundColor: 'secondary',
       },
     },
     tertiary: {
@@ -493,7 +493,7 @@ export const oasisBaseTheme = {
       py: 3,
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary100',
+      borderColor: 'secondary',
       '&:focus': {
         outline: 'none',
       },
