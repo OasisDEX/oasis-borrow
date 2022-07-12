@@ -176,8 +176,19 @@ export function AutoBuyFormControl({
       currentForm: isAddForm ? 'remove' : 'add',
     })
     uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
+      type: 'reset',
+      resetData: {
+        targetCollRatio: autoBuyTriggerData.targetCollRatio,
+        execCollRatio: autoBuyTriggerData.execCollRatio,
+        maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+          ? undefined
+          : autoBuyTriggerData.maxBuyOrMinSellPrice,
+        maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
+        withThreshold:
+          !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
+          autoBuyTriggerData.triggerId.isZero(),
+        txDetails: {},
+      },
     })
   }
 

@@ -1,6 +1,5 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { TxError } from 'helpers/types'
 
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
@@ -9,7 +8,7 @@ export const BASIC_BUY_FORM_CHANGE = 'BASIC_BUY_FORM_CHANGE'
 export type CurrentBSForm = 'add' | 'remove'
 
 export type BasicBSTriggerResetData = Pick<
-  BasicBSTriggerData,
+  BasicBSFormChange,
   'execCollRatio' | 'targetCollRatio' | 'maxBuyOrMinSellPrice' | 'maxBaseFeeInGwei'
 > & {
   withThreshold: boolean

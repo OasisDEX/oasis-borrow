@@ -139,6 +139,8 @@ export function getDataForStopLoss(
     currentCollateralRatio: afterCollateralizationRatio,
     isAutoSellEnabled: false,
     isStopLossEnabled: false,
+    warnings: [],
+    errors: [],
   }
 
   return sidebarProps
