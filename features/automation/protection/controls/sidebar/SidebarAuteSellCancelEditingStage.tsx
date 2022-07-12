@@ -3,6 +3,7 @@ import { Vault } from 'blockchain/vaults'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { CancelAutoBSInfoSection } from 'features/automation/basicBuySell/InfoSections/CancelAutoBSInfoSection'
+import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
@@ -12,19 +13,23 @@ import { Text } from 'theme-ui'
 interface AutoSellInfoSectionControlProps {
   vault: Vault
   cancelTriggerGasEstimation: ReactNode
+  basicSellState: BasicBSFormChange
 }
 
 function AutoSellInfoSectionControl({
   vault,
   cancelTriggerGasEstimation,
+  basicSellState,
 }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
     <CancelAutoBSInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
+      debt={vault.debt}
       estimatedTransactionCost={cancelTriggerGasEstimation}
       title={t('auto-sell.cancel-summary-title')}
+      basicBSState={basicSellState}
     />
   )
 }
@@ -35,6 +40,7 @@ interface SidebarAutoSellCancelEditingStageProps {
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   cancelTriggerGasEstimation: ReactNode
+  basicSellState: BasicBSFormChange
 }
 
 export function SidebarAutoSellCancelEditingStage({
@@ -43,6 +49,7 @@ export function SidebarAutoSellCancelEditingStage({
   errors,
   warnings,
   cancelTriggerGasEstimation,
+  basicSellState,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
 
@@ -56,6 +63,7 @@ export function SidebarAutoSellCancelEditingStage({
       <AutoSellInfoSectionControl
         vault={vault}
         cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+        basicSellState={basicSellState}
       />
     </>
   )

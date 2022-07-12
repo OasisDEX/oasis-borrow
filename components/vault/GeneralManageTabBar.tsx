@@ -28,7 +28,7 @@ export enum VaultViewMode {
 interface GeneralManageTabBarProps {
   generalManageVault: GeneralManageVaultState
   positionInfo?: JSX.Element
-  showProtectionTab: boolean
+  showAutomationTabs: boolean
   protectionEnabled: boolean
   optimizationEnabled: boolean
 }
@@ -36,7 +36,7 @@ interface GeneralManageTabBarProps {
 export function GeneralManageTabBar({
   generalManageVault,
   positionInfo,
-  showProtectionTab,
+  showAutomationTabs,
   protectionEnabled,
   optimizationEnabled,
 }: GeneralManageTabBarProps): JSX.Element {
@@ -70,7 +70,7 @@ export function GeneralManageTabBar({
           value: VaultViewMode.Overview,
           content: <GeneralManageVaultViewAutomation generalManageVault={generalManageVault} />,
         },
-        ...(showProtectionTab
+        ...(showAutomationTabs
           ? [
               {
                 label: t('system.protection'),
@@ -87,7 +87,7 @@ export function GeneralManageTabBar({
               },
             ]
           : []),
-        ...(basicBSEnabled
+        ...(basicBSEnabled && showAutomationTabs
           ? [
               {
                 label: t('system.optimization'),

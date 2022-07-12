@@ -52,7 +52,7 @@ export function ProtectionDetailsControl({
       />
       {basicBSEnabled && (
         <BasicSellDetailsControl
-          token={vault.token}
+          vault={vault}
           basicSellTriggerData={basicSellTriggerData}
           isAutoSellActive={isAutoSellActive}
           priceInfo={priceInfo}

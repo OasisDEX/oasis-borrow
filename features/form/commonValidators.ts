@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
@@ -477,4 +478,18 @@ export function stopLossCloseToCollRatioValidator({
     .minus(alertRange)
 
   return stopLossLevel.gte(currentCollRatioFloor)
+}
+
+export function stopLossTriggeredValidator({
+  vaultHistory,
+}: {
+  vaultHistory: VaultHistoryEvent[]
+}) {
+  return (
+    !!vaultHistory[1] &&
+    'triggerId' in vaultHistory[1] &&
+    vaultHistory[1].eventType === 'executed' &&
+    (vaultHistory[0].kind === 'CLOSE_VAULT_TO_COLLATERAL' ||
+      vaultHistory[0].kind === 'CLOSE_VAULT_TO_DAI')
+  )
 }

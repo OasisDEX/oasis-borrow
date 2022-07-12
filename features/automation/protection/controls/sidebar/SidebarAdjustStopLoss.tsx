@@ -29,7 +29,6 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     stage,
     toggleForms,
     token,
-    vault: { debt },
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
@@ -37,7 +36,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, debt, isStopLossEnabled }),
+    title: getSidebarTitle({ flow, stage, token, isStopLossEnabled }),
     ...(basicBSEnabled && {
       dropdown: {
         forcePanel: 'stopLoss',
