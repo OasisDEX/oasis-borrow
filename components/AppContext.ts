@@ -872,10 +872,12 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const vaultsHistory$ = memoize(curry(vaultsWithHistory$)(context$, vaults$, 1000 * 60))
+  const vaultsHistoryAndValue$ = memoize(
+    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
+  )
 
   const positionsList$ = memoize(
-    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistory$),
+    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
   )
 
   const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
