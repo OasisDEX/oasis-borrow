@@ -4,10 +4,8 @@ import { AppLink } from 'components/Links'
 import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  errorsStopLossValidation,
-  warningsStopLossValidation,
-} from 'features/automation/protection/common/validation'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -33,8 +31,7 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'vault'
   | 'isAutoSellEnabled'
   | 'isStopLossEnabled'
->
-
+> & { errors: VaultErrorMessage[]; warnings: VaultWarningMessage[] }
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
   collateralizationRatioAtNextPrice,
@@ -51,22 +48,12 @@ export function SidebarAdjustStopLossEditingStage({
   tokenPrice,
   txError,
   vault,
-  vault: { debt },
-  isAutoSellEnabled,
   isStopLossEnabled,
+  errors,
+  warnings,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
-  const errors = errorsStopLossValidation({ txError, debt })
-  const warnings = warningsStopLossValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-    sliderMax: slValuePickerConfig.maxBoundry,
-    triggerRatio: selectedSLValue,
-    isAutoSellEnabled,
-  })
   const isVaultEmpty = vault.debt.isZero()
 
   if (isVaultEmpty && !isStopLossEnabled) {

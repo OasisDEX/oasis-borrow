@@ -178,8 +178,19 @@ export function AutoSellFormControl({
       currentForm: isAddForm ? 'remove' : 'add',
     })
     uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
+      type: 'reset',
+      resetData: {
+        targetCollRatio: autoSellTriggerData.targetCollRatio,
+        execCollRatio: autoSellTriggerData.execCollRatio,
+        maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
+          ? undefined
+          : autoSellTriggerData.maxBuyOrMinSellPrice,
+        maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
+        withThreshold:
+          !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
+          autoSellTriggerData.triggerId.isZero(),
+        txDetails: {},
+      },
     })
   }
 

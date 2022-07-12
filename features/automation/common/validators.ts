@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
-import { TxError } from 'helpers/types'
 
 export function warningsBasicSellValidation({
   vault,
@@ -58,34 +58,44 @@ export function warningsBasicSellValidation({
 }
 
 export function errorsBasicSellValidation({
-  txError,
   vault,
   ilkData,
   debtDelta,
-  targetCollRatio,
-  withThreshold,
   isRemoveForm,
-  minSellPrice,
+  basicSellState,
+  autoBuyTriggerData,
 }: {
-  txError?: TxError
   vault: Vault
   ilkData: IlkData
   debtDelta: BigNumber
-  targetCollRatio: BigNumber
-  withThreshold: boolean
   isRemoveForm: boolean
-  minSellPrice?: BigNumber
+  basicSellState: BasicBSFormChange
+  autoBuyTriggerData: BasicBSTriggerData
 }) {
-  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const {
+    execCollRatio,
+    targetCollRatio,
+    withThreshold,
+    maxBuyOrMinSellPrice,
+    txDetails,
+  } = basicSellState
+  const insufficientEthFundsForTx = ethFundsForTxValidator({
+    txError: txDetails?.txError,
+  })
   const targetCollRatioExceededDustLimitCollRatio =
     !targetCollRatio.isZero() && ilkData.debtFloor.gt(vault.debt.plus(debtDelta))
 
   const minimumSellPriceNotProvided =
-    !isRemoveForm && withThreshold && (!minSellPrice || minSellPrice.isZero())
+    !isRemoveForm && withThreshold && (!maxBuyOrMinSellPrice || maxBuyOrMinSellPrice.isZero())
+
+  const autoSellTriggerHigherThanAutoBuyTarget = execCollRatio
+    .plus(5)
+    .gt(autoBuyTriggerData.targetCollRatio)
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
+    autoSellTriggerHigherThanAutoBuyTarget,
   })
 }
