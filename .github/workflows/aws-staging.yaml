@@ -56,6 +56,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: Extract commit hash
+      id: vars
+      shell: bash
+      run: |
+        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+
     - name: Build, tag, and push image to Amazon ECR and Dockerhub
       id: build-image
       env:
@@ -96,12 +102,6 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
         docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
 
-    - name: Extract commit hash
-      id: vars
-      shell: bash
-      run: |
-        echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-
     - name: Update ECS service with latest Docker image
       id: service-update
       run: |
@@ -114,6 +114,6 @@ jobs:
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
     - name: Invalidate CloudFront
-      run:
+      run: |
         aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }}
         --paths "/*"
