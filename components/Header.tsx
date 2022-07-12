@@ -760,7 +760,7 @@ export function MobileMenu() {
           onClick={() => setIsOpen(true)}
           size="auto"
           width="20px"
-          color="lavender"
+          color="neutral80"
         />
       </Button>
     </>
