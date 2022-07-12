@@ -107,9 +107,7 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
       const textPending = 'Pending...'
 
       return (
-        <Text sx={{ color: 'neutral80' }}>
-          {withBrackets ? `(${textPending})` : textPending}
-        </Text>
+        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
       )
     case GasEstimationStatus.error:
     case GasEstimationStatus.unknown:

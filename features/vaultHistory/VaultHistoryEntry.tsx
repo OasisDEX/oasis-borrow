@@ -254,10 +254,7 @@ export function VaultHistoryEntry({
             0: ({ children }) => <Text as="span">{children}</Text>,
           })}
         </Text>
-        <Text
-          as="time"
-          sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}
-        >
+        <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {date.format('MMM DD, YYYY, h:mma')}
         </Text>
         <Icon

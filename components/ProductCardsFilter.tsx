@@ -58,9 +58,7 @@ export function ProductCardsFilter({ filters, children, selectedFilter }: TokenT
                       variant: 'paragraph2',
                       fontWeight: 'semiBold',
                       color:
-                        tab.name === currentFilter || hover === tab.name
-                          ? 'primary'
-                          : 'neutral80',
+                        tab.name === currentFilter || hover === tab.name ? 'primary' : 'neutral80',
                     }}
                   >
                     {tab.name}

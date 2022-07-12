@@ -48,7 +48,9 @@ export function VaultInformation({ items }: VaultInformationProps) {
         ))}
       </DefinitionList>
       <AppLink href="https://kb.oasis.app/help">
-        <WithArrow sx={{ color: 'interactive', fontSize: 1, mt: 3 }}>{t('learn-more-at-oasis')}</WithArrow>
+        <WithArrow sx={{ color: 'interactive', fontSize: 1, mt: 3 }}>
+          {t('learn-more-at-oasis')}
+        </WithArrow>
       </AppLink>
     </Card>
   )

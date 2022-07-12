@@ -173,7 +173,12 @@ export function StopLossBannerLayout({
           <Button variant="unStyled" onClick={handleClick} sx={{ p: 0 }}>
             <WithArrow sx={{ color: 'interactive' }}>
               <Text
-                sx={{ display: 'inline', color: 'interactive', fontSize: 1, fontWeight: 'semiBold' }}
+                sx={{
+                  display: 'inline',
+                  color: 'interactive',
+                  fontSize: 1,
+                  fontWeight: 'semiBold',
+                }}
                 variant="paragraph1"
               >
                 {t('protection.edit-vault-protection')}
