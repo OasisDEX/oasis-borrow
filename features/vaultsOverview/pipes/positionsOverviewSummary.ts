@@ -176,7 +176,7 @@ export function createPositionsOverviewSummary$(
     })),
     debounceTime(500),
     distinctUntilChanged(isEqual),
-    timeout(1000 * 10),
+    timeout(1000 * 15),
     catchError(() => of({ assetsAndPositions: [], percentageOther: zero, totalValueUsd: zero })),
   )
 }
