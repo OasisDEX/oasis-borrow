@@ -868,6 +868,11 @@ export function setupAppContext() {
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
   const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
 
+  const productCardsDataPicked$ = (ilks: string[]) => {
+    const ilkDataListPicked$ = createIlkDataList$(ilkData$, of(ilks))
+    return createProductCardsData$(ilkDataListPicked$, priceInfo$)
+  }
+
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
@@ -1011,6 +1016,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    productCardsDataPicked$,
     getOasisStats$: memoize(getOasisStats$),
     productCardsWithBalance$,
     addGasEstimation$,

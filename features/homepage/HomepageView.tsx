@@ -150,8 +150,8 @@ function Stats({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
-  const { context$, productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const { context$, productCardsDataPicked$ } = useAppContext()
+  const [productCardsData, productCardsDataError] = useObservable(productCardsDataPicked$(['ETH-C']))
   const [context] = useObservable(context$)
   const standardAnimationDuration = '0.7s'
 
