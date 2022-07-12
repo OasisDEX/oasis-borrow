@@ -217,7 +217,6 @@ export function FeesView({ userReferral }: Props) {
                         overflowWrap: 'break-word',
                         fontSize: 2,
                         ml: ['0px', '8px'],
-                        fontVariantLigatures: 'no-contextual',
                       }}
                     >
                       {t('ref.not-referred-yet')}
@@ -257,6 +256,7 @@ export function FeesView({ userReferral }: Props) {
                     fontSize: 2,
                     ml: ['0px', '8px'],
                     pt: '16px',
+                    fontVariantLigatures: 'no-contextual',
                   }}
                 >
                   {userReferral?.referrer && !userReferral.invitePending && userReferral.referrer}{' '}
