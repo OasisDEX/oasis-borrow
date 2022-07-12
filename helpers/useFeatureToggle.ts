@@ -12,6 +12,7 @@ export type Feature =
   | 'StopLossWrite'
   | 'BasicBS'
   | 'ReadOnlyBasicBS'
+  | 'notifications'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -22,6 +23,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossWrite: true,
   BasicBS: false,
   ReadOnlyBasicBS: false,
+  notifications: false,
   // your feature here....
 }
 
