@@ -19,11 +19,11 @@ jobs:
           ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
 
     - name: Install dependencies
-      if: steps.cache-yarn.outputs.cache-hit != 'true'
+      if: ${{steps.cache-yarn.outputs.cache-hit != true}}
       run: yarn install --frozen-lockfile --no-progress --non-interactive
 
     - name: Run post install
-      if: steps.cache-yarn.outputs.cache-hit == 'true'
+      if: ${{steps.cache-yarn.outputs.cache-hit == true}}
       run: yarn postinstall
 
     - name: Cache next build
