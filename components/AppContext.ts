@@ -228,6 +228,7 @@ import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
+  createProductCardsDataBySection,
   createProductCardsWithBalance$,
   supportedBorrowIlks,
   supportedEarnIlks,
@@ -866,12 +867,8 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsDataBySection = createProductCardsDataBySection(ilkDataList$, priceInfo$)
   const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
-
-  const productCardsDataPicked$ = (ilks: string[]) => {
-    const ilkDataListPicked$ = createIlkDataList$(ilkData$, of(ilks))
-    return createProductCardsData$(ilkDataListPicked$, priceInfo$)
-  }
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
@@ -1016,7 +1013,7 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
-    productCardsDataPicked$,
+    productCardsDataBySection,
     getOasisStats$: memoize(getOasisStats$),
     productCardsWithBalance$,
     addGasEstimation$,

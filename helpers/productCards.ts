@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
+import curry from 'ramda/src/curry'
 import { combineLatest, Observable, of } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
@@ -561,14 +562,32 @@ export function createProductCardsWithBalance$(
   )
 }
 
+export function createProductCardsDataBySection(
+  ilkDataList$: Observable<IlkDataList>,
+  priceInfo$: (token: string) => Observable<PriceInfo>,) {
+
+  const create$ = curry(createProductCardsData$)(ilkDataList$, priceInfo$)
+
+  return {
+    landing: {
+      multiply$: create$(productCardsConfig.landing.featuredCards.multiply),
+      borrow$: create$(productCardsConfig.landing.featuredCards.borrow),
+      earn$: create$(productCardsConfig.landing.featuredCards.earn),
+    }
+  }
+}
+
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
   priceInfo$: (token: string) => Observable<PriceInfo>,
+  ilks?: string[],
 ): Observable<ProductCardData[]> {
   return ilkDataList$.pipe(
     switchMap((ilkDataList) =>
       combineLatest(
-        ...ilkDataList.map((ilk) => {
+        ...ilkDataList.filter((ilkData) => {
+          return !ilks || ilks.includes(ilkData.ilk)
+        }).map((ilk) => {
           const tokenMeta = getToken(ilk.token)
 
           return priceInfo$(ilk.token).pipe(
