@@ -16,7 +16,7 @@ jobs:
         path: node_modules
         key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          ${{ runner.OS }}-yarn-cache-
+          ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
 
     - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
       name: Install dependencies
@@ -33,7 +33,7 @@ jobs:
           ${{ github.workspace }}/.next/cache
         key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
         restore-keys: |
-          ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
 
     - name: Lint
       run: yarn lint
@@ -51,6 +51,7 @@ jobs:
       env:
           SENTRY_RELEASE: ${{ env.SHA_TAG }}
           NEXT_PUBLIC_SENTRY_ENV: staging
+          NODE_ENV: production
       run: yarn build
 #  test-e2e:
 #    runs-on: ubuntu-latest
