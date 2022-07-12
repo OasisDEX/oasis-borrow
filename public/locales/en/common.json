@@ -1403,7 +1403,7 @@
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "target-ratio-with-deviation": "Target ratio with deviation",
-    "title": "Auto sell",
+    "title": "Auto-Sell",
     "add-form-title": "Auto Sell-Setup",
     "edit-form-title": "Edit Auto-Sell",
     "setting-form-title": "Setting Auto-Sell",

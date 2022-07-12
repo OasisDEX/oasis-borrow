@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-export interface ProtectionDetailsLayoutProps {
+export interface StopLossDetailsLayoutProps {
   slRatio: BigNumber
   vaultDebt: BigNumber
   currentOraclePrice: BigNumber
@@ -41,7 +41,7 @@ export function StopLossDetailsLayout({
   isEditing,
   collateralizationRatioAtNextPrice,
   collateralizationRatio,
-}: ProtectionDetailsLayoutProps) {
+}: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
@@ -51,7 +51,7 @@ export function StopLossDetailsLayout({
       <Grid>
         <Box>
           <DetailsSection
-            title={t('system.protection')}
+            title={t('system.stop-loss')}
             badge={isStopLossEnabled}
             content={
               <DetailsSectionContentCardWrapper>
