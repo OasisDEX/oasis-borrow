@@ -1,5 +1,5 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { LegacyRef } from 'react'
+import React, { LegacyRef } from 'react'
 import { Box, Button } from 'theme-ui'
 
 interface NotificationsIconButtonProps {
