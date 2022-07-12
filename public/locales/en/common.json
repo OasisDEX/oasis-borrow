@@ -1419,8 +1419,8 @@
     "sell-trigger-ratio": "Sell Trigger Ratio",
     "target-coll-ratio": "Target Col Ratio (After Sell)",
     "set-min-sell-price": "Set Min Sell Price",
-    "set-trigger-description": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. Your first sell being ${{executionPrice}}/{{token}}, limited to a price of ${{minSellPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. With no min sell price. Learn More ",
+    "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
+    "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
     "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Sell is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Sell here or deposit into your vault in overview tab",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Auto-Sell",
@@ -1476,8 +1476,8 @@
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
-    "set-trigger-description": "You are setting a recurring automated buy action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to buy more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. Your first buy being ${{executionPrice}}/{{token}}, limited to a price of ${{minSellPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are setting a recurring automated buy action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to buy more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. With no min buy price. Learn More "
+    "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More (link to kb article)",
+    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More "
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",

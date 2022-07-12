@@ -92,7 +92,7 @@ export function SidebarAutoBuyEditingStage({
               token: vault.token,
               execCollRatio: basicBuyState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
-              minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
+              minBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
             })
           : t('auto-buy.set-trigger-description-no-threshold', {
               targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
