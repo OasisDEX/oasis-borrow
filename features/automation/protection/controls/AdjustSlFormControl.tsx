@@ -51,6 +51,7 @@ interface AdjustSlFormControlProps {
   ilkData: IlkData
   triggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
   ctx: Context
   accountIsController: boolean
   toggleForms: () => void
@@ -65,6 +66,7 @@ export function AdjustSlFormControl({
   ilkData,
   triggerData,
   autoSellTriggerData,
+  autoBuyTriggerData,
   ctx,
   accountIsController,
   toggleForms,
@@ -321,6 +323,7 @@ export function AdjustSlFormControl({
     currentCollateralRatio: vault.collateralizationRatio,
     isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    autoBuyTriggerData,
   }
 
   return <SidebarAdjustStopLoss {...props} />

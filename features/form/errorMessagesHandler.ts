@@ -38,6 +38,9 @@ export type VaultErrorMessage =
   | 'targetCollRatioExceededDustLimitCollRatio'
   | 'autoBuyMaxBuyPriceNotSpecified'
   | 'minimumSellPriceNotProvided'
+  | 'autoSellTriggerHigherThanAutoBuyTarget'
+  | 'autoBuyTriggerLowerThanAutoSellTarget'
+  | 'stopLossTriggerHigherThanAutoBuyTarget'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -78,6 +81,9 @@ interface ErrorMessagesHandler {
   targetCollRatioExceededDustLimitCollRatio?: boolean
   autoBuyMaxBuyPriceNotSpecified?: boolean
   minimumSellPriceNotProvided?: boolean
+  autoSellTriggerHigherThanAutoBuyTarget?: boolean
+  autoBuyTriggerLowerThanAutoSellTarget?: boolean
+  stopLossTriggerHigherThanAutoBuyTarget?: boolean
 }
 
 export function errorMessagesHandler({
@@ -119,6 +125,9 @@ export function errorMessagesHandler({
   targetCollRatioExceededDustLimitCollRatio,
   autoBuyMaxBuyPriceNotSpecified,
   minimumSellPriceNotProvided,
+  autoSellTriggerHigherThanAutoBuyTarget,
+  autoBuyTriggerLowerThanAutoSellTarget,
+  stopLossTriggerHigherThanAutoBuyTarget,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
@@ -271,6 +280,18 @@ export function errorMessagesHandler({
 
   if (autoBuyMaxBuyPriceNotSpecified) {
     errorMessages.push('autoBuyMaxBuyPriceNotSpecified')
+  }
+
+  if (autoSellTriggerHigherThanAutoBuyTarget) {
+    errorMessages.push('autoSellTriggerHigherThanAutoBuyTarget')
+  }
+
+  if (autoBuyTriggerLowerThanAutoSellTarget) {
+    errorMessages.push('autoBuyTriggerLowerThanAutoSellTarget')
+  }
+
+  if (stopLossTriggerHigherThanAutoBuyTarget) {
+    errorMessages.push('stopLossTriggerHigherThanAutoBuyTarget')
   }
 
   return errorMessages
