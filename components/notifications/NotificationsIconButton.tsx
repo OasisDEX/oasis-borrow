@@ -1,25 +1,24 @@
-import { Icon } from "@makerdao/dai-ui-icons";
-import { LegacyRef } from "react";
-import { Box, Button } from "theme-ui";
-import { theme } from '../../theme'
+import { Icon } from '@makerdao/dai-ui-icons'
+import { LegacyRef } from 'react'
+import { Box, Button } from 'theme-ui'
 
 interface NotificationsIconButtonProps {
-  notificationsPanelOpen: boolean;
-  notificationsRef: LegacyRef<HTMLDivElement>;
-  notificationsCount: string;
-  onButtonClick: () => void;
+  notificationsPanelOpen: boolean
+  notificationsRef: LegacyRef<HTMLDivElement>
+  notificationsCount: string
+  onButtonClick: () => void
 }
 
-export function NotificationsIconButton ({
+export function NotificationsIconButton({
   notificationsPanelOpen,
   notificationsCount,
   notificationsRef,
-  onButtonClick
+  onButtonClick,
 }: NotificationsIconButtonProps) {
   return (
     <Box
       sx={{
-        ml: 2
+        ml: 2,
       }}
       ref={notificationsRef}
     >
@@ -41,11 +40,11 @@ export function NotificationsIconButton ({
       >
         <>
           <Box
-            as='span'
+            as="span"
             sx={{
               bg: '#575CFE',
               color: 'white',
-              py: .5,
+              py: 0.5,
               px: 2,
               borderRadius: '24px',
               fontWeight: 'semiBold',

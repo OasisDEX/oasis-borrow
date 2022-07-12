@@ -249,7 +249,7 @@ function UserDesktopMenu() {
   // TODO: Update this once the the notifications pannel is available
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
-  const notificationsToggle = useFeatureToggle('notifications');
+  const notificationsToggle = useFeatureToggle('notifications')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -339,11 +339,10 @@ function UserDesktopMenu() {
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
             // TODO: Update to real vairable
-            notificationsCount='13'
+            notificationsCount="13"
             notificationsPanelOpen={notificationsPanelOpen}
           />
         )}
-
       </Flex>
     </Flex>
   )
