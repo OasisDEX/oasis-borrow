@@ -180,7 +180,9 @@ export function AutoBuyFormControl({
       resetData: {
         targetCollRatio: autoBuyTriggerData.targetCollRatio,
         execCollRatio: autoBuyTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
+        maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+          ? undefined
+          : autoBuyTriggerData.maxBuyOrMinSellPrice,
         maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
         withThreshold:
           !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||

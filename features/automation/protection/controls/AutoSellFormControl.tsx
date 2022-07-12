@@ -182,7 +182,9 @@ export function AutoSellFormControl({
       resetData: {
         targetCollRatio: autoSellTriggerData.targetCollRatio,
         execCollRatio: autoSellTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
+        maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
+          ? undefined
+          : autoSellTriggerData.maxBuyOrMinSellPrice,
         maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
         withThreshold:
           !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
