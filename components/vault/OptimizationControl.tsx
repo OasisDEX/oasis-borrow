@@ -153,7 +153,6 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
               <OptimizationDetailsControl
                 vault={vault}
                 automationTriggersData={automationTriggers}
-                priceInfo={priceInfo}
               />
             }
             editForm={

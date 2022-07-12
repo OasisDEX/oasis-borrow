@@ -155,20 +155,14 @@ export function AutoBuyFormControl({
         })
       } else {
         if (isAddForm) {
-          addBasicBSTrigger(
-            txHelpers,
-            addTxData,
-            uiChanges,
-            priceInfo.currentEthPrice,
-            BASIC_BUY_FORM_CHANGE,
-          )
+          addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_BUY_FORM_CHANGE)
         }
         if (isRemoveForm) {
           removeBasicBSTrigger(
             txHelpers,
             cancelTxData,
             uiChanges,
-            priceInfo.currentEthPrice,
+            ethMarketPrice,
             BASIC_BUY_FORM_CHANGE,
           )
         }
@@ -215,7 +209,7 @@ export function AutoBuyFormControl({
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: priceInfo.nextCollateralPrice,
+    marketPrice: ethMarketPrice,
     slippage: basicBuyState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,

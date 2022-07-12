@@ -13,6 +13,7 @@ interface ContentCardTargetSellColRatioProps {
   afterTargetColRatio?: BigNumber
   threshold?: BigNumber
   changeVariant?: ChangeVariantType
+  token: String
 }
 
 export function ContentCardTargetSellColRatio({
@@ -20,6 +21,7 @@ export function ContentCardTargetSellColRatio({
   afterTargetColRatio,
   threshold,
   changeVariant,
+  token,
 }: ContentCardTargetSellColRatioProps) {
   const { t } = useTranslation()
 
@@ -52,7 +54,11 @@ export function ContentCardTargetSellColRatio({
   if (threshold)
     contentCardSettings.footnote = t('auto-sell.continual-sell-threshold', {
       amount: formatted.threshold,
+      token,
     })
+
+  if (!threshold || threshold?.isZero())
+    contentCardSettings.footnote = t('auto-sell.continual-sell-no-threshold')
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

@@ -55,7 +55,6 @@ export function ProtectionDetailsControl({
           vault={vault}
           basicSellTriggerData={basicSellTriggerData}
           isAutoSellActive={isAutoSellActive}
-          priceInfo={priceInfo}
         />
       )}
     </>

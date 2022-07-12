@@ -14,6 +14,7 @@ interface ContentCardTargetColRatioProps {
   afterTargetColRatio?: BigNumber
   threshold: BigNumber
   changeVariant?: ChangeVariantType
+  token: string
 }
 
 export function ContentCardTargetColRatio({
@@ -21,6 +22,7 @@ export function ContentCardTargetColRatio({
   afterTargetColRatio,
   threshold,
   changeVariant,
+  token,
 }: ContentCardTargetColRatioProps) {
   const { t } = useTranslation()
 
@@ -55,7 +57,11 @@ export function ContentCardTargetColRatio({
   if (threshold)
     contentCardSettings.footnote = t('auto-buy.continual-buy-threshold', {
       amount: formatted.threshold,
+      token,
     })
+
+  if (!threshold || threshold.isEqualTo(maxUint256) || threshold.isZero())
+    contentCardSettings.footnote = t('auto-buy.continual-buy-no-threshold')
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }
