@@ -75,13 +75,9 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipNotice account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
-        {() =>
-          topAssetsAndPositions.totalValueUsd.gt(zero) ? (
-            <AssetsAndPositionsOverview {...topAssetsAndPositions} />
-          ) : (
-            <></>
-          )
-        }
+        {topAssetsAndPositions.totalValueUsd.gt(zero) && (
+          <AssetsAndPositionsOverview {...topAssetsAndPositions} />
+        )}
         {!isOwnerViewing && numberOfVaults === 0 && (
           <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
             <Trans
