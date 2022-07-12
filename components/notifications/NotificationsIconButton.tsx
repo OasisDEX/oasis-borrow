@@ -42,7 +42,7 @@ export function NotificationsIconButton({
           <Box
             as="span"
             sx={{
-              bg: '#575CFE',
+              bg: 'link',
               color: 'white',
               py: 0.5,
               px: 2,

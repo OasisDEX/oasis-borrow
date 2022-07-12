@@ -249,7 +249,7 @@ function UserDesktopMenu() {
   // TODO: Update this once the the notifications pannel is available
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
-  const notificationsToggle = useFeatureToggle('notifications')
+  const notificationsToggle = useFeatureToggle('Notifications')
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
