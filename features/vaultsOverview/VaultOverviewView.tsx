@@ -1,12 +1,8 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { VaultOverviewOwnershipNotice } from 'features/notices/VaultsNoticesView'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
-import { useObservable } from 'helpers/observableHook'
 import { ProductCardData } from 'helpers/productCards'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
@@ -15,11 +11,13 @@ import { Card, Flex, Grid, Heading } from 'theme-ui'
 import { PositionList } from '../../components/dumb/PositionList'
 import { zero } from '../../helpers/zero'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
+import { TopAssetsAndPositionsViewModal } from './pipes/positionsOverviewSummary'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSuggestions } from './VaultSuggestions'
 
 interface Props {
   vaultsOverview: VaultsOverview
+  topAssetsAndPositions: TopAssetsAndPositionsViewModal
   context: Context
   address: string
   ensName: string | null | undefined
@@ -51,6 +49,7 @@ function getHeaderTranslationKey(
 
 export function VaultsOverviewView({
   vaultsOverview,
+  topAssetsAndPositions,
   context,
   address,
   ensName,
@@ -58,8 +57,6 @@ export function VaultsOverviewView({
 }: Props) {
   const { t } = useTranslation()
 
-  const { positionsOverviewSummary$ } = useAppContext()
-  const [positionsOverviewSummary, err] = useObservable(positionsOverviewSummary$(address))
   const { positions, vaultSummary } = vaultsOverview
   const numberOfVaults = positions.length
 
@@ -78,17 +75,9 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipNotice account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
-        <WithErrorHandler error={err}>
-          <WithLoadingIndicator value={positionsOverviewSummary}>
-            {(positionsOverviewSummary) =>
-              positionsOverviewSummary.totalValueUsd.gt(zero) ? (
-                <AssetsAndPositionsOverview {...positionsOverviewSummary} />
-              ) : (
-                <></>
-              )
-            }
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+        {topAssetsAndPositions.totalValueUsd.gt(zero) && (
+          <AssetsAndPositionsOverview {...topAssetsAndPositions} />
+        )}
         {!isOwnerViewing && numberOfVaults === 0 && (
           <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
             <Trans

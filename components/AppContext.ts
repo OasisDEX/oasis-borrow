@@ -219,8 +219,10 @@ import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
@@ -451,13 +453,17 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const coninbasePrices$ = memoize(coinbaseOrderBook$)
+  const coinGeckoPrices$ = memoize(coinGeckoTicker$)
+
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(
       every10Seconds$,
-      coinbaseOrderBook$,
+      coninbasePrices$,
       coinPaprikaTicker$,
-      coinGeckoTicker$,
+      coinGeckoPrices$,
     ),
+    (tokens: string[]) => tokens.sort().join(','),
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
@@ -530,7 +536,7 @@ export function setupAppContext() {
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = curry(createIlkToToken$)(context$)
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -866,19 +872,19 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      context$,
-      vaultWithValue$,
-      ilksWithBalance$,
-      automationTriggersData$,
-      vaultHistory$,
-    ),
+  const vaultsHistoryAndValue$ = memoize(
+    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
   )
+
+  const positionsList$ = memoize(
+    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
+  )
+
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
-      connectedContext$,
+      context$,
       ilkToToken$,
       {
         borrow: supportedBorrowIlks,
