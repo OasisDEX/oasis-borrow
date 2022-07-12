@@ -9,7 +9,7 @@
     "start": "next dev",
     "start:prod": "yarn migrate:prod && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
-    "migrate:prod": "node ./dist/migrate.js",
+    "migrate:prod": "node ./server/database/migrate.js",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
     "build:app": "next build && node sitemapGenerator.js",
@@ -39,7 +39,8 @@
   },
   "targets": {
     "default": {
-      "includeNodeModules": true
+      "includeNodeModules": true,
+      "distDir": "./server/database"
     }
   },
   "dependencies": {
