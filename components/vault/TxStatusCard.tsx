@@ -12,15 +12,15 @@ export interface TxStatusCardProgressProps {
 export function TxStatusCardProgress({ text, txHash, etherscan }: TxStatusCardProgressProps) {
   const { t } = useTranslation()
   return (
-    <Card sx={{ backgroundColor: 'warning', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>
+    <Card sx={{ backgroundColor: 'warning10', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
-        <Spinner size={20} color="onWarning" />
+        <Spinner size={20} color="warning" />
         <Grid pl={2} gap={0}>
-          <Text variant="paragraph3" color="onWarning">
+          <Text variant="paragraph3" color="warning">
             {text}
           </Text>
           <Link href={`${etherscan}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
-            <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }} color="onWarning">
+            <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }} color="warning">
               {t('view-on-etherscan')}
             </Text>
           </Link>
@@ -43,9 +43,9 @@ export function TxStatusCardSuccess({
   return (
     <Card sx={{ backgroundColor: 'success10', border: 'none', p: 2, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
-        <Icon name="checkmark" size={20} color="onSuccess" />
+        <Icon name="checkmark" size={20} color="success" />
         <Grid pl={2} gap={0}>
-          <Text variant="paragraph3" color="onSuccess">
+          <Text variant="paragraph3" color="success">
             {text}
           </Text>
           <Link href={`${etherscan}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
@@ -56,7 +56,7 @@ export function TxStatusCardSuccess({
                 display: 'flex',
                 alignItems: 'center',
               }}
-              color="onSuccess"
+              color="success"
             >
               {t('view-on-etherscan')}
             </Text>

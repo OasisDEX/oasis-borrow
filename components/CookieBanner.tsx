@@ -29,7 +29,7 @@ function Checkbox({
         alignItems: 'center',
       }}
     >
-      {checked && <Icon name="checkmark" color="onSuccess" size="auto" width="12px" />}
+      {checked && <Icon name="checkmark" color="success" size="auto" width="12px" />}
     </Flex>
   )
 }

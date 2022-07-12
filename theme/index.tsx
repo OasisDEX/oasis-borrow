@@ -328,7 +328,7 @@ export const oasisBaseTheme = {
     warning: {
       variant: 'cards.primary',
       borderColor: 'warning',
-      bg: 'warning',
+      bg: 'warning10',
     },
     vaultFormContainer: {
       variant: 'cards.primary',

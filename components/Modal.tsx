@@ -225,7 +225,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           mb: 2,
         }}
       >
-        <Icon name="close_squared" color="onError" size={30} />
+        <Icon name="close_squared" color="critical" size={30} />
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>

@@ -131,7 +131,7 @@ export function SidebarAutoSellAddEditingStage({
         step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
-        leftThumbColor="onWarning"
+        leftThumbColor="warning"
         rightThumbColor="primary"
       />
       <VaultActionInput
