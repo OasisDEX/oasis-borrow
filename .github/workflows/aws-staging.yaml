@@ -16,8 +16,28 @@ jobs:
       CLUSTER_NAME: oasis-borrow-staging
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+    - name: Cache YARN dependencies
+      id: cache-yarn
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
+
+    - name: Install dependencies
+      if: steps.cache-yarn.outputs.cache-hit != 'true'
+      run: yarn install --frozen-lockfile --no-progress --non-interactive
+
+    - name: Run post install
+      if: steps.cache-yarn.outputs.cache-hit == 'true'
+      run: yarn postinstall
+
+    - name: Cache next build
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ github.workspace }}/.next/cache
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -94,4 +114,6 @@ jobs:
         ecs-services: '["${{ env.SERVICE_NAME }}"]'
 
     - name: Invalidate CloudFront
-      run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }} --paths "/*"
+      run: |
+        aws cloudfront create-invalidation --distribution-id ${{ secrets.CF_DIST_ID_STAGING }}
+        --paths "/*"
