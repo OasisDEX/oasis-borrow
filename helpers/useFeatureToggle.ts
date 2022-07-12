@@ -13,6 +13,7 @@ export type Feature =
   | 'StopLossOpenFlow'
   | 'BasicBS'
   | 'ReadOnlyBasicBS'
+  | 'Notifications'
   | 'Referrals'
 
 const configuredFeatures: Record<Feature, boolean> = {
@@ -25,6 +26,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossOpenFlow: false,
   BasicBS: false,
   ReadOnlyBasicBS: false,
+  Notifications: false,
   Referrals: false,
   // your feature here....
 }

@@ -157,20 +157,14 @@ export function AutoSellFormControl({
         })
       } else {
         if (isAddForm) {
-          addBasicBSTrigger(
-            txHelpers,
-            addTxData,
-            uiChanges,
-            priceInfo.currentEthPrice,
-            BASIC_SELL_FORM_CHANGE,
-          )
+          addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_SELL_FORM_CHANGE)
         }
         if (isRemoveForm) {
           removeBasicBSTrigger(
             txHelpers,
             cancelTxData,
             uiChanges,
-            priceInfo.currentEthPrice,
+            ethMarketPrice,
             BASIC_SELL_FORM_CHANGE,
           )
         }
@@ -214,7 +208,7 @@ export function AutoSellFormControl({
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: priceInfo.nextCollateralPrice,
+    marketPrice: ethMarketPrice,
     slippage: basicSellState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
