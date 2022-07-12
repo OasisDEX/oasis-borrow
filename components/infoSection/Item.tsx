@@ -67,7 +67,7 @@ export function Item({
               display: 'flex',
               alignItems: 'center',
             }}
-            as="p"
+            as="div"
           >
             {isLoading ? (
               <AppSpinner />
