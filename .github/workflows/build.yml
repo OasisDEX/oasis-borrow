@@ -18,12 +18,12 @@ jobs:
         restore-keys: |
           ${{ runner.OS }}-yarn-cache-${{ hashFiles('**/yarn.lock') }}
 
-    - if: ${{ steps.cache-yarn.outputs.cache-hit == 'false' }}
-      name: Install dependencies
+    - name: Install dependencies
+      if: steps.cache-yarn.outputs.cache-hit != 'true'
       run: yarn install --frozen-lockfile --no-progress --non-interactive
 
-    - if: ${{ steps.cache-yarn.outputs.cache-hit == 'true' }}
-      name: Run post install
+    - name: Run post install
+      if: steps.cache-yarn.outputs.cache-hit == 'true'
       run: yarn postinstall
 
     - name: Cache next build
