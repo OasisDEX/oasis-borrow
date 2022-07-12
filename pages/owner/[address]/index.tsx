@@ -37,7 +37,7 @@ function Summary({ address }: { address: string }) {
   const [context, contextError] = useObservable(context$)
   const [accountData, accountDataError] = useObservable(accountData$)
   const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(
-    positionsOverviewSummary$(address),
+    positionsOverviewSummary$(checksumAddress),
   )
 
   return (
