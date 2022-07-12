@@ -3,7 +3,6 @@
 .gitignore
 .pre-commit*
 codecov.yml
-node_modules
 .env
 .env*.local
 ./server/database/.env
