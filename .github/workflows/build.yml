@@ -47,6 +47,7 @@ jobs:
       env:
           SENTRY_RELEASE: ${{ env.SHA_TAG }}
           NEXT_PUBLIC_SENTRY_ENV: staging
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN  }}
           NODE_ENV: production
       run: yarn build
 #  test-e2e:
