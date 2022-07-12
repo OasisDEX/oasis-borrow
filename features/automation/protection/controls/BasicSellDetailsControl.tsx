@@ -1,3 +1,4 @@
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
@@ -5,7 +6,6 @@ import { AppLink } from 'components/Links'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicSellDetailsLayout } from 'features/automation/protection/controls/BasicSellDetailsLayout'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -15,20 +15,24 @@ interface BasicSellDetailsControlProps {
   vault: Vault
   basicSellTriggerData: BasicBSTriggerData
   isAutoSellActive: boolean
-  priceInfo: PriceInfo
 }
 
 export function BasicSellDetailsControl({
   vault,
   basicSellTriggerData,
   isAutoSellActive,
-  priceInfo,
 }: BasicSellDetailsControlProps) {
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const { execCollRatio, targetCollRatio, maxBuyOrMinSellPrice } = basicSellTriggerData
   const isDebtZero = vault.debt.isZero()
+
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
 
   if (readOnlyBasicBSEnabled) {
     return null
@@ -44,7 +48,7 @@ export function BasicSellDetailsControl({
         <BasicSellDetailsLayout
           token={vault.token}
           triggerColRatio={execCollRatio}
-          nextSellPrice={priceInfo.nextCollateralPrice}
+          nextSellPrice={executionPrice}
           targetColRatio={targetCollRatio}
           threshold={maxBuyOrMinSellPrice}
           basicSellTriggerData={basicSellTriggerData}
