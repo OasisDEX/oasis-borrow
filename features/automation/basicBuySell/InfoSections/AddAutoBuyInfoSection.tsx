@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 
@@ -25,7 +25,7 @@ interface BuyInfoSectionProps {
   estimatedTransactionCost: ReactNode
 }
 
-export function BuyInfoSection({
+export function AddAutoBuyInfoSection({
   colRatioAfterBuy,
   multipleAfterBuy,
   nextBuyPrice,
@@ -50,6 +50,8 @@ export function BuyInfoSection({
   const collateralToBePurchasedFormatted = formatCryptoBalance(collateralToBePurchased)
   const targetRatioWithDeviationFloorFormatted = formatPercent(targetRatioWithDeviationFloor)
   const targetRatioWithDeviationCeilingFormatted = formatPercent(targetRatioWithDeviationCeiling)
+  const nextBuyPriceFormatted = formatAmount(nextBuyPrice, 'USD')
+
   return (
     <InfoSection
       title={t('auto-buy.buy-title')}
@@ -68,9 +70,7 @@ export function BuyInfoSection({
         },
         {
           label: t('auto-buy.next-buy-prices'),
-          value: `$${nextBuyPrice}`,
-          // value: `$${nextBuyPrice.value}`,
-          // dropdownValues: nextBuyPrice.dropDownValues,
+          value: `$${nextBuyPriceFormatted}`,
         },
         {
           label: t('auto-buy.target-ratio-with-deviation'),

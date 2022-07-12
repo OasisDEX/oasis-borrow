@@ -10,7 +10,7 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
+import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import {
@@ -236,7 +236,7 @@ function AutoBuyInfoSectionControl({
     .times(basicBuyState.targetCollRatio)
 
   return (
-    <BuyInfoSection
+    <AddAutoBuyInfoSection
       token={vault.token}
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
