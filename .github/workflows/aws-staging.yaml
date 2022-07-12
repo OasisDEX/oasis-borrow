@@ -39,6 +39,24 @@ jobs:
           ${{ github.workspace }}/.next/cache
         key: ${{ runner.os }}-nextjs-${{ hashFiles('**/yarn.lock') }}
 
+    - name: Build
+      env:
+          SENTRY_RELEASE: ${{ env.SHA_TAG }}
+          NEXT_PUBLIC_SENTRY_ENV: staging
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN  }}
+          NODE_ENV: production
+          NODE_OPTIONS: --max_old_space_size=4096
+          COMMIT_SHA: ${{ env.SHA_TAG }}
+          API_HOST: ${{ secrets.API_HOST_STAGING }}
+          MIXPANEL_ENV: staging
+          MIXPANEL_KEY: ${{ secretes.MIXPANEL_STAGING_KEY }}
+          ADROLL_ADV_ID: ${{ secretes.ADROLL_ADV_ID_STAGING }}
+          ADROLL_PIX_ID: ${{ secretes.ADROLL_PIX_ID_STAGING }}
+          INFURA_PROJECT_ID: ${{ secretes.INFURA_PROJECT_ID }}
+          ETHERSCAN_API_KEY: ${{ secretes.ETHERSCAN_API_KEY }}
+          MAINNET_CACHE_URL: ${{ secrets.MAINNET_CACHE_URL_STAGING }}
+      run: yarn build
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
