@@ -4,7 +4,7 @@ import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { catchError, debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 
 import { AssetAction } from './assetActions'
 
@@ -169,6 +169,5 @@ export function createPositionsOverviewSummary$(
     })),
     debounceTime(500),
     distinctUntilChanged(isEqual),
-    catchError(() => of({ assetsAndPositions: [], percentageOther: zero, totalValueUsd: zero })),
   )
 }
