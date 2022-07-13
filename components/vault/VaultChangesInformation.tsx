@@ -58,7 +58,7 @@ export function VaultChangesInformationItem({
           {tooltip}
         </Tooltip>
       )}
-      <Box sx={{ color: 'primary' }}>{value}</Box>
+      <Box sx={{ color: 'primary100' }}>{value}</Box>
     </Flex>
   )
 }
@@ -92,7 +92,7 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'critical' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {

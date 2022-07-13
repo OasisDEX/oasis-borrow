@@ -77,7 +77,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                         lineHeight: 'body',
                         fontSize: 1,
                         color: 'white',
-                        bg: 'primary',
+                        bg: 'primary100',
                       },
                     }
                   : {}),

@@ -31,7 +31,9 @@ export interface ContentCardProps {
 }
 
 export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
-  return collRatioColor === 'primary' || collRatioColor === 'success' ? 'positive' : 'negative'
+  return collRatioColor === 'primary100' || collRatioColor === 'success100'
+    ? 'positive'
+    : 'negative'
 }
 
 export function DetailsSectionContentCardChangePill({
@@ -46,11 +48,11 @@ export function DetailsSectionContentCardChangePill({
         px: 3,
         py: 1,
         ...(variant === 'positive' && {
-          color: 'success',
+          color: 'success100',
           backgroundColor: 'secondary60',
         }),
         ...(variant === 'negative' && {
-          color: 'critical',
+          color: 'critical100',
           backgroundColor: 'critical10',
         }),
         borderRadius: 'mediumLarge',
@@ -142,7 +144,7 @@ export function DetailsSectionContentCard({
         {title}
         {modal && (
           <Icon
-            color={isHighlighted ? 'primary' : 'neutral80'}
+            color={isHighlighted ? 'primary100' : 'neutral80'}
             name="question_o"
             size="auto"
             width="14px"

@@ -20,7 +20,7 @@ export function VaultFormVaultTypeSwitch({
         <AppLink
           href={href}
           sx={{
-            color: 'primary',
+            color: 'primary100',
             fontWeight: 'semiBold',
             fontSize: 3,
             display: 'block',
@@ -67,7 +67,7 @@ export function WithVaultFormStepIndicator({
         }}
       >
         <Box sx={{ position: 'relative', top: '1px' }}>
-          <Text as="span" sx={{ color: 'primary', fontSize: 3 }}>
+          <Text as="span" sx={{ color: 'primary100', fontSize: 3 }}>
             {currentStep}
           </Text>{' '}
           / {totalSteps}

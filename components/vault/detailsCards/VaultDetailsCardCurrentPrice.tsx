@@ -44,7 +44,7 @@ export function VaultDetailsCardCurrentPriceModal({
                 target="_blank"
                 sx={{
                   display: 'inline-block',
-                  color: 'primary',
+                  color: 'primary100',
                   textDecoration: 'underline',
                 }}
               />,

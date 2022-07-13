@@ -382,7 +382,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
       }}
       components={{
         IndicatorsContainer: () => null,
-        ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+        ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
         SingleValue: ({ children }) => <Box>{children}</Box>,
         Option: ({ children, innerProps }) => (
           <Box

@@ -125,14 +125,14 @@ export const CollaterizationRatio = ({ hasAfter, hasBottom }: CardsControl) => {
       <VaultDetailsCard
         title={t('system.collateralization-ratio')}
         value={
-          <Text as="span" sx={{ color: 'success' }}>
+          <Text as="span" sx={{ color: 'success100' }}>
             105.09%{' '}
           </Text>
         }
         valueBottom={
           hasBottom ? (
             <>
-              <Text as="span" sx={{ color: 'success' }}>
+              <Text as="span" sx={{ color: 'success100' }}>
                 105.09%{' '}
               </Text>
               <Text as="span" sx={{ color: 'neutral80' }}>

@@ -98,7 +98,7 @@ export function SidebarSliderAdjustMultiply({
                 <Text
                   as="span"
                   variant="paragraph1"
-                  sx={{ fontWeight: 'semiBold', color: 'primary' }}
+                  sx={{ fontWeight: 'semiBold', color: 'primary100' }}
                 >
                   {formatPercent(currentCollaterizationRatio.times(100))}
                   <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />

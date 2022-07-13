@@ -22,7 +22,7 @@ function getPercentageColor(percentageChange: BigNumber) {
     ? 'text'
     : percentageChange.gt(zero)
     ? 'success'
-    : 'critical'
+    : 'critical100'
 }
 
 function CellOracleUpdate({ update }: { update?: Date }) {

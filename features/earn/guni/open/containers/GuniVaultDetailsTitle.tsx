@@ -37,7 +37,7 @@ export function GuniVaultDetailsTitle({ token, depositAmount }: GuniVaultDetails
           sx={{
             fontWeight: 'semiBold',
             fontSize: '28px',
-            color: 'primary',
+            color: 'primary100',
           }}
         >
           {`${formatCryptoBalance(depositAmount)} DAI`}

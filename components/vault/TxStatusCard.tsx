@@ -14,13 +14,13 @@ export function TxStatusCardProgress({ text, txHash, etherscan }: TxStatusCardPr
   return (
     <Card sx={{ backgroundColor: 'warning10', border: 'none', p: 2, px: 3, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
-        <Spinner size={20} color="warning" />
+        <Spinner size={20} color="warning100" />
         <Grid pl={2} gap={0}>
-          <Text variant="paragraph3" color="warning">
+          <Text variant="paragraph3" color="warning100">
             {text}
           </Text>
           <Link href={`${etherscan}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
-            <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }} color="warning">
+            <Text variant="paragraph4" sx={{ fontWeight: 'semiBold' }} color="warning100">
               {t('view-on-etherscan')}
             </Text>
           </Link>
@@ -43,9 +43,9 @@ export function TxStatusCardSuccess({
   return (
     <Card sx={{ backgroundColor: 'success10', border: 'none', p: 2, borderRadius: 'round' }}>
       <Flex sx={{ alignItems: 'center', p: 1 }}>
-        <Icon name="checkmark" size={20} color="success" />
+        <Icon name="checkmark" size={20} color="success100" />
         <Grid pl={2} gap={0}>
-          <Text variant="paragraph3" color="success">
+          <Text variant="paragraph3" color="success100">
             {text}
           </Text>
           <Link href={`${etherscan}/tx/${txHash}`} target="_blank" rel="noopener noreferrer">
@@ -56,7 +56,7 @@ export function TxStatusCardSuccess({
                 display: 'flex',
                 alignItems: 'center',
               }}
-              color="success"
+              color="success100"
             >
               {t('view-on-etherscan')}
             </Text>

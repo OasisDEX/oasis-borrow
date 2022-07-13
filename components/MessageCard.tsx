@@ -10,7 +10,7 @@ interface NoticeCardProps {
 
 export function MessageCard({ messages, type, withBullet = true, handleClick }: NoticeCardProps) {
   const cardVariant = type === 'error' ? 'danger' : 'warning'
-  const textColor = type === 'error' ? 'critical' : 'warning'
+  const textColor = type === 'error' ? 'critical100' : 'warning100'
 
   if (!messages.length) return null
   return (

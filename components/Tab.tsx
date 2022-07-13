@@ -44,11 +44,11 @@ const styles = {
     borderRadius: '58px',
     px: 4,
     '&:hover': {
-      color: 'primary',
+      color: 'primary100',
     },
   },
   largeSelected: {
-    color: 'primary',
+    color: 'primary100',
     bg: 'neutral10',
     boxShadow: '0px 1px 6px rgba(37, 39, 61, 0.15)',
   },
@@ -59,12 +59,12 @@ const styles = {
     px: 4,
     minWidth: '94px',
     '&:hover': {
-      color: 'primary',
+      color: 'primary100',
     },
   },
   mediumSelected: {
     color: 'neutral10',
-    bg: 'primary',
+    bg: 'primary100',
     '&:hover': {
       color: 'neutral10',
     },
@@ -76,7 +76,7 @@ const styles = {
     px: 3,
     minWidth: '54px',
     '&:hover': {
-      color: 'primary',
+      color: 'primary100',
     },
   },
   smallSelected: {
@@ -95,8 +95,8 @@ const styles = {
     paddingBottom: '12px',
   },
   underlineSelected: {
-    color: 'primary',
+    color: 'primary100',
     borderBottom: '3px solid',
-    borderColor: 'primary',
+    borderColor: 'primary100',
   },
 }

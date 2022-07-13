@@ -48,7 +48,7 @@ export function ListWithIcon({
             <Trans
               defaults={item}
               components={{
-                1: <Text as="strong" sx={{ color: 'primary' }} />,
+                1: <Text as="strong" sx={{ color: 'primary100' }} />,
               }}
             />
           </Text>

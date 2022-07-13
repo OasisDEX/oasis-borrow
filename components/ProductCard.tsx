@@ -19,7 +19,7 @@ function InactiveCard() {
         sx={{
           width: '100%',
           height: '100%',
-          backgroundColor: 'primary',
+          backgroundColor: 'primary100',
           position: 'absolute',
           top: 0,
           zIndex: 1,
@@ -38,7 +38,7 @@ function InactiveCard() {
         <Box sx={{ position: 'relative', height: '40px', width: '186px' }}>
           <Box
             sx={{
-              backgroundColor: 'primary',
+              backgroundColor: 'primary100',
               height: 'inherit',
               width: 'inherit',
               opacity: '0.6',
@@ -59,7 +59,10 @@ function InactiveCard() {
             }}
           >
             <Icon name="lock" size="19px" />
-            <Text variant="paragraph2" sx={{ color: 'secondary', fontWeight: 'semiBold', ml: 2 }}>
+            <Text
+              variant="paragraph2"
+              sx={{ color: 'secondary100', fontWeight: 'semiBold', ml: 2 }}
+            >
               Inactive
             </Text>
           </Flex>
@@ -307,11 +310,11 @@ export function ProductCard({
                   alignItems: 'center',
                   justifyContent: 'center',
                   boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                  backgroundColor: inactive || isFull ? '#80818A' : 'primary',
+                  backgroundColor: inactive || isFull ? '#80818A' : 'primary100',
                   '&:hover': {
                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
                     transition: '0.2s ease-in',
-                    backgroundColor: isFull ? '#80818A' : 'primary',
+                    backgroundColor: isFull ? '#80818A' : 'primary100',
                     cursor: isFull ? 'default' : 'pointer',
                   },
                 }}

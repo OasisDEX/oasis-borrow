@@ -64,7 +64,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: Mod
         transition: TRANSITIONS.global,
         color,
         '&:hover': {
-          color: 'primary',
+          color: 'primary100',
         },
         ...sx,
       }}
@@ -217,7 +217,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           height: '98px',
           borderRadius: '50%',
           border: '2px solid',
-          borderColor: 'critical',
+          borderColor: 'critical100',
           alignItems: 'center',
           justifyContent: 'center',
           mx: 'auto',
@@ -225,7 +225,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           mb: 2,
         }}
       >
-        <Icon name="close_squared" color="critical" size={30} />
+        <Icon name="close_squared" color="critical100" size={30} />
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>
@@ -304,7 +304,7 @@ export function MobileSidePanelClose({
       >
         <ModalCloseIcon
           close={onClose}
-          sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+          sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
           size={3}
         />
       </Box>

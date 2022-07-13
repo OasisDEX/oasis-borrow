@@ -60,7 +60,7 @@ function CareersPage({ careers }: { careers: Career[] }) {
                       boxShadow: 'table',
                       borderRadius: 8,
                       p: 3,
-                      color: 'primary',
+                      color: 'primary100',
                       transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                       '&:hover': {
                         boxShadow: ['table', 'table_hovered'],
@@ -116,7 +116,7 @@ function RoleCount({ count, sx }: { count: number; sx?: SxStyleProp }) {
         width: '26px',
         height: '26px',
         borderRadius: 'large',
-        backgroundColor: 'primary',
+        backgroundColor: 'primary100',
         alignItems: 'center',
         justifyContent: 'center',
         flexShrink: 0,

@@ -376,12 +376,12 @@ export function UniswapWidget(props: { token?: string }) {
         [main.swapBtn]: {
           border: '3px solid',
           borderColor: 'neutral20',
-          ':hover': { borderColor: 'primary', bg: 'neutral10' },
+          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
         },
         [main.token1Btn + '[color="interactive"], ' + main.token2Btn + '[color="interactive"]']: {
           border: '1px solid',
           borderColor: 'neutral20',
-          ':hover': { borderColor: 'primary', bg: 'neutral10' },
+          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
         },
         [tokenSel.hoverAppended]: { display: 'none' },
         [tokenSel.option]: {
@@ -394,7 +394,7 @@ export function UniswapWidget(props: { token?: string }) {
           borderColor: 'neutral20',
           borderRadius: 'medium',
           ':hover': { bg: 'neutral10' },
-          ':focus': { borderColor: 'primary' },
+          ':focus': { borderColor: 'primary100' },
           '::placeholder': { color: 'neutral80' },
         },
         [tokenSel.scrollbar]: {

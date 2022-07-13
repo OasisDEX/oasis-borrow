@@ -3,7 +3,6 @@ import { Flex, SxStyleProp, Text } from 'theme-ui'
 
 interface FloatingLabelProps {
   text: string
-  variant?: 'primary'
   flexSx?: SxStyleProp
   textSx?: SxStyleProp
 }

@@ -16,7 +16,7 @@ function CardContent({
 } & WithChildren) {
   return (
     <Box sx={{ position: 'relative', zIndex: 2 }}>
-      <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary' }}>{title}</Heading>
+      <Heading sx={{ my: 2, fontWeight: 'bold', color: 'primary100' }}>{title}</Heading>
       <Text sx={{ mb: 3, color: 'neutral80', minHeight: '3em', maxWidth: ['unset', '320px'] }}>
         {subtitle}
       </Text>
@@ -84,7 +84,7 @@ export function InfoCard(props: InfoCardProps) {
               sx={{
                 pb: 3,
                 fontSize: 3,
-                color: 'primary',
+                color: 'primary100',
                 fontWeight: 'semiBold',
               }}
             >
@@ -109,7 +109,7 @@ export function InfoCard(props: InfoCardProps) {
                 href={href}
                 sx={{
                   fontSize: 3,
-                  color: 'primary',
+                  color: 'primary100',
                   '&:hover svg': {
                     transform: 'translateX(8px)',
                   },

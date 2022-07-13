@@ -51,7 +51,7 @@ export function SidebarVaultProxyStage({ stage, gasData }: SidebarOpenVaultProxy
           <ListWithIcon
             icon="checkmark"
             iconSize="14px"
-            iconColor="primary"
+            iconColor="primary100"
             items={t<string, string[]>('proxy-advantages-new', { returnObjects: true })}
             listStyle={{ my: 2 }}
           />

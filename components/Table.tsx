@@ -226,7 +226,7 @@ export function TableSortHeader<K extends string>({
       variant="tableHeader"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
-      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary' : 'neutral80' }}>
+      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary100' : 'neutral80' }}>
         {children}
       </Box>
       <Box>
@@ -234,7 +234,7 @@ export function TableSortHeader<K extends string>({
           variant="sort"
           isUp={filters.direction === 'ASC' && isSelected}
           size={12}
-          color={isSelected ? 'primary' : 'neutral80'}
+          color={isSelected ? 'primary100' : 'neutral80'}
         />
       </Box>
     </Button>

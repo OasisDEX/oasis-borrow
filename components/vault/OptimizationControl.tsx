@@ -52,7 +52,7 @@ function ZeroDebtOptimizationBanner({
           )}
         </>
       }
-      color="primary"
+      color="primary100"
     />
   )
 }

@@ -53,7 +53,7 @@ function Header({ name }: { name: string }) {
 
 function Cell({ children }: WithChildren) {
   return (
-    <Box sx={{ py: 2, color: 'primary' }}>
+    <Box sx={{ py: 2, color: 'primary100' }}>
       <Text sx={{ my: 1 }}>{children}</Text>
     </Box>
   )
@@ -259,7 +259,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
   }
 
   return (
-    <Box sx={{ color: 'primary', zIndex: 1 }}>
+    <Box sx={{ color: 'primary100', zIndex: 1 }}>
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', my: 3 }}>
         {t('earn.your-positions')} ({positions.length})
       </Text>

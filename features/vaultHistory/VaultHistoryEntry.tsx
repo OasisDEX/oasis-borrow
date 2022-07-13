@@ -65,7 +65,7 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
         as="span"
         sx={{
           flexShrink: 0,
-          color: 'primary',
+          color: 'primary100',
         }}
       >
         {children}
@@ -249,7 +249,7 @@ export function VaultHistoryEntry({
         }}
         onClick={() => setOpened(!opened)}
       >
-        <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
+        <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
           {interpolate(translation, {
             0: ({ children }) => <Text as="span">{children}</Text>,
           })}

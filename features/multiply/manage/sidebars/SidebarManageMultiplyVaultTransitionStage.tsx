@@ -22,7 +22,7 @@ export function SidebarManageMultiplyVaultTransitionStage({
           <ListWithIcon
             icon="checkmark"
             iconSize="14px"
-            iconColor="primary"
+            iconColor="primary100"
             items={[
               t('multiply-to-borrow.checkmark1'),
               t('multiply-to-borrow.checkmark2'),

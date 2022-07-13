@@ -133,7 +133,7 @@ function Filters_({
             fontWeight: 'heading',
           },
           '&:focus-within': {
-            color: 'primary',
+            color: 'primary100',
           },
         }}
       >

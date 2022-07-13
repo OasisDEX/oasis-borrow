@@ -55,11 +55,11 @@ function SlippageOptionButton({
         cursor: 'pointer',
         '&:last-child': { mr: '0px' },
         '&:hover': {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         },
         ...(active && {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         }),
       }}
@@ -109,7 +109,7 @@ function SlippageLimitMessages({
         </Text>
       ))}
       {errors.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'critical' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'critical100' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
@@ -231,7 +231,7 @@ function SlippageSettingsForm() {
         </Text>
       )}
       {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'critical' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'critical100' }}>
           {t('user-settings.update-failure')}
         </Text>
       )}
@@ -375,7 +375,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
         <Icon name={userIcon!} size="auto" width="42" />
         <Text
           variant="address"
-          sx={{ ml: 3, color: 'primary', fontSize: 2, fontWeight: [600, 500] }}
+          sx={{ ml: 3, color: 'primary100', fontSize: 2, fontWeight: [600, 500] }}
         >
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
@@ -387,7 +387,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
-          color={active ? 'primary' : 'inherit'}
+          color={active ? 'primary100' : 'inherit'}
         />
       </Flex>
     </Flex>

@@ -40,7 +40,7 @@ export function Notice({ children, close, sx, withClose = true }: NoticeProps) {
             zIndex: 1,
             color: 'neutral80',
             '&:hover': {
-              color: 'primary',
+              color: 'primary100',
             },
           }}
         >

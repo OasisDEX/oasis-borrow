@@ -76,7 +76,7 @@ function getPercent(value?: BigNumber) {
 
 function getSubColor(number: BigNumber) {
   if (number.lt(zero)) {
-    return 'critical'
+    return 'critical100'
   }
-  return 'success'
+  return 'success100'
 }

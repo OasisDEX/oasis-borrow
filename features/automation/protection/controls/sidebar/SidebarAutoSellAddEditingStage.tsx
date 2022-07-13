@@ -181,14 +181,14 @@ export function SidebarAutoSellAddEditingStage({
           value1: basicSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'warning',
-          value1: 'success',
+          value0: 'warning100',
+          value1: 'success100',
         }}
         step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
-        leftThumbColor="warning"
-        rightThumbColor="success"
+        leftThumbColor="warning100"
+        rightThumbColor="success100"
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}

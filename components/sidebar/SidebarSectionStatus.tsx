@@ -36,13 +36,13 @@ export function SidebarSectionStatus({
   const types: SidebarSectionStatusTypeDetails = {
     progress: {
       bg: 'warning10',
-      color: 'warning',
-      icon: <Spinner size={20} color="warning" />,
+      color: 'warning100',
+      icon: <Spinner size={20} color="warning100" />,
     },
     success: {
       bg: 'success10',
       color: 'success',
-      icon: <Icon name="checkmark" size={20} color="success" />,
+      icon: <Icon name="checkmark" size={20} color="success100" />,
     },
     waiting: {
       bg: 'secondary60',

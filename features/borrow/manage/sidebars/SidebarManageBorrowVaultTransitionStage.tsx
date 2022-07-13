@@ -24,7 +24,7 @@ export function SidebarManageBorrowVaultTransitionStage({
           <ListWithIcon
             icon="checkmark"
             iconSize="14px"
-            iconColor="primary"
+            iconColor="primary100"
             items={[
               t('borrow-to-multiply.checkmark1', { token }),
               t('borrow-to-multiply.checkmark2'),
@@ -33,7 +33,7 @@ export function SidebarManageBorrowVaultTransitionStage({
             ]}
             listStyle={{ my: 2 }}
           />
-          <Text as="p" variant="paragraph3" sx={{ color: 'primary', fontWeight: 'semiBold' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
             {t('borrow-to-multiply.subheader2')}
           </Text>
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>

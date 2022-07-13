@@ -55,7 +55,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
             key={anchor.id}
             variant="nav"
             sx={{
-              '&, &:hover': { color: sectionId === anchor.id ? 'primary' : 'primary60' },
+              '&, &:hover': { color: sectionId === anchor.id ? 'primary100' : 'primary60' },
               fontSize: '12px',
             }}
             onClick={() => setSectionId(anchor.id)}

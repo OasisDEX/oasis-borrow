@@ -19,7 +19,7 @@ function Checkbox({
       onClick={onClick}
       sx={{
         border: '1px solid',
-        borderColor: checked ? 'success' : 'lavender_o25',
+        borderColor: checked ? 'success100' : 'lavender_o25',
         backgroundColor: checked ? 'success10' : 'neutral10',
         width: '20px',
         height: '20px',
@@ -29,7 +29,7 @@ function Checkbox({
         alignItems: 'center',
       }}
     >
-      {checked && <Icon name="checkmark" color="success" size="auto" width="12px" />}
+      {checked && <Icon name="checkmark" color="success100" size="auto" width="12px" />}
     </Flex>
   )
 }

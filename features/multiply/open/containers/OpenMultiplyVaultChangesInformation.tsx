@@ -91,7 +91,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
           ) : (
             <Text>
               ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-              <Text as="span" sx={{ color: 'critical' }}>
+              <Text as="span" sx={{ color: 'critical100' }}>
                 ({formatPercent(impact, { precision: 2 })})
               </Text>
             </Text>

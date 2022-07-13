@@ -53,7 +53,7 @@ export function Item({
           <Text
             sx={{
               mr: 'auto',
-              color: labelColorPrimary ? 'primary' : theme.colors.neutral80,
+              color: labelColorPrimary ? 'primary100' : theme.colors.neutral80,
             }}
             as="p"
           >
@@ -63,7 +63,7 @@ export function Item({
         <Box>
           <Text
             sx={{
-              color: 'primary',
+              color: 'primary100',
               display: 'flex',
               alignItems: 'center',
             }}

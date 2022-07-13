@@ -35,7 +35,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
       withAccountPrefix={false}
       href="/"
       sx={{
-        color: 'primary',
+        color: 'primary100',
         fontWeight: 'semiBold',
         fontSize: '0px',
         cursor: 'pointer',
@@ -129,7 +129,10 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <PositionsLink sx={{ position: 'relative', ...sx }}>
-      <Button variant="menuButtonRound" sx={{ color: 'neutral80', ':hover': { color: 'primary' } }}>
+      <Button
+        variant="menuButtonRound"
+        sx={{ color: 'neutral80', ':hover': { color: 'primary100' } }}
+      >
         <Icon name="home" size="auto" width="20" />
       </Button>
       {vaultCount && (
@@ -188,10 +191,10 @@ function ButtonDropdown({
           p: 1,
           '&, :focus': {
             outline: isOpen ? '1px solid' : null,
-            outlineColor: 'primary',
+            outlineColor: 'primary100',
           },
           color: 'neutral80',
-          ':hover': { color: 'primary' },
+          ':hover': { color: 'primary100' },
         }}
       >
         {showNewBeacon && (
@@ -288,10 +291,10 @@ function UserDesktopMenu() {
               position: 'relative',
               '&, :focus': {
                 outline: widgetOpen ? '1px solid' : null,
-                outlineColor: 'primary',
+                outlineColor: 'primary100',
               },
               color: 'neutral80',
-              ':hover': { color: 'primary' },
+              ':hover': { color: 'primary100' },
             }}
           >
             {showNewUniswapWidgetBeacon && (
@@ -310,7 +313,7 @@ function UserDesktopMenu() {
               name="exchange"
               size="auto"
               width="20"
-              color={widgetOpen ? 'primary' : 'inherit'}
+              color={widgetOpen ? 'primary100' : 'inherit'}
             />
           </Button>
           <UniswapWidgetShowHide />
@@ -405,7 +408,7 @@ function MobileSettings() {
           >
             <ModalCloseIcon
               close={() => setOpened(false)}
-              sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+              sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
               size={3}
             />
           </Box>
@@ -419,7 +422,7 @@ function MobileSettings() {
 }
 
 function navLinkColor(isActive: boolean) {
-  return isActive ? 'primary' : 'neutral80'
+  return isActive ? 'primary100' : 'neutral80'
 }
 
 const LINKS = {
@@ -513,17 +516,17 @@ function ConnectedHeader() {
                   mr: 2,
                   '&, :focus': {
                     outline: widgetOpen ? '1px solid' : null,
-                    outlineColor: 'primary',
+                    outlineColor: 'primary100',
                   },
                   color: 'neutral80',
-                  ':hover': { color: 'primary' },
+                  ':hover': { color: 'primary100' },
                 }}
               >
                 <Icon
                   name="exchange"
                   size="auto"
                   width="20"
-                  color={widgetOpen ? 'primary' : 'inherit'}
+                  color={widgetOpen ? 'primary100' : 'inherit'}
                 />
               </Button>
               <UniswapWidgetShowHide
@@ -559,7 +562,7 @@ function HeaderDropdown({
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
-            color: 'primary',
+            color: 'primary100',
           },
           '& .menu': {
             display: 'block',
@@ -742,7 +745,7 @@ export function MobileMenu() {
         <Box
           sx={{
             color: 'neutral80',
-            ':hover': { color: 'primary' },
+            ':hover': { color: 'primary100' },
             position: 'absolute',
             bottom: 5,
             left: '50%',

@@ -31,10 +31,10 @@ export const ICONS = {
       }}
     />
   ),
-  complete: <Icon name="checkmark" color="success" />,
-  error: <Icon name="close" color="critical" />,
-  expired: <Icon name="clock" color="critical" size={20} />,
-  warning: <Icon name="warning" color="warning" size={24} />,
+  complete: <Icon name="checkmark" color="success100" />,
+  error: <Icon name="close" color="critical100" />,
+  expired: <Icon name="clock" color="critical100" size={20} />,
+  warning: <Icon name="warning" color="warning100" size={24} />,
 }
 
 export function describeTxNotificationStatus(tx?: TxMgrTransaction) {

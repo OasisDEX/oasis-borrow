@@ -110,7 +110,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           borderRadius: '2em',
           bg: ['transparent', 'bgPrimaryAlt'],
           border: 'light',
-          borderColor: 'secondary',
+          borderColor: 'secondary100',
           height: small ? '38px' : 'initial',
           justifyContent: 'space-between',
           px: 2,
@@ -145,7 +145,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            color: 'primary',
+            color: 'primary100',
             '&:disabled': {
               opacity: 0.7,
             },
@@ -158,7 +158,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
           disabled={!submit}
         >
           {stage === 'inProgress' ? (
-            <AppSpinner sx={{ color: 'primary' }} variant="styles.spinner.large" />
+            <AppSpinner sx={{ color: 'primary100' }} variant="styles.spinner.large" />
           ) : (
             <Flex sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
               <Text mr={1}>{t('newsletter.button')}</Text>
@@ -174,7 +174,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
       </Flex>
       <Box sx={{ mt: 2, minHeight: '1.3em' }}>
         {showError && (
-          <Text sx={{ textAlign: 'left', color: 'critical', fontSize: 2 }}>
+          <Text sx={{ textAlign: 'left', color: 'critical100', fontSize: 2 }}>
             {errorKey ? t(`newsletter.errors.${errorKey}`) : messageResponse}
           </Text>
         )}

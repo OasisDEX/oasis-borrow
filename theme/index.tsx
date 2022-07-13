@@ -21,7 +21,7 @@ export const oasisBaseTheme = {
     interactive50: '#878BFC',
     interactive30: '#D8D9FE',
     interactive10: '#EDEDFF',
-    primary: '#25273D',
+    primary100: '#25273D',
     primary60: '#626472',
     primary30: '#80818A',
     secondary100: '#E6E9EB',
@@ -32,7 +32,7 @@ export const oasisBaseTheme = {
     neutral60: '#BEC9D0',
     neutral70: '#A8A9B1',
     neutral80: '#787A9B',
-    success: '#1AAB9B',
+    success100: '#1AAB9B',
     success10: '#E7FCFA',
     warning100: '#D8762D',
     warning10: '#FFF1CF',
@@ -42,10 +42,10 @@ export const oasisBaseTheme = {
     // special colors for some components
     lavender_o25: '#787a9b40',
     banner: {
-      warning: '#FF6A16',
-      danger: '#FE4343',
-      muted: 'primary',
-      dangerBorder: '#FBE1D9',
+      warning: 'warning100',
+      danger: 'critical100',
+      muted: 'primary100',
+      dangerBorder: 'critical10',
     },
     counter: {
       primary: '#FF7B31',
@@ -91,28 +91,28 @@ export const oasisBaseTheme = {
       fontWeight: 'heading',
       lineHeight: 'heading',
       fontSize: '52px',
-      color: 'primary',
+      color: 'primary100',
     },
     header2: {
       fontFamily: 'heading',
       fontWeight: 'heading',
       lineHeight: 'heading',
       fontSize: 7,
-      color: 'primary',
+      color: 'primary100',
     },
     header3: {
       fontFamily: 'heading',
       fontWeight: 'bold',
       lineHeight: 'heading',
       fontSize: 5,
-      color: 'primary',
+      color: 'primary100',
     },
     header4: {
       fontFamily: 'body',
       fontWeight: 'semiBold',
       lineHeight: 'heading',
       fontSize: 4,
-      color: 'primary',
+      color: 'primary100',
     },
     headerSettings: {
       // deprecated, use header4
@@ -127,28 +127,28 @@ export const oasisBaseTheme = {
       fontWeight: 'body',
       lineHeight: 'body',
       fontSize: 4, // 18px
-      color: 'primary',
+      color: 'primary100',
     },
     paragraph2: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
       fontSize: 3, // 16px
-      color: 'primary',
+      color: 'primary100',
     },
     paragraph3: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
       fontSize: 2, // 14px
-      color: 'primary',
+      color: 'primary100',
     },
     paragraph4: {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
       fontSize: 1, // 12px
-      color: 'primary',
+      color: 'primary100',
     },
     subheader: {
       variant: 'text.paragraph2',
@@ -176,7 +176,7 @@ export const oasisBaseTheme = {
       lineHeight: 'bodyLoose',
       a: {
         variant: 'text.paragraph1',
-        color: 'primary',
+        color: 'primary100',
       },
     },
     address: {
@@ -290,7 +290,7 @@ export const oasisBaseTheme = {
   cards: {
     primary: {
       border: '1px solid',
-      borderColor: 'secondary',
+      borderColor: 'secondary100',
       p: 3,
       borderRadius: 'roundish',
       bg: 'neutral10',
@@ -322,12 +322,12 @@ export const oasisBaseTheme = {
     },
     danger: {
       variant: 'cards.primary',
-      borderColor: 'critical',
+      borderColor: 'critical100',
       bg: 'critical10',
     },
     warning: {
       variant: 'cards.primary',
-      borderColor: 'warning',
+      borderColor: 'warning100',
       bg: 'warning10',
     },
     vaultFormContainer: {
@@ -343,7 +343,7 @@ export const oasisBaseTheme = {
       position: 'absolute',
       boxShadow: 'surface',
       borderRadius: 'small',
-      color: 'primary',
+      color: 'primary100',
       zIndex: 1,
     },
     tooltipVaultHeader: {
@@ -420,9 +420,9 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary',
+      borderColor: 'secondary100',
       borderRadius: 'round',
-      color: 'primary',
+      color: 'primary100',
       fontWeight: 'semiBold',
       px: 4,
       py: 2,
@@ -435,7 +435,7 @@ export const oasisBaseTheme = {
       background: 'none',
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary',
+      borderColor: 'secondary100',
       borderRadius: 'mediumLarge',
       '&:focus': {
         outline: 'none',
@@ -447,7 +447,7 @@ export const oasisBaseTheme = {
       cursor: 'pointer',
       fontWeight: 'semiBold',
       bg: 'secondary60',
-      color: 'primary',
+      color: 'primary100',
       borderRadius: 'round',
       px: 4,
       py: 2,
@@ -459,7 +459,7 @@ export const oasisBaseTheme = {
         opacity: 0.5,
       },
       '&:hover': {
-        backgroundColor: 'secondary',
+        backgroundColor: 'secondary100',
       },
     },
     tertiary: {
@@ -471,12 +471,12 @@ export const oasisBaseTheme = {
       lineHeight: '20px',
       cursor: 'pointer',
       bg: 'secondary60',
-      color: 'primary',
+      color: 'primary100',
       borderRadius: 'round',
       whiteSpace: 'nowrap',
       transition: 'background-color 200ms',
       '&:hover': {
-        bg: 'secondary',
+        bg: 'secondary100',
       },
       '&:focus': {
         outline: 'none',
@@ -493,7 +493,7 @@ export const oasisBaseTheme = {
       py: 3,
       borderWidth: '1px',
       borderStyle: 'solid',
-      borderColor: 'secondary',
+      borderColor: 'secondary100',
       '&:focus': {
         outline: 'none',
       },
@@ -548,7 +548,7 @@ export const oasisBaseTheme = {
       },
       '&[data-selected="true"]': {
         border: 'light',
-        color: 'primary',
+        color: 'primary100',
       },
     },
     textual: {
@@ -568,7 +568,7 @@ export const oasisBaseTheme = {
     textualSmall: {
       variant: 'buttons.textual',
       fontSize: 1,
-      color: 'primary',
+      color: 'primary100',
       py: 0,
     },
     actionOption: {
@@ -580,7 +580,7 @@ export const oasisBaseTheme = {
       cursor: 'pointer',
       fontSize: 1,
       fontWeight: 'semiBold',
-      color: 'primary',
+      color: 'primary100',
       userSelect: 'none',
       bg: 'secondary60',
       px: 2,
@@ -589,7 +589,7 @@ export const oasisBaseTheme = {
       lineHeight: 1.25,
       position: 'relative',
       '&:hover': {
-        bg: 'secondary',
+        bg: 'secondary100',
       },
       transition: 'background-color 200ms',
     },
@@ -608,10 +608,10 @@ export const oasisBaseTheme = {
     beanActive: {
       variant: 'buttons.bean',
       color: 'white',
-      bg: 'primary',
+      bg: 'primary100',
       '&:hover': {
         color: 'white',
-        bg: 'primary',
+        bg: 'primary100',
       },
     },
     vaultEditingController: {
@@ -621,7 +621,7 @@ export const oasisBaseTheme = {
       lineHeight: 'body',
       bg: 'neutral10',
       p: 3,
-      color: 'primary',
+      color: 'primary100',
       boxShadow: 'vaultEditingController',
       borderRadius: 'inherit',
       cursor: 'pointer',
@@ -635,7 +635,7 @@ export const oasisBaseTheme = {
       cursor: 'pointer',
       transition: TRANSITIONS.global,
       '&:hover': {
-        color: 'primary',
+        color: 'primary100',
       },
     },
     tab: {
@@ -684,24 +684,24 @@ export const oasisBaseTheme = {
       fontSize: 1,
       fontWeight: 'semiBold',
       lineHeight: '18px',
-      color: 'primary',
+      color: 'primary100',
       backgroundColor: 'neutral10',
       border: 'lightMuted',
       borderRadius: 'rounder',
       cursor: 'pointer',
       transition: 'border-color 200ms',
       '&:hover': {
-        borderColor: 'primary',
+        borderColor: 'primary100',
       },
     },
     actionActive: {
       variant: 'buttons.action',
-      borderColor: 'primary',
+      borderColor: 'primary100',
     },
     actionActiveGreen: {
       variant: 'buttons.action',
       border: 'none',
-      bg: 'success',
+      bg: 'success100',
       color: 'neutral10',
     },
     pill: {
@@ -743,7 +743,7 @@ export const oasisBaseTheme = {
       py: 2,
       variant: 'buttons.primary',
       display: 'inline-block',
-      bg: 'primary',
+      bg: 'primary100',
       '&, &:visited': {
         textDecoration: 'none',
       },
@@ -779,7 +779,7 @@ export const oasisBaseTheme = {
       variant: 'links.nav',
       color: 'neutral80',
       '&:hover, &:focus-visible': {
-        color: 'primary',
+        color: 'primary100',
       },
     },
     outline: {
@@ -819,10 +819,10 @@ export const oasisBaseTheme = {
   radio: {
     color: 'neutral60',
     'input:checked ~ &': {
-      color: 'success',
+      color: 'success100',
     },
     'input:focus ~ &': {
-      color: 'success',
+      color: 'success100',
     },
   },
   chevronUpDown: {
@@ -854,8 +854,8 @@ export const oasisBaseTheme = {
       lineHeight: 'tight',
       fontSize: 5,
       '&:focus': {
-        borderColor: 'primary',
-        color: 'primary',
+        borderColor: 'primary100',
+        color: 'primary100',
       },
       '&:disabled': {
         bg: 'neutral10',
@@ -864,9 +864,9 @@ export const oasisBaseTheme = {
     },
     inputError: {
       variant: 'forms.input',
-      borderColor: 'critical',
+      borderColor: 'critical100',
       '&:focus': {
-        borderColor: 'critical',
+        borderColor: 'critical100',
       },
     },
     inputSecondary: {
@@ -904,7 +904,7 @@ export const oasisBaseTheme = {
     textarea: { variant: 'forms.input', lineHeight: 'body' },
     textareaError: { variant: 'forms.inputError' },
     slider: {
-      color: 'primary',
+      color: 'primary100',
       backgroundColor: 'neutral60',
       height: 1,
       borderRadius: 'small',
@@ -931,7 +931,7 @@ export const oasisBaseTheme = {
     readonly: {
       variant: 'alerts.primary',
       bg: 'txManagerBg',
-      color: 'primary',
+      color: 'primary100',
       borderRadius: 'large',
       fontWeight: 'body',
       px: 2,
@@ -986,7 +986,7 @@ export const oasisBaseTheme = {
     },
     spinner: {
       default: {
-        color: 'primary',
+        color: 'primary100',
         strokeWidth: 3,
         size: 16,
         opacity: 1,
