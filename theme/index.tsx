@@ -36,7 +36,7 @@ export const oasisBaseTheme = {
     success10: '#E7FCFA',
     warning100: '#D8762D',
     warning10: '#FFF1CF',
-    critical: '#D94A1E',
+    critical100: '#D94A1E',
     critical10: '#FFEEE9',
 
     // special colors for some components
