@@ -33,7 +33,7 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
           borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-thumb': {
-          backgroundColor: theme.colors.secondary,
+          backgroundColor: theme.colors.secondary100,
           borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-track': {

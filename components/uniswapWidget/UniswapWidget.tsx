@@ -22,10 +22,10 @@ import { Box, Button, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 const { colors, radii } = theme
 
 const widgetTheme = {
-  accent: colors.primary,
-  primary: colors.primary,
+  accent: colors.primary100,
+  primary: colors.primary100,
   container: colors.neutral10,
-  active: colors.primary,
+  active: colors.primary100,
   interactive: colors.neutral10,
   module: colors.neutral30,
   dialog: colors.neutral10,
