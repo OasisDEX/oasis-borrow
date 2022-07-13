@@ -182,7 +182,8 @@ export function SidebarAutoBuyEditingStage({
                 : autoBuyTriggerData.maxBuyOrMinSellPrice,
               maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
               withThreshold:
-                !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
+                (!autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() &&
+                  !autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
                 autoBuyTriggerData.triggerId.isZero(),
             },
           })

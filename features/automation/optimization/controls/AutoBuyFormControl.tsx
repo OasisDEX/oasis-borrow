@@ -18,7 +18,10 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import {
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -180,13 +183,12 @@ export function AutoBuyFormControl({
       resetData: {
         targetCollRatio: autoBuyTriggerData.targetCollRatio,
         execCollRatio: autoBuyTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-          ? undefined
-          : autoBuyTriggerData.maxBuyOrMinSellPrice,
+        maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice),
         maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-        withThreshold:
-          !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
-          autoBuyTriggerData.triggerId.isZero(),
+        withThreshold: resolveWithThreshold({
+          maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
+          triggerId: autoBuyTriggerData.triggerId,
+        }),
         txDetails: {},
       },
     })
@@ -210,7 +212,8 @@ export function AutoBuyFormControl({
     (isProgressStage ||
       !isOwner ||
       !isEditing ||
-      (basicBuyState.withThreshold &&
+      (isAddForm &&
+        basicBuyState.withThreshold &&
         (basicBuyState.maxBuyOrMinSellPrice === undefined ||
           basicBuyState.maxBuyOrMinSellPrice?.isZero())) ||
       basicBuyState.execCollRatio.isZero()) &&

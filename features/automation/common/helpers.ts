@@ -6,3 +6,16 @@ export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
     ? undefined
     : maxBuyOrMinSellPrice
 }
+
+export function resolveWithThreshold({
+  maxBuyOrMinSellPrice,
+  triggerId,
+}: {
+  maxBuyOrMinSellPrice: BigNumber
+  triggerId: BigNumber
+}) {
+  return (
+    (!maxBuyOrMinSellPrice.isZero() && !maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
+    triggerId.isZero()
+  )
+}

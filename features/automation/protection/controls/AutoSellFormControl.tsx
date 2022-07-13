@@ -10,6 +10,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
+  maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
@@ -187,7 +188,8 @@ export function AutoSellFormControl({
           : autoSellTriggerData.maxBuyOrMinSellPrice,
         maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
         withThreshold:
-          !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
+          (!autoSellTriggerData.maxBuyOrMinSellPrice.isZero() &&
+            !autoSellTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
           autoSellTriggerData.triggerId.isZero(),
         txDetails: {},
       },
@@ -209,7 +211,8 @@ export function AutoSellFormControl({
     (isProgressStage ||
       !isOwner ||
       !isEditing ||
-      (basicSellState.withThreshold &&
+      (isAddForm &&
+        basicSellState.withThreshold &&
         (basicSellState.maxBuyOrMinSellPrice === undefined ||
           basicSellState.maxBuyOrMinSellPrice?.isZero())) ||
       basicSellState.execCollRatio.isZero()) &&
