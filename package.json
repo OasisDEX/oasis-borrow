@@ -7,13 +7,12 @@
   },
   "scripts": {
     "start": "next dev",
-    "start:prod": "yarn migrate:prod && next start",
+    "start:prod": "yarn migrate && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
-    "migrate:prod": "node ./server/database/migrate.js",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
     "prisma:generate": "prisma generate --schema=./server/database/schema.prisma",
-    "build:server": "parcel build ./server/database/migrate.ts --no-source-maps",
     "build": "next build && node sitemapGenerator.js",
+    "build:server": "tsc --project ./tsconfig.prod.json",
     "format": "prettier --check \"./**/*.{ts,tsx,js,jsx}\"",
     "format:fix": "prettier --write \"./**/*.{ts,tsx,js,jsx}\"",
     "lint": "eslint --ext .ts --ext .tsx .",
@@ -35,12 +34,6 @@
     "build:storybook": "build-storybook",
     "publish:storybook": "storybook-to-aws-s3",
     "release": "release-it"
-  },
-  "targets": {
-    "default": {
-      "includeNodeModules": true,
-      "distDir": "./server/database"
-    }
   },
   "dependencies": {
     "@gnosis.pm/safe-apps-web3-react": "^0.5.0",
@@ -238,9 +231,7 @@
     "mixin-deep": "^1.3.2",
     "mocha": "^9.1.2",
     "node-sass": "^6.0.1",
-    "parcel": "^2.6.2",
     "patch-package": "^6.4.7",
-    "pg-native": "^3.0.0",
     "prettier": "^2.0.1",
     "prisma": "^3.14.0",
     "react-i18next": "^11.16.2",
