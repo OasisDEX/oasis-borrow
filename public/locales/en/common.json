@@ -1496,7 +1496,7 @@
   "constant-multiple": {
     "banner": {
     "header": "Set up Constant Multiple",
-    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.",
+    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
     "button": "Setup Constant Multiple"
   }
   },
