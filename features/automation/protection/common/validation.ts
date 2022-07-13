@@ -52,7 +52,7 @@ export function errorsStopLossValidation({
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
   const maxDebtForSettingStopLoss = debt.gt(MAX_DEBT_FOR_SETTING_STOP_LOSS)
   const stopLossTriggerHigherThanAutoBuyTarget =
-    stopLossLevel && autoBuyTriggerData
+    stopLossLevel && autoBuyTriggerData?.isTriggerEnabled
       ? stopLossLevel.plus(5).gt(autoBuyTriggerData.targetCollRatio)
       : false
 
