@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
-import curry from 'ramda/src/curry'
 import { combineLatest, Observable, of } from 'rxjs'
 import { startWith, switchMap } from 'rxjs/operators'
 
@@ -17,6 +16,7 @@ import {
 } from '../blockchain/tokensMetadata'
 import { PriceInfo } from '../features/shared/priceInfo'
 import { zero } from './zero'
+import curry from 'ramda/src/curry'
 
 export interface ProductCardData {
   token: string
@@ -564,8 +564,8 @@ export function createProductCardsWithBalance$(
 
 export function createProductCardsDataBySection(
   ilkDataList$: Observable<IlkDataList>,
-  priceInfo$: (token: string) => Observable<PriceInfo>,) {
-
+  priceInfo$: (token: string) => Observable<PriceInfo>,
+) {
   const create$ = curry(createProductCardsData$)(ilkDataList$, priceInfo$)
 
   return {
@@ -573,7 +573,7 @@ export function createProductCardsDataBySection(
       multiply$: create$(productCardsConfig.landing.featuredCards.multiply),
       borrow$: create$(productCardsConfig.landing.featuredCards.borrow),
       earn$: create$(productCardsConfig.landing.featuredCards.earn),
-    }
+    },
   }
 }
 
@@ -585,30 +585,32 @@ export function createProductCardsData$(
   return ilkDataList$.pipe(
     switchMap((ilkDataList) =>
       combineLatest(
-        ...ilkDataList.filter((ilkData) => {
-          return !ilks || ilks.includes(ilkData.ilk)
-        }).map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+        ...ilkDataList
+          .filter((ilkData) => {
+            return !ilks || ilks.includes(ilkData.ilk)
+          })
+          .map((ilk) => {
+            const tokenMeta = getToken(ilk.token)
 
-          return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) => {
-              return of({
-                token: ilk.token,
-                ilk: ilk.ilk as Ilk,
-                liquidationRatio: ilk.liquidationRatio,
-                liquidityAvailable: ilk.ilkDebtAvailable,
-                stabilityFee: ilk.stabilityFee,
-                debtFloor: ilk.debtFloor,
-                currentCollateralPrice: priceInfo.currentCollateralPrice,
-                bannerIcon: tokenMeta.bannerIcon,
-                bannerGif: tokenMeta.bannerGif,
-                background: tokenMeta.background,
-                name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              })
-            }),
-          )
-        }),
+            return priceInfo$(ilk.token).pipe(
+              switchMap((priceInfo) => {
+                return of({
+                  token: ilk.token,
+                  ilk: ilk.ilk as Ilk,
+                  liquidationRatio: ilk.liquidationRatio,
+                  liquidityAvailable: ilk.ilkDebtAvailable,
+                  stabilityFee: ilk.stabilityFee,
+                  debtFloor: ilk.debtFloor,
+                  currentCollateralPrice: priceInfo.currentCollateralPrice,
+                  bannerIcon: tokenMeta.bannerIcon,
+                  bannerGif: tokenMeta.bannerGif,
+                  background: tokenMeta.background,
+                  name: tokenMeta.name,
+                  isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
+                })
+              }),
+            )
+          }),
       ),
     ),
   )

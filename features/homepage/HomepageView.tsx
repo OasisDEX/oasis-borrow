@@ -5,6 +5,7 @@ import { LANDING_PILLS } from 'content/landing'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
+import { Observable } from 'rxjs'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -17,44 +18,52 @@ import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
+import { ProductCardData } from '../../helpers/productCards'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
-function TabContent(props: {
+function CardGroup(props: {
   paraText: JSX.Element
-  type: ProductTypes
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  productCardsData: ProductCardData[]
+  productCardsData$: Observable<ProductCardData[]>
 }) {
+  const [cardsData, cardsDataError] = useObservable(props.productCardsData$)
   const ProductCard = props.renderProductCard
 
-  const landingCards = landingPageCardsData({
-    productCardsData: props.productCardsData,
-    product: props.type,
-  })
-
   return (
-    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <Text
-        variant="paragraph2"
-        sx={{
-          mt: 4,
-          color: 'lavender',
-          maxWidth: 617,
-          textAlign: 'center',
-          mb: 5,
-          ...fadeInAnimation,
-        }}
+    <WithErrorHandler error={[cardsDataError]}>
+      <WithLoadingIndicator
+        value={[cardsData]}
+        customLoader={
+          <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+            <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+          </Flex>
+        }
       >
-        {props.paraText}
-      </Text>
-      <ProductCardsWrapper>
-        {landingCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
-    </Flex>
+        {([cardsData]) => (
+          <Flex sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+            <Text
+              variant="paragraph2"
+              sx={{
+                mt: 4,
+                color: 'lavender',
+                maxWidth: 617,
+                textAlign: 'center',
+                mb: 5,
+                ...fadeInAnimation,
+              }}
+            >
+              {props.paraText}
+            </Text>
+            <ProductCardsWrapper>
+              {cardsData.map((cardData) => (
+                <ProductCard cardData={cardData} key={cardData.ilk} />
+              ))}
+            </ProductCardsWrapper>
+          </Flex>
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
 
@@ -148,10 +157,69 @@ function Stats({ sx }: { sx?: SxProps }) {
   )
 }
 
+function MultiplyCards() {
+  const { productCardsDataBySection } = useAppContext()
+  const { t } = useTranslation()
+
+  return (
+    <CardGroup
+      paraText={
+        <>
+          {t('landing.tabs.multiply.tabParaContent')}{' '}
+          <AppLink href="/multiply" variant="inText">
+            {t('landing.tabs.multiply.tabParaLinkContent')}
+          </AppLink>
+        </>
+      }
+      renderProductCard={ProductCardMultiply}
+      productCardsData$={productCardsDataBySection.landing.multiply$}
+    />
+  )
+}
+
+function BorrowCards() {
+  const { productCardsDataBySection } = useAppContext()
+  const { t } = useTranslation()
+
+  return (
+    <CardGroup
+      paraText={
+        <>
+          <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+          <AppLink href="/borrow" variant="inText">
+            {t('landing.tabs.borrow.tabParaLinkContent')}
+          </AppLink>
+        </>
+      }
+      renderProductCard={ProductCardBorrow}
+      productCardsData$={productCardsDataBySection.landing.borrow$}
+    />
+  )
+}
+
+function EarnCards() {
+  const { productCardsDataBySection } = useAppContext()
+  const { t } = useTranslation()
+
+  return (
+    <CardGroup
+      paraText={
+        <>
+          {t('landing.tabs.earn.tabParaContent')}{' '}
+          <AppLink href="/earn" variant="inText">
+            {t('landing.tabs.earn.tabParaLinkContent')}
+          </AppLink>
+        </>
+      }
+      renderProductCard={ProductCardEarn}
+      productCardsData$={productCardsDataBySection.landing.earn$}
+    />
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
-  const { context$, productCardsDataBySection } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsDataBySection.landing.multiply$)
+  const { context$ } = useAppContext()
   const [context] = useObservable(context$)
   const standardAnimationDuration = '0.7s'
 
@@ -200,85 +268,28 @@ export function HomepageView() {
         }}
         id="product-cards-wrapper"
       >
-        <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator
-            value={[productCardsData]}
-            customLoader={
-              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-                <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-              </Flex>
-            }
-          >
-            {([productCardsData]) => {
-              return (
-                <TabBar
-                  variant="large"
-                  useDropdownOnMobile
-                  sections={[
-                    {
-                      label: t('landing.tabs.multiply.tabLabel'),
-                      value: 'multiply',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              {t('landing.tabs.multiply.tabParaContent')}{' '}
-                              <AppLink href="/multiply" variant="inText">
-                                {t('landing.tabs.multiply.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="multiply"
-                          renderProductCard={ProductCardMultiply}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
-                    {
-                      label: t('landing.tabs.borrow.tabLabel'),
-                      value: 'borrow',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
-                              <AppLink href="/borrow" variant="inText">
-                                {t('landing.tabs.borrow.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="borrow"
-                          renderProductCard={ProductCardBorrow}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
+        <TabBar
+          variant="large"
+          useDropdownOnMobile
+          sections={[
+            {
+              label: t('landing.tabs.multiply.tabLabel'),
+              value: 'multiply',
+              content: <MultiplyCards />,
+            },
+            {
+              label: t('landing.tabs.borrow.tabLabel'),
+              value: 'borrow',
+              content: <BorrowCards />,
+            },
 
-                    {
-                      label: t('landing.tabs.earn.tabLabel'),
-                      value: 'earn',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              {t('landing.tabs.earn.tabParaContent')}{' '}
-                              <AppLink href="/multiply" variant="inText">
-                                {t('landing.tabs.earn.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="earn"
-                          renderProductCard={ProductCardEarn}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              )
-            }}
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+            {
+              label: t('landing.tabs.earn.tabLabel'),
+              value: 'earn',
+              content: <EarnCards />,
+            },
+          ]}
+        />
       </Box>
       <Box
         sx={{
