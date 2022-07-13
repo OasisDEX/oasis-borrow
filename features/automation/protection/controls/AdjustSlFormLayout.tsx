@@ -10,6 +10,7 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { one } from 'helpers/zero'
@@ -207,4 +208,5 @@ export interface AdjustSlFormLayoutProps {
   redirectToCloseVault: () => void
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
+  autoBuyTriggerData: BasicBSTriggerData
 }

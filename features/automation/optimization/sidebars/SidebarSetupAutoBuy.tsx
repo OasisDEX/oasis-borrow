@@ -104,9 +104,8 @@ export function SidebarSetupAutoBuy({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
   const errors = errorsBasicBuyValidation({
-    txError: basicBuyState.txDetails?.txError,
-    withThreshold: basicBuyState.withThreshold,
-    maxBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
+    basicBuyState,
+    autoSellTriggerData,
     isRemoveForm,
   })
 

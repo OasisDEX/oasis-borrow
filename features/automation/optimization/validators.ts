@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
-import { TxError } from 'helpers/types'
 
 export function warningsBasicBuyValidation({
   vault,
@@ -57,23 +57,27 @@ export function warningsBasicBuyValidation({
 }
 
 export function errorsBasicBuyValidation({
-  txError,
-  withThreshold,
+  basicBuyState,
+  autoSellTriggerData,
   isRemoveForm,
-  maxBuyPrice,
 }: {
-  txError?: TxError
-  withThreshold: boolean
+  basicBuyState: BasicBSFormChange
+  autoSellTriggerData: BasicBSTriggerData
   isRemoveForm: boolean
-  maxBuyPrice?: BigNumber
 }) {
-  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
+  const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = basicBuyState
+  const insufficientEthFundsForTx = ethFundsForTxValidator({ txError: txDetails?.txError })
 
   const autoBuyMaxBuyPriceNotSpecified =
-    !isRemoveForm && withThreshold && (!maxBuyPrice || maxBuyPrice.isZero())
+    !isRemoveForm && withThreshold && (!maxBuyOrMinSellPrice || maxBuyOrMinSellPrice.isZero())
+
+  const autoBuyTriggerLowerThanAutoSellTarget = execCollRatio
+    .minus(5)
+    .lt(autoSellTriggerData.targetCollRatio)
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     autoBuyMaxBuyPriceNotSpecified,
+    autoBuyTriggerLowerThanAutoSellTarget,
   })
 }
