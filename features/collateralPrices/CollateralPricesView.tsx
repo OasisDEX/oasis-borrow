@@ -21,7 +21,7 @@ function getPercentageColor(percentageChange: BigNumber) {
   return percentageChange.isEqualTo(zero)
     ? 'text'
     : percentageChange.gt(zero)
-    ? 'success'
+    ? 'success100'
     : 'critical100'
 }
 
