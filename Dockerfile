@@ -2,14 +2,17 @@ FROM node:16.13.2
 
 EXPOSE 3000
 
+RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
+RUN npm i -g next
+
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
-COPY ./server/ /usr/src/app/server
+COPY .next/ /usr/src/app/.next
+COPY public/ /usr/src/app/public
+COPY server/database/ /usr/src/app/server/database/
+COPY node_modules/postgres-migrations/dist/migrations /usr/src/app/node_modules/postgres-migrations/dist/migrations
 
 WORKDIR /usr/src/app
-
-RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
-RUN yarn --no-progress --non-interactive --frozen-lockfile
 
 ARG COMMIT_SHA
 ARG API_HOST
@@ -43,10 +46,5 @@ ENV COMMIT_SHA=$COMMIT_SHA \
     NEXT_PUBLIC_SENTRY_ENV=$NEXT_PUBLIC_SENTRY_ENV \
     SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN \
     NODE_OPTIONS=--max-old-space-size=4096
-
-COPY . .
-
-RUN chmod +x ./scripts/wait-for-it.sh \
-    && npm run build
 
 CMD [ "npm", "run", "start:prod" ]

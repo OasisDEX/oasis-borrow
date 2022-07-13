@@ -5,3 +5,4 @@ package.json
 .next/
 types
 storybook-static
+/server/database/migrate.js
