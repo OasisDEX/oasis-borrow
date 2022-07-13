@@ -282,9 +282,9 @@ export function VaultActionInput({
                     ? `~ ${
                         auxiliarySymbol === 'USD'
                           ? formatAmount(auxiliaryAmount || zero, 'USD')
-                          : formatCryptoBalance(auxiliaryAmount || zero)
+                          : formatBigNumber(auxiliaryAmount || zero, auxiliaryDigits)
                       } ${auxiliarySymbol}`
-                    : `${formatCryptoBalance(amount || zero)} ${tokenSymbol}`}
+                    : `${formatBigNumber(amount || zero, currencyDigits)} ${tokenSymbol}`}
                 </>
               ) : (
                 toggleOffPlaceholder
