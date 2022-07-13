@@ -36,7 +36,7 @@ export function createBonusPipe$(
   const bonusAdapter = createBonusAdapter(cdpId)
   const claimClick$ = new Subject<void>()
 
-  const claimTnxState$: Observable<ClaimTxnState | undefined> = combineLatest(
+  const ClaimTxnState$: Observable<ClaimTxnState | undefined> = combineLatest(
     claimClick$,
     bonusAdapter.claimAll$,
   ).pipe(
@@ -48,7 +48,7 @@ export function createBonusPipe$(
     startWith(undefined),
   )
 
-  const claimTxnInProgress$ = claimTnxState$.pipe(
+  const claimTxnInProgress$ = ClaimTxnState$.pipe(
     map((claimTxnState) => claimTxnState === ClaimTxnState.PENDING),
   )
 
@@ -68,7 +68,7 @@ export function createBonusPipe$(
     ),
   )
 
-  return combineLatest(bonusAdapter.bonus$, claimAll$, claimTnxState$).pipe(
+  return combineLatest(bonusAdapter.bonus$, claimAll$, ClaimTxnState$).pipe(
     map(([bonus, claimAll, claimTxnState]) => ({
       bonus,
       claimAll,
