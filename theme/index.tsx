@@ -24,7 +24,7 @@ export const oasisBaseTheme = {
     primary: '#25273D',
     primary60: '#626472',
     primary30: '#80818A',
-    secondary: '#E6E9EB',
+    secondary100: '#E6E9EB',
     secondary60: '#F1F3F4',
     neutral10: '#FFFFFF',
     neutral20: '#EAEAEA',
