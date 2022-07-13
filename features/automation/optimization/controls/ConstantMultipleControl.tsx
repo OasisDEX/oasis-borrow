@@ -1,14 +1,17 @@
+import { Vault } from 'blockchain/vaults'
 import React from 'react'
-import { ColorMode, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
+
 import { ConstantMultipleDetailsLayout } from './ConstantMultipleDetailsLayout'
 
-interface ConstantMultipleControlProps{}
+interface ConstantMultipleControlProps {
+  vault: Vault
+}
 
-export function ConstantMultipleControl({}: ConstantMultipleControlProps) {
-
-    return (
-        <Grid>
-            <ConstantMultipleDetailsLayout/>
-        </Grid>
-    )
+export function ConstantMultipleControl({ vault }: ConstantMultipleControlProps) {
+  return (
+    <Grid>
+      <ConstantMultipleDetailsLayout token={vault.token} />
+    </Grid>
+  )
 }

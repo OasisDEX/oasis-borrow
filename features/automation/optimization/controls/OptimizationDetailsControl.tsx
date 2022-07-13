@@ -5,7 +5,8 @@ import { BasicBuyDetailsControl } from 'features/automation/optimization/control
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
-import { ConstantMultipleDetailsLayout } from './ConstantMultipleDetailsLayout'
+
+import { ConstantMultipleControl } from './ConstantMultipleControl'
 
 interface OptimizationDetailsControlProps {
   automationTriggersData: TriggersData
@@ -19,12 +20,14 @@ export function OptimizationDetailsControl({
   const basicBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
-  return (<>
-  <BasicBuyDetailsControl vault={vault} basicBuyTriggerData={basicBuyTriggerData} />
-  { constantMultipleEnabled && <>
-  <ConstantMultipleDetailsLayout/>
-  </>}  
-  </>
-  
+  return (
+    <>
+      <BasicBuyDetailsControl vault={vault} basicBuyTriggerData={basicBuyTriggerData} />
+      {constantMultipleEnabled && (
+        <>
+          <ConstantMultipleControl vault={vault} />
+        </>
+      )}
+    </>
   )
 }

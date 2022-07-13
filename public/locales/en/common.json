@@ -1494,6 +1494,9 @@
     "unable-to-access-auto-buy": "Unable to access Optimization"
   },
   "constant-multiple": {
+    "title": "Constant Multiple",
+    "target-multiple": "Target Multiple",
+    "total-cost-of-feature": "Total cost of feature",
     "banner": {
     "header": "Set up Constant Multiple",
     "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
