@@ -10,6 +10,7 @@ COPY yarn.lock /usr/src/app/yarn.lock
 COPY .next/ /usr/src/app/.next
 COPY public/ /usr/src/app/public
 COPY server/database/ /usr/src/app/server/database/
+COPY node_modules/postgres-migrations/dist/migrations /usr/src/app/node_modules/postgres-migrations/dist/migrations
 
 WORKDIR /usr/src/app
 
