@@ -18,8 +18,8 @@ import {
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
 import {
+  prepareBasicBSResetData,
   resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -182,17 +182,7 @@ export function AutoSellFormControl({
     })
     uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
       type: 'reset',
-      resetData: {
-        targetCollRatio: autoSellTriggerData.targetCollRatio,
-        execCollRatio: autoSellTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice),
-        maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
-        withThreshold: resolveWithThreshold({
-          maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
-          triggerId: autoSellTriggerData.triggerId,
-        }),
-        txDetails: {},
-      },
+      resetData: prepareBasicBSResetData(autoSellTriggerData),
     })
   }
 

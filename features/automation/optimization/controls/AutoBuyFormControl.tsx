@@ -19,8 +19,8 @@ import {
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
 import {
+  prepareBasicBSResetData,
   resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
@@ -180,17 +180,7 @@ export function AutoBuyFormControl({
     })
     uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
       type: 'reset',
-      resetData: {
-        targetCollRatio: autoBuyTriggerData.targetCollRatio,
-        execCollRatio: autoBuyTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice),
-        maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-        withThreshold: resolveWithThreshold({
-          maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
-          triggerId: autoBuyTriggerData.triggerId,
-        }),
-        txDetails: {},
-      },
+      resetData: prepareBasicBSResetData(autoBuyTriggerData),
     })
   }
 
