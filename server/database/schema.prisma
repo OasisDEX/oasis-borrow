@@ -1,42 +1,72 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model migrations {
-  id          Int       @id
-  name        String    @unique
-  hash        String
-  executed_at DateTime? @default(now())
+    id          Int       @id
+    name        String    @unique
+    hash        String
+    executed_at DateTime? @default(now())
 }
 
 model TosApproval {
-  id          Int      @id @default(autoincrement())
-  address     String
-  doc_version String
-  sign_date   DateTime
+    id          Int      @id @default(autoincrement())
+    address     String
+    doc_version String
+    sign_date   DateTime
 
-  @@unique([address, doc_version], name: "tos_approval_unique_signature")
-  @@map("tos_approval")
+    @@unique([address, doc_version], name: "tos_approval_unique_signature")
+    @@map("tos_approval")
 }
 
 model Vault {
-  vault_id      Int       @unique
-  type          VaultType
-  owner_address String
-  chain_id      Int?
+    vault_id      Int       @unique
+    type          VaultType
+    owner_address String
+    chain_id      Int?
 
-  @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
-  @@map("vault")
+    @@unique([vault_id, chain_id], name: "vault_vault_id_chain_id_unique_constraint")
+    @@map("vault")
 }
 
 enum VaultType {
-  borrow
-  multiply
+    borrow
+    multiply
 
-   @@map("vault_type")
+    @@map("vault_type")
+}
+
+model User {
+    address                    String        @unique
+    createdAt                  DateTime      @default(now())
+    user_that_referred_address String?
+    total_amount               String
+    user_that_referred         User?         @relation("UserToUser", fields: [user_that_referred_address], references: [address])
+    referred_users             User[]        @relation("UserToUser")
+    weekly_claims              WeeklyClaim[]
+    accepted                   Boolean
+    @@map("user")
+}
+
+model WeeklyClaim {
+    id           Int      @id @default(autoincrement())
+    week_number  Int
+    user_address String
+    proof        String[]
+    amount       String
+    claimant     User     @relation(fields: [user_address], references: [address])
+
+    @@unique([week_number, user_address], name: "week_number_userAddress_unique_id")
+    @@map("weekly_claim")
+}
+
+model MerkleTree {
+    week_number Int    @unique
+    tree_root   String
+    @@map("merkle_tree")
 }
