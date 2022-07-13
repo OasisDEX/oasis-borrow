@@ -3,7 +3,7 @@ FROM node:16.13.2
 EXPOSE 3000
 
 RUN apt update && apt-get install -y libudev-dev && apt-get install libusb-1.0-0
-RUN npm install --location=global next
+RUN npm i -g next
 
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
