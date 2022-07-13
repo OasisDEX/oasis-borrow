@@ -36,7 +36,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
     }
   }
 
-  const quoteColors = ['success', 'interactive', 'primary60']
+  const quoteColors = ['success100', 'interactive100', 'primary60']
   const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,

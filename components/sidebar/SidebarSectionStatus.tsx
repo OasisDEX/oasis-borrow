@@ -41,7 +41,7 @@ export function SidebarSectionStatus({
     },
     success: {
       bg: 'success10',
-      color: 'success',
+      color: 'success100',
       icon: <Icon name="checkmark" size={20} color="success100" />,
     },
     waiting: {

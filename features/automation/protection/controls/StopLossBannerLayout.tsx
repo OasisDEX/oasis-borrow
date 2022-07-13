@@ -36,7 +36,7 @@ function StopLossBannerSection({
         {value}
       </Text>
       {afterValue && showAfterPill && (
-        <VaultDetailsAfterPill afterPillColors={{ bg: 'secondary60', color: 'success' }}>
+        <VaultDetailsAfterPill afterPillColors={{ bg: 'secondary60', color: 'success100' }}>
           {afterValue} after
         </VaultDetailsAfterPill>
       )}
