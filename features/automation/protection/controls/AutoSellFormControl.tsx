@@ -18,8 +18,9 @@ import {
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
 import {
+  checkIfDisabledBasicBS,
+  checkIfEditingBasicBS,
   prepareBasicBSResetData,
-  resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -187,26 +188,21 @@ export function AutoSellFormControl({
   }
 
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice)
 
-  const isEditing =
-    !autoSellTriggerData.targetCollRatio.isEqualTo(basicSellState.targetCollRatio) ||
-    !autoSellTriggerData.execCollRatio.isEqualTo(basicSellState.execCollRatio) ||
-    !autoSellTriggerData.maxBaseFeeInGwei.isEqualTo(basicSellState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicSellState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoSellTriggerData.triggerId.isZero()) ||
-    isRemoveForm
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoSellTriggerData,
+    basicBSState: basicSellState,
+    isRemoveForm,
+  })
 
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (isAddForm &&
-        basicSellState.withThreshold &&
-        (basicSellState.maxBuyOrMinSellPrice === undefined ||
-          basicSellState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicSellState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
+  const isDisabled = checkIfDisabledBasicBS({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    basicBSState: basicSellState,
+    stage,
+  })
 
   const isFirstSetup = autoSellTriggerData.triggerId.isZero()
 

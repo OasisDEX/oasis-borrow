@@ -19,8 +19,9 @@ import {
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
 import {
+  checkIfDisabledBasicBS,
+  checkIfEditingBasicBS,
   prepareBasicBSResetData,
-  resolveMaxBuyOrMinSellPrice,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
@@ -188,26 +189,21 @@ export function AutoBuyFormControl({
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice)
 
-  const isEditing =
-    !autoBuyTriggerData.targetCollRatio.isEqualTo(basicBuyState.targetCollRatio) ||
-    !autoBuyTriggerData.execCollRatio.isEqualTo(basicBuyState.execCollRatio) ||
-    !autoBuyTriggerData.maxBaseFeeInGwei.isEqualTo(basicBuyState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicBuyState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoBuyTriggerData.triggerId.isZero()) ||
-    isRemoveForm
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoBuyTriggerData,
+    basicBSState: basicBuyState,
+    isRemoveForm,
+  })
 
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (isAddForm &&
-        basicBuyState.withThreshold &&
-        (basicBuyState.maxBuyOrMinSellPrice === undefined ||
-          basicBuyState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicBuyState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
+  const isDisabled = checkIfDisabledBasicBS({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    basicBSState: basicBuyState,
+    stage,
+  })
 
   const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
 
