@@ -10,7 +10,6 @@ import { useAppContext } from 'components/AppContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
-  maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
@@ -18,7 +17,10 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import {
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -183,14 +185,12 @@ export function AutoSellFormControl({
       resetData: {
         targetCollRatio: autoSellTriggerData.targetCollRatio,
         execCollRatio: autoSellTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
-          ? undefined
-          : autoSellTriggerData.maxBuyOrMinSellPrice,
+        maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice),
         maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
-        withThreshold:
-          (!autoSellTriggerData.maxBuyOrMinSellPrice.isZero() &&
-            !autoSellTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
-          autoSellTriggerData.triggerId.isZero(),
+        withThreshold: resolveWithThreshold({
+          maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice,
+          triggerId: autoSellTriggerData.triggerId,
+        }),
         txDetails: {},
       },
     })

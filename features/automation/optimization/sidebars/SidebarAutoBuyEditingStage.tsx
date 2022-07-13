@@ -14,6 +14,10 @@ import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSect
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import {
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
+import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
@@ -177,14 +181,14 @@ export function SidebarAutoBuyEditingStage({
             resetData: {
               targetCollRatio: autoBuyTriggerData.targetCollRatio,
               execCollRatio: autoBuyTriggerData.execCollRatio,
-              maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-                ? undefined
-                : autoBuyTriggerData.maxBuyOrMinSellPrice,
+              maxBuyOrMinSellPrice: resolveMaxBuyOrMinSellPrice(
+                autoBuyTriggerData.maxBuyOrMinSellPrice,
+              ),
               maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-              withThreshold:
-                (!autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() &&
-                  !autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
-                autoBuyTriggerData.triggerId.isZero(),
+              withThreshold: resolveWithThreshold({
+                maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
+                triggerId: autoBuyTriggerData.triggerId,
+              }),
             },
           })
         }}
