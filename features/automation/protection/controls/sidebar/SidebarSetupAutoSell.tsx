@@ -132,6 +132,7 @@ export function SidebarSetupAutoSell({
 
   const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
   const cancelAutoSellErrors = extractCancelAutoSellErrors(errors)
+  console.log(errors)
 
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {

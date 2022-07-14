@@ -93,15 +93,7 @@ interface OptimizationControlProps {
 }
 
 export function OptimizationControl({ vault, ilkData, balanceInfo }: OptimizationControlProps) {
-  const {
-    automationTriggersData$,
-    priceInfo$,
-    context$,
-    txHelpers$,
-    tokenPriceUSD$,
-  } = useAppContext()
-  const priceInfoObs$ = useMemo(() => priceInfo$(vault.token), [vault.token])
-  const [priceInfoData, priceInfoError] = useObservable(priceInfoObs$)
+  const { automationTriggersData$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
   const autoTriggersData$ = automationTriggersData$(vault.id)
@@ -135,19 +127,13 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
 
   return (
     <WithErrorHandler
-      error={[
-        automationTriggersError,
-        priceInfoError,
-        ethAndTokenPricesError,
-        contextError,
-        txHelpersError,
-      ]}
+      error={[automationTriggersError, ethAndTokenPricesError, contextError, txHelpersError]}
     >
       <WithLoadingIndicator
-        value={[automationTriggersData, priceInfoData, contextData, ethAndTokenPricesData]}
+        value={[automationTriggersData, contextData, ethAndTokenPricesData]}
         customLoader={<VaultContainerSpinner />}
       >
-        {([automationTriggers, priceInfo, context, ethAndTokenPrices]) => (
+        {([automationTriggers, context, ethAndTokenPrices]) => (
           <DefaultVaultLayout
             detailsViewControl={
               <OptimizationDetailsControl
@@ -160,12 +146,10 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
                 vault={vault}
                 automationTriggersData={automationTriggers}
                 ilkData={ilkData}
-                priceInfo={priceInfo}
                 txHelpers={txHelpersData}
                 context={context}
                 balanceInfo={balanceInfo}
                 ethMarketPrice={ethAndTokenPrices['ETH']}
-                tokenMarketPrice={ethAndTokenPrices[vault.token]}
               />
             }
           />
