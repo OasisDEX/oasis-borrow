@@ -27,6 +27,7 @@ import {
 } from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
+import { NotificationsCenter } from './notifications/NotificationsCenter'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
@@ -270,7 +271,11 @@ function UserDesktopMenu() {
         zIndex: 3,
       }}
     >
-      <Flex>
+      <Flex
+        sx={{
+          position: 'relative'  
+        }}
+      >
         <PositionsLink sx={{ mr: 4, display: ['none', 'none', 'flex'] }}>
           <Icon
             name="home"
@@ -343,6 +348,8 @@ function UserDesktopMenu() {
             notificationsPanelOpen={notificationsPanelOpen}
           />
         )}
+
+        {/* <NotificationsCenter /> */}
       </Flex>
     </Flex>
   )

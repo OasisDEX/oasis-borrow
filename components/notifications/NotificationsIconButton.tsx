@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React, { LegacyRef } from 'react'
 import { Box, Button } from 'theme-ui'
+import { NotificationsCenter } from './NotificationsCenter'
 
 interface NotificationsIconButtonProps {
   notificationsPanelOpen: boolean
@@ -63,6 +64,11 @@ export function NotificationsIconButton({
           />
         </>
       </Button>
+
+      {notificationsPanelOpen && (
+        <NotificationsCenter />
+      )}
+      
     </Box>
   )
 }
