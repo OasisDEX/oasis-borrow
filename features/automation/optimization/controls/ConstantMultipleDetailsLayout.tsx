@@ -1,4 +1,3 @@
-
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'

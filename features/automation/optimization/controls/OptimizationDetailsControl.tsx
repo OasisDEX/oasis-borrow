@@ -6,7 +6,7 @@ import { TriggersData } from 'features/automation/protection/triggers/Automation
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React from 'react'
 
-import { ConstantMultipleControl } from './ConstantMultipleControl'
+import { ConstantMultipleDetailsControl } from './ConstantMultipleDetailsControl'
 
 interface OptimizationDetailsControlProps {
   automationTriggersData: TriggersData
@@ -25,7 +25,7 @@ export function OptimizationDetailsControl({
       <BasicBuyDetailsControl vault={vault} basicBuyTriggerData={basicBuyTriggerData} />
       {constantMultipleEnabled && (
         <>
-          <ConstantMultipleControl vault={vault} />
+          <ConstantMultipleDetailsControl vault={vault} />
         </>
       )}
     </>

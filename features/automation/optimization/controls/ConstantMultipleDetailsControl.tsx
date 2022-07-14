@@ -4,11 +4,11 @@ import { Grid } from 'theme-ui'
 
 import { ConstantMultipleDetailsLayout } from './ConstantMultipleDetailsLayout'
 
-interface ConstantMultipleControlProps {
+interface ConstantMultipleDetailsControlProps {
   vault: Vault
 }
 
-export function ConstantMultipleControl({ vault }: ConstantMultipleControlProps) {
+export function ConstantMultipleDetailsControl({ vault }: ConstantMultipleDetailsControlProps) {
   return (
     <Grid>
       <ConstantMultipleDetailsLayout token={vault.token} />
