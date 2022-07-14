@@ -26,7 +26,7 @@ const v1: Content = {
     content: <TranslatedContent content={tosContent} />,
   },
   privacy: {
-    version: 'ver-1.6.2021',
+    version: 'ver-7.7.2022',
     content: <TranslatedContent content={privacyContent} />,
   },
   support: {
