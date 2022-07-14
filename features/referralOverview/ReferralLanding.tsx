@@ -4,6 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -27,13 +28,17 @@ interface Props {
 export function ReferralLandingSummary() {
   const { context$, userReferral$ } = useAppContext()
 
-  const [context] = useObservable(context$)
-  const [userReferral] = useObservable(userReferral$)
+  const [context, contextError] = useObservable(context$)
+  const [userReferral, userReferralError] = useObservable(userReferral$)
 
   return (
-
-          <ReferralLanding context={context!} userReferral={userReferral!} />
-
+    <WithErrorHandler error={[contextError, userReferralError]}>
+      <WithLoadingIndicator value={[context, userReferral]}>
+        {([context, userReferral]) => (
+          <ReferralLanding context={context} userReferral={userReferral} />
+        )}
+      </WithLoadingIndicator>
+    </WithErrorHandler>
   )
 }
 
@@ -67,6 +72,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
 
   return (
     <ReferralLayout>
+      {userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       <Flex
         sx={{
           flexDirection: 'column',

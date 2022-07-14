@@ -1,7 +1,6 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -23,7 +22,7 @@ export default function ReferralsPage({ address }: { address: string }) {
     <WithConnection>
 
         <BackgroundLight />
-        {referralsEnabled ? <ReferralsSummary address={address} landing={false} /> : null}
+        {referralsEnabled ? <ReferralsSummary address={address} /> : null}
 
     </WithConnection>
   ) : null

@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { UserReferralState } from 'features/referralOverview/user'
 import { useRedirect } from 'helpers/useRedirect'
-
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
