@@ -56,6 +56,7 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
         </ReferralLayout>
       )}
       {isConnected && connectedAccount !== address && <ReferralLandingSummary />}
+      {!isConnected && <ReferralLandingSummary />}
     </>
   )
 }
