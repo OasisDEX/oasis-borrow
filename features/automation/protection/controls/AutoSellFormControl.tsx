@@ -17,7 +17,11 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import {
+  checkIfDisabledBasicBS,
+  checkIfEditingBasicBS,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -46,6 +50,7 @@ interface AutoSellFormControlProps {
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
@@ -61,6 +66,7 @@ export function AutoSellFormControl({
   txHelpers,
   context,
   ethMarketPrice,
+  tokenMarketPrice,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -179,47 +185,32 @@ export function AutoSellFormControl({
     })
     uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
       type: 'reset',
-      resetData: {
-        targetCollRatio: autoSellTriggerData.targetCollRatio,
-        execCollRatio: autoSellTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
-          ? undefined
-          : autoSellTriggerData.maxBuyOrMinSellPrice,
-        maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
-        withThreshold:
-          !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
-          autoSellTriggerData.triggerId.isZero(),
-        txDetails: {},
-      },
+      resetData: prepareBasicBSResetData(autoSellTriggerData),
     })
   }
 
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoSellTriggerData.maxBuyOrMinSellPrice)
 
-  const isEditing =
-    !autoSellTriggerData.targetCollRatio.isEqualTo(basicSellState.targetCollRatio) ||
-    !autoSellTriggerData.execCollRatio.isEqualTo(basicSellState.execCollRatio) ||
-    !autoSellTriggerData.maxBaseFeeInGwei.isEqualTo(basicSellState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicSellState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoSellTriggerData.triggerId.isZero()) ||
-    isRemoveForm
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoSellTriggerData,
+    basicBSState: basicSellState,
+    isRemoveForm,
+  })
 
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (basicSellState.withThreshold &&
-        (basicSellState.maxBuyOrMinSellPrice === undefined ||
-          basicSellState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicSellState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
+  const isDisabled = checkIfDisabledBasicBS({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    basicBSState: basicSellState,
+    stage,
+  })
 
   const isFirstSetup = autoSellTriggerData.triggerId.isZero()
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: ethMarketPrice,
+    marketPrice: tokenMarketPrice,
     slippage: basicSellState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,

@@ -18,7 +18,11 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import {
+  checkIfDisabledBasicBS,
+  checkIfEditingBasicBS,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -47,6 +51,7 @@ interface AutoBuyFormControlProps {
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
@@ -62,6 +67,7 @@ export function AutoBuyFormControl({
   txHelpers,
   context,
   ethMarketPrice,
+  tokenMarketPrice,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -177,18 +183,7 @@ export function AutoBuyFormControl({
     })
     uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
       type: 'reset',
-      resetData: {
-        targetCollRatio: autoBuyTriggerData.targetCollRatio,
-        execCollRatio: autoBuyTriggerData.execCollRatio,
-        maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-          ? undefined
-          : autoBuyTriggerData.maxBuyOrMinSellPrice,
-        maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-        withThreshold:
-          !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
-          autoBuyTriggerData.triggerId.isZero(),
-        txDetails: {},
-      },
+      resetData: prepareBasicBSResetData(autoBuyTriggerData),
     })
   }
 
@@ -196,31 +191,27 @@ export function AutoBuyFormControl({
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice)
 
-  const isEditing =
-    !autoBuyTriggerData.targetCollRatio.isEqualTo(basicBuyState.targetCollRatio) ||
-    !autoBuyTriggerData.execCollRatio.isEqualTo(basicBuyState.execCollRatio) ||
-    !autoBuyTriggerData.maxBaseFeeInGwei.isEqualTo(basicBuyState.maxBaseFeeInGwei) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicBuyState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoBuyTriggerData.triggerId.isZero()) ||
-    isRemoveForm
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoBuyTriggerData,
+    basicBSState: basicBuyState,
+    isRemoveForm,
+  })
 
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (basicBuyState.withThreshold &&
-        (basicBuyState.maxBuyOrMinSellPrice === undefined ||
-          basicBuyState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicBuyState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
+  const isDisabled = checkIfDisabledBasicBS({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    basicBSState: basicBuyState,
+    stage,
+  })
 
   const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: ethMarketPrice,
+    marketPrice: tokenMarketPrice,
     slippage: basicBuyState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,
