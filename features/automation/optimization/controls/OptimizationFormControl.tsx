@@ -12,7 +12,9 @@ import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
+import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
@@ -50,8 +52,10 @@ export function OptimizationFormControl({
       })
     }
   }, [])
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   return (
+    <>
     <AutoBuyFormControl
       vault={vault}
       ilkData={ilkData}
@@ -64,7 +68,10 @@ export function OptimizationFormControl({
       context={context}
       txHelpers={txHelpers}
       ethMarketPrice={ethMarketPrice}
-      tokenMarketPrice={tokenMarketPrice}
-    />
+      tokenMarketPrice={tokenMarketPrice} />
+{constantMultipleEnabled && 
+     <ConstantMultipleFormControl context={context} />
+}      
+      </>
   )
 }

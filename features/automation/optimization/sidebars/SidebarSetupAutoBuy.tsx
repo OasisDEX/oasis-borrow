@@ -29,7 +29,7 @@ import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
-export interface SidebarSetupAutoBuyProps {
+interface SidebarSetupAutoBuyProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
