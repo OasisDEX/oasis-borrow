@@ -73,7 +73,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
 
   return (
     <ReferralLayout>
-      {userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
+      <TermsOfService userReferral={userReferral} />
       <Flex
         sx={{
           flexDirection: 'column',
