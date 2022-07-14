@@ -213,7 +213,7 @@ export function calculatePricePercentageChange(current: BigNumber, next: BigNumb
   return current.minus(next).div(current).times(-1)
 }
 
-type OraclePriceDataArgs = {
+export type OraclePriceDataArgs = {
   token: string
   requestedData: Array<keyof OraclePriceData>
 }
@@ -237,6 +237,10 @@ export function createOraclePriceData$(
 ): Observable<Partial<OraclePriceData>> {
   return context$.pipe(
     switchMap(({ web3, mcdOsms }) => {
+      console.log(mcdOsms[token])
+
+      console.log(mcdOsms)
+      console.log(token)
       return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
         switchMap((contractData) => {

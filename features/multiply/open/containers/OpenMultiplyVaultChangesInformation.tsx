@@ -56,7 +56,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
   const dynamicStopLossPrice = afterLiquidationPrice
     .div(ilkData.liquidationRatio)
     .times(stopLossLevel.div(100))
-
+  console.log(`dynamicStopLossPrice: ${dynamicStopLossPrice}`)
   return !inputAmountsEmpty ? (
     <VaultChangesInformationContainer title="Order information">
       <VaultChangesInformationItem
