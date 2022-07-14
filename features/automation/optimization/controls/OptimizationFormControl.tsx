@@ -23,6 +23,7 @@ interface OptimizationFormControlProps {
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
 }
 
 export function OptimizationFormControl({
@@ -34,6 +35,7 @@ export function OptimizationFormControl({
   context,
   balanceInfo,
   ethMarketPrice,
+  tokenMarketPrice,
 }: OptimizationFormControlProps) {
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
@@ -62,6 +64,7 @@ export function OptimizationFormControl({
       context={context}
       txHelpers={txHelpers}
       ethMarketPrice={ethMarketPrice}
+      tokenMarketPrice={tokenMarketPrice}
     />
   )
 }

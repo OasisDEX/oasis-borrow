@@ -51,6 +51,7 @@ interface AutoBuyFormControlProps {
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
+  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
@@ -66,6 +67,7 @@ export function AutoBuyFormControl({
   txHelpers,
   context,
   ethMarketPrice,
+  tokenMarketPrice,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -209,7 +211,7 @@ export function AutoBuyFormControl({
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: ethMarketPrice,
+    marketPrice: tokenMarketPrice,
     slippage: basicBuyState.deviation.div(100),
     debt: vault.debt,
     lockedCollateral: vault.lockedCollateral,

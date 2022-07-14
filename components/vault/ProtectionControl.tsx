@@ -175,6 +175,7 @@ export function ProtectionControl({
                   txHelpers={txHelpersData}
                   context={context}
                   ethMarketPrice={ethAndTokenPrices['ETH']}
+                  tokenMarketPrice={ethAndTokenPrices[vault.token]}
                 />
               }
             />
