@@ -235,8 +235,10 @@ export function TermsOfService({ userReferral }: { userReferral?: UserReferralSt
 }
 
 export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
-  const { web3ContextConnected$ } = useAppContext()
+  const { web3ContextConnected$, userReferral$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
+  const [userReferral] = useObservable(userReferral$)
+
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
 
   if (!web3ContextConnected) {
@@ -250,7 +252,7 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   return (
     <>
       {children}
-      <TermsOfService />
+      <TermsOfService userReferral={userReferral} />
     </>
   )
 }

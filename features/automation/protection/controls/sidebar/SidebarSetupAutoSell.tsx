@@ -184,7 +184,7 @@ export function SidebarSetupAutoSell({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

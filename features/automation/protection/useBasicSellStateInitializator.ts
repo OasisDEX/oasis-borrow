@@ -3,8 +3,11 @@ import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import {
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BASIC_SELL_FORM_CHANGE,
@@ -33,6 +36,7 @@ export function useBasicBSstateInitialization(
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE
   const maxBuyOrMinSellPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice)
+  const withThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice, triggerId })
 
   useEffect(() => {
     uiChanges.publish(publishKey, {
@@ -65,9 +69,7 @@ export function useBasicBSstateInitialization(
     })
     uiChanges.publish(publishKey, {
       type: 'with-threshold',
-      withThreshold:
-        (!maxBuyOrMinSellPrice.isZero() && !maxBuyOrMinSellPrice.isEqualTo(maxUint256)) ||
-        triggerId.isZero(),
+      withThreshold: withThresholdResolved,
     })
   }, [triggerId.toNumber(), collateralizationRatio])
 
