@@ -238,7 +238,7 @@ export function WithTermsOfService({ children }: WithTermsOfServiceProps) {
   const { web3ContextConnected$, userReferral$ } = useAppContext()
   const [web3ContextConnected] = useObservable(web3ContextConnected$)
   const [userReferral] = useObservable(userReferral$)
-  
+
   const shouldUseTermsOfService = getConfig()?.publicRuntimeConfig?.useTermsOfService
 
   if (!web3ContextConnected) {
