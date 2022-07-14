@@ -15,6 +15,7 @@ export type Feature =
   | 'ReadOnlyBasicBS'
   | 'Notifications'
   | 'Referrals'
+  | 'ConstantMultiple'
 
 const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
@@ -28,6 +29,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   ReadOnlyBasicBS: false,
   Notifications: false,
   Referrals: false,
+  ConstantMultiple: false,
   // your feature here....
 }
 
