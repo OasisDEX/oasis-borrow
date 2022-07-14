@@ -62,7 +62,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         alignItems: 'center',
         fontSize: 3,
         border: '1px solid',
-        borderColor: '#ccc',
+        borderColor: 'neutral60',
         borderRadius: 'medium',
         py: '8px',
         px: '16px',

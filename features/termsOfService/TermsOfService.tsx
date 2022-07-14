@@ -105,7 +105,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
         >
           <Text mt={3}>{t('tos-view')}</Text>
         </AppLink>
-        <Box px={2} sx={{ background: '#f6f8f9', borderRadius: '12px', p: 3, mb: 4 }}>
+        <Box px={2} sx={{ background: 'neutral30', borderRadius: '12px', p: 3, mb: 4 }}>
           <Label
             sx={{ fontSize: 3, fontWeight: 'body', cursor: 'pointer' }}
             onClick={() => setChecked(!checked)}

@@ -286,9 +286,7 @@ export function ProductCard({
                   <Text sx={{ color: 'neutral80', pb: 1 }} variant="paragraph3">
                     {title}
                   </Text>
-                  <Text variant="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
-                    {value}
-                  </Text>
+                  <Text sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>{value}</Text>
                 </Flex>
               )
             })}
@@ -310,11 +308,11 @@ export function ProductCard({
                   alignItems: 'center',
                   justifyContent: 'center',
                   boxShadow: '0px 2px 8px rgba(0, 0, 0, 0.13)',
-                  backgroundColor: inactive || isFull ? '#80818A' : 'primary100',
+                  backgroundColor: inactive || isFull ? 'neutral70' : 'primary100',
                   '&:hover': {
                     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.15)',
                     transition: '0.2s ease-in',
-                    backgroundColor: isFull ? '#80818A' : 'primary100',
+                    backgroundColor: isFull ? 'neutral70' : 'primary100',
                     cursor: isFull ? 'default' : 'pointer',
                   },
                 }}

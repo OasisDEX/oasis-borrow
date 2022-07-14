@@ -56,7 +56,7 @@ export function FeesView({ userReferral }: Props) {
     >
       <Card
         sx={{
-          backgroundColor: '#ffffff',
+          backgroundColor: 'neutral10',
           borderColor: 'border',
           borderWidth: '1px',
           p: 4,
@@ -68,8 +68,7 @@ export function FeesView({ userReferral }: Props) {
           <Box sx={{ py: 1 }}>
             <Text
               sx={{
-                color: 'text.subtitle',
-
+                color: 'neutral80',
                 fontSize: 1,
               }}
               variant="strong"
@@ -89,7 +88,7 @@ export function FeesView({ userReferral }: Props) {
             <Box sx={{ flex: '1 1 auto' }}>
               <Text
                 sx={{
-                  color: 'text.subtitle',
+                  color: 'neutral80',
                   fontSize: 1,
                 }}
                 variant="strong"
@@ -171,7 +170,7 @@ export function FeesView({ userReferral }: Props) {
                     <Box sx={{ flex: '1 1 auto', pt: '16px' }}>
                       <Text
                         sx={{
-                          color: 'text.subtitle',
+                          color: 'neutral80',
                           overflowWrap: 'break-word',
                           fontSize: 2,
                           ml: ['0px', '8px'],
@@ -213,7 +212,7 @@ export function FeesView({ userReferral }: Props) {
                   <Box sx={{ flex: '1 1 auto' }}>
                     <Text
                       sx={{
-                        color: 'text.subtitle',
+                        color: 'neutral80',
                         overflowWrap: 'break-word',
                         fontSize: 2,
                         ml: ['0px', '8px'],
@@ -251,7 +250,7 @@ export function FeesView({ userReferral }: Props) {
               <Box sx={{ flex: '1 1 auto' }}>
                 <Text
                   sx={{
-                    color: 'text.subtitle',
+                    color: 'neutral80',
                     overflowWrap: 'break-word',
                     fontSize: 2,
                     ml: ['0px', '8px'],
@@ -313,7 +312,7 @@ export function FeesView({ userReferral }: Props) {
                           '&:hover': {
                             cursor: 'pointer',
                           },
-                          color: '#585CF5',
+                          color: 'interactive100',
                           mr: '12px',
                           ml: ['0px', '12px'],
                           lineHeight: '22px',
@@ -331,7 +330,7 @@ export function FeesView({ userReferral }: Props) {
                           }}
                         />
                       </Text>
-                      <Text color="text.subtitle" sx={{ lineHeight: '22px' }}>
+                      <Text color="neutral80" sx={{ lineHeight: '22px' }}>
                         |
                       </Text>
                       <Text
@@ -346,7 +345,7 @@ export function FeesView({ userReferral }: Props) {
                           '&:hover': {
                             cursor: 'pointer',
                           },
-                          color: '#585CF5',
+                          color: 'interactive100',
                           ml: '12px',
                           lineHeight: '22px',
                         }}

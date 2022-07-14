@@ -320,7 +320,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         {t('user-settings.slippage-limit.preset-title')}
       </Text>
       <SlippageSettingsForm />
-      <Box sx={{ borderTop: '1px solid #E7EDEF', mt: 3 }} />
+      <Box sx={{ borderTop: '1px solid neutral30', mt: 3 }} />
       <Button
         variant="textual"
         sx={{

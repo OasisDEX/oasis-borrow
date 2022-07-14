@@ -86,7 +86,7 @@ export function SidebarAutoBuyEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {basicBuyState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-buy.set-trigger-description', {
               targetCollRatio: basicBuyState.targetCollRatio.toNumber(),

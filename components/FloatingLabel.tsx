@@ -17,7 +17,7 @@ export function FloatingLabel({ text, flexSx = {}, textSx = {} }: FloatingLabelP
         px: 3,
         position: 'absolute',
         alignItems: 'center',
-        backgroundColor: '#5C5FFE',
+        backgroundColor: 'interactive100',
         boxShadow: '0 0 8px rgba(0, 0, 0, 0.25)',
         ...flexSx,
       }}

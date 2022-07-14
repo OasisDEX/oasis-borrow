@@ -81,9 +81,9 @@ const styles = {
   },
   smallSelected: {
     color: 'neutral10',
-    bg: '#575CFE',
+    bg: 'interactive100',
     '&:hover': {
-      color: 'text.constrast',
+      color: 'neutral10',
     },
   },
   underline: {

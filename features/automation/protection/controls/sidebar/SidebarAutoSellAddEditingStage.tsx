@@ -144,7 +144,7 @@ export function SidebarAutoSellAddEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {basicSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
               targetCollRatio: basicSellState.targetCollRatio.toNumber(),

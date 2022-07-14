@@ -667,7 +667,7 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
   return (
     <Box
       sx={{
-        ':hover': { bg: '#F6F6F6' },
+        ':hover': { bg: 'neutral30' },
         borderRadius: 'medium',
         p: 3,
         textDecoration: 'none',
