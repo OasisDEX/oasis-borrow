@@ -49,7 +49,7 @@ export function DetailsSectionContentCardChangePill({
         py: 1,
         ...(variant === 'positive' && {
           color: 'success100',
-          backgroundColor: 'secondary60',
+          backgroundColor: 'success10',
         }),
         ...(variant === 'negative' && {
           color: 'critical100',
@@ -68,14 +68,14 @@ function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionCon
     <>
       {url && (
         <AppLink href={url} sx={{ mt: 2 }}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive100' }}>
             {label}
           </WithArrow>
         </AppLink>
       )}
       {action && (
         <Text as="span" sx={{ mt: 2, cursor: 'pointer' }} onClick={action}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive100' }}>
             {label}
           </WithArrow>
         </Text>

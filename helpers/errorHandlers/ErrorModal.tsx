@@ -37,7 +37,11 @@ export function ErrorModal({ close, error }: ModalProps & { error: string }) {
               {t('error-message')}
             </Text>
           </Box>
-          <Button sx={{ width: '80%', justifySelf: 'center' }} onClick={onClickReload}>
+          <Button
+            variant="primary"
+            sx={{ width: '80%', justifySelf: 'center', mt: 2 }}
+            onClick={onClickReload}
+          >
             {' '}
             {t('error-button-reload')}
           </Button>

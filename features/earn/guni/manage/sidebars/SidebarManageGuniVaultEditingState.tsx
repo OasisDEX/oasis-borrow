@@ -33,7 +33,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
               1: (
                 <Text
                   as="span"
-                  sx={{ fontWeight: 'semiBold', color: 'interactive', cursor: 'pointer' }}
+                  sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
                   onClick={() => {
                     toggle!('otherActions')
                   }}

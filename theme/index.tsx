@@ -11,6 +11,13 @@ export const GRADIENTS = {
   newsletterSuccess: 'linear-gradient(137.02deg, #2A30EE 0%, #A4A6FF 99.12%);',
 }
 
+// Used to share design system colours with theme-ui default color fields
+const COLORS = {
+  primary100: '#25273D',
+  secondary100: '#E6E9EB',
+  neutral10: '#FFFFFF',
+}
+
 export const oasisBaseTheme = {
   useBorderBox: true,
   useBodyStyles: true,
@@ -21,12 +28,12 @@ export const oasisBaseTheme = {
     interactive50: '#878BFC',
     interactive30: '#D8D9FE',
     interactive10: '#EDEDFF',
-    primary100: '#25273D',
+    primary100: COLORS.primary100,
     primary60: '#626472',
     primary30: '#80818A',
-    secondary100: '#E6E9EB',
+    secondary100: COLORS.secondary100,
     secondary60: '#F1F3F4',
-    neutral10: '#FFFFFF',
+    neutral10: COLORS.neutral10,
     neutral20: '#EAEAEA',
     neutral30: '#F3F7F9',
     neutral60: '#BEC9D0',
@@ -38,6 +45,12 @@ export const oasisBaseTheme = {
     warning10: '#FFF1CF',
     critical100: '#D94A1E',
     critical10: '#FFEEE9',
+
+    // used by theme-ui internally
+    primary: COLORS.primary100,
+    secondary: COLORS.secondary100,
+    background: COLORS.neutral10,
+    text: COLORS.primary100,
 
     // special colors for some components
     lavender_o25: '#787a9b40',
@@ -554,7 +567,7 @@ export const oasisBaseTheme = {
     textual: {
       variant: 'text.paragraph3',
       fontWeight: 'semiBold',
-      color: 'interactive',
+      color: 'interactive100',
       cursor: 'pointer',
       background: 'none',
       transition: 'opacity 200ms',
@@ -724,9 +737,9 @@ export const oasisBaseTheme = {
     pillActive: {
       variant: 'buttons.pill',
       color: 'neutral10',
-      backgroundColor: 'interactive',
+      backgroundColor: 'interactive100',
       '&:hover': {
-        backgroundColor: 'interactive',
+        backgroundColor: 'interactive100',
       },
     },
   },
@@ -736,7 +749,7 @@ export const oasisBaseTheme = {
     },
     inText: {
       textDecoration: 'none',
-      color: '#585CF5',
+      color: 'interactive100',
     },
     primary: {
       px: 3,
@@ -1025,7 +1038,7 @@ export const oasisBaseTheme = {
       fontWeight: 'semiBold',
       textDecoration: 'none',
       cursor: 'pointer',
-      color: 'interactive',
+      color: 'interactive100',
     },
     hr: {
       borderBottom: 'lightMuted',

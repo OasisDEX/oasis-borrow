@@ -39,7 +39,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
   }, [switchEvent?.value])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash || section.value === hash
+    return hash.includes(`#${section.value}`) || hash.includes(section.value)
   }
 
   const selectedSection = sections.find(isSelected) || sections[0]

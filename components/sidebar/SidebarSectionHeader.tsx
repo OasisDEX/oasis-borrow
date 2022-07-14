@@ -59,7 +59,7 @@ export function SidebarSectionHeader({
         <Flex
           sx={{
             alignItems: 'center',
-            color: 'interactive',
+            color: 'interactive100',
             fontSize: 2,
             fontWeight: 600,
             cursor: 'pointer',

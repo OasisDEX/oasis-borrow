@@ -147,7 +147,7 @@ export function ManageVaultFormHeader(
                   ),
                   2: (
                     <WithArrow
-                      sx={{ display: 'inline', color: 'interactive', fontWeight: 'body' }}
+                      sx={{ display: 'inline', color: 'interactive100', fontWeight: 'body' }}
                     />
                   ),
                 }}

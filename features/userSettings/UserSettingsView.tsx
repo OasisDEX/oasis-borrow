@@ -271,7 +271,12 @@ function WalletInfo() {
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'interactive', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
+              sx={{
+                color: 'interactive100',
+                fontSize: 1,
+                cursor: 'pointer',
+                fontWeight: 'semiBold',
+              }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}

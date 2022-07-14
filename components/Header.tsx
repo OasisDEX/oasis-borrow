@@ -143,7 +143,7 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
             right: '-7px',
             width: '24px',
             height: '24px',
-            bg: 'interactive',
+            bg: 'interactive100',
             color: 'neutral10',
             borderRadius: '50%',
             justifyContent: 'center',
