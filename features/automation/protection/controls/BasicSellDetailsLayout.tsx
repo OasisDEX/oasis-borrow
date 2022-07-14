@@ -50,6 +50,7 @@ export function BasicSellDetailsLayout({
             afterTargetColRatio={uiState.targetCollRatio}
             threshold={threshold}
             changeVariant="positive"
+            token={token}
           />
         </DetailsSectionContentCardWrapper>
       }

@@ -140,6 +140,12 @@ export function VaultErrors({
         return translate('stop-loss-max-debt')
       case 'targetCollRatioExceededDustLimitCollRatio':
         return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
+      case 'autoSellTriggerHigherThanAutoBuyTarget':
+        return translate('auto-sell-trigger-higher-than-auto-buy-target')
+      case 'autoBuyTriggerLowerThanAutoSellTarget':
+        return translate('auto-buy-trigger-lower-than-auto-sell-target')
+      case 'stopLossTriggerHigherThanAutoBuyTarget':
+        return translate('stop-loss-trigger-higher-than-auto-buy-target')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

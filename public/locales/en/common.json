@@ -552,7 +552,8 @@
     "more": "More",
     "assets": "Assets",
     "earn": "Earn",
-    "select-an-asset": "Select an asset"
+    "select-an-asset": "Select an asset",
+    "referrals": "Referrals"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -839,7 +840,10 @@
     "stop-loss-max-debt": "The Stop-Loss cannot be created due to the high price impact of the order. Your total vault debt has to be less than 20m DAI",
     "target-coll-ratio-exceeded-dust-limit-coll-ratio": "You cannot select a higher Target Collateralization Ratio, as it would result in the vault hitting the dust limit",
     "auto-buy-max-price-requred": "Please enter a maximum buy price or select <1>Set No Threshold<1>",
-    "minimum-sell-price-not-provided": "Please enter a minimum sell price or select <1>Set No Threshold<1>"
+    "minimum-sell-price-not-provided": "Please enter a minimum sell price or select <1>Set No Threshold<1>",
+    "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
+    "stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
+    "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first"
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -1377,6 +1381,8 @@
       "claim-rewards": "Claim Rewards"
     }
   },
+  "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
+
   "simulate-faq": {
     "contents": "Contents",
     "learn-more-heading": "Want to know more?",
@@ -1403,7 +1409,7 @@
     "col-to-be-sold": "{{token}} to be sold at next sell",
     "estimated-transaction-cost": "Estimated transaction cost",
     "target-ratio-with-deviation": "Target ratio with deviation",
-    "title": "Auto sell",
+    "title": "Auto-Sell",
     "add-form-title": "Auto Sell-Setup",
     "edit-form-title": "Edit Auto-Sell",
     "setting-form-title": "Setting Auto-Sell",
@@ -1413,14 +1419,15 @@
     "trigger-cancelled": "Basic-Sell cancellation completed",
     "trigger-updated": "Basic-Sell Protection Updated",
     "next-sell-price": "Next sell price: {{amount}}",
-    "continual-sell-threshold": "Continual sell, Sell down to {{amount}}",
+    "continual-sell-threshold": "Recurring sell order down to {{amount}}/{{token}}",
+    "continual-sell-no-threshold": "Recurring sell order with no min",
     "target-col-ratio-after-selling": "Target Col. Ratio after selling",
     "trigger-col-ratio-to-sell-token": "Trigger Col. Ratio to sell {{token}}",
     "sell-trigger-ratio": "Sell Trigger Ratio",
-    "target-coll-ratio": "Target Col Ratio (After Sell)",
+    "target-coll-ratio": "Sell Target Ratio",
     "set-min-sell-price": "Set Min Sell Price",
-    "set-trigger-description": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. Your first sell being ${{executionPrice}}/{{token}}, limited to a price of ${{minSellPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are setting a recurring automated sell action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to sell more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. With no min sell price. Learn More ",
+    "set-trigger-description": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a min sell price of ${{minSellPrice}}/{{token}}. Learn More ",
+    "set-trigger-description-no-threshold": "You are creating a recurring sell action to trigger at a collateralization ratio of {{execCollRatio}}%, increasing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min sell price. Learn More ",
     "closed-vault-existing-trigger-header": "Your vault is closed but Auto-Sell is still active",
     "closed-vault-existing-trigger-description": "You can cancel your existing Auto-Sell here or deposit into your vault in overview tab",
     "closed-vault-not-existing-trigger-header": "You need to generate Dai before you can set up Auto-Sell",
@@ -1442,15 +1449,15 @@
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
     "form-title": "Auto-Buy Setup",
-    "continual-buy-threshold": "Continual buy, threshold {{amount}} {{token}}",
+    "continual-buy-threshold": "Recurring buy order up to {{amount}}/{{token}}",
+    "continual-buy-no-threshold": "Recurring buy order with no max",
     "min-ratio": "min. ratio with Stop-Loss/Auto-Sell",
     "next-buy-price": "Next buy price: {{amount}}",
     "set-max-buy-price": "Set Max Buy Price",
     "target-col-ratio-after-buying": "Target Col. Ratio after buying",
-    "target-coll-ratio": "Target Col Ratio",
+    "target-coll-ratio": "Buy Target Ratio",
     "trigger-col-ratio-to-buy-token": "Trigger Col. Ratio to buy {{token}}",
-    "trigger-coll-ratio": "Trigger Col Ratio",
-
+    "trigger-coll-ratio": "Buy Trigger Ratio",
     "buy-title": "Basic Auto-Buy Summary",
     "target-col-ratio-each-buy": "Target Col. Ratio after each buy",
     "target-multiple-each-buy": "Target Multiple after each buy",
@@ -1476,8 +1483,8 @@
     },
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
-    "set-trigger-description": "You are setting a recurring automated buy action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to buy more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. Your first buy being ${{executionPrice}}/{{token}}, limited to a price of ${{minSellPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are setting a recurring automated buy action at a Target Collateral Ratio of {{targetCollRatio}}% and a trigger to buy more {{token}} at your Collateral Ratio Trigger of {{execCollRatio}}%. With no min buy price. Learn More "
+    "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More ",
+    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More "
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1485,5 +1492,70 @@
     "adding-new-triggers-disabled": "Creation of the new Optimization triggers is currently disabled.",
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
     "unable-to-access-auto-buy": "Unable to access Optimization"
+  },
+  "constant-multiple": {
+    "title": "Constant Multiple",
+    "target-multiple": "Target Multiple",
+    "total-cost-of-feature": "Total cost of feature",
+    "banner": {
+    "header": "Set up Constant Multiple",
+    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
+    "button": "Setup Constant Multiple"
+  }
+  },
+  "ref": {
+    "banner": "Introducing Refer a Friend. Earn DAI today",
+    "ref-a-friend": "Refer a Friend",
+    "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
+    "intro-link": "Oasis Refer a Friend",
+    "total": "Total DAI fees earned",
+    "not-claimed": "DAI not claimed",
+    "claim": "Claim DAI",
+    "claimed": "Claimed",
+    "no-claim": "No claims",
+    "claiming": "Claiming",
+    "top": "Top earners",
+    "link": "Your Oasis.app referral link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "explanation": "Once someone clicks your referral link and accepts then you will see them appear in the “Accounts you’ve referred” below. Then you are all set, fee sharing is active! Your link is reusable as many times as you like.",
+    "faq-link": "Read more in Oasis Referral F.A.Q",
+    "you-referred": "Accounts you've referred",
+    "not-referred-yet": "You haven’t referred anyone yet",
+    "you-were-not-referred": "No account has referred you to Oasis.app",
+    "you-have-been-invited": "You have been invited by ",
+    "accept-invite": "Accept Invite",
+    "reject-invite": "Reject Invite",
+    "referred-you": "Account that referred you",
+    "get-started": "Get started",
+    "how": "How it works",
+    "how-p1-not-connected": "1. Connect your ETH wallet to Oasis.app",
+    "how-p1-connected": "1. Click <1>‘Get Started’</1> below",
+    "how-p2": "2. Share your link with potential Oasis.app users",
+    "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
+    "need-help": "Need help?",
+    "help-link-1": "Oasis Referrals FAQ’s",
+    "help-link-2": "Visit Oasis Knowledge Centre",
+    "etherscan": "Etherscan",
+    "modal": {
+      "you-have-been-ref": "You have been invited to the Oasis.app Refer a Friend program by ",
+      "body-text": "Oasis.app is the most trusted place to deploy capital into Defi. By joining our Refer a Friend program you:",
+      "p1_1": "Receive 5% of all ",
+      "p1_2": "fees you generate on Oasis.app",
+      "p2": "Completely free, claim anytime",
+      "p3": "All fees paid in DAI",
+      "dont-earn": "Don't earn with fee sharing",
+      "read": "Read More",
+      "accept": "Accept invite",
+      "later": "Decide later",
+      "joined": "You have successfully joined the Oasis.app Refer a Friend program.",
+      "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
+      "go-home": "Go to Oasis.app homepage ",
+      "go-dashboard": "Go to referral dashboard ",
+      "link": "Oasis.app Referral Blog Post, Referral FAQs",
+      "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
+      "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
+      "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
+    }
   }
 }

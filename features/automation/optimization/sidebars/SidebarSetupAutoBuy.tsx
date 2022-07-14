@@ -104,9 +104,8 @@ export function SidebarSetupAutoBuy({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
   const errors = errorsBasicBuyValidation({
-    txError: basicBuyState.txDetails?.txError,
-    withThreshold: basicBuyState.withThreshold,
-    maxBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
+    basicBuyState,
+    autoSellTriggerData,
     isRemoveForm,
   })
 
@@ -178,7 +177,7 @@ export function SidebarSetupAutoBuy({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

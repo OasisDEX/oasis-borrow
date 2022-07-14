@@ -1,6 +1,6 @@
 type AutomationKinds = 'Protection' | 'Optimization'
 export type AutomationProtectionFeatures = 'stopLoss' | 'autoSell'
-export type AutomationOptimizationFeatures = 'autoBuy' | 'constantMultiply'
+export type AutomationOptimizationFeatures = 'autoBuy' | 'constantMultiple'
 
 export const AUTOMATION_CHANGE_FEATURE = 'automationChangeFeature'
 

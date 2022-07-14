@@ -71,6 +71,7 @@ export function ProtectionFormControl({
         ilkData={ilkData}
         stopLossTriggerData={stopLossTriggerData}
         autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
         priceInfo={priceInfo}
         vault={vault}
         account={account}
@@ -83,7 +84,6 @@ export function ProtectionFormControl({
       <AutoSellFormControl
         vault={vault}
         ilkData={ilkData}
-        priceInfo={priceInfo}
         balanceInfo={balanceInfo}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}

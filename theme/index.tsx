@@ -442,6 +442,10 @@ export const oasisBaseTheme = {
       '&:focus': {
         outline: 'none',
       },
+      '&:disabled': {
+        pointerEvents: 'none',
+        opacity: 0.5,
+      },
     },
     outlineSquare: {
       variant: 'text.paragraph2',

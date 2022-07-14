@@ -103,13 +103,11 @@ export function SidebarSetupAutoSell({
   const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
 
   const errors = errorsBasicSellValidation({
-    txError: basicSellState.txDetails?.txError,
     ilkData,
     vault,
     debtDelta,
-    targetCollRatio: basicSellState.targetCollRatio,
-    withThreshold: basicSellState.withThreshold,
-    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+    basicSellState,
+    autoBuyTriggerData,
     isRemoveForm,
   })
 
@@ -186,7 +184,7 @@ export function SidebarSetupAutoSell({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

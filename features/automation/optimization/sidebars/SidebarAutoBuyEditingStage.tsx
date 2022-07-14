@@ -10,9 +10,10 @@ import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
+import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
@@ -92,7 +93,7 @@ export function SidebarAutoBuyEditingStage({
               token: vault.token,
               execCollRatio: basicBuyState.execCollRatio,
               executionPrice: executionPrice.toFixed(2),
-              minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
+              minBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
             })
           : t('auto-buy.set-trigger-description-no-threshold', {
               targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
@@ -174,15 +175,7 @@ export function SidebarAutoBuyEditingStage({
         clear={() => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'reset',
-            resetData: {
-              targetCollRatio: autoBuyTriggerData.targetCollRatio,
-              execCollRatio: autoBuyTriggerData.execCollRatio,
-              maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
-              maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-              withThreshold:
-                !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
-                autoBuyTriggerData.triggerId.isZero(),
-            },
+            resetData: prepareBasicBSResetData(autoBuyTriggerData),
           })
         }}
       />
@@ -236,7 +229,7 @@ function AutoBuyInfoSectionControl({
     .times(basicBuyState.targetCollRatio)
 
   return (
-    <BuyInfoSection
+    <AddAutoBuyInfoSection
       token={vault.token}
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}

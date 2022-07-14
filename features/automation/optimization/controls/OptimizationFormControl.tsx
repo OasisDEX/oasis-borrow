@@ -11,14 +11,12 @@ import { extractStopLossData } from 'features/automation/protection/common/stopL
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import React, { useEffect } from 'react'
 
 interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   txHelpers?: TxHelpers
   context: Context
   balanceInfo: BalanceInfo
@@ -29,7 +27,6 @@ export function OptimizationFormControl({
   automationTriggersData,
   vault,
   ilkData,
-  priceInfo,
   txHelpers,
   context,
   balanceInfo,
@@ -53,7 +50,6 @@ export function OptimizationFormControl({
     <AutoBuyFormControl
       vault={vault}
       ilkData={ilkData}
-      priceInfo={priceInfo}
       balanceInfo={balanceInfo}
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
