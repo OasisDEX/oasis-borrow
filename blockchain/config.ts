@@ -310,7 +310,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, '0x0A0647e629A0825353B76dEeC232b29df960ac2d'),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0xcB065A8b7C89F657F18601A6221A9c4984a4EaB0'),
   dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
