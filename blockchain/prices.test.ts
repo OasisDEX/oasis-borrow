@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
-import { of, throwError } from 'rxjs'
+import { Observable, of, throwError } from 'rxjs'
 
 import { getStateUnpacker } from '../helpers/testHelpers'
-import { createOraclePriceData$, createTokenPriceInUSD$ } from './prices'
+import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
 import { mockContext, mockContextConnected } from '../helpers/mocks/context.mock'
 import sinon from 'sinon'
 
@@ -159,57 +159,111 @@ describe('createOraclePriceData$', () => {
   })
 
   describe('only calling what it needs', () => {
-    it('only calls peek$ for currentPrice', () => {
-      const peek$ = sinon.stub().returns(of(['1000', true]))
-      const peep$ = sinon.stub().returns(of(['100000000', true]))
-      const zzz$ = sinon.stub().returns(of(new BigNumber('1657811932000')))
-      const hop$ = sinon.stub().returns(of(new BigNumber('3600000')))
+    let pipes: {
+      peek$: () => Observable<[string, boolean]>
+      peep$: () => Observable<[string, boolean]>
+      zzz$: () => Observable<BigNumber>
+      hop$: () => Observable<BigNumber>
+    }
+    beforeEach(() => {
+      pipes = {
+        peek$: sinon.stub().returns(of(['1000', true])),
+        peep$: sinon.stub().returns(of(['100000000', true])),
+        zzz$: sinon.stub().returns(of(new BigNumber('1657811932000'))),
+        hop$: sinon.stub().returns(of(new BigNumber('3600000'))),
+      }
+    })
+
+    type TestCase = {
+      requestedValue: keyof OraclePriceData
+      runAssertion: (result: Partial<OraclePriceData>) => void
+      streamsNotCalled: Array<keyof typeof pipes>
+      streamsCalled: Array<keyof typeof pipes>
+    }
+
+    function runTest({ requestedValue, runAssertion, streamsCalled, streamsNotCalled }: TestCase) {
       const oraclePriceData$ = createOraclePriceData$(
         of(mockContextConnected),
-        peek$,
-        peep$,
-        zzz$,
-        hop$,
+        pipes.peek$,
+        pipes.peep$,
+        pipes.zzz$,
+        pipes.hop$,
         {
           token: 'ETH',
-          requestedData: ['currentPrice'],
+          requestedData: [requestedValue],
         },
       )
 
       const result = getStateUnpacker(oraclePriceData$)()
 
-      expect(peek$).to.have.been.calledOnce
-      expect(peep$).not.to.have.been.called
-      expect(zzz$).not.to.have.been.called
-      expect(hop$).not.to.have.been.called
-      expect(result.currentPrice?.toString()).eq('0.000000000000001')
+      streamsCalled.forEach((stream$) => {
+        expect(pipes[stream$], stream$).to.have.been.calledOnce
+      })
+
+      streamsNotCalled.forEach((stream$) => {
+        expect(pipes[stream$], stream$).not.to.have.been.called
+      })
+      runAssertion(result)
+    }
+
+    it('only calls peek$ for currentPrice', () => {
+      runTest({
+        requestedValue: 'currentPrice',
+        runAssertion: (result) => expect(result.currentPrice?.toString()).eq('0.000000000000001'),
+        streamsCalled: ['peek$'],
+        streamsNotCalled: ['peep$', 'zzz$', 'hop$'],
+      })
     })
 
     it('calls peek$ and peep$ for nextPrice', () => {
-      const peek$ = sinon.stub().returns(of(['1000', true]))
-      const peep$ = sinon.stub().returns(of(['100000000', true]))
-      const zzz$ = sinon.stub().returns(of(new BigNumber('1657811932000')))
-      const hop$ = sinon.stub().returns(of(new BigNumber('3600000')))
-      const oraclePriceData$ = createOraclePriceData$(
-        of(mockContextConnected),
-        peek$,
-        peep$,
-        zzz$,
-        hop$,
-        {
-          token: 'ETH',
-          requestedData: ['nextPrice'],
-        },
-      )
+      runTest({
+        requestedValue: 'nextPrice',
+        runAssertion: (result) => expect(result.nextPrice?.toString()).eq('0.0000000001'),
+        streamsCalled: ['peek$', 'peep$'],
+        streamsNotCalled: ['zzz$', 'hop$'],
+      })
+    })
 
-      const result = getStateUnpacker(oraclePriceData$)()
+    it('calls zzz for currentPriceUpdate', () => {
+      runTest({
+        requestedValue: 'currentPriceUpdate',
+        runAssertion: (result) =>
+          expect(result.currentPriceUpdate?.toString()).eq(
+            'Thu Jul 14 2022 16:18:52 GMT+0100 (British Summer Time)',
+          ),
+        streamsCalled: ['zzz$'],
+        streamsNotCalled: ['hop$', 'peek$', 'peep$'],
+      })
+    })
 
-      expect(peek$).to.have.been.calledOnce
-      expect(peep$).to.have.been.calledOnce
-      expect(zzz$).not.to.have.been.called
-      expect(hop$).not.to.have.been.called
+    it('calls zzz$ and hop$ for currentPriceUpdate', () => {
+      runTest({
+        requestedValue: 'nextPriceUpdate',
+        runAssertion: (result) =>
+          expect(result.nextPriceUpdate?.toString()).eq(
+            'Thu Jul 14 2022 17:18:52 GMT+0100 (British Summer Time)',
+          ),
+        streamsCalled: ['zzz$', 'hop$'],
+        streamsNotCalled: ['peek$', 'peep$'],
+      })
+    })
 
-      expect(result.nextPrice?.toString()).eq('0.0000000001')
+    it('calls zzz$ and hop$ for priceUpdateInterval', () => {
+      runTest({
+        requestedValue: 'priceUpdateInterval',
+        runAssertion: (result) => expect(result.priceUpdateInterval?.toString()).eq('3600000'),
+        streamsCalled: ['hop$'],
+        streamsNotCalled: ['zzz$', 'peek$', 'peep$'],
+      })
+    })
+
+    it('calls peek$ and peep$ for percentageChange', () => {
+      runTest({
+        requestedValue: 'percentageChange',
+        runAssertion: (result) => expect(result.percentageChange?.toString()).eq('99999'),
+        streamsCalled: ['peek$', 'peep$'],
+        streamsNotCalled: ['zzz$', 'hop$'],
+      })
     })
   })
 })

@@ -240,51 +240,80 @@ export function createOraclePriceData$(
       return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
         switchMap((contractData) => {
-          // const pipes = {
-          //   pipPeek$: of(undefined),
-          //   pipPeep$: of(undefined),
-          //   pipZzz$: of(undefined),
-          //   pipHop$: of(undefined),
-          // }
-          if (requestedData.includes('currentPrice') && requestedData.length === 1) {
-            return pipPeek$(token).pipe(
-              map((peek) => ({
-                currentPrice: transformOraclePrice({ token, oraclePrice: peek }),
-              })),
-            )
+          type Pipes = {
+            pipPeek$: typeof pipPeek$ | (() => Observable<undefined>)
+            pipPeep$: typeof pipPeep$ | (() => Observable<undefined>)
+            pipZzz$: typeof pipZzz$ | (() => Observable<undefined>)
+            pipHop$: typeof pipHop$ | (() => Observable<undefined>)
+          }
+          const pipes: Pipes = {
+            pipPeek$: () => of(undefined),
+            pipPeep$: () => of(undefined),
+            pipZzz$: () => of(undefined),
+            pipHop$: () => of(undefined),
           }
 
-          if (requestedData.includes('nextPrice') && requestedData.length === 1) {
-            return combineLatest(pipPeek$(token), pipPeep$(token)).pipe(
-              map(([peek, peep]) => ({
-                nextPrice: peep
-                  ? transformOraclePrice({ token, oraclePrice: peep })
-                  : transformOraclePrice({ token, oraclePrice: peek }), // current price
-              })),
-            )
+          if (requestedData.includes('currentPrice')) {
+            pipes.pipPeek$ = pipPeek$
           }
 
-          return iif(
-            () => contractData.length > DSVALUE_APPROX_SIZE,
-            combineLatest(
-              pipPeek$(token),
-              pipPeep$(token),
-              pipZzz$(token),
-              pipHop$(token),
-              of(false),
-            ),
-            combineLatest(pipPeek$(token), of(undefined), of(undefined), of(undefined), of(true)),
-          ).pipe(
+          if (requestedData.includes('nextPrice')) {
+            pipes.pipPeek$ = pipPeek$
+            pipes.pipPeep$ = pipPeep$
+          }
+
+          if (requestedData.includes('currentPriceUpdate')) {
+            pipes.pipZzz$ = pipZzz$
+          }
+
+          if (requestedData.includes('nextPriceUpdate')) {
+            pipes.pipZzz$ = pipZzz$
+            pipes.pipHop$ = pipHop$
+          }
+
+          if (requestedData.includes('priceUpdateInterval')) {
+            pipes.pipHop$ = pipHop$
+          }
+
+          if (requestedData.includes('percentageChange')) {
+            pipes.pipPeek$ = pipPeek$
+            pipes.pipPeep$ = pipPeep$
+          }
+
+          const combined$ =
+            contractData.length > DSVALUE_APPROX_SIZE
+              ? combineLatest(
+                  pipes.pipPeek$(token),
+                  pipes.pipPeep$(token),
+                  pipes.pipZzz$(token),
+                  pipes.pipHop$(token),
+                  of(false),
+                )
+              : combineLatest(
+                  pipPeek$(token),
+                  of(undefined),
+                  of(undefined),
+                  of(undefined),
+                  of(true),
+                )
+
+          return combined$.pipe(
             switchMap(([peek, peep, zzz, hop, isStaticPrice]) => {
               const currentPriceUpdate = zzz ? new Date(zzz.toNumber()) : undefined
               const nextPriceUpdate = zzz && hop ? new Date(zzz.plus(hop).toNumber()) : undefined
               const priceUpdateInterval = hop ? hop.toNumber() : undefined
-              const currentPrice = transformOraclePrice({ token, oraclePrice: peek })
+              const currentPrice = peek
+                ? transformOraclePrice({ token, oraclePrice: peek })
+                : undefined
+
               const nextPrice = peep
                 ? transformOraclePrice({ token, oraclePrice: peep })
                 : currentPrice
 
-              const percentageChange = calculatePricePercentageChange(currentPrice, nextPrice)
+              const percentageChange =
+                currentPrice && nextPrice
+                  ? calculatePricePercentageChange(currentPrice, nextPrice)
+                  : undefined
 
               return of({
                 currentPrice,
