@@ -273,7 +273,7 @@ function UserDesktopMenu() {
     >
       <Flex
         sx={{
-          position: 'relative'  
+          position: 'relative'
         }}
       >
         <PositionsLink sx={{ mr: 4, display: ['none', 'none', 'flex'] }}>
@@ -363,6 +363,9 @@ function MobileSettings() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const componentRef = useOutsideElementClickHandler(() => setOpened(false))
+  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
+  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
+  const notificationsToggle = useFeatureToggle('Notifications')
 
   if (
     !context ||
@@ -691,6 +694,10 @@ export function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false)
   const [showAssets, setShowAssets] = useState(false)
 
+  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
+  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
+  const notificationsToggle = useFeatureToggle('Notifications')
+
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
@@ -779,6 +786,15 @@ export function MobileMenu() {
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
+      {notificationsToggle && (
+          <NotificationsIconButton
+            notificationsRef={notificationsRef}
+            onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
+            // TODO: Update to real vairable
+            notificationsCount="13"
+            notificationsPanelOpen={notificationsPanelOpen}
+          />
+        )}
       <Button variant="menuButtonRound">
         <Icon
           name={'menu'}

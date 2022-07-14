@@ -65,9 +65,9 @@ export function NotificationsIconButton({
         </>
       </Button>
 
-      {notificationsPanelOpen && (
-        <NotificationsCenter />
-      )}
+      <NotificationsCenter 
+        isOpen={notificationsPanelOpen}
+      />
       
     </Box>
   )

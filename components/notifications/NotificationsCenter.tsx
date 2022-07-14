@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { theme } from 'theme';
 import { Box } from 'theme-ui';
-import { slideInAnimation } from 'theme/animations';
+
+import { useOnMobile } from 'theme/useBreakpointIndex';
 import { NotificationsCenterContent } from './NotificationsCenterContent';
 import { NotificationsCenterHeader } from './NotificationsCenterHeader';
 
@@ -14,24 +15,29 @@ import { NotificationsCenterHeader } from './NotificationsCenterHeader';
 // }
 // Rendering is then handle below
 
-export function NotificationsCenter() {
+export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
 
+  const onMobile = useOnMobile()
   const [showPrefrencesTab, setShowPrefencesTab] = useState(false)
+
+  const notificationCenterStyles = useMemo(() => ({
+    right: onMobile ? '8px' : '0',
+    width: onMobile ? '95%' : 380,
+  }), [onMobile])
 
   return (
     <Box
       sx={{
         bg: 'white',
-        width: 380,
         position: 'absolute',
         mt: 2,
         borderRadius: '24px',
         boxShadow: theme.shadows.vaultDetailsCard,
         p: 24,
         // TODO: Needs to be calculated but possibly be easier to get designers to adapt to this as its simpler from dev perspective & looks just as good
-        right: 0,
-        transition: 'transform 0.2s ease-in-out',
-        transform: 'translateX(0)'
+        ...notificationCenterStyles,
+        transition: 'transform 0.3s ease-in-out',
+        transform: !isOpen ? 'translateX(400%)' : 'translateX(0)'
       }}
     >
       <NotificationsCenterHeader
