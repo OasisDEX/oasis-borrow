@@ -1,13 +1,14 @@
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { getAddress } from 'ethers/lib/utils'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { FeesView } from './FeesView'
-import { ReferralLandingSummary } from './ReferralLanding'
+import { ReferralLanding } from './ReferralLanding'
 import { ReferralLayout } from './ReferralLayout'
 import { ReferralsView } from './ReferralsView'
 import { UserReferralState } from './user'
@@ -47,6 +48,7 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
 
   return (
     <>
+      {userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       {isConnected && connectedAccount === address && userReferral.state !== 'newUser' && (
         <ReferralLayout>
           <>
@@ -55,8 +57,10 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
           </>
         </ReferralLayout>
       )}
-      {isConnected && connectedAccount !== address && <ReferralLandingSummary />}
-      {!isConnected && <ReferralLandingSummary />}
+      {isConnected && connectedAccount !== address && (
+        <ReferralLanding context={context} userReferral={userReferral} />
+      )}
+      {!isConnected && <ReferralLanding context={context} userReferral={userReferral} />}
     </>
   )
 }

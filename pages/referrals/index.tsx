@@ -1,6 +1,7 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
 import { AppLayout } from 'components/Layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
+import { ReferralsSummary } from 'features/referralOverview/ReferralOverviewView'
 import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
@@ -22,10 +23,10 @@ export default function ReferralsPage() {
   return (
     <>
       <WithConnection>
-        <WithTermsOfService>
+
           <BackgroundLight />
-          {referralsEnabled ? <ReferralLandingSummary /> : null}
-        </WithTermsOfService>
+          {referralsEnabled ? <ReferralsSummary address={"null"} landing={true}/>: null}
+
       </WithConnection>
     </>
   )

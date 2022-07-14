@@ -21,10 +21,10 @@ export default function ReferralsPage({ address }: { address: string }) {
   const referralsEnabled = useFeatureToggle('Referrals')
   return address ? (
     <WithConnection>
-      <WithTermsOfService>
+
         <BackgroundLight />
-        {referralsEnabled ? <ReferralsSummary address={address} /> : null}
-      </WithTermsOfService>
+        {referralsEnabled ? <ReferralsSummary address={address} landing={false} /> : null}
+
     </WithConnection>
   ) : null
 }

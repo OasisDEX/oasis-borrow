@@ -27,17 +27,13 @@ interface Props {
 export function ReferralLandingSummary() {
   const { context$, userReferral$ } = useAppContext()
 
-  const [context, contextError] = useObservable(context$)
-  const [userReferral, userReferralError] = useObservable(userReferral$)
+  const [context] = useObservable(context$)
+  const [userReferral] = useObservable(userReferral$)
 
   return (
-    <WithErrorHandler error={[contextError, userReferralError]}>
-      <WithLoadingIndicator value={[context, userReferral]}>
-        {([context, userReferral]) => (
-          <ReferralLanding context={context} userReferral={userReferral} />
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+
+          <ReferralLanding context={context!} userReferral={userReferral!} />
+
   )
 }
 
