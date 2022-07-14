@@ -45,10 +45,8 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
   const isConnected = context?.status === 'connected'
 
   const connectedAccount = isConnected ? context.account : undefined
-
   return (
     <>
-      {userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       {isConnected && connectedAccount === address && userReferral.state !== 'newUser' && (
         <ReferralLayout>
           <>
