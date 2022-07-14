@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
@@ -31,7 +32,6 @@ import {
 import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
@@ -42,7 +42,6 @@ import React, { useMemo } from 'react'
 interface AutoSellFormControlProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -50,14 +49,12 @@ interface AutoSellFormControlProps {
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
 
 export function AutoSellFormControl({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -66,7 +63,6 @@ export function AutoSellFormControl({
   txHelpers,
   context,
   ethMarketPrice,
-  tokenMarketPrice,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -208,20 +204,29 @@ export function AutoSellFormControl({
 
   const isFirstSetup = autoSellTriggerData.triggerId.isZero()
 
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: tokenMarketPrice,
-    slippage: basicSellState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicSellState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicSellState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
   })
+
+  const { debtDelta, collateralDelta } =
+    basicSellState.targetCollRatio.gt(zero) && basicSellState.execCollRatio.gt(zero)
+      ? getVaultChange({
+          currentCollateralPrice: executionPrice,
+          marketPrice: executionPrice,
+          slippage: basicSellState.deviation.div(100),
+          debt: vault.debt,
+          lockedCollateral: vault.lockedCollateral,
+          requiredCollRatio: basicSellState.targetCollRatio.div(100),
+          depositAmount: zero,
+          paybackAmount: zero,
+          generateAmount: zero,
+          withdrawAmount: zero,
+          OF: OAZO_FEE,
+          FF: LOAN_FEE,
+        })
+      : { debtDelta: zero, collateralDelta: zero }
 
   return (
     <SidebarSetupAutoSell

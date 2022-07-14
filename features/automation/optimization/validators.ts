@@ -71,9 +71,9 @@ export function errorsBasicBuyValidation({
   const autoBuyMaxBuyPriceNotSpecified =
     !isRemoveForm && withThreshold && (!maxBuyOrMinSellPrice || maxBuyOrMinSellPrice.isZero())
 
-  const autoBuyTriggerLowerThanAutoSellTarget = execCollRatio
-    .minus(5)
-    .lt(autoSellTriggerData.targetCollRatio)
+  const autoBuyTriggerLowerThanAutoSellTarget =
+    autoSellTriggerData.isTriggerEnabled &&
+    execCollRatio.minus(5).lt(autoSellTriggerData.targetCollRatio)
 
   return errorMessagesHandler({
     insufficientEthFundsForTx,
