@@ -1493,6 +1493,16 @@
     "adding-new-triggers-disabled-description": "To protect our users, due to extreme adversarial market conditions we have currently disabled setting up NEW Optimization triggers",
     "unable-to-access-auto-buy": "Unable to access Optimization"
   },
+  "constant-multiple": {
+    "title": "Constant Multiple",
+    "target-multiple": "Target Multiple",
+    "total-cost-of-feature": "Total cost of feature",
+    "banner": {
+    "header": "Set up Constant Multiple",
+    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
+    "button": "Setup Constant Multiple"
+  }
+  },
   "ref": {
     "banner": "Introducing Refer a Friend. Earn DAI today",
     "ref-a-friend": "Refer a Friend",
