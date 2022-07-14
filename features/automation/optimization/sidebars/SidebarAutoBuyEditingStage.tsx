@@ -13,6 +13,7 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
@@ -123,14 +124,14 @@ export function SidebarAutoBuyEditingStage({
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'onWarning',
-          value1: 'onSuccess',
+          value0: 'onSuccess',
+          value1: 'onWarning',
         }}
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="onWarning"
-        rightThumbColor="onSuccess"
+        leftThumbColor="onSuccess"
+        rightThumbColor="onWarning"
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
@@ -174,17 +175,7 @@ export function SidebarAutoBuyEditingStage({
         clear={() => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'reset',
-            resetData: {
-              targetCollRatio: autoBuyTriggerData.targetCollRatio,
-              execCollRatio: autoBuyTriggerData.execCollRatio,
-              maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-                ? undefined
-                : autoBuyTriggerData.maxBuyOrMinSellPrice,
-              maxBaseFeeInGwei: autoBuyTriggerData.maxBaseFeeInGwei,
-              withThreshold:
-                !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
-                autoBuyTriggerData.triggerId.isZero(),
-            },
+            resetData: prepareBasicBSResetData(autoBuyTriggerData),
           })
         }}
       />

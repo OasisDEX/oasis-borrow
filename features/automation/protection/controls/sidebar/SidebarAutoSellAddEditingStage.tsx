@@ -13,6 +13,7 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddAutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoSellInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSFormChange,
@@ -230,17 +231,7 @@ export function SidebarAutoSellAddEditingStage({
         clear={() => {
           uiChanges.publish(BASIC_SELL_FORM_CHANGE, {
             type: 'reset',
-            resetData: {
-              targetCollRatio: autoSellTriggerData.targetCollRatio,
-              execCollRatio: autoSellTriggerData.execCollRatio,
-              maxBuyOrMinSellPrice: autoSellTriggerData.maxBuyOrMinSellPrice.isZero()
-                ? undefined
-                : autoSellTriggerData.maxBuyOrMinSellPrice,
-              maxBaseFeeInGwei: autoSellTriggerData.maxBaseFeeInGwei,
-              withThreshold:
-                !autoSellTriggerData.maxBuyOrMinSellPrice.isZero() ||
-                autoSellTriggerData.triggerId.isZero(),
-            },
+            resetData: prepareBasicBSResetData(autoSellTriggerData),
           })
         }}
       />

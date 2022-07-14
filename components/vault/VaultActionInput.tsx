@@ -108,6 +108,8 @@ export function VaultActionInput({
   const tokenSymbol = currencyCode !== 'USD' ? getToken(currencyCode).symbol : 'USD'
   const auxiliarySymbol = auxiliaryCurrencyCode ? getToken(auxiliaryCurrencyCode).symbol : 'USD'
 
+  const toggleResolved = typeof defaultToggle === 'boolean' ? defaultToggle : toggleStatus
+
   const currencyDigits =
     currencyCode !== 'USD'
       ? calculateTokenPrecisionByValue({
@@ -204,11 +206,11 @@ export function VaultActionInput({
                   cursor: 'pointer',
                 }}
                 onClick={() => {
-                  if (onToggle) onToggle(!toggleStatus)
-                  setToggleStatus(!toggleStatus)
+                  if (onToggle) onToggle(!toggleResolved)
+                  setToggleStatus(!toggleResolved)
                 }}
               >
-                {toggleStatus ? toggleOnLabel : toggleOffLabel}
+                {toggleResolved ? toggleOnLabel : toggleOffLabel}
               </Text>
             )}
           </Text>
@@ -226,9 +228,9 @@ export function VaultActionInput({
             box-shadow 200ms,
             border-color 200ms
           `,
-          opacity: !toggleStatus && !disabled ? '0.5' : '1',
+          opacity: !toggleResolved && !disabled ? '0.5' : '1',
           ...(!disabled &&
-            toggleStatus && {
+            toggleResolved && {
               '&:hover, &:focus-within': {
                 borderColor: hasError ? 'onError' : 'borderSelected',
               },
@@ -239,7 +241,7 @@ export function VaultActionInput({
           {!auxiliaryFlag ? (
             <BigNumberInput
               type="text"
-              disabled={disabled || !toggleStatus}
+              disabled={disabled || !toggleResolved}
               mask={createNumberMask({
                 allowDecimal: true,
                 decimalLimit: currencyDigits,
@@ -247,13 +249,13 @@ export function VaultActionInput({
               })}
               onChange={onChange}
               value={amount ? formatBigNumber(amount, currencyDigits) : ''}
-              placeholder={toggleStatus ? `0 ${tokenSymbol}` : toggleOffPlaceholder}
+              placeholder={toggleResolved ? `0 ${tokenSymbol}` : toggleOffPlaceholder}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           ) : (
             <BigNumberInput
               type="text"
-              disabled={disabled || !toggleStatus}
+              disabled={disabled || !toggleResolved}
               mask={createNumberMask({
                 allowDecimal: true,
                 decimalLimit: auxiliaryDigits,
@@ -261,7 +263,7 @@ export function VaultActionInput({
               })}
               onChange={onAuxiliaryChange}
               value={auxiliaryAmount ? formatBigNumber(auxiliaryAmount, auxiliaryDigits) : ''}
-              placeholder={toggleStatus ? `0 ${auxiliarySymbol}` : toggleOffPlaceholder}
+              placeholder={toggleResolved ? `0 ${auxiliarySymbol}` : toggleOffPlaceholder}
               sx={hasAuxiliary ? { border: 'none', px: 3, pt: 3, pb: 1 } : { border: 'none', p: 3 }}
             />
           )}
@@ -276,7 +278,7 @@ export function VaultActionInput({
                 pt: 1,
               }}
             >
-              {toggleStatus ? (
+              {toggleResolved ? (
                 <>
                   {!auxiliaryFlag
                     ? `~ ${
@@ -299,7 +301,7 @@ export function VaultActionInput({
               cursor: 'pointer',
               textAlign: 'right',
               pr: 3,
-              ...(!toggleStatus && { pointerEvents: 'none' }),
+              ...(!toggleResolved && { pointerEvents: 'none' }),
               '& svg': {
                 transform: 'rotate(90deg)',
                 transition: 'color 200ms',
