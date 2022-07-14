@@ -1,7 +1,6 @@
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { getAddress } from 'ethers/lib/utils'
-import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'

@@ -64,6 +64,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
+            userReferral.trigger()
             replace(`/referrals/${connectedAccount}`)
           }
         })
