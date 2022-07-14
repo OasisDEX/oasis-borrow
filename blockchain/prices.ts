@@ -213,20 +213,58 @@ export function calculatePricePercentageChange(current: BigNumber, next: BigNumb
   return current.minus(next).div(current).times(-1)
 }
 
+type OraclePriceDataArgs = {
+  token: string
+  requestedData: Array<keyof OraclePriceData>
+}
+
+// export function createOraclePriceData$(
+//   context$: Observable<Context>,
+//   pipPeek$: (token: string) => Observable<[string, boolean]>,
+//   pipPeep$: (token: string) => Observable<[string, boolean]>,
+//   pipZzz$: (token: string) => Observable<BigNumber>,
+//   pipHop$: (token: string) => Observable<BigNumber>,
+//   token: string,
+// ): Observable<OraclePriceData>
+
 export function createOraclePriceData$(
   context$: Observable<Context>,
   pipPeek$: (token: string) => Observable<[string, boolean]>,
   pipPeep$: (token: string) => Observable<[string, boolean]>,
   pipZzz$: (token: string) => Observable<BigNumber>,
   pipHop$: (token: string) => Observable<BigNumber>,
-  token: string,
-): Observable<OraclePriceData> {
+  { token, requestedData }: OraclePriceDataArgs,
+): Observable<Partial<OraclePriceData>> {
   return context$.pipe(
     switchMap(({ web3, mcdOsms }) => {
       return bindNodeCallback(web3.eth.getCode)(mcdOsms[token].address).pipe(
         first(),
-        switchMap((contractData) =>
-          iif(
+        switchMap((contractData) => {
+          // const pipes = {
+          //   pipPeek$: of(undefined),
+          //   pipPeep$: of(undefined),
+          //   pipZzz$: of(undefined),
+          //   pipHop$: of(undefined),
+          // }
+          if (requestedData.includes('currentPrice') && requestedData.length === 1) {
+            return pipPeek$(token).pipe(
+              map((peek) => ({
+                currentPrice: transformOraclePrice({ token, oraclePrice: peek }),
+              })),
+            )
+          }
+
+          if (requestedData.includes('nextPrice') && requestedData.length === 1) {
+            return combineLatest(pipPeek$(token), pipPeep$(token)).pipe(
+              map(([peek, peep]) => ({
+                nextPrice: peep
+                  ? transformOraclePrice({ token, oraclePrice: peep })
+                  : transformOraclePrice({ token, oraclePrice: peek }), // current price
+              })),
+            )
+          }
+
+          return iif(
             () => contractData.length > DSVALUE_APPROX_SIZE,
             combineLatest(
               pipPeek$(token),
@@ -250,7 +288,7 @@ export function createOraclePriceData$(
 
               return of({
                 currentPrice,
-                nextPrice: nextPrice,
+                nextPrice,
                 currentPriceUpdate,
                 nextPriceUpdate,
                 priceUpdateInterval,
@@ -258,8 +296,8 @@ export function createOraclePriceData$(
                 percentageChange,
               })
             }),
-          ),
-        ),
+          )
+        }),
       )
     }),
     shareReplay(1),

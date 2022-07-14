@@ -3,7 +3,9 @@ import { expect } from 'chai'
 import { of, throwError } from 'rxjs'
 
 import { getStateUnpacker } from '../helpers/testHelpers'
-import { createTokenPriceInUSD$ } from './prices'
+import { createOraclePriceData$, createTokenPriceInUSD$ } from './prices'
+import { mockContext, mockContextConnected } from '../helpers/mocks/context.mock'
+import sinon from 'sinon'
 
 describe('createTokenPriceInUSD$', () => {
   function coinbaseOrderBook$() {
@@ -103,6 +105,111 @@ describe('createTokenPriceInUSD$', () => {
       const tokenPrice = getStateUnpacker(tokenPrice$)
 
       expect(tokenPrice().MKR).is.undefined
+    })
+  })
+})
+
+describe('createOraclePriceData$', () => {
+  let getCodeStub: sinon.SinonStub
+  beforeEach(() => {
+    getCodeStub = sinon
+      .stub(mockContextConnected.web3.eth, 'getCode')
+      // @ts-ignore
+      .callsFake((address, callback?: (error: Error, code: string) => void) => {
+        // @ts-ignore
+        callback && callback(null, Array(6001).fill(0).join(''))
+      })
+  })
+  afterEach(() => {
+    getCodeStub.restore()
+  })
+  it('does not regress', () => {
+    const oraclePriceData$ = createOraclePriceData$(
+      of(mockContextConnected),
+      () => of(['1000', true]),
+      () => of(['100000000', true]),
+      () => of(new BigNumber('1657811932000')),
+      () => of(new BigNumber('3600000')),
+      {
+        token: 'ETH',
+        requestedData: [
+          'currentPrice',
+          'nextPrice',
+          'currentPriceUpdate',
+          'nextPriceUpdate',
+          'priceUpdateInterval',
+          'isStaticPrice',
+          'percentageChange',
+        ],
+      },
+    )
+    const result = getStateUnpacker(oraclePriceData$)()
+
+    expect(result.currentPrice?.toString()).eq('0.000000000000001')
+    expect(result.nextPrice?.toString()).eq('0.0000000001')
+    expect(result.currentPriceUpdate?.toString()).eq(
+      'Thu Jul 14 2022 16:18:52 GMT+0100 (British Summer Time)',
+    )
+    expect(result.nextPriceUpdate?.toString()).eq(
+      'Thu Jul 14 2022 17:18:52 GMT+0100 (British Summer Time)',
+    )
+    expect(result.priceUpdateInterval?.toString()).eq('3600000')
+    expect(result.isStaticPrice).eq(false)
+    expect(result.percentageChange?.toString()).eq('99999')
+  })
+
+  describe('only calling what it needs', () => {
+    it('only calls peek$ for currentPrice', () => {
+      const peek$ = sinon.stub().returns(of(['1000', true]))
+      const peep$ = sinon.stub().returns(of(['100000000', true]))
+      const zzz$ = sinon.stub().returns(of(new BigNumber('1657811932000')))
+      const hop$ = sinon.stub().returns(of(new BigNumber('3600000')))
+      const oraclePriceData$ = createOraclePriceData$(
+        of(mockContextConnected),
+        peek$,
+        peep$,
+        zzz$,
+        hop$,
+        {
+          token: 'ETH',
+          requestedData: ['currentPrice'],
+        },
+      )
+
+      const result = getStateUnpacker(oraclePriceData$)()
+
+      expect(peek$).to.have.been.calledOnce
+      expect(peep$).not.to.have.been.called
+      expect(zzz$).not.to.have.been.called
+      expect(hop$).not.to.have.been.called
+      expect(result.currentPrice?.toString()).eq('0.000000000000001')
+    })
+
+    it('calls peek$ and peep$ for nextPrice', () => {
+      const peek$ = sinon.stub().returns(of(['1000', true]))
+      const peep$ = sinon.stub().returns(of(['100000000', true]))
+      const zzz$ = sinon.stub().returns(of(new BigNumber('1657811932000')))
+      const hop$ = sinon.stub().returns(of(new BigNumber('3600000')))
+      const oraclePriceData$ = createOraclePriceData$(
+        of(mockContextConnected),
+        peek$,
+        peep$,
+        zzz$,
+        hop$,
+        {
+          token: 'ETH',
+          requestedData: ['nextPrice'],
+        },
+      )
+
+      const result = getStateUnpacker(oraclePriceData$)()
+
+      expect(peek$).to.have.been.calledOnce
+      expect(peep$).to.have.been.calledOnce
+      expect(zzz$).not.to.have.been.called
+      expect(hop$).not.to.have.been.called
+
+      expect(result.nextPrice?.toString()).eq('0.0000000001')
     })
   })
 })

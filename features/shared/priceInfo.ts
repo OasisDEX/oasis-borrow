@@ -21,6 +21,27 @@ export interface PriceInfo {
   ethPricePercentageChange: BigNumber
 }
 
+type CreatePriceInfo$Args = {
+  token: string
+  updateFrequency: number
+  includeEth: boolean
+}
+
+// type CreatePriceInfo$ = (
+//   oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
+//   { token, updateFrequency }: CreatePriceInfo$Args,
+// ) => Observable<PriceInfo>
+
+export function createPriceInfo$(
+  oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
+  { token, updateFrequency }: CreatePriceInfo$Args,
+): Observable<PriceInfo>
+
+export function createPriceInfo$(
+  oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
+  { token, updateFrequency }: CreatePriceInfo$Args,
+): Observable<PriceInfo>
+
 export function createPriceInfo$(
   oraclePriceData$: (token: string) => Observable<OraclePriceData>,
   token: string,
