@@ -27,7 +27,6 @@ import {
 } from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
-import { NotificationsCenter } from './notifications/NotificationsCenter'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
@@ -273,7 +272,7 @@ function UserDesktopMenu() {
     >
       <Flex
         sx={{
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <PositionsLink sx={{ mr: 4, display: ['none', 'none', 'flex'] }}>
@@ -363,9 +362,6 @@ function MobileSettings() {
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const componentRef = useOutsideElementClickHandler(() => setOpened(false))
-  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
-  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
-  const notificationsToggle = useFeatureToggle('Notifications')
 
   if (
     !context ||
@@ -787,14 +783,14 @@ export function MobileMenu() {
         </Box>
       </Box>
       {notificationsToggle && (
-          <NotificationsIconButton
-            notificationsRef={notificationsRef}
-            onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-            // TODO: Update to real vairable
-            notificationsCount="13"
-            notificationsPanelOpen={notificationsPanelOpen}
-          />
-        )}
+        <NotificationsIconButton
+          notificationsRef={notificationsRef}
+          onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
+          // TODO: Update to real vairable
+          notificationsCount="13"
+          notificationsPanelOpen={notificationsPanelOpen}
+        />
+      )}
       <Button variant="menuButtonRound">
         <Icon
           name={'menu'}

@@ -1,28 +1,28 @@
-import { Icon } from "@makerdao/dai-ui-icons";
-import { Text, Flex, Button } from "theme-ui";
-
+import { Icon } from '@makerdao/dai-ui-icons'
+import { Button, Flex, Text } from 'theme-ui'
+import React from 'react'
 interface NotificationsCenterHeaderProps {
-  onButtonClick: () => void;
-  showPrefrencesTab: boolean;
+  onButtonClick: () => void
+  showPrefrencesTab: boolean
 }
 
 export function NotificationsCenterHeader({
   onButtonClick,
-  showPrefrencesTab
+  showPrefrencesTab,
 }: NotificationsCenterHeaderProps) {
   return (
     <Flex
       sx={{
         borderBottom: '1px solid #EAEAEA',
         pb: '16px',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       <Text
         sx={{
           flexGrow: 1,
           fontWeight: 600,
-          fontSize: '18px'
+          fontSize: '18px',
         }}
       >
         Notifications
@@ -42,7 +42,7 @@ export function NotificationsCenterHeader({
           // height: '28px',
           // width: '28px',
           ':hover': {
-            background: '#F3F7F9'
+            background: '#F3F7F9',
           },
           // display: 'flex',
           // alignItems: 'center',
