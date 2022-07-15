@@ -348,7 +348,6 @@ function UserDesktopMenu() {
           />
         )}
 
-        {/* <NotificationsCenter /> */}
       </Flex>
     </Flex>
   )

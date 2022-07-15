@@ -39,14 +39,9 @@ export function NotificationsCenterHeader({
           flexShrink: 0,
           background: 'white',
           borderRadius: '18px',
-          // height: '28px',
-          // width: '28px',
           ':hover': {
             background: '#F3F7F9',
           },
-          // display: 'flex',
-          // alignItems: 'center',
-          // justifyContent: 'center'
         }}
         onClick={onButtonClick}
       >
