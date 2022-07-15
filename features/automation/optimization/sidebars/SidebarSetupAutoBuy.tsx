@@ -53,6 +53,7 @@ interface SidebarSetupAutoBuyProps {
   isFirstSetup: boolean
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  isAutoBuyActive: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -84,6 +85,7 @@ export function SidebarSetupAutoBuy({
 
   debtDelta,
   collateralDelta,
+  isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -131,7 +133,8 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
-  if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
+  if (isAutoBuyActive) {
+    // if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
       content: (

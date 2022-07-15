@@ -53,6 +53,7 @@ interface AutoBuyFormControlProps {
   ethMarketPrice: BigNumber
   tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
+  isAutoBuyActive: boolean
 }
 
 export function AutoBuyFormControl({
@@ -68,6 +69,7 @@ export function AutoBuyFormControl({
   context,
   ethMarketPrice,
   tokenMarketPrice,
+  isAutoBuyActive,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -249,6 +251,7 @@ export function AutoBuyFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
+      isAutoBuyActive={isAutoBuyActive}
     />
   )
 }

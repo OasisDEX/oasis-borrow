@@ -5,10 +5,11 @@ import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMu
 
 interface ConstantMultipleFormControlProps {
     context: Context
+    isConstantMultipleActive: boolean
 
 }
 
-export function ConstantMultipleFormControl({context} : ConstantMultipleFormControlProps) {
+export function ConstantMultipleFormControl({context, isConstantMultipleActive} : ConstantMultipleFormControlProps) {
     const { uiChanges/*, addGasEstimation$*/ } = useAppContext()
 
     return (

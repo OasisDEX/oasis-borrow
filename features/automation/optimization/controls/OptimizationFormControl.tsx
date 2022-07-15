@@ -7,11 +7,13 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
+import { getActiveOptimizationFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { AutomationChangeFeature, AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
 import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
@@ -43,6 +45,15 @@ export function OptimizationFormControl({
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const { uiChanges } = useAppContext()
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+
+
+  const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
+    currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
+    isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
+    isConstantMultipleOn: false, //TODO ŁW for now it will be always false as contract  is not deployed yet
+    section: 'form',
+  })
 
   useEffect(() => {
     if (autoBuyTriggerData.isTriggerEnabled) {
@@ -53,24 +64,27 @@ export function OptimizationFormControl({
     }
   }, [])
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-
+  console.log('activeAutomationFeature')
+  console.log(activeAutomationFeature)
+  
   return (
     <>
     <AutoBuyFormControl
-      vault={vault}
-      ilkData={ilkData}
-      priceInfo={priceInfo}
-      balanceInfo={balanceInfo}
-      autoSellTriggerData={autoSellTriggerData}
-      autoBuyTriggerData={autoBuyTriggerData}
-      stopLossTriggerData={stopLossTriggerData}
-      isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
-      context={context}
-      txHelpers={txHelpers}
-      ethMarketPrice={ethMarketPrice}
-      tokenMarketPrice={tokenMarketPrice} />
+        vault={vault}
+        ilkData={ilkData}
+        priceInfo={priceInfo}
+        balanceInfo={balanceInfo}
+        autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
+        stopLossTriggerData={stopLossTriggerData}
+        isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
+        context={context}
+        txHelpers={txHelpers}
+        ethMarketPrice={ethMarketPrice}
+        tokenMarketPrice={tokenMarketPrice} 
+        isAutoBuyActive={isAutoBuyActive} />
 {constantMultipleEnabled && 
-     <ConstantMultipleFormControl context={context} />
+     <ConstantMultipleFormControl context={context} isConstantMultipleActive={isConstantMultipleActive}/>
 }      
       </>
   )
