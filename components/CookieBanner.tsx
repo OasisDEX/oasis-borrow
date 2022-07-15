@@ -1,6 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ChevronUpDown } from 'components/ChevronUpDown'
 import { AppLink } from 'components/Links'
+import { currentContent } from 'features/content'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { Fragment, MouseEventHandler, useState } from 'react'
 import { Box, Button, Card, Container, Flex, Grid, Text } from 'theme-ui'
@@ -35,7 +36,8 @@ function Checkbox({
 }
 
 type SelectedCookies = Record<CookieName, boolean>
-export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies }
+type Version = string
+export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: Version }
 
 export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
@@ -53,7 +55,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
   const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(false))
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
-  if (settingsAreSaved || value) {
+  if (settingsAreSaved || (value && value.version === currentContent.cookie.version)) {
     return null
   }
 
@@ -77,7 +79,11 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
 
   function rejectCookies() {
     COOKIE_NAMES.forEach((cookieName) => manageCookie[cookieName].disable())
-    saveSettings({ accepted: false, enabledCookies: initSelectedCookies(false) })
+    saveSettings({
+      accepted: false,
+      enabledCookies: initSelectedCookies(false),
+      version: currentContent.cookie.version,
+    })
   }
 
   function acceptSelectedCookies() {
@@ -88,7 +94,11 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
         manageCookie[cookieName].disable()
       }
     })
-    saveSettings({ accepted: true, enabledCookies: selectedCookies })
+    saveSettings({
+      accepted: true,
+      enabledCookies: selectedCookies,
+      version: currentContent.cookie.version,
+    })
   }
 
   const ctaButtons = (
@@ -120,9 +130,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
               <Box sx={{ variant: 'text.paragraph3' }}>
                 <Trans
                   i18nKey="landing.cookie-banner.message"
-                  components={[
-                    <AppLink href="/cookie" sx={{ fontSize: 2, fontWeight: 'body' }} />,
-                  ]}
+                  components={[<AppLink href="/cookie" sx={{ fontSize: 2, fontWeight: 'body' }} />]}
                 />
               </Box>
             </Box>
