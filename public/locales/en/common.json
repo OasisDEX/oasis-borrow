@@ -338,14 +338,14 @@
       }
     },
     "cookie-banner": {
-      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
+      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Cookie Policy</0>.",
       "settings-toggle": "Manage settings",
       "accept": "Accept",
       "reject": "Reject",
       "cookies": {
         "marketing": {
           "title": "Marketing Cookies",
-          "description": "Oasis.app uses anonymised cookies for marketing purposes."
+          "description": "Oasis.app uses anonymised cookies from adRoll to be able to apply retargeting campaigns on advertising platforms."
         },
         "analytics": {
           "title": "Analytics Cookies",

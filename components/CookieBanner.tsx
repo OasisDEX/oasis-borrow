@@ -50,7 +50,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
   const { t } = useTranslation()
 
   const [showSettings, setShowSettings] = useState(false)
-  const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(true))
+  const [selectedCookies, setSelectedCookies] = useState(initSelectedCookies(false))
   const [settingsAreSaved, setSettingsAreSaved] = useState(false)
 
   if (settingsAreSaved || value) {
@@ -121,7 +121,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
                 <Trans
                   i18nKey="landing.cookie-banner.message"
                   components={[
-                    <AppLink href="/privacy" sx={{ fontSize: 2, fontWeight: 'body' }} />,
+                    <AppLink href="/cookie" sx={{ fontSize: 2, fontWeight: 'body' }} />,
                   ]}
                 />
               </Box>
