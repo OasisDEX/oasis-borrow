@@ -41,7 +41,7 @@ export function SidebarSetupConstantMultiple({
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
-      title: t('constant-multiple.form-title'),
+      title: t('constant-multiple.title'),
       content: <Grid gap={3}></Grid>,
       primaryButton: {
         label: primaryButtonLabel,
