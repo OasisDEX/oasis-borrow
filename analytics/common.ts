@@ -1,6 +1,5 @@
 import * as mixpanel from 'mixpanel-browser'
 
-export const COOKIE_POLICY = 'version'
 export const COOKIE_NAMES = ['marketing', 'analytics']
 export const LOCALSTORAGE_KEY = 'cookieSettings'
 

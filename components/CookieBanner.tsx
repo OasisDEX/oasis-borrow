@@ -36,9 +36,8 @@ function Checkbox({
 }
 
 type SelectedCookies = Record<CookieName, boolean>
-type Version = string
-export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: Version }
 
+export type SavedSettings = { accepted: boolean; enabledCookies: SelectedCookies; version: string }
 export function initSelectedCookies(defaultValue: boolean): SelectedCookies {
   return COOKIE_NAMES.reduce((acc, cookieName) => ({ ...acc, [cookieName]: defaultValue }), {})
 }
