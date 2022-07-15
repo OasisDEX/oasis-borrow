@@ -1,18 +1,25 @@
 import { Box } from '@theme-ui/components'
+import { AppLink } from 'components/Links'
 import { VaultChangesWithADelayCard } from 'components/vault/VaultChangesWithADelayCard'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
-// import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
 interface SidebarAutoSellCreationStageProps {
   stage: SidebarVaultStages
+  isAddForm: boolean
+  isRemoveForm: boolean
 }
 
-export function SidebarAutoSellCreationStage({ stage }: SidebarAutoSellCreationStageProps) {
-  // const { t } = useTranslation()
+export function SidebarAutoSellCreationStage({
+  stage,
+  isAddForm,
+  isRemoveForm,
+}: SidebarAutoSellCreationStageProps) {
+  const { t } = useTranslation()
 
   switch (stage) {
     case 'txInProgress':
@@ -20,8 +27,8 @@ export function SidebarAutoSellCreationStage({ stage }: SidebarAutoSellCreationS
         <>
           <AddingStopLossAnimation />
           <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus
-            blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.
+            {isAddForm && t('auto-sell.add-content')}
+            {isRemoveForm && t('auto-sell.remove-content')}
           </Text>
         </>
       )
@@ -34,8 +41,15 @@ export function SidebarAutoSellCreationStage({ stage }: SidebarAutoSellCreationS
             </Flex>
           </Box>
           <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vitae erat at tellus
-            blandit fermentum. Sed hendrerit hendrerit mi quis porttitor.
+            {isAddForm && (
+              <>
+                {t('auto-sell.add-complete-content')}{' '}
+                <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
+                  {t('here')}.
+                </AppLink>
+              </>
+            )}
+            {isRemoveForm && t('auto-sell.remove-complete-content')}
           </Text>
           <Box>
             <VaultChangesWithADelayCard />

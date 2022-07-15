@@ -6,6 +6,7 @@ import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
@@ -26,6 +27,7 @@ import {
 } from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
+import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
@@ -244,6 +246,11 @@ function UserDesktopMenu() {
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
 
+  // TODO: Update this once the the notifications pannel is available
+  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
+  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
+  const notificationsToggle = useFeatureToggle('Notifications')
+
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
@@ -284,7 +291,7 @@ function UserDesktopMenu() {
               })
             }}
             sx={{
-              mr: 3,
+              mr: 2,
               position: 'relative',
               '&, :focus': {
                 outline: widgetOpen ? '1px solid' : null,
@@ -324,6 +331,17 @@ function UserDesktopMenu() {
           >
             <UserSettings sx={{ p: 4, minWidth: '380px' }} />
           </ButtonDropdown>
+        )}
+
+        {/* TODO: Should remove feature toggle */}
+        {!shouldHideSettings && notificationsToggle && (
+          <NotificationsIconButton
+            notificationsRef={notificationsRef}
+            onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
+            // TODO: Update to real vairable
+            notificationsCount="13"
+            notificationsPanelOpen={notificationsPanelOpen}
+          />
         )}
       </Flex>
     </Flex>

@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
+import { YieldChange } from 'helpers/earn/calculations'
 import moment from 'moment'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -6,12 +8,10 @@ import React from 'react'
 import { useAppContext } from '../../../../components/AppContextProvider'
 import { EarnVaultHeadline } from '../../../../components/vault/EarnVaultHeadline'
 import { HeadlineDetailsProp } from '../../../../components/vault/VaultHeadline'
-import { WithLoadingIndicator } from '../../../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
 import { formatFiatBalance, formatPercent } from '../../../../helpers/formatters/format'
 import { useObservable } from '../../../../helpers/observableHook'
 import { zero } from '../../../../helpers/zero'
-import { YieldChange } from '../../yieldCalculations'
 
 export interface EarnVaultHeaderProps {
   ilk: string

@@ -94,7 +94,10 @@ export function coinbaseOrderBook$(ticker: string): Observable<AjaxResponse['res
     headers: {
       Accept: 'application/json',
     },
-  }).pipe(map(({ response }) => response))
+  }).pipe(
+    map(({ response }) => response),
+    shareReplay(1),
+  )
 }
 
 export const coinPaprikaTicker$: Observable<Ticker> = timer(0, 1000 * 60).pipe(
@@ -118,7 +121,10 @@ export function coinGeckoTicker$(ticker: string): Observable<BigNumber> {
     headers: {
       Accept: 'application/json',
     },
-  }).pipe(map(({ response }) => new BigNumber(response[ticker].usd)))
+  }).pipe(
+    map(({ response }) => new BigNumber(response[ticker].usd)),
+    shareReplay(1),
+  )
 }
 
 export function createTokenPriceInUSD$(

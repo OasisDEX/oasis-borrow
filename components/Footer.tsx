@@ -47,6 +47,7 @@ const FOOTER_SECTIONS = [
       // add link
       { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
+      { labelKey: 'nav.referrals', url: '/referrals' },
     ],
   },
   {

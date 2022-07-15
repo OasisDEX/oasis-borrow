@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
+import { ContentCardCollateralizationRatio } from 'components/vault/detailsSection/ContentCardCollateralizationRatio'
 import { ContentCardDynamicStopPrice } from 'components/vault/detailsSection/ContentCardDynamicStopPrice'
 import { ContentCardEstTokenOnTrigger } from 'components/vault/detailsSection/ContentCardEstTokenOnTrigger'
 import { ContentCardStopLossCollateralRatio } from 'components/vault/detailsSection/ContentCardStopLossCollateralRatio'
@@ -8,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
 
-export interface ProtectionDetailsLayoutProps {
+export interface StopLossDetailsLayoutProps {
   slRatio: BigNumber
   vaultDebt: BigNumber
   currentOraclePrice: BigNumber
@@ -23,6 +24,7 @@ export interface ProtectionDetailsLayoutProps {
   isCollateralActive: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
+  collateralizationRatio: BigNumber
 }
 
 export function StopLossDetailsLayout({
@@ -38,7 +40,8 @@ export function StopLossDetailsLayout({
   isCollateralActive,
   isEditing,
   collateralizationRatioAtNextPrice,
-}: ProtectionDetailsLayoutProps) {
+  collateralizationRatio,
+}: StopLossDetailsLayoutProps) {
   const { t } = useTranslation()
 
   const liquidationPrice = vaultDebt.times(liquidationRatio).div(lockedCollateral)
@@ -48,7 +51,7 @@ export function StopLossDetailsLayout({
       <Grid>
         <Box>
           <DetailsSection
-            title={t('system.protection')}
+            title={t('system.stop-loss')}
             badge={isStopLossEnabled}
             content={
               <DetailsSectionContentCardWrapper>
@@ -56,8 +59,12 @@ export function StopLossDetailsLayout({
                   isStopLossEnabled={isStopLossEnabled}
                   isEditing={isEditing}
                   slRatio={slRatio}
-                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                  collateralizationRatio={collateralizationRatio}
                   afterSlRatio={afterSlRatio}
+                />
+                <ContentCardCollateralizationRatio
+                  collateralizationRatio={collateralizationRatio}
+                  collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
                 />
                 <ContentCardDynamicStopPrice
                   isStopLossEnabled={isStopLossEnabled}

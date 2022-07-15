@@ -1,13 +1,14 @@
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { SLIPPAGE_WARNING_THRESHOLD } from 'features/userSettings/userSettings'
 import { isNullish } from 'helpers/functions'
+import { STOP_LOSS_MARGIN } from 'helpers/multiply/calculations'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { zero } from 'helpers/zero'
 
 import {
   accountIsConnectedValidator,
   accountIsControllerValidator,
-  afterCollRatioBelowStopLossRatioValidator,
+  afterCollRatioThresholdRatioValidator,
   collateralAllowanceProgressionDisabledValidator,
   customCollateralAllowanceAmountEmptyValidator,
   customCollateralAllowanceAmountExceedsMaxUint256Validator,
@@ -26,6 +27,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -230,6 +232,8 @@ export interface ManageVaultConditions {
   invalidSlippage: boolean
   stopLossTriggered: boolean
   afterCollRatioBelowStopLossRatio: boolean
+  afterCollRatioBelowBasicSellRatio: boolean
+  afterCollRatioAboveBasicBuyRatio: boolean
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
 }
@@ -295,6 +299,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   invalidSlippage: false,
   stopLossTriggered: false,
   afterCollRatioBelowStopLossRatio: false,
+  afterCollRatioBelowBasicSellRatio: false,
+  afterCollRatioAboveBasicBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -354,6 +360,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     invalidSlippage,
     vaultHistory,
     stopLossData,
+    basicSellData,
+    basicBuyData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -569,10 +577,30 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
 
   const afterCollRatioBelowStopLossRatio =
     !!stopLossData?.isStopLossEnabled &&
-    afterCollRatioBelowStopLossRatioValidator({
+    afterCollRatioThresholdRatioValidator({
       afterCollateralizationRatio,
       afterCollateralizationRatioAtNextPrice,
-      stopLossRatio: stopLossData.stopLossLevel,
+      threshold: stopLossData.stopLossLevel,
+      type: 'below',
+      margin: STOP_LOSS_MARGIN,
+    })
+
+  const afterCollRatioBelowBasicSellRatio =
+    !!basicSellData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: basicSellData.execCollRatio.div(100),
+      type: 'below',
+    })
+
+  const afterCollRatioAboveBasicBuyRatio =
+    !!basicBuyData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: basicBuyData.execCollRatio.div(100),
+      type: 'above',
     })
 
   const editingProgressionDisabled =
@@ -597,7 +625,9 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       shouldShowExchangeError ||
       hasToDepositCollateralOnEmptyVault ||
       invalidSlippage ||
-      afterCollRatioBelowStopLossRatio)
+      afterCollRatioBelowStopLossRatio ||
+      afterCollRatioBelowBasicSellRatio ||
+      afterCollRatioAboveBasicBuyRatio)
 
   const editingProgressionDisabledForUncontrolled =
     !accountIsController &&
@@ -652,8 +682,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered =
-    !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
+  const stopLossTriggered = stopLossTriggeredValidator({ vaultHistory })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 
@@ -715,6 +744,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     highSlippage,
     stopLossTriggered,
     afterCollRatioBelowStopLossRatio,
+    afterCollRatioBelowBasicSellRatio,
+    afterCollRatioAboveBasicBuyRatio,
 
     insufficientEthFundsForTx,
   }

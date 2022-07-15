@@ -1,7 +1,12 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
 import { Context, every5Seconds$ } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import {
+  BasicBSTriggerData,
+  extractBasicBSData,
+} from 'features/automation/common/basicBSTriggerData'
 import {
   extractStopLossData,
   StopLossTriggerData,
@@ -57,7 +62,7 @@ export function createAutomationTriggersData(
   )
 }
 
-export function createStopLossDataChange$(
+export function createAutomationTriggersChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
@@ -66,14 +71,18 @@ export function createStopLossDataChange$(
   return stopLossReadEnabled
     ? automationTriggersData$(id).pipe(
         map((triggers) => ({
-          kind: 'stopLossData',
+          kind: 'automationTriggersData',
           stopLossData: extractStopLossData(triggers),
+          basicSellData: extractBasicBSData(triggers, TriggerType.BasicSell),
+          basicBuyData: extractBasicBSData(triggers, TriggerType.BasicBuy),
         })),
       )
     : []
 }
 
-export interface StopLossChange {
-  kind: 'stopLossData'
+export interface AutomationTriggersChange {
+  kind: 'automationTriggersData'
   stopLossData: StopLossTriggerData
+  basicSellData: BasicBSTriggerData
+  basicBuyData: BasicBSTriggerData
 }

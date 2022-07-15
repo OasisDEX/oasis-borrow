@@ -51,6 +51,7 @@ interface AdjustSlFormControlProps {
   ilkData: IlkData
   triggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
   ctx: Context
   accountIsController: boolean
   toggleForms: () => void
@@ -65,6 +66,7 @@ export function AdjustSlFormControl({
   ilkData,
   triggerData,
   autoSellTriggerData,
+  autoBuyTriggerData,
   ctx,
   accountIsController,
   toggleForms,
@@ -78,6 +80,8 @@ export function AdjustSlFormControl({
   const { addGasEstimation$, uiChanges } = useAppContext()
 
   const [firstStopLossSetup, setFirstStopLossSetup] = useState(!isStopLossEnabled)
+  // below useState has been added to handle button disable just after click
+  const [isTxStarted, setIsTxStarted] = useState(false)
 
   const token = vault.token
   const tokenData = getToken(token)
@@ -200,6 +204,7 @@ export function AdjustSlFormControl({
     !isOwner ||
     (!isEditing && txStatus !== TxStatus.Success) ||
     isProgressStage ||
+    isTxStarted ||
     maxDebtForSettingStopLoss
   )
 
@@ -209,6 +214,9 @@ export function AdjustSlFormControl({
       if (tx === undefined) {
         return
       }
+
+      setIsTxStarted(true)
+
       const txSendSuccessHandler = (transactionState: TxState<AutomationBotAddTriggerData>) => {
         transactionStateHandler(
           (txState) => {
@@ -244,6 +252,10 @@ export function AdjustSlFormControl({
                 txCost: totalCost,
               },
             })
+
+            if (progressStatuses.includes(txState.status)) {
+              setIsTxStarted(false)
+            }
           },
           transactionState,
           finishLoader,
@@ -320,6 +332,8 @@ export function AdjustSlFormControl({
     redirectToCloseVault,
     currentCollateralRatio: vault.collateralizationRatio,
     isStopLossEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    autoBuyTriggerData,
   }
 
   return <SidebarAdjustStopLoss {...props} />

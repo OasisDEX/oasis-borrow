@@ -51,6 +51,8 @@ const commonErrors = [
   'hasToDepositCollateralOnEmptyVault',
   'invalidSlippage',
   'afterCollRatioBelowStopLossRatio',
+  'afterCollRatioBelowBasicSellRatio',
+  'afterCollRatioAboveBasicBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
 
@@ -100,4 +102,16 @@ const cancelAutoSellErrors = ['insufficientEthFundsForTx']
 
 export function extractCancelAutoSellErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => cancelAutoSellErrors.includes(message))
+}
+
+const cancelAutoBuyWarnings = ['potentialInsufficientEthFundsForTx']
+
+export function extractCancelAutoBuyWarnings(warningMessages: VaultWarningMessage[]) {
+  return warningMessages.filter((message) => cancelAutoBuyWarnings.includes(message))
+}
+
+const cancelAutoBuyErrors = ['insufficientEthFundsForTx']
+
+export function extractCancelAutoBuyErrors(errorMessages: VaultErrorMessage[]) {
+  return errorMessages.filter((message) => cancelAutoBuyErrors.includes(message))
 }

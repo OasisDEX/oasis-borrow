@@ -1,18 +1,8 @@
 import { BigNumber } from 'bignumber.js'
-import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import {
-  extractStopLossData,
-  StopLossTriggerData,
-} from 'features/automation/protection/common/stopLossTriggerData'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { isEqual } from 'lodash'
 import { Observable } from 'rxjs'
-import { combineLatest, of } from 'rxjs'
-import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, switchMap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
-import { Context } from '../../blockchain/network'
 import { getToken } from '../../blockchain/tokensMetadata'
 import {
   BorrowPositionVM,
@@ -27,100 +17,34 @@ import {
 } from '../../helpers/formatters/format'
 import { calculatePNL } from '../../helpers/multiply/calculations'
 import { zero } from '../../helpers/zero'
-import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
-import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
 import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { VaultHistoryEvent } from '../vaultHistory/vaultHistory'
+import { PositionDetails } from './pipes/positionsList'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface VaultsOverview {
   positions: PositionVM[]
   vaultSummary: VaultSummary | undefined
-  ilksWithFilters: IlksWithFilters
 }
-
-type VaultWithIlkBalance = VaultWithType &
-  IlkWithBalance & { events: VaultHistoryEvent[]; isOwner: boolean }
-type VaultPosition = VaultWithIlkBalance & StopLossTriggerData
 
 export function createVaultsOverview$(
-  context$: Observable<Context>,
-  vaults$: (address: string) => Observable<VaultWithValue<VaultWithType>[]>,
-  ilksListWithBalances$: Observable<IlkWithBalance[]>,
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
-  vaultHistory$: (vaultId: BigNumber) => Observable<VaultHistoryEvent[]>,
+  positions$: (address: string) => Observable<PositionDetails[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  const vaultsWithHistory$ = vaults$(address).pipe(
-    switchMap((vaults) => {
-      if (vaults.length === 0) {
-        return of([])
-      }
-      const vaultsWithHistory = vaults.map((vault) =>
-        vaultHistory$(vault.id).pipe(map((history) => ({ ...vault, events: history || [] }))),
-      )
-      return combineLatest(vaultsWithHistory)
-    }),
-  )
-  const vaultsAddressWithIlksBalances$: Observable<VaultWithIlkBalance[]> = combineLatest(
-    vaultsWithHistory$,
-    ilksListWithBalances$,
-    context$,
-  ).pipe(
-    map(([vaults, balances, context]) => {
-      return vaults.map((vault) => {
-        const balance = balances.find((balance) => balance.ilk === vault.ilk)
-
-        const isOwner = context.status === 'connected' && context.account === vault.controller
-
-        return {
-          ...vault,
-          ...balance,
-          isOwner,
-        }
-      })
-    }),
-    distinctUntilChanged(isEqual),
-  )
-
-  const vaultWithAutomationData$ = vaultsAddressWithIlksBalances$.pipe(
-    switchMap((vaults) => {
-      return combineLatest(
-        (vaults || []).length > 0
-          ? vaults.map((vault) => {
-              return automationTriggersData$(vault.id).pipe(
-                map((automationData) => ({
-                  ...vault,
-                  ...extractStopLossData(automationData),
-                })),
-              )
-            })
-          : of([]),
-      )
-    }),
-  )
-
-  return combineLatest(
-    vaultWithAutomationData$,
-    vaultsAddressWithIlksBalances$.pipe(map(getVaultsSummary)),
-    ilksWithFilter$(ilksListWithBalances$),
-  ).pipe(
-    map(([vaults, vaultSummary, ilksWithFilters]) => {
+  return positions$(address).pipe(
+    map((positions) => {
       return {
-        positions: mapToPositionVM(vaults),
-        vaultSummary,
-        ilksWithFilters,
+        positions: mapToPositionVM(positions),
+        vaultSummary: getVaultsSummary(positions),
       }
     }),
-    distinctUntilChanged(isEqual),
   )
 }
 
-function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] {
+function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
   const { borrow, multiply, earn } = vaults.reduce<{
-    borrow: VaultWithValue<VaultPosition>[]
-    multiply: VaultWithValue<VaultPosition>[]
-    earn: VaultWithValue<VaultPosition>[]
+    borrow: PositionDetails[]
+    multiply: PositionDetails[]
+    earn: PositionDetails[]
   }>(
     (acc, vault) => {
       if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
@@ -146,8 +70,8 @@ function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] 
       daiDebt: formatCryptoBalance(position.debt),
       collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
       variable: formatPercent(position.stabilityFee.times(100), { precision: 2 }),
-      automationEnabled: position.isStopLossEnabled,
-      protectionAmount: formatPercent(position.stopLossLevel.times(100)),
+      automationEnabled: position.stopLossData.isStopLossEnabled,
+      protectionAmount: formatPercent(position.stopLossData.stopLossLevel.times(100)),
       editLinkProps: {
         href: `/${position.id}`,
         hash: VaultViewMode.Overview,
@@ -176,7 +100,7 @@ function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] 
       fundingCost: formatPercent(fundingCost, {
         precision: 2,
       }),
-      automationEnabled: position.isStopLossEnabled,
+      automationEnabled: position.stopLossData.isStopLossEnabled,
       editLinkProps: {
         href: `/${position.id}`,
         hash: VaultViewMode.Overview,
@@ -214,8 +138,8 @@ function mapToPositionVM(vaults: VaultWithValue<VaultPosition>[]): PositionVM[] 
   return [...borrowVMs, ...multiplyVMs, ...earnVMs]
 }
 
-function getPnl(vault: VaultWithIlkBalance): BigNumber {
-  const { lockedCollateralUSD, debt, events } = vault
+function getPnl(vault: PositionDetails): BigNumber {
+  const { lockedCollateralUSD, debt, history } = vault
   const netValueUSD = lockedCollateralUSD.minus(debt)
-  return calculatePNL(events, netValueUSD)
+  return calculatePNL(history, netValueUSD)
 }

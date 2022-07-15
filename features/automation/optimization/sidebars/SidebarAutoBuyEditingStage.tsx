@@ -1,62 +1,114 @@
 import BigNumber from 'bignumber.js'
-import {
-  addAutomationBotTrigger,
-  AutomationBotAddTriggerData,
-} from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
-import { BuyInfoSection } from 'features/automation/basicBuySell/InfoSections/BuyInfoSection'
+import { VaultErrors } from 'components/vault/VaultErrors'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { AddAutoBuyInfoSection } from 'features/automation/basicBuySell/InfoSections/AddAutoBuyInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
-import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { prepareBasicBSResetData } from 'features/automation/common/helpers'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
-import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus } from 'helpers/form'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { useObservable } from 'helpers/observableHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { useMemo } from 'react'
+import React, { ReactNode } from 'react'
+import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyEditingStageProps {
   vault: Vault
   ilkData: IlkData
-  addTxData: AutomationBotAddTriggerData
-  basicBuyState: BasicBSFormChange
   isEditing: boolean
+  basicBuyState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
-  priceInfo: PriceInfo
+  errors: VaultErrorMessage[]
+  warnings: VaultWarningMessage[]
+  addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
+  sliderMin: BigNumber
+  sliderMax: BigNumber
 }
 
 export function SidebarAutoBuyEditingStage({
   vault,
   ilkData,
   isEditing,
-  addTxData,
   basicBuyState,
   autoBuyTriggerData,
-  priceInfo,
+  errors,
+  warnings,
+  addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
+  sliderMin,
+  sliderMax,
 }: SidebarAutoBuyEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
+  const isVaultEmpty = vault.debt.isZero()
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicBuyState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
 
-  // TODO to be updated
-  const min = ilkData.liquidationRatio.plus(0.05).times(100).toNumber()
+  if (readOnlyBasicBSEnabled && !isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-buy.adding-new-triggers-disabled')}
+        description={t('auto-buy.adding-new-triggers-disabled-description')}
+      />
+    )
+  }
+
+  if (isVaultEmpty) {
+    return (
+      <SidebarFormInfo
+        title={t('auto-buy.closed-vault-existing-trigger-header')}
+        description={t('auto-buy.closed-vault-existing-trigger-description')}
+      />
+    )
+  }
 
   return (
     <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        {basicBuyState.maxBuyOrMinSellPrice !== undefined
+          ? t('auto-buy.set-trigger-description', {
+              targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicBuyState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+              minBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
+            })
+          : t('auto-buy.set-trigger-description-no-threshold', {
+              targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
+              token: vault.token,
+              execCollRatio: basicBuyState.execCollRatio,
+              executionPrice: executionPrice.toFixed(2),
+            })}{' '}
+        {/* TODO ŁW link to article in kb */}
+        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+          {t('here')}.
+        </AppLink>
+      </Text>{' '}
       <MultipleRangeSlider
-        min={min}
-        max={500} // TODO ŁW use meaningful max
+        min={sliderMin.toNumber()}
+        max={sliderMax.toNumber()}
         onChange={(value) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'target-coll-ratio',
@@ -72,11 +124,14 @@ export function SidebarAutoBuyEditingStage({
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
-          value1: 'onSuccess',
+          value0: 'onSuccess',
+          value1: 'onWarning',
         }}
+        step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        minDescription={`(${t('auto-buy.min-ratio')})`}
+        leftThumbColor="onSuccess"
+        rightThumbColor="onWarning"
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}
@@ -99,6 +154,8 @@ export function SidebarAutoBuyEditingStage({
             type: 'max-buy-or-sell-price',
             maxBuyOrMinSellPrice: !toggleStatus
               ? undefined
+              : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+              ? zero
               : autoBuyTriggerData.maxBuyOrMinSellPrice,
           })
         }}
@@ -108,37 +165,37 @@ export function SidebarAutoBuyEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={basicBuyState.withThreshold}
       />
-
+      {isEditing && (
+        <>
+          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
+        </>
+      )}
       <SidebarResetButton
         clear={() => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
             type: 'reset',
-            resetData: {
-              targetCollRatio: autoBuyTriggerData.targetCollRatio,
-              execCollRatio: autoBuyTriggerData.execCollRatio,
-              maxBuyOrMinSellPrice: autoBuyTriggerData.maxBuyOrMinSellPrice,
-              withThreshold:
-                !autoBuyTriggerData.maxBuyOrMinSellPrice.isZero() ||
-                autoBuyTriggerData.triggerId.isZero(),
-            },
+            resetData: prepareBasicBSResetData(autoBuyTriggerData),
           })
         }}
       />
       <MaxGasPriceSection
-        onChange={(maxGasGweiPrice) => {
+        onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-            type: 'max-gas-gwei-price',
-            maxGasGweiPrice,
+            type: 'max-gas-fee-in-gwei',
+            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
         }}
-        defaultValue={basicBuyState.maxGasPercentagePrice}
+        value={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
         <AutoBuyInfoSectionControl
-          addTxData={addTxData}
-          priceInfo={priceInfo}
+          executionPrice={executionPrice}
           basicBuyState={basicBuyState}
           vault={vault}
+          addTriggerGasEstimation={addTriggerGasEstimation}
+          debtDelta={debtDelta}
+          collateralDelta={collateralDelta}
         />
       )}
     </>
@@ -146,56 +203,38 @@ export function SidebarAutoBuyEditingStage({
 }
 
 interface AutoBuyInfoSectionControlProps {
-  addTxData: AutomationBotAddTriggerData
-  priceInfo: PriceInfo
+  executionPrice: BigNumber
   vault: Vault
   basicBuyState: BasicBSFormChange
+  addTriggerGasEstimation: ReactNode
+  debtDelta: BigNumber
+  collateralDelta: BigNumber
 }
 
 function AutoBuyInfoSectionControl({
-  addTxData,
-  priceInfo,
+  executionPrice,
   vault,
   basicBuyState,
+  addTriggerGasEstimation,
+  debtDelta,
+  collateralDelta,
 }: AutoBuyInfoSectionControlProps) {
-  const { addGasEstimation$, tokenPriceUSD$ } = useAppContext()
-  const _tokenPriceUSD$ = useMemo(() => tokenPriceUSD$([vault.token]), [vault.token])
+  const deviationPercent = basicBuyState.deviation.div(100)
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const [tokenPriceData] = useObservable(_tokenPriceUSD$)
-  const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: marketPrice,
-    slippage: basicBuyState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicBuyState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
-  })
+  const targetRatioWithDeviationFloor = one
+    .minus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
+  const targetRatioWithDeviationCeiling = one
+    .plus(deviationPercent)
+    .times(basicBuyState.targetCollRatio)
 
   return (
-    <BuyInfoSection
+    <AddAutoBuyInfoSection
       token={vault.token}
       colRatioAfterBuy={basicBuyState.targetCollRatio}
       multipleAfterBuy={one.div(basicBuyState.targetCollRatio.div(100).minus(one)).plus(one)}
       execCollRatio={basicBuyState.execCollRatio}
-      nextBuyPrice={priceInfo.nextCollateralPrice}
-      slippageLimit={basicBuyState.deviation}
+      nextBuyPrice={executionPrice}
       collateralAfterNextBuy={{
         value: vault.lockedCollateral,
         secondaryValue: vault.lockedCollateral.plus(collateralDelta),
@@ -204,8 +243,10 @@ function AutoBuyInfoSectionControl({
         value: vault.debt,
         secondaryValue: vault.debt.plus(debtDelta),
       }}
-      collateralToBePurchased={collateralDelta}
-      estimatedTransactionCost={gasEstimation}
+      collateralToBePurchased={collateralDelta.abs()}
+      targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
+      targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
+      estimatedTransactionCost={addTriggerGasEstimation}
     />
   )
 }

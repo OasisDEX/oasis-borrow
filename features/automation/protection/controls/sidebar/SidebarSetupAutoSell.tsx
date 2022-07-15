@@ -10,13 +10,13 @@ import {
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
 import { SidebarAutoSellCreationStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
@@ -30,7 +30,6 @@ import { Grid } from 'theme-ui'
 interface SidebarSetupAutoSellProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -57,7 +56,6 @@ interface SidebarSetupAutoSellProps {
 export function SidebarSetupAutoSell({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   context,
   ethMarketPrice,
@@ -105,22 +103,31 @@ export function SidebarSetupAutoSell({
   const sidebarTitle = getSidebarTitle({ flow, stage, token: vault.token })
 
   const errors = errorsBasicSellValidation({
-    txError: basicSellState.txDetails?.txError,
     ilkData,
     vault,
     debtDelta,
-    targetCollRatio: basicSellState.targetCollRatio,
-    withThreshold: basicSellState.withThreshold,
-    minSellPrice: basicSellState.maxBuyOrMinSellPrice,
+    basicSellState,
+    autoBuyTriggerData,
+    isRemoveForm,
+  })
+
+  const { min, max } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
   })
 
   const warnings = warningsBasicSellValidation({
-    token: vault.token,
+    vault,
     gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    basicSellState,
+    sliderMin: min,
+    sliderMax: max,
   })
 
   const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
@@ -143,16 +150,15 @@ export function SidebarSetupAutoSell({
                   vault={vault}
                   ilkData={ilkData}
                   isEditing={isEditing}
-                  priceInfo={priceInfo}
                   basicSellState={basicSellState}
                   autoSellTriggerData={autoSellTriggerData}
-                  autoBuyTriggerData={autoBuyTriggerData}
-                  stopLossTriggerData={stopLossTriggerData}
                   errors={errors}
                   warnings={warnings}
                   addTriggerGasEstimation={addTriggerGasEstimation}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
+                  sliderMin={min}
+                  sliderMax={max}
                 />
               )}
               {isRemoveForm && (
@@ -162,18 +168,23 @@ export function SidebarSetupAutoSell({
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
                   cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+                  basicSellState={basicSellState}
                 />
               )}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoSellCreationStage stage={stage} />
+            <SidebarAutoSellCreationStage
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
           )}
         </Grid>
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

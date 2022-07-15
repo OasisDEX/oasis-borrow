@@ -20,6 +20,7 @@ import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
+import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -124,6 +125,13 @@ import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manag
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
+import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
+import { createUserReferral$ } from 'features/referralOverview/user'
+import {
+  getReferralsFromApi$,
+  getUserFromApi$,
+  getWeeklyClaimsFromApi$,
+} from 'features/referralOverview/userApi'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -213,16 +221,18 @@ import {
   createMakerOracleTokenPrices$,
   createMakerOracleTokenPricesForDates$,
 } from '../features/earn/makerOracleTokenPrices'
-import { getYieldChange$, getYields$ } from '../features/earn/yieldCalculations'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
 import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
 import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
   createProductCardsData$,
@@ -232,7 +242,6 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -250,6 +259,7 @@ export type TxData =
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
   | ClaimRewardData
+  | ClaimMultipleData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -391,7 +401,6 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
-
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
@@ -452,13 +461,17 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const coninbasePrices$ = memoize(coinbaseOrderBook$)
+  const coinGeckoPrices$ = memoize(coinGeckoTicker$)
+
   const tokenPriceUSD$ = memoize(
     curry(createTokenPriceInUSD$)(
       every10Seconds$,
-      coinbaseOrderBook$,
+      coninbasePrices$,
       coinPaprikaTicker$,
-      coinGeckoTicker$,
+      coinGeckoPrices$,
     ),
+    (tokens: string[]) => tokens.sort().join(','),
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
@@ -531,7 +544,7 @@ export function setupAppContext() {
 
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = curry(createIlkToToken$)(context$)
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -867,19 +880,19 @@ export function setupAppContext() {
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(
-      context$,
-      vaultWithValue$,
-      ilksWithBalance$,
-      automationTriggersData$,
-      vaultHistory$,
-    ),
+  const vaultsHistoryAndValue$ = memoize(
+    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
   )
+
+  const positionsList$ = memoize(
+    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
+  )
+
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
 
   const assetActions$ = memoize(
     curry(createAssetActions$)(
-      connectedContext$,
+      context$,
       ilkToToken$,
       {
         borrow: supportedBorrowIlks,
@@ -901,6 +914,17 @@ export function setupAppContext() {
     checkAcceptanceFromApi$,
     saveAcceptanceFromApi$,
   )
+
+  const userReferral$ = createUserReferral$(
+    web3Context$,
+    txHelpers$,
+    getUserFromApi$,
+    getReferralsFromApi$,
+    getWeeklyClaimsFromApi$,
+    checkReferralLocalStorage$,
+  )
+
+  const checkReferralLocal$ = checkReferralLocalStorage$()
 
   const vaultBanners$ = memoize(
     curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
@@ -931,7 +955,7 @@ export function setupAppContext() {
     (ilk: string, date?: moment.Moment) => {
       return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
     },
-    (ilk: string, date?: moment.Moment) => `${ilk}-${date?.format('YYYY-MM-DD')}`,
+    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
   )
 
   const yieldsChange$ = memoize(
@@ -991,6 +1015,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    gasPrice$,
     automationTriggersData$,
     accountData$,
     vaultHistory$,
@@ -1014,9 +1039,12 @@ export function setupAppContext() {
     positionsOverviewSummary$,
     priceInfo$,
     yields$,
+    daiEthTokenPrice$,
     totalValueLocked$,
     yieldsChange$,
     tokenPriceUSD$,
+    userReferral$,
+    checkReferralLocal$,
   }
 }
 

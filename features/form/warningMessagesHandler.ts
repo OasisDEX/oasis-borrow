@@ -12,6 +12,14 @@ export type VaultWarningMessage =
   | 'vaultWillRemainUnderMinActiveColRatio'
   | 'currentCollRatioCloseToStopLoss'
   | 'noMinSellPriceWhenStopLossEnabled'
+  | 'settingAutoBuyTriggerWithNoThreshold'
+  | 'basicSellTriggerCloseToStopLossTrigger'
+  | 'basicSellTargetCloseToAutoBuyTrigger'
+  | 'stopLossTriggerCloseToAutoSellTrigger'
+  | 'autoBuyTargetCloseToStopLossTrigger'
+  | 'autoBuyTargetCloseToAutoSellTrigger'
+  | 'autoBuyTriggeredImmediately'
+  | 'autoSellTriggeredImmediately'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -25,6 +33,14 @@ interface WarningMessagesHandler {
   customSlippageOverridden?: boolean
   currentCollRatioCloseToStopLoss?: boolean
   noMinSellPriceWhenStopLossEnabled?: boolean
+  settingAutoBuyTriggerWithNoThreshold?: boolean
+  basicSellTriggerCloseToStopLossTrigger?: boolean
+  basicSellTargetCloseToAutoBuyTrigger?: boolean
+  stopLossTriggerCloseToAutoSellTrigger?: boolean
+  autoBuyTargetCloseToStopLossTrigger?: boolean
+  autoBuyTargetCloseToAutoSellTrigger?: boolean
+  autoSellTriggeredImmediately?: boolean
+  autoBuyTriggeredImmediately?: boolean
 }
 
 export function warningMessagesHandler({
@@ -37,6 +53,14 @@ export function warningMessagesHandler({
   potentialInsufficientEthFundsForTx,
   currentCollRatioCloseToStopLoss,
   noMinSellPriceWhenStopLossEnabled,
+  settingAutoBuyTriggerWithNoThreshold,
+  basicSellTriggerCloseToStopLossTrigger,
+  basicSellTargetCloseToAutoBuyTrigger,
+  stopLossTriggerCloseToAutoSellTrigger,
+  autoBuyTargetCloseToStopLossTrigger,
+  autoBuyTargetCloseToAutoSellTrigger,
+  autoSellTriggeredImmediately,
+  autoBuyTriggeredImmediately,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -74,6 +98,37 @@ export function warningMessagesHandler({
 
   if (noMinSellPriceWhenStopLossEnabled) {
     warningMessages.push('noMinSellPriceWhenStopLossEnabled')
+  }
+
+  if (settingAutoBuyTriggerWithNoThreshold) {
+    warningMessages.push('settingAutoBuyTriggerWithNoThreshold')
+  }
+  if (basicSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('basicSellTriggerCloseToStopLossTrigger')
+  }
+
+  if (basicSellTargetCloseToAutoBuyTrigger) {
+    warningMessages.push('basicSellTargetCloseToAutoBuyTrigger')
+  }
+
+  if (stopLossTriggerCloseToAutoSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToAutoSellTrigger')
+  }
+
+  if (autoBuyTargetCloseToStopLossTrigger) {
+    warningMessages.push('autoBuyTargetCloseToStopLossTrigger')
+  }
+
+  if (autoBuyTargetCloseToAutoSellTrigger) {
+    warningMessages.push('autoBuyTargetCloseToAutoSellTrigger')
+  }
+
+  if (autoBuyTriggeredImmediately) {
+    warningMessages.push('autoBuyTriggeredImmediately')
+  }
+
+  if (autoSellTriggeredImmediately) {
+    warningMessages.push('autoSellTriggeredImmediately')
   }
 
   // if (highSlippage) {

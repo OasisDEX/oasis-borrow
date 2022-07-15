@@ -12,6 +12,12 @@ import { getTriggersByType } from 'features/automation/common/filterTriggersByTy
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
 
+export const maxUint32 = new BigNumber('0xFFFFFFFF')
+export const maxUint256 = new BigNumber(
+  '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+  16,
+)
+
 export interface BasicBSTriggerData {
   triggerId: BigNumber
   execCollRatio: BigNumber
@@ -19,6 +25,7 @@ export interface BasicBSTriggerData {
   maxBuyOrMinSellPrice: BigNumber
   continuous: boolean
   deviation: BigNumber
+  maxBaseFeeInGwei: BigNumber
   isTriggerEnabled: boolean
 }
 
@@ -34,17 +41,30 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       maxBuyOrMinSellPrice,
       continuous,
       deviation,
+      maxBaseFeeInGwei,
     ] = trigger.result
+
+    /*
+     * TRANSFORMATION INFO:
+     * execCollRatio - 200% -> (20000 / 100 = 200%)
+     * targetCollRatio - 250% -> (25000 / 100 = 250%)
+     * deviation - 1% -> (100 / 100 =  1%)
+     * maxBaseFeeInGwei - 500 gwei -> (500 = 500 gwei)
+     * maxBuyOrMinSellPrice - 2000$ -> (2000 * 10^18 / 10^18 = 2000$)
+     */
 
     return {
       triggerId: new BigNumber(trigger.triggerId),
       execCollRatio: new BigNumber(execCollRatio.toString()).div(100),
       targetCollRatio: new BigNumber(targetCollRatio.toString()).div(100),
-      maxBuyOrMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).div(
-        new BigNumber(10).pow(18),
-      ),
-      continuous: continuous,
-      deviation: new BigNumber(deviation.toString()).div(1000),
+      maxBuyOrMinSellPrice: new BigNumber(maxBuyOrMinSellPrice.toString()).isEqualTo(maxUint256)
+        ? maxUint256
+        : new BigNumber(maxBuyOrMinSellPrice.toString()).div(new BigNumber(10).pow(18)),
+      continuous,
+      deviation: new BigNumber(deviation.toString()).div(100),
+      maxBaseFeeInGwei: maxBaseFeeInGwei
+        ? new BigNumber(maxBaseFeeInGwei.toString())
+        : new BigNumber(100), // handling for old command address
       isTriggerEnabled: true,
     } as BasicBSTriggerData
   })
@@ -57,15 +77,16 @@ const defaultBasicSellData = {
   maxBuyOrMinSellPrice: zero,
   continuous: false,
   deviation: new BigNumber(1),
+  maxBaseFeeInGwei: new BigNumber(100),
   isTriggerEnabled: false,
 }
 
 export function extractBasicBSData(data: TriggersData, type: TriggerType): BasicBSTriggerData {
   if (data.triggers && data.triggers.length > 0) {
-    const basicSellTriggers = getTriggersByType(data.triggers, [type])
+    const basicBSTriggers = getTriggersByType(data.triggers, [type])
 
-    if (basicSellTriggers.length) {
-      return mapBasicBSTriggerData(basicSellTriggers)[0]
+    if (basicBSTriggers.length) {
+      return mapBasicBSTriggerData(basicBSTriggers)[0]
     }
   }
 
@@ -80,6 +101,7 @@ export function prepareBasicBSTriggerData({
   maxBuyOrMinSellPrice,
   continuous,
   deviation,
+  maxBaseFeeInGwei,
 }: {
   vaultData: Vault
   triggerType: BasicBSTriggerTypes
@@ -88,22 +110,31 @@ export function prepareBasicBSTriggerData({
   maxBuyOrMinSellPrice: BigNumber
   continuous: boolean
   deviation: BigNumber
+  maxBaseFeeInGwei: BigNumber
 }): AutomationBaseTriggerData {
   const data = [
     vaultData.id.toString(),
     triggerType.toString(),
     execCollRatio.times(100).toString(),
     targetCollRatio.times(100).toString(),
-    maxBuyOrMinSellPrice.times(new BigNumber(10).pow(18)).toString(),
+    maxBuyOrMinSellPrice.isEqualTo(maxUint256)
+      ? maxUint256.toString()
+      : maxBuyOrMinSellPrice.times(new BigNumber(10).pow(18)).toString(),
     continuous.toString(),
-    deviation.times(1000).toString(),
+    deviation.times(100).toString(),
+    maxBaseFeeInGwei.toString(),
   ]
+
+  const commands = {
+    [TriggerType.BasicSell]: CommandContractType.BasicSellCommand,
+    [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
+  }
 
   return {
     cdpId: vaultData.id,
     triggerType,
     proxyAddress: vaultData.owner,
-    triggerData: encodeTriggerDataByType(CommandContractType.BasicSellCommand, data),
+    triggerData: encodeTriggerDataByType(commands[triggerType], data),
   }
 }
 
@@ -116,6 +147,7 @@ export function prepareAddBasicBSTriggerData({
   continuous,
   deviation,
   replacedTriggerId,
+  maxBaseFeeInGwei,
 }: {
   vaultData: Vault
   triggerType: BasicBSTriggerTypes
@@ -125,6 +157,7 @@ export function prepareAddBasicBSTriggerData({
   continuous: boolean
   deviation: BigNumber
   replacedTriggerId: BigNumber
+  maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddTriggerData {
   const baseTriggerData = prepareBasicBSTriggerData({
     vaultData,
@@ -134,6 +167,7 @@ export function prepareAddBasicBSTriggerData({
     maxBuyOrMinSellPrice,
     continuous,
     deviation,
+    maxBaseFeeInGwei,
   })
 
   return {
@@ -160,6 +194,7 @@ export function prepareRemoveBasicBSTriggerData({
     maxBuyOrMinSellPrice: zero,
     continuous: false,
     deviation: zero,
+    maxBaseFeeInGwei: zero,
   })
 
   return {
