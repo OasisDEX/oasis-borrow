@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { Button, Flex, Text } from 'theme-ui'
 import React from 'react'
+import { Button, Flex, Text } from 'theme-ui'
 interface NotificationsCenterHeaderProps {
   onButtonClick: () => void
   showPrefrencesTab: boolean

@@ -347,7 +347,6 @@ function UserDesktopMenu() {
             notificationsPanelOpen={notificationsPanelOpen}
           />
         )}
-
       </Flex>
     </Flex>
   )
