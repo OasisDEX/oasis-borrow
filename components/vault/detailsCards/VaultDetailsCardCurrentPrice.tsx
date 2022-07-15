@@ -44,7 +44,7 @@ export function VaultDetailsCardCurrentPriceModal({
                 target="_blank"
                 sx={{
                   display: 'inline-block',
-                  color: 'primary',
+                  color: 'primary100',
                   textDecoration: 'underline',
                 }}
               />,
@@ -88,7 +88,7 @@ export function VaultDetailsCardCurrentPrice({
       valueBottom={
         isStaticCollateralPrice ? null : (
           <Flex sx={{ whiteSpace: 'pre-wrap' }}>
-            <Text sx={{ color: 'text.subtitle' }}>Next </Text>
+            <Text sx={{ color: 'neutral80' }}>Next </Text>
             <Flex
               variant="paragraph2"
               sx={{ fontWeight: 'semiBold', alignItems: 'center', color: priceChangeColor }}

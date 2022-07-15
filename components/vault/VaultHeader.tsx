@@ -51,12 +51,12 @@ export function VaultIlkDetailsItem({
     >
       <Flex sx={{ alignItems: 'center' }}>
         {`${label} `}
-        <Text as="span" sx={{ color: 'primary', ml: 1, mr: 1 }}>
+        <Text as="span" sx={{ color: 'primary100', ml: 1, mr: 1 }}>
           {value}
         </Text>
         <Flex sx={{ position: 'relative' }}>
           <Box sx={{ fontSize: '0px' }}>
-            <Icon name="tooltip" color="primary" size="auto" width="14px" height="14px" />
+            <Icon name="tooltip" color="primary100" size="auto" width="14px" height="14px" />
           </Box>
           {tooltipOpen && (
             <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>

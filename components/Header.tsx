@@ -37,7 +37,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
       withAccountPrefix={false}
       href="/"
       sx={{
-        color: 'primary',
+        color: 'primary100',
         fontWeight: 'semiBold',
         fontSize: '0px',
         cursor: 'pointer',
@@ -81,11 +81,11 @@ export function BackArrow() {
     <Box
       sx={{
         cursor: 'pointer',
-        color: 'onBackground',
+        color: 'neutral70',
         fontSize: '0',
         transition: TRANSITIONS.global,
         '&:hover': {
-          color: 'onSurface',
+          color: 'neutral80',
         },
       }}
     >
@@ -131,7 +131,10 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <PositionsLink sx={{ position: 'relative', ...sx }}>
-      <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
+      <Button
+        variant="menuButtonRound"
+        sx={{ color: 'neutral80', ':hover': { color: 'primary100' } }}
+      >
         <Icon name="home" size="auto" width="20" />
       </Button>
       {vaultCount && (
@@ -142,8 +145,8 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
             right: '-7px',
             width: '24px',
             height: '24px',
-            bg: 'link',
-            color: 'onPrimary',
+            bg: 'interactive100',
+            color: 'neutral10',
             borderRadius: '50%',
             justifyContent: 'center',
             alignItems: 'center',
@@ -190,10 +193,10 @@ function ButtonDropdown({
           p: 1,
           '&, :focus': {
             outline: isOpen ? '1px solid' : null,
-            outlineColor: 'primary',
+            outlineColor: 'primary100',
           },
-          color: 'lavender',
-          ':hover': { color: 'primary' },
+          color: 'neutral80',
+          ':hover': { color: 'primary100' },
         }}
       >
         {showNewBeacon && (
@@ -216,7 +219,7 @@ function ButtonDropdown({
           right: 0,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
-          bg: 'background',
+          bg: 'neutral10',
           boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
@@ -295,10 +298,10 @@ function UserDesktopMenu() {
               position: 'relative',
               '&, :focus': {
                 outline: widgetOpen ? '1px solid' : null,
-                outlineColor: 'primary',
+                outlineColor: 'primary100',
               },
-              color: 'lavender',
-              ':hover': { color: 'primary' },
+              color: 'neutral80',
+              ':hover': { color: 'primary100' },
             }}
           >
             {showNewUniswapWidgetBeacon && (
@@ -317,7 +320,7 @@ function UserDesktopMenu() {
               name="exchange"
               size="auto"
               width="20"
-              color={widgetOpen ? 'primary' : 'inherit'}
+              color={widgetOpen ? 'primary100' : 'inherit'}
             />
           </Button>
           <UniswapWidgetShowHide />
@@ -383,7 +386,7 @@ function MobileSettings() {
         <Button
           variant="menuButton"
           onClick={() => setOpened(true)}
-          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'lavender' }}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'neutral80' }}
         >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
@@ -403,7 +406,7 @@ function MobileSettings() {
             bottom: 0,
             transition: '0.3s transform ease-in-out',
             transform: `translateY(${opened ? '0' : '100'}%)`,
-            bg: 'background',
+            bg: 'neutral10',
             p: 3,
             pt: 0,
             zIndex: 'modal',
@@ -423,7 +426,7 @@ function MobileSettings() {
           >
             <ModalCloseIcon
               close={() => setOpened(false)}
-              sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+              sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
               size={3}
             />
           </Box>
@@ -437,7 +440,7 @@ function MobileSettings() {
 }
 
 function navLinkColor(isActive: boolean) {
-  return isActive ? 'primary' : 'lavender'
+  return isActive ? 'primary100' : 'neutral80'
 }
 
 const LINKS = {
@@ -531,17 +534,17 @@ function ConnectedHeader() {
                   mr: 2,
                   '&, :focus': {
                     outline: widgetOpen ? '1px solid' : null,
-                    outlineColor: 'primary',
+                    outlineColor: 'primary100',
                   },
-                  color: 'lavender',
-                  ':hover': { color: 'primary' },
+                  color: 'neutral80',
+                  ':hover': { color: 'primary100' },
                 }}
               >
                 <Icon
                   name="exchange"
                   size="auto"
                   width="20"
-                  color={widgetOpen ? 'primary' : 'inherit'}
+                  color={widgetOpen ? 'primary100' : 'inherit'}
                 />
               </Button>
               <UniswapWidgetShowHide
@@ -577,7 +580,7 @@ function HeaderDropdown({
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
-            color: 'primary',
+            color: 'primary100',
           },
           '& .menu': {
             display: 'block',
@@ -664,7 +667,7 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
   return (
     <Box
       sx={{
-        ':hover': { bg: '#F6F6F6' },
+        ':hover': { bg: 'neutral30' },
         borderRadius: 'medium',
         p: 3,
         textDecoration: 'none',
@@ -706,7 +709,7 @@ export function MobileMenu() {
       )}
       <Box
         sx={{
-          backgroundColor: 'background',
+          backgroundColor: 'neutral10',
           position: 'fixed',
           top: 0,
           left: 0,
@@ -759,8 +762,8 @@ export function MobileMenu() {
         </Grid>
         <Box
           sx={{
-            color: 'lavender',
-            ':hover': { color: 'primary' },
+            color: 'neutral80',
+            ':hover': { color: 'primary100' },
             position: 'absolute',
             bottom: 5,
             left: '50%',
@@ -778,7 +781,7 @@ export function MobileMenu() {
           onClick={() => setIsOpen(true)}
           size="auto"
           width="20px"
-          color="lavender"
+          color="neutral80"
         />
       </Button>
     </>
@@ -824,7 +827,7 @@ function DisconnectedHeader() {
               href="/connect"
               sx={{
                 boxShadow: 'cardLanding',
-                bg: 'surface',
+                bg: 'neutral10',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',

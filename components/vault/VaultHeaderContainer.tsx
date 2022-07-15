@@ -30,7 +30,7 @@ export function VaultHeaderContainer({
             mb: 4,
             fontSize: 1,
             fontWeight: 'semiBold',
-            color: 'text.subtitle',
+            color: 'neutral80',
             display: ['grid', 'flex'],
             gridTemplateColumns: '1fr 1fr',
             gap: [3, 0],

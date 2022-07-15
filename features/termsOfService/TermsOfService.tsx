@@ -105,7 +105,7 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
         >
           <Text mt={3}>{t('tos-view')}</Text>
         </AppLink>
-        <Box px={2} sx={{ background: '#f6f8f9', borderRadius: '12px', p: 3, mb: 4 }}>
+        <Box px={2} sx={{ background: 'neutral30', borderRadius: '12px', p: 3, mb: 4 }}>
           <Label
             sx={{ fontSize: 3, fontWeight: 'body', cursor: 'pointer' }}
             onClick={() => setChecked(!checked)}
@@ -117,18 +117,18 @@ function TOSWaiting4Acceptance({ stage, acceptTOS, updated }: TermsAcceptanceSta
                 width: '25px',
                 height: '25px',
                 border: 'light',
-                borderColor: 'onSuccess',
+                borderColor: 'success100',
                 borderRadius: 'small',
                 alignItems: 'center',
                 justifyContent: 'center',
                 transition: 'background ease-in 0.2s',
                 ...(checked && {
-                  bg: 'success',
+                  bg: 'success10',
                 }),
               }}
             >
               {checked && (
-                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="onSuccess" />
+                <Icon sx={{ animation: `${fadeIn} 0.2s` }} name="checkmark" color="success100" />
               )}
             </Flex>
             <Text ml={3} sx={{ flex: 1, fontWeight: '400', fontSize: '14px' }}>

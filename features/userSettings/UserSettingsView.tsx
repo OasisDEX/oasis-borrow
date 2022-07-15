@@ -55,11 +55,11 @@ function SlippageOptionButton({
         cursor: 'pointer',
         '&:last-child': { mr: '0px' },
         '&:hover': {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         },
         ...(active && {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'userSettingsOptionButton',
         }),
       }}
@@ -104,12 +104,12 @@ function SlippageLimitMessages({
   return (
     <Grid gap={2} mb={2}>
       {warnings.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onWarning' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'warning' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
       {errors.map((message) => (
-        <Text sx={{ ...validationMessageStyles, color: 'onError' }} key={message}>
+        <Text sx={{ ...validationMessageStyles, color: 'critical100' }} key={message}>
           {t(getSlippageLimitMessageTranslation(message))}
         </Text>
       ))}
@@ -142,7 +142,7 @@ function SlippageSettingsForm() {
     <>
       <Box>
         <Box>
-          <Text variant="paragraph3" sx={{ color: 'text.subtitle', mb: -1 }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', mb: -1 }}>
             {t('user-settings.slippage-limit.preset-description')}
           </Text>
           <Link href="/support#using-multiply" passHref>
@@ -166,7 +166,7 @@ function SlippageSettingsForm() {
         </Box>
         <Box my={3}>
           <Flex
-            sx={{ color: 'primaryEmphasis', cursor: 'pointer' }}
+            sx={{ color: 'primary60', cursor: 'pointer' }}
             onClick={() => setCustomOpened(!customOpened)}
           >
             <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'inherit' }}>
@@ -214,7 +214,7 @@ function SlippageSettingsForm() {
             {stage === 'inProgress' && (
               <AppSpinner
                 variant="styles.spinner.large"
-                sx={{ color: 'surface', display: 'flex', mr: 2 }}
+                sx={{ color: 'neutral10', display: 'flex', mr: 2 }}
               />
             )}
             <Text>
@@ -226,12 +226,12 @@ function SlippageSettingsForm() {
         </Button>
       )}
       {stage === 'success' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onSuccess' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'success' }}>
           {t('user-settings.update-success')}
         </Text>
       )}
       {stage === 'failure' && (
-        <Text sx={{ ...saveStatusMessageStyles, color: 'onError' }}>
+        <Text sx={{ ...saveStatusMessageStyles, color: 'critical100' }}>
           {t('user-settings.update-failure')}
         </Text>
       )}
@@ -271,7 +271,12 @@ function WalletInfo() {
               {formatAddress(account, 6)}
             </Text>
             <Text
-              sx={{ color: 'link', fontSize: 1, cursor: 'pointer', fontWeight: 'semiBold' }}
+              sx={{
+                color: 'interactive100',
+                fontSize: 1,
+                cursor: 'pointer',
+                fontWeight: 'semiBold',
+              }}
               onClick={() => copyToClipboard()}
             >
               {t('copy')}
@@ -288,7 +293,7 @@ function WalletInfo() {
             {accountData && accountData.daiBalance && (
               <>
                 <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
-                <Text variant="caption" sx={{ ml: 1, color: 'text.subtitle' }}>
+                <Text variant="caption" sx={{ ml: 1, color: 'neutral80' }}>
                   {formatCryptoBalance(accountData.daiBalance)}
                 </Text>
               </>
@@ -315,7 +320,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         {t('user-settings.slippage-limit.preset-title')}
       </Text>
       <SlippageSettingsForm />
-      <Box sx={{ borderTop: '1px solid #E7EDEF', mt: 3 }} />
+      <Box sx={{ borderTop: '1px solid neutral30', mt: 3 }} />
       <Button
         variant="textual"
         sx={{
@@ -326,8 +331,8 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
         }}
         onClick={() => disconnect(web3Context)}
       >
-        <Icon name="sign_out" color="primaryEmphasis" size="auto" width={20} />
-        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primaryEmphasis', ml: 2 }}>
+        <Icon name="sign_out" color="primary60" size="auto" width={20} />
+        <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>
           {t('disconnect-wallet')}
         </Text>
       </Button>
@@ -375,7 +380,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
         <Icon name={userIcon!} size="auto" width="42" />
         <Text
           variant="address"
-          sx={{ ml: 3, color: 'primary', fontSize: 2, fontWeight: [600, 500] }}
+          sx={{ ml: 3, color: 'primary100', fontSize: 2, fontWeight: [600, 500] }}
         >
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>
@@ -387,7 +392,7 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
           height="16"
           name="settings"
           sx={{ flexShrink: 0, m: '13px' }}
-          color={active ? 'primary' : 'inherit'}
+          color={active ? 'primary100' : 'inherit'}
         />
       </Flex>
     </Flex>

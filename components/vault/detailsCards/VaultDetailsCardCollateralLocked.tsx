@@ -69,7 +69,7 @@ export function VaultDetailsCardCollateralLocked({
       valueBottom={
         <>
           {formatAmount(depositAmount || zero, getToken(token).symbol)}
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
+          <Text as="span" sx={{ color: 'neutral80' }}>
             {` ${getToken(token).symbol}`}
           </Text>
         </>

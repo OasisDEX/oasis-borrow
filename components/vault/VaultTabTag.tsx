@@ -12,7 +12,7 @@ export function VaultTabTag({ isEnabled }: VaultTabTagProps) {
         height: '19px',
         lineHeight: '19px',
         borderRadius: '5px',
-        backgroundColor: isEnabled ? 'onSuccess' : 'onWarning',
+        backgroundColor: isEnabled ? 'success100' : 'warning100',
         color: 'white',
         fontSize: 1,
         fontWeight: 'semiBold',

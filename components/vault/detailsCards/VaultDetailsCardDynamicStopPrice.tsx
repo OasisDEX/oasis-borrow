@@ -64,7 +64,7 @@ export function VaultDetailsCardDynamicStopPrice({
         isProtected ? (
           <>
             ${formatAmount(dynamicStopPrice.minus(liquidationPrice), 'USD')}{' '}
-            <Text as="span" sx={{ color: 'text.subtitle', fontSize: '1' }}>
+            <Text as="span" sx={{ color: 'neutral80', fontSize: '1' }}>
               {t('manage-multiply-vault.card.above-liquidation-price')}
             </Text>
           </>

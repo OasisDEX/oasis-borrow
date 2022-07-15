@@ -59,7 +59,7 @@ export const ThemeElements = () => {
       <Grid>
         {sizes.map((size, index) => (
           <Flex sx={{ alignItems: 'center' }} key={index}>
-            <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary' }} />
+            <Box key={size} sx={{ width: `${size}px`, height: '10px', bg: 'primary100' }} />
             <Box px={2}>{size}px</Box>
             <Box px={2}>index: {index}</Box>
           </Flex>

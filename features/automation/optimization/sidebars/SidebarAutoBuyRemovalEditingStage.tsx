@@ -29,7 +29,7 @@ export function SidebarAutoBuyRemovalEditingStage({
 }: SidebarAutoBuyRemovalEditingStageProps) {
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />

@@ -16,7 +16,7 @@ export function SidebarVaultStopLossStage(props: {
     case 'stopLossTxInProgress':
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('open-vault-two-tx-setup-requirement')}
           </Text>
           <AddingStopLossAnimation />
@@ -25,7 +25,7 @@ export function SidebarVaultStopLossStage(props: {
     default:
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('open-vault-two-tx-setup-requirement')}
           </Text>
           <Flex sx={{ justifyContent: 'center' }}>

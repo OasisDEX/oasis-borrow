@@ -65,7 +65,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
               <Text>
                 {formatCryptoBalance(collateralDelta?.abs() || zero)} {token}
                 {` `}
-                <Text as="span" sx={{ color: 'text.subtitle' }}>
+                <Text as="span" sx={{ color: 'neutral80' }}>
                   (${formatAmount(collateralDeltaUSD?.abs() || zero, 'USD')})
                 </Text>
               </Text>
@@ -94,7 +94,7 @@ export function ManageMultiplyVaultChangesInformation(props: ManageMultiplyVault
               ) : (
                 <Text>
                   ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-                  <Text as="span" sx={{ color: 'onError' }}>
+                  <Text as="span" sx={{ color: 'critical100' }}>
                     ({formatPercent(impact, { precision: 2 })})
                   </Text>
                 </Text>

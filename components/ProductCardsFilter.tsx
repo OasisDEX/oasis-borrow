@@ -59,8 +59,8 @@ export function ProductCardsFilter({ filters, children, selectedFilter }: TokenT
                       fontWeight: 'semiBold',
                       color:
                         tab.name === currentFilter || hover === tab.name
-                          ? 'primary'
-                          : 'text.subtitle',
+                          ? 'primary100'
+                          : 'neutral80',
                     }}
                   >
                     {tab.name}

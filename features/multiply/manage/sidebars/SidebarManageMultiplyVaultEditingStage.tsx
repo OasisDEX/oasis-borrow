@@ -103,7 +103,7 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
           },
         ]}
       />
-      <Text as="p" variant="paragraph3" sx={{ mt: 2, color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ mt: 2, color: 'neutral80' }}>
         {t('vault-info-messages.closing')}
       </Text>
       <Text
@@ -111,7 +111,7 @@ function SidebarManageMultiplyVaultEditingStageClose(props: ManageMultiplyVaultS
         variant="paragraph3"
         sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, fontWeight: 'semiBold' }}
       >
-        <Text as="span" sx={{ display: 'flex', alignItems: 'flex-end', color: 'text.subtitle' }}>
+        <Text as="span" sx={{ display: 'flex', alignItems: 'flex-end', color: 'neutral80' }}>
           <Icon name={getToken(closeToTokenSymbol).iconCircle} size="20px" sx={{ mr: 1 }} />
           {t('after-closing', { token: closeToTokenSymbol })}
         </Text>
@@ -185,7 +185,7 @@ function SidebarManageMultiplyVaultEditingStageDepositDai(props: ManageMultiplyV
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('system.multiply-buy-coll', { token })}
       </Text>
       <FieldDepositDai {...extractFieldDepositDaiData(props)} />
@@ -199,7 +199,7 @@ function SidebarManageMultiplyVaultEditingStagePaybackDai(props: ManageMultiplyV
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('system.multiply-reduce-debt')}
       </Text>
       <FieldPaybackDai {...extractFieldPaybackDaiData(props)} />

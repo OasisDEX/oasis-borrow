@@ -169,7 +169,7 @@ function Menu(props: {
       sx={{
         position: 'absolute',
         boxShadow: 'elevation',
-        backgroundColor: 'background',
+        backgroundColor: 'neutral10',
         borderRadius: '12px',
         border: 'none',
         padding: '24px',
@@ -198,7 +198,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
       >
         {t('vaults-overview.total-assets')}
       </Text>
-      <Text variant="paragraph2" sx={{ color: 'lavender', mt: '7px' }}>
+      <Text variant="paragraph2" sx={{ color: 'neutral80', mt: '7px' }}>
         <Trans
           i18nKey="vaults-overview.total-assets-subheader"
           components={[
