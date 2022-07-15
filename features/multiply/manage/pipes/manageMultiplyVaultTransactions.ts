@@ -645,23 +645,13 @@ export function applyEstimateGas(
       closeToDaiParams,
       closeToCollateralParams,
       isProxyStage,
+      debtDelta,
+      collateralDelta,
     } = state
 
     if (proxyAddress) {
       if (requiredCollRatio) {
-        const daiAmount =
-          swap?.status === 'SUCCESS'
-            ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.daiAmount.div(one.minus(OAZO_FEE))
-              : swap.daiAmount
-            : zero
 
-        const collateralAmount =
-          swap?.status === 'SUCCESS'
-            ? exchangeAction === 'BUY_COLLATERAL'
-              ? swap.collateralAmount.times(one.minus(SLIPPAGE))
-              : swap.collateralAmount
-            : zero
 
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
@@ -669,8 +659,8 @@ export function applyEstimateGas(
           depositDai: depositDaiAmount || zero,
           withdrawCollateral: withdrawAmount || zero,
           withdrawDai: generateAmount || zero,
-          requiredDebt: daiAmount,
-          borrowedCollateral: collateralAmount,
+          requiredDebt: debtDelta?.abs() || zero,
+          borrowedCollateral: collateralDelta?.abs() || zero,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
