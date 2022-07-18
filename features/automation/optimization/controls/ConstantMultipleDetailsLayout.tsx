@@ -1,19 +1,17 @@
+import BigNumber from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
 import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
-import {
-  DetailsSectionContentCard,
-  DetailsSectionContentCardWrapper,
-} from 'components/DetailsSectionContentCard'
+import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
-import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
+import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
+import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -35,32 +33,15 @@ export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetails
           // badge={isConstantMultipleOn}
           content={
             <DetailsSectionContentCardWrapper>
-              {/* TODO -ŁW details TBD */}
-              <DetailsSectionContentCard title={t('constant-multiple.target-multiple')} />
-              <DetailsSectionContentCard title={t('constant-multiple.total-cost-of-feature')} />
-              <ContentCardTargetColRatio
-                threshold={one}
-                token={''}
-                // targetColRatio={targetColRatio}
-                // afterTargetColRatio={uiState.targetCollRatio}
-                // threshold={threshold}
+              {/* Dummy values */}
+              <ContentCardTargetMultiple
+                targetMultiple={new BigNumber(2)}
+                // aftertargetMultiple={new BigNumber(2.2)}
+                targetColRatio={new BigNumber(200)}
                 // changeVariant="positive"
-                // token={token}
               />
-              {/* TODO - ŁW allow to pass title for ContentCardTriggerColRatio re-use for buy, sell ? */}
-              {/* not sure if it makes sense to reuse those components, there are some differences in designs */}
-              {/* buy trigger */}
-              <ContentCardTriggerColRatio
-                token={token}
-                //   triggerColRatio={triggerColRatio}
-                //   afterTriggerColRatio={uiState.execCollRatio}
-                //   nextBuyPrice={nextBuyPrice}
-                //   changeVariant="positive"
-              />
-              {/* sell trigger */}
               <ContentCardTriggerColRatio token={token} />
-              <DetailsSectionContentCard title={t('auto-buy.next-buy-prices')} />
-              <DetailsSectionContentCard title={t('auto-buy.next-sell-prices')} />
+              <ContentCardSellTriggerCollRatio token={token} />
             </DetailsSectionContentCardWrapper>
           }
         />
