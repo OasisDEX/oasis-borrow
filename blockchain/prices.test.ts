@@ -6,6 +6,7 @@ import { getStateUnpacker } from '../helpers/testHelpers'
 import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
 import { mockContext, mockContextConnected } from '../helpers/mocks/context.mock'
 import sinon from 'sinon'
+import moment from 'moment'
 
 describe('createTokenPriceInUSD$', () => {
   function coinbaseOrderBook$() {
@@ -147,12 +148,8 @@ describe('createOraclePriceData$', () => {
 
     expect(result.currentPrice?.toString()).eq('0.000000000000001')
     expect(result.nextPrice?.toString()).eq('0.0000000001')
-    expect(result.currentPriceUpdate?.toString()).eq(
-      'Thu Jul 14 2022 16:18:52 GMT+0100 (British Summer Time)',
-    )
-    expect(result.nextPriceUpdate?.toString()).eq(
-      'Thu Jul 14 2022 17:18:52 GMT+0100 (British Summer Time)',
-    )
+    expect(moment(result.currentPriceUpdate).unix()).eq(1657811932)
+    expect(moment(result.nextPriceUpdate).unix()).eq(1657815532)
     expect(result.priceUpdateInterval?.toString()).eq('3600000')
     expect(result.isStaticPrice).eq(false)
     expect(result.percentageChange?.toString()).eq('99999')
@@ -227,10 +224,7 @@ describe('createOraclePriceData$', () => {
     it('calls zzz for currentPriceUpdate', () => {
       runTest({
         requestedValue: 'currentPriceUpdate',
-        runAssertion: (result) =>
-          expect(result.currentPriceUpdate?.toString()).eq(
-            'Thu Jul 14 2022 16:18:52 GMT+0100 (British Summer Time)',
-          ),
+        runAssertion: (result) => expect(moment(result.currentPriceUpdate).unix()).eq(1657811932),
         streamsCalled: ['zzz$'],
         streamsNotCalled: ['hop$', 'peek$', 'peep$'],
       })
@@ -239,10 +233,7 @@ describe('createOraclePriceData$', () => {
     it('calls zzz$ and hop$ for currentPriceUpdate', () => {
       runTest({
         requestedValue: 'nextPriceUpdate',
-        runAssertion: (result) =>
-          expect(result.nextPriceUpdate?.toString()).eq(
-            'Thu Jul 14 2022 17:18:52 GMT+0100 (British Summer Time)',
-          ),
+        runAssertion: (result) => expect(moment(result.nextPriceUpdate).unix()).eq(1657815532),
         streamsCalled: ['zzz$', 'hop$'],
         streamsNotCalled: ['peek$', 'peep$'],
       })

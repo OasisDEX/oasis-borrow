@@ -5,7 +5,7 @@ import { Observable, of, throwError } from 'rxjs'
 import { getStateUnpacker } from '../helpers/testHelpers'
 import { getCollateralLocked$, getTotalValueLocked$ } from './collateral'
 import { ContextConnected } from './network'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 describe('getCollateralLocked$', () => {
   it('should return error when no ilk to token mappings', () => {
@@ -69,7 +69,7 @@ describe('getTotalValueLocked$', () => {
       }
       return throwError(new Error('Not found'))
     }
-    function oraclePriceData$(token: string): Observable<OraclePriceData> {
+    function mockOraclePriceData$({ token }: OraclePriceDataArgs): Observable<OraclePriceData> {
       if (token === 'token') {
         return of({
           currentPrice: new BigNumber(2),
@@ -78,7 +78,7 @@ describe('getTotalValueLocked$', () => {
       return throwError(new Error('Not found'))
     }
 
-    const result = getTotalValueLocked$(getCollateralLocked$, oraclePriceData$, 'ilk')
+    const result = getTotalValueLocked$(getCollateralLocked$, mockOraclePriceData$, 'ilk')
 
     const state = getStateUnpacker(result)()
 
