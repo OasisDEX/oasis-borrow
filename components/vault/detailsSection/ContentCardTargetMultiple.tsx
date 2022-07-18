@@ -11,23 +11,23 @@ import React from 'react'
 interface ContentCardTargetMultipleProps {
   targetMultiple?: BigNumber
   targetColRatio?: BigNumber
-  aftertargetMultiple?: BigNumber
+  afterTargetMultiple?: BigNumber
   changeVariant?: ChangeVariantType
 }
 
 export function ContentCardTargetMultiple({
   targetMultiple,
   targetColRatio,
-  aftertargetMultiple,
+  afterTargetMultiple,
   changeVariant,
 }: ContentCardTargetMultipleProps) {
   const { t } = useTranslation()
 
   const formatted = {
     targetMultiple: `${targetMultiple?.toFixed(1)}x`,
-    aftertargetMultiple: `${aftertargetMultiple?.toFixed(2)}x`,
+    afterTargetMultiple: `${afterTargetMultiple?.toFixed(2)}x`,
     targetColRatio:
-    targetColRatio &&
+      targetColRatio &&
       formatPercent(targetColRatio, {
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
@@ -39,9 +39,9 @@ export function ContentCardTargetMultiple({
   }
 
   if (targetMultiple) contentCardSettings.value = formatted.targetMultiple
-  if (aftertargetMultiple && changeVariant)
+  if (afterTargetMultiple && changeVariant)
     contentCardSettings.change = {
-      value: `${formatted.aftertargetMultiple} ${t('system.cards.common.after')}`,
+      value: `${formatted.afterTargetMultiple} ${t('system.cards.common.after')}`,
       variant: changeVariant,
     }
   if (targetColRatio)

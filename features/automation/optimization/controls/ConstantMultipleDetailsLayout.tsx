@@ -6,6 +6,7 @@ import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionConte
 import { AppLink } from 'components/Links'
 import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
+import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTargetMultiple copy'
 import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -38,6 +39,12 @@ export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetails
                 targetMultiple={new BigNumber(2)}
                 // aftertargetMultiple={new BigNumber(2.2)}
                 targetColRatio={new BigNumber(200)}
+                // changeVariant="positive"
+              />
+              <ContentCardTotalCostOfFeature
+                totalCost={new BigNumber(5000)}
+                // afterTotalCost={new BigNumber(5040.85)}
+                PnLSinceEnabled={new BigNumber(48.25)}
                 // changeVariant="positive"
               />
               <ContentCardTriggerColRatio token={token} />
