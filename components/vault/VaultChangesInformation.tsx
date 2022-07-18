@@ -46,7 +46,7 @@ export function VaultChangesInformationItem({
       onClick={handleClick}
     >
       <Flex
-        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        sx={{ color: 'neutral80', justifyContent: 'flex-end' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -58,7 +58,7 @@ export function VaultChangesInformationItem({
           {tooltip}
         </Tooltip>
       )}
-      <Box sx={{ color: 'primary' }}>{value}</Box>
+      <Box sx={{ color: 'primary100' }}>{value}</Box>
     </Flex>
   )
 }
@@ -72,7 +72,7 @@ export function VaultChangesInformationContainer({
       as="ul"
       sx={{
         p: 3,
-        backgroundColor: 'secondaryAlt',
+        backgroundColor: 'neutral30',
         borderRadius: 'medium',
       }}
     >
@@ -92,7 +92,7 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {
@@ -107,9 +107,7 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
       const textPending = 'Pending...'
 
       return (
-        <Text sx={{ color: 'text.subtitle' }}>
-          {withBrackets ? `(${textPending})` : textPending}
-        </Text>
+        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
       )
     case GasEstimationStatus.error:
     case GasEstimationStatus.unknown:

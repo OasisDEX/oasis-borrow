@@ -34,7 +34,7 @@ export function ManageVaultHeaderAllowance({
             : t('vault-form.header.review-manage')}
         </Text>
       </WithVaultFormStepIndicator>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
         {isProxyStage ? (
           <VaultProxySubtitle stage={stage} />
         ) : isCollateralAllowanceStage ? (

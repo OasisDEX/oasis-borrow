@@ -71,13 +71,13 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                         padding: 2,
                         borderRadius: 'small',
                         transform: 'translate(-50%, 0)',
-                        boxShadow: 'surface',
+                        boxShadow: 'neutral10',
                         fontFamily: 'body',
                         fontWeight: 'body',
                         lineHeight: 'body',
                         fontSize: 1,
                         color: 'white',
-                        bg: 'primary',
+                        bg: 'primary100',
                       },
                     }
                   : {}),
@@ -90,7 +90,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
           as="hr"
           sx={{
             display: ['block', 'none', 'none'],
-            borderColor: 'border',
+            borderColor: 'neutral20',
             borderWidth: '1px',
             borderTop: 'none',
             mb: 3,
@@ -123,7 +123,7 @@ function Graph({ assetRatio }: { assetRatio: Dictionary<BigNumber> }) {
                 <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
                   {token}
                 </Text>
-                <Text variant="paragraph3" sx={{ color: 'text.muted', ml: [2, 0, 0] }}>
+                <Text variant="paragraph3" sx={{ color: 'neutral80', ml: [2, 0, 0] }}>
                   {formatPercent(ratio.isNaN() ? zero : ratio.times(100), { precision: 2 })}
                 </Text>
               </Box>
@@ -141,7 +141,7 @@ export function Summary({ summary }: { summary: VaultSummary }) {
     <Card variant="surface" sx={{ mb: 5, px: 4 }}>
       <Grid sx={{ pt: 3 }} columns={['1fr', 'repeat(4, 1fr)', 'repeat(4, 1fr)']}>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
+          <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
             {t('vaults-overview.number-of-vaults')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>
@@ -149,7 +149,7 @@ export function Summary({ summary }: { summary: VaultSummary }) {
           </Text>
         </Box>
         <Box sx={{ gridColumn: ['initial', 'span 2', 'initial'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
+          <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
             {t('vaults-overview.total-locked')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>
@@ -159,7 +159,7 @@ export function Summary({ summary }: { summary: VaultSummary }) {
         <Box
           sx={{ gridRow: ['initial', '2/3', 'auto'], gridColumn: ['initial', 'span 2', 'initial'] }}
         >
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
+          <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
             {t('vaults-overview.total-debt')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>
@@ -168,7 +168,7 @@ export function Summary({ summary }: { summary: VaultSummary }) {
           </Text>
         </Box>
         <Box sx={{ gridRow: ['initial', '2/3', 'auto'] }}>
-          <Text variant="paragraph2" sx={{ color: 'text.muted' }}>
+          <Text variant="paragraph2" sx={{ color: 'neutral80' }}>
             {t('vaults-overview.vaults-at-risk')}
           </Text>
           <Text variant="header2" sx={{ mt: 2 }}>

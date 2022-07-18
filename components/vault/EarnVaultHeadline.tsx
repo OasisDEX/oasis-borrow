@@ -29,7 +29,7 @@ export function EarnVaultHeadline({ header, token, details }: EarnVaultHeadlineP
         sx={{
           fontWeight: 'semiBold',
           fontSize: '28px',
-          color: 'primary',
+          color: 'primary100',
         }}
       >
         <Icon name={iconCircle} size="32px" sx={{ verticalAlign: 'text-bottom', mr: 2 }} />

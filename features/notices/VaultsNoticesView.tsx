@@ -106,7 +106,7 @@ export function VaultLiquidatingNextPriceNotice({
                 >
                   {'<2'}
                 </Heading>
-                <Text sx={{ lineHeight: 'tight', fontSize: 1, color: 'mutedAlt' }}>mins</Text>
+                <Text sx={{ lineHeight: 'tight', fontSize: 1, color: 'neutral80Alt' }}>mins</Text>
               </Box>
             }
           />
@@ -370,7 +370,7 @@ export function VaultNextPriceUpdateCounter({
             <Heading as="h3" sx={{ lineHeight: '1.0', color: 'banner.warning' }}>
               {remainingTime && Math.floor(remainingTime / 60)}
             </Heading>
-            <Text sx={{ lineHeight: '1.0', fontSize: 1, color: 'mutedAlt' }}>mins</Text>
+            <Text sx={{ lineHeight: '1.0', fontSize: 1, color: 'neutral80Alt' }}>mins</Text>
           </Box>
         )
       }}

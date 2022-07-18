@@ -108,12 +108,12 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       </Flex>
       <Flex sx={{ justifyContent: 'center' }}>
         <Box sx={{ textAlign: 'center', maxWidth: 980 }}>
-          <Text sx={{ display: 'inline', color: 'text.subtitle' }} variant="paragraph1">
+          <Text sx={{ display: 'inline', color: 'neutral80' }} variant="paragraph1">
             {t(content.descriptionKey)}
           </Text>
           <AppLink href={t(content.link)}>
-            <WithArrow sx={{ display: 'inline', color: 'link', ml: 2 }}>
-              <Text sx={{ display: 'inline', color: 'link' }} variant="paragraph1">
+            <WithArrow sx={{ display: 'inline', color: 'interactive100', ml: 2 }}>
+              <Text sx={{ display: 'inline', color: 'interactive100' }} variant="paragraph1">
                 {t('learn-more-about')} {content.symbol}
               </Text>
             </WithArrow>

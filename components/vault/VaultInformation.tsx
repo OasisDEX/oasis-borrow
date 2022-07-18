@@ -15,10 +15,10 @@ interface VaultInformationItemProps {
 function VaultInformationItem({ text, value }: VaultInformationItemProps) {
   return (
     <DefinitionListItem sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Text as="span" sx={{ color: 'text.subtitle' }}>
+      <Text as="span" sx={{ color: 'neutral80' }}>
         {text}
       </Text>
-      <Text as="span" sx={{ color: 'primary' }}>
+      <Text as="span" sx={{ color: 'primary100' }}>
         {value}
       </Text>
     </DefinitionListItem>
@@ -48,7 +48,9 @@ export function VaultInformation({ items }: VaultInformationProps) {
         ))}
       </DefinitionList>
       <AppLink href="https://kb.oasis.app/help">
-        <WithArrow sx={{ color: 'link', fontSize: 1, mt: 3 }}>{t('learn-more-at-oasis')}</WithArrow>
+        <WithArrow sx={{ color: 'interactive100', fontSize: 1, mt: 3 }}>
+          {t('learn-more-at-oasis')}
+        </WithArrow>
       </AppLink>
     </Card>
   )

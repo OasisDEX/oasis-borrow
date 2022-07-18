@@ -16,13 +16,13 @@ export function SidebarManageMultiplyVaultTransitionStage({
     <Grid gap={3}>
       {stage === 'borrowTransitionEditing' ? (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('multiply-to-borrow.title1')}
           </Text>
           <ListWithIcon
             icon="checkmark"
             iconSize="14px"
-            iconColor="primary"
+            iconColor="primary100"
             items={[
               t('multiply-to-borrow.checkmark1'),
               t('multiply-to-borrow.checkmark2'),
@@ -33,7 +33,7 @@ export function SidebarManageMultiplyVaultTransitionStage({
         </>
       ) : (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('multiply-to-borrow.title2')}
           </Text>
           <Icon name="borrow_transition" size="auto" sx={{ fill: 'none' }} />

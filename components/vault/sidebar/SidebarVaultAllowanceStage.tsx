@@ -12,7 +12,7 @@ export function SidebarVaultAllowanceStage(props: CommonVaultState) {
 
   return (
     <Grid gap={3}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('vault-form.subtext.allowance')}
       </Text>
       {stage === 'collateralAllowanceWaitingForConfirmation' && (

@@ -20,10 +20,10 @@ export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps)
     case 'txInProgress':
       return (
         <>
-          <Text variant="paragraph3" sx={{ mb: 2, color: 'lavender' }}>
+          <Text variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
             {t('protection.cancelling-downside-protection-desc')}
           </Text>
-          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'lavender' }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>
             {t('protection.position-again-at-risk')}
           </Text>
           <AddingStopLossAnimation />
@@ -32,7 +32,7 @@ export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps)
     case 'txSuccess':
       return (
         <>
-          <Text variant="paragraph3" sx={{ mb: 2, color: 'lavender' }}>
+          <Text variant="paragraph3" sx={{ mb: 2, color: 'neutral80' }}>
             {t('protection.cancel-protection-complete-desc')}
           </Text>
           <AppLink

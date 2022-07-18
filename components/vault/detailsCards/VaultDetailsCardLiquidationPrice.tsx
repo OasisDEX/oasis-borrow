@@ -119,7 +119,7 @@ export function VaultDetailsCardLiquidationPrice({
           precision: 2,
           roundMode: BigNumber.ROUND_DOWN,
         })}
-        <Text as="span" sx={{ color: 'text.subtitle' }}>
+        <Text as="span" sx={{ color: 'neutral80' }}>
           {` ${liquidationPriceCurrentPriceDifference.lt(zero) ? 'above' : 'below'} current price`}
         </Text>
       </>

@@ -7,7 +7,7 @@ import { zero } from 'helpers/zero'
 import React, { ReactNode } from 'react'
 import { Box, Card, Flex, Grid, Heading, SxProps, Text } from 'theme-ui'
 
-export type CollRatioColor = 'primary' | 'onError' | 'onWarning' | 'onSuccess'
+export type CollRatioColor = 'primary100' | 'critical100' | 'warning100' | 'success100'
 
 export type AfterPillProps = {
   showAfterPill?: boolean
@@ -34,29 +34,29 @@ export function getCollRatioColor(
     !collateralizationRatio.isZero()
 
   return collateralizationRatio.isZero()
-    ? 'primary'
+    ? 'primary100'
     : vaultWillBeAtRiskLevelDanger || vaultWillBeUnderCollateralized
-    ? 'onError'
+    ? 'critical100'
     : vaultWillBeAtRiskLevelWarning
-    ? 'onWarning'
-    : 'onSuccess'
+    ? 'warning100'
+    : 'success100'
 }
 
 export function getPriceChangeColor({
   collateralPricePercentageChange,
 }: Pick<PriceInfo, 'collateralPricePercentageChange'>) {
   return collateralPricePercentageChange.isZero()
-    ? 'text.muted'
+    ? 'neutral80'
     : collateralPricePercentageChange.gt(zero)
-    ? 'onSuccess'
-    : 'onError'
+    ? 'success100'
+    : 'critical100'
 }
 
 export function getAfterPillColors(collRatioColor: CollRatioColor) {
-  if (collRatioColor === 'primary') {
+  if (collRatioColor === 'primary100') {
     return {
-      color: 'onSuccess',
-      bg: 'success',
+      color: 'success100',
+      bg: 'success10',
     }
   }
 
@@ -74,8 +74,8 @@ export function VaultDetailsAfterPill({
   return (
     <Card
       sx={{
-        bg: 'success',
-        color: 'onSuccess',
+        bg: 'success10',
+        color: 'success100',
         fontWeight: 'semiBold',
         border: 'none',
         px: 2,
@@ -119,14 +119,14 @@ export function VaultDetailsCard({
         display: 'flex',
         opacity: relevant ? 1 : 0.5,
         svg: {
-          color: 'text.subtitle',
+          color: 'neutral80',
         },
         ...(openModal && {
           cursor: 'pointer',
           '&:hover': {
             boxShadow: 'vaultDetailsCard',
             svg: {
-              color: 'primary',
+              color: 'primary100',
             },
           },
         }),
@@ -205,7 +205,7 @@ export function VaultDetailsSummaryItem({
 }: { label: ReactNode; value: ReactNode; valueAfter?: ReactNode } & AfterPillProps) {
   return (
     <Grid gap={1}>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', fontWeight: 'semiBold' }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', fontWeight: 'semiBold' }}>
         {label}
       </Text>
       <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>

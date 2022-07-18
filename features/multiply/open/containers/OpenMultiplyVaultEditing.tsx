@@ -46,10 +46,10 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
           colors?.sliderTrackFill
-        } ${slider.toNumber()}%, ${colors?.primaryAlt} ${slider.toNumber()}%, ${
-          colors?.primaryAlt
+        } ${slider.toNumber()}%, ${colors?.neutral60} ${slider.toNumber()}%, ${
+          colors?.neutral60
         } 100%)`
-      : 'primaryAlt'
+      : 'neutral60'
 
   const { t } = useTranslation()
 
@@ -84,7 +84,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
               fontWeight: 'semiBold',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Grid gap={2}>
@@ -128,7 +128,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
             sx={{
               variant: 'text.paragraph4',
               justifyContent: 'space-between',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             <Text>Decrease risk</Text>

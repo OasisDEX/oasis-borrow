@@ -33,13 +33,13 @@ export function SidebarSectionContent({ activePanel, content }: SidebarSectionCo
           borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-thumb': {
-          backgroundColor: theme.colors.grey.darker,
+          backgroundColor: theme.colors.secondary100,
           borderRadius: theme.radii.large,
         },
         '&::-webkit-scrollbar-track': {
           my: '24px',
           mr: '10px',
-          backgroundColor: theme.colors.backgroundAlt,
+          backgroundColor: theme.colors.secondary60,
           borderRadius: theme.radii.large,
         },
         maxHeight: 490,

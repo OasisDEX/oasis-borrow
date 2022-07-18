@@ -26,7 +26,7 @@ export function SidebarAutoSellCreationStage({
       return (
         <>
           <AddingStopLossAnimation />
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && t('auto-sell.add-content')}
             {isRemoveForm && t('auto-sell.remove-content')}
           </Text>
@@ -40,7 +40,7 @@ export function SidebarAutoSellCreationStage({
               <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
             </Flex>
           </Box>
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && (
               <>
                 {t('auto-sell.add-complete-content')}{' '}

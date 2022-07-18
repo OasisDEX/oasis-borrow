@@ -63,7 +63,7 @@ export function GuniManageMultiplyVaultChangesInformation(props: ManageMultiplyV
               ) : (
                 <Text>
                   ${marketPrice ? formatFiatBalance(marketPrice) : formatFiatBalance(zero)}{' '}
-                  <Text as="span" sx={{ color: 'onError' }}>
+                  <Text as="span" sx={{ color: 'critical100' }}>
                     ({formatPercent(impact, { precision: 2 })})
                   </Text>
                 </Text>

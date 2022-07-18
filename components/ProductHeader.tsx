@@ -35,7 +35,7 @@ export function ProductHeader({ title, description, link, scrollToId }: ProductH
       <Text
         variant="paragraph1"
         sx={{
-          color: 'lavender',
+          color: 'neutral80',
           mb: 3,
         }}
       >
