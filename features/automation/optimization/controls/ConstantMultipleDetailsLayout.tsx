@@ -4,10 +4,10 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
-import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
 import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTargetMultiple copy'
-import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
+import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
+import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -47,8 +47,8 @@ export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetails
                 PnLSinceEnabled={new BigNumber(48.25)}
                 // changeVariant="positive"
               />
-              <ContentCardTriggerColRatio token={token} />
-              <ContentCardSellTriggerCollRatio token={token} />
+              <ContentCardTriggerColRatioToBuy token={token} />
+              <ContentCardTriggerColRatioToSell token={token} />
             </DetailsSectionContentCardWrapper>
           }
         />
