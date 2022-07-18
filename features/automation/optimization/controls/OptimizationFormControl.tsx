@@ -67,7 +67,6 @@ export function OptimizationFormControl({
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   console.log('activeAutomationFeature')
   console.log(activeAutomationFeature)
-  useConstantMultipleStateInitialization()
   return (
     <>
     <AutoBuyFormControl
