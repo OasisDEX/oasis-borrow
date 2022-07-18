@@ -20,32 +20,6 @@ export interface PriceInfo {
   collateralPricePercentageChange: BigNumber
   ethPricePercentageChange: BigNumber
 }
-//
-// type CreatePriceInfo$Args = {
-//   token: string
-//   updateFrequency: number
-//   includeEth: boolean
-// }
-//
-// // type CreatePriceInfo$ = (
-// //   oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
-// //   { token, updateFrequency }: CreatePriceInfo$Args,
-// // ) => Observable<PriceInfo>
-//
-// export function createPriceInfo$(
-//   oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
-//   { token, updateFrequency }: CreatePriceInfo$Args,
-// ): Observable<PriceInfo>
-//
-// export function createPriceInfo$(
-//   oraclePriceData$: (token: string, updateFrequencyMs: number) => Observable<OraclePriceData>,
-//   { token, updateFrequency }: CreatePriceInfo$Args,
-// ): Observable<PriceInfo>
-
-type PriceInfoArgs = {
-  token: string
-  requestedData: Array<string>
-}
 
 export function createPriceInfo$(
   oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,

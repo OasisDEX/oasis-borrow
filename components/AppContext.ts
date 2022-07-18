@@ -873,7 +873,7 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsData$ = createProductCardsData$(ilkDataList$, oraclePriceData$)
   const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
 
   const automationTriggersData$ = memoize(
