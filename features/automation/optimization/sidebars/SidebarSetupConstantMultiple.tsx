@@ -111,7 +111,6 @@ export function SidebarSetupConstantMultiple({
                       handleChangeMultiplier(acceptableMultipliers[5])
                     },
                   },
-                  
                 ]}
               />
       
