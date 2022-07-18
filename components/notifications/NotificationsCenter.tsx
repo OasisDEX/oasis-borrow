@@ -42,7 +42,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         // TODO: Needs to be calculated but possibly be easier to get designers to adapt to this as its simpler from dev perspective & looks just as good
         ...notificationCenterStyles,
         transition: 'transform 0.3s ease-in-out',
-        transform: !isOpen ? 'translateX(400%)' : 'translateXq(0)',
+        transform: !isOpen ? 'translateX(400%)' : 'translateX(0)',
       }}
     >
       <NotificationsCenterHeader
