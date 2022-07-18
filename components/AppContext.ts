@@ -83,6 +83,7 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSChangeAction,
   basicBSFormChangeReducer,
+  ConstantMultipleChangeAction,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
@@ -315,6 +316,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  ConstantMultipleChangeAction: ConstantMultipleChangeAction
 }
 
 export type UIChanges = {

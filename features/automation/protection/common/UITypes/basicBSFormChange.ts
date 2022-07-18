@@ -16,26 +16,36 @@ export type BasicBSTriggerResetData = Pick<
   withThreshold: boolean
 }
 
-export type BasicBSChangeAction =
-  | { type: 'trigger-id'; triggerId: BigNumber }
-  | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
-  | { type: 'target-coll-ratio'; targetCollRatio: BigNumber }
-  | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
-  | { type: 'continuous'; continuous: boolean }
-  | { type: 'deviation'; deviation: BigNumber }
-  | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
-  | { type: 'current-form'; currentForm: CurrentBSForm }
-  | { type: 'with-threshold'; withThreshold: boolean }
-  | { type: 'reset'; resetData: BasicBSTriggerResetData }
-  | {
-      type: 'tx-details'
-      txDetails: {
-        txStatus?: TxStatus
-        txError?: TxError
-        txHash?: string
-        txCost?: BigNumber
-      }
+type AutomationChangeAction =   | { type: 'trigger-id'; triggerId: BigNumber }
+| { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
+| { type: 'target-coll-ratio'; targetCollRatio: BigNumber }
+| { type: 'continuous'; continuous: boolean }
+| { type: 'deviation'; deviation: BigNumber }
+| { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
+| { type: 'current-form'; currentForm: CurrentBSForm }
+| { type: 'reset'; resetData: BasicBSTriggerResetData }
+| {
+    type: 'tx-details'
+    txDetails: {
+      txStatus?: TxStatus
+      txError?: TxError
+      txHash?: string
+      txCost?: BigNumber
     }
+  }
+
+export type BasicBSChangeAction = AutomationChangeAction 
+  | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
+  | { type: 'with-threshold'; withThreshold: boolean }
+
+export type ConstantMultipleChangeAction = AutomationChangeAction
+| { type: 'max-buy-price'; maxBuyPrice?: BigNumber }
+| { type: 'min-sell-price'; minSellPrice?: BigNumber }
+| { type: 'buy-with-threshold'; buyWithThreshold: boolean }
+| { type: 'sell-with-threshold'; sellWithThreshold: boolean }
+| { type: 'multiplier'; multiplier: number }
+
+
 
 export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
