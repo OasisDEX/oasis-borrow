@@ -156,5 +156,7 @@ export function collateralPriceAtRatio({
   collateral,
   vaultDebt,
 }: CollateralPriceAtRatioThresholdArgs): BigNumber {
-  return collateral.eq(zero) ? zero : vaultDebt.times(colRatio).div(collateral)
+  return collateral.isZero() || vaultDebt.isZero()
+    ? zero
+    : vaultDebt.times(colRatio).div(collateral)
 }
