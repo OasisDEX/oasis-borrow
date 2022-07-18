@@ -83,7 +83,6 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSChangeAction,
   basicBSFormChangeReducer,
-  ConstantMultipleChangeAction,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
@@ -243,6 +242,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { ConstantMultipleChangeAction } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 export type TxData =
   | OpenData
   | DepositAndGenerateData

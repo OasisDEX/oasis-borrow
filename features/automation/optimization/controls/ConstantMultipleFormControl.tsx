@@ -2,8 +2,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { Context } from 'blockchain/network'
 import React, { useMemo } from 'react'
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
-import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import BigNumber from 'bignumber.js'
+import { CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 
 interface ConstantMultipleFormControlProps {
     context: Context
