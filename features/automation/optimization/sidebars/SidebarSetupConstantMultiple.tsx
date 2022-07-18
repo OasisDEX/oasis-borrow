@@ -3,15 +3,15 @@ import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
-import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import {
-  AutomationChangeFeature,
   AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
-  ConstantMultipleFormChange,
   CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
@@ -19,7 +19,7 @@ import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLa
 import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode, useCallback } from 'react'
+import React, {  useCallback } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
@@ -214,6 +214,7 @@ export function SidebarSetupConstantMultiple({
             toggleOffLabel={t('protection.set-threshold')}
             toggleOffPlaceholder={t('protection.no-threshold')}
           />
+          <ConstantMultipleInfoSectionControl />
         </Grid>
       ),
       primaryButton: {
@@ -241,4 +242,10 @@ function txHandler(): void {
 }
 function textButtonHandler(): void {
   alert('switch to remove')
+}
+
+interface ConstantMultipleInfoSectionControlProps {}
+
+function ConstantMultipleInfoSectionControl({}: ConstantMultipleInfoSectionControlProps) {
+  return <ConstantMultipleInfoSection />
 }

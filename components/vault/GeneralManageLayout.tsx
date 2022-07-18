@@ -46,7 +46,6 @@ export function GeneralManageLayout({
   // TODO ŁW no triggers deployed so far
   useConstantMultipleStateInitialization()
 
-
   const headlineElement =
     generalManageVault.type === VaultType.Earn ? (
       <GuniVaultHeader token={ilkData.token} ilk={ilkData.ilk} />

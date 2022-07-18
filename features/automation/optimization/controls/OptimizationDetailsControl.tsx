@@ -23,9 +23,7 @@ export function OptimizationDetailsControl({
   return (
     <>
       <BasicBuyDetailsControl vault={vault} basicBuyTriggerData={basicBuyTriggerData} />
-      {constantMultipleEnabled && (
-          <ConstantMultipleDetailsControl vault={vault} />
-      )}
+      {constantMultipleEnabled && <ConstantMultipleDetailsControl vault={vault} />}
     </>
   )
 }

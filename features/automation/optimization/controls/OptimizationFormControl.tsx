@@ -9,14 +9,17 @@ import { extractBasicBSData } from 'features/automation/common/basicBSTriggerDat
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
-import { AutomationChangeFeature, AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
+
 import { ConstantMultipleFormControl } from './ConstantMultipleFormControl'
 
 interface OptimizationFormControlProps {
@@ -48,7 +51,6 @@ export function OptimizationFormControl({
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
-
   const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
@@ -69,7 +71,7 @@ export function OptimizationFormControl({
   console.log(activeAutomationFeature)
   return (
     <>
-    <AutoBuyFormControl
+      <AutoBuyFormControl
         vault={vault}
         ilkData={ilkData}
         priceInfo={priceInfo}
@@ -81,11 +83,15 @@ export function OptimizationFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
-        tokenMarketPrice={tokenMarketPrice} 
-        isAutoBuyActive={isAutoBuyActive} />
-{constantMultipleEnabled && 
-     <ConstantMultipleFormControl context={context} isConstantMultipleActive={isConstantMultipleActive}/>
-}      
-      </>
+        tokenMarketPrice={tokenMarketPrice}
+        isAutoBuyActive={isAutoBuyActive}
+      />
+      {constantMultipleEnabled && (
+        <ConstantMultipleFormControl
+          context={context}
+          isConstantMultipleActive={isConstantMultipleActive}
+        />
+      )}
+    </>
   )
 }
