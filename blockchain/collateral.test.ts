@@ -47,7 +47,6 @@ describe('getCollateralLocked$', () => {
     const result = getCollateralLocked$(of(context), ilkToToken$, balance$, ilk)
 
     const state = getStateUnpacker(result)()
-    console.log(state)
 
     expect(state).to.eql({
       ilk: 'ilk',

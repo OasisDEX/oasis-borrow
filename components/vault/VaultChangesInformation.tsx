@@ -115,7 +115,6 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
     case undefined:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      console.log(`gasEstimationUsd ${gasEstimationUsd}`)
       const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
 
       return withBrackets ? `(${textGas})` : textGas
