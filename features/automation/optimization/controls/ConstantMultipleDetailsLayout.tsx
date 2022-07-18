@@ -78,8 +78,8 @@ export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetails
             }
             image={{
               src: '/static/img/setup-banner/constant-multiply.svg',
-              backgroundColor: bannerGradientPresets.autoBuy[0],
-              backgroundColorEnd: bannerGradientPresets.autoBuy[1],
+              backgroundColor: bannerGradientPresets.constantMultiply[0],
+              backgroundColorEnd: bannerGradientPresets.constantMultiply[1],
             }}
             button={{
               action: () => {
