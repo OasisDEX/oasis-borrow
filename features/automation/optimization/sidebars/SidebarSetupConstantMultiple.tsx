@@ -1,9 +1,12 @@
 import { ActionPills } from 'components/ActionPills'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import {
   AutomationChangeFeature,
   AUTOMATION_CHANGE_FEATURE,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -11,16 +14,16 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useCallback } from 'react'
 import { Grid } from 'theme-ui'
 
-interface SidebarSetupContantMultipleProps {
+interface SidebarSetupConstantMultipleProps {
   stage: SidebarVaultStages
-
+  constantMultipleState: ConstantMultipleFormChange // TODO state needs to be initialized
   isAddForm: boolean
   isRemoveForm: boolean
   // isEditing: boolean
   isDisabled: boolean
   isFirstSetup: boolean
 
-  multiplier?: number
+  // multiplier?: number
   onChange: (multiplier: number) => void
 
 }
@@ -32,9 +35,10 @@ export function SidebarSetupConstantMultiple({
   isDisabled,
   isFirstSetup,
   stage,
-  multiplier =2,
+  // multiplier =2,
   onChange: onMultiplierChange,
-}: SidebarSetupContantMultipleProps) {
+  constantMultipleState,
+}: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -62,7 +66,7 @@ export function SidebarSetupConstantMultiple({
       title: t('constant-multiple.title'),
       content: <Grid gap={3}>
          <ActionPills
-                active={multiplier.toString()}
+                active={constantMultipleState?.multiplier ? constantMultipleState.multiplier.toString() : INITIAL_MULTIPLIER_SELECTED.toString()}
                 variant="secondary"
                 items={[
                   {
@@ -110,6 +114,7 @@ export function SidebarSetupConstantMultiple({
                   
                 ]}
               />
+      
       </Grid>,
       primaryButton: {
         label: primaryButtonLabel,

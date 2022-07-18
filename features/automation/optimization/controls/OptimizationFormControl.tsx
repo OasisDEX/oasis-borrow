@@ -11,6 +11,7 @@ import { getActiveOptimizationFeature } from 'features/automation/protection/com
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AutomationChangeFeature, AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { useConstantMultipleStateInitialization } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -66,7 +67,7 @@ export function OptimizationFormControl({
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   console.log('activeAutomationFeature')
   console.log(activeAutomationFeature)
-  
+  useConstantMultipleStateInitialization()
   return (
     <>
     <AutoBuyFormControl
