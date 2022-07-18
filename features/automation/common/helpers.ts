@@ -77,17 +77,16 @@ export function checkIfDisabledBasicBS({
   stage: SidebarVaultStages
 }) {
   return (
-    ((isProgressStage ||
+    (isProgressStage ||
       !isOwner ||
       !isEditing ||
       (isAddForm &&
-        basicBSState.withThreshold &&
-        (basicBSState.maxBuyOrMinSellPrice === undefined ||
-          basicBSState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicBSState.execCollRatio.isZero()) &&
-      stage !== 'txSuccess') ||
-    basicBSState.execCollRatio.isZero() ||
-    basicBSState.targetCollRatio.isZero()
+        (basicBSState.execCollRatio.isZero() ||
+          basicBSState.targetCollRatio.isZero() ||
+          (basicBSState.withThreshold &&
+            (basicBSState.maxBuyOrMinSellPrice === undefined ||
+              basicBSState.maxBuyOrMinSellPrice?.isZero()))))) &&
+    stage !== 'txSuccess'
   )
 }
 
