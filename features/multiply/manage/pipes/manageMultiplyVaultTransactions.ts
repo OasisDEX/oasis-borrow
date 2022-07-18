@@ -12,8 +12,7 @@ import { Context } from 'blockchain/network'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
 import { getQuote$, getTokenMetaData } from 'features/exchange/exchange'
 import { transactionToX } from 'helpers/form'
-import { OAZO_FEE, SLIPPAGE } from 'helpers/multiply/calculations'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 import { iif, Observable, of } from 'rxjs'
 import { catchError, filter, first, startWith, switchMap } from 'rxjs/operators'
 
@@ -651,8 +650,6 @@ export function applyEstimateGas(
 
     if (proxyAddress) {
       if (requiredCollRatio) {
-
-
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
