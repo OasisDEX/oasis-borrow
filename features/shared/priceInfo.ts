@@ -42,6 +42,11 @@ export interface PriceInfo {
 //   { token, updateFrequency }: CreatePriceInfo$Args,
 // ): Observable<PriceInfo>
 
+type PriceInfoArgs = {
+  token: string
+  requestedData: Array<string>
+}
+
 export function createPriceInfo$(
   oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   token: string,

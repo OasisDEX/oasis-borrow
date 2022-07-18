@@ -218,15 +218,6 @@ export type OraclePriceDataArgs = {
   requestedData: Array<keyof OraclePriceData>
 }
 
-// export function createOraclePriceData$(
-//   context$: Observable<Context>,
-//   pipPeek$: (token: string) => Observable<[string, boolean]>,
-//   pipPeep$: (token: string) => Observable<[string, boolean]>,
-//   pipZzz$: (token: string) => Observable<BigNumber>,
-//   pipHop$: (token: string) => Observable<BigNumber>,
-//   token: string,
-// ): Observable<OraclePriceData>
-
 export function createOraclePriceData$(
   context$: Observable<Context>,
   pipPeek$: (token: string) => Observable<[string, boolean]>,
