@@ -5,7 +5,7 @@ import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
 import { ContentCardTargetMultiple } from 'components/vault/detailsSection/ContentCardTargetMultiple'
-import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTargetMultiple copy'
+import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTotalCostOfFeature'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
 import {
