@@ -77,7 +77,8 @@ export function OptimizationFormControl({
         isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
         context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}  />
+        ethMarketPrice={ethMarketPrice}
+        isAutoBuyActive={isAutoBuyActive}  />
       {constantMultipleEnabled && (
         <ConstantMultipleFormControl
           context={context}

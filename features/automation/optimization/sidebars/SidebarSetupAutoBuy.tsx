@@ -132,8 +132,7 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
-  if (isAutoBuyActive) {
-    // if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
+    if (isAutoBuyActive) {
   const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
     const sidebarSectionProps: SidebarSectionProps = {
