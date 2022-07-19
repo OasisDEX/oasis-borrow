@@ -20,7 +20,7 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   multiplier: number
 }
 
-export function basicBSFormChangeReducer(
+export function constantMultipleFormChangeReducer(
   state: ConstantMultipleFormChange,
   action: ConstantMultipleChangeAction,
 ): ConstantMultipleFormChange {
