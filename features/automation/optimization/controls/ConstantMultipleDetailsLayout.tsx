@@ -21,13 +21,13 @@ import { Grid } from 'theme-ui'
 export interface ConstantMultipleDetailsLayoutProps {
   token: string
   targetMultiple: BigNumber
-  targetColRatio: BigNumber
+  targetColRatio?: BigNumber
   totalCost: BigNumber
-  PnLSinceEnabled: BigNumber
+  PnLSinceEnabled?: BigNumber
   triggerColRatioToBuy: BigNumber
-  nextBuyPrice: BigNumber
+  nextBuyPrice?: BigNumber
   triggerColRatioToSell: BigNumber
-  nextSellPrice: BigNumber
+  nextSellPrice?: BigNumber
   constantMultiplyTriggerData: ConstantMultiplyTriggerData
 }
 

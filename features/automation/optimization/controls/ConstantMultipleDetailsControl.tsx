@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { ConstantMultiplyTriggerData } from 'features/automation/common/constantMultiplyTriggerData'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
+import { calculatePNL } from 'helpers/multiply/calculations'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -9,36 +11,47 @@ import { ConstantMultipleDetailsLayout } from './ConstantMultipleDetailsLayout'
 
 interface ConstantMultipleDetailsControlProps {
   vault: Vault
+  vaultHistory: VaultHistoryEvent[]
+  tokenMarketPrice: BigNumber
   constantMultiplyTriggerData: ConstantMultiplyTriggerData
 }
 
 export function ConstantMultipleDetailsControl({
   vault,
+  vaultHistory,
+  tokenMarketPrice,
   constantMultiplyTriggerData,
 }: ConstantMultipleDetailsControlProps) {
+  const { debt, lockedCollateral, token } = vault
+  const { isTriggerEnabled } = constantMultiplyTriggerData
+  const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
   // TODO: get those values from constantMultiplyTriggerData when there is actual data
   const targetMultiple = new BigNumber(2)
-  const targetColRatio = new BigNumber(200)
   const totalCost = new BigNumber(3000)
-  const PnLSinceEnabled = new BigNumber(48.25)
   const triggerColRatioToBuy = new BigNumber(220)
   const triggerColRatioToSell = new BigNumber(180)
-  // ENDTODO
-  const nextBuyPrice = collateralPriceAtRatio({
-    colRatio: triggerColRatioToBuy.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
-  })
-  const nextSellPrice = collateralPriceAtRatio({
-    colRatio: triggerColRatioToSell.div(100),
-    collateral: vault.lockedCollateral,
-    vaultDebt: vault.debt,
-  })
+  const targetColRatio = isTriggerEnabled ? new BigNumber(200) : undefined
+  // TODO: vaultHistory should be cut down right after first found set up multiply event
+  const PnLSinceEnabled = isTriggerEnabled ? calculatePNL(vaultHistory, netValueUSD) : undefined
+  const nextBuyPrice = isTriggerEnabled
+    ? collateralPriceAtRatio({
+        colRatio: triggerColRatioToBuy.div(100),
+        collateral: lockedCollateral,
+        vaultDebt: debt,
+      })
+    : undefined
+  const nextSellPrice = isTriggerEnabled
+    ? collateralPriceAtRatio({
+        colRatio: triggerColRatioToSell.div(100),
+        collateral: lockedCollateral,
+        vaultDebt: debt,
+      })
+    : undefined
 
   return (
     <Grid>
       <ConstantMultipleDetailsLayout
-        token={vault.token}
+        token={token}
         targetMultiple={targetMultiple}
         targetColRatio={targetColRatio}
         totalCost={totalCost}

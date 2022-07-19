@@ -28,7 +28,7 @@ export function ContentCardTotalCostOfFeature({
     afterTotalCost: afterTotalCost && `$${formatAmount(afterTotalCost, 'USD')}`,
     PnLSinceEnabled:
       PnLSinceEnabled &&
-      formatPercent(PnLSinceEnabled, {
+      formatPercent(PnLSinceEnabled.times(100), {
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
