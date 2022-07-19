@@ -80,7 +80,9 @@ export function createUserReferral$(
           const filteredWeeklyClaims = weeklyClaims?.filter(
             (item) => !claimedWeeks.includes(item.week_number),
           )
-          const totalClaims = weeklyClaims ? weeklyClaims.reduce((p, c) => p.plus(c.amount), new BigNumber('0')) : zero;
+          const totalClaims = weeklyClaims
+            ? weeklyClaims.reduce((p, c) => p.plus(c.amount), zero)
+            : zero
           const claimsOut = {
             weeks: filteredWeeklyClaims?.map((item) => new BigNumber(item.week_number)),
             amounts: filteredWeeklyClaims?.map((item) => new BigNumber(item.amount)),
