@@ -144,7 +144,7 @@ export function SidebarAutoSellAddEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {basicSellState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-sell.set-trigger-description', {
               targetCollRatio: basicSellState.targetCollRatio.toNumber(),
@@ -182,14 +182,14 @@ export function SidebarAutoSellAddEditingStage({
           value1: basicSellState.targetCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'onWarning',
-          value1: 'onSuccess',
+          value0: 'warning100',
+          value1: 'success100',
         }}
         step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-sell.target-coll-ratio')}
-        leftThumbColor="onWarning"
-        rightThumbColor="onSuccess"
+        leftThumbColor="warning100"
+        rightThumbColor="success100"
       />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}

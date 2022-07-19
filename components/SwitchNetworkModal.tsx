@@ -90,7 +90,7 @@ export function SwitchNetworkModal({ close, type }: ModalProps<{ type: SwitchNet
             {(type === 'injected' || type === 'userNetwork') && t('wallet-wrong-network')}
             {type === 'appNetwork' && t('app-wrong-network')}
           </Heading>
-          <Text variant="paragraph3" sx={{ color: 'lavender', textAlign: 'center', mb: '24px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', textAlign: 'center', mb: '24px' }}>
             {type === 'injected' && t('wallet-wrong-network-desc')}
             {type === 'appNetwork' && t('app-wrong-network-desc')}
             {type === 'userNetwork' && t('user-wrong-network-desc')}

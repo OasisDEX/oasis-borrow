@@ -49,7 +49,7 @@ export function MagicLinkForm() {
   //       </Button>
   //     </Grid>
   //     <Flex sx={{ alignItems: 'center', justifyContent: 'center' }} mt={2}>
-  //       <Text sx={{ color: 'onSurface' }}>{t('powered-by')}</Text>
+  //       <Text sx={{ color: 'neutral80' }}>{t('powered-by')}</Text>
   //       <Icon name="magic_link" sx={{ ml: 2, mt: 1 }} size="auto" width="62px" height="24px" />
   //     </Flex>
   //   </Grid>

@@ -25,7 +25,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
   return (
     <Grid gap={3}>
       {stage === 'adjustPosition' && (
-        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
           <Trans
             i18nKey={'vault-info-messages.earn-overview'}
             values={{ token }}
@@ -33,7 +33,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
               1: (
                 <Text
                   as="span"
-                  sx={{ fontWeight: 'semiBold', color: 'link', cursor: 'pointer' }}
+                  sx={{ fontWeight: 'semiBold', color: 'interactive100', cursor: 'pointer' }}
                   onClick={() => {
                     toggle!('otherActions')
                   }}
@@ -45,7 +45,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
       )}
       {stage === 'otherActions' && (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-info-messages.closing')}
           </Text>
           {!debt.isZero() && (
@@ -62,7 +62,7 @@ export function SidebarManageGuniVaultEditingState(props: ManageMultiplyVaultSta
               >
                 <Text
                   as="span"
-                  sx={{ display: 'flex', alignItems: 'flex-end', color: 'text.subtitle' }}
+                  sx={{ display: 'flex', alignItems: 'flex-end', color: 'neutral80' }}
                 >
                   <Icon name={getToken('DAI').iconCircle} size="20px" sx={{ mr: 1 }} />
                   {t('minimum')} {t('after-closing', { token: 'DAI' })}

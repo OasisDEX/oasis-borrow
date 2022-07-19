@@ -26,24 +26,20 @@ interface OptimizationFormControlProps {
   automationTriggersData: TriggersData
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   txHelpers?: TxHelpers
   context: Context
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
 }
 
 export function OptimizationFormControl({
   automationTriggersData,
   vault,
   ilkData,
-  priceInfo,
   txHelpers,
   context,
   balanceInfo,
   ethMarketPrice,
-  tokenMarketPrice,
 }: OptimizationFormControlProps) {
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
@@ -71,10 +67,9 @@ export function OptimizationFormControl({
   console.log(activeAutomationFeature)
   return (
     <>
-      <AutoBuyFormControl
+    <AutoBuyFormControl
         vault={vault}
         ilkData={ilkData}
-        priceInfo={priceInfo}
         balanceInfo={balanceInfo}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
@@ -82,10 +77,7 @@ export function OptimizationFormControl({
         isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
         context={context}
         txHelpers={txHelpers}
-        ethMarketPrice={ethMarketPrice}
-        tokenMarketPrice={tokenMarketPrice}
-        isAutoBuyActive={isAutoBuyActive}
-      />
+        ethMarketPrice={ethMarketPrice}  />
       {constantMultipleEnabled && (
         <ConstantMultipleFormControl
           context={context}
@@ -93,5 +85,6 @@ export function OptimizationFormControl({
         />
       )}
     </>
+
   )
 }

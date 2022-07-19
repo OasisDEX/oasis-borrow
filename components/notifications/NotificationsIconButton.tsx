@@ -2,6 +2,8 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React, { LegacyRef } from 'react'
 import { Box, Button } from 'theme-ui'
 
+import { NotificationsCenter } from './NotificationsCenter'
+
 interface NotificationsIconButtonProps {
   notificationsPanelOpen: boolean
   notificationsRef: LegacyRef<HTMLDivElement>
@@ -32,17 +34,17 @@ export function NotificationsIconButton({
           alignItems: 'center',
           ':focus': {
             outline: '1px solid',
-            outlineColor: 'primary',
+            outlineColor: 'primary100',
           },
-          color: notificationsPanelOpen ? 'primary' : 'lavender',
-          ':hover': { color: 'primary' },
+          color: notificationsPanelOpen ? 'primary100' : 'neutral80',
+          ':hover': { color: 'primary100' },
         }}
       >
         <>
           <Box
             as="span"
             sx={{
-              bg: 'link',
+              bg: 'interactive100',
               color: 'white',
               py: 0.5,
               px: 2,
@@ -59,10 +61,12 @@ export function NotificationsIconButton({
             name="bell"
             size="auto"
             width="16"
-            color={notificationsPanelOpen ? 'primary' : 'lavender'}
+            color={notificationsPanelOpen ? 'primary100' : 'neutral80'}
           />
         </>
       </Button>
+
+      <NotificationsCenter isOpen={notificationsPanelOpen} />
     </Box>
   )
 }

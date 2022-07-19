@@ -27,7 +27,7 @@ export function SidebarSection({
   )
 
   return (
-    <MobileSidePanel toggleTitle={<Icon name="edit" color="onSuccess" />}>
+    <MobileSidePanel toggleTitle={<Icon name="edit" color="success100" />}>
       <Card
         sx={{
           position: 'relative',

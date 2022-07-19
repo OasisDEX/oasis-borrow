@@ -68,7 +68,7 @@ const LangSelectComponents: Partial<SelectComponents<{
   label: string
 }>> = {
   IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,
   Option: ({ children, innerProps }) => (
     <Box
@@ -79,7 +79,7 @@ const LangSelectComponents: Partial<SelectComponents<{
         pr: 5,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'background',
+          bg: 'neutral10',
         },
       }}
     >

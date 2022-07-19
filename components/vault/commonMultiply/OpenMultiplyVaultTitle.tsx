@@ -47,7 +47,7 @@ export function OpenMultiplyVaultTitle({
             : t('vault-form.header.confirm')}
         </Text>
       </WithVaultFormStepIndicator>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', lineHeight: '22px' }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', lineHeight: '22px' }}>
         {isEditingStage ? (
           subTitle
         ) : isProxyStage ? (

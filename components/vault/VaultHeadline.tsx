@@ -34,7 +34,7 @@ export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDe
           width: '1px',
           height: '16px',
           margin: 'auto',
-          backgroundColor: 'lightIcon',
+          backgroundColor: 'neutral60',
         },
         ':first-child': {
           ml: 0,
@@ -45,10 +45,10 @@ export function VaultHeadlineDetails({ label, value, sub, subColor }: HeadlineDe
         },
       }}
     >
-      <Text as="span" sx={{ color: 'text.subtitle' }}>
+      <Text as="span" sx={{ color: 'neutral80' }}>
         {label}
       </Text>
-      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary' }}>
+      <Text as="span" sx={{ ml: 1, fontWeight: 'semiBold', color: 'primary100' }}>
         {value}
       </Text>
       {sub && subColor && (
@@ -94,7 +94,7 @@ export function VaultHeadline({
         sx={{
           fontWeight: 'semiBold',
           fontSize: '28px',
-          color: 'primary',
+          color: 'primary100',
         }}
       >
         <Icon name={iconCircle} size="32px" sx={{ verticalAlign: 'text-bottom', mr: 2 }} />

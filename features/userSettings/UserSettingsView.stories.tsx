@@ -35,7 +35,7 @@ const StoryContainer = ({ children, title }: { title: string } & WithChildren) =
       <Box sx={{ bg: 'pink', p: 6 }}>
         <Box
           sx={{
-            bg: 'surface',
+            bg: 'neutral10',
             boxShadow: 'elevation',
             borderRadius: 'mediumLarge',
             width: '380px',

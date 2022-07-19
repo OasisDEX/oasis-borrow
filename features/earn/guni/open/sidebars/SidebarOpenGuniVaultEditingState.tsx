@@ -28,7 +28,7 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
 
   return (
     <Grid gap={3}>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         <Trans
           i18nKey="vault-form.subtext.edit-multiply-dai"
           values={{ token }}
@@ -56,7 +56,7 @@ export function SidebarOpenGuniVaultEditingState(props: OpenGuniVaultState) {
         maxGenerateAmount={maxGenerateAmount}
       />
       <VaultWarnings {...props} warningMessages={extractCommonWarnings(warningMessages)} />
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {maxMultiple.toNumber().toFixed(2)}x {token}
       </Text>
       <GuniOpenMultiplyVaultChangesInformation {...props} />

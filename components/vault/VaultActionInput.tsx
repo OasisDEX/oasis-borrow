@@ -157,7 +157,7 @@ export function VaultActionInput({
             sx={{
               fontWeight: 'semiBold',
               textAlign: 'right',
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             {showMin && (
@@ -223,7 +223,7 @@ export function VaultActionInput({
           border: '1px solid',
           borderRadius: 'medium',
           alignItems: 'center',
-          borderColor: hasError ? 'onError' : 'border',
+          borderColor: hasError ? 'critical100' : 'neutral20',
           transition: `
             box-shadow 200ms,
             border-color 200ms
@@ -232,7 +232,7 @@ export function VaultActionInput({
           ...(!disabled &&
             toggleResolved && {
               '&:hover, &:focus-within': {
-                borderColor: hasError ? 'onError' : 'borderSelected',
+                borderColor: hasError ? 'critical100' : 'neutral70',
               },
             }),
         }}
@@ -272,7 +272,7 @@ export function VaultActionInput({
               variant="paragraph4"
               sx={{
                 fontWeight: 'semiBold',
-                color: 'text.subtitle',
+                color: 'neutral80',
                 px: 3,
                 pb: 2,
                 pt: 1,
@@ -305,9 +305,9 @@ export function VaultActionInput({
               '& svg': {
                 transform: 'rotate(90deg)',
                 transition: 'color 200ms',
-                color: 'lightIcon',
+                color: 'neutral60',
                 '&:hover': {
-                  color: 'borderSelected',
+                  color: 'neutral70',
                 },
               },
             }}

@@ -31,7 +31,7 @@ export function VaultHeaderLayout({
           mb: 4,
           fontSize: 1,
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
           display: ['grid', 'flex'],
           gridTemplateColumns: '1fr 1fr',
           gap: [2, 0],

@@ -247,8 +247,8 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
           slider.toNumber() || 0
-        }%, ${colors?.primaryAlt} ${slider.toNumber() || 0}%, ${colors?.primaryAlt} 100%)`
-      : 'primaryAlt'
+        }%, ${colors?.neutral60} ${slider.toNumber() || 0}%, ${colors?.neutral60} 100%)`
+      : 'neutral60'
 
   return (
     <Grid
@@ -263,7 +263,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
             fontWeight: 'semiBold',
-            color: 'text.subtitle',
+            color: 'neutral80',
           }}
         >
           <Grid gap={2}>
@@ -306,7 +306,7 @@ function SliderInput(props: ManageMultiplyVaultState & { collapsed?: boolean }) 
           sx={{
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
-            color: 'text.subtitle',
+            color: 'neutral80',
           }}
         >
           <Text>Decrease risk</Text>
@@ -382,7 +382,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
       }}
       components={{
         IndicatorsContainer: () => null,
-        ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+        ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
         SingleValue: ({ children }) => <Box>{children}</Box>,
         Option: ({ children, innerProps }) => (
           <Box
@@ -393,7 +393,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
               fontSize: 2,
               cursor: 'pointer',
               '&:hover': {
-                bg: 'backgroundAlt',
+                bg: 'secondary60',
               },
             }}
           >
@@ -443,7 +443,7 @@ function OtherActionsSelect(props: ManageMultiplyVaultState) {
               size="auto"
               width="14px"
               height="9px"
-              sx={{ color: 'text.subtitle' }}
+              sx={{ color: 'neutral80' }}
             />
           </Box>
         ),
@@ -486,17 +486,17 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           optionName={'dai'}
         />
       </Grid>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', mt: 3 }}>
         {t('vault-info-messages.closing')}
       </Text>
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
-        <Text sx={{ color: 'text.subtitle' }}>{closeToTokenName} after closing</Text>
+        <Text sx={{ color: 'neutral80' }}>{closeToTokenName} after closing</Text>
         <Text>
           {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
           {closeToTokenName}
           {` `}
           {closeToCollateral && (
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
+            <Text as="span" sx={{ color: 'neutral80' }}>
               (${formatAmount(afterCloseToCollateralUSD, 'USD')})
             </Text>
           )}

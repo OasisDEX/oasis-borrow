@@ -14,7 +14,7 @@ export function InfoSection({ title, items }: InfoSectionProps) {
       as="ul"
       sx={{
         p: 3,
-        backgroundColor: 'secondaryAlt',
+        backgroundColor: 'neutral30',
         borderRadius: 'medium',
         listStyle: 'none',
       }}

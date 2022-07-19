@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
@@ -21,6 +22,7 @@ import {
 import {
   checkIfDisabledBasicBS,
   checkIfEditingBasicBS,
+  getBasicBSVaultChange,
   prepareBasicBSResetData,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
@@ -30,20 +32,15 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 interface AutoBuyFormControlProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -51,7 +48,6 @@ interface AutoBuyFormControlProps {
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
-  tokenMarketPrice: BigNumber
   txHelpers?: TxHelpers
   isAutoBuyActive: boolean
 }
@@ -59,7 +55,6 @@ interface AutoBuyFormControlProps {
 export function AutoBuyFormControl({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -68,8 +63,6 @@ export function AutoBuyFormControl({
   txHelpers,
   context,
   ethMarketPrice,
-  tokenMarketPrice,
-  isAutoBuyActive,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -211,19 +204,16 @@ export function AutoBuyFormControl({
 
   const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
 
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: tokenMarketPrice,
-    slippage: basicBuyState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicBuyState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicBuyState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+
+  const { debtDelta, collateralDelta } = getBasicBSVaultChange({
+    basicBSState: basicBuyState,
+    vault,
+    executionPrice,
   })
 
   return (
@@ -251,7 +241,6 @@ export function AutoBuyFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
-      isAutoBuyActive={isAutoBuyActive}
     />
   )
 }
