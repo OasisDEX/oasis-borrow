@@ -25,6 +25,7 @@ export function useConstantMultipleStateInitialization(
 
   const buyTriggerData = extractBasicBSData(autoTriggersData, TriggerType.BasicBuy)
   const sellTriggerData = extractBasicBSData(autoTriggersData, TriggerType.BasicSell)
+  
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   useEffect(() => {
