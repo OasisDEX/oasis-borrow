@@ -110,7 +110,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
       <Flex
         sx={{
           borderRadius: '2em',
-          bg: ['transparent', 'bgPrimaryAlt'],
+          bg: ['transparent', 'neutral10'],
           border: 'light',
           borderColor: 'secondary100',
           height: small ? '38px' : 'initial',
@@ -121,7 +121,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
         <Input
           placeholder={t('newsletter.placeholder')}
           sx={{
-            bg: 'bgPrimaryAlt',
+            bg: 'neutral10',
             borderRadius: 'inherit',
             border: 'none',
             px: 3,
@@ -189,7 +189,7 @@ function NewsletterForm({ small }: { small?: boolean }) {
         >
           {(inputOnFocus || showError || gdprBoxOnHover) && (
             <Box sx={{ p: 3, borderRadius: '16px' }} bg="secondary60">
-              <Text sx={{ textAlign: 'left', color: 'text.subtitle', fontSize: 2 }}>
+              <Text sx={{ textAlign: 'left', color: 'neutral80', fontSize: 2 }}>
                 <Trans
                   i18nKey="newsletter.gdpr"
                   components={{
