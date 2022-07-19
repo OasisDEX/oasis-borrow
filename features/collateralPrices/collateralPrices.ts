@@ -1,3 +1,4 @@
+
 import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
@@ -6,7 +7,6 @@ import {
   CollateralPricesWithFilters,
   collateralPricesWithFilters$,
 } from './collateralPricesWithFilters'
-import { BigNumber } from 'bignumber.js'
 
 export type CollateralPrice = OraclePriceData & { token: string }
 export type CollateralPrices = CollateralPrice[]

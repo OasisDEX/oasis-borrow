@@ -6,6 +6,7 @@ import { startWith, switchMap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
+import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
 import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
@@ -14,9 +15,7 @@ import {
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
-import { PriceInfo } from '../features/shared/priceInfo'
 import { zero } from './zero'
-import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
 
 export interface ProductCardData {
   token: string

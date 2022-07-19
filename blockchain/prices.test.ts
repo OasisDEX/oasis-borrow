@@ -1,12 +1,12 @@
 import BigNumber from 'bignumber.js'
 import { expect } from 'chai'
+import moment from 'moment'
 import { Observable, of, throwError } from 'rxjs'
+import sinon from 'sinon'
 
+import {  mockContextConnected } from '../helpers/mocks/context.mock'
 import { getStateUnpacker } from '../helpers/testHelpers'
 import { createOraclePriceData$, createTokenPriceInUSD$, OraclePriceData } from './prices'
-import { mockContext, mockContextConnected } from '../helpers/mocks/context.mock'
-import sinon from 'sinon'
-import moment from 'moment'
 
 describe('createTokenPriceInUSD$', () => {
   function coinbaseOrderBook$() {
