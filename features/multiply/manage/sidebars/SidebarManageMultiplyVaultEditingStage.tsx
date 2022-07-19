@@ -133,6 +133,7 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
     showSliderController,
     toggleSliderController,
     vault: { token },
+    accountIsController,
   } = props
 
   return (
@@ -140,7 +141,7 @@ function SidebarManageMultiplyVaultEditingStageDepositCollateral(props: ManageMu
       <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
       <OptionalAdjust
         label={t('adjust-your-position-additional')}
-        isVisible={depositAmount?.gt(zero)}
+        isVisible={depositAmount?.gt(zero) && accountIsController}
         isExpanded={showSliderController}
         clickHandler={toggleSliderController}
       >
