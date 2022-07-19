@@ -92,7 +92,12 @@ export function extractBasicBSData(data: TriggersData, type: TriggerType): Basic
 
   return defaultBasicSellData
 }
-
+// TODO ŁW, AS difference for cm method that would merge pareams from basic sell
+// exec coll ratio for basic buy and basic sell
+// could call this method twice - for buy and sell, merge the result, to determine maxBuy, minSell
+// Group type instead of triggerType as returned value (as POC)
+// replaceTriggerId atm send empty array for cm
+// triggersData will be array, one will be for basic buy, other for basic sell
 export function prepareBasicBSTriggerData({
   vaultData,
   triggerType,
