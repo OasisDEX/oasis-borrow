@@ -1,6 +1,8 @@
+import { dummyNotifications } from 'components/notifications/NotificationCard'
+import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
 import React, { useMemo, useState } from 'react'
 import { theme } from 'theme'
-import { Box } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { NotificationsCenterContent } from './NotificationsCenterContent'
@@ -35,7 +37,8 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         mt: 2,
         borderRadius: '24px',
         boxShadow: theme.shadows.vaultDetailsCard,
-        p: 24,
+        py: 24,
+        px: 3,
         // TODO: Needs to be calculated but possibly be easier to get designers to adapt to this as its simpler from dev perspective & looks just as good
         ...notificationCenterStyles,
         transition: 'transform 0.3s ease-in-out',
@@ -47,7 +50,13 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         showPrefrencesTab={showPrefrencesTab}
       />
       <NotificationsCenterContent>
-        <>{showPrefrencesTab ? <p>Prefrences</p> : <p>Notifications</p>}</>
+        <Grid sx={{ px: 2, mt: 3 }}>
+          {showPrefrencesTab ? (
+            <p>Prefrences</p>
+          ) : (
+            <NotificationCardsWrapper notificationCards={dummyNotifications} />
+          )}
+        </Grid>
       </NotificationsCenterContent>
     </Box>
   )

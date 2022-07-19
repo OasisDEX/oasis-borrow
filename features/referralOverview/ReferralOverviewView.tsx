@@ -7,7 +7,7 @@ import { useObservable } from 'helpers/observableHook'
 import React from 'react'
 
 import { FeesView } from './FeesView'
-import { ReferralLandingSummary } from './ReferralLanding'
+import { ReferralLanding } from './ReferralLanding'
 import { ReferralLayout } from './ReferralLayout'
 import { ReferralsView } from './ReferralsView'
 import { UserReferralState } from './user'
@@ -44,7 +44,6 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
   const isConnected = context?.status === 'connected'
 
   const connectedAccount = isConnected ? context.account : undefined
-
   return (
     <>
       {isConnected && connectedAccount === address && userReferral.state !== 'newUser' && (
@@ -55,7 +54,10 @@ export function ReferralOverviewView({ context, userReferral, address }: Props) 
           </>
         </ReferralLayout>
       )}
-      {isConnected && connectedAccount !== address && <ReferralLandingSummary />}
+      {isConnected && connectedAccount !== address && (
+        <ReferralLanding context={context} userReferral={userReferral} />
+      )}
+      {!isConnected && <ReferralLanding context={context} userReferral={userReferral} />}
     </>
   )
 }
