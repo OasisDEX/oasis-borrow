@@ -150,7 +150,7 @@ export function createUserReferral$(
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,
-              totalAmount: formatAmount(amountFromWei(new BigNumber(totalClaims!)), 'USD'),
+              totalAmount: formatAmount(amountFromWei(new BigNumber(totalClaims)), 'USD'),
               totalClaim: claimsOut.amounts
                 ? formatAmount(
                     amountFromWei(
