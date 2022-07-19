@@ -1,6 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
 import { providers } from 'ethers'
+import { skipCache } from 'helpers/cache/skipCache'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
@@ -22,8 +23,9 @@ function getHandler(chainIdPromise: Promise<number | string>): ProxyHandler<any>
       if (!provider) {
         const chainId = fixChainId(await chainIdPromise)
 
-        provider = new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
-        // provider = new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+        provider = skipCache(chainId.toString())
+          ? new JsonRpcBatchProvider(networksById[chainId].infuraUrl, chainId)
+          : new JsonRpcCachedProvider(networksById[chainId].infuraUrl, chainId)
       }
       return provider
     }

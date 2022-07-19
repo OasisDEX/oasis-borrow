@@ -37,7 +37,7 @@ interface Request {
 function cacheHash(request: Request) {
   const hashString = JSON.stringify({
     method: request.method,
-    params: request.params,
+    params: { data: request.params[0].data, to: request.params[0].to },
     network: request.network,
   })
   const digest = crypto.createHash('sha256').update(hashString).digest('hex')
