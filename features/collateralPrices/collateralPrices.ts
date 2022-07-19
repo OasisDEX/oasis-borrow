@@ -1,4 +1,3 @@
-
 import { OraclePriceData, OraclePriceDataArgs } from 'blockchain/prices'
 import { combineLatest, Observable, of } from 'rxjs'
 import { switchMap } from 'rxjs/operators'
