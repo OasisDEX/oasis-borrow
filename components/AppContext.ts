@@ -874,7 +874,10 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = createProductCardsData$(ilkDataList$, oraclePriceData$)
-  const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(
+    ilksWithBalance$,
+    oraclePriceData$,
+  )
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
