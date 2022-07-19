@@ -21,6 +21,7 @@ import {
 import {
   checkIfDisabledBasicBS,
   checkIfEditingBasicBS,
+  getBasicBSVaultChange,
   prepareBasicBSResetData,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
@@ -30,10 +31,8 @@ import {
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
@@ -209,24 +208,11 @@ export function AutoSellFormControl({
     collateral: vault.lockedCollateral,
     vaultDebt: vault.debt,
   })
-
-  const { debtDelta, collateralDelta } =
-    basicSellState.targetCollRatio.gt(zero) && basicSellState.execCollRatio.gt(zero)
-      ? getVaultChange({
-          currentCollateralPrice: executionPrice,
-          marketPrice: executionPrice,
-          slippage: basicSellState.deviation.div(100),
-          debt: vault.debt,
-          lockedCollateral: vault.lockedCollateral,
-          requiredCollRatio: basicSellState.targetCollRatio.div(100),
-          depositAmount: zero,
-          paybackAmount: zero,
-          generateAmount: zero,
-          withdrawAmount: zero,
-          OF: OAZO_FEE,
-          FF: LOAN_FEE,
-        })
-      : { debtDelta: zero, collateralDelta: zero }
+  const { debtDelta, collateralDelta } = getBasicBSVaultChange({
+    basicBSState: basicSellState,
+    vault,
+    executionPrice,
+  })
 
   return (
     <SidebarSetupAutoSell

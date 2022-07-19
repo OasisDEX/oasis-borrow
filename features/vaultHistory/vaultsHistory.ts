@@ -113,7 +113,7 @@ function mapToVaultWithHistory(
     const history = flatEvents([vaultEvents, vaultAutomationEvents])
     const stopLossData = extractStopLossData({
       isAutomationEnabled: vaultActiveTriggers.length > 0,
-      triggers: activeTriggers.map((trigger) => ({
+      triggers: vaultActiveTriggers.map((trigger) => ({
         ...trigger,
         executionParams: trigger.triggerData,
       })),

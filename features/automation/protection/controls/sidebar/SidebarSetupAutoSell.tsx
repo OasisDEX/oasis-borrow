@@ -133,6 +133,8 @@ export function SidebarSetupAutoSell({
   const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
   const cancelAutoSellErrors = extractCancelAutoSellErrors(errors)
 
+  const validationErrors = isAddForm ? errors : cancelAutoSellErrors
+
   if (isAutoSellActive) {
     const sidebarSectionProps: SidebarSectionProps = {
       title: sidebarTitle,
@@ -184,7 +186,7 @@ export function SidebarSetupAutoSell({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

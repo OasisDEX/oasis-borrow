@@ -13,7 +13,8 @@ export function NotificationsCenterHeader({
   return (
     <Flex
       sx={{
-        borderBottom: '1px solid #EAEAEA',
+        borderBottom: '1px solid',
+        borderColor: 'neutral20',
         pb: '16px',
         alignItems: 'center',
       }}
@@ -40,7 +41,7 @@ export function NotificationsCenterHeader({
           background: 'white',
           borderRadius: '18px',
           ':hover': {
-            background: '#F3F7F9',
+            bg: 'neutral30',
           },
         }}
         onClick={onButtonClick}
@@ -49,7 +50,7 @@ export function NotificationsCenterHeader({
           name={showPrefrencesTab ? 'close' : 'settings'}
           size="auto"
           width="16"
-          color={'lavender'}
+          color="neutral80"
         />
       </Button>
     </Flex>
