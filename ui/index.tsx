@@ -1,5 +1,3 @@
-import { Toggle } from "./Toggle/Toggle";
+import { Toggle } from './Toggle/Toggle'
 
-export {
-  Toggle
-}
+export { Toggle }

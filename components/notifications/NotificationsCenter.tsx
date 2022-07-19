@@ -2,8 +2,8 @@ import React, { useMemo, useState } from 'react'
 import { theme } from 'theme'
 import { Box } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
-import { NotificationPrefrenceCard } from './NotificationPrefrenceCard'
 
+import { NotificationPrefrenceCard } from './NotificationPrefrenceCard'
 import { NotificationsCenterContent } from './NotificationsCenterContent'
 import { NotificationsCenterHeader } from './NotificationsCenterHeader'
 import { NOTIFICATION_PREFRENCES_DUMMY_DATA } from './tempData'
@@ -49,12 +49,18 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         showPrefrencesTab={showPrefrencesTab}
       />
       <NotificationsCenterContent>
-        <>{showPrefrencesTab ? <div>{NOTIFICATION_PREFRENCES_DUMMY_DATA && NOTIFICATION_PREFRENCES_DUMMY_DATA.map((prefrence, index) => (
-          <NotificationPrefrenceCard
-            key={index.toString()}
-            {...prefrence}
-          />
-        ) )}</div> : <p>Notifications</p>}</>
+        <>
+          {showPrefrencesTab ? (
+            <div>
+              {NOTIFICATION_PREFRENCES_DUMMY_DATA &&
+                NOTIFICATION_PREFRENCES_DUMMY_DATA.map((prefrence, index) => (
+                  <NotificationPrefrenceCard key={index.toString()} {...prefrence} />
+                ))}
+            </div>
+          ) : (
+            <p>Notifications</p>
+          )}
+        </>
       </NotificationsCenterContent>
     </Box>
   )

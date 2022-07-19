@@ -1,24 +1,24 @@
-import { Box, Card, Flex, Text } from "theme-ui";
-import React from 'react';
-import { Toggle } from "ui";
+import React from 'react'
+import { Box, Card, Flex, Text } from 'theme-ui'
+import { Toggle } from 'ui'
 
 interface NotificationPrefrenceCardPtops {
-  heading: string;
-  description: string;
-  checked: boolean;
+  heading: string
+  description: string
+  checked: boolean
 }
 
 export function NotificationPrefrenceCard({
   heading,
   description,
-  checked
+  checked,
 }: NotificationPrefrenceCardPtops) {
   return (
     <Card
       sx={{
         border: 'none',
         padding: '8px',
-        mt: 3
+        mt: 3,
       }}
     >
       <Flex>
@@ -26,7 +26,7 @@ export function NotificationPrefrenceCard({
           sx={{
             fontWeight: 500,
             marginRight: 'auto',
-            fontSize: '14px'
+            fontSize: '14px',
           }}
         >
           {heading}
@@ -35,13 +35,13 @@ export function NotificationPrefrenceCard({
       </Flex>
       <Box
         sx={{
-          pr: '40px'
+          pr: '40px',
         }}
       >
         <Text
           sx={{
             color: '#787A9B',
-            fontSize: '14px'
+            fontSize: '14px',
           }}
         >
           {description}
