@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+
 import { AutomationChangeAction, AutomationFormChange } from './basicBSFormChange'
 
 export const CONSTANT_MULTIPLE_FORM_CHANGE = 'CONSTANT_MULTIPLE_FORM_CHANGE'

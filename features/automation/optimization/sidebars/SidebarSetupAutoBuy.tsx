@@ -67,7 +67,6 @@ export function SidebarSetupAutoBuy({
   autoBuyTriggerData,
   stopLossTriggerData,
 
-  isAutoBuyOn,
   basicBuyState,
   txHandler,
   textButtonHandler,
