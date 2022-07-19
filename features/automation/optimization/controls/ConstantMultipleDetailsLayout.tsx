@@ -8,6 +8,7 @@ import { ContentCardTargetMultiple } from 'components/vault/detailsSection/Conte
 import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTotalCostOfFeature'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
+import { ConstantMultiplyTriggerData } from 'features/automation/common/constantMultiplyTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -19,9 +20,29 @@ import { Grid } from 'theme-ui'
 
 export interface ConstantMultipleDetailsLayoutProps {
   token: string
+  targetMultiple: BigNumber
+  targetColRatio: BigNumber
+  totalCost: BigNumber
+  PnLSinceEnabled: BigNumber
+  triggerColRatioToBuy: BigNumber
+  nextBuyPrice: BigNumber
+  triggerColRatioToSell: BigNumber
+  nextSellPrice: BigNumber
+  constantMultiplyTriggerData: ConstantMultiplyTriggerData
 }
 
-export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetailsLayoutProps) {
+export function ConstantMultipleDetailsLayout({
+  token,
+  targetMultiple,
+  targetColRatio,
+  totalCost,
+  PnLSinceEnabled,
+  triggerColRatioToBuy,
+  nextBuyPrice,
+  triggerColRatioToSell,
+  nextSellPrice,
+  constantMultiplyTriggerData,
+}: ConstantMultipleDetailsLayoutProps) {
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -31,24 +52,39 @@ export function ConstantMultipleDetailsLayout({ token }: ConstantMultipleDetails
       {activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple' ? (
         <DetailsSection
           title={t('constant-multiple.title')}
-          // badge={isConstantMultipleOn}
+          badge={constantMultiplyTriggerData.isTriggerEnabled}
           content={
             <DetailsSectionContentCardWrapper>
-              {/* Dummy values */}
               <ContentCardTargetMultiple
-                targetMultiple={new BigNumber(2)}
-                // aftertargetMultiple={new BigNumber(2.2)}
-                targetColRatio={new BigNumber(200)}
-                // changeVariant="positive"
+                targetMultiple={targetMultiple}
+                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                afterTargetMultiple={undefined}
+                targetColRatio={targetColRatio}
+                changeVariant="positive"
               />
               <ContentCardTotalCostOfFeature
-                totalCost={new BigNumber(5000)}
-                // afterTotalCost={new BigNumber(5040.85)}
-                PnLSinceEnabled={new BigNumber(48.25)}
-                // changeVariant="positive"
+                totalCost={totalCost}
+                // TODO: how to calculate this value change dynamically?
+                afterTotalCost={undefined}
+                PnLSinceEnabled={PnLSinceEnabled}
+                changeVariant="positive"
               />
-              <ContentCardTriggerColRatioToBuy token={token} />
-              <ContentCardTriggerColRatioToSell token={token} />
+              <ContentCardTriggerColRatioToBuy
+                token={token}
+                triggerColRatio={triggerColRatioToBuy}
+                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                afterTriggerColRatio={undefined}
+                nextBuyPrice={nextBuyPrice}
+                changeVariant="positive"
+              />
+              <ContentCardTriggerColRatioToSell
+                token={token}
+                triggerColRatio={triggerColRatioToSell}
+                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                afterTriggerColRatio={undefined}
+                nextSellPrice={nextSellPrice}
+                changeVariant="positive"
+              />
             </DetailsSectionContentCardWrapper>
           }
         />
