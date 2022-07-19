@@ -459,7 +459,7 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Flex mb={5} mt={7} sx={{ justifyContent: 'center' }}>
+      <Flex mb={4} mt={7} sx={{ justifyContent: 'center' }}>
         <NewsletterSection />
       </Flex>
     </Box>
