@@ -6,6 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect } from 'react'
 import { BasicBSTriggerData, extractBasicBSData } from '../common/basicBSTriggerData'
+import { resolveWithThreshold } from '../common/helpers'
 
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
 import { TriggersData } from './triggers/AutomationTriggersData'
@@ -25,7 +26,11 @@ export function useConstantMultipleStateInitialization(
 
   const buyTriggerData = extractBasicBSData(autoTriggersData, TriggerType.BasicBuy)
   const sellTriggerData = extractBasicBSData(autoTriggersData, TriggerType.BasicSell)
-  
+  const  maxBuyPrice  = buyTriggerData.maxBuyOrMinSellPrice
+  const buyWithThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice: maxBuyPrice, triggerId: buyTriggerData.triggerId })
+  const minSellPrice = sellTriggerData.maxBuyOrMinSellPrice
+  const sellWithThresholdResolved = resolveWithThreshold({maxBuyOrMinSellPrice: minSellPrice, triggerId: sellTriggerData.triggerId})
+
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   useEffect(() => {
