@@ -99,6 +99,16 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
       version: currentContent.cookie.version,
     })
   }
+  function acceptAllCookies() {
+    COOKIE_NAMES.forEach((cookieName) => {
+      manageCookie[cookieName].enable()
+    })
+    saveSettings({
+      accepted: true,
+      enabledCookies: initSelectedCookies(true),
+      version: currentContent.cookie.version,
+    })
+  }
 
   const ctaButtons = (
     <Container
@@ -114,7 +124,11 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
       <Button variant="bean" sx={{ fontSize: 2 }} onClick={() => rejectCookies()}>
         {t('landing.cookie-banner.reject')}
       </Button>
-      <Button variant="beanActive" sx={{ fontSize: 2 }} onClick={() => acceptSelectedCookies()}>
+      <Button
+        variant="beanActive"
+        sx={{ fontSize: 2 }}
+        onClick={() => (showSettings ? acceptSelectedCookies() : acceptAllCookies())}
+      >
         {t('landing.cookie-banner.accept')}
       </Button>
     </Container>
