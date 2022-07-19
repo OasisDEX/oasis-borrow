@@ -192,7 +192,7 @@ export function ManageMultiplyVaultButton(props: ManageMultiplyVaultState) {
             <Text sx={{ position: 'relative' }} pl={2}>
               <Spinner
                 size={25}
-                color="surface"
+                color="neutral10"
                 sx={{
                   position: 'absolute',
                   left: 0,

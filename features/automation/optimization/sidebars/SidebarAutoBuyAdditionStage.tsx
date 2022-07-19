@@ -25,7 +25,7 @@ export function SidebarAutoBuyCreationStage({
       return (
         <>
           <AddingStopLossAnimation />
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && t('auto-buy.add-content')}
             {isRemoveForm && t('auto-buy.remove-content')}
           </Text>
@@ -39,7 +39,7 @@ export function SidebarAutoBuyCreationStage({
               <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
             </Flex>
           </Box>
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && (
               <>
                 {t('auto-buy.add-complete-content')}{' '}

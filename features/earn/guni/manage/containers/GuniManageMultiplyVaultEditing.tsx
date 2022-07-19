@@ -32,17 +32,17 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           isActive={!closeToCollateral}
         />
       </Grid>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
+      <Text variant="paragraph3" sx={{ color: 'neutral80', mt: 3 }}>
         {t('vault-info-messages.closing')}
       </Text>
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
-        <Text sx={{ color: 'text.subtitle' }}>Minimum {closeToTokenName} after closing</Text>
+        <Text sx={{ color: 'neutral80' }}>Minimum {closeToTokenName} after closing</Text>
         <Text>
           {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
           {closeToTokenName}
           {` `}
           {closeToCollateral && (
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
+            <Text as="span" sx={{ color: 'neutral80' }}>
               (${formatAmount(afterCloseToCollateralUSD, 'USD')})
             </Text>
           )}

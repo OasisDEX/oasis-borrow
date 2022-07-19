@@ -21,11 +21,11 @@ function CareerPage({ career }: { career: Career }) {
         sx={{
           display: 'flex',
           alignItems: 'center',
-          color: 'text.focused',
+          color: 'primary100',
         }}
       >
         <Icon name="arrow_left" size={3} sx={{ mr: 1 }} />
-        <Text variant="paragraph2" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
+        <Text variant="paragraph2" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
           {t('careers.back-link')}
         </Text>
       </AppLink>
@@ -38,7 +38,7 @@ function CareerPage({ career }: { career: Career }) {
       >
         {career.title}
       </Text>
-      <Text sx={{ mb: 5, color: 'primary' }}>{career.location}</Text>
+      <Text sx={{ mb: 5, color: 'primary100' }}>{career.location}</Text>
       <Box
         sx={{
           h2: {
@@ -51,7 +51,7 @@ function CareerPage({ career }: { career: Career }) {
           li: { mb: 3 },
           strong: {
             fontWeight: 'body',
-            color: 'primary',
+            color: 'primary100',
             a: {
               fontWeight: 'semiBold',
             },

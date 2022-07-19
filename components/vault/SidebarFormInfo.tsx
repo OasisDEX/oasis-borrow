@@ -19,7 +19,7 @@ export function SidebarFormInfo({ title, description }: SidebarFormInfoProps) {
       >
         {title}
       </Text>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {description}
       </Text>
     </>

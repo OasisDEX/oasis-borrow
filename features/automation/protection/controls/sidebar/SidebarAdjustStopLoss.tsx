@@ -82,7 +82,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
             )}
           </>
         ) : (
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             Due to extreme adversarial market conditions we have currently disabled setting up new
             stop loss triggers, as they might not result in the expected outcome for our users.
             Please use the 'close vault' option if you want to close your vault right now.

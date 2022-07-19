@@ -43,12 +43,12 @@ function Question({ question, answer }: ContentQuestion) {
           justifyContent: 'space-between',
           transition: TRANSITIONS.global,
           '&:hover': {
-            color: 'primaryEmphasis',
+            color: 'primary60',
           },
         }}
         onClick={() => setOpened(!opened)}
       >
-        <Heading variant="paragraph1" sx={{ color: 'primary', fontWeight: 'heading' }}>
+        <Heading variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'heading' }}>
           {question}
         </Heading>
         <Icon name={opened ? 'support_minus' : 'support_plus'} size="auto" width="21px" />
@@ -58,11 +58,11 @@ function Question({ question, answer }: ContentQuestion) {
           sx={{
             mb: 3,
             a: {
-              color: 'primary',
+              color: 'primary100',
               textDecoration: 'underline',
             },
             p: {
-              color: 'primary',
+              color: 'primary100',
             },
           }}
         >
@@ -86,11 +86,11 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
             textDecoration: 'none',
             fontSize: 3,
             fontWeight: 'heading',
-            color: 'primaryEmphasis',
+            color: 'primary60',
             cursor: 'pointer',
             position: 'relative',
             '&:hover': {
-              color: 'primary',
+              color: 'primary100',
             },
             '&:before': {
               display: 'block',
@@ -98,7 +98,7 @@ function Navigation({ navigation }: { navigation: ContentNavigation[] }) {
               position: 'absolute',
               width: '4px',
               height: '4px',
-              bg: 'light',
+              bg: 'secondary100',
               right: -3,
               top: '50%',
               borderRadius: '50%',
@@ -154,7 +154,7 @@ function SupportPage() {
         {cantFind}
         <AppLink
           href={`${apiHost}/daiwallet/contact`}
-          sx={{ color: 'primary', textDecoration: 'underline', ml: 1 }}
+          sx={{ color: 'primary100', textDecoration: 'underline', ml: 1 }}
         >
           {contactLink}
         </AppLink>

@@ -58,7 +58,8 @@ const globalStyles = `
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    overflow-anchor: none
+    overflow-anchor: none;
+    overflow-x: hidden;
   }
 
   input::-webkit-outer-spin-button,

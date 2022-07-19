@@ -36,7 +36,7 @@ export function GuniManageMultiplyVaultDetails(props: ManageEarnVaultState) {
     earningsToDateAfterFees,
     netAPY,
   } = props
-  const afterCollRatioColor = 'onSuccess'
+  const afterCollRatioColor = 'success100'
   const showAfterPill = !inputAmountsEmpty && stage !== 'manageSuccess'
   const oraclePrice = priceInfo.currentCollateralPrice
   const changeVariant = showAfterPill ? getChangeVariant(afterCollRatioColor) : undefined

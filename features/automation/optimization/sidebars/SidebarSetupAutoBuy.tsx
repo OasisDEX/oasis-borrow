@@ -131,6 +131,8 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
+  const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
+
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
@@ -177,7 +179,7 @@ export function SidebarSetupAutoBuy({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: (isDisabled || !!errors.length) && stage !== 'txSuccess',
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

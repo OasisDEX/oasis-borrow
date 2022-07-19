@@ -184,7 +184,7 @@ function TabHeaderParagraph({ children }: WithChildren) {
         <Text
           variant="paragraph2"
           sx={{
-            color: 'lavender',
+            color: 'neutral80',
             maxWidth: 617,
             textAlign: 'center',
             mb: 4,

@@ -53,7 +53,7 @@ function ZeroDebtProtectionBanner({
           )}
         </>
       }
-      color="primary"
+      color="primary100"
     />
   )
 }

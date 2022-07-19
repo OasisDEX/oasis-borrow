@@ -35,7 +35,7 @@ export function ListWithIcon({
             sx={{
               position: 'relative',
               pl: 4,
-              color: 'text.subtitle',
+              color: 'neutral80',
               ...itemStyle,
             }}
           >
@@ -48,7 +48,7 @@ export function ListWithIcon({
             <Trans
               defaults={item}
               components={{
-                1: <Text as="strong" sx={{ color: 'primary' }} />,
+                1: <Text as="strong" sx={{ color: 'primary100' }} />,
               }}
             />
           </Text>

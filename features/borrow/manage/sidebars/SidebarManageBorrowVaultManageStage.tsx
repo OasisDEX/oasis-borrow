@@ -28,7 +28,7 @@ export function SidebarManageBorrowVaultManageStage(props: ManageStandardBorrowV
     default:
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
           <ManageVaultChangesInformation {...props} />

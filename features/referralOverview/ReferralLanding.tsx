@@ -4,6 +4,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -63,6 +64,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
           jwtToken,
         ).subscribe((res) => {
           if (res === 200) {
+            userReferral.trigger()
             replace(`/referrals/${connectedAccount}`)
           }
         })
@@ -71,6 +73,7 @@ export function ReferralLanding({ context, userReferral }: Props) {
 
   return (
     <ReferralLayout>
+      <TermsOfService userReferral={userReferral} />
       <Flex
         sx={{
           flexDirection: 'column',

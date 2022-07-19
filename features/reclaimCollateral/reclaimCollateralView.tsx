@@ -24,7 +24,7 @@ export function ReclaimCollateralButton({ amount, token, id }: ReclaimCollateral
     <Button onClick={reclaim} variant="secondary" disabled={isLoading}>
       {isLoading ? (
         <Flex sx={{ justifyContent: 'center' }}>
-          <Spinner size={25} color="primary" />
+          <Spinner size={25} color="primary100" />
           <Text pl={2}>{t('reclaim')}</Text>
         </Flex>
       ) : (

@@ -9,7 +9,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
   ValueContainer: ({ children }) => (
     <Flex
       sx={{
-        color: 'primary',
+        color: 'primary100',
         fontWeight: 'body',
         fontSize: '18px',
         backgroundColor: 'white',
@@ -27,7 +27,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         px: 3,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'secondaryAlt',
+          bg: 'neutral30',
         },
       }}
     >
@@ -62,7 +62,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         alignItems: 'center',
         fontSize: 3,
         border: '1px solid',
-        borderColor: '#ccc',
+        borderColor: 'neutral60',
         borderRadius: 'medium',
         py: '8px',
         px: '16px',

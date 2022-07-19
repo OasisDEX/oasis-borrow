@@ -41,7 +41,7 @@ export function ReferralsView({ address }: Props) {
     >
       <Card
         sx={{
-          backgroundColor: '#ffffff',
+          backgroundColor: 'neutral100',
           borderColor: 'border',
           borderWidth: '1px',
           p: 4,
@@ -91,7 +91,7 @@ export function ReferralsView({ address }: Props) {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  color: 'link',
+                  color: 'interactive100',
                   cursor: 'pointer',
                   my: '12px',
                 }}

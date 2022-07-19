@@ -11,7 +11,7 @@ export const stopLossSliderBasicConfig = {
   rightBoundryStyling: {
     fontWeight: 'semiBold',
     textAlign: 'right',
-    color: 'primary',
+    color: 'primary100',
   } as SxStyleProp,
   step: 1,
 }

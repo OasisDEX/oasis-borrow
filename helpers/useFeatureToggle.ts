@@ -25,7 +25,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   StopLossRead: true,
   StopLossWrite: true,
   StopLossOpenFlow: false,
-  BasicBS: false,
+  BasicBS: true,
   ReadOnlyBasicBS: false,
   Notifications: false,
   Referrals: false,

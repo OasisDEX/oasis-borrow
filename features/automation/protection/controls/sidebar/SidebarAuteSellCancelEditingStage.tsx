@@ -55,7 +55,7 @@ export function SidebarAutoSellCancelEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {t('auto-sell.cancel-summary-description')}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
