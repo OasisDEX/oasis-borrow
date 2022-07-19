@@ -29,23 +29,23 @@ export function ReferralModal({ heading, topButton, bottomButton }: ReferralModa
           <Heading as="h3" sx={{ mb: '12px', lineHeight: 1.5 }} variant="text.headerSettings">
             {heading}
           </Heading>
-          <Text variant="paragraph3" sx={{ color: 'lavender', mb: '8px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', mb: '8px' }}>
             {t('ref.modal.body-text')}
           </Text>
-          <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
             <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             <span style={{ fontWeight: 'bold', color: 'primary' }}> {t('ref.modal.p1_1')}</span>
             {t('ref.modal.p1_2')}
           </Text>
-          <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
             <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             {t('ref.modal.p2')}
           </Text>
-          <Text variant="paragraph3" sx={{ color: 'lavender', my: '8px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', my: '8px' }}>
             <Icon name="checkmark" size="auto" width="14px" color="primary" sx={{ mr: '8px' }} />{' '}
             {t('ref.modal.p3')}
           </Text>
-          <Text variant="paragraph3" sx={{ color: 'lavender', my: '12px' }}>
+          <Text variant="paragraph3" sx={{ color: 'neutral80', my: '12px' }}>
             {t('ref.modal.read')}{' '}
             <AppLink href="#" sx={{ fontWeight: 'body' }}>
               {' '}

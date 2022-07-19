@@ -91,7 +91,7 @@ export function ReferralsView({ address }: Props) {
                   display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  color: 'link',
+                  color: 'interactive100',
                   cursor: 'pointer',
                   my: '12px',
                 }}
