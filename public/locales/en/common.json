@@ -721,6 +721,8 @@
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
     "basic-sell": "Auto-Sell",
+    "basic-buy": "Auto-Buy",
+    "constant-multiple": "Constant Multiple",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
