@@ -13,7 +13,8 @@ import { TriggersData } from './triggers/AutomationTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
 
 export interface ConstantMultipleTriggerData {
-  groupTriggerId: BigNumber
+  // groupTypeId: BigNumber ŁW for now it's always 1
+  // group of triggers also will have some unique id
   triggersData: {[key in TriggerType]: TriggersData}
 }
 
@@ -36,6 +37,8 @@ export function useConstantMultipleStateInitialization(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
   const publishKey = CONSTANT_MULTIPLE_FORM_CHANGE
 
+  // TODO ŁW multiplier is result of target ratio of both triggers, 
+  // such value is not used in smart contract
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'multiplier',
