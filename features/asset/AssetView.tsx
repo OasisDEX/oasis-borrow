@@ -25,73 +25,69 @@ function Loader() {
   )
 }
 
-function TabContent(props: {
-  type: ProductTypes
+type TabContentProps = {
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   ilks: string[]
-  productCardsData: ProductCardData[]
-}) {
+}
+
+function TabContent(props: TabContentProps) {
   const ProductCard = props.renderProductCard
-  const filteredCards = props.ilks
-    .map((ilk) => props.productCardsData.find((card) => card.ilk === ilk))
-    .filter(
-      (cardData: ProductCardData | undefined): cardData is ProductCardData =>
-        cardData !== null && cardData !== undefined,
-    )
+
+  const { productCardsDataNew$ } = useAppContext()
+  const [productCardsData, productCardsDataError] = useObservable(productCardsDataNew$(props.ilks))
 
   return (
     <Box mt={5}>
-      <ProductCardsWrapper>
-        {filteredCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
+      <WithErrorHandler error={[productCardsDataError]}>
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
+          {([_productCardsData]) => (
+            <ProductCardsWrapper>
+              {_productCardsData.map((cardData) => (
+                <ProductCard cardData={cardData} key={cardData.ilk} />
+              ))}
+            </ProductCardsWrapper>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </Box>
   )
 }
+
+// we need these wrappers to avoid react trying to render the wrong card types for the wrong ilks
+function BorrowTabContent(props: TabContentProps) {
+  return <TabContent {...props} />
+}
+
+function MultiplyTabContent(props: TabContentProps) {
+  return <TabContent {...props} />
+}
+
+function EarnTabContent(props: TabContentProps) {
+  return <TabContent {...props} />
+}
+
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
 
-  const tabs = (productCardsData: ProductCardData[]) => {
+  const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.borrow.tabLabel'),
       value: 'borrow',
-      content: (
-        <TabContent
-          ilks={content.borrowIlks}
-          type="borrow"
-          renderProductCard={ProductCardBorrow}
-          productCardsData={productCardsData}
-        />
-      ),
+      content: <BorrowTabContent ilks={content.borrowIlks} renderProductCard={ProductCardBorrow} />,
     }
 
     const multiplyTab = content.multiplyIlks && {
       label: t('landing.tabs.multiply.tabLabel'),
       value: 'multiply',
       content: (
-        <TabContent
-          ilks={content.multiplyIlks}
-          type="multiply"
-          renderProductCard={ProductCardMultiply}
-          productCardsData={productCardsData}
-        />
+        <MultiplyTabContent ilks={content.multiplyIlks} renderProductCard={ProductCardMultiply} />
       ),
     }
 
     const earnTab = content.earnIlks && {
       label: t('landing.tabs.earn.tabLabel'),
       value: 'earn',
-      content: (
-        <TabContent
-          ilks={content.earnIlks}
-          type="earn"
-          renderProductCard={ProductCardEarn}
-          productCardsData={productCardsData}
-        />
-      ),
+      content: <EarnTabContent ilks={content.earnIlks} renderProductCard={ProductCardEarn} />,
     }
 
     return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSection[]
@@ -121,15 +117,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Box>
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
-        <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
-            {([productCardsData]) => {
-              return (
-                <TabBar useDropdownOnMobile variant="large" sections={tabs(productCardsData)} />
-              )
-            }}
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+        <TabBar useDropdownOnMobile variant="large" sections={tabs()} />
       </Grid>
     </Grid>
   )

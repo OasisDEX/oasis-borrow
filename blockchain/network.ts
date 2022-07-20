@@ -100,7 +100,7 @@ export function createOnEveryBlock$(
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),
-    tap(() => console.log('onEveryBlock$')),
+    tap(() => console.log('sending - onEveryBlock$ triggered')),
     shareReplay(1),
   )
 
