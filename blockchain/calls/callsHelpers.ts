@@ -33,15 +33,7 @@ export function callAbstractContext<D, R, CC extends Context>(
 ): (args: D) => Observable<R> {
   return (args: D) => {
     return from<R>(
-      call(
-        args,
-        context,
-      )(...prepareArgs(args, context)).call(
-        context.status === 'connected'
-          ? { from: (context as any).account }
-          : // spot neccessary to read osms in readonly
-            { from: context.mcdSpot.address },
-      ),
+      call(args, context)(...prepareArgs(args, context)).call({ from: context.mcdSpot.address }),
     ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))
   }
 }
