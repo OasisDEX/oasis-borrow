@@ -4,10 +4,87 @@ import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
 import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
+import { equals } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import {
+  AutomationEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from './vaultHistoryEvents'
+
+export function getUpdateTrigger(events: VaultHistoryEvent[]) {
+  const updateCombination = ['added', 'removed']
+  const eventTypes = events.reduce(
+    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
+    [] as string[],
+  )
+  const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
+
+  const autoEvent = events.find(
+    (item) => 'triggerId' in item && updateCombination.includes(item.eventType),
+  )
+
+  if (autoEvent && isUpdateTriggerEvent) {
+    return { ...autoEvent, eventType: 'updated' } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function getExecuteTrigger(events: VaultHistoryEvent[]) {
+  const postExecutionEvents = [
+    'DECREASE_MULTIPLE',
+    'INCREASE_MULTIPLE',
+    'CLOSE_VAULT_TO_DAI',
+    'CLOSE_VAULT_TO_COLLATERAL',
+  ]
+  const postExecutionEvent = events.find((item) => postExecutionEvents.includes(item.kind))
+  const autoEvent = events.find((item) => 'triggerId' in item && item.eventType === 'executed') as
+    | AutomationEvent
+    | undefined
+
+  if (postExecutionEvent && autoEvent) {
+    return {
+      ...postExecutionEvent,
+      triggerId: autoEvent.triggerId,
+      eventType: 'executed',
+    } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function mapAutomationEvents(events: VaultHistoryEvent[]) {
+  const groupedByHash = events.reduce((acc, curr) => {
+    return {
+      ...acc,
+      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
+    }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
+    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+
+    if (updateTriggerEvent) {
+      return { ...acc, [key]: [updateTriggerEvent] }
+    }
+
+    if (executeTriggerEvent) {
+      return {
+        ...acc,
+        [key]: [executeTriggerEvent],
+      }
+    }
+
+    return { ...acc, [key]: groupedByHash[key] }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  return flatten(Object.values(wrappedByHash))
+}
 
 type WithSplitMark<T> = T & { splitId?: number }
 
