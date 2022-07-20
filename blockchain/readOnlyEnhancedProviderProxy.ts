@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers'
 import { JSONRPCRequestPayload } from 'ethereum-protocol'
 import { providers } from 'ethers'
-import { skipCache } from 'helpers/cache/skipCache'
+import { skipCache } from 'helpers/api/skipCache'
 import _ from 'lodash'
 import { JsonRpcResponse } from 'web3-core-helpers'
 
