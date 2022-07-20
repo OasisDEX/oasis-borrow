@@ -70,7 +70,7 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
           estimate.gasEstimationStatus == GasEstimationStatus.calculated),
     })
     // TODO: Add actual estimation here
-  }, [])
+  }, [gasEstimationData])
 
   return (
     <gasEstimationContext.Provider value={gasEstimate}>{children}</gasEstimationContext.Provider>

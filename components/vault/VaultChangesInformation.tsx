@@ -104,7 +104,7 @@ export function getEstimatedGasFeeTextOld(
     return <EstimationError withBrackets={withBrackets} />
   }
 
-  switch (gasEstimation?gasEstimation.gasEstimationStatus:undefined) {
+  switch (gasEstimation.gasEstimationStatus) {
     case GasEstimationStatus.calculating:
       const textPending = 'Pending...'
 
@@ -114,10 +114,9 @@ export function getEstimatedGasFeeTextOld(
     case GasEstimationStatus.error:
     case GasEstimationStatus.unknown:
     case GasEstimationStatus.unset:
-    case undefined:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimation?.gasEstimationUsd!, 'USD')}`
+      const textGas = `$${formatAmount(gasEstimation.gasEstimationUsd!, 'USD')}`
 
       return withBrackets ? `(${textGas})` : textGas
   }

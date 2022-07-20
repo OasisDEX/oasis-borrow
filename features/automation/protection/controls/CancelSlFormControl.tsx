@@ -5,14 +5,13 @@ import {
   AutomationBotRemoveTriggerData,
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
+import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
   prepareRemoveStopLossTriggerData,
@@ -25,8 +24,6 @@ import {
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
@@ -71,7 +68,13 @@ export function CancelSlFormControl({
     [triggerId],
   )
 
-  const gasEstimationContext = useGasEstimationContext()
+  uiChanges.publish(TX_DATA_CHANGE, {
+    type: 'remove-trigger',
+    tx: {
+      data: txData,
+      transaction: removeAutomationBotTrigger,
+    },
+  })
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
 
@@ -121,6 +124,8 @@ export function CancelSlFormControl({
         finishLoader(false)
       }
 
+
+
       // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx
         .sendWithGasEstimation(removeAutomationBotTrigger, txData)
@@ -150,7 +155,6 @@ export function CancelSlFormControl({
   const { token } = vault
   const etherscan = ctx.etherscan.url
 
-  const gasEstimationUsd = gasEstimationContext.usdValue
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     tokenPrice: priceInfo.currentCollateralPrice,

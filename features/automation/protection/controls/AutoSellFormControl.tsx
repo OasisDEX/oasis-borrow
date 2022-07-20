@@ -9,7 +9,6 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText, getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,

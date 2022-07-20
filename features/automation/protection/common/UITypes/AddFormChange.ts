@@ -52,6 +52,7 @@ export interface AddFormChange {
   }
 }
 
+//TODO: Move to different file
 export interface TxPayloadChange<T extends TxMeta> {
   data: T
   transaction: TransactionDef<T>

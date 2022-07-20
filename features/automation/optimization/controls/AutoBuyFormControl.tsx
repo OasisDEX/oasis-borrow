@@ -98,8 +98,6 @@ export function AutoBuyFormControl({
     ],
   )
 
-  const addTriggerGasEstimationUsd = gasEstimationContext.usdValue
-
   const cancelTxData = useMemo(
     () =>
       prepareRemoveBasicBSTriggerData({
@@ -186,8 +184,6 @@ export function AutoBuyFormControl({
       },
     })
   }
-
-  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
 
   const isEditing = checkIfEditingBasicBS({
     basicBSTriggerData: autoBuyTriggerData,

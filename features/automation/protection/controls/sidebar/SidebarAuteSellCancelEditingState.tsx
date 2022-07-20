@@ -4,7 +4,7 @@ import {
 } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText, getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
+import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import { AutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AutoSellInfoSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
