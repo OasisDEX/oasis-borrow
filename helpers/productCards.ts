@@ -6,6 +6,7 @@ import { startWith, switchMap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
 import { IlkDataList } from '../blockchain/ilks'
+import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
 import {
   ALLOWED_MULTIPLY_TOKENS,
   BTC_TOKENS,
@@ -14,7 +15,6 @@ import {
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
 } from '../blockchain/tokensMetadata'
-import { PriceInfo } from '../features/shared/priceInfo'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -525,7 +525,7 @@ export function cardFiltersFromBalances(
 
 export function createProductCardsWithBalance$(
   ilksWithBalance$: Observable<IlkWithBalance[]>,
-  priceInfo$: (token: string) => Observable<PriceInfo>,
+  oraclePrice$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
 ): Observable<ProductCardData[]> {
   return ilksWithBalance$.pipe(
     switchMap((ilkDataList) =>
@@ -534,7 +534,7 @@ export function createProductCardsWithBalance$(
           .filter((ilk) => ilk.debtCeiling.gt(zero))
           .map((ilk) => {
             const tokenMeta = getToken(ilk.token)
-            return priceInfo$(ilk.token).pipe(
+            return oraclePrice$({ token: ilk.token, requestedData: ['currentPrice'] }).pipe(
               switchMap((priceInfo) => {
                 return of({
                   token: ilk.token,
@@ -545,7 +545,7 @@ export function createProductCardsWithBalance$(
                   liquidityAvailable: ilk.ilkDebtAvailable,
                   stabilityFee: ilk.stabilityFee,
                   debtFloor: ilk.debtFloor,
-                  currentCollateralPrice: priceInfo.currentCollateralPrice,
+                  currentCollateralPrice: priceInfo.currentPrice,
                   bannerIcon: tokenMeta.bannerIcon,
                   bannerGif: tokenMeta.bannerGif,
                   background: tokenMeta.background,
@@ -563,7 +563,7 @@ export function createProductCardsWithBalance$(
 
 export function createProductCardsData$(
   ilkDataList$: Observable<IlkDataList>,
-  priceInfo$: (token: string) => Observable<PriceInfo>,
+  oraclePrice$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
 ): Observable<ProductCardData[]> {
   return ilkDataList$.pipe(
     switchMap((ilkDataList) =>
@@ -571,8 +571,8 @@ export function createProductCardsData$(
         ...ilkDataList.map((ilk) => {
           const tokenMeta = getToken(ilk.token)
 
-          return priceInfo$(ilk.token).pipe(
-            switchMap((priceInfo) => {
+          return oraclePrice$({ token: ilk.token, requestedData: ['currentPrice'] }).pipe(
+            switchMap((tokenPrice) => {
               return of({
                 token: ilk.token,
                 ilk: ilk.ilk as Ilk,
@@ -580,7 +580,7 @@ export function createProductCardsData$(
                 liquidityAvailable: ilk.ilkDebtAvailable,
                 stabilityFee: ilk.stabilityFee,
                 debtFloor: ilk.debtFloor,
-                currentCollateralPrice: priceInfo.currentCollateralPrice,
+                currentCollateralPrice: tokenPrice.currentPrice,
                 bannerIcon: tokenMeta.bannerIcon,
                 bannerGif: tokenMeta.bannerGif,
                 background: tokenMeta.background,

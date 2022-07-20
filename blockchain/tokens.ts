@@ -6,7 +6,7 @@ import { distinctUntilChanged, map, shareReplay, switchMap } from 'rxjs/operator
 import { maxUint256, tokenAllowance, tokenBalance } from './calls/erc20'
 import { CallObservable } from './calls/observe'
 import { Context } from './network'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
   onEveryBlock$: Observable<number>,
@@ -45,7 +45,7 @@ export type TokenBalances = Record<string, { balance: BigNumber; price: BigNumbe
 export function createAccountBalance$(
   tokenBalance$: (token: string, address: string) => Observable<BigNumber>,
   collateralTokens$: Observable<string[]>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   address: string,
 ): Observable<TokenBalances> {
   return collateralTokens$.pipe(
@@ -55,7 +55,7 @@ export function createAccountBalance$(
           combineLatest(
             of(collateralToken),
             tokenBalance$(collateralToken, address),
-            oraclePriceData$(collateralToken),
+            oraclePriceData$({ token: collateralToken, requestedData: ['currentPrice'] }),
           ),
         ),
       ),
