@@ -54,7 +54,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <AppLink
               variant="inText"
               target="_blank"
-              href="https://kb.oasis.app/help/tbd"
+              href="https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend?version=latest"
               sx={{
                 pt: '8px',
                 fontSize: 2,
@@ -76,7 +76,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <AppLink
               variant="inText"
               target="_blank"
-              href="https://kb.oasis.app/help/tbd"
+              href="https://kb.oasis.app/help"
               sx={{
                 pt: '8px',
                 fontSize: 2,
