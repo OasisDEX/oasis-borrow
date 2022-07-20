@@ -26,7 +26,7 @@ export function ReferralLayout({ children }: WithChildren) {
             }}
           >
             <Text variant="text.header2">{t('ref.ref-a-friend')}</Text>
-            <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'lavender' }}>
+            <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
               {t('ref.intro-1')}{' '}
               <AppLink
                 href={`https://kb.oasis.app/help/tbd`}

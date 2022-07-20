@@ -86,6 +86,7 @@ export type MultiplyPositionVM = {
   liquidationPrice: string
   fundingCost: string
   automationEnabled: boolean
+  protectionAmount?: string
   automationLinkProps: AppLinkProps
 } & PositionCommonProps
 
@@ -113,7 +114,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
     return (
       <AppLink {...automationLinkProps}>
         <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
-          {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+          {t('earn.automation-button-on')} {position.protectionAmount}
         </Button>
       </AppLink>
     )

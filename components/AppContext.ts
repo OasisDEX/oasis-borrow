@@ -876,6 +876,11 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
+  const productCardsData$ = createProductCardsData$(ilkDataList$, oraclePriceData$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(
+    ilksWithBalance$,
+    oraclePriceData$,
+  )
   const productCardsDataNew$ = memoize(
     curry(createProductCardsData$)(ilkData$, oraclePriceData$),
     (ilks: string[]) => {
