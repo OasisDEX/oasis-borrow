@@ -10,7 +10,7 @@ export class BatchCache {
   _cache: NodeCache
   _debug?: boolean
 
-  constructor(props: { ttlInSeconds?: number; debug?: boolean }) {
+  constructor(props: { ttlInSeconds?: number; debug?: boolean } = {}) {
     this._cache = new NodeCache({ stdTTL: props?.ttlInSeconds || 15 })
     this._debug = props?.debug || false
   }
