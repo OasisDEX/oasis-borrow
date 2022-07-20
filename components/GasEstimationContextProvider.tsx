@@ -1,5 +1,9 @@
 import BigNumber from 'bignumber.js'
-import { TxPayloadChange, TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
+import {
+  TxPayloadChange,
+  TxPayloadChangeBase,
+  TX_DATA_CHANGE,
+} from 'features/automation/protection/common/UITypes/AddFormChange'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
@@ -9,9 +13,10 @@ import { WithChildren } from '../helpers/types'
 import { useAppContext } from './AppContextProvider'
 
 export type GasEstimationContex = {
-  isSuccessful : boolean,
-  gasAmount : BigNumber,
-  usdValue : BigNumber,
+  isSuccessful: boolean
+  isCompleted: boolean
+  gasAmount: BigNumber
+  usdValue: BigNumber
 }
 
 export const gasEstimationContext = React.createContext<GasEstimationContex | undefined>(undefined)
@@ -37,9 +42,9 @@ export function useGasEstimationContext(): GasEstimationContex {
 
 export function GasEstimationContextProvider({ children }: WithChildren) {
   const [gasEstimate, setEstimate] = useState<GasEstimationContex | undefined>(undefined)
-  const { addGasEstimation$ } = useAppContext();
+  const { addGasEstimation$ } = useAppContext()
 
-  const [txData] = useUIChanges<TxPayloadChange>(TX_DATA_CHANGE)
+  const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
 
   const gasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
@@ -50,18 +55,24 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
 
   const [gasEstimationData] = useObservable(gasEstimationData$)
 
-  const estimate : HasGasEstimation | undefined = gasEstimationData?(gasEstimationData as HasGasEstimation):undefined;
+  const estimate: HasGasEstimation | undefined = gasEstimationData
+    ? (gasEstimationData as HasGasEstimation)
+    : undefined
 
   useEffect(() => {
-      
     setEstimate({
-      gasAmount:estimate?new BigNumber(estimate.gasEstimation!):new BigNumber(0),
-      isSuccessful:!!estimate,
-      usdValue:estimate?estimate.gasEstimationUsd!:new BigNumber(0),
+      gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : new BigNumber(0),
+      isSuccessful: !!estimate && estimate.gasEstimationStatus == GasEstimationStatus.calculated,
+      usdValue: estimate ? estimate.gasEstimationUsd! : new BigNumber(0),
+      isCompleted:
+        !!estimate &&
+        (estimate.gasEstimationStatus == GasEstimationStatus.error ||
+          estimate.gasEstimationStatus == GasEstimationStatus.calculated),
     })
-   // TODO: Add actual estimation here
+    // TODO: Add actual estimation here
   }, [])
 
-  return <gasEstimationContext.Provider value={gasEstimate}>{children}</gasEstimationContext.Provider>
+  return (
+    <gasEstimationContext.Provider value={gasEstimate}>{children}</gasEstimationContext.Provider>
+  )
 }
-

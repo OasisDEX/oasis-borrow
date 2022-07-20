@@ -12,7 +12,7 @@ import { Box, Image, Text } from 'theme-ui'
 
 import { HasGasEstimation } from '../../helpers/form'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
-import { getEstimatedGasFeeText, VaultChangesInformationItem } from './VaultChangesInformation'
+import { getEstimatedGasFeeText, getEstimatedGasFeeTextOld, VaultChangesInformationItem } from './VaultChangesInformation'
 
 export function VaultProxyStatusCard({
   stage,
@@ -75,7 +75,7 @@ export function VaultProxyContentBox({
               </Text>
               <VaultChangesInformationItem
                 label={t('transaction-fee')}
-                value={getEstimatedGasFeeText(gasData)}
+                value={getEstimatedGasFeeTextOld(gasData)}
               />
             </Box>
           )}

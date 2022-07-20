@@ -8,6 +8,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
@@ -28,6 +29,7 @@ import {
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
@@ -36,7 +38,7 @@ import { BalanceInfo } from 'features/shared/balanceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 interface AutoBuyFormControlProps {
   vault: Vault
@@ -64,7 +66,10 @@ export function AutoBuyFormControl({
   ethMarketPrice,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges, addGasEstimation$ } = useAppContext()
+  const { uiChanges } = useAppContext()
+
+  const gasEstimationContext = useGasEstimationContext()
+  const gasEstimationText = getEstimatedGasFeeText(gasEstimationContext)
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
 
@@ -93,18 +98,7 @@ export function AutoBuyFormControl({
     ],
   )
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-  const addTriggerGasEstimationUsd =
-    addTriggerGasEstimationData &&
-    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
+  const addTriggerGasEstimationUsd = gasEstimationContext.usdValue
 
   const cancelTxData = useMemo(
     () =>
@@ -116,18 +110,7 @@ export function AutoBuyFormControl({
     [basicBuyState.triggerId.toNumber()],
   )
 
-  const cancelTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
-    )
-  }, [cancelTxData])
-
-  const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
-  const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
-  const cancelTriggerGasEstimationUsd =
-    cancelTriggerGasEstimationData &&
-    (cancelTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
+  const cancelTriggerGasEstimationUsd = gasEstimationContext.usdValue
 
   const txStatus = basicBuyState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
@@ -184,6 +167,26 @@ export function AutoBuyFormControl({
   const isAddForm = basicBuyState.currentForm === 'add'
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
+  if (isAddForm) {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'add-trigger',
+      tx: {
+        data: addTxData,
+        transaction: addAutomationBotTrigger,
+      },
+    })
+  }
+
+  if (isRemoveForm) {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'remove-trigger',
+      tx: {
+        data: cancelTxData,
+        transaction: removeAutomationBotTrigger,
+      },
+    })
+  }
+
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
 
   const isEditing = checkIfEditingBasicBS({
@@ -231,8 +234,8 @@ export function AutoBuyFormControl({
       textButtonHandler={textButtonHandler}
       stage={stage}
       gasEstimationUsd={gasEstimationUsd}
-      addTriggerGasEstimation={addTriggerGasEstimation}
-      cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+      addTriggerGasEstimation={gasEstimationText}
+      cancelTriggerGasEstimation={gasEstimationText}
       isAddForm={isAddForm}
       isRemoveForm={isRemoveForm}
       isEditing={isEditing}

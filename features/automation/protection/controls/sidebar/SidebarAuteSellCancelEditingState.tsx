@@ -4,7 +4,7 @@ import {
 } from 'blockchain/calls/automationBot'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { getEstimatedGasFeeText, getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import { AutoSellInfoSection } from 'features/automation/basicBuySell/InfoSections/AutoSellInfoSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -42,7 +42,7 @@ function AutoSellInfoSectionControl({
   const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
   const [tokenPriceData] = useObservable(_tokenPriceUSD$)
   const marketPrice = tokenPriceData?.[vault.token] || priceInfo.currentCollateralPrice
-  const gasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
+  const gasEstimation = getEstimatedGasFeeTextOld(addTriggerGasEstimationData)
 
   const { debtDelta, collateralDelta } = getVaultChange({
     currentCollateralPrice: priceInfo.currentCollateralPrice,

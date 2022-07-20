@@ -8,7 +8,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { getEstimatedGasFeeText, getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   prepareAddBasicBSTriggerData,
@@ -124,7 +124,7 @@ export function AutoSellFormControl({
   }, [cancelTxData])
 
   const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
-  const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
+  const cancelTriggerGasEstimation = getEstimatedGasFeeTextOld(cancelTriggerGasEstimationData)
   const cancelTriggerGasEstimationUsd =
     cancelTriggerGasEstimationData &&
     (cancelTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd

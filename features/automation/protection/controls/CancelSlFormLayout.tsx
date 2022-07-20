@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { GasEstimationContex } from 'components/GasEstimationContextProvider'
 import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationArrow,
@@ -133,7 +134,6 @@ export interface CancelSlFormLayoutProps {
   tokenPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
-  gasEstimation: HasGasEstimation
   accountIsController: boolean
   etherscan: string
   ethPrice: BigNumber
@@ -142,7 +142,6 @@ export interface CancelSlFormLayoutProps {
   actualCancelTxCost?: BigNumber
   txState?: TxStatus
   txHash?: string
-  gasEstimationUsd?: BigNumber
   stage: 'editing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   token: string

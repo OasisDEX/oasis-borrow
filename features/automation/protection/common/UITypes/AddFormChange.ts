@@ -1,5 +1,10 @@
-import { TxStatus } from '@oasisdex/transactions'
+import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import {
+  AutomationBotAddTriggerData,
+  AutomationBotRemoveTriggerData,
+} from 'blockchain/calls/automationBot'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
 
 import { TxError } from '../../../../../helpers/types'
 
@@ -47,7 +52,22 @@ export interface AddFormChange {
   }
 }
 
-export interface TxPayloadChange {
-  data:any,
-  transaction:any
+export interface TxPayloadChange<T extends TxMeta> {
+  data: T
+  transaction: TransactionDef<T>
 }
+
+export interface TxPayloadChangeBase {
+  data: any
+  transaction: any
+}
+
+export type TxPayloadChangeAction =
+  | {
+      type: 'add-trigger'
+      tx: TxPayloadChange<AutomationBotAddTriggerData>
+    }
+  | {
+      type: 'remove-trigger'
+      tx: TxPayloadChange<AutomationBotRemoveTriggerData>
+    }

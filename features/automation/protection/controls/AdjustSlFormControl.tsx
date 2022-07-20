@@ -15,7 +15,7 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
+import { getEstimatedGasFeeTextOld } from 'components/vault/VaultChangesInformation'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
@@ -295,7 +295,7 @@ export function AdjustSlFormControl({
   const txProgressing =
     !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
-  const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
+  const gasEstimation = getEstimatedGasFeeTextOld(gasEstimationData)
   const gasEstimationUsd =
     gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
 

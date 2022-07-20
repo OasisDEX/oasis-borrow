@@ -25,7 +25,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
-  const gasEstimationContext = useGasEstimationContext();
+  const gasEstimationContext = useGasEstimationContext()
 
   const {
     addTriggerConfig,

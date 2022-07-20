@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import BigNumber from 'bignumber.js'
+import { GasEstimationContex } from 'components/GasEstimationContextProvider'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
@@ -95,14 +95,16 @@ export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
-export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {
+export function getEstimatedGasFeeTextOld(
+  gasEstimation?: HasGasEstimation,
+  withBrackets = false,
+) {
+
   if (!gasEstimation) {
     return <EstimationError withBrackets={withBrackets} />
   }
 
-  const { gasEstimationStatus, gasEstimationUsd } = gasEstimation
-
-  switch (gasEstimationStatus) {
+  switch (gasEstimation?gasEstimation.gasEstimationStatus:undefined) {
     case GasEstimationStatus.calculating:
       const textPending = 'Pending...'
 
@@ -115,7 +117,35 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
     case undefined:
       return <EstimationError withBrackets={withBrackets} />
     case GasEstimationStatus.calculated:
-      const textGas = `$${formatAmount(gasEstimationUsd as BigNumber, 'USD')}`
+      const textGas = `$${formatAmount(gasEstimation?.gasEstimationUsd!, 'USD')}`
+
+      return withBrackets ? `(${textGas})` : textGas
+  }
+}
+
+export function getEstimatedGasFeeText(gasEstimation: GasEstimationContex, withBrackets = false) {
+  if (!gasEstimation.isSuccessful) {
+    return <EstimationError withBrackets={withBrackets} />
+  }
+
+  const status: GasEstimationStatus = gasEstimation.isCompleted
+    ? gasEstimation.isSuccessful
+      ? GasEstimationStatus.calculated
+      : GasEstimationStatus.error
+    : GasEstimationStatus.calculating
+
+  switch (status) {
+    case GasEstimationStatus.calculating:
+      const textPending = 'Pending...'
+
+      return (
+        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
+      )
+    case GasEstimationStatus.error:
+    case undefined:
+      return <EstimationError withBrackets={withBrackets} />
+    case GasEstimationStatus.calculated:
+      const textGas = `$${formatAmount(gasEstimation.usdValue, 'USD')}`
 
       return withBrackets ? `(${textGas})` : textGas
   }
@@ -126,7 +156,7 @@ export function VaultChangesInformationEstimatedGasFee(props: HasGasEstimation) 
   return (
     <VaultChangesInformationItem
       label={t('max-gas-fee')}
-      value={getEstimatedGasFeeText(props)}
+      value={getEstimatedGasFeeTextOld(props)}
       tooltip={<Box>{t('gas-explanation')}</Box>}
     />
   )

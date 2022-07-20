@@ -3,6 +3,7 @@ import { Box, Flex, Grid, Text } from '@theme-ui/components'
 import BigNumber from 'bignumber.js'
 import {
   getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
@@ -148,7 +149,7 @@ export function OpenMultiplyVaultChangesInformation(props: OpenMultiplyVaultStat
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(txFees, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"

@@ -11,6 +11,8 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
+import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
   prepareRemoveStopLossTriggerData,
@@ -59,7 +61,7 @@ export function CancelSlFormControl({
   ethMarketPrice,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = triggerData
-  const { addGasEstimation$, uiChanges } = useAppContext()
+  const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
@@ -69,14 +71,7 @@ export function CancelSlFormControl({
     [triggerId],
   )
 
-  const gasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, txData),
-    )
-  }, [txData])
-
-  const [gasEstimationData] = useObservable(gasEstimationData$)
+  const gasEstimationContext = useGasEstimationContext()
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
 
@@ -155,9 +150,7 @@ export function CancelSlFormControl({
   const { token } = vault
   const etherscan = ctx.etherscan.url
 
-  const gasEstimationUsd =
-    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
-
+  const gasEstimationUsd = gasEstimationContext.usdValue
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     tokenPrice: priceInfo.currentCollateralPrice,
@@ -165,8 +158,6 @@ export function CancelSlFormControl({
     txState: uiState?.txDetails?.txStatus,
     txHash: uiState?.txDetails?.txHash,
     txError: uiState?.txDetails?.txError,
-    gasEstimation: gasEstimationData as HasGasEstimation,
-    gasEstimationUsd: gasEstimationUsd,
     accountIsController,
     actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
