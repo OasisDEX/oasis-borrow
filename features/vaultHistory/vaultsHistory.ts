@@ -1,4 +1,9 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
+import {
+  BasicBSTriggerData,
+  extractBasicBSData,
+} from 'features/automation/common/basicBSTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
 import { isEqual, memoize } from 'lodash'
 import { combineLatest, from, Observable, timer } from 'rxjs'
@@ -95,6 +100,7 @@ async function getDataFromCache(
 export type VaultWithHistory = VaultWithValue<VaultWithType> & {
   history: VaultEvent[]
   stopLossData: StopLossTriggerData
+  basicSellData: BasicBSTriggerData
 }
 
 function mapToVaultWithHistory(
@@ -109,20 +115,30 @@ function mapToVaultWithHistory(
     const vaultActiveTriggers = activeTriggers.filter(
       (trigger) => trigger.cdpId === vault.id.toString(),
     )
+    const isAutomationEnabled = vaultActiveTriggers.length > 0
+    const triggers = vaultActiveTriggers.map((trigger) => ({
+      ...trigger,
+      executionParams: trigger.triggerData,
+    }))
 
     const history = flatEvents([vaultEvents, vaultAutomationEvents])
     const stopLossData = extractStopLossData({
-      isAutomationEnabled: vaultActiveTriggers.length > 0,
-      triggers: vaultActiveTriggers.map((trigger) => ({
-        ...trigger,
-        executionParams: trigger.triggerData,
-      })),
+      isAutomationEnabled,
+      triggers,
     })
+    const basicSellData = extractBasicBSData(
+      {
+        isAutomationEnabled,
+        triggers,
+      },
+      TriggerType.BasicSell,
+    )
 
     return {
       ...vault,
       history,
       stopLossData,
+      basicSellData,
     }
   })
 }
