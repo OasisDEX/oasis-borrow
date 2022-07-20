@@ -17,7 +17,7 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   minSellPrice?: BigNumber
   buyWithThreshold: boolean
   sellWithThreshold: boolean
-  multiplier: number
+  multiplier: number // Multiplier is not used in Smart Contract, it specifies target coll ratio
 }
 
 export function constantMultipleFormChangeReducer(

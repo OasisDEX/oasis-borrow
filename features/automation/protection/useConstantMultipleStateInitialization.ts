@@ -11,22 +11,25 @@ import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/hel
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
 import { TriggersData } from './triggers/AutomationTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
+export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
 
 export interface ConstantMultipleTriggerData {
+  groupTriggerId: BigNumber
   // groupTypeId: BigNumber ŁW for now it's always 1
   // group of triggers also will have some unique id
-  triggersData: {[key in TriggerType]: TriggersData}
+  autoTriggersData: TriggersData
+  // TODO - aggregatedTriggersData: AggregatedTriggersData
 }
 
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
-  autoTriggersData: ConstantMultipleTriggerData, //TODO ŁW how to make sure there will be 2 elements and which one will be for absic buy and whioch for basic sell?
+  constantMultipleTriggersData: ConstantMultipleTriggerData,
 ) {
   const { uiChanges } = useAppContext()
-
-  const buyTriggerData = extractBasicBSData(autoTriggersData.triggersData[TriggerType.BasicBuy], TriggerType.BasicBuy)
-  const sellTriggerData = extractBasicBSData(autoTriggersData.triggersData[TriggerType.BasicSell], TriggerType.BasicSell)
+  // const constantMultipleTriggerIds = extractConstantMultipleIds(aggregatedTriggersData, CONSTANT_MULTIPLE_GROUP_TYPE)
+  const buyTriggerData = extractBasicBSData(constantMultipleTriggersData.triggersData[TriggerType.BasicBuy], TriggerType.BasicBuy)
+  const sellTriggerData = extractBasicBSData(constantMultipleTriggersData.triggersData[TriggerType.BasicSell], TriggerType.BasicSell)
   const maxBuyPrice  = buyTriggerData.maxBuyOrMinSellPrice
   const buyWithThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice: maxBuyPrice, triggerId: buyTriggerData.triggerId })
   const minSellPrice = sellTriggerData.maxBuyOrMinSellPrice
@@ -39,10 +42,11 @@ export function useConstantMultipleStateInitialization(
 
   // TODO ŁW multiplier is result of target ratio of both triggers, 
   // such value is not used in smart contract
+  const {groupTriggerId} = constantMultipleTriggersData
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'multiplier',
-      multiplier: INITIAL_MULTIPLIER_SELECTED,
+      multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists
     })
-  })
+  }, [groupTriggerId.toNumber(), collateralizationRatio])
 }

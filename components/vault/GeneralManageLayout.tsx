@@ -43,11 +43,11 @@ export function GeneralManageLayout({
     autoTriggersData,
     TriggerType.BasicBuy,
   )
-  // TODO ŁW no triggers deployed so far
+  // TODO ŁW pass both aggregatedTriggersData and autoTriggersData, pick ones that belong to group
   const isConstantMultipleEnabled = useConstantMultipleStateInitialization(    
     ilkData,
     vault,
-    autoTriggersData,
+    constantMultipleTriggersData: autoTriggersData,
     )
 
   const headlineElement =
