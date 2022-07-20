@@ -7,6 +7,7 @@ import { readOnlyEnhanceProvider } from 'blockchain/readOnlyEnhancedProviderProx
 import { SetupWeb3Context } from 'blockchain/web3Context'
 import { AppContextProvider } from 'components/AppContextProvider'
 import { CookieBanner } from 'components/CookieBanner'
+import { GasEstimationContextProvider } from 'components/GasEstimationContextProvider'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
@@ -161,18 +162,20 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             <Global styles={globalStyles} />
             <Web3ReactProvider {...{ getLibrary }}>
               <AppContextProvider>
-                <ModalProvider>
-                  <HeadTags />
-                  {seoTags}
-                  <SetupWeb3Context>
-                    <SharedUIProvider>
-                      <Layout {...layoutProps}>
-                        <Component {...pageProps} />
-                        <CookieBanner setValue={setValue} value={value} />
-                      </Layout>
-                    </SharedUIProvider>
-                  </SetupWeb3Context>
-                </ModalProvider>
+                <GasEstimationContextProvider>
+                  <ModalProvider>
+                    <HeadTags />
+                    {seoTags}
+                    <SetupWeb3Context>
+                      <SharedUIProvider>
+                        <Layout {...layoutProps}>
+                          <Component {...pageProps} />
+                          <CookieBanner setValue={setValue} value={value} />
+                        </Layout>
+                      </SharedUIProvider>
+                    </SetupWeb3Context>
+                  </ModalProvider>
+                </GasEstimationContextProvider>
               </AppContextProvider>
             </Web3ReactProvider>
           </MDXProvider>

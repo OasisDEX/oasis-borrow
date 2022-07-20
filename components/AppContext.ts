@@ -71,6 +71,7 @@ import {
   AddFormChange,
   AddFormChangeAction,
   formChangeReducer,
+  TxPayloadChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -305,6 +306,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
+  | TxPayloadChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction

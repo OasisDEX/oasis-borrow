@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { TxError } from '../../../../../helpers/types'
 
 export const ADD_FORM_CHANGE = 'ADD_FORM_CHANGE'
+export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
 /* End of section */
 export type AddFormChangeAction =
@@ -44,4 +45,9 @@ export interface AddFormChange {
     txHash?: string
     txCost?: BigNumber
   }
+}
+
+export interface TxPayloadChange {
+  data:any,
+  transaction:any
 }
