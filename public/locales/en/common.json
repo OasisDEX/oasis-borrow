@@ -1557,7 +1557,8 @@
       "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
       "go-home": "Go to Oasis.app homepage ",
       "go-dashboard": "Go to referral dashboard ",
-      "link": "Oasis.app Referral Blog Post, Referral FAQs",
+      "link-1": "Oasis.app Referral Blog Post, ",
+      "link-2": "Referral FAQs",
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
