@@ -1,6 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
@@ -93,19 +94,6 @@ export function AutoSellFormControl({
     ],
   )
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-  const addTriggerGasEstimationUsd =
-    addTriggerGasEstimationData &&
-    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
-
   const cancelTxData = useMemo(
     () =>
       prepareRemoveBasicBSTriggerData({
@@ -116,21 +104,28 @@ export function AutoSellFormControl({
     [basicSellState.triggerId.toNumber()],
   )
 
-  const cancelTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
-    )
-  }, [cancelTxData])
-
-  const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
-  const cancelTriggerGasEstimation = getEstimatedGasFeeTextOld(cancelTriggerGasEstimationData)
-  const cancelTriggerGasEstimationUsd =
-    cancelTriggerGasEstimationData &&
-    (cancelTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
-
   const isAddForm = basicSellState.currentForm === 'add'
   const isRemoveForm = basicSellState.currentForm === 'remove'
+  
+  if (isAddForm) {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'add-trigger',
+      tx: {
+        data: addTxData,
+        transaction: addAutomationBotTrigger,
+      },
+    })
+  }
+
+  if (isRemoveForm) {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'remove-trigger',
+      tx: {
+        data: cancelTxData,
+        transaction: removeAutomationBotTrigger,
+      },
+    })
+  }
 
   const txStatus = basicSellState.txDetails?.txStatus
   const isSuccessStage = txStatus === TxStatus.Success
@@ -184,8 +179,6 @@ export function AutoSellFormControl({
     })
   }
 
-  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-
   const isEditing = checkIfEditingBasicBS({
     basicBSTriggerData: autoSellTriggerData,
     basicBSState: basicSellState,
@@ -229,9 +222,6 @@ export function AutoSellFormControl({
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}
-      gasEstimationUsd={gasEstimationUsd}
-      addTriggerGasEstimation={addTriggerGasEstimation}
-      cancelTriggerGasEstimation={cancelTriggerGasEstimation}
       isAddForm={isAddForm}
       isRemoveForm={isRemoveForm}
       isEditing={isEditing}

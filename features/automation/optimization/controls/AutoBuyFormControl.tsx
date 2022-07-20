@@ -233,7 +233,6 @@ export function AutoBuyFormControl({
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}
-      gasEstimationUsd={gasEstimationUsd}
       addTriggerGasEstimation={gasEstimationText}
       cancelTriggerGasEstimation={gasEstimationText}
       isAddForm={isAddForm}

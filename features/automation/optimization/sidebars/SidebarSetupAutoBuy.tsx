@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
@@ -43,7 +44,6 @@ export interface SidebarSetupAutoBuyProps {
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarVaultStages
-  gasEstimationUsd?: BigNumber
   addTriggerGasEstimation: ReactNode
   cancelTriggerGasEstimation: ReactNode
   isAddForm: boolean
@@ -72,7 +72,6 @@ export function SidebarSetupAutoBuy({
   textButtonHandler,
   stage,
 
-  gasEstimationUsd,
   addTriggerGasEstimation,
   cancelTriggerGasEstimation,
 
@@ -86,6 +85,9 @@ export function SidebarSetupAutoBuy({
   collateralDelta,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
+
+  const gasEstimationContext = useGasEstimationContext();
+
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
   const flow: SidebarFlow = isRemoveForm
@@ -117,7 +119,7 @@ export function SidebarSetupAutoBuy({
 
   const warnings = warningsBasicBuyValidation({
     vault,
-    gasEstimationUsd,
+    gasEstimationUsd:gasEstimationContext.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
