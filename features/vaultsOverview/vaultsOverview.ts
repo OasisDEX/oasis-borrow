@@ -100,7 +100,8 @@ function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
       fundingCost: formatPercent(fundingCost, {
         precision: 2,
       }),
-      automationEnabled: position.stopLossData.isStopLossEnabled,
+      automationEnabled: isAutomationEnabled(position),
+      protectionAmount: getProtectionAmount(position),
       editLinkProps: {
         href: `/${position.id}`,
         hash: VaultViewMode.Overview,
