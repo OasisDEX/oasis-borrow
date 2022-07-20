@@ -527,6 +527,9 @@ export function setupAppContext() {
 
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    ({ token, requestedData }) => {
+      return `${token}-${requestedData.join(',')}`
+    },
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
