@@ -2,10 +2,10 @@ import { BigNumber } from 'bignumber.js'
 import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
 import _, { keyBy, sortBy } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { startWith, switchMap } from 'rxjs/operators'
+import { map, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
-import { IlkDataList } from '../blockchain/ilks'
+import { IlkData, IlkDataList } from '../blockchain/ilks'
 import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
 import {
   ALLOWED_MULTIPLY_TOKENS,
@@ -562,35 +562,46 @@ export function createProductCardsWithBalance$(
 }
 
 export function createProductCardsData$(
-  ilkDataList$: Observable<IlkDataList>,
+  ilkData$: (ilk: string) => Observable<IlkData>,
   oraclePrice$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
+  visibleIlks: Array<string>,
 ): Observable<ProductCardData[]> {
-  return ilkDataList$.pipe(
-    switchMap((ilkDataList) =>
-      combineLatest(
-        ...ilkDataList.map((ilk) => {
-          const tokenMeta = getToken(ilk.token)
+  if (visibleIlks.length === 0) {
+    return of([])
+  }
 
-          return oraclePrice$({ token: ilk.token, requestedData: ['currentPrice'] }).pipe(
-            switchMap((tokenPrice) => {
-              return of({
-                token: ilk.token,
-                ilk: ilk.ilk as Ilk,
-                liquidationRatio: ilk.liquidationRatio,
-                liquidityAvailable: ilk.ilkDebtAvailable,
-                stabilityFee: ilk.stabilityFee,
-                debtFloor: ilk.debtFloor,
-                currentCollateralPrice: tokenPrice.currentPrice,
-                bannerIcon: tokenMeta.bannerIcon,
-                bannerGif: tokenMeta.bannerGif,
-                background: tokenMeta.background,
-                name: tokenMeta.name,
-                isFull: ilk.ilkDebtAvailable.lt(ilk.debtFloor),
-              })
-            }),
-          )
-        }),
+  const hydratedIlkData$ = combineLatest(visibleIlks.map((ilk) => ilkData$(ilk)))
+
+  const hydratedOraclePriceData$ = hydratedIlkData$.pipe(
+    switchMap((ilkDatas) =>
+      combineLatest(
+        ilkDatas.map((ilkData) =>
+          oraclePrice$({ token: ilkData.token, requestedData: ['currentPrice'] }),
+        ),
       ),
     ),
+  )
+
+  return combineLatest(hydratedIlkData$, hydratedOraclePriceData$).pipe(
+    map(([ilkDatas, oraclePriceDatas]) => {
+      return ilkDatas.map((ilkData, index) => {
+        const oraclePriceData = oraclePriceDatas[index]
+        const tokenMeta = getToken(ilkData.token)
+        return {
+          token: ilkData.token,
+          ilk: ilkData.ilk as Ilk,
+          liquidationRatio: ilkData.liquidationRatio,
+          liquidityAvailable: ilkData.ilkDebtAvailable,
+          stabilityFee: ilkData.stabilityFee,
+          debtFloor: ilkData.debtFloor,
+          currentCollateralPrice: oraclePriceData.currentPrice,
+          bannerIcon: tokenMeta.bannerIcon,
+          bannerGif: tokenMeta.bannerGif,
+          background: tokenMeta.background,
+          name: tokenMeta.name,
+          isFull: ilkData.ilkDebtAvailable.lt(ilkData.debtFloor),
+        }
+      })
+    }),
   )
 }

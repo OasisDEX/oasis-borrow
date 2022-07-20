@@ -527,6 +527,9 @@ export function setupAppContext() {
 
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    ({ token, requestedData }) => {
+      return `${token}-${requestedData.join(',')}`
+    },
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
@@ -873,7 +876,22 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const productCardsData$ = createProductCardsData$(ilkDataList$, oraclePriceData$)
+  const productCardsDataNew$ = memoize(
+    curry(createProductCardsData$)(ilkData$, oraclePriceData$),
+    (ilks: string[]) => {
+      return ilks.join(',')
+    },
+  )
+
+  // const productCardsDataNew$ = curry(createProductCardsData$)(ilkData$, oraclePriceData$)
+
+  const productCardsData$ = createProductCardsData$(ilkData$, oraclePriceData$, [
+    'ETH-C',
+    'WBTC-C',
+    'CRVV1ETHSTETH-A',
+    'WSTETH-B',
+  ])
+
   const productCardsWithBalance$ = createProductCardsWithBalance$(
     ilksWithBalance$,
     oraclePriceData$,
@@ -1032,6 +1050,7 @@ export function setupAppContext() {
     ilkDataList$,
     uiChanges,
     connectedContext$,
+    productCardsDataNew$,
     productCardsData$,
     getOasisStats$: memoize(getOasisStats$),
     productCardsWithBalance$,
