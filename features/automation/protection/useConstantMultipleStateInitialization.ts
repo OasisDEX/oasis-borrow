@@ -10,6 +10,7 @@ import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/hel
 
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
 import { TriggersData } from './triggers/AutomationTriggersData'
+import { AggregtedTriggersData } from './triggers/AggregatedTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
 
@@ -18,7 +19,7 @@ export interface ConstantMultipleTriggerData {
   // groupTypeId: BigNumber ŁW for now it's always 1
   // group of triggers also will have some unique id
   autoTriggersData: TriggersData
-  // TODO - aggregatedTriggersData: AggregatedTriggersData
+  aggregatedTriggersData: AggregtedTriggersData
 }
 
 export function useConstantMultipleStateInitialization(
