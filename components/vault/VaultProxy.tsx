@@ -99,7 +99,7 @@ export function VaultProxySubtitle({
         1: (
           <AppLink href="https://kb.oasis.app/help/what-is-a-proxy-contract" sx={{ fontSize: 2 }} />
         ),
-        2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
+        2: <WithArrow sx={{ display: 'inline', color: 'interactive100', fontWeight: 'body' }} />,
       }}
     />
   )

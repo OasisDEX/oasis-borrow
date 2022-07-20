@@ -80,7 +80,7 @@ export function ManageVaultCollateralAllowance({
                 sx={{
                   p: 1,
                   borderRadius: 'small',
-                  borderColor: 'light',
+                  borderColor: 'secondary100',
                   width: '100px',
                   fontSize: 1,
                   px: 3,

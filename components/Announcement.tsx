@@ -12,7 +12,7 @@ function Separator() {
       variant="paragraph3"
       sx={{
         fontWeight: 'semiBold',
-        color: 'muted',
+        color: 'neutral80',
         mx: 3,
         ml: 4,
         '@media screen and (max-width: 400px)': {
@@ -75,7 +75,7 @@ export function Announcement({ text, discordLink, link, linkText }: Announcement
           <Box sx={{ mb: 2 }}>
             <Text
               variant="paragraph3"
-              sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3, pr: 2, color: 'lavender' }}
+              sx={{ fontWeight: 'semiBold', fontSize: [1, 2], mr: 3, pr: 2, color: 'neutral80' }}
             >
               {text}
             </Text>

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
 import { ManageMultiplyVaultChange, ManageMultiplyVaultState } from './manageMultiplyVault'
@@ -391,13 +392,17 @@ export function applyManageVaultInput(
   if (change.kind === 'depositAmount') {
     const {
       priceInfo: { currentCollateralPrice },
+      vault: { token },
     } = state
-
+    const currencyDigits = calculateTokenPrecisionByValue({
+      token: token,
+      usdPrice: currentCollateralPrice,
+    })
     return {
       ...state,
       ...manageMultiplyInputsDefaults,
       depositAmount: change.depositAmount,
-      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice),
+      depositAmountUSD: change.depositAmount?.times(currentCollateralPrice).dp(currencyDigits),
       showSliderController: false,
     }
   }

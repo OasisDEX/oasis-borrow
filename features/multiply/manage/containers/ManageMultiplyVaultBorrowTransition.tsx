@@ -9,7 +9,7 @@ export function ManageMultiplyVaultBorrowTransition({ stage }: ManageMultiplyVau
   const { t } = useTranslation()
   return stage === 'borrowTransitionEditing' ? (
     <Grid mt={-3} mb={3}>
-      <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>
         <TextWithCheckmark>{t('multiply-to-borrow.checkmark1')}</TextWithCheckmark>
         <TextWithCheckmark>{t('multiply-to-borrow.checkmark2')}</TextWithCheckmark>
         <TextWithCheckmark>{t('multiply-to-borrow.checkmark3')}</TextWithCheckmark>

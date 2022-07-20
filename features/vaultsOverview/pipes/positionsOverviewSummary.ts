@@ -4,7 +4,7 @@ import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
-import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators'
+import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
 
 import { AssetAction } from './assetActions'
 
@@ -75,6 +75,7 @@ export function createPositionsOverviewSummary$(
     map((tokenBalancesAndActions) => {
       return [...tokenBalancesAndActions.filter(({ assetActions }) => assetActions.length > 0)]
     }),
+    shareReplay(1),
   )
 
   const positions$ = createPositions$(address)

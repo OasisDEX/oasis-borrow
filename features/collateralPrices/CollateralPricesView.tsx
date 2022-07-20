@@ -18,7 +18,11 @@ import {
 } from './collateralPricesWithFilters'
 
 function getPercentageColor(percentageChange: BigNumber) {
-  return percentageChange.isEqualTo(zero) ? 'text' : percentageChange.gt(zero) ? 'bull' : 'bear'
+  return percentageChange.isEqualTo(zero)
+    ? 'text'
+    : percentageChange.gt(zero)
+    ? 'success100'
+    : 'critical100'
 }
 
 function CellOracleUpdate({ update }: { update?: Date }) {
@@ -136,7 +140,7 @@ export function CollateralPricesView() {
     <Grid sx={{ position: 'relative', zIndex: 1, width: '100%' }} gap={5}>
       <Grid pt={5} pb={4}>
         <Heading variant="header2">{t('oracles.header')}</Heading>
-        <Box sx={{ maxWidth: '55.5em', color: 'text.subtitle' }}>{t('oracles.description')}</Box>
+        <Box sx={{ maxWidth: '55.5em', color: 'neutral80' }}>{t('oracles.description')}</Box>
       </Grid>
       <WithErrorHandler error={collateralPricesWithError}>
         <WithLoadingIndicator

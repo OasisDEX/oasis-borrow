@@ -78,7 +78,7 @@ export function SidebarSectionHeaderSelect({
               width: 26,
               height: 26,
               m: '3px 7px 3px 3px',
-              backgroundColor: 'secondaryAlt',
+              backgroundColor: 'neutral30',
               borderRadius: 'circle',
             }}
           />
@@ -102,7 +102,7 @@ export function SidebarSectionHeaderSelect({
           mt: 2,
           px: 0,
           py: '12px',
-          backgroundColor: 'surface',
+          backgroundColor: 'neutral10',
           borderRadius: 'medium',
           boxShadow: '0px 0px 4px rgba(0, 0, 0, 0.15)',
           opacity: isExpanded ? 1 : 0,
@@ -130,10 +130,10 @@ export function SidebarSectionHeaderSelect({
               fontSize: 1,
               fontWeight: 'semiBold',
               backgroundColor: 'transparent',
-              color: item === activeItem ? 'primary' : 'text.muted',
+              color: item === activeItem ? 'primary100' : 'neutral80',
               transition: 'background-color 150ms',
               '&:hover': {
-                backgroundColor: 'border',
+                backgroundColor: 'neutral20',
               },
               cursor: 'pointer',
               whiteSpace: 'pre',

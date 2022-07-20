@@ -12,7 +12,7 @@ import { AppLink, AppLinkProps } from '../Links'
 function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element | string }) {
   return (
     <Flex sx={{ alignItems: 'center' }}>
-      <Text sx={{ fontSize: 1, color: 'text.subtitle', fontWeight: 'semiBold' }}>{label}</Text>
+      <Text sx={{ fontSize: 1, color: 'neutral80', fontWeight: 'semiBold' }}>{label}</Text>
       {tooltip && (
         <StatefulTooltip
           tooltip={
@@ -34,7 +34,7 @@ function DumbHeader({ label, tooltip }: { label: string; tooltip?: JSX.Element |
             maxWidth: '480px',
           }}
         >
-          <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="text.subtitle" />
+          <Icon name="question_o" size="16px" sx={{ ml: 1, flexShrink: 0 }} color="neutral80" />
         </StatefulTooltip>
       )}
     </Flex>
@@ -53,7 +53,7 @@ function Header({ name }: { name: string }) {
 
 function Cell({ children }: WithChildren) {
   return (
-    <Box sx={{ py: 2, color: 'primary' }}>
+    <Box sx={{ py: 2, color: 'primary100' }}>
       <Text sx={{ my: 1 }}>{children}</Text>
     </Box>
   )
@@ -86,6 +86,7 @@ export type MultiplyPositionVM = {
   liquidationPrice: string
   fundingCost: string
   automationEnabled: boolean
+  protectionAmount?: string
   automationLinkProps: AppLinkProps
 } & PositionCommonProps
 
@@ -113,7 +114,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
     return (
       <AppLink {...automationLinkProps}>
         <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
-          {t('earn.automation-button-on')} {position.type === 'borrow' && position.protectionAmount}
+          {t('earn.automation-button-on')} {position.protectionAmount}
         </Button>
       </AppLink>
     )
@@ -164,7 +165,7 @@ function getPositionInfoItems(position: PositionVM): InfoItem[] {
         {
           header: <Header name="collateral-ratio" />,
           info: (
-            <Text sx={{ color: position.inDanger ? '#D94A1E' : 'onSuccess' }}>
+            <Text sx={{ color: position.inDanger ? 'critical100' : 'success100' }}>
               {position.collateralRatio}
             </Text>
           ),
@@ -259,7 +260,7 @@ export function PositionList({ positions }: { positions: PositionVM[] }) {
   }
 
   return (
-    <Box sx={{ color: 'primary', zIndex: 1 }}>
+    <Box sx={{ color: 'primary100', zIndex: 1 }}>
       <Text variant="paragraph2" sx={{ fontWeight: 'semiBold', my: 3 }}>
         {t('earn.your-positions')} ({positions.length})
       </Text>

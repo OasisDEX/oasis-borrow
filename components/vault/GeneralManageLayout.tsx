@@ -28,7 +28,7 @@ export function GeneralManageLayout({
   const { t } = useTranslation()
   const { ilkData, vault, priceInfo } = generalManageVault.state
 
-  const showProtectionTab = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
+  const showAutomationTabs = isSupportedAutomationIlk(getNetworkName(), vault.ilk)
   const isStopLossEnabled = useStopLossStateInitializator(ilkData, vault, autoTriggersData)
   const isBasicSellEnabled = useBasicBSstateInitialization(
     ilkData,
@@ -66,7 +66,7 @@ export function GeneralManageLayout({
       <GeneralManageTabBar
         positionInfo={positionInfo}
         generalManageVault={generalManageVault}
-        showProtectionTab={showProtectionTab}
+        showAutomationTabs={showAutomationTabs}
         protectionEnabled={protectionEnabled}
         optimizationEnabled={optimizationEnabled}
       />

@@ -25,7 +25,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
-      <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>
         <TextWithCheckmark>
           {t('borrow-to-multiply.checkmark1', { token: vault.token.toUpperCase() })}
         </TextWithCheckmark>
@@ -38,7 +38,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
         <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
           {t('borrow-to-multiply.subheader2')}
         </Text>
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
           {t('borrow-to-multiply.paragraph2')}
         </Text>
       </Grid>

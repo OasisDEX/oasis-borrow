@@ -16,7 +16,6 @@ import {
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
@@ -33,7 +32,6 @@ import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditin
 export interface SidebarSetupAutoBuyProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -60,7 +58,6 @@ export interface SidebarSetupAutoBuyProps {
 export function SidebarSetupAutoBuy({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   context,
   ethMarketPrice,
@@ -107,9 +104,8 @@ export function SidebarSetupAutoBuy({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
   const errors = errorsBasicBuyValidation({
-    txError: basicBuyState.txDetails?.txError,
-    withThreshold: basicBuyState.withThreshold,
-    maxBuyPrice: basicBuyState.maxBuyOrMinSellPrice,
+    basicBuyState,
+    autoSellTriggerData,
     isRemoveForm,
   })
 
@@ -135,6 +131,8 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
+  const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
+
   if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
@@ -148,7 +146,6 @@ export function SidebarSetupAutoBuy({
                   ilkData={ilkData}
                   basicBuyState={basicBuyState}
                   isEditing={isEditing}
-                  priceInfo={priceInfo}
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
                   warnings={warnings}
@@ -166,18 +163,23 @@ export function SidebarSetupAutoBuy({
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
                   cancelTriggerGasEstimation={cancelTriggerGasEstimation}
+                  basicBuyState={basicBuyState}
                 />
               )}
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoBuyCreationStage stage={stage} />
+            <SidebarAutoBuyCreationStage
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
           )}
         </Grid>
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled || !!errors.length,
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { calculateTokenPrecisionByValue } from 'helpers/tokens'
 import { zero } from 'helpers/zero'
 
 import { ManageStandardBorrowVaultState, ManageVaultChange } from '../manageVault'
@@ -115,7 +116,14 @@ export function applyManageVaultInput<VaultState extends ManageStandardBorrowVau
 
   if (change.kind === 'depositUSD' && canDeposit) {
     const { depositAmountUSD } = change
-    const depositAmount = depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice)
+    const { priceInfo, vault } = state
+    const currentCollateralPrice = priceInfo.currentCollateralPrice
+    const currencyDigits = calculateTokenPrecisionByValue({
+      token: vault.token,
+      usdPrice: currentCollateralPrice,
+    })
+    const depositAmount =
+      depositAmountUSD && depositAmountUSD.div(priceInfo.currentCollateralPrice).dp(currencyDigits)
 
     return {
       ...state,

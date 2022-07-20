@@ -20,9 +20,25 @@ import { Box, Flex, Text } from 'theme-ui'
 
 import { VaultHistoryEvent } from './vaultHistory'
 
+function resolveTranslationForEventsWithTriggers(event: VaultHistoryEvent) {
+  switch (event.kind) {
+    case 'DECREASE_MULTIPLE':
+      return 'basic-sell'
+    case 'INCREASE_MULTIPLE':
+      return 'basic-buy'
+    case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+      return 'stop-loss'
+    default:
+      return event.kind
+  }
+}
+
 export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
-    return `${t(`history.${event.kind}`)} ${t(`triggers.${event.eventType}`)}`
+    const resolveKind = resolveTranslationForEventsWithTriggers(event)
+
+    return `${t(`history.${resolveKind}`)} ${t(`triggers.${event.eventType}`)}`
   }
 
   return t(`history.${event.kind.toLowerCase()}`, {
@@ -55,7 +71,7 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
       <Text
         as="span"
         sx={{
-          color: 'text.subtitle',
+          color: 'neutral80',
           pr: 2,
         }}
       >
@@ -65,7 +81,7 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
         as="span"
         sx={{
           flexShrink: 0,
-          color: 'primary',
+          color: 'primary100',
         }}
       >
         {children}
@@ -249,15 +265,12 @@ export function VaultHistoryEntry({
         }}
         onClick={() => setOpened(!opened)}
       >
-        <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
+        <Text as="p" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
           {interpolate(translation, {
             0: ({ children }) => <Text as="span">{children}</Text>,
           })}
         </Text>
-        <Text
-          as="time"
-          sx={{ color: 'text.subtitle', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}
-        >
+        <Text as="time" sx={{ color: 'neutral80', whiteSpace: 'nowrap', fontWeight: 'semiBold' }}>
           {date.format('MMM DD, YYYY, h:mma')}
         </Text>
         <Icon
@@ -265,7 +278,7 @@ export function VaultHistoryEntry({
           size="auto"
           width="12px"
           height="7px"
-          color="text.subtitle"
+          color="neutral80"
           sx={{ position: 'absolute', top: '24px', right: 2 }}
         />
       </Flex>
@@ -283,7 +296,7 @@ export function VaultHistoryEntry({
             <AppLink sx={{ textDecoration: 'none' }} href={`${etherscan?.url}/tx/${item.hash}`}>
               <WithArrow
                 sx={{
-                  color: 'link',
+                  color: 'interactive100',
                   mr: 4,
                   mb: [1, null, null, 0],
                   fontSize: 1,
@@ -295,7 +308,7 @@ export function VaultHistoryEntry({
             </AppLink>
             {ethtx && (
               <AppLink sx={{ textDecoration: 'none' }} href={`${ethtx.url}/${item.hash}`}>
-                <WithArrow sx={{ color: 'link', fontSize: 1, fontWeight: 'semiBold' }}>
+                <WithArrow sx={{ color: 'interactive100', fontSize: 1, fontWeight: 'semiBold' }}>
                   {t('view-on-ethtx')}
                 </WithArrow>
               </AppLink>

@@ -12,7 +12,7 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const KbLink = (
-  <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
+  <AppLink sx={{ color: 'critical100' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
 )
 
 interface VaultErrorsProps {
@@ -140,6 +140,12 @@ export function VaultErrors({
         return translate('stop-loss-max-debt')
       case 'targetCollRatioExceededDustLimitCollRatio':
         return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
+      case 'autoSellTriggerHigherThanAutoBuyTarget':
+        return translate('auto-sell-trigger-higher-than-auto-buy-target')
+      case 'autoBuyTriggerLowerThanAutoSellTarget':
+        return translate('auto-buy-trigger-lower-than-auto-sell-target')
+      case 'stopLossTriggerHigherThanAutoBuyTarget':
+        return translate('stop-loss-trigger-higher-than-auto-buy-target')
       case 'autoBuyMaxBuyPriceNotSpecified':
         return (
           <Trans

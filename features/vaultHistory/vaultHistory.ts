@@ -2,13 +2,89 @@ import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { gql, GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
-import flatten from 'lodash/flatten'
+import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
+import { equals } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import {
+  AutomationEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from './vaultHistoryEvents'
+
+export function getUpdateTrigger(events: VaultHistoryEvent[]) {
+  const updateCombination = ['added', 'removed']
+  const eventTypes = events.reduce(
+    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
+    [] as string[],
+  )
+  const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
+
+  const autoEvent = events.find(
+    (item) => 'triggerId' in item && updateCombination.includes(item.eventType),
+  )
+
+  if (autoEvent && isUpdateTriggerEvent) {
+    return { ...autoEvent, eventType: 'updated' } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function getExecuteTrigger(events: VaultHistoryEvent[]) {
+  const postExecutionEvents = [
+    'DECREASE_MULTIPLE',
+    'INCREASE_MULTIPLE',
+    'CLOSE_VAULT_TO_DAI',
+    'CLOSE_VAULT_TO_COLLATERAL',
+  ]
+  const postExecutionEvent = events.find((item) => postExecutionEvents.includes(item.kind))
+  const autoEvent = events.find((item) => 'triggerId' in item && item.eventType === 'executed') as
+    | AutomationEvent
+    | undefined
+
+  if (postExecutionEvent && autoEvent) {
+    return {
+      ...postExecutionEvent,
+      triggerId: autoEvent.triggerId,
+      eventType: 'executed',
+    } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function mapAutomationEvents(events: VaultHistoryEvent[]) {
+  const groupedByHash = events.reduce((acc, curr) => {
+    return {
+      ...acc,
+      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
+    }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
+    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+
+    if (updateTriggerEvent) {
+      return { ...acc, [key]: [updateTriggerEvent] }
+    }
+
+    if (executeTriggerEvent) {
+      return {
+        ...acc,
+        [key]: [executeTriggerEvent],
+      }
+    }
+
+    return { ...acc, [key]: groupedByHash[key] }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  return flatten(Object.values(wrappedByHash))
+}
 
 type WithSplitMark<T> = T & { splitId?: number }
 
@@ -243,6 +319,28 @@ function addReclaimFlag(events: VaultHistoryEvent[]) {
   })
 }
 
+export function flatEvents([events, automationEvents]: [
+  ReturnedEvent[],
+  ReturnedAutomationEvent[],
+]) {
+  return flatten(
+    [...events, ...automationEvents]
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
+      .map(parseBigNumbersFields),
+  )
+}
+
+function mapEventsToVaultEvents(
+  events$: Observable<[ReturnedEvent[], ReturnedAutomationEvent[]]>,
+): Observable<VaultEvent[]> {
+  return events$.pipe(
+    map(([returnedEvents, returnedAutomationEvents]) =>
+      flatEvents([returnedEvents, returnedAutomationEvents]),
+    ),
+  )
+}
+
 export function createVaultHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
@@ -263,14 +361,7 @@ export function createVaultHistory$(
             getVaultAutomationHistory(apiClient, id),
           )
         }),
-        map(([returnedEvents, returnedAutomationEvents]) =>
-          flatten(
-            [...returnedEvents, ...returnedAutomationEvents]
-              .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-              .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields),
-          ),
-        ),
+        mapEventsToVaultEvents,
         map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
         map(addReclaimFlag),
         catchError(() => of([])),

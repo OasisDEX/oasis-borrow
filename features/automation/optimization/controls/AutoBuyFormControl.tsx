@@ -4,12 +4,14 @@ import BigNumber from 'bignumber.js'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
+  maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
 } from 'features/automation/common/basicBSTriggerData'
@@ -17,7 +19,12 @@ import {
   addBasicBSTrigger,
   removeBasicBSTrigger,
 } from 'features/automation/common/basicBStxHandlers'
-import { resolveMaxBuyOrMinSellPrice } from 'features/automation/common/helpers'
+import {
+  checkIfDisabledBasicBS,
+  checkIfEditingBasicBS,
+  getBasicBSVaultChange,
+  prepareBasicBSResetData,
+} from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -25,20 +32,15 @@ import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 interface AutoBuyFormControlProps {
   vault: Vault
   ilkData: IlkData
-  priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
@@ -52,7 +54,6 @@ interface AutoBuyFormControlProps {
 export function AutoBuyFormControl({
   vault,
   ilkData,
-  priceInfo,
   balanceInfo,
   autoSellTriggerData,
   autoBuyTriggerData,
@@ -75,17 +76,19 @@ export function AutoBuyFormControl({
         execCollRatio: basicBuyState.execCollRatio,
         targetCollRatio: basicBuyState.targetCollRatio,
         maxBuyOrMinSellPrice: basicBuyState.withThreshold
-          ? basicBuyState.maxBuyOrMinSellPrice || zero
-          : zero,
+          ? basicBuyState.maxBuyOrMinSellPrice || maxUint256
+          : maxUint256,
         continuous: basicBuyState.continuous, // leave as default
         deviation: basicBuyState.deviation,
         replacedTriggerId: basicBuyState.triggerId,
+        maxBaseFeeInGwei: basicBuyState.maxBaseFeeInGwei,
       }),
     [
       basicBuyState.execCollRatio.toNumber(),
       basicBuyState.targetCollRatio.toNumber(),
       basicBuyState.maxBuyOrMinSellPrice?.toNumber(),
       basicBuyState.triggerId.toNumber(),
+      basicBuyState.maxBaseFeeInGwei.toNumber(),
       vault.collateralizationRatio.toNumber(),
     ],
   )
@@ -152,20 +155,14 @@ export function AutoBuyFormControl({
         })
       } else {
         if (isAddForm) {
-          addBasicBSTrigger(
-            txHelpers,
-            addTxData,
-            uiChanges,
-            priceInfo.currentEthPrice,
-            BASIC_BUY_FORM_CHANGE,
-          )
+          addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_BUY_FORM_CHANGE)
         }
         if (isRemoveForm) {
           removeBasicBSTrigger(
             txHelpers,
             cancelTxData,
             uiChanges,
-            priceInfo.currentEthPrice,
+            ethMarketPrice,
             BASIC_BUY_FORM_CHANGE,
           )
         }
@@ -179,8 +176,8 @@ export function AutoBuyFormControl({
       currentForm: isAddForm ? 'remove' : 'add',
     })
     uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
-      type: 'tx-details',
-      txDetails: {},
+      type: 'reset',
+      resetData: prepareBasicBSResetData(autoBuyTriggerData),
     })
   }
 
@@ -188,47 +185,40 @@ export function AutoBuyFormControl({
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-  const maxBuyOrMinSellPrice = resolveMaxBuyOrMinSellPrice(autoBuyTriggerData.maxBuyOrMinSellPrice)
 
-  const isEditing =
-    !autoBuyTriggerData.targetCollRatio.isEqualTo(basicBuyState.targetCollRatio) ||
-    !autoBuyTriggerData.execCollRatio.isEqualTo(basicBuyState.execCollRatio) ||
-    (maxBuyOrMinSellPrice?.toNumber() !== basicBuyState.maxBuyOrMinSellPrice?.toNumber() &&
-      !autoBuyTriggerData.triggerId.isZero()) ||
-    isRemoveForm
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoBuyTriggerData,
+    basicBSState: basicBuyState,
+    isRemoveForm,
+  })
 
-  const isDisabled =
-    (isProgressStage ||
-      !isOwner ||
-      !isEditing ||
-      (basicBuyState.withThreshold &&
-        (basicBuyState.maxBuyOrMinSellPrice === undefined ||
-          basicBuyState.maxBuyOrMinSellPrice?.isZero())) ||
-      basicBuyState.execCollRatio.isZero()) &&
-    stage !== 'txSuccess'
+  const isDisabled = checkIfDisabledBasicBS({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    basicBSState: basicBuyState,
+    stage,
+  })
 
   const isFirstSetup = autoBuyTriggerData.triggerId.isZero()
 
-  const { debtDelta, collateralDelta } = getVaultChange({
-    currentCollateralPrice: priceInfo.currentCollateralPrice,
-    marketPrice: priceInfo.nextCollateralPrice,
-    slippage: basicBuyState.deviation.div(100),
-    debt: vault.debt,
-    lockedCollateral: vault.lockedCollateral,
-    requiredCollRatio: basicBuyState.targetCollRatio.div(100),
-    depositAmount: zero,
-    paybackAmount: zero,
-    generateAmount: zero,
-    withdrawAmount: zero,
-    OF: OAZO_FEE,
-    FF: LOAN_FEE,
+  const executionPrice = collateralPriceAtRatio({
+    colRatio: basicBuyState.execCollRatio.div(100),
+    collateral: vault.lockedCollateral,
+    vaultDebt: vault.debt,
+  })
+
+  const { debtDelta, collateralDelta } = getBasicBSVaultChange({
+    basicBSState: basicBuyState,
+    vault,
+    executionPrice,
   })
 
   return (
     <SidebarSetupAutoBuy
       vault={vault}
       ilkData={ilkData}
-      priceInfo={priceInfo}
       balanceInfo={balanceInfo}
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}

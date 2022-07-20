@@ -27,6 +27,7 @@ import {
   ledgerWalletContractDataDisabledValidator,
   paybackAmountExceedsDaiBalanceValidator,
   paybackAmountExceedsVaultDebtValidator,
+  stopLossTriggeredValidator,
   vaultWillBeAtRiskLevelDangerAtNextPriceValidator,
   vaultWillBeAtRiskLevelDangerValidator,
   vaultWillBeAtRiskLevelWarningAtNextPriceValidator,
@@ -681,8 +682,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     'borrowTransitionFailure',
   ] as ManageMultiplyVaultStage[]).some((s) => s === stage)
 
-  const stopLossTriggered =
-    !!vaultHistory[1] && 'triggerId' in vaultHistory[1] && vaultHistory[1].eventType === 'executed'
+  const stopLossTriggered = stopLossTriggeredValidator({ vaultHistory })
 
   const insufficientEthFundsForTx = ethFundsForTxValidator({ txError })
 

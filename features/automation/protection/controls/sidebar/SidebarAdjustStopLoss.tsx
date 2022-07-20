@@ -2,6 +2,10 @@ import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
+import {
+  errorsStopLossValidation,
+  warningsStopLossValidation,
+} from 'features/automation/protection/common/validation'
 import { AdjustSlFormLayoutProps } from 'features/automation/protection/controls/AdjustSlFormLayout'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -29,15 +33,39 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     stage,
     toggleForms,
     token,
+    slValuePickerConfig,
+    selectedSLValue,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+    isAutoSellEnabled,
+    txError,
     vault: { debt },
+    autoBuyTriggerData,
   } = props
 
   const flow = firstStopLossSetup ? 'addSl' : 'adjustSl'
   const sidebarTxData = extractSidebarTxData(props)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
+  const errors = errorsStopLossValidation({
+    txError,
+    debt,
+    stopLossLevel: selectedSLValue,
+    autoBuyTriggerData,
+  })
+  const warnings = warningsStopLossValidation({
+    token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+    sliderMax: slValuePickerConfig.maxBoundry,
+    triggerRatio: selectedSLValue,
+    isAutoSellEnabled,
+  })
+
   const sidebarSectionProps: SidebarSectionProps = {
-    title: getSidebarTitle({ flow, stage, token, debt, isStopLossEnabled }),
+    title: getSidebarTitle({ flow, stage, token, isStopLossEnabled }),
     ...(basicBSEnabled && {
       dropdown: {
         forcePanel: 'stopLoss',
@@ -50,11 +78,11 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
         {stopLossWriteEnabled ? (
           <>
             {(stage === 'stopLossEditing' || stage === 'txFailure') && (
-              <SidebarAdjustStopLossEditingStage {...props} />
+              <SidebarAdjustStopLossEditingStage {...props} errors={errors} warnings={warnings} />
             )}
           </>
         ) : (
-          <Text as="p" variant="paragraph3" sx={{ color: 'lavender' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             Due to extreme adversarial market conditions we have currently disabled setting up new
             stop loss triggers, as they might not result in the expected outcome for our users.
             Please use the 'close vault' option if you want to close your vault right now.
@@ -67,7 +95,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     ),
     primaryButton: {
       label: getPrimaryButtonLabel({ flow, stage, token }),
-      disabled: isProgressDisabled,
+      disabled: isProgressDisabled || !!errors.length,
       isLoading: stage === 'txInProgress',
       action: () => {
         if (stage !== 'txSuccess') addTriggerConfig.onClick(() => null)

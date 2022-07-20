@@ -1,12 +1,11 @@
 import { PickCloseState } from 'components/dumb/PickCloseState'
 import { SliderValuePicker } from 'components/dumb/SliderValuePicker'
 import { AppLink } from 'components/Links'
+import { SidebarFormInfo } from 'components/vault/SidebarFormInfo'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import {
-  errorsStopLossValidation,
-  warningsStopLossValidation,
-} from 'features/automation/protection/common/validation'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid, Text } from 'theme-ui'
@@ -31,8 +30,8 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'txError'
   | 'vault'
   | 'isAutoSellEnabled'
->
-
+  | 'isStopLossEnabled'
+> & { errors: VaultErrorMessage[]; warnings: VaultWarningMessage[] }
 export function SidebarAdjustStopLossEditingStage({
   closePickerConfig,
   collateralizationRatioAtNextPrice,
@@ -49,28 +48,29 @@ export function SidebarAdjustStopLossEditingStage({
   tokenPrice,
   txError,
   vault,
-  vault: { debt },
-  isAutoSellEnabled,
+  isStopLossEnabled,
+  errors,
+  warnings,
 }: SidebarAdjustStopLossEditingStageProps) {
   const { t } = useTranslation()
 
-  const errors = errorsStopLossValidation({ txError, debt })
-  const warnings = warningsStopLossValidation({
-    token,
-    gasEstimationUsd,
-    ethBalance,
-    ethPrice,
-    sliderMax: slValuePickerConfig.maxBoundry,
-    triggerRatio: selectedSLValue,
-    isAutoSellEnabled,
-  })
+  const isVaultEmpty = vault.debt.isZero()
+
+  if (isVaultEmpty && !isStopLossEnabled) {
+    return (
+      <SidebarFormInfo
+        title={t('protection.closed-vault-not-existing-trigger-header')}
+        description={t('protection.closed-vault-not-existing-trigger-description')}
+      />
+    )
+  }
 
   return (
     <>
       {!vault.debt.isZero() ? (
         <Grid>
           <PickCloseState {...closePickerConfig} />
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.set-downside-protection-desc')}{' '}
             <AppLink href="https://kb.oasis.app/help/stop-loss-protection" sx={{ fontSize: 2 }}>
               {t('here')}.
@@ -79,9 +79,10 @@ export function SidebarAdjustStopLossEditingStage({
           <SliderValuePicker {...slValuePickerConfig} />
         </Grid>
       ) : (
-        <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
-          {t('protection.closed-vault-existing-sl-description')}
-        </Text>
+        <SidebarFormInfo
+          title={t('protection.closed-vault-existing-sl-header')}
+          description={t('protection.closed-vault-existing-sl-description')}
+        />
       )}
       {isEditing && (
         <Grid>

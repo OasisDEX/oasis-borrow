@@ -53,7 +53,7 @@ export function Item({
           <Text
             sx={{
               mr: 'auto',
-              color: labelColorPrimary ? 'primary' : theme.colors.text.subtitle,
+              color: labelColorPrimary ? 'primary100' : theme.colors.neutral80,
             }}
             as="p"
           >
@@ -63,11 +63,11 @@ export function Item({
         <Box>
           <Text
             sx={{
-              color: 'primary',
+              color: 'primary100',
               display: 'flex',
               alignItems: 'center',
             }}
-            as="p"
+            as="div"
           >
             {isLoading ? (
               <AppSpinner />
@@ -111,7 +111,7 @@ export function Item({
             <Text
               sx={{
                 fontWeight: 400,
-                color: theme.colors.text.subtitle,
+                color: theme.colors.neutral80,
               }}
             >
               {subLabel}
@@ -122,7 +122,8 @@ export function Item({
             gap={2}
             sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 2, listStyle: 'none' }}
           >
-            {dropdownValues && dropdownValues.map((item) => <Item {...item} key={item.label} />)}
+            {dropdownValues &&
+              dropdownValues.map((item, idx) => <Item {...item} key={item.label || idx} />)}
           </Grid>
         </>
       )}

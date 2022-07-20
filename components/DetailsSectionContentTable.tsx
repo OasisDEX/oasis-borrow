@@ -42,7 +42,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
         <>
           <Text
             as="p"
-            color="text.subtitle"
+            color="neutral80"
             sx={{ fontWeight: 'semiBold', textAlign: 'left' }}
             variant="paragraph4"
           >
@@ -64,7 +64,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
           <Text
             key={`${header}-${index}`}
             as="p"
-            color="text.subtitle"
+            color="neutral80"
             sx={{ fontWeight: 'semiBold', textAlign: index === 0 ? 'left' : 'right' }}
             variant="paragraph4"
           >
@@ -85,7 +85,7 @@ export function DetailsSectionContentTable({ headers, rows, footnote }: ContentT
       )}
       {footnote && (
         <Box sx={{ gridColumn: '1/-1' }}>
-          <Text variant="paragraph4" color="text.subtitle" sx={{ fontWeight: 'semiBold' }}>
+          <Text variant="paragraph4" color="neutral80" sx={{ fontWeight: 'semiBold' }}>
             {footnote}
           </Text>
         </Box>
@@ -107,7 +107,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         px: 3,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'backgroundAlt',
+          bg: 'secondary60',
         },
       }}
     >
@@ -150,7 +150,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         justifyContent: 'flex-end',
         alignItems: 'center',
         fontWeight: 'semiBold',
-        color: 'text.subtitle',
+        color: 'neutral80',
       }}
     >
       {children}
@@ -160,7 +160,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
         size="auto"
         width="14px"
         height="9px"
-        sx={{ color: 'text.subtitle', ml: 3 }}
+        sx={{ color: 'neutral80', ml: 3 }}
       />
     </Text>
   ),

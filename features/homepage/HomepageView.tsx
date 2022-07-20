@@ -1,10 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { ReferralBanner } from 'components/ReferralBanner'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
+import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -40,7 +46,7 @@ function TabContent(props: {
         variant="paragraph2"
         sx={{
           mt: 4,
-          color: 'lavender',
+          color: 'neutral80',
           maxWidth: 617,
           textAlign: 'center',
           mb: 5,
@@ -79,10 +85,10 @@ function Pill(props: PillProps) {
         borderRadius: 'round',
         variant: 'text.paragraph2',
         fontWeight: 'semiBold',
-        color: 'text.subtitle',
+        color: 'neutral80',
         py: 2,
         border: '1px solid',
-        borderColor: 'border',
+        borderColor: 'neutral20',
         transition: 'background 0.2s ease-in-out',
         '&:hover': {
           background: 'rgba(255, 255, 255, 0.8)',
@@ -109,7 +115,7 @@ function StatCell({ label, value }: { label: string; value: string }) {
     <Box sx={{ mb: [3, 1, 1] }}>
       <Text
         variant="paragraph2"
-        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'text.muted' }}
+        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'neutral80' }}
       >
         {label}
       </Text>
@@ -150,10 +156,28 @@ function Stats({ sx }: { sx?: SxProps }) {
 
 export function HomepageView() {
   const { t } = useTranslation()
-  const { context$, productCardsData$ } = useAppContext()
+
+  const referralsEnabled = useFeatureToggle('Referrals')
+  const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const [checkReferralLocal] = useObservable(checkReferralLocal$)
+  const [userReferral] = useObservable(userReferral$)
+  const [landedWithRef, setLandedWithRef] = useState('')
+  const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
+
+  const router = useRouter()
   const standardAnimationDuration = '0.7s'
+
+  useEffect(() => {
+    if (!localReferral && referralsEnabled) {
+      const linkReferral = router.query.ref as string
+      if (linkReferral) {
+        setLocalReferral(linkReferral)
+        setLandedWithRef(linkReferral)
+      }
+    }
+  }, [checkReferralLocal, router.isReady])
 
   return (
     <Box
@@ -161,6 +185,24 @@ export function HomepageView() {
         flex: 1,
       }}
     >
+      {referralsEnabled && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '80px',
+            mb: 0,
+          }}
+        >
+          <ReferralBanner
+            heading={t('ref.banner')}
+            link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
+          ></ReferralBanner>
+        </Flex>
+      )}
+      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
+        <NewReferralModal />
+      )}
+      {referralsEnabled && userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
@@ -417,7 +459,7 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Flex mb={5} mt={7} sx={{ justifyContent: 'center' }}>
+      <Flex mb={4} mt={7} sx={{ justifyContent: 'center' }}>
         <NewsletterSection />
       </Flex>
     </Box>
@@ -426,7 +468,7 @@ export function HomepageView() {
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
-
+  const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
   return (
@@ -436,14 +478,15 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        my: 5,
+        mt: referralsEnabled ? '24px' : '64px',
+        mb: 5,
         flexDirection: 'column',
       }}
     >
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       <AppLink

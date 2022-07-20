@@ -31,6 +31,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.team', url: '/about' },
       { labelKey: 'nav.careers', url: '/careers' },
       { labelKey: 'nav.privacy', url: '/privacy' },
+      { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
       { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
@@ -46,6 +47,7 @@ const FOOTER_SECTIONS = [
       // add link
       { labelKey: 'nav.knowledge-centre', url: 'https://kb.oasis.app/help', target: '_blank' },
       { labelKey: 'nav.oracles', url: '/oracles' },
+      { labelKey: 'nav.referrals', url: '/referrals' },
     ],
   },
   {
@@ -67,7 +69,7 @@ const LangSelectComponents: Partial<SelectComponents<{
   label: string
 }>> = {
   IndicatorsContainer: () => null,
-  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary' }}>{children}</Flex>,
+  ValueContainer: ({ children }) => <Flex sx={{ color: 'primary100' }}>{children}</Flex>,
   SingleValue: ({ children }) => <Box>{children}</Box>,
   Option: ({ children, innerProps }) => (
     <Box
@@ -78,7 +80,7 @@ const LangSelectComponents: Partial<SelectComponents<{
         pr: 5,
         cursor: 'pointer',
         '&:hover': {
-          bg: 'background',
+          bg: 'neutral10',
         },
       }}
     >
@@ -172,7 +174,7 @@ export function Footer() {
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 4, pt: 2 }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 0, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,
