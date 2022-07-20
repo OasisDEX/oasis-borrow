@@ -16,11 +16,13 @@ export class BatchCache {
   }
 
   createHash(request: Request) {
-    const hashString = JSON.stringify({
+    const requestExtract = {
       method: request.method,
       params: { data: request.params[0].data, to: request.params[0].to },
       network: request.network,
-    })
+    }
+
+    const hashString = JSON.stringify(requestExtract)
     const hash = crypto.createHash('sha256').update(hashString).digest('hex')
 
     return hash

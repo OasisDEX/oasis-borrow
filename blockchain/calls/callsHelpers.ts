@@ -38,7 +38,6 @@ export function callAbstractContext<D, R, CC extends Context>(
         context,
       )(...prepareArgs(args, context)).call(
         // spot neccessary to read osms in readonly
-        // note: batch call endpoint cache key depends on from field
         { from: context.mcdSpot.address },
       ),
     ).pipe(map((i: R) => (postprocess ? postprocess(i, args) : i)))

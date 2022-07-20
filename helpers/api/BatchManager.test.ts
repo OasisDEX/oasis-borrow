@@ -1,12 +1,10 @@
 import { expect } from 'chai'
 import sinon from 'sinon'
 
+import { BatchCache } from './BatchCache'
 import { BatchManager, Request } from './BatchManager'
 
-const mockConstructorProps = {
-  url: 'https://www.goingnowhere.com',
-  fetchJson: undefined,
-}
+const mockConnection = 'https://www.goingnowhere.com'
 
 describe('BatchManager', () => {
   let clock: sinon.SinonFakeTimers
@@ -22,27 +20,22 @@ describe('BatchManager', () => {
   it('should batch call into single request', async () => {
     const mockBatch = createMockBatch()
     const mockFetchJson = sinon.stub().resolves([]) as any
-    mockConstructorProps.fetchJson = mockFetchJson
-    const batchManager = new BatchManager(mockConstructorProps.url, mockConstructorProps.fetchJson)
+
+    const batchManager = createBatchManager(mockFetchJson)
     await batchManager.batchCall(mockBatch)
 
-    expect(mockFetchJson).to.have.been.calledWith(
-      mockConstructorProps.url,
-      JSON.stringify(mockBatch),
-    )
+    expect(mockFetchJson).to.have.been.calledWith(mockConnection, JSON.stringify(mockBatch))
   })
 
   it('should exclude cache hits', async () => {
     const mockBatch = createMockBatch()
-
     const mockFetchJson = sinon.stub().resolves(
       mockBatch.map(() => ({
         result: 'cached-result',
       })),
     ) as any
-    mockConstructorProps.fetchJson = mockFetchJson
 
-    const batchManager = new BatchManager(mockConstructorProps.url, mockConstructorProps.fetchJson)
+    const batchManager = createBatchManager(mockFetchJson)
 
     // First call
     await batchManager.batchCall(mockBatch)
@@ -56,15 +49,13 @@ describe('BatchManager', () => {
 
   it('should skip cache if cache ttl is exceeded between batches', async () => {
     const mockBatch = createMockBatch()
-
     const resolvesTo = mockBatch.map(() => ({
       result: 'cached-result',
     }))
     const mockFetchJson = sinon.stub().resolves(resolvesTo) as any
     mockFetchJson.onSecondCall().resolves(resolvesTo)
-    mockConstructorProps.fetchJson = mockFetchJson
 
-    const batchManager = new BatchManager(mockConstructorProps.url, mockConstructorProps.fetchJson)
+    const batchManager = createBatchManager(mockFetchJson)
 
     // First call
     await batchManager.batchCall(mockBatch)
@@ -76,11 +67,26 @@ describe('BatchManager', () => {
 
     expect(mockFetchJson).to.have.been.calledTwice
     expect(mockFetchJson.getCall(1)).to.have.been.calledWith(
-      mockConstructorProps.url,
+      mockConnection,
       JSON.stringify(mockBatch),
     )
   })
 })
+
+function createBatchManager(mockFetchJson: any) {
+  const mockConstructorProps = {
+    url: mockConnection,
+    fetchJson: undefined,
+    cache: new BatchCache(),
+  }
+  mockConstructorProps.fetchJson = mockFetchJson
+
+  return new BatchManager(
+    mockConstructorProps.url,
+    mockConstructorProps.cache,
+    mockConstructorProps.fetchJson,
+  )
+}
 
 function createMockBatch(): Request[] {
   return [

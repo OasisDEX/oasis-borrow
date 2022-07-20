@@ -16,8 +16,8 @@ export class BatchManager {
   private _connection: string
   private _fetchJson: typeof fetchJson
 
-  constructor(url: string, fetchJsonFn?: typeof fetchJson) {
-    this._cache = new BatchCache()
+  constructor(url: string, cache: BatchCache, fetchJsonFn?: typeof fetchJson) {
+    this._cache = cache
     this._connection = url
     this._fetchJson = fetchJsonFn || fetchJson
   }
@@ -44,7 +44,6 @@ export class BatchManager {
 
     // 3. Make the call to infura
     let batchResponse: Array<unknown> = []
-
     if (batchRequests.length > 0) {
       batchResponse = await this._fetchJson(this._connection, JSON.stringify(batchRequests)).then(
         (responses) => {
