@@ -70,8 +70,8 @@ function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
       daiDebt: formatCryptoBalance(position.debt),
       collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
       variable: formatPercent(position.stabilityFee.times(100), { precision: 2 }),
-      automationEnabled: position.stopLossData.isStopLossEnabled,
-      protectionAmount: formatPercent(position.stopLossData.stopLossLevel.times(100)),
+      automationEnabled: isAutomationEnabled(position),
+      protectionAmount: getProtectionAmount(position),
       editLinkProps: {
         href: `/${position.id}`,
         hash: VaultViewMode.Overview,
@@ -100,7 +100,8 @@ function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
       fundingCost: formatPercent(fundingCost, {
         precision: 2,
       }),
-      automationEnabled: position.stopLossData.isStopLossEnabled,
+      automationEnabled: isAutomationEnabled(position),
+      protectionAmount: getProtectionAmount(position),
       editLinkProps: {
         href: `/${position.id}`,
         hash: VaultViewMode.Overview,
@@ -142,4 +143,19 @@ function getPnl(vault: PositionDetails): BigNumber {
   const { lockedCollateralUSD, debt, history } = vault
   const netValueUSD = lockedCollateralUSD.minus(debt)
   return calculatePNL(history, netValueUSD)
+}
+
+function isAutomationEnabled(position: PositionDetails): boolean {
+  return position.stopLossData.isStopLossEnabled || position.basicSellData.isTriggerEnabled
+}
+
+function getProtectionAmount(position: PositionDetails): string {
+  let protectionAmount = zero
+
+  if (position.stopLossData.stopLossLevel.gt(zero))
+    protectionAmount = position.stopLossData.stopLossLevel.times(100)
+  else if (position.basicSellData.execCollRatio.gt(zero))
+    protectionAmount = position.basicSellData.execCollRatio
+
+  return formatPercent(protectionAmount)
 }
