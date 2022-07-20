@@ -2,9 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 
-import { mockPriceInfo$ } from './mocks/priceInfo.mock'
+import { OraclePriceData } from '../blockchain/prices'
 import {
   borrowPageCardsData,
   createProductCardsData$,
@@ -108,9 +108,18 @@ const crv = mockIlkData({
   ilkDebtAvailable: new BigNumber('100'),
 })()
 
+function mockOraclePriceData$(): Observable<OraclePriceData> {
+  return of({
+    currentPrice: new BigNumber('550'),
+    nextPrice: new BigNumber('2'),
+    isStaticPrice: false,
+    percentageChange: new BigNumber('0.1'),
+  })
+}
+
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
-    const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
+    const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), mockOraclePriceData$))
 
     expect(state()[0]).to.eql({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -130,7 +139,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, wstethA]), mockOraclePriceData$),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -183,7 +192,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), mockOraclePriceData$),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -239,7 +248,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcA, ethA, linkA, wstethA]), mockOraclePriceData$),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -280,7 +289,7 @@ describe('createProductCardsData$', () => {
   })
 
   it('maps one product card correctly', () => {
-    const state = getStateUnpacker(createProductCardsData$(of([wbtcC]), () => mockPriceInfo$()))
+    const state = getStateUnpacker(createProductCardsData$(of([wbtcC]), mockOraclePriceData$))
 
     const borrowPageData = borrowPageCardsData({
       productCardsData: state(),
@@ -305,7 +314,7 @@ describe('createProductCardsData$', () => {
 
   it('sorts and filters product cards', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wstethB, crv]), () => mockPriceInfo$()),
+      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wstethB, crv]), mockOraclePriceData$),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -321,8 +330,9 @@ describe('createProductCardsData$', () => {
 
   it('should return correct borrow page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wstethA, renbtc]), () =>
-        mockPriceInfo$(),
+      createProductCardsData$(
+        of([wbtcA, ethA, ethC, linkA, wstethA, renbtc]),
+        mockOraclePriceData$,
       ),
     )
 
@@ -364,7 +374,7 @@ describe('createProductCardsData$', () => {
     const state = getStateUnpacker(
       createProductCardsData$(
         of([wbtcA, ethA, ethC, linkA, wstethA, renbtc, ethB, wbtcB, wbtcC]),
-        () => mockPriceInfo$(),
+        mockOraclePriceData$,
       ),
     )
 
