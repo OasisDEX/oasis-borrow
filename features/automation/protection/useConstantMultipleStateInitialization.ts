@@ -5,7 +5,7 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect } from 'react'
-import { BasicBSTriggerData, extractBasicBSData } from '../common/basicBSTriggerData'
+import { BasicBSTriggerData, extractBasicBSData, extractGroupTriggersData } from '../common/basicBSTriggerData'
 import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/helpers'
 
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
@@ -24,11 +24,12 @@ export interface ConstantMultipleTriggerData {
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
-  constantMultipleTriggersData: ConstantMultipleTriggerData,
+  autoTriggersData: TriggersData
 ) {
   const { uiChanges } = useAppContext()
+  
   // const constantMultipleTriggerIds = extractConstantMultipleIds(aggregatedTriggersData, CONSTANT_MULTIPLE_GROUP_TYPE)
-  const buyTriggerData = extractBasicBSData(constantMultipleTriggersData.triggersData[TriggerType.BasicBuy], TriggerType.BasicBuy)
+  const buyTriggerData = extractGroupTriggersData(autoTriggersData,constantMultipleTriggerIds )
   const sellTriggerData = extractBasicBSData(constantMultipleTriggersData.triggersData[TriggerType.BasicSell], TriggerType.BasicSell)
   const maxBuyPrice  = buyTriggerData.maxBuyOrMinSellPrice
   const buyWithThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice: maxBuyPrice, triggerId: buyTriggerData.triggerId })

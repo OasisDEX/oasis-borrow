@@ -47,7 +47,7 @@ export function GeneralManageLayout({
   const isConstantMultipleEnabled = useConstantMultipleStateInitialization(    
     ilkData,
     vault,
-    constantMultipleTriggersData: autoTriggersData,
+    autoTriggersData,
     )
 
   const headlineElement =
