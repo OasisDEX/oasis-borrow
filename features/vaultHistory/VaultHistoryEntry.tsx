@@ -20,9 +20,25 @@ import { Box, Flex, Text } from 'theme-ui'
 
 import { VaultHistoryEvent } from './vaultHistory'
 
+function resolveTranslationForEventsWithTriggers(event: VaultHistoryEvent) {
+  switch (event.kind) {
+    case 'DECREASE_MULTIPLE':
+      return 'basic-sell'
+    case 'INCREASE_MULTIPLE':
+      return 'basic-buy'
+    case 'CLOSE_VAULT_TO_DAI':
+    case 'CLOSE_VAULT_TO_COLLATERAL':
+      return 'stop-loss'
+    default:
+      return event.kind
+  }
+}
+
 export function getHistoryEventTranslation(t: TFunction, event: VaultHistoryEvent) {
   if ('triggerId' in event) {
-    return `${t(`history.${event.kind}`)} ${t(`triggers.${event.eventType}`)}`
+    const resolveKind = resolveTranslationForEventsWithTriggers(event)
+
+    return `${t(`history.${resolveKind}`)} ${t(`triggers.${event.eventType}`)}`
   }
 
   return t(`history.${event.kind.toLowerCase()}`, {

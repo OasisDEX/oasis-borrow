@@ -259,7 +259,8 @@
   "triggers": {
     "added": "added",
     "removed": "removed",
-    "executed": "executed"
+    "executed": "executed",
+    "updated": "updated"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
