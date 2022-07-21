@@ -28,7 +28,7 @@ const configuredFeatures: Record<Feature, boolean> = {
   BasicBS: true,
   ReadOnlyBasicBS: false,
   Notifications: false,
-  Referrals: false,
+  Referrals: true,
   ConstantMultiple: false,
   // your feature here....
 }

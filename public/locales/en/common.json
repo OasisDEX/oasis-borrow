@@ -254,7 +254,13 @@
     "total-fees": "Total fees",
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
-    "basic-sell": "Auto-Sell trigger"
+    "basic-sell": "Auto-Sell trigger",
+    "close-to": "Close to",
+    "trigger-col-ratio": "Trigger Col. Ratio",
+    "target-col-ratio": "Target Col. Ratio",
+    "max-gas-fee-in-gwei": "Max gas fee in Gwei",
+    "minimum-sell-price": "Minimum sell price",
+    "maximum-buy-price": "Maximum buy price"
   },
   "triggers": {
     "added": "added",
@@ -961,7 +967,7 @@
     },
     "get-protection": {
       "header": "Get vault protection",
-      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
+      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from liquidation if it drops below your chosen collateralization ratio.",
       "button": "Protect your Vault"
     },
     "what-are-the-risks": {
@@ -1395,7 +1401,7 @@
   },
 
   "basic-buy-sell-generic": {
-    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
   },
 
@@ -1503,10 +1509,10 @@
     "target-multiple": "Target Multiple",
     "total-cost-of-feature": "Total cost of feature",
     "banner": {
-    "header": "Set up Constant Multiple",
-    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
-    "button": "Setup Constant Multiple"
-  }
+      "header": "Set up Constant Multiple",
+      "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
+      "button": "Setup Constant Multiple"
+    }
   },
   "ref": {
     "banner": "Introducing Refer a Friend. Earn DAI today",
@@ -1557,7 +1563,8 @@
       "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
       "go-home": "Go to Oasis.app homepage ",
       "go-dashboard": "Go to referral dashboard ",
-      "link": "Oasis.app Referral Blog Post, Referral FAQs",
+      "link-1": "Oasis.app Referral Blog Post, ",
+      "link-2": "Referral FAQs",
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."

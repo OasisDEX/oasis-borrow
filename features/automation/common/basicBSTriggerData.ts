@@ -64,7 +64,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       deviation: new BigNumber(deviation.toString()).div(100),
       maxBaseFeeInGwei: maxBaseFeeInGwei
         ? new BigNumber(maxBaseFeeInGwei.toString())
-        : new BigNumber(100), // handling for old command address
+        : new BigNumber(300), // handling for old command address
       isTriggerEnabled: true,
     } as BasicBSTriggerData
   })
@@ -77,7 +77,7 @@ const defaultBasicSellData = {
   maxBuyOrMinSellPrice: zero,
   continuous: false,
   deviation: new BigNumber(1),
-  maxBaseFeeInGwei: new BigNumber(100),
+  maxBaseFeeInGwei: new BigNumber(300),
   isTriggerEnabled: false,
 }
 
