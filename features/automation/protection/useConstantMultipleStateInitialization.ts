@@ -41,22 +41,68 @@ export function useConstantMultipleStateInitialization(
   const sellWithThresholdResolved = resolveWithThreshold({maxBuyOrMinSellPrice: minSellPrice, triggerId: sellTriggerData.triggerId})
   const maxBuyPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyPrice)
   const minSellPriceResolved = resolveMaxBuyOrMinSellPrice(minSellPrice)
+  const buyExecutionCollRatio = buyTriggerData.execCollRatio
+  const sellExecutionCollRatio = sellTriggerData.execCollRatio
 
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
   const publishKey = CONSTANT_MULTIPLE_FORM_CHANGE
 
   // TODO ŁW multiplier is result of target ratio of both triggers, 
   // such value is not used in smart contract
-  let gretestGroupId = aggregatedTriggersData.triggers?.reduce((max, current) => max.groupId > current.groupId ? max : current).groupId
-  const groupId = gretestGroupId !== undefined ? gretestGroupId : undefined
+  const targetCollRatio = calculateTargetCollRatioFromSelectedMultiplier(INITIAL_MULTIPLIER_SELECTED)
+
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'multiplier',
       multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists
     })
-  }, [groupId, collateralizationRatio])
+    uiChanges.publish(publishKey, {
+      type: 'buy-execution-coll-ratio',
+      buyExecutionCollRatio,
+    })
+    uiChanges.publish(publishKey, {
+      type: 'sell-execution-coll-ratio',
+      sellExecutionCollRatio,
+    })
+    uiChanges.publish(publishKey, {
+      type: 'target-coll-ratio',
+      targetCollRatio,
+    })
+    uiChanges.publish(publishKey, {
+      type: 'max-buy-price',
+      maxBuyPrice: maxBuyPriceResolved,
+    })
+    uiChanges.publish(publishKey, {
+      type: 'min-sell-price',
+      minSellPrice: minSellPriceResolved
+    })
+    uiChanges.publish(publishKey, {
+      type: 'continuous',
+      continuous: buyTriggerData.continuous, //whatever it doesn't change
+    })
+    uiChanges.publish(publishKey, {
+      type: 'deviation',
+      deviation: buyTriggerData.deviation, //whatever it doesn't change
+    })
+    uiChanges.publish(publishKey, {
+      type: 'max-gas-fee-in-gwei',
+      maxBaseFeeInGwei: buyTriggerData.maxBaseFeeInGwei, // assumption it's the same for bot buy and sell
+    })
+    uiChanges.publish(publishKey, {
+      type: 'buy-with-threshold',
+      buyWithThreshold: buyWithThresholdResolved,
+    })
+    uiChanges.publish(publishKey, {
+      type: 'sell-with-threshold',
+      sellWithThreshold: sellWithThresholdResolved,
+    })
+  }, [/*groupId,*/ collateralizationRatio])
 }
 function extractConstantMultipleIds(aggregatedTriggersData: AggregtedTriggersData) {
-  return aggregatedTriggersData.triggers?.flatMap(trigger => trigger.triggerIds)
+  return aggregatedTriggersData? aggregatedTriggersData.triggers?.flatMap(trigger => trigger.triggerIds) : []
+}
+
+function calculateTargetCollRatioFromSelectedMultiplier(multiplier: number) {
+  return new BigNumber(300) // TODO ŁW implement function
 }
 

@@ -139,8 +139,8 @@ export function SidebarSetupConstantMultiple({
               })
             }}
             value={{
-              value0: constantMultipleState?.targetCollRatio.toNumber(),
-              value1: constantMultipleState?.execCollRatio.toNumber(),
+              value0: constantMultipleState?.sellExecutionCollRatio? constantMultipleState.sellExecutionCollRatio.toNumber() : 250,
+              value1: constantMultipleState?.buyExecutionCollRatio? constantMultipleState.buyExecutionCollRatio.toNumber() : 400,
             }}
             valueColors={{
               value0: 'onSuccess',
