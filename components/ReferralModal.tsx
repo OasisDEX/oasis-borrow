@@ -56,7 +56,7 @@ export function ReferralModal({ heading, topButton, bottomButton }: ReferralModa
               {t('ref.modal.link-1')}
             </AppLink>
             <AppLink
-              href="https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend?version=latest"
+              href="https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend"
               target="_blank"
               sx={{ fontWeight: 'body' }}
             >
