@@ -7,12 +7,7 @@ import { map, startWith, switchMap, tap } from 'rxjs/operators'
 import { supportedIlks } from '../blockchain/config'
 import { IlkData } from '../blockchain/ilks'
 import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
-import {
-  ALLOWED_MULTIPLY_TOKENS,
-  getToken,
-  LP_TOKENS,
-  ONLY_MULTIPLY_TOKENS,
-} from '../blockchain/tokensMetadata'
+import { getToken, LP_TOKENS, ONLY_MULTIPLY_TOKENS } from '../blockchain/tokensMetadata'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -219,7 +214,7 @@ export const productCardsConfig: {
       genericFilters.featured,
       genericFilters.eth,
       genericFilters.btc,
-      genericFilters.unilp,
+      // genericFilters.unilp,
       genericFilters.link,
       genericFilters.yfi,
       genericFilters.mana,
@@ -473,24 +468,13 @@ export function multiplyPageCardsData({
     cardsFilter,
   )
 
-  const multiplyTokens = ilkToTokenMapping.filter((ilk) =>
-    ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
-  )
-
   if (cardsFilter === 'Featured') {
     return ilkToTokenMapping.filter((ilk) =>
       productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
     )
   }
 
-  // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
-  if (cardsFilter === 'UNI LP') {
-    return ilkToTokenMapping.filter((data) =>
-      ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
-    )
-  }
-
-  return multiplyTokens.filter((ilk) => ilk.token === cardsFilter)
+  return ilkToTokenMapping.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function borrowPageCardsData({

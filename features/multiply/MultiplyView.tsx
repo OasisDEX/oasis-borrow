@@ -39,7 +39,7 @@ export function MultiplyView() {
         scrollToId={tab}
       />
       <ProductCardsFilter
-        filters={productCardsConfig.borrow.cardsFilters}
+        filters={productCardsConfig.multiply.cardsFilters}
         selectedFilter={tab}
         productCardComponent={ProductCardMultiply}
         filterCards={multiplyPageCardsData}
