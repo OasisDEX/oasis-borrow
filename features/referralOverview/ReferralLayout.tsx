@@ -29,7 +29,7 @@ export function ReferralLayout({ children }: WithChildren) {
             <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
               {t('ref.intro-1')}{' '}
               <AppLink
-                href={`https://kb.oasis.app/help/tbd`}
+                href={`https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend`}
                 target="_blank"
                 sx={{
                   fontSize: 3,
