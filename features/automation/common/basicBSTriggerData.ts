@@ -85,10 +85,10 @@ interface ConstantMultipleTriggerPairData {
   [TriggerType.BasicBuy]: BasicBSTriggerData, [TriggerType.BasicSell]: BasicBSTriggerData
 }
 
-export function extractGroupTriggersData(data: TriggersData, triggerIds: number[]): ConstantMultipleTriggerPairData {
+export function extractGroupTriggersData(data: TriggersData, triggerIds: number[] | undefined): ConstantMultipleTriggerPairData {
   const groupData: TriggersData = {
     isAutomationEnabled: data.isAutomationEnabled,
-    triggers: data.triggers?.filter(trigger => triggerIds.includes(trigger.triggerId))
+    triggers: data.triggers?.filter(trigger => triggerIds?.includes(trigger.triggerId))
   }
 
   return {
