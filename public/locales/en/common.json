@@ -643,6 +643,10 @@
     "about": {
       "title": "About Us",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
+    },
+    "referrals": {
+      "title": "Refer a friend and earn Dai",
+      "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
