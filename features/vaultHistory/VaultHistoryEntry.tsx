@@ -124,11 +124,11 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
   const unlimited = t('unlimited')
 
   return (
-    <DefinitionList>
+    <>
       {isAddOrRemoveEvent && (
         <>
           {isBasicBSEvent && 'execCollRatio' in addOrRemoveEvent && (
-            <>
+            <DefinitionList>
               <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
                 {formatPercent(addOrRemoveEvent.execCollRatio, {
                   precision: 2,
@@ -147,10 +147,10 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
               <VaultHistoryEntryDetailsItem label={t('history.max-gas-fee-in-gwei')}>
                 {resolveMaxGweiAmount(addOrRemoveEvent.maxBaseFeeInGwei, unlimited)}
               </VaultHistoryEntryDetailsItem>
-            </>
+            </DefinitionList>
           )}
           {isStopLossEvent && 'stopLossLevel' in addOrRemoveEvent && (
-            <>
+            <DefinitionList>
               <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
                 {formatPercent(addOrRemoveEvent.stopLossLevel.times(100), {
                   precision: 2,
@@ -160,7 +160,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
               <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
                 {addOrRemoveEvent.isToCollateral ? (event as AutomationEvent).token : 'Dai'}
               </VaultHistoryEntryDetailsItem>
-            </>
+            </DefinitionList>
           )}
         </>
       )}
@@ -169,7 +169,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
           {isBasicBSEvent &&
             'execCollRatio' in event.removeTriggerData &&
             'execCollRatio' in event.addTriggerData && (
-              <>
+              <DefinitionList>
                 <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
                   {formatPercent(event.removeTriggerData.execCollRatio, {
                     precision: 2,
@@ -205,12 +205,12 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                   {arrow}
                   {resolveMaxGweiAmount(event.addTriggerData.maxBaseFeeInGwei, unlimited)}
                 </VaultHistoryEntryDetailsItem>
-              </>
+              </DefinitionList>
             )}
           {isStopLossEvent &&
             'stopLossLevel' in event.removeTriggerData &&
             'stopLossLevel' in event.addTriggerData && (
-              <>
+              <DefinitionList>
                 <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
                   {formatPercent(event.removeTriggerData.stopLossLevel.times(100), {
                     precision: 2,
@@ -227,11 +227,11 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                   {arrow}
                   {event.addTriggerData.isToCollateral ? event.token : 'Dai'}
                 </VaultHistoryEntryDetailsItem>
-              </>
+              </DefinitionList>
             )}
         </>
       )}
-    </DefinitionList>
+    </>
   )
 }
 
