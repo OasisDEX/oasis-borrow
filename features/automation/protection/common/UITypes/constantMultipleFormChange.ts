@@ -11,14 +11,14 @@ export type ConstantMultipleChangeAction =
   | { type: 'buy-with-threshold'; buyWithThreshold: boolean }
   | { type: 'sell-with-threshold'; sellWithThreshold: boolean }
   | { type: 'multiplier'; multiplier: number }
-  | {type: 'buy-execution-coll-ratio'; buyExecutionCollRatio?: BigNumber }
-  | {type: 'sell-execution-coll-ratio'; sellExecutionCollRatio?: BigNumber }
+  | {type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
+  | {type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
   minSellPrice?: BigNumber
-  buyExecutionCollRatio?: BigNumber
-  sellExecutionCollRatio?: BigNumber
+  buyExecutionCollRatio: BigNumber
+  sellExecutionCollRatio: BigNumber
   buyWithThreshold: boolean
   sellWithThreshold: boolean
   multiplier: number // Multiplier is not used in Smart Contract, it specifies target coll ratio

@@ -130,17 +130,17 @@ export function SidebarSetupConstantMultiple({
             max={500}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'target-coll-ratio',
-                targetCollRatio: new BigNumber(value.value0),
+                type: 'sell-execution-coll-ratio',
+                sellExecutionCollRatio: new BigNumber(value.value0),
               })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'execution-coll-ratio',
-                execCollRatio: new BigNumber(value.value1),
+                type: 'buy-execution-coll-ratio',
+                buyExecutionCollRatio: new BigNumber(value.value1),
               })
             }}
             value={{
-              value0: constantMultipleState?.sellExecutionCollRatio? constantMultipleState.sellExecutionCollRatio.toNumber() : 250,
-              value1: constantMultipleState?.buyExecutionCollRatio? constantMultipleState.buyExecutionCollRatio.toNumber() : 400,
+              value0: constantMultipleState.sellExecutionCollRatio.toNumber(),
+              value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
             }}
             valueColors={{
               value0: 'onSuccess',
