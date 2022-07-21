@@ -5,12 +5,10 @@ import { combineLatest, Observable, of } from 'rxjs'
 import { map, startWith, switchMap, tap } from 'rxjs/operators'
 
 import { supportedIlks } from '../blockchain/config'
-import { IlkData, IlkDataList } from '../blockchain/ilks'
+import { IlkData } from '../blockchain/ilks'
 import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
 import {
   ALLOWED_MULTIPLY_TOKENS,
-  BTC_TOKENS,
-  ETH_TOKENS,
   getToken,
   LP_TOKENS,
   ONLY_MULTIPLY_TOKENS,
