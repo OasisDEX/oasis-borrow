@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { amountFromWei } from 'blockchain/utils'
 import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
+import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInformation'
 import { WithArrow } from 'components/WithArrow'
 import { maxUint32, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
@@ -120,7 +121,6 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
   const maxBuyOrMinSellPriceLabel =
     event.kind === 'basic-sell' ? t('history.minimum-sell-price') : t('history.maximum-buy-price')
 
-  const arrow = ' -> '
   const unlimited = t('unlimited')
 
   return (
@@ -175,7 +175,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
                   })}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {formatPercent(event.addTriggerData.execCollRatio, {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
@@ -186,7 +186,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
                   })}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {formatPercent(event.addTriggerData.targetCollRatio, {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
@@ -197,12 +197,12 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                     event.removeTriggerData.maxBuyOrMinSellPrice,
                     unlimited,
                   )}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {resolveMaxBuyOrSellPrice(event.addTriggerData.maxBuyOrMinSellPrice, unlimited)}
                 </VaultHistoryEntryDetailsItem>
                 <VaultHistoryEntryDetailsItem label={t('history.max-gas-fee-in-gwei')}>
                   {resolveMaxGweiAmount(event.removeTriggerData.maxBaseFeeInGwei, unlimited)}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {resolveMaxGweiAmount(event.addTriggerData.maxBaseFeeInGwei, unlimited)}
                 </VaultHistoryEntryDetailsItem>
               </DefinitionList>
@@ -216,7 +216,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
                   })}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {formatPercent(event.addTriggerData.stopLossLevel.times(100), {
                     precision: 2,
                     roundMode: BigNumber.ROUND_DOWN,
@@ -224,7 +224,7 @@ function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
                 </VaultHistoryEntryDetailsItem>
                 <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
                   {event.removeTriggerData.isToCollateral ? event.token : 'Dai'}
-                  {arrow}
+                  <VaultChangesInformationArrow />
                   {event.addTriggerData.isToCollateral ? event.token : 'Dai'}
                 </VaultHistoryEntryDetailsItem>
               </DefinitionList>
@@ -294,16 +294,21 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
       {!closeEvent && (
         <>
           <VaultHistoryEntryDetailsItem label={t('system.collateral')}>
-            {'beforeLockedCollateral' in event &&
-              event.beforeLockedCollateral.gt(0) &&
-              formatCryptoBalance(event.beforeLockedCollateral) + `->`}
+            {'beforeLockedCollateral' in event && event.beforeLockedCollateral.gt(0) && (
+              <>
+                {formatCryptoBalance(event.beforeLockedCollateral)} <VaultChangesInformationArrow />
+              </>
+            )}
             {'lockedCollateral' in event && formatCryptoBalance(event.lockedCollateral)}{' '}
             {event.token}
           </VaultHistoryEntryDetailsItem>
           <VaultHistoryEntryDetailsItem label={t('multiple')}>
-            {'beforeMultiple' in event &&
-              event.beforeMultiple.gt(0) &&
-              formatCryptoBalance(event.beforeMultiple) + `x` + `->`}
+            {'beforeMultiple' in event && event.beforeMultiple.gt(0) && (
+              <>
+                {formatCryptoBalance(event.beforeMultiple) + `x`}
+                <VaultChangesInformationArrow />
+              </>
+            )}
             {'multiple' in event && event.multiple.gt(zero) ? `${event.multiple.toFixed(2)}x` : '-'}
           </VaultHistoryEntryDetailsItem>
         </>
@@ -319,21 +324,27 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
         </VaultHistoryEntryDetailsItem>
       )}
       <VaultHistoryEntryDetailsItem label={t('outstanding-debt')}>
-        {'beforeDebt' in event &&
-          event.beforeDebt.gt(0) &&
-          formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI` + `->`}
+        {'beforeDebt' in event && event.beforeDebt.gt(0) && (
+          <>
+            {formatCryptoBalance(event.beforeDebt.times(event.rate)) + `DAI`}
+            <VaultChangesInformationArrow />
+          </>
+        )}
         {'debt' in event && formatCryptoBalance(event.debt.times(event.rate))} DAI
       </VaultHistoryEntryDetailsItem>
       {!closeEvent && (
         <>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.coll-ratio')}>
-              {'beforeCollateralizationRatio' in event &&
-                event.beforeCollateralizationRatio.gt(0) &&
-                formatPercent(event.beforeCollateralizationRatio.times(100), {
-                  precision: 2,
-                  roundMode: BigNumber.ROUND_DOWN,
-                }) + `->`}
+              {'beforeCollateralizationRatio' in event && event.beforeCollateralizationRatio.gt(0) && (
+                <>
+                  {formatPercent(event.beforeCollateralizationRatio.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                  <VaultChangesInformationArrow />
+                </>
+              )}
               {'collateralizationRatio' in event &&
                 formatPercent(event.collateralizationRatio.times(100), {
                   precision: 2,
@@ -346,9 +357,12 @@ function VaultHistoryEntryDetails(event: VaultHistoryEvent) {
           </VaultHistoryEntryDetailsItem>
           {event.kind !== 'OPEN_MULTIPLY_GUNI_VAULT' && (
             <VaultHistoryEntryDetailsItem label={t('system.liquidation-price')}>
-              {'beforeLiquidationPrice' in event &&
-                event.beforeLiquidationPrice.gt(0) &&
-                `$` + formatFiatBalance(event.beforeLiquidationPrice) + `->`}
+              {'beforeLiquidationPrice' in event && event.beforeLiquidationPrice.gt(0) && (
+                <>
+                  {`$` + formatFiatBalance(event.beforeLiquidationPrice)}
+                  <VaultChangesInformationArrow />
+                </>
+              )}
               {'liquidationPrice' in event && '$' + formatFiatBalance(event.liquidationPrice)}
             </VaultHistoryEntryDetailsItem>
           )}
