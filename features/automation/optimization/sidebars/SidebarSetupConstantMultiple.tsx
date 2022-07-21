@@ -33,6 +33,7 @@ interface SidebarSetupConstantMultipleProps {
 
   // multiplier?: number
   onChange: (multiplier: number) => void
+  txHandler: () => void
 }
 
 export function SidebarSetupConstantMultiple({
@@ -45,6 +46,7 @@ export function SidebarSetupConstantMultiple({
   // multiplier =2,
   onChange: onMultiplierChange,
   constantMultipleState,
+  txHandler,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)

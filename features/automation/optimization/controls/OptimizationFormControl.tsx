@@ -83,6 +83,7 @@ export function OptimizationFormControl({
         <ConstantMultipleFormControl
           context={context}
           isConstantMultipleActive={isConstantMultipleActive}
+          txHelpers={txHelpers}
         />
       )}
     </>
