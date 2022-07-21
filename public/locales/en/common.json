@@ -643,10 +643,6 @@
     "about": {
       "title": "About Us",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
-    },
-    "referrals": {
-      "title": "Refer A Friend",
-      "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
