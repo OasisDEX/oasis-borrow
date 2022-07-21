@@ -23,6 +23,9 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     chain_id: params.chainId,
   }
 
+  const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}')`
+  const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id = ${vaultData.chain_id}`
+
   if (params.type !== 'borrow' && params.type !== 'multiply') {
     return res.status(403).send('Incorrect type of vault')
   }
@@ -31,13 +34,9 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
 
   if (vault === null || vault.owner_address === user.address) {
     if (vault === null) {
-      await prisma.$executeRawUnsafe(`
-        INSERT INTO vault (vault_id, chain_id, type, owner_address) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}') }
-      `)
+      await prisma.$executeRawUnsafe(insertQuery)
     } else {
-      await prisma.$executeRawUnsafe(`
-        UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id = ${vaultData.chain_id}
-      `)
+      await prisma.$executeRawUnsafe(updateQuery)
     }
     return res.status(200).send('OK')
   } else {
