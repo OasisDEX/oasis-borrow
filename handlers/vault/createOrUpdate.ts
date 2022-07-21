@@ -22,7 +22,7 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     owner_address: user.address,
     chain_id: params.chainId,
   }
-  
+
   if (params.type !== 'borrow' && params.type !== 'multiply') {
     return res.status(403).send('Incorrect type of vault')
   }
