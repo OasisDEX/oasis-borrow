@@ -169,14 +169,6 @@ export function SidebarSetupConstantMultiple({
                 type: 'buy-with-threshold',
                 buyWithThreshold: toggleStatus,
               })
-              // uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-              //   type: 'max-buy-or-sell-price',
-              //   maxBuyOrMinSellPrice: !toggleStatus
-              //     ? undefined
-              //     : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-              //     ? zero
-              //     : autoBuyTriggerData.maxBuyOrMinSellPrice,
-              // })
             }}
             showToggle={true}
             toggleOnLabel={t('protection.set-no-threshold')}
