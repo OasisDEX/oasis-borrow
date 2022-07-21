@@ -10,7 +10,7 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import React, { cloneElement, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -186,7 +186,7 @@ export function HomepageView() {
   const { t } = useTranslation()
 
   const referralsEnabled = useFeatureToggle('Referrals')
-  const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
+  const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)

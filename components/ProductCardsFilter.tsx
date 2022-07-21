@@ -1,7 +1,10 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
+import { AppSpinner, WithLoadingIndicator } from '../helpers/AppSpinner'
+import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from '../helpers/observableHook'
 import {
   ilkToEntryToken,
   mapUrlFragmentToFilter,
@@ -9,12 +12,8 @@ import {
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
 } from '../helpers/productCards'
-import { ProductCardsSelect } from './ProductCardsSelect'
 import { useAppContext } from './AppContextProvider'
-import { useObservable } from '../helpers/observableHook'
-import { AppSpinner, WithLoadingIndicator } from '../helpers/AppSpinner'
-import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
-import { ProductCardBorrow } from './ProductCardBorrow'
+import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsWrapper } from './ProductCardsWrapper'
 
 interface TokenTabsProps {

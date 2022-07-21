@@ -1,20 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
-import { useAppContext } from '../../components/AppContextProvider'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardsFilter } from '../../components/ProductCardsFilter'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../helpers/observableHook'
-import {
-  borrowPageCardsData,
-  productCardsConfig,
-  ProductLandingPagesFiltersKeys,
-} from '../../helpers/productCards'
+import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
 
 export function BorrowView() {
   const { t } = useTranslation()
