@@ -4,6 +4,8 @@ import { amountFromWei } from 'blockchain/utils'
 import { DefinitionList, DefinitionListItem } from 'components/DefinitionList'
 import { AppLink } from 'components/Links'
 import { WithArrow } from 'components/WithArrow'
+import { maxUint32, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { AutomationEvent } from 'features/vaultHistory/vaultHistoryEvents'
 import {
   formatAddress,
   formatCryptoBalance,
@@ -87,6 +89,149 @@ function VaultHistoryEntryDetailsItem({ label, children }: { label: string } & W
         {children}
       </Text>
     </DefinitionListItem>
+  )
+}
+
+function resolveMaxBuyOrSellPrice(maxBuyOrMinSellPrice: BigNumber, unlimited: string) {
+  return maxBuyOrMinSellPrice.isEqualTo(maxUint256) || maxBuyOrMinSellPrice.isZero()
+    ? unlimited
+    : '$' + formatFiatBalance(maxBuyOrMinSellPrice)
+}
+
+function resolveMaxGweiAmount(maxBaseFeeInGwei: BigNumber, unlimited: string) {
+  return maxBaseFeeInGwei.isEqualTo(maxUint32)
+    ? unlimited
+    : formatCryptoBalance(maxBaseFeeInGwei) + ' Gwei'
+}
+
+function VaultHistoryAutomationEntryDetails(event: AutomationEvent) {
+  const { t } = useTranslation()
+
+  const isUpdateEvent = 'addTriggerData' in event && 'removeTriggerData' in event
+  const isAddOrRemoveEvent =
+    ('addTriggerData' in event || 'removeTriggerData' in event) && !isUpdateEvent
+  const addOrRemoveKey =
+    isAddOrRemoveEvent && 'addTriggerData' in event ? 'addTriggerData' : 'removeTriggerData'
+
+  const isBasicBSEvent = event.kind === 'basic-buy' || event.kind === 'basic-sell'
+  const isStopLossEvent = event.kind === 'stop-loss'
+
+  const addOrRemoveEvent = event[addOrRemoveKey]
+  const maxBuyOrMinSellPriceLabel =
+    event.kind === 'basic-sell' ? t('history.minimum-sell-price') : t('history.maximum-buy-price')
+
+  const arrow = ' -> '
+  const unlimited = t('unlimited')
+
+  return (
+    <DefinitionList>
+      {isAddOrRemoveEvent && (
+        <>
+          {isBasicBSEvent && 'execCollRatio' in addOrRemoveEvent && (
+            <>
+              <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
+                {formatPercent(addOrRemoveEvent.execCollRatio, {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </VaultHistoryEntryDetailsItem>
+              <VaultHistoryEntryDetailsItem label={t('history.target-col-ratio')}>
+                {formatPercent(addOrRemoveEvent.targetCollRatio, {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </VaultHistoryEntryDetailsItem>
+              <VaultHistoryEntryDetailsItem label={maxBuyOrMinSellPriceLabel}>
+                {resolveMaxBuyOrSellPrice(addOrRemoveEvent.maxBuyOrMinSellPrice, unlimited)}
+              </VaultHistoryEntryDetailsItem>
+              <VaultHistoryEntryDetailsItem label={t('history.max-gas-fee-in-gwei')}>
+                {resolveMaxGweiAmount(addOrRemoveEvent.maxBaseFeeInGwei, unlimited)}
+              </VaultHistoryEntryDetailsItem>
+            </>
+          )}
+          {isStopLossEvent && 'stopLossLevel' in addOrRemoveEvent && (
+            <>
+              <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
+                {formatPercent(addOrRemoveEvent.stopLossLevel.times(100), {
+                  precision: 2,
+                  roundMode: BigNumber.ROUND_DOWN,
+                })}
+              </VaultHistoryEntryDetailsItem>
+              <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
+                {addOrRemoveEvent.isToCollateral ? (event as AutomationEvent).token : 'Dai'}
+              </VaultHistoryEntryDetailsItem>
+            </>
+          )}
+        </>
+      )}
+      {isUpdateEvent && (
+        <>
+          {isBasicBSEvent &&
+            'execCollRatio' in event.removeTriggerData &&
+            'execCollRatio' in event.addTriggerData && (
+              <>
+                <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
+                  {formatPercent(event.removeTriggerData.execCollRatio, {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                  {arrow}
+                  {formatPercent(event.addTriggerData.execCollRatio, {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                </VaultHistoryEntryDetailsItem>
+                <VaultHistoryEntryDetailsItem label={t('history.target-col-ratio')}>
+                  {formatPercent(event.removeTriggerData.targetCollRatio, {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                  {arrow}
+                  {formatPercent(event.addTriggerData.targetCollRatio, {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                </VaultHistoryEntryDetailsItem>
+                <VaultHistoryEntryDetailsItem label={maxBuyOrMinSellPriceLabel}>
+                  {resolveMaxBuyOrSellPrice(
+                    event.removeTriggerData.maxBuyOrMinSellPrice,
+                    unlimited,
+                  )}
+                  {arrow}
+                  {resolveMaxBuyOrSellPrice(event.addTriggerData.maxBuyOrMinSellPrice, unlimited)}
+                </VaultHistoryEntryDetailsItem>
+                <VaultHistoryEntryDetailsItem label={t('history.max-gas-fee-in-gwei')}>
+                  {resolveMaxGweiAmount(event.removeTriggerData.maxBaseFeeInGwei, unlimited)}
+                  {arrow}
+                  {resolveMaxGweiAmount(event.addTriggerData.maxBaseFeeInGwei, unlimited)}
+                </VaultHistoryEntryDetailsItem>
+              </>
+            )}
+          {isStopLossEvent &&
+            'stopLossLevel' in event.removeTriggerData &&
+            'stopLossLevel' in event.addTriggerData && (
+              <>
+                <VaultHistoryEntryDetailsItem label={t('history.trigger-col-ratio')}>
+                  {formatPercent(event.removeTriggerData.stopLossLevel.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                  {arrow}
+                  {formatPercent(event.addTriggerData.stopLossLevel.times(100), {
+                    precision: 2,
+                    roundMode: BigNumber.ROUND_DOWN,
+                  })}
+                </VaultHistoryEntryDetailsItem>
+                <VaultHistoryEntryDetailsItem label={t('history.close-to')}>
+                  {event.removeTriggerData.isToCollateral ? event.token : 'Dai'}
+                  {arrow}
+                  {event.addTriggerData.isToCollateral ? event.token : 'Dai'}
+                </VaultHistoryEntryDetailsItem>
+              </>
+            )}
+        </>
+      )}
+    </DefinitionList>
   )
 }
 
@@ -249,6 +394,8 @@ export function VaultHistoryEntry({
     item.kind === 'CLOSE_GUNI_VAULT_TO_DAI' ||
     item.kind === 'CLOSE_VAULT_TO_COLLATERAL'
 
+  const isAutomationEvent = 'triggerId' in item
+
   return (
     <DefinitionListItem sx={{ fontSize: 2, position: 'relative' }}>
       <Flex
@@ -285,6 +432,7 @@ export function VaultHistoryEntry({
       {opened && (
         <Box sx={{ pb: 3 }}>
           {isMultiplyEvent && <VaultHistoryEntryDetails {...item} />}
+          {isAutomationEvent && <VaultHistoryAutomationEntryDetails {...item} />}
           <Flex
             sx={{
               flexDirection: ['column', null, null, 'row'],
