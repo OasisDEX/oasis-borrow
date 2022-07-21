@@ -139,6 +139,31 @@ const genericFilters = {
   crvlp: { name: 'Curve LP', icon: 'curve_circle', urlFragment: 'crvlp', tokens: [] },
 } as const
 
+const ilkToEntryTokenMap = {
+  'ETH-A': 'ETH',
+  'ETH-B': 'ETH',
+  'ETH-C': 'ETH',
+  'WSTETH-A': 'ETH',
+  'WBTC-A': 'BTC',
+  'WBTC-B': 'BTC',
+  'WBTC-C': 'BTC',
+  'RENBTC-A': 'BTC',
+  'LINK-A': 'LINK',
+  'GUSD-A': 'GUSD',
+  'YFI-A': 'YFI',
+  'MANA-A': 'MANA',
+  'MATIC-A': 'MATIC',
+  'UNIV2USDCETH-A': 'UNIV2USDCETH',
+  'UNIV2DAIUSDC-A': 'UNIV2DAIUSDC',
+  'CRVV1ETHSTETH-A': 'CRVV1ETHSTETH',
+  'WSTETH-B': 'ETH',
+}
+
+export const ilkToEntryToken = Object.entries(ilkToEntryTokenMap).map(([ilk, token]) => ({
+  ilk,
+  token,
+}))
+
 const urlFragmentKeyedFilters = keyBy(genericFilters, 'urlFragment')
 
 export function mapUrlFragmentToFilter(urlFragment: string) {
@@ -360,14 +385,6 @@ export const productCardsConfig: {
   },
 }
 
-function btcProductCards(productCardsData: ProductCardData[]) {
-  return productCardsData.filter((ilk) => BTC_TOKENS.includes(ilk.token))
-}
-
-function ethProductCards(productCardsData: ProductCardData[]) {
-  return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
-}
-
 const notSupportedAnymoreLpTokens = [
   'UNIV2ETHUSDT',
   'UNIV2LINKETH',
@@ -379,12 +396,13 @@ const notSupportedAnymoreLpTokens = [
   'UNIV2WBTCDAI',
 ]
 
-export function uniLpProductCards(productCardsData: ProductCardData[]) {
-  return productCardsData.filter(
-    (ilk) =>
-      LP_TOKENS.includes(ilk.token) &&
-      !ONLY_MULTIPLY_TOKENS.includes(ilk.token) &&
-      !notSupportedAnymoreLpTokens.includes(ilk.token),
+export function uniLpProductCards(ilkToTokenMappings: Array<{ ilk: string; token: string }>) {
+  console.log(LP_TOKENS)
+  return ilkToTokenMappings.filter(
+    ({ token }) =>
+      LP_TOKENS.includes(token) &&
+      !ONLY_MULTIPLY_TOKENS.includes(token) &&
+      !notSupportedAnymoreLpTokens.includes(token),
   )
 }
 
@@ -415,16 +433,16 @@ export function pageCardsDataByProduct({
 }
 
 function sortCards(
-  productCardsData: ProductCardData[],
+  ilkToTokenMappings: Array<{ ilk: string; token: string }>,
   sortingConfig: ProductPageType['ordering'],
   cardsFilter?: ProductLandingPagesFiltersKeys,
 ) {
   if (cardsFilter) {
-    productCardsData = sortBy(productCardsData, (productCard) => {
+    ilkToTokenMappings = sortBy(ilkToTokenMappings, ({ ilk }) => {
       const orderForFilter = sortingConfig[cardsFilter]
 
       if (orderForFilter) {
-        const order = orderForFilter.indexOf(productCard.ilk)
+        const order = orderForFilter.indexOf(ilk)
         if (order >= 0) {
           return order
         } else {
@@ -435,7 +453,7 @@ function sortCards(
       return 0
     })
   }
-  return productCardsData
+  return ilkToTokenMappings
 }
 
 export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
@@ -445,74 +463,62 @@ export function earnPageCardsData({ productCardsData }: { productCardsData: Prod
 }
 
 export function multiplyPageCardsData({
-  productCardsData,
+  ilkToTokenMapping,
   cardsFilter,
 }: {
-  productCardsData: ProductCardData[]
+  ilkToTokenMapping: Array<{ ilk: string; token: string }>
   cardsFilter?: ProductLandingPagesFiltersKeys
 }) {
-  productCardsData = sortCards(productCardsData, productCardsConfig.multiply.ordering, cardsFilter)
+  ilkToTokenMapping = sortCards(
+    ilkToTokenMapping,
+    productCardsConfig.multiply.ordering,
+    cardsFilter,
+  )
 
-  const multiplyTokens = productCardsData.filter((ilk) =>
+  const multiplyTokens = ilkToTokenMapping.filter((ilk) =>
     ALLOWED_MULTIPLY_TOKENS.includes(ilk.token),
   )
 
   if (cardsFilter === 'Featured') {
-    return productCardsData.filter((ilk) =>
+    return ilkToTokenMapping.filter((ilk) =>
       productCardsConfig.multiply.featuredCards.includes(ilk.ilk),
     )
   }
 
   // TODO TEMPORARY UNTIL WE WILL HAVE EARN PAGE
   if (cardsFilter === 'UNI LP') {
-    return productCardsData.filter((data) =>
+    return ilkToTokenMapping.filter((data) =>
       ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
     )
-  }
-
-  if (cardsFilter === 'BTC') {
-    return btcProductCards(productCardsData)
-  }
-
-  if (cardsFilter === 'ETH') {
-    return ethProductCards(productCardsData)
   }
 
   return multiplyTokens.filter((ilk) => ilk.token === cardsFilter)
 }
 
 export function borrowPageCardsData({
-  productCardsData,
+  ilkToTokenMapping,
   cardsFilter,
 }: {
-  productCardsData: ProductCardData[]
+  ilkToTokenMapping: Array<{ ilk: string; token: string }>
   cardsFilter?: ProductLandingPagesFiltersKeys
-}): ProductCardData[] {
-  productCardsData = sortCards(productCardsData, productCardsConfig.borrow.ordering, cardsFilter)
+}): Array<{ ilk: string; token: string }> {
+  ilkToTokenMapping = sortCards(ilkToTokenMapping, productCardsConfig.borrow.ordering, cardsFilter)
 
   if (cardsFilter === 'Featured') {
-    return productCardsData.filter((ilk) =>
-      productCardsConfig.borrow.featuredCards.includes(ilk.ilk),
+    return ilkToTokenMapping.filter(({ ilk }) =>
+      productCardsConfig.borrow.featuredCards.includes(ilk),
     )
   }
 
   if (cardsFilter === 'UNI LP') {
-    return uniLpProductCards(productCardsData)
-  }
-
-  if (cardsFilter === 'BTC') {
-    return btcProductCards(productCardsData)
-  }
-
-  if (cardsFilter === 'ETH') {
-    return ethProductCards(productCardsData)
+    return uniLpProductCards(ilkToTokenMapping)
   }
 
   if (cardsFilter === 'Curve LP') {
-    return productCardsData.filter((card) => card.ilk === 'CRVV1ETHSTETH-A')
+    return ilkToTokenMapping.filter(({ ilk }) => ilk === 'CRVV1ETHSTETH-A')
   }
 
-  return productCardsData.filter((ilk) => ilk.token === cardsFilter)
+  return ilkToTokenMapping.filter(({ token }) => token === cardsFilter)
 }
 
 export function cardFiltersFromBalances(

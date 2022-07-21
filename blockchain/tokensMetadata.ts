@@ -650,14 +650,6 @@ export const LP_TOKENS = tokens
   .filter((token) => (token.tags as CoinTag[]).includes('lp-token'))
   .map((lpToken) => lpToken.symbol)
 
-export const BTC_TOKENS = tokens
-  .filter((token) => token.rootToken === 'BTC' || token.symbol === 'BTC')
-  .map((btcToken) => btcToken.symbol)
-
-export const ETH_TOKENS = tokens
-  .filter((token) => token.rootToken === 'ETH' || token.symbol === 'ETH')
-  .map((ethToken) => ethToken.symbol)
-
 export const ONLY_MULTIPLY_TOKENS = ['GUNIV3DAIUSDC1', 'GUNIV3DAIUSDC2']
 
 const ALLOWED_AUTOMATION_ILKS: Record<string, string[]> = {

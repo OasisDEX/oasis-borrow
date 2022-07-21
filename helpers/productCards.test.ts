@@ -292,7 +292,7 @@ describe('createProductCardsData$', () => {
     const state = getStateUnpacker(createProductCardsData$(of([wbtcC]), mockOraclePriceData$))
 
     const borrowPageData = borrowPageCardsData({
-      productCardsData: state(),
+      ilks: state(),
       cardsFilter: 'Featured',
     })
 
@@ -318,7 +318,7 @@ describe('createProductCardsData$', () => {
     )
 
     const borrowPageData = borrowPageCardsData({
-      productCardsData: state(),
+      ilks: state(),
       cardsFilter: 'Featured',
     })
 
@@ -336,7 +336,7 @@ describe('createProductCardsData$', () => {
       ),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'BTC' })
+    const borrowPageData = borrowPageCardsData({ ilks: state(), cardsFilter: 'BTC' })
 
     expect(borrowPageData).to.eql([
       {
@@ -378,7 +378,7 @@ describe('createProductCardsData$', () => {
       ),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
+    const borrowPageData = borrowPageCardsData({ ilks: state(), cardsFilter: 'ETH' })
 
     expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
     expect(borrowPageData[1].ilk).to.eql(ethA.ilk)

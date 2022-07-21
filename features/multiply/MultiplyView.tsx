@@ -10,12 +10,15 @@ import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
+import {
+  borrowPageCardsData,
+  multiplyPageCardsData,
+  productCardsConfig,
+} from '../../helpers/productCards'
+import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 
 export function MultiplyView() {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
   const tab = window.location.hash.replace(/^#/, '')
 
   return (
@@ -35,38 +38,12 @@ export function MultiplyView() {
         }}
         scrollToId={tab}
       />
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsDataValue]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
-          {([productCardsData]) => (
-            <ProductCardsFilter
-              filters={productCardsConfig.multiply.cardsFilters.filter((f) => f.name !== 'UNI LP')}
-              selectedFilter={tab}
-            >
-              {(cardsFilter) => {
-                const filteredCards = multiplyPageCardsData({
-                  productCardsData,
-                  cardsFilter,
-                })
-
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardMultiply cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <ProductCardsFilter
+        filters={productCardsConfig.borrow.cardsFilters}
+        selectedFilter={tab}
+        productCardComponent={ProductCardMultiply}
+        filterCards={multiplyPageCardsData}
+      />
     </Grid>
   )
 }

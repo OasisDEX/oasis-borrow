@@ -18,8 +18,6 @@ import {
 
 export function BorrowView() {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const tab = window.location.hash.replace(/^#/, '')
 
   return (
@@ -39,36 +37,12 @@ export function BorrowView() {
         }}
         scrollToId={tab}
       />
-
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsData]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
-          {([productCardsData]) => (
-            <ProductCardsFilter
-              filters={productCardsConfig.borrow.cardsFilters}
-              selectedFilter={tab}
-            >
-              {(cardsFilter: ProductLandingPagesFiltersKeys) => {
-                const filteredCards = borrowPageCardsData({ productCardsData, cardsFilter })
-
-                return (
-                  <ProductCardsWrapper>
-                    {filteredCards.map((cardData) => (
-                      <ProductCardBorrow cardData={cardData} key={cardData.ilk} />
-                    ))}
-                  </ProductCardsWrapper>
-                )
-              }}
-            </ProductCardsFilter>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
+      <ProductCardsFilter
+        filters={productCardsConfig.borrow.cardsFilters}
+        selectedFilter={tab}
+        productCardComponent={ProductCardBorrow}
+        filterCards={borrowPageCardsData}
+      />
     </Grid>
   )
 }
