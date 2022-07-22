@@ -7,10 +7,9 @@ import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { useObservable } from 'helpers/observableHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useHash } from 'helpers/useHash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-
-import { TAB_CHANGE_SUBJECT } from '../common/UITypes/TabChange'
 
 interface GetProtectionBannerProps {
   vaultId: BigNumber
@@ -26,7 +25,8 @@ export function GetProtectionBannerControl({
   debt,
 }: GetProtectionBannerProps) {
   const { t } = useTranslation()
-  const { uiChanges, automationTriggersData$ } = useAppContext()
+  const setHash = useHash()[1]
+  const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(vaultId)
   const [automationTriggersData] = useObservable(autoTriggersData$)
 
@@ -54,12 +54,7 @@ export function GetProtectionBannerControl({
           backgroundColorEnd: bannerGradientPresets.stopLoss[1],
         }}
         button={{
-          action: () => {
-            uiChanges.publish(TAB_CHANGE_SUBJECT, {
-              type: 'change-tab',
-              currentMode: VaultViewMode.Protection,
-            })
-          },
+          action: () => setHash(VaultViewMode.Protection),
           text: !basicBSEnabled
             ? t('vault-banners.setup-stop-loss.button')
             : t('vault-banners.get-protection.button'),

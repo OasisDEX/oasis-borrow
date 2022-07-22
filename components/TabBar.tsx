@@ -39,7 +39,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
   }, [switchEvent?.value])
 
   function isSelected(section: TabSection) {
-    return `#${section.value}` === hash || section.value === hash
+    return hash.includes(`#${section.value}`) || hash.includes(section.value)
   }
 
   const selectedSection = sections.find(isSelected) || sections[0]
@@ -83,10 +83,10 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
                     sx={{
                       py: 2,
                       px: 3,
-                      bg: isSelected ? 'selected' : undefined,
+                      bg: isSelected ? 'interactive10' : undefined,
                       cursor: 'pointer',
                       '&:hover': {
-                        bg: 'secondaryAlt',
+                        bg: 'neutral30',
                       },
                     }}
                   >
@@ -127,7 +127,7 @@ export function TabBar({ sections, variant, useDropdownOnMobile, switchEvent }: 
               ? {
                   display: 'inline-flex',
                   borderRadius: '58px',
-                  bg: 'backgroundAlt',
+                  bg: 'secondary60',
                 }
               : {}),
           }}

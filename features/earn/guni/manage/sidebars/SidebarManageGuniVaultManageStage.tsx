@@ -31,7 +31,7 @@ export function SidebarManageGuniVaultManageStage(props: ManageMultiplyVaultStat
     default:
       return (
         <>
-          <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+          <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('vault-form.subtext.review-manage')}
           </Text>
           <GuniManageMultiplyVaultChangesInformation {...props} />

@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { UserReferralState } from 'features/referralOverview/user'
+import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Flex, Grid, Heading, Image, Text } from 'theme-ui'
@@ -16,6 +17,7 @@ interface NewReferralProps {
 
 export function SuccessfulJoinModal({ account, userReferral, heading }: NewReferralProps) {
   const { t } = useTranslation()
+  const { replace } = useRedirect()
   return (
     <>
       {userReferral && (
@@ -36,7 +38,6 @@ export function SuccessfulJoinModal({ account, userReferral, heading }: NewRefer
               <Text variant="paragraph3" sx={{ color: 'lavender', mb: '8px' }}>
                 {t('ref.modal.successful-body')}
               </Text>
-
               <>
                 <AppLink href="/">
                   <Button
@@ -59,26 +60,29 @@ export function SuccessfulJoinModal({ account, userReferral, heading }: NewRefer
                     <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
                   </Button>
                 </AppLink>
-                <AppLink href={`/referrals/${account}`}>
-                  <Button
-                    variant="textual"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 2,
-                      width: '100%',
-                      mt: '12px',
-                      py: 0,
-                      '&:hover svg': {
-                        transform: 'translateX(10px)',
-                      },
-                    }}
-                  >
-                    {t('ref.modal.go-dashboard')}
-                    <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
-                  </Button>
-                </AppLink>
+
+                <Button
+                  variant="textual"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 2,
+                    width: '100%',
+                    mt: '12px',
+                    py: 0,
+                    '&:hover svg': {
+                      transform: 'translateX(10px)',
+                    },
+                  }}
+                  onClick={() => {
+                    userReferral.trigger()
+                    replace(`/referrals/${account}`)
+                  }}
+                >
+                  {t('ref.modal.go-dashboard')}
+                  <Icon key="arrow" name="arrow_right" sx={{ transition: '0.2s', ml: '4px' }} />
+                </Button>
               </>
             </Flex>
           </Grid>

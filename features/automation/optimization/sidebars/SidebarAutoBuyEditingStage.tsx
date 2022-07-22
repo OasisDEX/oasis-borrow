@@ -86,7 +86,7 @@ export function SidebarAutoBuyEditingStage({
 
   return (
     <>
-      <Text as="p" variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
         {basicBuyState.maxBuyOrMinSellPrice !== undefined
           ? t('auto-buy.set-trigger-description', {
               targetCollRatio: basicBuyState.targetCollRatio.toNumber(),
@@ -124,14 +124,14 @@ export function SidebarAutoBuyEditingStage({
           value1: basicBuyState.execCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'onSuccess',
-          value1: 'onWarning',
+          value0: 'warning100',
+          value1: 'success100',
         }}
         step={1}
         leftDescription={t('auto-buy.target-coll-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="onSuccess"
-        rightThumbColor="onWarning"
+        leftThumbColor="warning100"
+        rightThumbColor="success100"
       />
       <VaultActionInput
         action={t('auto-buy.set-max-buy-price')}

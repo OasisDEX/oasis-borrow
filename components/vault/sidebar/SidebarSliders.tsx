@@ -49,10 +49,10 @@ export function SidebarSliderAdjustMultiply({
     multiply && !multiply.isNaN() && slider
       ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${
           colors?.sliderTrackFill
-        } ${slider.toNumber()}%, ${colors?.primaryAlt} ${slider.toNumber()}%, ${
-          colors?.primaryAlt
+        } ${slider.toNumber()}%, ${colors?.neutral60} ${slider.toNumber()}%, ${
+          colors?.neutral60
         } 100%)`
-      : 'primaryAlt'
+      : 'neutral60'
 
   return (
     <Grid
@@ -75,7 +75,7 @@ export function SidebarSliderAdjustMultiply({
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
         }}
       >
         <Grid as="p" gap={2}>
@@ -98,7 +98,7 @@ export function SidebarSliderAdjustMultiply({
                 <Text
                   as="span"
                   variant="paragraph1"
-                  sx={{ fontWeight: 'semiBold', color: 'primary' }}
+                  sx={{ fontWeight: 'semiBold', color: 'primary100' }}
                 >
                   {formatPercent(currentCollaterizationRatio.times(100))}
                   <Icon name="arrow_right" size="16px" sx={{ ml: 2, mr: 2 }} />
@@ -127,7 +127,7 @@ export function SidebarSliderAdjustMultiply({
         sx={{
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
-          color: 'text.subtitle',
+          color: 'neutral80',
         }}
       >
         <Text as="span">{t('slider.adjust-multiply.left-footer')}</Text>

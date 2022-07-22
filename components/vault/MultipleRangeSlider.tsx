@@ -53,9 +53,9 @@ function getSliderBackgroundGradient({
   value1InPercent: number
 }) {
   const { colors } = theme
-  return `linear-gradient(to right, ${colors.primaryAlt}  0%, ${colors.primaryAlt} ${value0InPercent}%,
+  return `linear-gradient(to right, ${colors.neutral60}  0%, ${colors.neutral60} ${value0InPercent}%,
     ${colors.sliderTrackFill} ${value0InPercent}%,  ${colors.sliderTrackFill} ${value1InPercent}%,
-    ${colors.primaryAlt} ${value1InPercent}%, ${colors.primaryAlt} 100%)`
+    ${colors.neutral60} ${value1InPercent}%, ${colors.neutral60} 100%)`
 }
 
 interface SliderValues {
@@ -92,8 +92,8 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
-  leftThumbColor = 'onWarning',
-  rightThumbColor = 'onSuccess',
+  leftThumbColor = 'warning100',
+  rightThumbColor = 'success100',
   leftDescription,
   rightDescription,
   minDescription = '',
@@ -197,7 +197,7 @@ export function MultipleRangeSlider({
           variant: 'text.paragraph4',
           justifyContent: 'space-between',
           fontWeight: 'semiBold',
-          color: 'text.subtitle',
+          color: 'neutral80',
           mb: '24px',
           lineHeight: 'tight',
         }}
@@ -281,7 +281,7 @@ export function MultipleRangeSlider({
                   width: '3px',
                   height: '30px',
                   transform: 'translateX(-50%)',
-                  backgroundColor: 'sliderActiveFill',
+                  backgroundColor: 'interactive50',
                   left: `${middleMarkPercentagePosition}%`,
                 }}
               />
@@ -307,7 +307,7 @@ export function MultipleRangeSlider({
           sx={{
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
-            color: 'text.subtitle',
+            color: 'neutral80',
             fontWeight: 'medium',
           }}
         >

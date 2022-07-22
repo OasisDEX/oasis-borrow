@@ -84,7 +84,7 @@ import {
   BasicBSChangeAction,
   basicBSFormChangeReducer,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { ConstantMultipleChangeAction } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { ConstantMultipleChangeAction, constantMultipleFormChangeReducer, CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -406,6 +406,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(CONSTANT_MULTIPLE_FORM_CHANGE, constantMultipleFormChangeReducer)
 
   return uiChangesSubject
 }

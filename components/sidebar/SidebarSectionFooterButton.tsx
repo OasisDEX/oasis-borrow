@@ -41,7 +41,7 @@ export function SidebarSectionFooterButton({
             justifyContent: 'center',
           }}
         >
-          {isLoading && <Spinner size={24} color="surface" sx={{ mr: 2, mb: '2px' }} />}
+          {isLoading && <Spinner size={24} color="neutral10" sx={{ mr: 2, mb: '2px' }} />}
           {label} {steps && `(${steps[0]}/${steps[1]})`}
         </Button>
       )}

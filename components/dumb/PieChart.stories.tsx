@@ -13,7 +13,7 @@ export default {
 const findToken = (symbol: string) => tokens.find((t) => t.symbol === symbol)
 
 function tokenColor(symbol: string) {
-  return findToken(symbol)?.color || '#999'
+  return findToken(symbol)?.color || 'neutral70'
 }
 
 export const TokenColors = () => {

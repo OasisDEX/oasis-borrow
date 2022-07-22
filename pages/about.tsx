@@ -29,9 +29,9 @@ function AboutPage({ members }: { members: TeamMember[] }) {
       </Box>
       <AppLink
         href="/careers"
-        sx={{ color: 'text.focused', display: 'flex', alignItems: 'center', mt: 3 }}
+        sx={{ color: 'primary100', display: 'flex', alignItems: 'center', mt: 3 }}
       >
-        <Text variant="paragraph1" sx={{ color: 'text.focused', fontWeight: 'semiBold' }}>
+        <Text variant="paragraph1" sx={{ color: 'primary100', fontWeight: 'semiBold' }}>
           {t('about.careers-link')}
         </Text>
         <Icon name="arrow_right" size="16px" sx={{ ml: 1 }} />
@@ -83,8 +83,8 @@ function PortraitsGrid({ members }: { members: TeamMember[] }) {
             />
           </Box>
           <Box sx={{ pt: 3 }}>
-            <Text sx={{ color: 'primary', mb: 1 }}>{member.name}</Text>
-            <Text variant="paragraph3" sx={{ color: 'lavender' }}>
+            <Text sx={{ color: 'primary100', mb: 1 }}>{member.name}</Text>
+            <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
               {member.title}
             </Text>
           </Box>

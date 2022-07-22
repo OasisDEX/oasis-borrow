@@ -33,10 +33,10 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   const background = props.sliderPercentageFill
     ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
         props.sliderPercentageFill.toNumber() || 0
-      }%, ${colors?.primaryAlt} ${props.sliderPercentageFill.toNumber() || 0}%, ${
-        colors?.primaryAlt
+      }%, ${colors?.neutral60} ${props.sliderPercentageFill.toNumber() || 0}%, ${
+        colors?.neutral60
       } 100%)`
-    : 'primaryAlt'
+    : 'neutral60'
 
   return (
     <Grid gap={2}>
@@ -46,7 +46,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
             variant: 'text.paragraph4',
             justifyContent: 'space-between',
             fontWeight: 'semiBold',
-            color: 'text.subtitle',
+            color: 'neutral80',
           }}
         >
           <Grid gap={2}>

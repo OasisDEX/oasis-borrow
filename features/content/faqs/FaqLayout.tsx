@@ -36,7 +36,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
     }
   }
 
-  const quoteColors = ['bull', 'link', 'primaryEmphasis']
+  const quoteColors = ['success100', 'interactive100', 'primary60']
   const quoteColorsSx = quoteColors.reduce((obj: Record<string, SxStyleProp>, color, index) => {
     obj[`:nth-of-type(${quoteColors.length}n-${quoteColors.length - index - 1})`] = {
       borderColor: color,
@@ -55,7 +55,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
             key={anchor.id}
             variant="nav"
             sx={{
-              '&, &:hover': { color: sectionId === anchor.id ? 'primary' : 'textAlt' },
+              '&, &:hover': { color: sectionId === anchor.id ? 'primary100' : 'primary60' },
               fontSize: '12px',
             }}
             onClick={() => setSectionId(anchor.id)}
@@ -83,7 +83,7 @@ export function FaqLayout({ learnMoreUrl, children }: { learnMoreUrl: string } &
       >
         {sections[sectionId]}
       </Box>
-      <Box sx={{ borderRadius: 'mediumLarge', bg: 'secondaryAlt', p: 3, mt: 4 }}>
+      <Box sx={{ borderRadius: 'mediumLarge', bg: 'neutral30', p: 3, mt: 4 }}>
         <Box sx={{ maxWidth: '455px' }}>
           <Text variant="paragraph3" sx={{ fontWeight: 'bold', mb: 2 }}>
             {t('simulate-faq.learn-more-heading')}

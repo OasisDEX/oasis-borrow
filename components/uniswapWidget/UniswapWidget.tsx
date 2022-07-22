@@ -22,15 +22,15 @@ import { Box, Button, Flex, Image, SxStyleProp, Text } from 'theme-ui'
 const { colors, radii } = theme
 
 const widgetTheme = {
-  accent: colors.primary,
-  primary: colors.primary,
-  container: colors.background,
-  active: colors.primary,
-  interactive: colors.surface,
-  module: '#F6F6F6',
-  dialog: colors.background,
-  success: colors.success,
-  error: colors.error,
+  accent: colors.primary100,
+  primary: colors.primary100,
+  container: colors.neutral10,
+  active: colors.primary100,
+  interactive: colors.neutral10,
+  module: colors.neutral30,
+  dialog: colors.neutral10,
+  success: colors.success10,
+  error: colors.critical10,
   tokenColorExtraction: false,
   borderRadius: radii.mediumLarge,
   fontFamily: 'Inter',
@@ -328,7 +328,7 @@ export function UniswapWidgetShowHide(props: { sxWrapper?: SxStyleProp }) {
           right: '240px',
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
-          bg: 'background',
+          bg: 'neutral10',
           boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
@@ -375,27 +375,30 @@ export function UniswapWidget(props: { token?: string }) {
         '.subhead': { fontWeight: 'medium' },
         [main.swapBtn]: {
           border: '3px solid',
-          borderColor: 'border',
-          ':hover': { borderColor: 'primary', bg: 'surface' },
+          borderColor: 'neutral20',
+          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
         },
-        [main.token1Btn + '[color="interactive"], ' + main.token2Btn + '[color="interactive"]']: {
+        [main.token1Btn +
+        '[color="interactive100"], ' +
+        main.token2Btn +
+        '[color="interactive100"]']: {
           border: '1px solid',
-          borderColor: 'border',
-          ':hover': { borderColor: 'primary', bg: 'surface' },
+          borderColor: 'neutral20',
+          ':hover': { borderColor: 'primary100', bg: 'neutral10' },
         },
         [tokenSel.hoverAppended]: { display: 'none' },
         [tokenSel.option]: {
           bg: 'transparent',
-          ':hover': { bg: 'border' },
+          ':hover': { bg: 'neutral20' },
           borderRadius: '8px',
           '.subhead': { fontWeight: 'semiBold' },
         },
         [tokenSel.search]: {
-          borderColor: 'border',
+          borderColor: 'neutral20',
           borderRadius: 'medium',
-          ':hover': { bg: 'surface' },
-          ':focus': { borderColor: 'primary' },
-          '::placeholder': { color: 'text.lavender' },
+          ':hover': { bg: 'neutral10' },
+          ':focus': { borderColor: 'primary100' },
+          '::placeholder': { color: 'neutral80' },
         },
         [tokenSel.scrollbar]: {
           '::-webkit-scrollbar-thumb': {
@@ -425,7 +428,7 @@ export function UniswapWidget(props: { token?: string }) {
             left: 0,
             right: 0,
             bottom: 0,
-            bg: 'surface',
+            bg: 'neutral10',
             zIndex: 'menu',
             borderRadius: 'mediumLarge',
             py: 4,

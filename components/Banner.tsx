@@ -57,7 +57,7 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
               mb: 3,
               fontSize: 2,
               lineHeight: 1.571,
-              color: 'text.subtitle',
+              color: 'neutral80',
             }}
           >
             {description}

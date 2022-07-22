@@ -91,7 +91,7 @@ export function SidebarManageBorrowVaultEditingStage(props: ManageStandardBorrow
               <FieldDepositCollateral token={token} {...extractFieldDepositCollateralData(props)} />
               <FieldGenerateDai
                 debt={debt}
-                disabled={isSecondaryFieldDisabled}
+                disabled={isSecondaryFieldDisabled || !isOwner}
                 {...extractFieldGenerateDaiData(props)}
               />
             </>

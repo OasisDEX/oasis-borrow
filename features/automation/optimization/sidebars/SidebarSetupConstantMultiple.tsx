@@ -35,6 +35,7 @@ interface SidebarSetupConstantMultipleProps {
 
   // multiplier?: number
   onChange: (multiplier: number) => void
+  txHandler: () => void
 }
 
 export function SidebarSetupConstantMultiple({
@@ -47,6 +48,7 @@ export function SidebarSetupConstantMultiple({
   // multiplier =2,
   onChange: onMultiplierChange,
   constantMultipleState,
+  txHandler,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -137,17 +139,17 @@ export function SidebarSetupConstantMultiple({
             max={500}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'target-coll-ratio',
-                targetCollRatio: new BigNumber(value.value0),
+                type: 'sell-execution-coll-ratio',
+                sellExecutionCollRatio: new BigNumber(value.value0),
               })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'execution-coll-ratio',
-                execCollRatio: new BigNumber(value.value1),
+                type: 'buy-execution-coll-ratio',
+                buyExecutionCollRatio: new BigNumber(value.value1),
               })
             }}
             value={{
-              value0: constantMultipleState?.targetCollRatio.toNumber(),
-              value1: constantMultipleState?.execCollRatio.toNumber(),
+              value0: constantMultipleState.sellExecutionCollRatio.toNumber(),
+              value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
             }}
             valueColors={{
               value0: 'onSuccess',
@@ -176,14 +178,6 @@ export function SidebarSetupConstantMultiple({
                 type: 'buy-with-threshold',
                 buyWithThreshold: toggleStatus,
               })
-              // uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-              //   type: 'max-buy-or-sell-price',
-              //   maxBuyOrMinSellPrice: !toggleStatus
-              //     ? undefined
-              //     : autoBuyTriggerData.maxBuyOrMinSellPrice.isEqualTo(maxUint256)
-              //     ? zero
-              //     : autoBuyTriggerData.maxBuyOrMinSellPrice,
-              // })
             }}
             showToggle={true}
             toggleOnLabel={t('protection.set-no-threshold')}
