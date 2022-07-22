@@ -1515,7 +1515,7 @@
     }
   },
   "ref": {
-    "banner": "Introducing Refer a Friend. Earn DAI today",
+    "banner": "Refer a Friend. Earn DAI today",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
@@ -1530,7 +1530,7 @@
     "copy": "Copy",
     "copied": "Copied",
     "explanation": "Once someone clicks your referral link and accepts then you will see them appear in the “Accounts you’ve referred” below. Then you are all set, fee sharing is active! Your link is reusable as many times as you like.",
-    "faq-link": "Read more in Oasis Referral F.A.Q",
+    "faq-link": "Read more in Oasis Referral Guide",
     "you-referred": "Accounts you've referred",
     "not-referred-yet": "You haven’t referred anyone yet",
     "you-were-not-referred": "No account has referred you to Oasis.app",
@@ -1545,7 +1545,7 @@
     "how-p2": "2. Share your link with potential Oasis.app users",
     "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
     "need-help": "Need help?",
-    "help-link-1": "Oasis Referrals FAQ’s",
+    "help-link-1": "Oasis Referrals Guide",
     "help-link-2": "Visit Oasis Knowledge Centre",
     "etherscan": "Etherscan",
     "modal": {
@@ -1564,7 +1564,7 @@
       "go-home": "Go to Oasis.app homepage ",
       "go-dashboard": "Go to referral dashboard ",
       "link-1": "Oasis.app Referral Blog Post, ",
-      "link-2": "Referral FAQs",
+      "link-2": "Referral Guide",
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
