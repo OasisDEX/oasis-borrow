@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { theme } from 'theme'
 import { Button, Flex, Text } from 'theme-ui'
 
 interface NotificationsChangeEmailButtonProps {
