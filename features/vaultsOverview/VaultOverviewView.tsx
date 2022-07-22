@@ -7,7 +7,7 @@ import { Flex, Grid } from 'theme-ui'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
 import { Connect } from './containers/Connect'
 import { PositionsList } from './containers/PositionsList'
-import { VaultSuggestions } from './VaultSuggestions'
+import { VaultSuggestions } from './containers/VaultSuggestions'
 
 interface Props {
   context: Context
@@ -32,9 +32,7 @@ export function VaultsOverviewView({ context, address, ensName, productCardsData
       </Flex>
       <PositionsList address={address} />
 
-      {isOwnerViewing && (
-        <VaultSuggestions productCardsData={productCardsData} address={ensName || address} />
-      )}
+      {isOwnerViewing && <VaultSuggestions address={ensName || address} />}
     </Grid>
   )
 }
