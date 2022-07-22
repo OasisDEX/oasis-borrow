@@ -50,7 +50,8 @@ export function ConstantMultipleFormControl({
     ? 'txFailure'
     : 'editing'
 
-  const isAddForm = constantMultipleState.currentForm === 'add'
+  const isAddForm = true
+  // const isAddForm = constantMultipleState.currentForm === 'add'
   const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
   const addTxData = useMemo(
@@ -70,7 +71,8 @@ export function ConstantMultipleFormControl({
       maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
     }), [
 
-      constantMultipleState.triggerId.toNumber(),
+      // constantMultipleState.triggerId.toNumber(),
+      1,
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
@@ -83,6 +85,10 @@ export function ConstantMultipleFormControl({
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
     ]
   )
+
+  console.log('addTxData')
+  console.log(addTxData)
+ 
 
   function txHandler() {
     if (txHelpers) {

@@ -17,14 +17,18 @@ const takeUntilTxState = [
 ]
 
 export function addConstantMultipleTrigger(
-    { sendWithGasEstimation }: TxHelpers,
+    { sendWithGasEstimation, send }: TxHelpers,
     txData: AutomationBotAddAggregatorTriggerData,
     uiChanges: UIChanges,
     ethPrice: BigNumber,
     ) {
-    sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
-      .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-      .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+      console.log("odpalilo sie")
+    // sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
+    //   .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
+    //   .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+  send(addAutomationBotAggregatorTrigger, txData)
+    .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
   }
 
   function handleTriggerTx({

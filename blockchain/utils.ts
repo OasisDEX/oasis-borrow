@@ -27,7 +27,12 @@ export function funcSigTopic(v: string): string {
 }
 
 export function encodeArray(array: string[]): string {
-  return ((ethAbi as unknown) as AbiCoder).encodeParameter(["bytes[]"],array)
+  // return ((ethAbi as unknown) as AbiCoder).encodeParameter(["bytes[]"],array)
+  console.log('array')
+  console.log(array)
+  console.log('result')
+  console.log(((ethAbi as unknown) as AbiCoder).encodeParameter("bytes[]",array))
+  return ((ethAbi as unknown) as AbiCoder).encodeParameter("bytes[]",array)
 }
 
 export function amountToWei(amount: BigNumber, token: string): BigNumber {

@@ -84,6 +84,8 @@ export function OptimizationFormControl({
           context={context}
           isConstantMultipleActive={isConstantMultipleActive}
           txHelpers={txHelpers}
+          vault={vault}
+          ethMarketPrice={ethMarketPrice}
         />
       )}
     </>
