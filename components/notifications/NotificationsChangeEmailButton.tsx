@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { theme } from 'theme'
 import { Button, Flex, Text } from 'theme-ui'
 
 interface NotificationsChangeEmailButtonProps {
@@ -14,17 +15,17 @@ export function NotificationsChangeEmailButton({
   return (
     <Flex
       sx={{
-        background: '#F3F7F9',
+        background: 'neutral30',
         height: '54px',
         alignItems: 'center',
-        borderRadius: '8px',
+        borderRadius: 'medium',
         p: 3,
       }}
     >
       <Text
         sx={{
-          fontSize: '14px',
-          color: '#787A9B',
+          fontSize: 2,
+          color: 'neutral80',
         }}
       >
         {currentEmail}
@@ -32,11 +33,11 @@ export function NotificationsChangeEmailButton({
 
       <Button
         sx={{
-          color: '#575CFE',
-          fontSize: '14px',
+          color: 'interactive100',
+          fontSize: 2,
           background: 'transparent',
-          marginLeft: 'auto !important',
-          paddingRight: 0,
+          ml: 'auto !important',
+          pr: 0,
           ':hover': {
             background: 'transparent',
           },

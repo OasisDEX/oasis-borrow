@@ -14,30 +14,26 @@ export function NotificationsEmailPrefrences() {
         heading={t('notifications.enable-notifications-email-heading')}
         description={t('notifications.enable-notifications-email-description')}
         checked={enableEmailPrefrences}
-        onChangeHandler={() => {
-          console.log('called')
-          setEnableEmailPrefrences(!enableEmailPrefrences)
-        }}
+        onChangeHandler={() => setEnableEmailPrefrences(!enableEmailPrefrences)}
       />
 
       {enableEmailPrefrences && (
         <Box
           sx={{
             px: '5px',
-            transition: 'all .5s ease-in-out',
           }}
         >
           <Box
             sx={{
-              background: '#F3F7F9',
+              background: 'neutral30',
               p: '16px',
-              borderRadius: '8px',
+              borderRadius: 'medium',
             }}
           >
             <Text
               sx={{
-                fontSize: '12px',
-                fontWeight: 600,
+                fontSize: 1,
+                fontWeight: 'semiBold',
               }}
             >
               Set up your email
@@ -46,11 +42,11 @@ export function NotificationsEmailPrefrences() {
             <Input
               sx={{
                 border: '1px solid #EAEAEA',
-                borderRadius: '8px',
+                borderRadius: 'medium',
                 p: '8px, 16px, 8px, 16px',
                 background: 'white',
-                color: '#787A9B',
-                fontSize: '14px',
+                color: 'neutral80',
+                fontSize: 2,
                 mt: 2,
                 mb: 2,
                 maxHeight: '38px',
@@ -72,12 +68,12 @@ export function NotificationsEmailPrefrences() {
             {/* TODO: Add disabled / enabled state that changes background color */}
             <Button
               sx={{
-                borderRadius: '24px',
-                background: '#80818A',
+                borderRadius: 'rounder',
+                background: 'primary30',
                 color: 'white',
-                fontWeight: 600,
+                fontWeight: 'semiBold',
                 width: '100%',
-                fontSize: '12px',
+                fontSize: 1,
                 maxHeight: '28px',
                 lineHeight: '1',
                 justifyContent: 'center',

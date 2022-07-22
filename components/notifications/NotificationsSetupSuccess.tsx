@@ -11,8 +11,8 @@ export function NotificationsSetupSuccess() {
         p: '16px',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: '#E7FCFA',
-        borderRadius: '8px',
+        background: 'success10',
+        borderRadius: 'medium',
       }}
     >
       <Flex
@@ -40,8 +40,8 @@ export function NotificationsSetupSuccess() {
       </Flex>
       <Text
         sx={{
-          color: '#1AAB9B',
-          fontSize: '14px',
+          color: 'success100',
+          fontSize: 2,
         }}
       >
         {t('notifications.email-entered')}
