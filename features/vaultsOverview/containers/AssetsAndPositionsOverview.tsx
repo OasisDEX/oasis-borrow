@@ -223,7 +223,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
   )
 }
 
-export function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
+function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
   const { t } = useTranslation()
   const breakpointIndex = useBreakpointIndex()
   const topAssetsAndPositions = props.assetsAndPositions.slice(0, 5)
