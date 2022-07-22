@@ -2,7 +2,7 @@ import { TxMeta, TxState, TxStatus } from "@oasisdex/transactions";
 import { amountFromWei } from "@oasisdex/utils";
 import BigNumber from "bignumber.js";
 import { AutomationBotAddTriggerData } from "blockchain/calls/automationBot";
-import { addAutomationBotAggregatorTrigger } from "blockchain/calls/automationBotAggregator";
+import { addAutomationBotAggregatorTrigger, AutomationBotAddAggregatorTriggerData } from "blockchain/calls/automationBotAggregator";
 import { TxHelpers, UIChanges } from "components/AppContext";
 import { zero } from "helpers/zero";
 import { takeWhileInclusive } from "rxjs-take-while-inclusive";
@@ -18,11 +18,10 @@ const takeUntilTxState = [
 
 export function addConstantMultipleTrigger(
     { sendWithGasEstimation }: TxHelpers,
-    txData: AutomationBotAddTriggerData,
+    txData: AutomationBotAddAggregatorTriggerData,
     uiChanges: UIChanges,
     ethPrice: BigNumber,
     ) {
-    const formChanged= 'CONSTANT_MULTIPLE_FORM_CHANGE'
     sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
       .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
       .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
@@ -32,12 +31,10 @@ export function addConstantMultipleTrigger(
     txState,
     ethPrice,
     uiChanges,
-    // formChanged,
   }: {
     txState: TxState<TxMeta>
     ethPrice: BigNumber
     uiChanges: UIChanges
-    // formChanged: CONSTANT_MU
   }) {
     const gasUsed =
       txState.status === TxStatus.Success ? new BigNumber(txState.receipt.gasUsed) : zero

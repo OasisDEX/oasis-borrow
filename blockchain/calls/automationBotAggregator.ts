@@ -10,13 +10,13 @@ import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/use
 
 export type AutomationBotAggregatorBaseTriggerData = {}
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
-    cdpId: BigNumber
+    // cdpId: BigNumber
     groupId: BigNumber
-    // triggerIds: BigNumber[]
-    triggerIds: string
-    kind: TxMetaKind.addTrigger
+    groupTypeId: number,
+    replacedTriggerId: string,
+    triggersData: string,
     proxyAddress: string
-    triggersData: string
+    kind: TxMetaKind.addTriggerGroup
 }
 
 

@@ -1,27 +1,36 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { Context } from 'blockchain/network'
+import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
-
+import {prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
+import BigNumber from 'bignumber.js'
+import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { zero } from 'helpers/zero'
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
   txHelpers?: TxHelpers
+  vault: Vault
+  ethMarketPrice: BigNumber
 }
 
 export function ConstantMultipleFormControl({
   context,
   isConstantMultipleActive,
   txHelpers,
+  vault,
+  ethMarketPrice,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
@@ -41,8 +50,39 @@ export function ConstantMultipleFormControl({
     ? 'txFailure'
     : 'editing'
 
-    const isAddForm = constantMultipleState.currentForm === 'add'
-    const isRemoveForm = constantMultipleState.currentForm === 'remove'
+  const isAddForm = constantMultipleState.currentForm === 'add'
+  const isRemoveForm = constantMultipleState.currentForm === 'remove'
+
+  const addTxData = useMemo(
+    () => 
+    prepareAddConstantMultipleTriggerData({
+      groupId: constantMultipleState.triggerId, // TODO ŁW - consider changing triggerId to groupId
+      vaultData: vault,
+      maxBuyPrice: constantMultipleState.buyWithThreshold ? constantMultipleState.maxBuyPrice || maxUint256 : maxUint256,
+      minSellPrice: constantMultipleState.sellWithThreshold ? constantMultipleState.minSellPrice  || zero : zero,
+      buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio,
+      sellExecutionCollRatio:  constantMultipleState.sellExecutionCollRatio,
+      buyWithThreshold: constantMultipleState.buyWithThreshold,
+      sellWithThreshold: constantMultipleState. sellWithThreshold,
+      targetCollRatio: new BigNumber(300), // TODO calculate using constantMultipleState.multiplier
+      continuous: constantMultipleState.continuous,
+      deviation: constantMultipleState. deviation,
+      maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
+    }), [
+
+      constantMultipleState.triggerId.toNumber(),
+      vault.collateralizationRatio.toNumber(),
+      constantMultipleState.maxBuyPrice?.toNumber(),
+      constantMultipleState.minSellPrice?.toNumber(),
+      constantMultipleState.buyExecutionCollRatio?.toNumber(),
+      constantMultipleState.sellExecutionCollRatio?.toNumber(),
+      constantMultipleState.buyWithThreshold,
+      constantMultipleState.sellWithThreshold,
+      constantMultipleState.continuous,
+      constantMultipleState.deviation?.toNumber(),
+      constantMultipleState.maxBaseFeeInGwei?.toNumber(),
+    ]
+  )
 
   function txHandler() {
     if (txHelpers) {
@@ -57,11 +97,11 @@ export function ConstantMultipleFormControl({
         })
       } else {
         if (isAddForm) {
+          addConstantMultipleTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice)
           // addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_BUY_FORM_CHANGE)
         }
         if (isRemoveForm) {
           // TODO ŁW can't remove as can't load from cache
-
         }
       }
     }
@@ -79,9 +119,9 @@ export function ConstantMultipleFormControl({
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,
-        })
+        })    
       }}
-      
+      txHandler={txHandler}
     />
   )
 }

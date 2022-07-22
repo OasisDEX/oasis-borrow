@@ -243,6 +243,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -261,6 +262,7 @@ export type TxData =
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
+  | AutomationBotAddAggregatorTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
