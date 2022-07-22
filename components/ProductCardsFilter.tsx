@@ -43,9 +43,9 @@ export function ProductCardsFilter({
     ilkToTokenMapping: ilkToEntryToken,
     cardsFilter: currentFilter,
   })
-  const { productCardsDataNew$ } = useAppContext()
+  const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(
-    productCardsDataNew$(productsToDisplay.map(({ ilk }) => ilk)),
+    productCardsData$(productsToDisplay.map(({ ilk }) => ilk)),
   )
   const [hover, setHover] = useState('')
   const ProductCardComponent = productCardComponent

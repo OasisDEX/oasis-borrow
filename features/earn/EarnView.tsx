@@ -13,9 +13,9 @@ import { supportedEarnIlks } from '../../helpers/productCards'
 
 export function EarnView() {
   const { t } = useTranslation()
-  const { productCardsDataNew$ } = useAppContext()
+  const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(
-    productCardsDataNew$(supportedEarnIlks),
+    productCardsData$(supportedEarnIlks),
   )
 
   return (

@@ -33,8 +33,8 @@ type TabContentProps = {
 function TabContent(props: TabContentProps) {
   const ProductCard = props.renderProductCard
 
-  const { productCardsDataNew$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsDataNew$(props.ilks))
+  const { productCardsData$ } = useAppContext()
+  const [productCardsData, productCardsDataError] = useObservable(productCardsData$(props.ilks))
 
   return (
     <Box mt={5}>

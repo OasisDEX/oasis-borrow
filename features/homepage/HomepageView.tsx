@@ -36,9 +36,9 @@ type TabContentProps = {
 function TabContent(props: TabContentProps) {
   const ProductCard = props.renderProductCard
 
-  const { productCardsDataNew$ } = useAppContext()
+  const { productCardsData$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(
-    productCardsDataNew$(productCardsConfig.landing.featuredCards[props.type]),
+    productCardsData$(productCardsConfig.landing.featuredCards[props.type]),
   )
 
   return (
