@@ -26,6 +26,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   const { context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
+  const [token, setToken] = useState('')
 
   const account = context?.status === 'connected' ? context.account : ''
   const jwtToken = jwtAuthGetToken(account)
@@ -39,6 +40,10 @@ export function NotificationSocketProvider({ children }: WithChildren) {
 
   useEffect(() => {
     if (jwtToken) {
+      if (jwtToken !== token && socket) {
+        socket.disconnect()
+      }
+
       const socketInstance = io('ws://localhost:3005', { auth: { token: `Bearer ${jwtToken}` } })
 
       // initialize state
@@ -60,6 +65,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
       })
 
       setSocket(socketInstance)
+      setToken(jwtToken)
     }
 
     return () => {
