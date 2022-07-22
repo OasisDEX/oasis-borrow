@@ -10,7 +10,6 @@ export function Background() {
         position: 'absolute',
         left: 'calc((100% - 1882px) / 2)',
         top: '-200px',
-        right: 0,
         backgroundColor: 'white',
         overflow: 'hidden',
         '&::after': {

@@ -10,7 +10,6 @@ export function ProductBackground() {
         position: 'absolute',
         left: 'calc((100% - 1617px) / 2)',
         top: 0,
-        right: 0,
         backgroundColor: 'white',
         overflow: 'hidden',
       }}

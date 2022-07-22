@@ -9,7 +9,6 @@ export function BackgroundLighter() {
       sx={{
         position: 'absolute',
         left: 'calc((100% - 1882px) / 2)',
-        right: 0,
         overflow: 'hidden',
         top: '-132px',
         zIndex: -1,
