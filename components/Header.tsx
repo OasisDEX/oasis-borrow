@@ -3,7 +3,6 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
-import { initializeNotifications } from 'features/notifications/notificationHook'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -459,11 +458,7 @@ const LINKS = {
   earn: '/earn',
 }
 
-interface ConnectedHeaderProps {
-  account: string
-}
-
-function ConnectedHeader({ account }: ConnectedHeaderProps) {
+function ConnectedHeader() {
   const { uiChanges } = useAppContext()
   const { pathname } = useRouter()
   const { t } = useTranslation()
@@ -471,7 +466,8 @@ function ConnectedHeader({ account }: ConnectedHeaderProps) {
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
-  initializeNotifications(account)
+  // socket instance that can be used to emit events
+  // const { socket } = useSocket()
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -889,11 +885,7 @@ export function AppHeader() {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
 
-  return context?.status === 'connected' ? (
-    <ConnectedHeader account={context.account} />
-  ) : (
-    <DisconnectedHeader />
-  )
+  return context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />
 }
 
 export function ConnectPageHeader() {

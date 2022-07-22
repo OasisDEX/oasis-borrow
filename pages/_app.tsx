@@ -10,6 +10,7 @@ import { CookieBanner } from 'components/CookieBanner'
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
+import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
@@ -19,7 +20,6 @@ import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
-import io from 'socket.io-client'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
@@ -118,8 +118,6 @@ const noOverlayWorkaroundScript = `
   })
 `
 
-const socket = io('ws://localhost:3005')
-
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
 
@@ -163,16 +161,18 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
             <Web3ReactProvider {...{ getLibrary }}>
-              <AppContextProvider socket={socket}>
+              <AppContextProvider>
                 <ModalProvider>
                   <HeadTags />
                   {seoTags}
                   <SetupWeb3Context>
                     <SharedUIProvider>
-                      <Layout {...layoutProps}>
-                        <Component {...pageProps} />
-                        <CookieBanner setValue={setValue} value={value} />
-                      </Layout>
+                      <NotificationSocketProvider>
+                        <Layout {...layoutProps}>
+                          <Component {...pageProps} />
+                          <CookieBanner setValue={setValue} value={value} />
+                        </Layout>
+                      </NotificationSocketProvider>
                     </SharedUIProvider>
                   </SetupWeb3Context>
                 </ModalProvider>

@@ -155,7 +155,6 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
-import { Socket } from 'socket.io-client'
 
 import {
   cropperBonusTokenAddress,
@@ -418,7 +417,7 @@ function initializeUIChanges() {
   return uiChangesSubject
 }
 
-export function setupAppContext(socket: Socket) {
+export function setupAppContext() {
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -1061,7 +1060,6 @@ export function setupAppContext(socket: Socket) {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
-    socket,
   }
 }
 
