@@ -9,14 +9,11 @@ type PendingBatch = Array<{
   reject: (error: Error) => void
 }>
 
-let calls = 0
-
 export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
   _pendingBatchAggregator: NodeJS.Timer | null = null
   _pendingBatch: PendingBatch | null = null
 
   send(method: string, params: Array<any>): Promise<any> {
-    calls++
     const request = {
       method: method,
       params: params,
@@ -60,7 +57,7 @@ export class JsonRpcBatchProvider extends providers.JsonRpcProvider {
           request: deepCopy(request),
           provider: this,
         })
-        console.log(`sending batch with ${batch?.length} calls (total calls for session ${calls})`)
+
         return fetchJson(this.connection, JSON.stringify(request)).then(
           (result) => {
             this.emit('debug', {

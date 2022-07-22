@@ -17,7 +17,6 @@ import {
   skip,
   startWith,
   switchMap,
-  tap,
 } from 'rxjs/operators'
 import Web3 from 'web3'
 
@@ -100,7 +99,6 @@ export function createOnEveryBlock$(
       return concat(every5Seconds$.pipe(skip(1), first()), source)
     }),
     distinctUntilChanged(),
-    tap(() => console.log('sending - onEveryBlock$ triggered')),
     shareReplay(1),
   )
 
