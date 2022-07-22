@@ -3,6 +3,7 @@ import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
 
@@ -20,6 +21,8 @@ const initialState: NotificationChange = {
 }
 
 export function NotificationSocketProvider({ children }: WithChildren) {
+  const notificationsToggle = useFeatureToggle('Notifications')
+
   if (!isAppContextAvailable()) {
     return null
   }
@@ -39,7 +42,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   }
 
   useEffect(() => {
-    if (jwtToken) {
+    if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
         socket.disconnect()
       }
