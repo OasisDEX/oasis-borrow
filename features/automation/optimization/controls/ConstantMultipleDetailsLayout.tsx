@@ -8,7 +8,6 @@ import { ContentCardTargetMultiple } from 'components/vault/detailsSection/Conte
 import { ContentCardTotalCostOfFeature } from 'components/vault/detailsSection/ContentCardTotalCostOfFeature'
 import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
-import { ConstantMultiplyTriggerData } from 'features/automation/common/constantMultiplyTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -20,6 +19,7 @@ import { Grid } from 'theme-ui'
 
 export interface ConstantMultipleDetailsLayoutProps {
   token: string
+  isTriggerEnabled: boolean
   targetMultiple: BigNumber
   targetColRatio?: BigNumber
   totalCost: BigNumber
@@ -28,11 +28,11 @@ export interface ConstantMultipleDetailsLayoutProps {
   nextBuyPrice?: BigNumber
   triggerColRatioToSell: BigNumber
   nextSellPrice?: BigNumber
-  constantMultiplyTriggerData: ConstantMultiplyTriggerData
 }
 
 export function ConstantMultipleDetailsLayout({
   token,
+  isTriggerEnabled,
   targetMultiple,
   targetColRatio,
   totalCost,
@@ -41,7 +41,7 @@ export function ConstantMultipleDetailsLayout({
   nextBuyPrice,
   triggerColRatioToSell,
   nextSellPrice,
-  constantMultiplyTriggerData,
+  // TODO: PK get constantMultiplyTriggerData here
 }: ConstantMultipleDetailsLayoutProps) {
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { t } = useTranslation()
@@ -52,19 +52,19 @@ export function ConstantMultipleDetailsLayout({
       {activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple' ? (
         <DetailsSection
           title={t('constant-multiple.title')}
-          badge={constantMultiplyTriggerData.isTriggerEnabled}
+          badge={isTriggerEnabled}
           content={
             <DetailsSectionContentCardWrapper>
               <ContentCardTargetMultiple
                 targetMultiple={targetMultiple}
-                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                // TODO: PK: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
                 afterTargetMultiple={undefined}
                 targetColRatio={targetColRatio}
                 changeVariant="positive"
               />
               <ContentCardTotalCostOfFeature
                 totalCost={totalCost}
-                // TODO: how to calculate this value change dynamically?
+                // TODO: PK: how to calculate this value change dynamically?
                 afterTotalCost={undefined}
                 PnLSinceEnabled={PnLSinceEnabled}
                 changeVariant="positive"
@@ -72,7 +72,7 @@ export function ConstantMultipleDetailsLayout({
               <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatioToBuy}
-                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                // TODO: PK: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
                 afterTriggerColRatio={undefined}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
@@ -80,7 +80,7 @@ export function ConstantMultipleDetailsLayout({
               <ContentCardTriggerColRatioToSell
                 token={token}
                 triggerColRatio={triggerColRatioToSell}
-                // TODO: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
+                // TODO: PK: get this value from uiState CONSTANT_MULTIPLE_FORM_CHANGE
                 afterTriggerColRatio={undefined}
                 nextSellPrice={nextSellPrice}
                 changeVariant="positive"

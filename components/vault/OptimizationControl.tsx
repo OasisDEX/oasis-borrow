@@ -94,7 +94,12 @@ interface OptimizationControlProps {
   vaultHistory: VaultHistoryEvent[]
 }
 
-export function OptimizationControl({ vault, ilkData, balanceInfo, vaultHistory }: OptimizationControlProps) {
+export function OptimizationControl({
+  vault,
+  ilkData,
+  balanceInfo,
+  vaultHistory,
+}: OptimizationControlProps) {
   const { automationTriggersData$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)

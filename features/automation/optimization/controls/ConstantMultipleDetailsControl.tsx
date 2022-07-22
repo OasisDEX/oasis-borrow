@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
-import { ConstantMultiplyTriggerData } from 'features/automation/common/constantMultiplyTriggerData'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { calculatePNL } from 'helpers/multiply/calculations'
 import React from 'react'
@@ -13,25 +12,25 @@ interface ConstantMultipleDetailsControlProps {
   vault: Vault
   vaultHistory: VaultHistoryEvent[]
   tokenMarketPrice: BigNumber
-  constantMultiplyTriggerData: ConstantMultiplyTriggerData
+  // TODO: PK use constantMultiplyTriggerData in interface
 }
 
 export function ConstantMultipleDetailsControl({
   vault,
   vaultHistory,
   tokenMarketPrice,
-  constantMultiplyTriggerData,
+  // TODO: PK get constantMultiplyTriggerData here
 }: ConstantMultipleDetailsControlProps) {
   const { debt, lockedCollateral, token } = vault
-  const { isTriggerEnabled } = constantMultiplyTriggerData
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
-  // TODO: get those values from constantMultiplyTriggerData when there is actual data
+  // TODO: PK get those values from constantMultiplyTriggerData when there is actual data
+  const isTriggerEnabled = false
   const targetMultiple = new BigNumber(2)
   const totalCost = new BigNumber(3000)
   const triggerColRatioToBuy = new BigNumber(220)
   const triggerColRatioToSell = new BigNumber(180)
   const targetColRatio = isTriggerEnabled ? new BigNumber(200) : undefined
-  // TODO: vaultHistory should be cut down right after first found set up multiply event
+  // TODO: PK vaultHistory should be cut down right after first found set up multiply event
   const PnLSinceEnabled = isTriggerEnabled ? calculatePNL(vaultHistory, netValueUSD) : undefined
   const nextBuyPrice = isTriggerEnabled
     ? collateralPriceAtRatio({
@@ -52,6 +51,7 @@ export function ConstantMultipleDetailsControl({
     <Grid>
       <ConstantMultipleDetailsLayout
         token={token}
+        isTriggerEnabled={isTriggerEnabled}
         targetMultiple={targetMultiple}
         targetColRatio={targetColRatio}
         totalCost={totalCost}
@@ -60,7 +60,6 @@ export function ConstantMultipleDetailsControl({
         nextBuyPrice={nextBuyPrice}
         triggerColRatioToSell={triggerColRatioToSell}
         nextSellPrice={nextSellPrice}
-        constantMultiplyTriggerData={constantMultiplyTriggerData}
       />
     </Grid>
   )
