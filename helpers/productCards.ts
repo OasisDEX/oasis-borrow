@@ -158,7 +158,7 @@ const ilkToEntryTokenMap = {
   'WSTETH-B': 'WSTETH',
 }
 
-type IlkTokenMap = { ilk: Ilk; token: string }
+export type IlkTokenMap = { ilk: Ilk; token: string }
 
 export const ilkToEntryToken: Array<IlkTokenMap> = Object.entries(ilkToEntryTokenMap).map(
   ([ilk, token]) => ({
@@ -388,15 +388,13 @@ export const productCardsConfig: {
   },
 }
 
-function btcProductCards<T extends { ilk: string; token: string }>(
-  productCardsData: Array<T>,
-): Array<T> {
+function btcProductCards<T extends IlkTokenMap>(productCardsData: Array<T>): Array<T> {
   return productCardsData.filter((ilk) => {
     return BTC_TOKENS.includes(ilk.token)
   })
 }
 
-function ethProductCards<T extends { ilk: string; token: string }>(productCardsData: T[]): T[] {
+function ethProductCards<T extends IlkTokenMap>(productCardsData: T[]): T[] {
   return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
 }
 
@@ -411,9 +409,7 @@ const notSupportedAnymoreLpTokens = [
   'UNIV2WBTCDAI',
 ]
 
-export function uniLpProductCards<T extends { ilk: string; token: string }>(
-  ilkToTokenMappings: Array<T>,
-): Array<T> {
+export function uniLpProductCards<T extends IlkTokenMap>(ilkToTokenMappings: Array<T>): Array<T> {
   return ilkToTokenMappings.filter(
     ({ token }) =>
       LP_TOKENS.includes(token) &&
@@ -448,7 +444,7 @@ export function pageCardsDataByProduct({
   )
 }
 
-function sortCards<T extends { ilk: string; token: string }>(
+function sortCards<T extends IlkTokenMap>(
   ilkToTokenMappings: Array<T>,
   sortingConfig: ProductPageType['ordering'],
   cardsFilter?: ProductLandingPagesFiltersKeys,
@@ -472,7 +468,7 @@ function sortCards<T extends { ilk: string; token: string }>(
   return ilkToTokenMappings
 }
 
-export function earnPageCardsData<T extends { ilk: string; token: string }>({
+export function earnPageCardsData<T extends IlkTokenMap>({
   ilkToTokenMapping,
 }: {
   ilkToTokenMapping: Array<T>
@@ -482,7 +478,7 @@ export function earnPageCardsData<T extends { ilk: string; token: string }>({
   )
 }
 
-export function multiplyPageCardsData<T extends { ilk: string; token: string }>({
+export function multiplyPageCardsData<T extends IlkTokenMap>({
   ilkToTokenMapping,
   cardsFilter,
 }: {
@@ -512,7 +508,7 @@ export function multiplyPageCardsData<T extends { ilk: string; token: string }>(
   return ilkToTokenMapping.filter((ilk) => ilk.token === cardsFilter)
 }
 
-export function borrowPageCardsData<T extends { ilk: string; token: string }>({
+export function borrowPageCardsData<T extends IlkTokenMap>({
   ilkToTokenMapping,
   cardsFilter,
 }: {

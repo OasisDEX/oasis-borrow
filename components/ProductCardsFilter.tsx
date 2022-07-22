@@ -7,6 +7,7 @@ import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../helpers/observableHook'
 import {
   ilkToEntryToken,
+  IlkTokenMap,
   mapUrlFragmentToFilter,
   ProductCardData,
   ProductLandingPagesFilter,
@@ -24,9 +25,9 @@ interface TokenTabsProps {
     ilkToTokenMapping,
     cardsFilter,
   }: {
-    ilkToTokenMapping: Array<{ ilk: string; token: string }>
+    ilkToTokenMapping: Array<IlkTokenMap>
     cardsFilter?: ProductLandingPagesFiltersKeys
-  }) => Array<{ ilk: string; token: string }>
+  }) => Array<IlkTokenMap>
 }
 
 export function ProductCardsFilter({
