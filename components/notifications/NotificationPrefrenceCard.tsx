@@ -6,12 +6,15 @@ interface NotificationPrefrenceCardPtops {
   heading: string
   description: string
   checked: boolean
+  // TODO: Make this required prop
+  onChangeHandler?: () => void
 }
 
 export function NotificationPrefrenceCard({
   heading,
   description,
   checked,
+  onChangeHandler,
 }: NotificationPrefrenceCardPtops) {
   return (
     <Card
@@ -31,7 +34,13 @@ export function NotificationPrefrenceCard({
         >
           {heading}
         </Text>
-        <Toggle isChecked={checked} />
+        <Toggle
+          isChecked={checked}
+          onChangeHandler={onChangeHandler}
+          sx={{
+            transition: '0.4s',
+          }}
+        />
       </Flex>
       <Box
         sx={{

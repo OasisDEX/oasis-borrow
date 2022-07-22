@@ -8,6 +8,7 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 import { NotificationPrefrenceCard } from './NotificationPrefrenceCard'
 import { NotificationsCenterContent } from './NotificationsCenterContent'
 import { NotificationsCenterHeader } from './NotificationsCenterHeader'
+import { NotificationsEmailPrefrences } from './NotificationsEmailPrefrences'
 import { NOTIFICATION_PREFRENCES_DUMMY_DATA } from './tempData'
 
 // TODO: This component should have props that look something like
@@ -59,6 +60,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
                 NOTIFICATION_PREFRENCES_DUMMY_DATA.map((prefrence, index) => (
                   <NotificationPrefrenceCard key={index.toString()} {...prefrence} />
                 ))}
+              <NotificationsEmailPrefrences />
             </Box>
           ) : (
             <NotificationCardsWrapper notificationCards={dummyNotifications} />

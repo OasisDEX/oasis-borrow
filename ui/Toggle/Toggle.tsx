@@ -3,11 +3,14 @@ import { Box, Input } from 'theme-ui'
 
 interface ToggleProps {
   isChecked: boolean
+  onChangeHandler?: () => void
+  sx?: any
 }
 
-export function Toggle({ isChecked }: ToggleProps) {
+export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
   // TODO: Update this
-  const [checked, setChecked] = useState(isChecked)
+  const checked = isChecked
+  const [, setChecked] = useState(isChecked)
 
   return (
     <Box
@@ -17,6 +20,7 @@ export function Toggle({ isChecked }: ToggleProps) {
         display: 'inline-block',
         width: '48px',
         height: '24px',
+        ...sx,
       }}
     >
       <Input
@@ -26,7 +30,8 @@ export function Toggle({ isChecked }: ToggleProps) {
           height: 0,
         }}
         type="checkbox"
-        onChange={() => setChecked(!checked)}
+        // TODO: Update this to use only parsed handler
+        onChange={onChangeHandler ? () => onChangeHandler() : () => setChecked(!checked)}
       />
       <Box
         as="span"
