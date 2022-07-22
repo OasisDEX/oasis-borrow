@@ -21,7 +21,7 @@ interface TokenTabsProps {
   filters: Array<ProductLandingPagesFilter>
   productCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
-  filterCards: ({
+  filterCardsFunction: ({
     ilkToTokenMapping,
     cardsFilter,
   }: {
@@ -34,12 +34,12 @@ export function ProductCardsFilter({
   filters,
   productCardComponent,
   selectedFilter,
-  filterCards,
+  filterCardsFunction,
 }: TokenTabsProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
-  const productsToDisplay = filterCards({
+  const productsToDisplay = filterCardsFunction({
     ilkToTokenMapping: ilkToEntryToken,
     cardsFilter: currentFilter,
   })
@@ -53,7 +53,6 @@ export function ProductCardsFilter({
     setCurrentFilter(token)
   }
 
-  console.log(`currentFilter ${currentFilter}`)
   function handleSelectChange(filter: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(filter)
   }

@@ -224,7 +224,6 @@ export const productCardsConfig: {
       genericFilters.featured,
       genericFilters.eth,
       genericFilters.btc,
-      // genericFilters.unilp,
       genericFilters.link,
       genericFilters.yfi,
       genericFilters.mana,
@@ -598,7 +597,7 @@ export function createProductCardsData$(
   }
 
   const hydratedIlkData$ = combineLatest(visibleIlks.map((ilk) => ilkData$(ilk)))
-  // hydratedIlkData$.subscribe(console.log)
+
   const hydratedOraclePriceData$ = hydratedIlkData$.pipe(
     switchMap((ilkDatas) =>
       combineLatest(

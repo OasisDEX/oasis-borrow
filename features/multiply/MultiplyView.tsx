@@ -32,7 +32,7 @@ export function MultiplyView() {
         filters={productCardsConfig.multiply.cardsFilters}
         selectedFilter={tab}
         productCardComponent={ProductCardMultiply}
-        filterCards={multiplyPageCardsData}
+        filterCardsFunction={multiplyPageCardsData}
       />
     </Grid>
   )

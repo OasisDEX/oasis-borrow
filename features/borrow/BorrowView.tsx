@@ -32,7 +32,7 @@ export function BorrowView() {
         filters={productCardsConfig.borrow.cardsFilters}
         selectedFilter={tab}
         productCardComponent={ProductCardBorrow}
-        filterCards={borrowPageCardsData}
+        filterCardsFunction={borrowPageCardsData}
       />
     </Grid>
   )
