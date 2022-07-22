@@ -5,10 +5,10 @@ import { contractDesc } from 'blockchain/config'
 import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from './txMeta'
+import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
 
 
 export type AutomationBotAggregatorBaseTriggerData = {}
-
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
     cdpId: BigNumber
     groupId: BigNumber
@@ -16,7 +16,7 @@ export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseT
     triggerIds: string
     kind: TxMetaKind.addTrigger
     proxyAddress: string
-
+    triggersData: string
 }
 
 
@@ -25,10 +25,22 @@ export const addAutomationBotAggregatorTrigger: TransactionDef<AutomationBotAddA
       return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
     },
     prepareArgs: (data, context) => [
-      context.automationBot.address,
+      context.automationBotAggregator.address,
       getAddAutomationAggregatotTriggerCallData(data, context).encodeABI(),
     ],
   }
+/**
+ * 
+ * @param data 
+ * @param context 
+ * @returns 
+ *     addTriggerGroup(
+      groupTypeId: BigNumberish,
+      replacedTriggerId: BigNumberish[],
+      triggersData: BytesLike[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+ */
 
 function getAddAutomationAggregatotTriggerCallData(
   data: AutomationBotAddAggregatorTriggerData,
@@ -36,8 +48,8 @@ function getAddAutomationAggregatotTriggerCallData(
 ) {
   const { contract, automationBotAggregator } = context
   return contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
-    data.cdpId,
-    data.groupId,
-    data.triggerIds,
+    CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
+    data.groupId, // replacedTriggerId
+    data.triggersData, // triggersData
   )
 }
