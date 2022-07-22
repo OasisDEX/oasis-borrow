@@ -9,12 +9,14 @@ import { ProductHeader } from '../../components/ProductHeader'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { earnPageCardsData } from '../../helpers/productCards'
+import { supportedEarnIlks } from '../../helpers/productCards'
 
 export function EarnView() {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const { productCardsDataNew$ } = useAppContext()
+  const [productCardsData, productCardsDataError] = useObservable(
+    productCardsDataNew$(supportedEarnIlks),
+  )
 
   return (
     <Grid
@@ -44,7 +46,7 @@ export function EarnView() {
         >
           {([productCardsData]) => (
             <ProductCardsWrapper>
-              {earnPageCardsData({ productCardsData }).map((cardData) => (
+              {productCardsData.map((cardData) => (
                 <ProductCardEarn cardData={cardData} key={cardData.ilk} />
               ))}
             </ProductCardsWrapper>
