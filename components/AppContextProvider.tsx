@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { Socket } from 'socket.io-client'
 
 import { WithChildren } from '../helpers/types'
 import { AppContext, setupAppContext } from './AppContext'
@@ -24,11 +25,11 @@ export function useAppContext(): AppContext {
   on top of that page with isAppContextAvailable.
 */
 
-export function AppContextProvider({ children }: WithChildren) {
+export function AppContextProvider({ children, socket }: { socket: Socket } & WithChildren) {
   const [context, setContext] = useState<AppContext | undefined>(undefined)
 
   useEffect(() => {
-    setContext(setupAppContext())
+    setContext(setupAppContext(socket))
   }, [])
 
   return <appContext.Provider value={context}>{children}</appContext.Provider>

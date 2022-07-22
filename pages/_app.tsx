@@ -19,6 +19,7 @@ import { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useEffect } from 'react'
+import io from 'socket.io-client'
 import { theme } from 'theme'
 // @ts-ignore
 import { components, ThemeProvider } from 'theme-ui'
@@ -117,6 +118,8 @@ const noOverlayWorkaroundScript = `
   })
 `
 
+const socket = io('ws://localhost:3005')
+
 function App({ Component, pageProps }: AppProps & CustomAppProps) {
   const [value, setValue] = useLocalStorage(LOCALSTORAGE_KEY, '')
 
@@ -160,7 +163,7 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
           <MDXProvider components={{ ...components, a: CustomMDXLink }}>
             <Global styles={globalStyles} />
             <Web3ReactProvider {...{ getLibrary }}>
-              <AppContextProvider>
+              <AppContextProvider socket={socket}>
                 <ModalProvider>
                   <HeadTags />
                   {seoTags}

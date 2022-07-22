@@ -2,10 +2,13 @@ import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
 import { AppLink } from 'components/Links'
+import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import { initializeNotifications } from 'features/notifications/notificationHook'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
@@ -248,6 +251,7 @@ function UserDesktopMenu() {
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   // TODO: Update this once the the notifications pannel is available
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
@@ -345,8 +349,7 @@ function UserDesktopMenu() {
           <NotificationsIconButton
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-            // TODO: Update to real vairable
-            notificationsCount="13"
+            notificationsCount={notificationsState?.numberOfNotifications}
             notificationsPanelOpen={notificationsPanelOpen}
           />
         )}
@@ -456,7 +459,11 @@ const LINKS = {
   earn: '/earn',
 }
 
-function ConnectedHeader() {
+interface ConnectedHeaderProps {
+  account: string
+}
+
+function ConnectedHeader({ account }: ConnectedHeaderProps) {
   const { uiChanges } = useAppContext()
   const { pathname } = useRouter()
   const { t } = useTranslation()
@@ -464,6 +471,7 @@ function ConnectedHeader() {
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
+  initializeNotifications(account)
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -694,6 +702,7 @@ export function MobileMenu() {
   const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
   const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
   const notificationsToggle = useFeatureToggle('Notifications')
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
@@ -787,8 +796,7 @@ export function MobileMenu() {
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-          // TODO: Update to real vairable
-          notificationsCount="13"
+          notificationsCount={notificationsState?.numberOfNotifications}
           notificationsPanelOpen={notificationsPanelOpen}
         />
       )}
@@ -881,7 +889,11 @@ export function AppHeader() {
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
 
-  return context?.status === 'connected' ? <ConnectedHeader /> : <DisconnectedHeader />
+  return context?.status === 'connected' ? (
+    <ConnectedHeader account={context.account} />
+  ) : (
+    <DisconnectedHeader />
+  )
 }
 
 export function ConnectPageHeader() {

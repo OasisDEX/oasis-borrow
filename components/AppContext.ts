@@ -124,6 +124,12 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
+import {
+  NOTIFICATION_CHANGE,
+  NotificationChange,
+  NotificationChangeAction,
+  notificationReducer,
+} from 'features/notifications/notificationChange'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
@@ -149,6 +155,7 @@ import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { Socket } from 'socket.io-client'
 
 import {
   cropperBonusTokenAddress,
@@ -305,6 +312,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
+  | NotificationChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -315,6 +323,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  NotificationChange: NotificationChangeAction
 }
 
 export type UIChanges = {
@@ -404,11 +413,12 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
 
   return uiChangesSubject
 }
 
-export function setupAppContext() {
+export function setupAppContext(socket: Socket) {
   const chainIdToRpcUrl = mapValues(networksById, (network) => network.infuraUrl)
   const chainIdToDAIContractDesc = mapValues(networksById, (network) => network.tokens.DAI)
   const [web3Context$, setupWeb3Context$] = createWeb3Context$(
@@ -1051,6 +1061,7 @@ export function setupAppContext() {
     tokenPriceUSD$,
     userReferral$,
     checkReferralLocal$,
+    socket,
   }
 }
 
