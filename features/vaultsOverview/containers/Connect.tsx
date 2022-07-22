@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
-import { PositionList, PositionVM } from 'components/dumb/PositionList'
+import { PositionVM } from 'components/dumb/PositionList'
 import { AppLink } from 'components/Links'
 import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -12,26 +12,34 @@ import { Trans, useTranslation } from 'next-i18next'
 import { Box, Heading } from 'theme-ui'
 
 interface Props {
-  context: Context
   address: string
 }
 
 export function Connect(props: Props) {
   const { address } = props
-  const { vaultsOverview$ } = useAppContext()
+  const { context$, vaultsOverview$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
+  const [context, contextError] = useObservable(context$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
-
+  console.log('Connect[vaultsOverview]', vaultsOverview)
   return (
-    <WithErrorHandler error={[vaultsOverviewError]}>
-      <WithLoadingIndicator value={[vaultsOverview]}>
-        {([{ positions }]) => <ConnectView {...props} positions={positions} />}
+    <WithErrorHandler error={[contextError, vaultsOverviewError]}>
+      <WithLoadingIndicator value={[context, vaultsOverview]}>
+        {([_context, { positions }]) => (
+          <ConnectView {...props} context={_context} positions={positions} />
+        )}
       </WithLoadingIndicator>
     </WithErrorHandler>
   )
 }
 
-function ConnectView({ context, address, positions }: Props & { positions: PositionVM[] }) {
+interface ViewProps {
+  context: Context
+  address: string
+  positions: PositionVM[]
+}
+
+function ConnectView({ context, address, positions }: ViewProps) {
   const { t } = useTranslation()
   const numberOfVaults = positions.length
   const connectedAccount = context?.status === 'connected' ? context.account : undefined

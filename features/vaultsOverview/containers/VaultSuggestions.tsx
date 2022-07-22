@@ -1,3 +1,4 @@
+import { Context } from 'blockchain/network'
 import { useAppContext } from 'components/AppContextProvider'
 import { TabBar } from 'components/TabBar'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
@@ -32,15 +33,22 @@ interface Props {
 }
 
 export function VaultSuggestions({ address }: Props) {
-  const { productCardsWithBalance$ } = useAppContext()
-
+  const { productCardsWithBalance$, context$, accountData$ } = useAppContext()
+  const [context, contextError] = useObservable(context$)
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsWithBalance$)
-
+  const [accountData, accountDataError] = useObservable(accountData$)
+  console.log('VaultSuggestions[context]', context)
+  console.log('VaultSuggestions[productCardsDataValue]', productCardsDataValue)
+  console.log('VaultSuggestions[accountData]', accountData)
   return (
-    <WithErrorHandler error={[productCardsDataError]}>
-      <WithLoadingIndicator value={[productCardsDataValue]}>
-        {([_productCardsDataValue]) => (
-          <VaultSuggestionsView address={address} productCardsData={_productCardsDataValue} />
+    <WithErrorHandler error={[contextError, productCardsDataError, accountDataError]}>
+      <WithLoadingIndicator value={[context, productCardsDataValue, accountData]}>
+        {([_context, _productCardsDataValue, _accountData]) => (
+          <VaultSuggestionsView
+            address={accountData?.ensName || address}
+            context={_context}
+            productCardsData={_productCardsDataValue}
+          />
         )}
       </WithLoadingIndicator>
     </WithErrorHandler>
@@ -49,11 +57,17 @@ export function VaultSuggestions({ address }: Props) {
 
 interface ViewProps {
   productCardsData: ProductCardData[]
+  context: Context
   address: string
 }
 
-function VaultSuggestionsView({ productCardsData, address }: ViewProps) {
+function VaultSuggestionsView({ productCardsData, context, address }: ViewProps) {
   const { t } = useTranslation()
+
+  const connectedAccount = context?.status === 'connected' ? context.account : undefined
+  const isOwnerViewing = !!connectedAccount && address === connectedAccount
+
+  if (!isOwnerViewing) return null
 
   return (
     <Box mt={5}>
