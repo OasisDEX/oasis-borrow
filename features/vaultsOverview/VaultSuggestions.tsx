@@ -43,7 +43,7 @@ function filterCards(props: {
       if (filter) {
         return cards.concat(
           filterCardsDataByProduct({
-            productCardsData: props.productCardsData,
+            ilkToTokenMapping: props.productCardsData,
             cardsFilter: filter,
           }),
         )

@@ -7,7 +7,13 @@ import { map, startWith, switchMap } from 'rxjs/operators'
 import { supportedIlks } from '../blockchain/config'
 import { IlkData } from '../blockchain/ilks'
 import { OraclePriceData, OraclePriceDataArgs } from '../blockchain/prices'
-import { getToken, LP_TOKENS, ONLY_MULTIPLY_TOKENS } from '../blockchain/tokensMetadata'
+import {
+  BTC_TOKENS,
+  ETH_TOKENS,
+  getToken,
+  LP_TOKENS,
+  ONLY_MULTIPLY_TOKENS,
+} from '../blockchain/tokensMetadata'
 import { zero } from './zero'
 
 export interface ProductCardData {
@@ -61,7 +67,7 @@ export type ProductLandingPagesFilter = {
 }
 export type ProductTypes = 'borrow' | 'multiply' | 'earn'
 
-type Ilk = typeof supportedIlks[number]
+export type Ilk = typeof supportedIlks[number]
 
 export const supportedBorrowIlks = [
   'ETH-A',
@@ -136,11 +142,11 @@ const ilkToEntryTokenMap = {
   'ETH-A': 'ETH',
   'ETH-B': 'ETH',
   'ETH-C': 'ETH',
-  'WSTETH-A': 'ETH',
-  'WBTC-A': 'BTC',
-  'WBTC-B': 'BTC',
-  'WBTC-C': 'BTC',
-  'RENBTC-A': 'BTC',
+  'WSTETH-A': 'WSTETH',
+  'WBTC-A': 'WBTC',
+  'WBTC-B': 'WBTC',
+  'WBTC-C': 'WBTC',
+  'RENBTC-A': 'RENBTC',
   'LINK-A': 'LINK',
   'GUSD-A': 'GUSD',
   'YFI-A': 'YFI',
@@ -149,13 +155,17 @@ const ilkToEntryTokenMap = {
   'UNIV2USDCETH-A': 'UNIV2USDCETH',
   'UNIV2DAIUSDC-A': 'UNIV2DAIUSDC',
   'CRVV1ETHSTETH-A': 'CRVV1ETHSTETH',
-  'WSTETH-B': 'ETH',
+  'WSTETH-B': 'WSTETH',
 }
 
-export const ilkToEntryToken = Object.entries(ilkToEntryTokenMap).map(([ilk, token]) => ({
-  ilk,
-  token,
-}))
+type IlkTokenMap = { ilk: Ilk; token: string }
+
+export const ilkToEntryToken: Array<IlkTokenMap> = Object.entries(ilkToEntryTokenMap).map(
+  ([ilk, token]) => ({
+    ilk,
+    token,
+  }),
+)
 
 const urlFragmentKeyedFilters = keyBy(genericFilters, 'urlFragment')
 
@@ -378,6 +388,18 @@ export const productCardsConfig: {
   },
 }
 
+function btcProductCards<T extends { ilk: string; token: string }>(
+  productCardsData: Array<T>,
+): Array<T> {
+  return productCardsData.filter((ilk) => {
+    return BTC_TOKENS.includes(ilk.token)
+  })
+}
+
+function ethProductCards<T extends { ilk: string; token: string }>(productCardsData: T[]): T[] {
+  return productCardsData.filter((ilk) => ETH_TOKENS.includes(ilk.token))
+}
+
 const notSupportedAnymoreLpTokens = [
   'UNIV2ETHUSDT',
   'UNIV2LINKETH',
@@ -389,8 +411,9 @@ const notSupportedAnymoreLpTokens = [
   'UNIV2WBTCDAI',
 ]
 
-export function uniLpProductCards(ilkToTokenMappings: Array<{ ilk: string; token: string }>) {
-  console.log(LP_TOKENS)
+export function uniLpProductCards<T extends { ilk: string; token: string }>(
+  ilkToTokenMappings: Array<T>,
+): Array<T> {
   return ilkToTokenMappings.filter(
     ({ token }) =>
       LP_TOKENS.includes(token) &&
@@ -425,11 +448,11 @@ export function pageCardsDataByProduct({
   )
 }
 
-function sortCards(
-  ilkToTokenMappings: Array<{ ilk: string; token: string }>,
+function sortCards<T extends { ilk: string; token: string }>(
+  ilkToTokenMappings: Array<T>,
   sortingConfig: ProductPageType['ordering'],
   cardsFilter?: ProductLandingPagesFiltersKeys,
-) {
+): Array<T> {
   if (cardsFilter) {
     ilkToTokenMappings = sortBy(ilkToTokenMappings, ({ ilk }) => {
       const orderForFilter = sortingConfig[cardsFilter]
@@ -449,19 +472,23 @@ function sortCards(
   return ilkToTokenMappings
 }
 
-export function earnPageCardsData({ productCardsData }: { productCardsData: ProductCardData[] }) {
-  return productCardsData.filter((data) =>
+export function earnPageCardsData<T extends { ilk: string; token: string }>({
+  ilkToTokenMapping,
+}: {
+  ilkToTokenMapping: Array<T>
+}): Array<T> {
+  return ilkToTokenMapping.filter((data) =>
     ['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(data.ilk),
   )
 }
 
-export function multiplyPageCardsData({
+export function multiplyPageCardsData<T extends { ilk: string; token: string }>({
   ilkToTokenMapping,
   cardsFilter,
 }: {
-  ilkToTokenMapping: Array<{ ilk: string; token: string }>
+  ilkToTokenMapping: Array<T>
   cardsFilter?: ProductLandingPagesFiltersKeys
-}) {
+}): Array<T> {
   ilkToTokenMapping = sortCards(
     ilkToTokenMapping,
     productCardsConfig.multiply.ordering,
@@ -474,16 +501,24 @@ export function multiplyPageCardsData({
     )
   }
 
+  if (cardsFilter === 'BTC') {
+    return btcProductCards(ilkToTokenMapping)
+  }
+
+  if (cardsFilter === 'ETH') {
+    return ethProductCards(ilkToTokenMapping)
+  }
+
   return ilkToTokenMapping.filter((ilk) => ilk.token === cardsFilter)
 }
 
-export function borrowPageCardsData({
+export function borrowPageCardsData<T extends { ilk: string; token: string }>({
   ilkToTokenMapping,
   cardsFilter,
 }: {
-  ilkToTokenMapping: Array<{ ilk: string; token: string }>
+  ilkToTokenMapping: Array<T>
   cardsFilter?: ProductLandingPagesFiltersKeys
-}): Array<{ ilk: string; token: string }> {
+}): Array<T> {
   ilkToTokenMapping = sortCards(ilkToTokenMapping, productCardsConfig.borrow.ordering, cardsFilter)
 
   if (cardsFilter === 'Featured') {
@@ -494,6 +529,14 @@ export function borrowPageCardsData({
 
   if (cardsFilter === 'UNI LP') {
     return uniLpProductCards(ilkToTokenMapping)
+  }
+
+  if (cardsFilter === 'BTC') {
+    return btcProductCards(ilkToTokenMapping)
+  }
+
+  if (cardsFilter === 'ETH') {
+    return ethProductCards(ilkToTokenMapping)
   }
 
   if (cardsFilter === 'Curve LP') {
@@ -552,14 +595,14 @@ export function createProductCardsWithBalance$(
 export function createProductCardsData$(
   ilkData$: (ilk: string) => Observable<IlkData>,
   oraclePrice$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
-  visibleIlks: Array<string>,
+  visibleIlks: Array<Ilk>,
 ): Observable<ProductCardData[]> {
   if (visibleIlks.length === 0) {
     return of([])
   }
 
   const hydratedIlkData$ = combineLatest(visibleIlks.map((ilk) => ilkData$(ilk)))
-
+  // hydratedIlkData$.subscribe(console.log)
   const hydratedOraclePriceData$ = hydratedIlkData$.pipe(
     switchMap((ilkDatas) =>
       combineLatest(
