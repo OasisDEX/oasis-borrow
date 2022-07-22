@@ -6,18 +6,15 @@ import { formatAddress } from 'helpers/formatters/format'
 import { ProductCardData } from 'helpers/productCards'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Card, Flex, Grid, Heading } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading } from 'theme-ui'
 
 import { PositionList } from '../../components/dumb/PositionList'
-import { zero } from '../../helpers/zero'
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
-import { TopAssetsAndPositionsViewModal } from './pipes/positionsOverviewSummary'
 import { VaultsOverview } from './vaultsOverview'
 import { VaultSuggestions } from './VaultSuggestions'
 
 interface Props {
   vaultsOverview: VaultsOverview
-  topAssetsAndPositions: TopAssetsAndPositionsViewModal
   context: Context
   address: string
   ensName: string | null | undefined
@@ -49,7 +46,6 @@ function getHeaderTranslationKey(
 
 export function VaultsOverviewView({
   vaultsOverview,
-  topAssetsAndPositions,
   context,
   address,
   ensName,
@@ -75,17 +71,18 @@ export function VaultsOverviewView({
         <VaultOverviewOwnershipNotice account={connectedAccount} controller={address} />
       )}
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
-        {topAssetsAndPositions.totalValueUsd.gt(zero) && (
-          <AssetsAndPositionsOverview {...topAssetsAndPositions} />
-        )}
+        <AssetsAndPositionsOverview address={address} />
+
         {!isOwnerViewing && numberOfVaults === 0 && (
-          <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
-            <Trans
-              i18nKey={headerTranslationKey}
-              values={{ address: formatAddress(address) }}
-              components={[<br />]}
-            />
-          </Heading>
+          <Box mt={5}>
+            <Heading variant="header2" sx={{ textAlign: 'center' }} as="h1">
+              <Trans
+                i18nKey={headerTranslationKey}
+                values={{ address: formatAddress(address) }}
+                components={[<br />]}
+              />
+            </Heading>
+          </Box>
         )}
 
         {context.status === 'connectedReadonly' && numberOfVaults === 0 && (
