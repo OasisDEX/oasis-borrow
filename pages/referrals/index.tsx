@@ -31,6 +31,10 @@ function ReferralsPage() {
 
 ReferralsPage.layout = AppLayout
 ReferralsPage.seoTags = (
-  <PageSEOTags title="seo.referrals.title" description="seo.referrals.description" url="/referrals" />
+  <PageSEOTags
+    title="seo.referrals.title"
+    description="seo.referrals.description"
+    url="/referrals"
+  />
 )
-export default  ReferralsPage
+export default ReferralsPage
