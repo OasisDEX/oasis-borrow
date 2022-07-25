@@ -11,7 +11,7 @@ import React from 'react'
 interface ContentCardTargetMultipleProps {
   targetMultiple?: BigNumber
   targetColRatio?: BigNumber
-  afterTargetMultiple?: Number
+  afterTargetMultiple?: number
   changeVariant?: ChangeVariantType
 }
 

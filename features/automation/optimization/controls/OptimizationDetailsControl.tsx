@@ -24,7 +24,7 @@ export function OptimizationDetailsControl({
   tokenMarketPrice,
 }: OptimizationDetailsControlProps) {
   const basicBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
-  // TODO: PK get constantMultiplyTriggerData here
+  // TODO: PK initialize and get constantMultiplyTriggerData here
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   return (

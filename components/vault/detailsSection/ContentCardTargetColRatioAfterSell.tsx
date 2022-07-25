@@ -13,7 +13,7 @@ interface ContentCardTargetColRatioAfterSellProps {
   afterTargetColRatio?: BigNumber
   threshold?: BigNumber
   changeVariant?: ChangeVariantType
-  token: String
+  token: string
 }
 
 export function ContentCardTargetColRatioAfterSell({

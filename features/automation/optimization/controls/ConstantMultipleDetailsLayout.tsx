@@ -45,8 +45,7 @@ export function ConstantMultipleDetailsLayout({
   nextBuyPrice,
   triggerColRatioToSell,
   nextSellPrice,
-}: // TODO: PK get constantMultiplyTriggerData here
-ConstantMultipleDetailsLayoutProps) {
+}: ConstantMultipleDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
