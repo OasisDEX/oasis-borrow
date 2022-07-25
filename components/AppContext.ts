@@ -124,6 +124,12 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
+import {
+  NOTIFICATION_CHANGE,
+  NotificationChange,
+  NotificationChangeAction,
+  notificationReducer,
+} from 'features/notifications/notificationChange'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
@@ -306,6 +312,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
+  | NotificationChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -316,6 +323,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  NotificationChange: NotificationChangeAction
 }
 
 export type UIChanges = {
@@ -405,6 +413,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
 
   return uiChangesSubject
 }

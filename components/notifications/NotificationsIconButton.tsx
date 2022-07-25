@@ -7,7 +7,7 @@ import { NotificationsCenter } from './NotificationsCenter'
 interface NotificationsIconButtonProps {
   notificationsPanelOpen: boolean
   notificationsRef: LegacyRef<HTMLDivElement>
-  notificationsCount: string
+  notificationsCount: number
   onButtonClick: () => void
 }
 
@@ -41,22 +41,24 @@ export function NotificationsIconButton({
         }}
       >
         <>
-          <Box
-            as="span"
-            sx={{
-              bg: 'interactive100',
-              color: 'white',
-              py: 0.5,
-              px: 2,
-              borderRadius: '24px',
-              fontWeight: 'semiBold',
-              position: 'absolute',
-              top: -10,
-              right: -10,
-            }}
-          >
-            {notificationsCount}
-          </Box>
+          {notificationsCount && (
+            <Box
+              as="span"
+              sx={{
+                bg: 'interactive100',
+                color: 'white',
+                py: 0.5,
+                px: 2,
+                borderRadius: '24px',
+                fontWeight: 'semiBold',
+                position: 'absolute',
+                top: -10,
+                right: -10,
+              }}
+            >
+              {notificationsCount}
+            </Box>
+          )}
           <Icon
             name="bell"
             size="auto"
