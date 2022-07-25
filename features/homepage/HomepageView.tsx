@@ -16,77 +16,11 @@ import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
-import { ProductCardBorrow } from '../../components/productCards/ProductCardBorrow'
-import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
-import { ProductCardMultiply } from '../../components/productCards/ProductCardMultiply'
-import {
-  ProductCardsLoader,
-  ProductCardsWrapper,
-} from '../../components/productCards/ProductCardsWrapper'
-import { WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { MultiplyProductCardsContainer } from '../../components/productCards/ProductCardsContainer'
 import { useObservable } from '../../helpers/observableHook'
-import { ProductCardData, productCardsConfig, ProductTypes } from '../../helpers/productCards'
+import { productCardsConfig } from '../../helpers/productCards'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
-
-type TabContentProps = {
-  paraText: JSX.Element
-  type: ProductTypes
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-}
-
-function TabContent(props: TabContentProps) {
-  const ProductCard = props.renderProductCard
-
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(
-    productCardsData$(productCardsConfig.landing.featuredCards[props.type]),
-  )
-
-  return (
-    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <Text
-        variant="paragraph2"
-        sx={{
-          mt: 4,
-          color: 'neutral80',
-          maxWidth: 617,
-          textAlign: 'center',
-          mb: 5,
-          ...fadeInAnimation,
-        }}
-      >
-        {props.paraText}
-      </Text>
-
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
-          {([_productCardsData]) => (
-            <ProductCardsWrapper>
-              {_productCardsData.map((cardData) => (
-                <ProductCard cardData={cardData} key={cardData.ilk} />
-              ))}
-            </ProductCardsWrapper>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
-    </Flex>
-  )
-}
-
-// we need these wrappers to avoid react trying to render the wrong card types for the wrong ilks
-function TabContentMultiply(props: TabContentProps) {
-  return <TabContent {...props} />
-}
-
-function TabContentBorrow(props: TabContentProps) {
-  return <TabContent {...props} />
-}
-
-function TabContentEarn(props: TabContentProps) {
-  return <TabContent {...props} />
-}
 
 interface PillProps {
   label: string
@@ -175,6 +109,33 @@ function Stats({ sx }: { sx?: SxProps }) {
         value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
       />
     </Grid>
+  )
+}
+
+function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
+  return (
+    <Flex
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      <Text
+        variant="paragraph2"
+        sx={{
+          mt: 4,
+          color: 'neutral80',
+          maxWidth: 617,
+          textAlign: 'center',
+          mb: 5,
+          ...fadeInAnimation,
+        }}
+      >
+        {props.paraText}
+      </Text>
+      {props.cards}
+    </Flex>
   )
 }
 
@@ -273,7 +234,7 @@ export function HomepageView() {
               label: t('landing.tabs.multiply.tabLabel'),
               value: 'multiply',
               content: (
-                <TabContentMultiply
+                <HomepageTabLayout
                   paraText={
                     <>
                       {t('landing.tabs.multiply.tabParaContent')}{' '}
@@ -282,8 +243,11 @@ export function HomepageView() {
                       </AppLink>
                     </>
                   }
-                  type="multiply"
-                  renderProductCard={ProductCardMultiply}
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['multiply']}
+                    />
+                  }
                 />
               ),
             },
@@ -291,7 +255,7 @@ export function HomepageView() {
               label: t('landing.tabs.borrow.tabLabel'),
               value: 'borrow',
               content: (
-                <TabContentBorrow
+                <HomepageTabLayout
                   paraText={
                     <>
                       <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
@@ -300,8 +264,11 @@ export function HomepageView() {
                       </AppLink>
                     </>
                   }
-                  type="borrow"
-                  renderProductCard={ProductCardBorrow}
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['borrow']}
+                    />
+                  }
                 />
               ),
             },
@@ -310,7 +277,7 @@ export function HomepageView() {
               label: t('landing.tabs.earn.tabLabel'),
               value: 'earn',
               content: (
-                <TabContentEarn
+                <HomepageTabLayout
                   paraText={
                     <>
                       {t('landing.tabs.earn.tabParaContent')}{' '}
@@ -319,8 +286,11 @@ export function HomepageView() {
                       </AppLink>
                     </>
                   }
-                  type="earn"
-                  renderProductCard={ProductCardEarn}
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['earn']}
+                    />
+                  }
                 />
               ),
             },

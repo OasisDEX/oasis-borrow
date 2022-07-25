@@ -1,65 +1,17 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
-import { ProductCardMultiply } from 'components/productCards/ProductCardMultiply'
-import {
-  ProductCardsLoader,
-  ProductCardsWrapper,
-} from 'components/productCards/ProductCardsWrapper'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
-import { WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
-import { ProductCardData } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
-
-type TabContentProps = {
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  ilks: string[]
-}
-
-function TabContent(props: TabContentProps) {
-  const ProductCard = props.renderProductCard
-
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$(props.ilks))
-
-  return (
-    <Box mt={5}>
-      <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
-          {([_productCardsData]) => (
-            <ProductCardsWrapper>
-              {_productCardsData.map((cardData) => (
-                <ProductCard cardData={cardData} key={cardData.ilk} />
-              ))}
-            </ProductCardsWrapper>
-          )}
-        </WithLoadingIndicator>
-      </WithErrorHandler>
-    </Box>
-  )
-}
-
-// we need these wrappers to avoid react trying to render the wrong card types for the wrong ilks
-function BorrowTabContent(props: TabContentProps) {
-  return <TabContent {...props} />
-}
-
-function MultiplyTabContent(props: TabContentProps) {
-  return <TabContent {...props} />
-}
-
-function EarnTabContent(props: TabContentProps) {
-  return <TabContent {...props} />
-}
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from '../../components/productCards/ProductCardsContainer'
 
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
@@ -68,21 +20,31 @@ export function AssetView({ content }: { content: AssetPageContent }) {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.borrow.tabLabel'),
       value: 'borrow',
-      content: <BorrowTabContent ilks={content.borrowIlks} renderProductCard={ProductCardBorrow} />,
+      content: (
+        <Box sx={{ mt: 5 }}>
+          <BorrowProductCardsContainer ilks={content.borrowIlks} />
+        </Box>
+      ),
     }
 
     const multiplyTab = content.multiplyIlks && {
       label: t('landing.tabs.multiply.tabLabel'),
       value: 'multiply',
       content: (
-        <MultiplyTabContent ilks={content.multiplyIlks} renderProductCard={ProductCardMultiply} />
+        <Box sx={{ mt: 5 }}>
+          <MultiplyProductCardsContainer ilks={content.multiplyIlks} />
+        </Box>
       ),
     }
 
     const earnTab = content.earnIlks && {
       label: t('landing.tabs.earn.tabLabel'),
       value: 'earn',
-      content: <EarnTabContent ilks={content.earnIlks} renderProductCard={ProductCardEarn} />,
+      content: (
+        <Box sx={{ mt: 5 }}>
+          <EarnProductCardsContainer ilks={content.earnIlks} />
+        </Box>
+      ),
     }
 
     return [borrowTab, multiplyTab, earnTab].filter((tab) => tab) as TabSection[]
