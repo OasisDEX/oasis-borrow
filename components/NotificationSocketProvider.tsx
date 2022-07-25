@@ -21,11 +21,11 @@ const initialState: NotificationChange = {
 }
 
 export function NotificationSocketProvider({ children }: WithChildren) {
-  const notificationsToggle = useFeatureToggle('Notifications')
-
   if (!isAppContextAvailable()) {
     return null
   }
+
+  const notificationsToggle = useFeatureToggle('Notifications')
   const { context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [socket, setSocket] = useState<Socket | undefined>(undefined)
