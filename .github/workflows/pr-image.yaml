@@ -19,10 +19,12 @@ jobs:
 
       - name: Extract commit hash
         id: vars
+        env:
+            COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
         shell: bash
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
-          echo "$github.event.pull_request.head.sha"
+          echo "$COMMIT_SHA"
 
       - name: Set up Docker Buildx
         id: buildex
@@ -35,9 +37,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-single-buildx
+          key: ${{ runner.os }}-buildx-cache
 
       - name: Build, tag, and push image toDockerhub
         id: build-image
@@ -72,13 +72,9 @@ jobs:
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: |
             ${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:${{ env.SHA_TAG }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-            # Note the mode=max here
-            # More: https://github.com/moby/buildkit#--export-cache-options
-          # And: https://github.com/docker/buildx#--cache-tonametypetypekeyvalue
-          cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
-
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          cache-from: |
+            type=local,src=/tmp/.buildx-cache
+            type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache
+          cache-to: |
+          type=local,mode=max,dest=/tmp/.buildx-cache
+          type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
