@@ -5,6 +5,7 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -15,11 +16,12 @@ import {
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, {  useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
@@ -73,6 +75,11 @@ export function SidebarSetupConstantMultiple({
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
+      dropdown: {
+        forcePanel: 'constantMultiple',
+        disabled: isDropdownDisabled({ stage }),
+        items: commonOptimizationDropdownItems(uiChanges, t),
+      },
       content: (
         <Grid gap={3}>
           <ActionPills

@@ -9,6 +9,7 @@ import { OptimizationDetailsControl } from 'features/automation/optimization/con
 import { OptimizationFormControl } from 'features/automation/optimization/controls/OptimizationFormControl'
 import { VaultNotice } from 'features/notices/VaultsNoticesView'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
@@ -90,9 +91,15 @@ interface OptimizationControlProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
+  vaultHistory: VaultHistoryEvent[]
 }
 
-export function OptimizationControl({ vault, ilkData, balanceInfo }: OptimizationControlProps) {
+export function OptimizationControl({
+  vault,
+  ilkData,
+  balanceInfo,
+  vaultHistory,
+}: OptimizationControlProps) {
   const { automationTriggersData$, context$, txHelpers$, tokenPriceUSD$ } = useAppContext()
   const [txHelpersData, txHelpersError] = useObservable(txHelpers$)
   const [contextData, contextError] = useObservable(context$)
@@ -138,7 +145,9 @@ export function OptimizationControl({ vault, ilkData, balanceInfo }: Optimizatio
             detailsViewControl={
               <OptimizationDetailsControl
                 vault={vault}
+                vaultHistory={vaultHistory}
                 automationTriggersData={automationTriggers}
+                tokenMarketPrice={ethAndTokenPrices[vault.token]}
               />
             }
             editForm={

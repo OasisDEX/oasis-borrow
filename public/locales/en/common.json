@@ -723,6 +723,8 @@
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
     "basic-sell": "Auto-Sell",
+    "basic-buy": "Auto-Buy",
+    "constant-multiple": "Constant Multiple",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -1498,7 +1500,9 @@
   "constant-multiple": {
     "title": "Constant Multiple",
     "target-multiple": "Target Multiple",
+    "target-col-ratio": "Target Col. Ratio {{amount}}",
     "total-cost-of-feature": "Total cost of feature",
+    "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "banner": {
     "header": "Set up Constant Multiple",
     "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
