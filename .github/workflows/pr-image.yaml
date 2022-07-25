@@ -1,6 +1,8 @@
 name: Build Image from Pull Request.
 
-on: [push]
+on:
+  pull_request:
+    types: [opened, reopened]
 
 jobs:
   build:
@@ -20,6 +22,7 @@ jobs:
         shell: bash
         run: |
           echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
+          echo "$github.event.pull_request.head.sha"
 
       - name: Set up Docker Buildx
         id: buildex
