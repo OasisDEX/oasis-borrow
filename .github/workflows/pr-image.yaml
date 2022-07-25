@@ -76,5 +76,5 @@ jobs:
             type=local,src=/tmp/.buildx-cache
             type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache
           cache-to: |
-          type=local,mode=max,dest=/tmp/.buildx-cache
-          type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
+            type=local,mode=max,dest=/tmp/.buildx-cache
+            type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
