@@ -23,7 +23,7 @@ jobs:
 
       - name: Set up Docker Buildx
         id: buildex
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v2
         with:
           install: true
 
