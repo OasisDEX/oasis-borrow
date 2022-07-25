@@ -45,36 +45,39 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
         socket.disconnect()
+        setSocket(undefined)
       }
 
-      const socketInstance = io('ws://localhost:3005', { auth: { token: `Bearer ${jwtToken}` } })
+      if (!socket) {
+        const socketInstance = io('ws://localhost:3005', { auth: { token: `Bearer ${jwtToken}` } })
 
-      // initialize state
-      uiChanges.publish(NOTIFICATION_CHANGE, {
-        type: 'initialize-state',
-        initializeState: initialState,
-      })
-
-      // initialize watchers
-      socketInstance.on('notificationcount', handler)
-
-      // subscription & reconnect handling
-      socketInstance.on('connect', () => {
-        socketInstance.emit('subscribecount', {
-          address: account,
-          signature: 'signature',
-          messageHash: 'messageHash',
+        // initialize state
+        uiChanges.publish(NOTIFICATION_CHANGE, {
+          type: 'initialize-state',
+          initializeState: initialState,
         })
-      })
 
-      setSocket(socketInstance)
-      setToken(jwtToken)
+        // initialize watchers
+        socketInstance.on('notificationcount', handler)
+
+        // subscription & reconnect handling
+        socketInstance.on('connect', () => {
+          socketInstance.emit('subscribecount', {
+            address: account,
+            signature: 'signature',
+            messageHash: 'messageHash',
+          })
+        })
+
+        setSocket(socketInstance)
+        setToken(jwtToken)
+      }
     }
 
     return () => {
       socket?.off('notificationcount', handler)
     }
-  }, [jwtToken])
+  }, [jwtToken, socket])
 
   return (
     <NotificationSocketContext.Provider value={{ socket }}>
