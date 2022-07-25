@@ -15,14 +15,21 @@ import React, { useMemo } from 'react'
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 import {prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { zero } from 'helpers/zero'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { IlkData } from 'blockchain/ilks'
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
   txHelpers?: TxHelpers
   vault: Vault
   ethMarketPrice: BigNumber
+  ilkData: IlkData
+  autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+
 }
 
 export function ConstantMultipleFormControl({
@@ -31,6 +38,11 @@ export function ConstantMultipleFormControl({
   txHelpers,
   vault,
   ethMarketPrice,
+  ilkData,
+
+  stopLossTriggerData,
+autoSellTriggerData,
+autoBuyTriggerData,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
@@ -128,6 +140,9 @@ export function ConstantMultipleFormControl({
         })    
       }}
       txHandler={txHandler}
+      ilkData={ilkData}
+      autoBuyTriggerData={autoBuyTriggerData}
+      stopLossTriggerData={stopLossTriggerData}
     />
   )
 }

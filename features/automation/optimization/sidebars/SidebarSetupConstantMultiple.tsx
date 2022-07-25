@@ -1,11 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
+import { DEFAULT_SL_SLIDER_BOUNDARY } from 'features/automation/protection/common/consts/automationDefaults'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -36,6 +41,9 @@ interface SidebarSetupConstantMultipleProps {
   // multiplier?: number
   onChange: (multiplier: number) => void
   txHandler: () => void
+  ilkData: IlkData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarSetupConstantMultiple({
@@ -49,6 +57,9 @@ export function SidebarSetupConstantMultiple({
   onChange: onMultiplierChange,
   constantMultipleState,
   txHandler,
+  ilkData,
+autoBuyTriggerData,
+stopLossTriggerData,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -71,6 +82,14 @@ export function SidebarSetupConstantMultiple({
       [onMultiplierChange],
     )
   }
+
+  const { min: sliderMin } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+  })
+
+  const sliderMax = ilkData.debtCeiling.minus(DEFAULT_SL_SLIDER_BOUNDARY)
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -135,8 +154,8 @@ export function SidebarSetupConstantMultiple({
             ]}
           />
           <MultipleRangeSlider
-            min={200} // TODO ŁW min, max
-            max={500}
+            min={sliderMin.toNumber()}
+            max={sliderMax.toNumber()}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',
