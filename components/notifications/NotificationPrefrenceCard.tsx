@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 import { Toggle } from 'ui'
 
-interface NotificationPrefrenceCardPtops {
+interface NotificationPrefrenceCardProps {
   heading: string
   description: string
   checked: boolean
@@ -12,7 +12,7 @@ export function NotificationPrefrenceCard({
   heading,
   description,
   checked,
-}: NotificationPrefrenceCardPtops) {
+}: NotificationPrefrenceCardProps) {
   return (
     <Card
       sx={{
