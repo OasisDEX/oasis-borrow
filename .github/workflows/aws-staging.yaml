@@ -103,9 +103,9 @@ jobs:
         cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
     - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Update ECS service with latest Docker image
       id: service-update
