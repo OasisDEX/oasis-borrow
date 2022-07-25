@@ -72,9 +72,5 @@ jobs:
             SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           tags: |
             ${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:${{ env.SHA_TAG }}
-          cache-from: |
-            type=local,src=/tmp/.buildx-cache
-            type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache
-          cache-to: |
-            type=local,mode=max,dest=/tmp/.buildx-cache
-            type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.DOCKERHUB_ORG }}/${{ env.REPO_NAME }}:buildcache,mode=max
