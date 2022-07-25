@@ -104,7 +104,7 @@ function verifyAcceptance$(
 
       const jwtAuth$ = new Subject<boolean>()
       if (updated) {
-        return jwtAuthSetupToken$(web3, account).pipe(
+        return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
           switchMap((token) => {
             return checkAcceptance(token, version, magicLinkEmail)
           }),

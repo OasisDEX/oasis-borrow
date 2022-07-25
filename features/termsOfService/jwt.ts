@@ -13,7 +13,7 @@ export type JWToken = string
 
 export function jwtAuthGetToken(address: string): JWToken | undefined {
   const token = localStorage.getItem(`token-b/${address}`)
-  if (token) {
+  if (token && token !== 'xxx') {
     const parsedToken = JSON.parse(atob(token.split('.')[1]))
     // remove old tokens
     if (!parsedToken.chainId) {

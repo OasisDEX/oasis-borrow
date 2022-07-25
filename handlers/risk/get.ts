@@ -66,8 +66,7 @@ async function getTrmRisk(account: string): Promise<RiskDataResponse> {
     })
 }
 
-// TODO TO BE UPDATED BEFORE MERGE TO DEV
-const offset = 7 * 24 * 60 * 60 * 1000 // 7 days
+const offset = 14 * 24 * 60 * 60 * 1000 // 14 days
 
 async function checkIfRisky(address: string) {
   const trmData = await getTrmRisk(address)
