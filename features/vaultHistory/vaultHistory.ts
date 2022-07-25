@@ -1,14 +1,172 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { gql, GraphQLClient } from 'graphql-request'
-import { memoize } from 'lodash'
-import flatten from 'lodash/flatten'
+import { flatten, memoize } from 'lodash'
 import pickBy from 'lodash/pickBy'
+import { equals } from 'ramda'
 import { combineLatest, Observable, of } from 'rxjs'
 import { catchError, map, switchMap } from 'rxjs/operators'
 
-import { ReturnedAutomationEvent, ReturnedEvent, VaultEvent } from './vaultHistoryEvents'
+import {
+  AutomationEvent,
+  ReturnedAutomationEvent,
+  ReturnedEvent,
+  VaultEvent,
+} from './vaultHistoryEvents'
+
+export function unpackTriggerDataForHistory(event: AutomationEvent) {
+  switch (event.kind) {
+    case 'basic-buy':
+    case 'basic-sell': {
+      const basicBuyData = extractBasicBSData(
+        {
+          isAutomationEnabled: false,
+          triggers: [
+            {
+              triggerId: Number(event.triggerId),
+              commandAddress: event.commandAddress,
+              executionParams: event.triggerData,
+            },
+          ],
+        },
+        event.kind === 'basic-buy' ? TriggerType.BasicBuy : TriggerType.BasicSell,
+      )
+
+      return {
+        execCollRatio: basicBuyData.execCollRatio,
+        targetCollRatio: basicBuyData.targetCollRatio,
+        maxBuyOrMinSellPrice: basicBuyData.maxBuyOrMinSellPrice,
+        maxBaseFeeInGwei: basicBuyData.maxBaseFeeInGwei,
+      }
+    }
+    case 'stop-loss':
+      const stopLossData = extractStopLossData({
+        isAutomationEnabled: false,
+        triggers: [
+          {
+            triggerId: Number(event.triggerId),
+            commandAddress: event.commandAddress,
+            executionParams: event.triggerData,
+          },
+        ],
+      })
+
+      return {
+        stopLossLevel: stopLossData.stopLossLevel,
+        isToCollateral: stopLossData.isToCollateral,
+      }
+    default:
+      return event
+  }
+}
+
+export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
+  const addOrRemoveEvents = ['added', 'removed']
+
+  const addOrRemoveEvent = events.find(
+    (item) => 'triggerId' in item && addOrRemoveEvents.includes(item.eventType),
+  ) as AutomationEvent
+
+  if (addOrRemoveEvent && events.length === 1) {
+    const historyKey =
+      addOrRemoveEvent.eventType === 'added' ? 'addTriggerData' : 'removeTriggerData'
+
+    return {
+      ...addOrRemoveEvent,
+      [historyKey]: unpackTriggerDataForHistory(addOrRemoveEvent),
+    } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function getUpdateTrigger(events: VaultHistoryEvent[]) {
+  const updateCombination = ['added', 'removed']
+  const eventTypes = events.reduce(
+    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
+    [] as string[],
+  )
+  const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
+
+  const autoEvent = events.find(
+    (item) => 'triggerId' in item && updateCombination.includes(item.eventType),
+  ) as AutomationEvent
+
+  if (autoEvent && isUpdateTriggerEvent) {
+    const addEvent = events[0] as AutomationEvent
+    const removeEvent = events[1] as AutomationEvent
+
+    return {
+      ...autoEvent,
+      addTriggerData: unpackTriggerDataForHistory(addEvent),
+      removeTriggerData: unpackTriggerDataForHistory(removeEvent),
+      eventType: 'updated',
+    } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function getExecuteTrigger(events: VaultHistoryEvent[]) {
+  const postExecutionEvents = [
+    'DECREASE_MULTIPLE',
+    'INCREASE_MULTIPLE',
+    'CLOSE_VAULT_TO_DAI',
+    'CLOSE_VAULT_TO_COLLATERAL',
+  ]
+  const postExecutionEvent = events.find((item) => postExecutionEvents.includes(item.kind))
+  const autoEvent = events.find((item) => 'triggerId' in item && item.eventType === 'executed') as
+    | AutomationEvent
+    | undefined
+
+  if (postExecutionEvent && autoEvent) {
+    return {
+      ...postExecutionEvent,
+      triggerId: autoEvent.triggerId,
+      eventType: 'executed',
+    } as VaultHistoryEvent
+  }
+
+  return undefined
+}
+
+export function mapAutomationEvents(events: VaultHistoryEvent[]) {
+  const groupedByHash = events.reduce((acc, curr) => {
+    return {
+      ...acc,
+      [curr.hash]: [...(acc[curr.hash] ? acc[curr.hash] : []), curr],
+    }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  const wrappedByHash = Object.keys(groupedByHash).reduce((acc, key) => {
+    const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
+    const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
+    const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+
+    if (updateTriggerEvent) {
+      return { ...acc, [key]: [updateTriggerEvent] }
+    }
+
+    if (executeTriggerEvent) {
+      return {
+        ...acc,
+        [key]: [executeTriggerEvent],
+      }
+    }
+
+    if (addOrRemoveEvent) {
+      return { ...acc, [key]: [addOrRemoveEvent] }
+    }
+
+    return { ...acc, [key]: groupedByHash[key] }
+  }, {} as Record<string, VaultHistoryEvent[]>)
+
+  return flatten(Object.values(wrappedByHash))
+}
 
 type WithSplitMark<T> = T & { splitId?: number }
 
@@ -153,6 +311,8 @@ const triggerEventsQuery = gql`
         eventType
         hash
         timestamp
+        triggerData
+        commandAddress
       }
     }
   }
@@ -243,6 +403,28 @@ function addReclaimFlag(events: VaultHistoryEvent[]) {
   })
 }
 
+export function flatEvents([events, automationEvents]: [
+  ReturnedEvent[],
+  ReturnedAutomationEvent[],
+]) {
+  return flatten(
+    [...events, ...automationEvents]
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
+      .map(parseBigNumbersFields),
+  )
+}
+
+function mapEventsToVaultEvents(
+  events$: Observable<[ReturnedEvent[], ReturnedAutomationEvent[]]>,
+): Observable<VaultEvent[]> {
+  return events$.pipe(
+    map(([returnedEvents, returnedAutomationEvents]) =>
+      flatEvents([returnedEvents, returnedAutomationEvents]),
+    ),
+  )
+}
+
 export function createVaultHistory$(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
@@ -263,15 +445,8 @@ export function createVaultHistory$(
             getVaultAutomationHistory(apiClient, id),
           )
         }),
-        map(([returnedEvents, returnedAutomationEvents]) =>
-          flatten(
-            [...returnedEvents, ...returnedAutomationEvents]
-              .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-              .map((returnedEvent) => pickBy(returnedEvent, (value) => value !== null))
-              .map(parseBigNumbersFields),
-          ),
-        ),
-        map((events) => events.map((event) => ({ etherscan, ethtx, token, ...event }))),
+        mapEventsToVaultEvents,
+        map((events) => events.map((event) => ({ etherscan, ethtx, ...event, token }))),
         map(addReclaimFlag),
         catchError(() => of([])),
       )

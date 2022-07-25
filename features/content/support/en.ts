@@ -143,7 +143,7 @@ export const content: ContentTypeSupport = {
         {
           question: 'How can I convert my Multiply view back to a Borrow view?',
           answer:
-            'If you have upgraded your Borrow Vault to a Multiply Vault in the Oasis UI and would like to swap it back, you will need to email support@oasis.app stating your wallet address and Vault ID you would like to swap back. The support team may ask for additional information to prove you own the Vault, and it can take up to 24 hours (longer at weekends) to change it.',
+            'If you have upgraded your Borrow Vault to a Multiply Vault in the Oasis UI and would like to swap it back, you can go to the "Borrow" tab in your vault\'s page, and then click on the "Go to Borrow Interface" button. It will ask you for confirmation, and if allowed, the Vault interface will be changed back to Borrow. You can switch back and forth the interface as many times as you want, as it does not require transactions.',
         },
       ],
     },

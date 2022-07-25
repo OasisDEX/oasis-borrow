@@ -1,20 +1,26 @@
+import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { networksById } from 'blockchain/config'
-import { Context } from 'blockchain/network'
+import { Context, every5Seconds$ } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import {
+  BasicBSTriggerData,
+  extractBasicBSData,
+} from 'features/automation/common/basicBSTriggerData'
+import {
+  extractStopLossData,
+  StopLossTriggerData,
+} from 'features/automation/protection/common/stopLossTriggerData'
 import { GraphQLClient } from 'graphql-request'
-import { List } from 'lodash'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
-import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
-import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
 
 // TODO - ŁW - Implement tests for this file
 
 async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Promise<TriggersData> {
-  // TODO: ŁW what's wrong with GraphQLClient
   const activeTriggersForVault = await getAllActiveTriggers(
     new GraphQLClient(cacheApi),
     vaultId.toFixed(0),
@@ -34,17 +40,17 @@ export interface TriggerRecord {
 
 export interface TriggersData {
   isAutomationEnabled: boolean
-  triggers?: List<TriggerRecord>
+  triggers?: TriggerRecord[]
 }
 
 export function createAutomationTriggersData(
   context$: Observable<Context>,
   onEveryBlock$: Observable<number>,
-  vauit$: (id: BigNumber) => Observable<Vault>,
+  vault$: (id: BigNumber) => Observable<Vault>,
   id: BigNumber,
 ): Observable<TriggersData> {
-  return onEveryBlock$.pipe(
-    withLatestFrom(context$, vauit$(id)),
+  return every5Seconds$.pipe(
+    withLatestFrom(context$, vault$(id)),
     mergeMap(([, , vault]) => {
       const networkConfig = networksById[vault.chainId]
       return loadTriggerDataFromCache(vault.id.toNumber(), networkConfig.cacheApi)
@@ -56,23 +62,27 @@ export function createAutomationTriggersData(
   )
 }
 
-export function createStopLossDataChange$(
+export function createAutomationTriggersChange$(
   automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
   id: BigNumber,
 ) {
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
-  return automationEnabled
+  return stopLossReadEnabled
     ? automationTriggersData$(id).pipe(
         map((triggers) => ({
-          kind: 'stopLossData',
+          kind: 'automationTriggersData',
           stopLossData: extractStopLossData(triggers),
+          basicSellData: extractBasicBSData(triggers, TriggerType.BasicSell),
+          basicBuyData: extractBasicBSData(triggers, TriggerType.BasicBuy),
         })),
       )
     : []
 }
 
-export interface StopLossChange {
-  kind: 'stopLossData'
+export interface AutomationTriggersChange {
+  kind: 'automationTriggersData'
   stopLossData: StopLossTriggerData
+  basicSellData: BasicBSTriggerData
+  basicBuyData: BasicBSTriggerData
 }

@@ -1,12 +1,11 @@
+import { IlkData } from 'blockchain/ilks'
 import { MessageCard } from 'components/MessageCard'
+import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
-
-import { IlkData } from '../../blockchain/ilks'
-import { VaultWarningMessage } from '../../features/form/warningMessagesHandler'
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
@@ -44,6 +43,28 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('vault-is-currently-under-min-active-col-ratio')
       case 'vaultWillRemainUnderMinActiveColRatio':
         return translate('vault-will-remain-under-min-active-col-ratio')
+      case 'potentialInsufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
+      case 'currentCollRatioCloseToStopLoss':
+        return translate('coll-ratio-close-to-current')
+      case 'noMinSellPriceWhenStopLossEnabled':
+        return translate('no-min-sell-price-when-stop-loss-enabled')
+      case 'settingAutoBuyTriggerWithNoThreshold':
+        return translate('auto-buy-with-no-max-price-threshold')
+      case 'basicSellTriggerCloseToStopLossTrigger':
+        return translate('auto-sell-trigger-close-to-stop-loss-trigger')
+      case 'basicSellTargetCloseToAutoBuyTrigger':
+        return translate('auto-sell-target-close-to-auto-buy-trigger')
+      case 'stopLossTriggerCloseToAutoSellTrigger':
+        return translate('stop-loss-trigger-close-to-auto-sell-trigger')
+      case 'autoBuyTargetCloseToStopLossTrigger':
+        return translate('auto-buy-target-close-to-stop-loss-trigger')
+      case 'autoBuyTargetCloseToAutoSellTrigger':
+        return translate('auto-buy-target-close-to-auto-sell-trigger')
+      case 'autoBuyTriggeredImmediately':
+        return translate('auto-buy-triggered-immediately')
+      case 'autoSellTriggeredImmediately':
+        return translate('auto-sell-triggered-immediately')
       default:
         throw new UnreachableCaseError(message)
     }
@@ -54,5 +75,5 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'warning' }} />
+  return <MessageCard {...{ messages, type: 'warning', withBullet: messages.length > 1 }} />
 }

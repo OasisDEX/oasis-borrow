@@ -4,6 +4,9 @@ import { createIlkDataChange$, IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { createVaultChange$, Vault } from 'blockchain/vaults'
 import { AddGasEstimationFunction, TxHelpers } from 'components/AppContext'
+import { SelectedDaiAllowanceRadio } from 'components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { calculateInitialTotalSteps } from 'features/borrow/open/pipes/openVaultConditions'
 import { ExchangeAction, ExchangeType, Quote } from 'features/exchange/exchange'
 import {
@@ -14,16 +17,14 @@ import {
 import { PriceInfo, priceInfoChange$ } from 'features/shared/priceInfo'
 import { slippageChange$, UserSettingsState } from 'features/userSettings/userSettings'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { TxError } from 'helpers/types'
 import { zero } from 'helpers/zero'
 import { curry } from 'lodash'
 import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { first, map, scan, shareReplay, switchMap, tap } from 'rxjs/operators'
 
-import { SelectedDaiAllowanceRadio } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
-import { TxError } from '../../../../helpers/types'
-import { StopLossTriggerData } from '../../../automation/protection/common/StopLossTriggerDataExtractor'
 import {
-  createStopLossDataChange$,
+  createAutomationTriggersChange$,
   TriggersData,
 } from '../../../automation/protection/triggers/AutomationTriggersData'
 import { VaultErrorMessage } from '../../../form/errorMessagesHandler'
@@ -76,7 +77,7 @@ import {
   ManageVaultTransitionChange,
   progressAdjust,
 } from './manageMultiplyVaultTransitions'
-import { validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
+import { finalValidation, validateErrors, validateWarnings } from './manageMultiplyVaultValidations'
 
 interface ManageVaultInjectedOverrideChange {
   kind: 'injectStateOverride'
@@ -139,6 +140,7 @@ export type CloseVaultTo = 'collateral' | 'dai'
 export type OtherAction =
   | 'depositCollateral'
   | 'depositDai'
+  | 'paybackDai'
   | 'withdrawCollateral'
   | 'withdrawDai'
   | 'closeVault'
@@ -152,6 +154,7 @@ export interface MutableManageMultiplyVaultState {
 
   depositAmount?: BigNumber
   depositAmountUSD?: BigNumber
+  depositDaiAmount?: BigNumber
   withdrawAmount?: BigNumber
   withdrawAmountUSD?: BigNumber
   paybackAmount?: BigNumber
@@ -195,7 +198,9 @@ interface ManageVaultFunctions {
 
   updateDepositAmount?: (depositAmount?: BigNumber) => void
   updateDepositAmountUSD?: (depositAmountUSD?: BigNumber) => void
+  updateDepositDaiAmount?: (depositDaiAmount?: BigNumber) => void
   updateDepositAmountMax?: () => void
+  updateDepositDaiAmountMax?: () => void
   updatePaybackAmount?: (paybackAmount?: BigNumber) => void
   updatePaybackAmountMax?: () => void
 
@@ -214,6 +219,7 @@ interface ManageVaultFunctions {
   updateDaiAllowanceAmount?: (amount?: BigNumber) => void
   setDaiAllowanceAmountUnlimited?: () => void
   setDaiAllowanceAmountToPaybackAmount?: () => void
+  setDaiAllowanceAmountToDepositDaiAmount?: () => void
   resetDaiAllowanceAmount?: () => void
   clear: () => void
 
@@ -255,6 +261,8 @@ export type ManageMultiplyVaultState = MutableManageMultiplyVaultState &
     totalSteps: number
     currentStep: number
     stopLossData?: StopLossTriggerData
+    basicBuyData?: BasicBSTriggerData
+    basicSellData?: BasicBSTriggerData
   } & HasGasEstimation
 
 function addTransitions(
@@ -314,6 +322,11 @@ function addTransitions(
         change({ kind: 'paybackAmount', paybackAmount })
       },
       updatePaybackAmountMax: () => change({ kind: 'paybackAmountMax' }),
+
+      updateDepositDaiAmount: (depositDaiAmount?: BigNumber) => {
+        change({ kind: 'depositDaiAmount', depositDaiAmount })
+      },
+      updateDepositDaiAmountMax: () => change({ kind: 'depositDaiAmountMax' }),
       updateWithdrawAmount: (withdrawAmount?: BigNumber) => {
         change({ kind: 'withdrawAmount', withdrawAmount })
       },
@@ -403,6 +416,8 @@ function addTransitions(
         change({ kind: 'daiAllowance', daiAllowanceAmount }),
       setDaiAllowanceAmountUnlimited: () => change({ kind: 'daiAllowanceUnlimited' }),
       setDaiAllowanceAmountToPaybackAmount: () => change({ kind: 'daiAllowanceAsPaybackAmount' }),
+      setDaiAllowanceAmountToDepositDaiAmount: () =>
+        change({ kind: 'daiAllowanceAsDepositDaiAmount' }),
       resetDaiAllowanceAmount: () =>
         change({
           kind: 'daiAllowanceReset',
@@ -531,6 +546,8 @@ export function createManageMultiplyVault$(
                     priceInfo,
                     vaultHistory: [],
                     stopLossData: undefined,
+                    basicBuyData: undefined,
+                    basicSellData: undefined,
                     balanceInfo,
                     ilkData,
                     account,
@@ -547,6 +564,9 @@ export function createManageMultiplyVault$(
                     initialTotalSteps,
                     totalSteps: initialTotalSteps,
                     currentStep: 1,
+                    toggle: (stage) => change({ kind: 'toggleEditing', stage }),
+                    setOtherAction: (otherAction: OtherAction) =>
+                      change({ kind: 'otherAction', otherAction }),
                     clear: () => change({ kind: 'clear' }),
                     gasEstimationStatus: GasEstimationStatus.unset,
                     injectStateOverride,
@@ -563,7 +583,7 @@ export function createManageMultiplyVault$(
                     createExchangeChange$(exchangeQuote$, stateSubject$),
                     slippageChange$(slippageLimit$),
                     createHistoryChange$(vaultHistory$, id),
-                    createStopLossDataChange$(automationTriggersData$, id),
+                    createAutomationTriggersChange$(automationTriggersData$, id),
                   )
 
                   const connectedProxyAddress$ = account ? proxyAddress$(account) : of(undefined)
@@ -573,6 +593,7 @@ export function createManageMultiplyVault$(
                     map(validateErrors),
                     map(validateWarnings),
                     switchMap(curry(applyEstimateGas)(addGasEstimation$)),
+                    map(finalValidation),
                     map((state) =>
                       addTransitions(
                         txHelpers$,

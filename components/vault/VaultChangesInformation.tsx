@@ -34,25 +34,31 @@ export function VaultChangesInformationItem({
 
   return (
     <Flex
+      as="li"
       sx={{
         justifyContent: 'space-between',
         alignItems: 'center',
         fontSize: 1,
         fontWeight: 'semiBold',
         cursor: tooltip ? 'pointer' : 'inherit',
+        position: 'relative',
       }}
       onClick={handleClick}
     >
       <Flex
-        sx={{ color: 'text.subtitle', justifyContent: 'flex-end' }}
+        sx={{ color: 'neutral80', justifyContent: 'flex-end' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Box>{label}</Box>
+        {label}
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
-      {tooltip && tooltipOpen && <Tooltip sx={{ transform: 'translateY(60%)' }}>{tooltip}</Tooltip>}
-      <Box>{value}</Box>
+      {tooltip && tooltipOpen && (
+        <Tooltip sx={{ transform: 'translateY(60%)', top: -230, right: ['0px', 'auto'] }}>
+          {tooltip}
+        </Tooltip>
+      )}
+      <Box sx={{ color: 'primary100' }}>{value}</Box>
     </Flex>
   )
 }
@@ -62,10 +68,19 @@ export function VaultChangesInformationContainer({
   children,
 }: { title: string } & WithChildren) {
   return (
-    <Grid>
-      <Text variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
-        {title}
-      </Text>
+    <Grid
+      as="ul"
+      sx={{
+        p: 3,
+        backgroundColor: 'neutral30',
+        borderRadius: 'medium',
+      }}
+    >
+      <Box as="li" sx={{ listStyle: 'none' }}>
+        <Text as="h3" variant="paragraph3" sx={{ fontWeight: 'semiBold' }}>
+          {title}
+        </Text>
+      </Box>
       {children}
     </Grid>
   )
@@ -77,7 +92,7 @@ export function VaultChangesInformationArrow() {
 
 export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   const textError = 'n/a'
-  return <Text sx={{ color: 'onError' }}>{withBrackets ? `(${textError})` : textError}</Text>
+  return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBrackets = false) {
@@ -92,9 +107,7 @@ export function getEstimatedGasFeeText(gasEstimation?: HasGasEstimation, withBra
       const textPending = 'Pending...'
 
       return (
-        <Text sx={{ color: 'text.subtitle' }}>
-          {withBrackets ? `(${textPending})` : textPending}
-        </Text>
+        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
       )
     case GasEstimationStatus.error:
     case GasEstimationStatus.unknown:

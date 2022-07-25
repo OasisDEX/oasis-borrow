@@ -1,87 +1,62 @@
-import BigNumber from 'bignumber.js'
+import { TriggerType } from '@oasisdex/automation'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { CollateralPricesWithFilters } from 'features/collateralPrices/collateralPricesWithFilters'
-import { useUIChanges } from 'helpers/uiChangesHook'
-import React from 'react'
-
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
-  getInitialVaultCollRatio,
-  getIsEditingProtection,
-  getStartingSlRatio,
-} from '../common/helpers'
-import { extractStopLossData, StopLossTriggerData } from '../common/StopLossTriggerDataExtractor'
-import { ADD_FORM_CHANGE, AddFormChange } from '../common/UITypes/AddFormChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
-import { ProtectionDetailsLayout, ProtectionDetailsLayoutProps } from './ProtectionDetailsLayout'
-
-function renderLayout(
-  triggersData: StopLossTriggerData,
-  vaultData: Vault,
-  collateralPrices: CollateralPricesWithFilters,
-  ilkData: IlkData,
-  lastUIState: AddFormChange,
-) {
-  const collateralPrice = collateralPrices.data.filter((x) => x.token === vaultData.token)[0]
-
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: ilkData.liquidationRatio,
-    collateralizationRatio: vaultData.collateralizationRatio,
-  })
-
-  const startingSlRatio = getStartingSlRatio({
-    stopLossLevel: triggersData.stopLossLevel,
-    isStopLossEnabled: triggersData.isStopLossEnabled,
-    initialVaultCollRatio,
-  })
-
-  const props: ProtectionDetailsLayoutProps = {
-    isStopLossEnabled: triggersData.isStopLossEnabled,
-    slRatio: triggersData.stopLossLevel,
-    vaultDebt: vaultData.debt,
-    currentOraclePrice: collateralPrice.currentPrice,
-    nextOraclePrice: collateralPrice.nextPrice,
-    lockedCollateral: vaultData.lockedCollateral,
-
-    liquidationRatio: ilkData.liquidationRatio,
-    liquidationPenalty: ilkData.liquidationPenalty,
-    isStaticPrice: collateralPrice.isStaticPrice,
-    token: vaultData.token,
-
-    afterSlRatio: lastUIState ? lastUIState.selectedSLValue?.dividedBy(100) : new BigNumber(0),
-    isCollateralActive: !!lastUIState?.collateralActive,
-    isEditing: getIsEditingProtection({
-      isStopLossEnabled: triggersData.isStopLossEnabled,
-      selectedSLValue: lastUIState.selectedSLValue,
-      startingSlRatio,
-      stopLossLevel: triggersData.stopLossLevel,
-      collateralActive: lastUIState.collateralActive,
-      isToCollateral: triggersData.isToCollateral,
-    }),
-  }
-  return <ProtectionDetailsLayout {...props} />
-}
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { BasicSellDetailsControl } from 'features/automation/protection/controls/BasicSellDetailsControl'
+import { StopLossDetailsControl } from 'features/automation/protection/controls/StopLossDetailsControl'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { PriceInfo } from 'features/shared/priceInfo'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import React from 'react'
 
 interface ProtectionDetailsControlProps {
   ilkData: IlkData
   automationTriggersData: TriggersData
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   vault: Vault
 }
 
 export function ProtectionDetailsControl({
-  ilkData,
-  automationTriggersData,
-  collateralPrices,
   vault,
+  automationTriggersData,
+  priceInfo,
+  ilkData,
 }: ProtectionDetailsControlProps) {
-  const [lastUIState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  const stopLossTriggerData = extractStopLossData(automationTriggersData)
+  const basicSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const basicBSEnabled = useFeatureToggle('BasicBS')
 
-  return renderLayout(
-    extractStopLossData(automationTriggersData),
-    vault,
-    collateralPrices,
-    ilkData,
-    lastUIState,
+  const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
+    currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
+    isAutoSellOn: basicSellTriggerData.isTriggerEnabled,
+    isStopLossOn: stopLossTriggerData.isStopLossEnabled,
+    section: 'details',
+  })
+
+  return (
+    <>
+      <StopLossDetailsControl
+        vault={vault}
+        stopLossTriggerData={stopLossTriggerData}
+        priceInfo={priceInfo}
+        ilkData={ilkData}
+        isStopLossActive={isStopLossActive}
+      />
+      {basicBSEnabled && (
+        <BasicSellDetailsControl
+          vault={vault}
+          basicSellTriggerData={basicSellTriggerData}
+          isAutoSellActive={isAutoSellActive}
+        />
+      )}
+    </>
   )
 }

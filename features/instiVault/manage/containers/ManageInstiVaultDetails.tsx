@@ -55,7 +55,7 @@ export function ManageInstiVaultDetails(props: ManageInstiVaultState) {
           value={formatDecimalAsPercent(currentFixedFee)}
           valueBottom={
             <>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 {t('manage-insti-vault.card.next-fee-change')}
               </Text>{' '}
               {nextFeeChange}

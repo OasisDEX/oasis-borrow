@@ -16,10 +16,10 @@ export interface OpenMultiplyVaultCalculations {
   afterNetValueUSD: BigNumber
   buyingCollateral: BigNumber
   buyingCollateralUSD: BigNumber
-  totalExposure?: BigNumber
+  totalExposure: BigNumber
   totalExposureUSD?: BigNumber
   impact: BigNumber
-  multiply?: BigNumber
+  multiply: BigNumber
   afterOutstandingDebt: BigNumber
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber

@@ -13,6 +13,7 @@ import { ManageVaultCollateralAllowance } from '../../../../components/vault/com
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
 import { VaultErrors } from '../../../../components/vault/VaultErrors'
 import { VaultWarnings } from '../../../../components/vault/VaultWarnings'
+import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
@@ -24,7 +25,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
   const { t } = useTranslation()
   return stage === 'multiplyTransitionEditing' ? (
     <Grid mt={-3}>
-      <Grid variant="text.paragraph3" sx={{ color: 'text.subtitle' }}>
+      <Grid variant="text.paragraph3" sx={{ color: 'neutral80' }}>
         <TextWithCheckmark>
           {t('borrow-to-multiply.checkmark1', { token: vault.token.toUpperCase() })}
         </TextWithCheckmark>
@@ -37,7 +38,7 @@ function ManageVaultMultiplyTransition({ stage, vault }: ManageStandardBorrowVau
         <Text variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
           {t('borrow-to-multiply.subheader2')}
         </Text>
-        <Text variant="paragraph3" sx={{ color: 'text.subtitle' }}>
+        <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
           {t('borrow-to-multiply.paragraph2')}
         </Text>
       </Grid>
@@ -67,9 +68,10 @@ export function ManageVaultForm(
     stopLossTriggered,
     vaultHistory,
   } = props
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
 
+  const gasData = extractGasDataFromState(props)
   const mostRecentEvent = vaultHistory[0]
 
   const isVaultClosed =
@@ -78,7 +80,7 @@ export function ManageVaultForm(
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => setReopenPositionClicked(true)}
@@ -86,7 +88,7 @@ export function ManageVaultForm(
       ) : (
         <>
           <ManageVaultFormHeader {...props} />
-          {isProxyStage && <VaultProxyContentBox stage={stage} />}
+          {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
           {isEditingStage && <ManageVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

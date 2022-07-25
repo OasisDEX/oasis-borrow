@@ -97,10 +97,10 @@ export type ManageVaultTransactionChange =
   | DaiAllowanceChange
   | ManageChange
 
-export function applyManageVaultTransaction(
+export function applyManageVaultTransaction<VS extends ManageMultiplyVaultState>(
   change: ManageMultiplyVaultChange,
-  state: ManageMultiplyVaultState,
-): ManageMultiplyVaultState {
+  state: VS,
+): VS {
   if (change.kind === 'proxyWaitingForApproval') {
     return {
       ...state,
@@ -240,8 +240,11 @@ export function adjustPosition(
     proxyAddress,
     vault: { ilk, token, id },
     exchangeAction,
+    depositDaiAmount,
     debtDelta,
     depositAmount,
+    withdrawAmount,
+    generateAmount,
     collateralDelta,
     slippage,
     oneInchAmount,
@@ -264,13 +267,16 @@ export function adjustPosition(
             sendWithGasEstimation(adjustMultiplyVault, {
               kind: TxMetaKind.adjustPosition,
               depositCollateral: depositAmount || zero,
+              depositDai: depositDaiAmount || zero,
+              withdrawCollateral: withdrawAmount || zero,
+              withdrawDai: generateAmount || zero,
               requiredDebt: debtDelta?.abs() || zero,
               borrowedCollateral: collateralDelta?.abs() || zero,
               userAddress: account!,
               proxyAddress: proxyAddress!,
               exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
               exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-              slippage: slippage,
+              slippage,
               action: exchangeAction!,
               token,
               id,
@@ -625,6 +631,7 @@ export function applyEstimateGas(
       proxyAddress,
       generateAmount,
       depositAmount,
+      depositDaiAmount,
       withdrawAmount,
       paybackAmount,
       shouldPaybackAll,
@@ -637,6 +644,7 @@ export function applyEstimateGas(
       closeVaultTo,
       closeToDaiParams,
       closeToCollateralParams,
+      isProxyStage,
     } = state
 
     if (proxyAddress) {
@@ -658,13 +666,16 @@ export function applyEstimateGas(
         return estimateGas(adjustMultiplyVault, {
           kind: TxMetaKind.adjustPosition,
           depositCollateral: depositAmount || zero,
+          depositDai: depositDaiAmount || zero,
+          withdrawCollateral: withdrawAmount || zero,
+          withdrawDai: generateAmount || zero,
           requiredDebt: daiAmount,
           borrowedCollateral: collateralAmount,
           userAddress: account!,
           proxyAddress: proxyAddress!,
           exchangeAddress: swap?.status === 'SUCCESS' ? swap.tx.to : '',
           exchangeData: swap?.status === 'SUCCESS' ? swap.tx.data : '',
-          slippage: slippage,
+          slippage,
           action: exchangeAction!,
           token,
           id,
@@ -724,6 +735,10 @@ export function applyEstimateGas(
           }
         }
       }
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined

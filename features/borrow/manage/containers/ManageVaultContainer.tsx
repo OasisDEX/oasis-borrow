@@ -1,9 +1,9 @@
 import { trackingEvents } from 'analytics/analytics'
 import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
-import { VaultChangesInformationEstimatedGasFee } from 'components/vault/VaultChangesInformation'
-import { VaultViewMode } from 'components/VaultTabSwitch'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { SidebarManageBorrowVault } from 'features/borrow/manage/sidebars/SidebarManageBorrowVault'
 import { VaultHistoryView } from 'features/vaultHistory/VaultHistoryView'
 import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
@@ -13,7 +13,6 @@ import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { ManageStandardBorrowVaultState } from '../pipes/manageVault'
 import { createManageVaultAnalytics$ } from '../pipes/manageVaultAnalytics'
 import { ManageVaultDetails } from './ManageVaultDetails'
-import { ManageVaultForm } from './ManageVaultForm'
 
 export function ManageVaultContainer({
   manageVault,
@@ -28,7 +27,7 @@ export function ManageVaultContainer({
     priceInfo,
   } = manageVault
   const { t } = useTranslation()
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   useEffect(() => {
     const subscription = createManageVaultAnalytics$(
@@ -38,14 +37,14 @@ export function ManageVaultContainer({
     ).subscribe()
 
     return () => {
-      !automationEnabled && clear()
+      !stopLossReadEnabled && clear()
       subscription.unsubscribe()
     }
   }, [])
 
   return (
     <>
-      {!automationEnabled && (
+      {!stopLossReadEnabled && (
         <DefaultVaultHeader
           header={t('vault.header', { ilk, id })}
           id={id}
@@ -65,13 +64,10 @@ export function ManageVaultContainer({
               })
             }}
           />
-          {!automationEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
+          {!stopLossReadEnabled && <VaultHistoryView vaultHistory={manageVault.vaultHistory} />}
         </Grid>
         <Box>
-          <ManageVaultForm
-            {...manageVault}
-            txnCostDisplay={<VaultChangesInformationEstimatedGasFee {...manageVault} />}
-          />
+          <SidebarManageBorrowVault {...manageVault} />
         </Box>
       </Grid>
     </>

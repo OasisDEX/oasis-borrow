@@ -44,7 +44,7 @@ export const StopLossCollRatioCard = ({ hasAfter, isProtected }: CardsControl) =
       <VaultDetailsCardStopLossCollRatio
         slRatio={new BigNumber(160)}
         afterSlRatio={new BigNumber(180)}
-        collateralizationRatio={new BigNumber(200)}
+        collateralizationRatioAtNextPrice={new BigNumber(200)}
         showAfterPill={hasAfter}
         isProtected={isProtected}
       />
@@ -125,17 +125,17 @@ export const CollaterizationRatio = ({ hasAfter, hasBottom }: CardsControl) => {
       <VaultDetailsCard
         title={t('system.collateralization-ratio')}
         value={
-          <Text as="span" sx={{ color: 'onSuccess' }}>
+          <Text as="span" sx={{ color: 'success100' }}>
             105.09%{' '}
           </Text>
         }
         valueBottom={
           hasBottom ? (
             <>
-              <Text as="span" sx={{ color: 'onSuccess' }}>
+              <Text as="span" sx={{ color: 'success100' }}>
                 105.09%{' '}
               </Text>
-              <Text as="span" sx={{ color: 'text.subtitle' }}>
+              <Text as="span" sx={{ color: 'neutral80' }}>
                 {t('manage-multiply-vault.card.on-next-price')}
               </Text>
             </>

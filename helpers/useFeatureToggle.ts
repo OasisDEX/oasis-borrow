@@ -1,27 +1,39 @@
 import { mapValues } from 'lodash'
 export const FT_LOCAL_STORAGE_KEY = 'features'
 
-type ConfiguredFeatures = Record<Features, boolean>
+type ConfiguredFeatures = Record<Feature, boolean>
 
-type Features =
+export type Feature =
   | 'TestFeature'
   | 'AnotherTestFeature'
-  | 'EarnProduct'
   | 'Automation'
-  | 'Exchange'
   | 'AutomationBasicBuyAndSell'
+  | 'StopLossRead'
+  | 'StopLossWrite'
+  | 'StopLossOpenFlow'
+  | 'BasicBS'
+  | 'ReadOnlyBasicBS'
+  | 'Notifications'
+  | 'Referrals'
+  | 'ConstantMultiple'
 
-const configuredFeatures: Record<Features, boolean> = {
+const configuredFeatures: Record<Feature, boolean> = {
   TestFeature: false, // used in unit tests
   AnotherTestFeature: true, // used in unit tests
-  EarnProduct: false,
-  Automation: false,
-  Exchange: true,
+  Automation: true,
   AutomationBasicBuyAndSell: false,
+  StopLossRead: true,
+  StopLossWrite: true,
+  StopLossOpenFlow: false,
+  BasicBS: true,
+  ReadOnlyBasicBS: false,
+  Notifications: false,
+  Referrals: true,
+  ConstantMultiple: false,
   // your feature here....
 }
 
-export function configureLocalStorageForTests(data: { [feature in Features]?: boolean }) {
+export function configureLocalStorageForTests(data: { [feature in Feature]?: boolean }) {
   localStorage.setItem(FT_LOCAL_STORAGE_KEY, JSON.stringify(data))
 }
 
@@ -30,7 +42,7 @@ export function configureLocalStorageForTests(data: { [feature in Features]?: bo
 // Because a feature is enabled if it's enabled either in code or local storage, the
 // feature ends up enabled.
 
-export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Features> = []) {
+export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Feature> = []) {
   // update local toggles
   if (typeof localStorage !== 'undefined') {
     // No-yet-loaded features are always set to false in local storage even if true in code.
@@ -63,7 +75,7 @@ export function loadFeatureToggles(testFeaturesFlaggedEnabled: Array<Features> =
   }
 }
 
-export function useFeatureToggle(feature: Features): boolean {
+export function useFeatureToggle(feature: Feature): boolean {
   const userEnabledFeatures = localStorage.getItem(FT_LOCAL_STORAGE_KEY)
   return JSON.parse(userEnabledFeatures || '{}')[feature] || configuredFeatures[feature]
 }

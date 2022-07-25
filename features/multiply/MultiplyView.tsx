@@ -11,14 +11,12 @@ import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { multiplyPageCardsData, productCardsConfig } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export function MultiplyView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsData$)
-
-  const earnEnabled = useFeatureToggle('EarnProduct')
+  const tab = window.location.hash.replace(/^#/, '')
 
   return (
     <Grid
@@ -35,8 +33,8 @@ export function MultiplyView() {
           href: 'https://kb.oasis.app/help/what-is-multiply',
           text: t('product-page.multiply.link'),
         }}
+        scrollToId={tab}
       />
-
       <WithErrorHandler error={[productCardsDataError]}>
         <WithLoadingIndicator
           value={[productCardsDataValue]}
@@ -48,9 +46,8 @@ export function MultiplyView() {
         >
           {([productCardsData]) => (
             <ProductCardsFilter
-              filters={productCardsConfig.multiply.cardsFilters.filter(
-                (f) => !(earnEnabled && f.name === 'UNI LP'),
-              )}
+              filters={productCardsConfig.multiply.cardsFilters.filter((f) => f.name !== 'UNI LP')}
+              selectedFilter={tab}
             >
               {(cardsFilter) => {
                 const filteredCards = multiplyPageCardsData({

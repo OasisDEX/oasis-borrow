@@ -98,7 +98,7 @@ export function VaultDetailsCardCollateralizationRatio(
               roundMode: BigNumber.ROUND_DOWN,
             })}
           </Text>
-          <Text as="span" sx={{ color: 'text.subtitle' }}>
+          <Text as="span" sx={{ color: 'neutral80' }}>
             {` on next price`}
           </Text>
         </>

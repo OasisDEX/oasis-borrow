@@ -1,0 +1,45 @@
+import { FaqLayout } from "../FaqLayout";
+
+export default ({ children }) => (
+  <FaqLayout learnMoreUrl="https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply">{children}</FaqLayout>
+);
+
+##### Do I need to manage this Earn position?
+
+Users should regularly check whether market changes have affected the position, in terms of profit, governance updates, and shifts in fee tiers. At the moment the Maker protocol has disabled liquidations for GUNI but they could be enabled in the future. Such changes will be announced in [Maker forums](https://forum.makerdao.com/) and in [Oasis communication channels](https://discord.gg/oasisapp). 
+
+##### What are the risks?
+
+>Lower than expected returns: Collected fees from the Uniswap V3 position are dependent on the volume that passes through that pool and as such is a variable return that’s reliant on market conditions and the ratio between liquidity and volume. Users will need to monitor their position to be sure that the rate of return exceeds the stability fee paid to Maker and the costs paid to set up and close the Earn position.
+
+>Liquidations: for this Vault, they have been disabled by the Maker protocol at the moment. This is not guaranteed since Maker could decide to enable them, users should monitor their positions to ensure the growth of the collateral exceeds the growth of the debt thanks to Uniswap V3 fees return.
+
+>Systemic risk: Blockchains have unavoidable risks arising from smart contract bugs or fatal errors in any protocols being used.
+
+##### How does it work
+
+>Dai is flashloaned from Maker, enough to reach the desired strategy multiple.
+
+>Dai is swapped with USDC in the proportion needed for the Arrakis Uniswap v3 position in the DAI/USDC pool.
+
+>Dai and USDC are locked in Arrakis Uniswap v3 position manager. This deposit gives shares representing the deposited amount.
+
+>The shares called GUNI DAI/USDC are locked in a Maker Vault and Dai is borrowed against this collateral up to the maximum collateralization ratio possible.
+
+>The flashloan is paid back.
+
+##### Where does the yield come from?
+
+Uniswap users pay the liquidity providers when trading DAI/USDC and this return is multiplied thanks to Maker Vaults. Since the position is multiplied up to 50 times, the returns are much greater than just putting up liquidity in Uniswap V3 directly.
+
+##### Where is my capital?
+
+The Earn position uses 3 protocols and the power of Oasis.app smart contracts: Uniswap V3 is the underlying yield source. Arrakis is the Uniswap V3 position manager and Maker is used to multiply exposure to the Uniswap returns.
+
+##### How much does it cost?
+
+The Oasis.app fee is 0.04% of the amount swapped and averages around 1% of the initial deposit while setting up the Vault. The closing fee is 0. This strategy pays interest on the debt to Maker. This stability fee is accounted for in the net APY. Users need to take into account gas costs related to the Ethereum network which vary with congestion and ETH price
+
+##### Is this a short or long-term position?
+
+This is a long-term position that assumes that the volume of DAI/USDC going through Uniswap V3 will trend up since that's the yield source. In general, users should expect this position to be profitable as long as demand to use DAI or USDC grows and Uniswap V3 remains the prime venue for these swaps. As time goes by the fixed costs for setting up the position will be paid off. The longer you stay in the position, the higher profit if all assumptions hold.

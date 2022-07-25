@@ -1,5 +1,6 @@
 export type VaultErrorMessage =
   | 'depositAmountExceedsCollateralBalance'
+  | 'depositDaiAmountExceedsDaiBalance'
   | 'depositingAllEthBalance'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateral'
   | 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice'
@@ -9,6 +10,7 @@ export type VaultErrorMessage =
   | 'customAllowanceAmountExceedsMaxUint256'
   | 'customAllowanceAmountLessThanDepositAmount'
   | 'ledgerWalletContractDataDisabled'
+  | 'insufficientEthFundsForTx'
   | 'exchangeError'
   | 'withdrawAmountExceedsFreeCollateral'
   | 'withdrawAmountExceedsFreeCollateralAtNextPrice'
@@ -27,7 +29,18 @@ export type VaultErrorMessage =
   | 'depositCollateralOnVaultUnderDebtFloor'
   | 'invalidSlippage'
   | 'afterCollRatioBelowStopLossRatio'
+  | 'afterCollRatioBelowBasicSellRatio'
+  | 'afterCollRatioAboveBasicBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
+  | 'stopLossOnNearLiquidationRatio'
+  | 'stopLossHigherThanCurrentOrNext'
+  | 'maxDebtForSettingStopLoss'
+  | 'targetCollRatioExceededDustLimitCollRatio'
+  | 'autoBuyMaxBuyPriceNotSpecified'
+  | 'minimumSellPriceNotProvided'
+  | 'autoSellTriggerHigherThanAutoBuyTarget'
+  | 'autoBuyTriggerLowerThanAutoSellTarget'
+  | 'stopLossTriggerHigherThanAutoBuyTarget'
 
 interface ErrorMessagesHandler {
   generateAmountLessThanDebtFloor?: boolean
@@ -35,6 +48,7 @@ interface ErrorMessagesHandler {
   exchangeError?: boolean
   generateAmountMoreThanMaxFlashAmount?: boolean
   ledgerWalletContractDataDisabled?: boolean
+  insufficientEthFundsForTx?: boolean
   depositingAllEthBalance?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateral?: boolean
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice?: boolean
@@ -50,6 +64,7 @@ interface ErrorMessagesHandler {
   customDaiAllowanceAmountExceedsMaxUint256?: boolean
   customDaiAllowanceAmountLessThanPaybackAmount?: boolean
   depositAmountExceedsCollateralBalance?: boolean
+  depositDaiAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsDaiBalance?: boolean
   paybackAmountExceedsVaultDebt?: boolean
   withdrawCollateralOnVaultUnderDebtFloor?: boolean
@@ -58,6 +73,17 @@ interface ErrorMessagesHandler {
   shouldShowExchangeError?: boolean
   invalidSlippage?: boolean
   afterCollRatioBelowStopLossRatio?: boolean
+  afterCollRatioBelowBasicSellRatio?: boolean
+  afterCollRatioAboveBasicBuyRatio?: boolean
+  stopLossOnNearLiquidationRatio?: boolean
+  stopLossHigherThanCurrentOrNext?: boolean
+  maxDebtForSettingStopLoss?: boolean
+  targetCollRatioExceededDustLimitCollRatio?: boolean
+  autoBuyMaxBuyPriceNotSpecified?: boolean
+  minimumSellPriceNotProvided?: boolean
+  autoSellTriggerHigherThanAutoBuyTarget?: boolean
+  autoBuyTriggerLowerThanAutoSellTarget?: boolean
+  stopLossTriggerHigherThanAutoBuyTarget?: boolean
 }
 
 export function errorMessagesHandler({
@@ -66,6 +92,7 @@ export function errorMessagesHandler({
   exchangeError,
   generateAmountMoreThanMaxFlashAmount,
   ledgerWalletContractDataDisabled,
+  insufficientEthFundsForTx,
   depositingAllEthBalance,
   generateAmountExceedsDaiYieldFromDepositingCollateral,
   generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice,
@@ -81,6 +108,7 @@ export function errorMessagesHandler({
   customDaiAllowanceAmountExceedsMaxUint256,
   customDaiAllowanceAmountLessThanPaybackAmount,
   depositAmountExceedsCollateralBalance,
+  depositDaiAmountExceedsDaiBalance,
   paybackAmountExceedsDaiBalance,
   paybackAmountExceedsVaultDebt,
   withdrawCollateralOnVaultUnderDebtFloor,
@@ -89,11 +117,26 @@ export function errorMessagesHandler({
   shouldShowExchangeError,
   invalidSlippage,
   afterCollRatioBelowStopLossRatio,
+  afterCollRatioBelowBasicSellRatio,
+  afterCollRatioAboveBasicBuyRatio,
+  stopLossOnNearLiquidationRatio,
+  stopLossHigherThanCurrentOrNext,
+  maxDebtForSettingStopLoss,
+  targetCollRatioExceededDustLimitCollRatio,
+  autoBuyMaxBuyPriceNotSpecified,
+  minimumSellPriceNotProvided,
+  autoSellTriggerHigherThanAutoBuyTarget,
+  autoBuyTriggerLowerThanAutoSellTarget,
+  stopLossTriggerHigherThanAutoBuyTarget,
 }: ErrorMessagesHandler) {
   const errorMessages: VaultErrorMessage[] = []
 
   if (depositAmountExceedsCollateralBalance) {
     errorMessages.push('depositAmountExceedsCollateralBalance')
+  }
+
+  if (depositDaiAmountExceedsDaiBalance) {
+    errorMessages.push('depositDaiAmountExceedsDaiBalance')
   }
 
   if (generateAmountLessThanDebtFloor) {
@@ -202,6 +245,53 @@ export function errorMessagesHandler({
 
   if (afterCollRatioBelowStopLossRatio) {
     errorMessages.push('afterCollRatioBelowStopLossRatio')
+  }
+
+  if (afterCollRatioBelowBasicSellRatio) {
+    errorMessages.push('afterCollRatioBelowBasicSellRatio')
+  }
+
+  if (afterCollRatioAboveBasicBuyRatio) {
+    errorMessages.push('afterCollRatioAboveBasicBuyRatio')
+  }
+
+  if (insufficientEthFundsForTx) {
+    errorMessages.push('insufficientEthFundsForTx')
+  }
+
+  if (stopLossOnNearLiquidationRatio) {
+    errorMessages.push('stopLossOnNearLiquidationRatio')
+  }
+
+  if (stopLossHigherThanCurrentOrNext) {
+    errorMessages.push('stopLossHigherThanCurrentOrNext')
+  }
+
+  if (maxDebtForSettingStopLoss) {
+    errorMessages.push('maxDebtForSettingStopLoss')
+  }
+
+  if (targetCollRatioExceededDustLimitCollRatio) {
+    errorMessages.push('targetCollRatioExceededDustLimitCollRatio')
+  }
+  if (minimumSellPriceNotProvided) {
+    errorMessages.push('minimumSellPriceNotProvided')
+  }
+
+  if (autoBuyMaxBuyPriceNotSpecified) {
+    errorMessages.push('autoBuyMaxBuyPriceNotSpecified')
+  }
+
+  if (autoSellTriggerHigherThanAutoBuyTarget) {
+    errorMessages.push('autoSellTriggerHigherThanAutoBuyTarget')
+  }
+
+  if (autoBuyTriggerLowerThanAutoSellTarget) {
+    errorMessages.push('autoBuyTriggerLowerThanAutoSellTarget')
+  }
+
+  if (stopLossTriggerHigherThanAutoBuyTarget) {
+    errorMessages.push('stopLossTriggerHigherThanAutoBuyTarget')
   }
 
   return errorMessages

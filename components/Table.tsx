@@ -114,7 +114,7 @@ function Header({ children, sx }: React.PropsWithChildren<{ sx?: SxStyleProp }>)
       variant="paragraph2"
       sx={{
         px: 3,
-        color: 'text.muted',
+        color: 'neutral80',
         fontSize: 2,
         textAlign: 'left',
         ...sx,
@@ -148,7 +148,7 @@ const TableRow = memo(
               ':before': {
                 variant: 'text.paragraph2',
                 fontWeight: 'semiBold',
-                color: 'text.muted',
+                color: 'neutral80',
                 content: `"${t(headerLabel)}"`,
                 display: ['block', 'none'],
               },
@@ -226,7 +226,7 @@ export function TableSortHeader<K extends string>({
       variant="tableHeader"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
-      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary' : 'text.muted' }}>
+      <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary100' : 'neutral80' }}>
         {children}
       </Box>
       <Box>
@@ -234,7 +234,7 @@ export function TableSortHeader<K extends string>({
           variant="sort"
           isUp={filters.direction === 'ASC' && isSelected}
           size={12}
-          color={isSelected ? 'primary' : 'text.muted'}
+          color={isSelected ? 'primary100' : 'neutral80'}
         />
       </Box>
     </Button>

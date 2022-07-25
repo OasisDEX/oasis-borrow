@@ -6,10 +6,11 @@ import { filter, map, switchMap } from 'rxjs/operators'
 import { Vault } from '../../blockchain/vaults'
 import { ManageInstiVaultState } from '../borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { ManageStandardBorrowVaultState } from '../borrow/manage/pipes/manageVault'
+import { ManageEarnVaultState } from '../earn/guni/manage/pipes/manageGuniVault'
 import { ManageMultiplyVaultState } from '../multiply/manage/pipes/manageMultiplyVault'
 import { VaultType } from './vaultType'
 
-type WithToggle<T> = T & { toggleVaultType: () => void }
+export type WithToggle<T> = T & { toggleVaultType: () => void }
 
 export type GeneralManageVaultState =
   | {
@@ -23,6 +24,10 @@ export type GeneralManageVaultState =
   | {
       type: VaultType.Multiply
       state: WithToggle<ManageMultiplyVaultState>
+    }
+  | {
+      type: VaultType.Earn
+      state: WithToggle<ManageEarnVaultState>
     }
 
 export function createGeneralManageVault$(
@@ -38,7 +43,7 @@ export function createGeneralManageVault$(
     switchMap((type) => {
       return vault$(id).pipe(
         filter((vault) => vault !== undefined),
-        switchMap((vault) => {
+        switchMap(() => {
           switch (type) {
             case VaultType.Borrow:
               return manageVault$(id).pipe(
@@ -46,14 +51,12 @@ export function createGeneralManageVault$(
                 map((state) => ({ state, type })),
               )
             case VaultType.Multiply:
-              if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
-                return manageGuniVault$(id).pipe(
-                  map((state) => ({ ...state, toggleVaultType: () => {} })),
-                  map((state) => ({ state, type })),
-                )
-              }
-
               return manageMultiplyVault$(id).pipe(
+                map((state) => ({ ...state, toggleVaultType: () => {} })),
+                map((state) => ({ state, type })),
+              )
+            case VaultType.Earn:
+              return manageGuniVault$(id).pipe(
                 map((state) => ({ ...state, toggleVaultType: () => {} })),
                 map((state) => ({ state, type })),
               )

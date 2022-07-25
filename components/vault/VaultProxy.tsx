@@ -8,9 +8,11 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
-import { Image } from 'theme-ui'
+import { Box, Image, Text } from 'theme-ui'
 
+import { HasGasEstimation } from '../../helpers/form'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
+import { getEstimatedGasFeeText, VaultChangesInformationItem } from './VaultChangesInformation'
 
 export function VaultProxyStatusCard({
   stage,
@@ -49,8 +51,10 @@ export function VaultProxyStatusCard({
 
 export function VaultProxyContentBox({
   stage,
+  gasData,
 }: {
   stage: OpenVaultStage | ManageBorrowVaultStage | ManageMultiplyVaultStage
+  gasData: HasGasEstimation
 }) {
   const { t } = useTranslation()
 
@@ -62,7 +66,20 @@ export function VaultProxyContentBox({
           sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}
         />
       ) : (
-        <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+        <>
+          <ListWithIcon items={t<string, string[]>('proxy-advantages', { returnObjects: true })} />
+          {stage !== 'proxyInProgress' && (
+            <Box>
+              <Text as="p" sx={{ fontSize: 2, fontWeight: 'semiBold', mb: 3 }}>
+                {t('creating-proxy-contract')}
+              </Text>
+              <VaultChangesInformationItem
+                label={t('transaction-fee')}
+                value={getEstimatedGasFeeText(gasData)}
+              />
+            </Box>
+          )}
+        </>
       )}
     </>
   )
@@ -82,7 +99,7 @@ export function VaultProxySubtitle({
         1: (
           <AppLink href="https://kb.oasis.app/help/what-is-a-proxy-contract" sx={{ fontSize: 2 }} />
         ),
-        2: <WithArrow sx={{ display: 'inline', color: 'link', fontWeight: 'body' }} />,
+        2: <WithArrow sx={{ display: 'inline', color: 'interactive100', fontWeight: 'body' }} />,
       }}
     />
   )

@@ -1,107 +1,98 @@
+import { TriggerType } from '@oasisdex/automation'
+import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
+import { Context } from 'blockchain/network'
+import { Vault } from 'blockchain/vaults'
+import { TxHelpers } from 'components/AppContext'
+import { useAppContext } from 'components/AppContextProvider'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import { AutoSellFormControl } from 'features/automation/protection/controls/AutoSellFormControl'
+import { StopLossFormControl } from 'features/automation/protection/controls/StopLossFormControl'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
+import { BalanceInfo } from 'features/shared/balanceInfo'
+import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import { useTranslation } from 'next-i18next'
 import React, { useEffect } from 'react'
 
-import { IlkData } from '../../../../blockchain/ilks'
-import { Vault } from '../../../../blockchain/vaults'
-import { useAppContext } from '../../../../components/AppContextProvider'
-import { useSharedUI } from '../../../../components/SharedUIProvider'
-import { VaultFormContainer } from '../../../../components/vault/VaultFormContainer'
-import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../../../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../../../../helpers/observableHook'
-import { CollateralPricesWithFilters } from '../../../collateralPrices/collateralPricesWithFilters'
-import { accountIsConnectedValidator } from '../../../form/commonValidators'
-import {
-  AutomationFromKind,
-  PROTECTION_MODE_CHANGE_SUBJECT,
-  ProtectionModeChange,
-} from '../common/UITypes/ProtectionFormModeChange'
-import { TriggersData } from '../triggers/AutomationTriggersData'
-import { AdjustSlFormControl } from './AdjustSlFormControl'
-import { CancelSlFormControl } from './CancelSlFormControl'
-
-interface Props {
+interface ProtectionFormControlProps {
   ilkData: IlkData
   automationTriggersData: TriggersData
-  collateralPrices: CollateralPricesWithFilters
+  priceInfo: PriceInfo
   vault: Vault
+  balanceInfo: BalanceInfo
+  txHelpers?: TxHelpers
+  context: Context
+  ethMarketPrice: BigNumber
   account?: string
 }
 
 export function ProtectionFormControl({
   ilkData,
   automationTriggersData,
-  collateralPrices,
+  priceInfo,
   vault,
   account,
-}: Props) {
-  const { txHelpers$, context$, uiChanges } = useAppContext()
-  const { t } = useTranslation()
-  const { setVaultFormOpened } = useSharedUI()
-  const isTouchDevice = window && 'ontouchstart' in window
+  balanceInfo,
+  context,
+  txHelpers,
+  ethMarketPrice,
+}: ProtectionFormControlProps) {
+  const stopLossTriggerData = extractStopLossData(automationTriggersData)
+  const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+  const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const { uiChanges } = useAppContext()
+
+  const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
+    currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
+    isAutoSellOn: autoSellTriggerData.isTriggerEnabled,
+    isStopLossOn: stopLossTriggerData.isStopLossEnabled,
+    section: 'form',
+  })
 
   useEffect(() => {
-    if (isTouchDevice && !automationTriggersData.isAutomationEnabled) {
-      setVaultFormOpened(true)
+    if (isAutoSellActive) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Protection',
+        currentProtectionFeature: 'autoSell',
+      })
     }
   }, [])
 
-  const [txHelpers, txHelpersError] = useObservable(txHelpers$)
-  const [context, contextError] = useObservable(context$)
-
-  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
-
-  const accountIsConnected = accountIsConnectedValidator({ account })
-  const accountIsController = accountIsConnected && account === vault.controller
-
   return (
-    <WithErrorHandler error={[contextError, txHelpersError]}>
-      <WithLoadingIndicator value={[context]} customLoader={<VaultContainerSpinner />}>
-        {([context]) => (
-          <VaultFormContainer
-            toggleTitle={
-              automationTriggersData.isAutomationEnabled
-                ? t('protection.set-downside-protection')
-                : t('protection.edit-vault-protection')
-            }
-          >
-            {currentForm?.currentMode === AutomationFromKind.CANCEL ? (
-              <CancelSlFormControl
-                vault={vault}
-                ilkData={ilkData}
-                triggerData={automationTriggersData}
-                tx={txHelpers}
-                ctx={context}
-                accountIsController={accountIsController}
-                toggleForms={() => {
-                  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    currentMode: AutomationFromKind.ADJUST,
-                    type: 'change-mode',
-                  })
-                }}
-                collateralPrice={collateralPrices}
-              />
-            ) : (
-              <AdjustSlFormControl
-                vault={vault}
-                collateralPrice={collateralPrices}
-                ilkData={ilkData}
-                triggerData={automationTriggersData}
-                tx={txHelpers}
-                ctx={context}
-                accountIsController={accountIsController}
-                toggleForms={() => {
-                  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
-                    type: 'change-mode',
-                    currentMode: AutomationFromKind.CANCEL,
-                  })
-                }}
-              />
-            )}
-          </VaultFormContainer>
-        )}
-      </WithLoadingIndicator>
-    </WithErrorHandler>
+    <>
+      <StopLossFormControl
+        ilkData={ilkData}
+        stopLossTriggerData={stopLossTriggerData}
+        autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
+        priceInfo={priceInfo}
+        vault={vault}
+        account={account}
+        balanceInfo={balanceInfo}
+        isStopLossActive={isStopLossActive}
+        context={context}
+        txHelpers={txHelpers}
+        ethMarketPrice={ethMarketPrice}
+      />
+      <AutoSellFormControl
+        vault={vault}
+        ilkData={ilkData}
+        balanceInfo={balanceInfo}
+        autoSellTriggerData={autoSellTriggerData}
+        autoBuyTriggerData={autoBuyTriggerData}
+        stopLossTriggerData={stopLossTriggerData}
+        isAutoSellActive={isAutoSellActive}
+        context={context}
+        txHelpers={txHelpers}
+        ethMarketPrice={ethMarketPrice}
+      />
+    </>
   )
 }

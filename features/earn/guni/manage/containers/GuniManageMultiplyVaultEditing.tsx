@@ -1,5 +1,6 @@
 import { CloseVaultCard } from 'components/vault/CloseVaultCard'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Grid, Text } from 'theme-ui'
 
@@ -7,6 +8,7 @@ import { ManageMultiplyVaultState } from '../../../../multiply/manage/pipes/mana
 import { GuniManageMultiplyVaultChangesInformation } from './GuniManageMultiplyVaultChangesInformation'
 
 function CloseVaultAction(props: ManageMultiplyVaultState) {
+  const { t } = useTranslation()
   const {
     setCloseVaultTo,
     closeVaultTo,
@@ -30,18 +32,17 @@ function CloseVaultAction(props: ManageMultiplyVaultState) {
           isActive={!closeToCollateral}
         />
       </Grid>
-      <Text variant="paragraph3" sx={{ color: 'text.subtitle', mt: 3 }}>
-        To close your vault, a part of your position will be sold to payback the outstanding debt.
-        The rest of your collateral will be send to your address.
+      <Text variant="paragraph3" sx={{ color: 'neutral80', mt: 3 }}>
+        {t('vault-info-messages.closing')}
       </Text>
       <Flex sx={{ fontSize: 1, fontWeight: 'semiBold', justifyContent: 'space-between', mt: 3 }}>
-        <Text sx={{ color: 'text.subtitle' }}>Minimum {closeToTokenName} after closing</Text>
+        <Text sx={{ color: 'neutral80' }}>Minimum {closeToTokenName} after closing</Text>
         <Text>
           {formatCryptoBalance(closeToCollateral ? afterCloseToCollateral : afterCloseToDai)}{' '}
           {closeToTokenName}
           {` `}
           {closeToCollateral && (
-            <Text as="span" sx={{ color: 'text.subtitle' }}>
+            <Text as="span" sx={{ color: 'neutral80' }}>
               (${formatAmount(afterCloseToCollateralUSD, 'USD')})
             </Text>
           )}

@@ -13,6 +13,7 @@ import {
 } from '../../../../components/vault/commonMultiply/ManageMultiplyVaultConfirmation'
 import { ManageVaultCollateralAllowance } from '../../../../components/vault/commonMultiply/ManageVaultCollateralAllowance'
 import { ManageVaultDaiAllowance } from '../../../../components/vault/commonMultiply/ManageVaultDaiAllowance'
+import { extractGasDataFromState } from '../../../../helpers/extractGasDataFromState'
 import { useFeatureToggle } from '../../../../helpers/useFeatureToggle'
 import { StopLossTriggeredFormControl } from '../../../automation/protection/controls/StopLossTriggeredFormControl'
 import { ManageMultiplyVaultState } from '../pipes/manageMultiplyVault'
@@ -42,14 +43,15 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
   } = props
 
   const [reopenPositionClicked, setReopenPositionClicked] = useState(false)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
   const shouldDisplayActionButton =
     accountIsConnected &&
     (accountIsController ||
       (!accountIsController &&
         stage !== 'adjustPosition' &&
-        (otherAction === 'depositCollateral' || otherAction === 'depositDai')))
+        (otherAction === 'depositCollateral' || otherAction === 'paybackDai')))
 
+  const gasData = extractGasDataFromState(props)
   const mostRecentEvent = vaultHistory[0]
 
   const isVaultClosed =
@@ -58,7 +60,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
 
   return (
     <VaultFormContainer toggleTitle="Edit Vault">
-      {stopLossTriggered && !reopenPositionClicked && automationEnabled && isVaultClosed ? (
+      {stopLossTriggered && !reopenPositionClicked && stopLossReadEnabled && isVaultClosed ? (
         <StopLossTriggeredFormControl
           closeEvent={mostRecentEvent}
           onClick={() => {
@@ -69,7 +71,7 @@ export function ManageMultiplyVaultForm(props: ManageMultiplyVaultState) {
       ) : (
         <>
           <ManageMultiplyVaultFormHeader {...props} />
-          {isProxyStage && <VaultProxyContentBox stage={stage} />}
+          {isProxyStage && <VaultProxyContentBox stage={stage} gasData={gasData} />}
           {isEditingStage && <ManageMultiplyVaultEditing {...props} />}
           {isCollateralAllowanceStage && <ManageVaultCollateralAllowance {...props} />}
           {isDaiAllowanceStage && <ManageVaultDaiAllowance {...props} />}

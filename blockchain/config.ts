@@ -1,9 +1,9 @@
 import { ContractDesc } from '@oasisdex/web3-context'
+import { Abi } from 'helpers/types'
 import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
-import { Abi } from '../helpers/types'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
 import * as eth from './abi/ds-eth-token.json'
@@ -21,6 +21,7 @@ import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
 import * as guniToken from './abi/guni-token.json'
+import * as lidoCrvLiquidityFarmingReward from './abi/lido-crv-liquidity-farming-reward.json'
 import * as otc from './abi/matching-market.json'
 import * as mcdDog from './abi/mcd-dog.json'
 import * as mcdEnd from './abi/mcd-end.json'
@@ -28,6 +29,7 @@ import * as mcdJoinDai from './abi/mcd-join-dai.json'
 import * as mcdJug from './abi/mcd-jug.json'
 import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
+import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
@@ -49,6 +51,10 @@ const infuraProjectId =
   process.env.INFURA_PROJECT_ID || getConfig()?.publicRuntimeConfig?.infuraProjectId || ''
 const etherscanAPIKey =
   process.env.ETHERSCAN_API_KEY || getConfig()?.publicRuntimeConfig?.etherscan || ''
+const mainnetCacheUrl =
+  process.env.MAINNET_CACHE_URL ||
+  getConfig()?.publicRuntimeConfig?.mainnetCacheURL ||
+  'https://oazo-bcache.new.oasis.app/api/v1'
 
 export const charterIlks = ['INST-ETH-A', 'INST-WBTC-A']
 
@@ -94,10 +100,17 @@ export const supportedIlks = [
   'WSTETH-A',
   'WBTC-B',
   'WBTC-C',
-
+  'WSTETH-B',
   ...charterIlks,
   ...cropJoinIlks,
-]
+] as const
+
+export const ilksNotSupportedOnGoerli = [
+  'GUNIV3DAIUSDC1-A',
+  'GUNIV3DAIUSDC2-A',
+  ...charterIlks,
+  ...cropJoinIlks,
+] as const
 
 const tokensMainnet = {
   ...getCollateralTokens(mainnetAddresses, supportedIlks),
@@ -105,6 +118,12 @@ const tokensMainnet = {
   GUNIV3DAIUSDC2: contractDesc(guniToken, mainnetAddresses['GUNIV3DAIUSDC2']),
   WETH: contractDesc(eth, mainnetAddresses['ETH']),
   DAI: contractDesc(erc20, mainnetAddresses['MCD_DAI']),
+  LDO: contractDesc(erc20, '0x5A98FcBEA516Cf06857215779Fd812CA3beF1B32'),
+  MKR: contractDesc(erc20, mainnetAddresses['MCD_GOV']),
+  STETH: contractDesc(erc20, mainnetAddresses['STETH']),
+  USDP: contractDesc(erc20, '0x8E870D67F660D95d5be530380D0eC0bd388289E1'),
+  WSTETH: contractDesc(erc20, mainnetAddresses['WSTETH']),
+  RENBTC: contractDesc(erc20, mainnetAddresses['RENBTC']),
 } as Dictionary<ContractDesc>
 const protoMain = {
   id: '1',
@@ -113,6 +132,7 @@ const protoMain = {
   infuraUrl: `https://mainnet.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://mainnet.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 10,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x794e6e91555438aFc3ccF1c5076A74F42133d08D'),
   collaterals: getCollaterals(mainnetAddresses, supportedIlks),
   tokens: tokensMainnet,
@@ -127,6 +147,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0xd9fabf81Ed15ea71FBAd0C1f77529a4755a38054'),
   dssCharter: contractDesc(dssCharter, '0x0000123'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
@@ -171,7 +192,12 @@ const protoMain = {
   magicLink: {
     apiKey: '',
   },
-  cacheApi: 'https://oazo-bcache.new.oasis.app/api/v1',
+  cacheApi: mainnetCacheUrl,
+  lidoCrvLiquidityFarmingReward: contractDesc(
+    lidoCrvLiquidityFarmingReward,
+    // address from here: https://docs.lido.fi/deployed-contracts
+    '0x99ac10631f69c753ddb595d074422a0922d9056b',
+  ),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -184,6 +210,7 @@ const kovan: NetworkConfig = {
   infuraUrl: `https://kovan.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://kovan.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0xe325acB9765b02b8b418199bf9650972299235F4'),
   collaterals: getCollaterals(kovanAddresses, supportedIlks),
   tokens: {
@@ -191,6 +218,8 @@ const kovan: NetworkConfig = {
     WETH: contractDesc(eth, kovanAddresses['ETH']),
     DAI: contractDesc(erc20, kovanAddresses['MCD_DAI']),
     USDC: contractDesc(erc20, '0x198419c5c340e8De47ce4C0E4711A03664d42CB2'),
+    MKR: contractDesc(erc20, kovanAddresses['MCD_GOV']),
+    stETH: contractDesc(erc20, '0x00'),
   },
   joins: {
     ...getCollateralJoinContracts(kovanAddresses, supportedIlks),
@@ -202,6 +231,7 @@ const kovan: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, kovanAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, kovanAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, kovanAddresses.MCD_DOG),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0x0'),
   dssCharter: contractDesc(dssCharter, '0x0000'),
   dssCdpManager: contractDesc(dssCdpManager, kovanAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x303f2bf24d98325479932881657f45567b3e47a8'),
@@ -245,6 +275,7 @@ const kovan: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const goerli: NetworkConfig = {
@@ -254,12 +285,16 @@ const goerli: NetworkConfig = {
   infuraUrl: `https://goerli.infura.io/v3/${infuraProjectId}`,
   infuraUrlWS: `wss://goerli.infura.io/ws/v3/${infuraProjectId}`,
   safeConfirmations: 6,
+  openVaultSafeConfirmations: 6,
   otc: contractDesc(otc, '0x0000000000000000000000000000000000000000'),
   collaterals: getCollaterals(goerliAddresses, supportedIlks),
   tokens: {
     ...getCollateralTokens(goerliAddresses, supportedIlks),
     WETH: contractDesc(eth, goerliAddresses.ETH),
     DAI: contractDesc(erc20, goerliAddresses.MCD_DAI),
+    MKR: contractDesc(erc20, goerliAddresses['MCD_GOV']),
+    STETH: contractDesc(erc20, goerliAddresses['STETH']),
+    USDP: contractDesc(erc20, '0xd1a7a9d23f298192f8abf31243dd4f332d681d61'),
   },
   tokensMainnet: protoMain.tokensMainnet,
   joins: {
@@ -275,6 +310,7 @@ const goerli: NetworkConfig = {
   mcdEnd: contractDesc(mcdEnd, goerliAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, goerliAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, goerliAddresses.MCD_DOG),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0x23440aC6c8a10EA89132da74B705CBc6D99a805b'),
   dssCharter: contractDesc(dssCharter, '0x7ea0d7ea31C544a472b55D19112e016Ba6708288'),
   dssCdpManager: contractDesc(dssCdpManager, goerliAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x0000000000000000000000000000000000000000'),
@@ -299,10 +335,9 @@ const goerli: NetworkConfig = {
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
   serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
-  // Currently this is not supported on Goerli - no deployed contract
-  defaultExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  lowerFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
-  noFeesExchange: contractDesc(exchange, '0x1F55deAeE5e878e45dcafb9A620b383C84e4005a'),
+  defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  lowerFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
+  noFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
   // Currently this is not supported on Goerli - no deployed contract
   fmm: goerliAddresses.MCD_FLASH,
   etherscan: {
@@ -319,6 +354,7 @@ const goerli: NetworkConfig = {
     apiKey: '',
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
+  lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
 }
 
 const hardhat: NetworkConfig = {
@@ -328,7 +364,7 @@ const hardhat: NetworkConfig = {
   label: 'Hardhat',
   infuraUrl: `http://localhost:8545`,
   infuraUrlWS: `ws://localhost:8545`,
-  cacheApi: 'http://localhost:3001/v1',
+  cacheApi: 'https://oazo-bcache-mainnet-staging.new.oasis.app/api/v1',
   /* dssMultiplyProxyActions: contractDesc(
     dssMultiplyProxyActions,
     getConfig()?.publicRuntimeConfig?.multiplyProxyActions ||

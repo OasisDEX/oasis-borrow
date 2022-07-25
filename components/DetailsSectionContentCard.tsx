@@ -4,13 +4,13 @@ import React, { ReactNode, useState } from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
-import { VaultDetailsCardModal } from './vault/VaultDetails'
+import { CollRatioColor, VaultDetailsCardModal } from './vault/VaultDetails'
 import { WithArrow } from './WithArrow'
 
-type ChangeVariantType = 'positive' | 'negative'
+export type ChangeVariantType = 'positive' | 'negative'
 
-interface DetailsSectionContentCardChangePillProps {
-  value: string
+export interface DetailsSectionContentCardChangePillProps {
+  value?: string
   variant: ChangeVariantType
 }
 
@@ -20,7 +20,7 @@ interface DetailsSectionContentCardLinkProps {
   action?: () => void
 }
 
-interface ContentCardProps {
+export interface ContentCardProps {
   title: string
   value?: string
   unit?: string
@@ -30,7 +30,13 @@ interface ContentCardProps {
   modal?: string | JSX.Element
 }
 
-function DetailsSectionContentCardChangePill({
+export function getChangeVariant(collRatioColor: CollRatioColor): ChangeVariantType {
+  return collRatioColor === 'primary100' || collRatioColor === 'success100'
+    ? 'positive'
+    : 'negative'
+}
+
+export function DetailsSectionContentCardChangePill({
   value,
   variant,
 }: DetailsSectionContentCardChangePillProps) {
@@ -42,12 +48,12 @@ function DetailsSectionContentCardChangePill({
         px: 3,
         py: 1,
         ...(variant === 'positive' && {
-          color: 'onSuccess',
-          backgroundColor: 'dimSuccess',
+          color: 'success100',
+          backgroundColor: 'success10',
         }),
         ...(variant === 'negative' && {
-          color: 'onError',
-          backgroundColor: 'dimError',
+          color: 'critical100',
+          backgroundColor: 'critical10',
         }),
         borderRadius: 'mediumLarge',
       }}
@@ -62,14 +68,14 @@ function DetailsSectionContentCardLink({ label, url, action }: DetailsSectionCon
     <>
       {url && (
         <AppLink href={url} sx={{ mt: 2 }}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive100' }}>
             {label}
           </WithArrow>
         </AppLink>
       )}
       {action && (
         <Text as="span" sx={{ mt: 2, cursor: 'pointer' }} onClick={action}>
-          <WithArrow gap={1} sx={{ fontSize: 1, color: 'link' }}>
+          <WithArrow gap={1} sx={{ fontSize: 1, color: 'interactive100' }}>
             {label}
           </WithArrow>
         </Text>
@@ -124,8 +130,9 @@ export function DetailsSectionContentCard({
         alignItems: 'flex-start',
         p: '12px',
         borderRadius: 'medium',
-        backgroundColor: modal && isHighlighted ? 'secondaryAlt' : 'surface',
+        backgroundColor: modal && isHighlighted ? 'neutral30' : 'neutral10',
         transition: 'background-color 200ms',
+        wordWrap: 'break-word',
       }}
     >
       <Heading
@@ -137,7 +144,7 @@ export function DetailsSectionContentCard({
         {title}
         {modal && (
           <Icon
-            color={isHighlighted ? 'primary' : 'text.subtitle'}
+            color={isHighlighted ? 'primary100' : 'neutral80'}
             name="question_o"
             size="auto"
             width="14px"
@@ -149,7 +156,7 @@ export function DetailsSectionContentCard({
       <Text
         as="p"
         variant="header2"
-        sx={{ lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
+        sx={{ maxWidth: '100%', lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >
         {value || '-'}
@@ -160,7 +167,10 @@ export function DetailsSectionContentCard({
         )}
       </Text>
       {change && (
-        <Box sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }} {...hightlightableItemEvents}>
+        <Box
+          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          {...hightlightableItemEvents}
+        >
           <DetailsSectionContentCardChangePill {...change} />
         </Box>
       )}
@@ -168,7 +178,7 @@ export function DetailsSectionContentCard({
         <Text
           as="p"
           variant="label"
-          sx={{ pt: 2, cursor: modal ? 'pointer' : 'auto' }}
+          sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto', fontSize: '12px' }}
           {...hightlightableItemEvents}
         >
           {footnote}

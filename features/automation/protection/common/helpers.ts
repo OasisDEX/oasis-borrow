@@ -1,34 +1,39 @@
 import BigNumber from 'bignumber.js'
-
-export function getInitialVaultCollRatio({
-  liquidationRatio,
-  collateralizationRatio,
-}: {
-  liquidationRatio: BigNumber
-  collateralizationRatio: BigNumber
-}) {
-  return new BigNumber(
-    liquidationRatio.plus(collateralizationRatio).dividedBy(2).toFixed(2, BigNumber.ROUND_CEIL),
-  )
-}
+import { IlkData } from 'blockchain/ilks'
+import { UIChanges } from 'components/AppContext'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { AutomationProtectionFeatures } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
+  AutomationFromKind,
+  PROTECTION_MODE_CHANGE_SUBJECT,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
+import { TAB_CHANGE_SUBJECT } from 'features/automation/protection/common/UITypes/TabChange'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 
 export function getIsEditingProtection({
   isStopLossEnabled,
   selectedSLValue,
-  startingSlRatio,
   stopLossLevel,
   collateralActive,
   isToCollateral,
 }: {
   isStopLossEnabled: boolean
   selectedSLValue: BigNumber
-  startingSlRatio: BigNumber
   stopLossLevel: BigNumber
-  collateralActive: boolean
-  isToCollateral: boolean
+  collateralActive?: boolean
+  isToCollateral?: boolean
 }) {
+  if (
+    (collateralActive === undefined && isToCollateral === undefined) ||
+    selectedSLValue.isZero()
+  ) {
+    return false
+  }
+
   return (
-    (!isStopLossEnabled && !selectedSLValue.eq(startingSlRatio.multipliedBy(100))) ||
     (isStopLossEnabled && !selectedSLValue.eq(stopLossLevel.multipliedBy(100))) ||
     collateralActive !== isToCollateral
   )
@@ -44,4 +49,102 @@ export function getStartingSlRatio({
   initialVaultCollRatio: BigNumber
 }) {
   return isStopLossEnabled ? stopLossLevel : initialVaultCollRatio
+}
+
+export function backToVaultOverview(uiChanges: UIChanges) {
+  uiChanges.publish(TAB_CHANGE_SUBJECT, {
+    type: 'change-tab',
+    currentMode: VaultViewMode.Overview,
+  })
+  uiChanges.publish(PROTECTION_MODE_CHANGE_SUBJECT, {
+    currentMode: AutomationFromKind.ADJUST,
+    type: 'change-mode',
+  })
+}
+
+export function getSliderPercentageFill({
+  value,
+  min,
+  max,
+}: {
+  value: BigNumber
+  min: BigNumber
+  max: BigNumber
+}) {
+  return value
+    .minus(min.times(100))
+    .div(max.times(100).decimalPlaces(0, BigNumber.ROUND_DOWN).div(100).minus(min))
+}
+
+export function getActiveProtectionFeature({
+  isAutoSellOn,
+  isStopLossOn,
+  section,
+  currentProtectionFeature,
+}: {
+  isAutoSellOn: boolean
+  isStopLossOn: boolean
+  section: 'form' | 'details'
+  currentProtectionFeature?: AutomationProtectionFeatures
+}) {
+  const basicBSEnabled = useFeatureToggle('BasicBS')
+
+  if (section === 'form') {
+    return {
+      isAutoSellActive:
+        (isAutoSellOn && !isStopLossOn && currentProtectionFeature !== 'stopLoss') ||
+        currentProtectionFeature === 'autoSell',
+      isStopLossActive:
+        (isStopLossOn && currentProtectionFeature !== 'autoSell') ||
+        currentProtectionFeature === 'stopLoss',
+    }
+  }
+
+  if (section === 'details') {
+    return {
+      isAutoSellActive: isAutoSellOn || currentProtectionFeature === 'autoSell',
+      isStopLossActive: isStopLossOn || currentProtectionFeature === 'stopLoss' || !basicBSEnabled,
+    }
+  }
+
+  return {
+    isAutoSellActive: false,
+    isStopLossActive: false,
+  }
+}
+
+export function getBasicSellMinMaxValues({
+  ilkData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
+}: {
+  ilkData: IlkData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+}) {
+  if (autoBuyTriggerData.isTriggerEnabled && stopLossTriggerData.isStopLossEnabled) {
+    return {
+      min: stopLossTriggerData.stopLossLevel.times(100).plus(5),
+      max: autoBuyTriggerData.execCollRatio.minus(5),
+    }
+  }
+
+  if (autoBuyTriggerData.isTriggerEnabled) {
+    return {
+      min: ilkData.liquidationRatio.times(100).plus(5),
+      max: autoBuyTriggerData.execCollRatio.minus(5),
+    }
+  }
+
+  if (stopLossTriggerData.isStopLossEnabled) {
+    return {
+      min: stopLossTriggerData.stopLossLevel.times(100).plus(5),
+      max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
+    }
+  }
+
+  return {
+    min: ilkData.liquidationRatio.times(100).plus(5),
+    max: DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100),
+  }
 }

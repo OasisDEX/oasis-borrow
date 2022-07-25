@@ -1,36 +1,32 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { FLASH_MINT_LIMIT_PER_TX } from 'components/constants'
 import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
+import { zero } from 'helpers/zero'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
-import { IlkData } from '../../blockchain/ilks'
-import { Vault } from '../../blockchain/vaults'
-import { VaultErrorMessage } from '../../features/form/errorMessagesHandler'
-import { zero } from '../../helpers/zero'
-
 const KbLink = (
-  <AppLink sx={{ color: 'onError' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
+  <AppLink sx={{ color: 'critical100' }} href="https://kb.oasis.app/help/minimum-vault-debt-dust" />
 )
 
 interface VaultErrorsProps {
   errorMessages: VaultErrorMessage[]
-  maxGenerateAmount: BigNumber
+  maxGenerateAmount?: BigNumber
   ilkData: IlkData
-  vault?: Vault
   maxWithdrawAmount?: BigNumber
 }
 
 export function VaultErrors({
   errorMessages,
-  maxGenerateAmount,
+  maxGenerateAmount = zero,
   maxWithdrawAmount = zero,
-  ilkData: { debtFloor },
-  vault,
+  ilkData: { debtFloor, token },
 }: VaultErrorsProps) {
   const { t } = useTranslation()
   if (!errorMessages.length) return null
@@ -40,6 +36,8 @@ export function VaultErrors({
     switch (message) {
       case 'depositAmountExceedsCollateralBalance':
         return translate('deposit-amount-exceeds-collateral-balance')
+      case 'depositDaiAmountExceedsDaiBalance':
+        return translate('deposit-dai-amount-exceeds-dai-balance')
       case 'generateAmountExceedsDaiYieldFromDepositingCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-depositing-collateral')
       case 'generateAmountExceedsDaiYieldFromDepositingCollateralAtNextPrice':
@@ -70,17 +68,19 @@ export function VaultErrors({
         return translate('depositing-all-eth-balance')
       case 'ledgerWalletContractDataDisabled':
         return translate('ledger-enable-contract-data')
+      case 'insufficientEthFundsForTx':
+        return translate('insufficient-eth-balance')
       case 'exchangeError':
         return translate('exchange-error')
       case 'withdrawAmountExceedsFreeCollateral':
         return translate('withdraw-amount-exceeds-free-collateral', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token,
+          token: token,
         })
       case 'withdrawAmountExceedsFreeCollateralAtNextPrice':
         return translate('withdraw-amount-exceeds-free-collateral-at-next-price', {
           maxWithdrawAmount: formatCryptoBalance(maxWithdrawAmount),
-          token: vault?.token,
+          token: token,
         })
       case 'generateAmountExceedsDaiYieldFromTotalCollateral':
         return translate('generate-amount-exceeds-dai-yield-from-total-collateral')
@@ -126,8 +126,44 @@ export function VaultErrors({
         return translate('invalid-slippage')
       case 'afterCollRatioBelowStopLossRatio':
         return translate('after-coll-ratio-below-stop-loss-ratio')
+      case 'afterCollRatioBelowBasicSellRatio':
+        return translate('after-coll-ratio-below-basic-sell-ratio')
+      case 'afterCollRatioAboveBasicBuyRatio':
+        return translate('after-coll-ratio-above-basic-buy-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
+      case 'stopLossOnNearLiquidationRatio':
+        return translate('stop-loss-near-liquidation-ratio')
+      case 'stopLossHigherThanCurrentOrNext':
+        return translate('stop-loss-near-liquidation-ratio')
+      case 'maxDebtForSettingStopLoss':
+        return translate('stop-loss-max-debt')
+      case 'targetCollRatioExceededDustLimitCollRatio':
+        return translate('target-coll-ratio-exceeded-dust-limit-coll-ratio')
+      case 'autoSellTriggerHigherThanAutoBuyTarget':
+        return translate('auto-sell-trigger-higher-than-auto-buy-target')
+      case 'autoBuyTriggerLowerThanAutoSellTarget':
+        return translate('auto-buy-trigger-lower-than-auto-sell-target')
+      case 'stopLossTriggerHigherThanAutoBuyTarget':
+        return translate('stop-loss-trigger-higher-than-auto-buy-target')
+      case 'autoBuyMaxBuyPriceNotSpecified':
+        return (
+          <Trans
+            i18nKey="vault-errors.auto-buy-max-price-requred"
+            components={{
+              1: <strong />,
+            }}
+          />
+        )
+      case 'minimumSellPriceNotProvided':
+        return (
+          <Trans
+            i18nKey="vault-errors.minimum-sell-price-not-provided"
+            components={{
+              1: <strong />,
+            }}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }
@@ -138,5 +174,5 @@ export function VaultErrors({
     [] as (string | JSX.Element)[],
   )
 
-  return <MessageCard {...{ messages, type: 'error' }} />
+  return <MessageCard {...{ messages, type: 'error', withBullet: messages.length > 1 }} />
 }

@@ -1,12 +1,13 @@
+import { IlkData } from 'blockchain/ilks'
+import { InstiVault } from 'blockchain/instiVault'
+import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
-import { IlkData } from '../../../blockchain/ilks'
-import { InstiVault } from '../../../blockchain/instiVault'
-import { Vault } from '../../../blockchain/vaults'
-import { useAppContext } from '../../../components/AppContextProvider'
-import { useUIChanges } from '../../../helpers/uiChangesHook'
-import { getInitialVaultCollRatio, getStartingSlRatio } from './common/helpers'
-import { extractStopLossData } from './common/StopLossTriggerDataExtractor'
+import { getStartingSlRatio } from './common/helpers'
 import { ADD_FORM_CHANGE } from './common/UITypes/AddFormChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
@@ -23,11 +24,9 @@ export function useStopLossStateInitializator(
   const { uiChanges } = useAppContext()
   const { stopLossLevel, isStopLossEnabled, isToCollateral } = extractStopLossData(autoTriggersData)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
+  const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
-  const initialVaultCollRatio = getInitialVaultCollRatio({
-    liquidationRatio: ilkData.liquidationRatio,
-    collateralizationRatio: vault.collateralizationRatio,
-  })
+  const initialVaultCollRatio = zero
 
   const startingSlRatio = getStartingSlRatio({
     stopLossLevel,
@@ -52,7 +51,7 @@ export function useStopLossStateInitializator(
       type: 'tx-details',
       txDetails: {},
     })
-  }, [currentForm])
+  }, [currentForm, collateralizationRatio])
 
   useEffect(() => {
     uiChanges.publish(ADD_FORM_CHANGE, {

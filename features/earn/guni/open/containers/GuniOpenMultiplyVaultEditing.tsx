@@ -25,7 +25,7 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
       <Grid gap={4}>
         <VaultActionInput
           action="Deposit"
-          token="DAI"
+          currencyCode="DAI"
           showMax={true}
           hasAuxiliary={false}
           onSetMax={updateDepositMax!}
@@ -38,13 +38,13 @@ export function GuniOpenMultiplyVaultEditing(props: OpenGuniVaultState) {
         <Flex
           sx={{
             border: '1px solid',
-            borderColor: 'primary',
+            borderColor: 'primary100',
             borderRadius: 'large',
             justifyContent: 'center',
             py: '10px',
           }}
         >
-          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'primary' }}>
+          <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'primary100' }}>
             {maxMultiple.toNumber().toFixed(2)}x {token}
           </Text>
         </Flex>

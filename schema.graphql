@@ -1,0 +1,1670 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"An object with a globally unique `ID`."
+interface Node {
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+}
+
+type ActiveTrigger {
+    blockId: Int
+    cdpId: BigFloat
+    commandAddress: String
+    id: Int
+    logIndex: Int
+    triggerData: String
+    triggerId: BigFloat
+    txId: Int
+}
+
+"A connection to a list of `ActiveTrigger` values."
+type ActiveTriggersConnection {
+    "A list of edges which contains the `ActiveTrigger` and cursor to aid in pagination."
+    edges: [ActiveTriggersEdge!]!
+    "A list of `ActiveTrigger` objects."
+    nodes: [ActiveTrigger]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `ActiveTrigger` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `ActiveTrigger` edge in the connection."
+type ActiveTriggersEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `ActiveTrigger` at the end of the edge."
+    node: ActiveTrigger
+}
+
+"The output of our `getHistoricalTokenPrices` mutation."
+type GetHistoricalTokenPricesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    results: [GetHistoricalTokenPricesRecord]
+}
+
+"The return type of our `getHistoricalTokenPrices` mutation."
+type GetHistoricalTokenPricesRecord {
+    absoluteDate: Date
+    daysAgo: Int
+    price: BigFloat
+    referenceDate: Date
+    token: String
+}
+
+type HistoricTokenPrice {
+    price: BigFloat
+    price30: BigFloat
+    price7: BigFloat
+    price90: BigFloat
+    token: String
+}
+
+"A connection to a list of `HistoricTokenPrice` values."
+type HistoricTokenPricesConnection {
+    "A list of edges which contains the `HistoricTokenPrice` and cursor to aid in pagination."
+    edges: [HistoricTokenPricesEdge!]!
+    "A list of `HistoricTokenPrice` objects."
+    nodes: [HistoricTokenPrice]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `HistoricTokenPrice` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `HistoricTokenPrice` edge in the connection."
+type HistoricTokenPricesEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `HistoricTokenPrice` at the end of the edge."
+    node: HistoricTokenPrice
+}
+
+"The output of our `makerOracleTokenPricesInDates` mutation."
+type MakerOracleTokenPricesInDatesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    tokenPrices: [TokenPrice]
+}
+
+"The output of our `makerOracleTokenPrices` mutation."
+type MakerOracleTokenPricesPayload {
+    """
+
+    The exact same `clientMutationId` that was provided in the mutation input,
+    unchanged and unused. May be used by a client to track mutations.
+    """
+    clientMutationId: String
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    tokenPrice: TokenPrice
+}
+
+"The root mutation type which contains root level fields which mutate data."
+type Mutation {
+    getHistoricalTokenPrices(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: GetHistoricalTokenPricesInput!
+    ): GetHistoricalTokenPricesPayload
+    makerOracleTokenPrices(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: MakerOracleTokenPricesInput!
+    ): MakerOracleTokenPricesPayload
+    makerOracleTokenPricesInDates(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: MakerOracleTokenPricesInDatesInput!
+    ): MakerOracleTokenPricesInDatesPayload
+}
+
+type OraclePrice {
+    blockNumber: Int
+    nextPrice: BigFloat
+    osmAddress: String
+    price: BigFloat
+    token: String
+    txHash: String
+}
+
+"A connection to a list of `OraclePrice` values."
+type OraclePricesConnection {
+    "A list of edges which contains the `OraclePrice` and cursor to aid in pagination."
+    edges: [OraclePricesEdge!]!
+    "A list of `OraclePrice` objects."
+    nodes: [OraclePrice]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `OraclePrice` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `OraclePrice` edge in the connection."
+type OraclePricesEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `OraclePrice` at the end of the edge."
+    node: OraclePrice
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+    "When paginating forwards, the cursor to continue."
+    endCursor: Cursor
+    "When paginating forwards, are there more items?"
+    hasNextPage: Boolean!
+    "When paginating backwards, are there more items?"
+    hasPreviousPage: Boolean!
+    "When paginating backwards, the cursor to continue."
+    startCursor: Cursor
+}
+
+"The root query type which gives access points into the data universe."
+type Query implements Node {
+    "Reads and enables pagination through a set of `ActiveTrigger`."
+    allActiveTriggers(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: ActiveTriggerCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: ActiveTriggerFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `ActiveTrigger`."
+        orderBy: [ActiveTriggersOrderBy!] = [NATURAL]
+    ): ActiveTriggersConnection
+    "Reads and enables pagination through a set of `HistoricTokenPrice`."
+    allHistoricTokenPrices(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: HistoricTokenPriceCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: HistoricTokenPriceFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `HistoricTokenPrice`."
+        orderBy: [HistoricTokenPricesOrderBy!] = [NATURAL]
+    ): HistoricTokenPricesConnection
+    "Reads and enables pagination through a set of `OraclePrice`."
+    allOraclePrices(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: OraclePriceCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: OraclePriceFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `OraclePrice`."
+        orderBy: [OraclePricesOrderBy!] = [NATURAL]
+    ): OraclePricesConnection
+    "Reads and enables pagination through a set of `TriggerEvent`."
+    allTriggerEvents(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: TriggerEventCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: TriggerEventFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `TriggerEvent`."
+        orderBy: [TriggerEventsOrderBy!] = [NATURAL]
+    ): TriggerEventsConnection
+    "Reads and enables pagination through a set of `VaultEvent`."
+    allVaultEvents(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: VaultEventCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: VaultEventFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `VaultEvent`."
+        orderBy: [VaultEventsOrderBy!] = [NATURAL]
+    ): VaultEventsConnection
+    "Reads and enables pagination through a set of `VaultMultiplyEvent`."
+    allVaultMultiplyEvents(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: VaultMultiplyEventCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: VaultMultiplyEventFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `VaultMultiplyEvent`."
+        orderBy: [VaultMultiplyEventsOrderBy!] = [NATURAL]
+    ): VaultMultiplyEventsConnection
+    "Reads and enables pagination through a set of `VaultMultiplyHistory`."
+    allVaultMultiplyHistories(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor,
+        "Read all values in the set before (above) this cursor."
+        before: Cursor,
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: VaultMultiplyHistoryCondition,
+        "A filter to be used in determining which values should be returned by the collection."
+        filter: VaultMultiplyHistoryFilter,
+        "Only read the first `n` values of the set."
+        first: Int,
+        "Only read the last `n` values of the set."
+        last: Int,
+        """
+
+        Skip the first `n` values from our `after` cursor, an alternative to cursor
+        based pagination. May not be used with `last`.
+        """
+        offset: Int,
+        "The method to use when ordering `VaultMultiplyHistory`."
+        orderBy: [VaultMultiplyHistoriesOrderBy!] = [NATURAL]
+    ): VaultMultiplyHistoriesConnection
+    "Fetches an object given its globally unique `ID`."
+    node(
+        "The globally unique `ID`."
+        nodeId: ID!
+    ): Node
+    "The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`."
+    nodeId: ID!
+    """
+
+    Exposes the root query type nested one level down. This is helpful for Relay 1
+    which can only query top level fields if they are in a particular form.
+    """
+    query: Query!
+}
+
+type TokenPrice {
+    price: BigFloat
+    requestedTimestamp: Datetime
+    timestamp: Datetime
+    token: String
+}
+
+type TriggerEvent {
+    cdpId: BigFloat
+    commandAddress: String
+    eventType: String
+    hash: String
+    id: Int
+    kind: String
+    logIndex: Int
+    number: Int
+    timestamp: Datetime
+    triggerId: BigFloat
+}
+
+"A connection to a list of `TriggerEvent` values."
+type TriggerEventsConnection {
+    "A list of edges which contains the `TriggerEvent` and cursor to aid in pagination."
+    edges: [TriggerEventsEdge!]!
+    "A list of `TriggerEvent` objects."
+    nodes: [TriggerEvent]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `TriggerEvent` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `TriggerEvent` edge in the connection."
+type TriggerEventsEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `TriggerEvent` at the end of the edge."
+    node: TriggerEvent
+}
+
+type VaultEvent {
+    auctionId: String
+    blockId: Int
+    cdpId: String
+    collateral: String
+    collateralAmount: BigFloat
+    collateralPrice: BigFloat
+    collateralTaken: BigFloat
+    coveredDebt: BigFloat
+    daiAmount: BigFloat
+    depositor: String
+    hash: String
+    id: Int
+    ilk: String
+    kind: String
+    liqPenalty: BigFloat
+    logIndex: Int
+    oraclePrice: BigFloat
+    rate: BigFloat
+    remainingCollateral: BigFloat
+    remainingDebt: BigFloat
+    timestamp: Datetime
+    transferFrom: String
+    transferTo: String
+    txId: Int
+    urn: String
+    vaultCreator: String
+}
+
+"A connection to a list of `VaultEvent` values."
+type VaultEventsConnection {
+    "A list of edges which contains the `VaultEvent` and cursor to aid in pagination."
+    edges: [VaultEventsEdge!]!
+    "A list of `VaultEvent` objects."
+    nodes: [VaultEvent]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `VaultEvent` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `VaultEvent` edge in the connection."
+type VaultEventsEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `VaultEvent` at the end of the edge."
+    node: VaultEvent
+}
+
+type VaultMultiplyEvent {
+    blockId: Int
+    cdpId: String
+    collateralLeft: BigFloat
+    daiLeft: BigFloat
+    flBorrowed: BigFloat
+    flDue: BigFloat
+    hash: String
+    id: Int
+    ilk: String
+    kind: String
+    liquidationRatio: BigFloat
+    logIndex: Int
+    methodName: String
+    oazoFee: BigFloat
+    swapMinAmount: BigFloat
+    swapOptimistAmount: BigFloat
+    timestamp: Datetime
+    txId: Int
+}
+
+"A connection to a list of `VaultMultiplyEvent` values."
+type VaultMultiplyEventsConnection {
+    "A list of edges which contains the `VaultMultiplyEvent` and cursor to aid in pagination."
+    edges: [VaultMultiplyEventsEdge!]!
+    "A list of `VaultMultiplyEvent` objects."
+    nodes: [VaultMultiplyEvent]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `VaultMultiplyEvent` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `VaultMultiplyEvent` edge in the connection."
+type VaultMultiplyEventsEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `VaultMultiplyEvent` at the end of the edge."
+    node: VaultMultiplyEvent
+}
+
+"A connection to a list of `VaultMultiplyHistory` values."
+type VaultMultiplyHistoriesConnection {
+    "A list of edges which contains the `VaultMultiplyHistory` and cursor to aid in pagination."
+    edges: [VaultMultiplyHistoriesEdge!]!
+    "A list of `VaultMultiplyHistory` objects."
+    nodes: [VaultMultiplyHistory]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `VaultMultiplyHistory` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `VaultMultiplyHistory` edge in the connection."
+type VaultMultiplyHistoriesEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `VaultMultiplyHistory` at the end of the edge."
+    node: VaultMultiplyHistory
+}
+
+type VaultMultiplyHistory {
+    auctionId: String
+    beforeCollateralizationRatio: BigFloat
+    beforeDebt: BigFloat
+    beforeLiquidationPrice: BigFloat
+    beforeLockedCollateral: BigFloat
+    beforeMultiple: BigFloat
+    blockHash: String
+    blockId: Int
+    blockNumber: Int
+    bought: BigFloat
+    cdpId: String
+    collateral: String
+    collateralAmount: BigFloat
+    collateralPrice: BigFloat
+    collateralTaken: BigFloat
+    collateralizationRatio: BigFloat
+    coveredDebt: BigFloat
+    daiAmount: BigFloat
+    debt: BigFloat
+    depositCollateral: BigFloat
+    depositDai: BigFloat
+    depositor: String
+    ethPrice: BigFloat
+    exitCollateral: BigFloat
+    exitDai: BigFloat
+    gasFee: BigFloat
+    hash: String
+    id: Int
+    ilk: String
+    kind: String
+    liqPenalty: BigFloat
+    liquidationPrice: BigFloat
+    loanFee: BigFloat
+    lockedCollateral: BigFloat
+    logIndex: Int
+    marketPrice: BigFloat
+    multiple: BigFloat
+    netValue: BigFloat
+    oazoFee: BigFloat
+    oraclePrice: BigFloat
+    rate: BigFloat
+    remainingCollateral: BigFloat
+    remainingDebt: BigFloat
+    sold: BigFloat
+    timestamp: Datetime
+    totalFee: BigFloat
+    transferFrom: String
+    transferTo: String
+    txId: Int
+    urn: String
+    vaultCreator: String
+    withdrawnCollateral: BigFloat
+    withdrawnDai: BigFloat
+}
+
+"Methods to use when ordering `ActiveTrigger`."
+enum ActiveTriggersOrderBy {
+    BLOCK_ID_ASC
+    BLOCK_ID_DESC
+    CDP_ID_ASC
+    CDP_ID_DESC
+    COMMAND_ADDRESS_ASC
+    COMMAND_ADDRESS_DESC
+    ID_ASC
+    ID_DESC
+    LOG_INDEX_ASC
+    LOG_INDEX_DESC
+    NATURAL
+    TRIGGER_DATA_ASC
+    TRIGGER_DATA_DESC
+    TRIGGER_ID_ASC
+    TRIGGER_ID_DESC
+    TX_ID_ASC
+    TX_ID_DESC
+}
+
+"Methods to use when ordering `HistoricTokenPrice`."
+enum HistoricTokenPricesOrderBy {
+    NATURAL
+    PRICE_30_ASC
+    PRICE_30_DESC
+    PRICE_7_ASC
+    PRICE_7_DESC
+    PRICE_90_ASC
+    PRICE_90_DESC
+    PRICE_ASC
+    PRICE_DESC
+    TOKEN_ASC
+    TOKEN_DESC
+}
+
+"Methods to use when ordering `OraclePrice`."
+enum OraclePricesOrderBy {
+    BLOCK_NUMBER_ASC
+    BLOCK_NUMBER_DESC
+    NATURAL
+    NEXT_PRICE_ASC
+    NEXT_PRICE_DESC
+    OSM_ADDRESS_ASC
+    OSM_ADDRESS_DESC
+    PRICE_ASC
+    PRICE_DESC
+    TOKEN_ASC
+    TOKEN_DESC
+    TX_HASH_ASC
+    TX_HASH_DESC
+}
+
+"Methods to use when ordering `TriggerEvent`."
+enum TriggerEventsOrderBy {
+    CDP_ID_ASC
+    CDP_ID_DESC
+    COMMAND_ADDRESS_ASC
+    COMMAND_ADDRESS_DESC
+    EVENT_TYPE_ASC
+    EVENT_TYPE_DESC
+    HASH_ASC
+    HASH_DESC
+    ID_ASC
+    ID_DESC
+    KIND_ASC
+    KIND_DESC
+    LOG_INDEX_ASC
+    LOG_INDEX_DESC
+    NATURAL
+    NUMBER_ASC
+    NUMBER_DESC
+    TIMESTAMP_ASC
+    TIMESTAMP_DESC
+    TRIGGER_ID_ASC
+    TRIGGER_ID_DESC
+}
+
+"Methods to use when ordering `VaultEvent`."
+enum VaultEventsOrderBy {
+    AUCTION_ID_ASC
+    AUCTION_ID_DESC
+    BLOCK_ID_ASC
+    BLOCK_ID_DESC
+    CDP_ID_ASC
+    CDP_ID_DESC
+    COLLATERAL_AMOUNT_ASC
+    COLLATERAL_AMOUNT_DESC
+    COLLATERAL_ASC
+    COLLATERAL_DESC
+    COLLATERAL_PRICE_ASC
+    COLLATERAL_PRICE_DESC
+    COLLATERAL_TAKEN_ASC
+    COLLATERAL_TAKEN_DESC
+    COVERED_DEBT_ASC
+    COVERED_DEBT_DESC
+    DAI_AMOUNT_ASC
+    DAI_AMOUNT_DESC
+    DEPOSITOR_ASC
+    DEPOSITOR_DESC
+    HASH_ASC
+    HASH_DESC
+    ID_ASC
+    ID_DESC
+    ILK_ASC
+    ILK_DESC
+    KIND_ASC
+    KIND_DESC
+    LIQ_PENALTY_ASC
+    LIQ_PENALTY_DESC
+    LOG_INDEX_ASC
+    LOG_INDEX_DESC
+    NATURAL
+    ORACLE_PRICE_ASC
+    ORACLE_PRICE_DESC
+    RATE_ASC
+    RATE_DESC
+    REMAINING_COLLATERAL_ASC
+    REMAINING_COLLATERAL_DESC
+    REMAINING_DEBT_ASC
+    REMAINING_DEBT_DESC
+    TIMESTAMP_ASC
+    TIMESTAMP_DESC
+    TRANSFER_FROM_ASC
+    TRANSFER_FROM_DESC
+    TRANSFER_TO_ASC
+    TRANSFER_TO_DESC
+    TX_ID_ASC
+    TX_ID_DESC
+    URN_ASC
+    URN_DESC
+    VAULT_CREATOR_ASC
+    VAULT_CREATOR_DESC
+}
+
+"Methods to use when ordering `VaultMultiplyEvent`."
+enum VaultMultiplyEventsOrderBy {
+    BLOCK_ID_ASC
+    BLOCK_ID_DESC
+    CDP_ID_ASC
+    CDP_ID_DESC
+    COLLATERAL_LEFT_ASC
+    COLLATERAL_LEFT_DESC
+    DAI_LEFT_ASC
+    DAI_LEFT_DESC
+    FL_BORROWED_ASC
+    FL_BORROWED_DESC
+    FL_DUE_ASC
+    FL_DUE_DESC
+    HASH_ASC
+    HASH_DESC
+    ID_ASC
+    ID_DESC
+    ILK_ASC
+    ILK_DESC
+    KIND_ASC
+    KIND_DESC
+    LIQUIDATION_RATIO_ASC
+    LIQUIDATION_RATIO_DESC
+    LOG_INDEX_ASC
+    LOG_INDEX_DESC
+    METHOD_NAME_ASC
+    METHOD_NAME_DESC
+    NATURAL
+    OAZO_FEE_ASC
+    OAZO_FEE_DESC
+    SWAP_MIN_AMOUNT_ASC
+    SWAP_MIN_AMOUNT_DESC
+    SWAP_OPTIMIST_AMOUNT_ASC
+    SWAP_OPTIMIST_AMOUNT_DESC
+    TIMESTAMP_ASC
+    TIMESTAMP_DESC
+    TX_ID_ASC
+    TX_ID_DESC
+}
+
+"Methods to use when ordering `VaultMultiplyHistory`."
+enum VaultMultiplyHistoriesOrderBy {
+    AUCTION_ID_ASC
+    AUCTION_ID_DESC
+    BEFORE_COLLATERALIZATION_RATIO_ASC
+    BEFORE_COLLATERALIZATION_RATIO_DESC
+    BEFORE_DEBT_ASC
+    BEFORE_DEBT_DESC
+    BEFORE_LIQUIDATION_PRICE_ASC
+    BEFORE_LIQUIDATION_PRICE_DESC
+    BEFORE_LOCKED_COLLATERAL_ASC
+    BEFORE_LOCKED_COLLATERAL_DESC
+    BEFORE_MULTIPLE_ASC
+    BEFORE_MULTIPLE_DESC
+    BLOCK_HASH_ASC
+    BLOCK_HASH_DESC
+    BLOCK_ID_ASC
+    BLOCK_ID_DESC
+    BLOCK_NUMBER_ASC
+    BLOCK_NUMBER_DESC
+    BOUGHT_ASC
+    BOUGHT_DESC
+    CDP_ID_ASC
+    CDP_ID_DESC
+    COLLATERALIZATION_RATIO_ASC
+    COLLATERALIZATION_RATIO_DESC
+    COLLATERAL_AMOUNT_ASC
+    COLLATERAL_AMOUNT_DESC
+    COLLATERAL_ASC
+    COLLATERAL_DESC
+    COLLATERAL_PRICE_ASC
+    COLLATERAL_PRICE_DESC
+    COLLATERAL_TAKEN_ASC
+    COLLATERAL_TAKEN_DESC
+    COVERED_DEBT_ASC
+    COVERED_DEBT_DESC
+    DAI_AMOUNT_ASC
+    DAI_AMOUNT_DESC
+    DEBT_ASC
+    DEBT_DESC
+    DEPOSITOR_ASC
+    DEPOSITOR_DESC
+    DEPOSIT_COLLATERAL_ASC
+    DEPOSIT_COLLATERAL_DESC
+    DEPOSIT_DAI_ASC
+    DEPOSIT_DAI_DESC
+    ETH_PRICE_ASC
+    ETH_PRICE_DESC
+    EXIT_COLLATERAL_ASC
+    EXIT_COLLATERAL_DESC
+    EXIT_DAI_ASC
+    EXIT_DAI_DESC
+    GAS_FEE_ASC
+    GAS_FEE_DESC
+    HASH_ASC
+    HASH_DESC
+    ID_ASC
+    ID_DESC
+    ILK_ASC
+    ILK_DESC
+    KIND_ASC
+    KIND_DESC
+    LIQUIDATION_PRICE_ASC
+    LIQUIDATION_PRICE_DESC
+    LIQ_PENALTY_ASC
+    LIQ_PENALTY_DESC
+    LOAN_FEE_ASC
+    LOAN_FEE_DESC
+    LOCKED_COLLATERAL_ASC
+    LOCKED_COLLATERAL_DESC
+    LOG_INDEX_ASC
+    LOG_INDEX_DESC
+    MARKET_PRICE_ASC
+    MARKET_PRICE_DESC
+    MULTIPLE_ASC
+    MULTIPLE_DESC
+    NATURAL
+    NET_VALUE_ASC
+    NET_VALUE_DESC
+    OAZO_FEE_ASC
+    OAZO_FEE_DESC
+    ORACLE_PRICE_ASC
+    ORACLE_PRICE_DESC
+    RATE_ASC
+    RATE_DESC
+    REMAINING_COLLATERAL_ASC
+    REMAINING_COLLATERAL_DESC
+    REMAINING_DEBT_ASC
+    REMAINING_DEBT_DESC
+    SOLD_ASC
+    SOLD_DESC
+    TIMESTAMP_ASC
+    TIMESTAMP_DESC
+    TOTAL_FEE_ASC
+    TOTAL_FEE_DESC
+    TRANSFER_FROM_ASC
+    TRANSFER_FROM_DESC
+    TRANSFER_TO_ASC
+    TRANSFER_TO_DESC
+    TX_ID_ASC
+    TX_ID_DESC
+    URN_ASC
+    URN_DESC
+    VAULT_CREATOR_ASC
+    VAULT_CREATOR_DESC
+    WITHDRAWN_COLLATERAL_ASC
+    WITHDRAWN_COLLATERAL_DESC
+    WITHDRAWN_DAI_ASC
+    WITHDRAWN_DAI_DESC
+}
+
+"A floating point number that requires more precision than IEEE 754 binary 64"
+scalar BigFloat
+
+"A location in a connection that can be used for resuming pagination."
+scalar Cursor
+
+"The day, does not include a time."
+scalar Date
+
+"""
+
+A point in time as described by the [ISO
+8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone.
+"""
+scalar Datetime
+
+"""
+
+A condition to be used against `ActiveTrigger` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input ActiveTriggerCondition {
+    "Checks for equality with the object’s `blockId` field."
+    blockId: Int
+    "Checks for equality with the object’s `cdpId` field."
+    cdpId: BigFloat
+    "Checks for equality with the object’s `commandAddress` field."
+    commandAddress: String
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `logIndex` field."
+    logIndex: Int
+    "Checks for equality with the object’s `triggerData` field."
+    triggerData: String
+    "Checks for equality with the object’s `triggerId` field."
+    triggerId: BigFloat
+    "Checks for equality with the object’s `txId` field."
+    txId: Int
+}
+
+"A filter to be used against `ActiveTrigger` object types. All fields are combined with a logical ‘and.’"
+input ActiveTriggerFilter {
+    "Checks for all expressions in this list."
+    and: [ActiveTriggerFilter!]
+    "Filter by the object’s `blockId` field."
+    blockId: IntFilter
+    "Filter by the object’s `cdpId` field."
+    cdpId: BigFloatFilter
+    "Filter by the object’s `commandAddress` field."
+    commandAddress: StringFilter
+    "Filter by the object’s `id` field."
+    id: IntFilter
+    "Filter by the object’s `logIndex` field."
+    logIndex: IntFilter
+    "Negates the expression."
+    not: ActiveTriggerFilter
+    "Checks for any expressions in this list."
+    or: [ActiveTriggerFilter!]
+    "Filter by the object’s `triggerData` field."
+    triggerData: StringFilter
+    "Filter by the object’s `triggerId` field."
+    triggerId: BigFloatFilter
+    "Filter by the object’s `txId` field."
+    txId: IntFilter
+}
+
+"A filter to be used against BigFloat fields. All fields are combined with a logical ‘and.’"
+input BigFloatFilter {
+    "Not equal to the specified value, treating null like an ordinary value."
+    distinctFrom: BigFloat
+    "Equal to the specified value."
+    equalTo: BigFloat
+    "Greater than the specified value."
+    greaterThan: BigFloat
+    "Greater than or equal to the specified value."
+    greaterThanOrEqualTo: BigFloat
+    "Included in the specified list."
+    in: [BigFloat!]
+    "Is null (if `true` is specified) or is not null (if `false` is specified)."
+    isNull: Boolean
+    "Less than the specified value."
+    lessThan: BigFloat
+    "Less than or equal to the specified value."
+    lessThanOrEqualTo: BigFloat
+    "Equal to the specified value, treating null like an ordinary value."
+    notDistinctFrom: BigFloat
+    "Not equal to the specified value."
+    notEqualTo: BigFloat
+    "Not included in the specified list."
+    notIn: [BigFloat!]
+}
+
+"A filter to be used against Datetime fields. All fields are combined with a logical ‘and.’"
+input DatetimeFilter {
+    "Not equal to the specified value, treating null like an ordinary value."
+    distinctFrom: Datetime
+    "Equal to the specified value."
+    equalTo: Datetime
+    "Greater than the specified value."
+    greaterThan: Datetime
+    "Greater than or equal to the specified value."
+    greaterThanOrEqualTo: Datetime
+    "Included in the specified list."
+    in: [Datetime!]
+    "Is null (if `true` is specified) or is not null (if `false` is specified)."
+    isNull: Boolean
+    "Less than the specified value."
+    lessThan: Datetime
+    "Less than or equal to the specified value."
+    lessThanOrEqualTo: Datetime
+    "Equal to the specified value, treating null like an ordinary value."
+    notDistinctFrom: Datetime
+    "Not equal to the specified value."
+    notEqualTo: Datetime
+    "Not included in the specified list."
+    notIn: [Datetime!]
+}
+
+"All input for the `getHistoricalTokenPrices` mutation."
+input GetHistoricalTokenPricesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    days: [Int]
+    referenceDate: Date
+    token: String
+}
+
+"""
+
+A condition to be used against `HistoricTokenPrice` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input HistoricTokenPriceCondition {
+    "Checks for equality with the object’s `price` field."
+    price: BigFloat
+    "Checks for equality with the object’s `price30` field."
+    price30: BigFloat
+    "Checks for equality with the object’s `price7` field."
+    price7: BigFloat
+    "Checks for equality with the object’s `price90` field."
+    price90: BigFloat
+    "Checks for equality with the object’s `token` field."
+    token: String
+}
+
+"A filter to be used against `HistoricTokenPrice` object types. All fields are combined with a logical ‘and.’"
+input HistoricTokenPriceFilter {
+    "Checks for all expressions in this list."
+    and: [HistoricTokenPriceFilter!]
+    "Negates the expression."
+    not: HistoricTokenPriceFilter
+    "Checks for any expressions in this list."
+    or: [HistoricTokenPriceFilter!]
+    "Filter by the object’s `price` field."
+    price: BigFloatFilter
+    "Filter by the object’s `price30` field."
+    price30: BigFloatFilter
+    "Filter by the object’s `price7` field."
+    price7: BigFloatFilter
+    "Filter by the object’s `price90` field."
+    price90: BigFloatFilter
+    "Filter by the object’s `token` field."
+    token: StringFilter
+}
+
+"A filter to be used against Int fields. All fields are combined with a logical ‘and.’"
+input IntFilter {
+    "Not equal to the specified value, treating null like an ordinary value."
+    distinctFrom: Int
+    "Equal to the specified value."
+    equalTo: Int
+    "Greater than the specified value."
+    greaterThan: Int
+    "Greater than or equal to the specified value."
+    greaterThanOrEqualTo: Int
+    "Included in the specified list."
+    in: [Int!]
+    "Is null (if `true` is specified) or is not null (if `false` is specified)."
+    isNull: Boolean
+    "Less than the specified value."
+    lessThan: Int
+    "Less than or equal to the specified value."
+    lessThanOrEqualTo: Int
+    "Equal to the specified value, treating null like an ordinary value."
+    notDistinctFrom: Int
+    "Not equal to the specified value."
+    notEqualTo: Int
+    "Not included in the specified list."
+    notIn: [Int!]
+}
+
+"All input for the `makerOracleTokenPricesInDates` mutation."
+input MakerOracleTokenPricesInDatesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    dates: [Datetime]
+    token: String
+}
+
+"All input for the `makerOracleTokenPrices` mutation."
+input MakerOracleTokenPricesInput {
+    """
+
+    An arbitrary string value with no semantic meaning. Will be included in the
+    payload verbatim. May be used to track mutations by the client.
+    """
+    clientMutationId: String
+    date: Datetime
+    token: String
+}
+
+"""
+
+A condition to be used against `OraclePrice` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input OraclePriceCondition {
+    "Checks for equality with the object’s `blockNumber` field."
+    blockNumber: Int
+    "Checks for equality with the object’s `nextPrice` field."
+    nextPrice: BigFloat
+    "Checks for equality with the object’s `osmAddress` field."
+    osmAddress: String
+    "Checks for equality with the object’s `price` field."
+    price: BigFloat
+    "Checks for equality with the object’s `token` field."
+    token: String
+    "Checks for equality with the object’s `txHash` field."
+    txHash: String
+}
+
+"A filter to be used against `OraclePrice` object types. All fields are combined with a logical ‘and.’"
+input OraclePriceFilter {
+    "Checks for all expressions in this list."
+    and: [OraclePriceFilter!]
+    "Filter by the object’s `blockNumber` field."
+    blockNumber: IntFilter
+    "Filter by the object’s `nextPrice` field."
+    nextPrice: BigFloatFilter
+    "Negates the expression."
+    not: OraclePriceFilter
+    "Checks for any expressions in this list."
+    or: [OraclePriceFilter!]
+    "Filter by the object’s `osmAddress` field."
+    osmAddress: StringFilter
+    "Filter by the object’s `price` field."
+    price: BigFloatFilter
+    "Filter by the object’s `token` field."
+    token: StringFilter
+    "Filter by the object’s `txHash` field."
+    txHash: StringFilter
+}
+
+"A filter to be used against String fields. All fields are combined with a logical ‘and.’"
+input StringFilter {
+    "Not equal to the specified value, treating null like an ordinary value."
+    distinctFrom: String
+    "Ends with the specified string (case-sensitive)."
+    endsWith: String
+    "Ends with the specified string (case-insensitive)."
+    endsWithInsensitive: String
+    "Equal to the specified value."
+    equalTo: String
+    "Greater than the specified value."
+    greaterThan: String
+    "Greater than or equal to the specified value."
+    greaterThanOrEqualTo: String
+    "Included in the specified list."
+    in: [String!]
+    "Contains the specified string (case-sensitive)."
+    includes: String
+    "Contains the specified string (case-insensitive)."
+    includesInsensitive: String
+    "Is null (if `true` is specified) or is not null (if `false` is specified)."
+    isNull: Boolean
+    "Less than the specified value."
+    lessThan: String
+    "Less than or equal to the specified value."
+    lessThanOrEqualTo: String
+    "Matches the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters."
+    like: String
+    "Matches the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters."
+    likeInsensitive: String
+    "Equal to the specified value, treating null like an ordinary value."
+    notDistinctFrom: String
+    "Does not end with the specified string (case-sensitive)."
+    notEndsWith: String
+    "Does not end with the specified string (case-insensitive)."
+    notEndsWithInsensitive: String
+    "Not equal to the specified value."
+    notEqualTo: String
+    "Not included in the specified list."
+    notIn: [String!]
+    "Does not contain the specified string (case-sensitive)."
+    notIncludes: String
+    "Does not contain the specified string (case-insensitive)."
+    notIncludesInsensitive: String
+    "Does not match the specified pattern (case-sensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters."
+    notLike: String
+    "Does not match the specified pattern (case-insensitive). An underscore (_) matches any single character; a percent sign (%) matches any sequence of zero or more characters."
+    notLikeInsensitive: String
+    "Does not match the specified pattern using the SQL standard's definition of a regular expression."
+    notSimilarTo: String
+    "Does not start with the specified string (case-sensitive)."
+    notStartsWith: String
+    "Does not start with the specified string (case-insensitive)."
+    notStartsWithInsensitive: String
+    "Matches the specified pattern using the SQL standard's definition of a regular expression."
+    similarTo: String
+    "Starts with the specified string (case-sensitive)."
+    startsWith: String
+    "Starts with the specified string (case-insensitive)."
+    startsWithInsensitive: String
+}
+
+"""
+
+A condition to be used against `TriggerEvent` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input TriggerEventCondition {
+    "Checks for equality with the object’s `cdpId` field."
+    cdpId: BigFloat
+    "Checks for equality with the object’s `commandAddress` field."
+    commandAddress: String
+    "Checks for equality with the object’s `eventType` field."
+    eventType: String
+    "Checks for equality with the object’s `hash` field."
+    hash: String
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `kind` field."
+    kind: String
+    "Checks for equality with the object’s `logIndex` field."
+    logIndex: Int
+    "Checks for equality with the object’s `number` field."
+    number: Int
+    "Checks for equality with the object’s `timestamp` field."
+    timestamp: Datetime
+    "Checks for equality with the object’s `triggerId` field."
+    triggerId: BigFloat
+}
+
+"A filter to be used against `TriggerEvent` object types. All fields are combined with a logical ‘and.’"
+input TriggerEventFilter {
+    "Checks for all expressions in this list."
+    and: [TriggerEventFilter!]
+    "Filter by the object’s `cdpId` field."
+    cdpId: BigFloatFilter
+    "Filter by the object’s `commandAddress` field."
+    commandAddress: StringFilter
+    "Filter by the object’s `eventType` field."
+    eventType: StringFilter
+    "Filter by the object’s `hash` field."
+    hash: StringFilter
+    "Filter by the object’s `id` field."
+    id: IntFilter
+    "Filter by the object’s `kind` field."
+    kind: StringFilter
+    "Filter by the object’s `logIndex` field."
+    logIndex: IntFilter
+    "Negates the expression."
+    not: TriggerEventFilter
+    "Filter by the object’s `number` field."
+    number: IntFilter
+    "Checks for any expressions in this list."
+    or: [TriggerEventFilter!]
+    "Filter by the object’s `timestamp` field."
+    timestamp: DatetimeFilter
+    "Filter by the object’s `triggerId` field."
+    triggerId: BigFloatFilter
+}
+
+"""
+
+A condition to be used against `VaultEvent` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+input VaultEventCondition {
+    "Checks for equality with the object’s `auctionId` field."
+    auctionId: String
+    "Checks for equality with the object’s `blockId` field."
+    blockId: Int
+    "Checks for equality with the object’s `cdpId` field."
+    cdpId: String
+    "Checks for equality with the object’s `collateral` field."
+    collateral: String
+    "Checks for equality with the object’s `collateralAmount` field."
+    collateralAmount: BigFloat
+    "Checks for equality with the object’s `collateralPrice` field."
+    collateralPrice: BigFloat
+    "Checks for equality with the object’s `collateralTaken` field."
+    collateralTaken: BigFloat
+    "Checks for equality with the object’s `coveredDebt` field."
+    coveredDebt: BigFloat
+    "Checks for equality with the object’s `daiAmount` field."
+    daiAmount: BigFloat
+    "Checks for equality with the object’s `depositor` field."
+    depositor: String
+    "Checks for equality with the object’s `hash` field."
+    hash: String
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `ilk` field."
+    ilk: String
+    "Checks for equality with the object’s `kind` field."
+    kind: String
+    "Checks for equality with the object’s `liqPenalty` field."
+    liqPenalty: BigFloat
+    "Checks for equality with the object’s `logIndex` field."
+    logIndex: Int
+    "Checks for equality with the object’s `oraclePrice` field."
+    oraclePrice: BigFloat
+    "Checks for equality with the object’s `rate` field."
+    rate: BigFloat
+    "Checks for equality with the object’s `remainingCollateral` field."
+    remainingCollateral: BigFloat
+    "Checks for equality with the object’s `remainingDebt` field."
+    remainingDebt: BigFloat
+    "Checks for equality with the object’s `timestamp` field."
+    timestamp: Datetime
+    "Checks for equality with the object’s `transferFrom` field."
+    transferFrom: String
+    "Checks for equality with the object’s `transferTo` field."
+    transferTo: String
+    "Checks for equality with the object’s `txId` field."
+    txId: Int
+    "Checks for equality with the object’s `urn` field."
+    urn: String
+    "Checks for equality with the object’s `vaultCreator` field."
+    vaultCreator: String
+}
+
+"A filter to be used against `VaultEvent` object types. All fields are combined with a logical ‘and.’"
+input VaultEventFilter {
+    "Checks for all expressions in this list."
+    and: [VaultEventFilter!]
+    "Filter by the object’s `auctionId` field."
+    auctionId: StringFilter
+    "Filter by the object’s `blockId` field."
+    blockId: IntFilter
+    "Filter by the object’s `cdpId` field."
+    cdpId: StringFilter
+    "Filter by the object’s `collateral` field."
+    collateral: StringFilter
+    "Filter by the object’s `collateralAmount` field."
+    collateralAmount: BigFloatFilter
+    "Filter by the object’s `collateralPrice` field."
+    collateralPrice: BigFloatFilter
+    "Filter by the object’s `collateralTaken` field."
+    collateralTaken: BigFloatFilter
+    "Filter by the object’s `coveredDebt` field."
+    coveredDebt: BigFloatFilter
+    "Filter by the object’s `daiAmount` field."
+    daiAmount: BigFloatFilter
+    "Filter by the object’s `depositor` field."
+    depositor: StringFilter
+    "Filter by the object’s `hash` field."
+    hash: StringFilter
+    "Filter by the object’s `id` field."
+    id: IntFilter
+    "Filter by the object’s `ilk` field."
+    ilk: StringFilter
+    "Filter by the object’s `kind` field."
+    kind: StringFilter
+    "Filter by the object’s `liqPenalty` field."
+    liqPenalty: BigFloatFilter
+    "Filter by the object’s `logIndex` field."
+    logIndex: IntFilter
+    "Negates the expression."
+    not: VaultEventFilter
+    "Checks for any expressions in this list."
+    or: [VaultEventFilter!]
+    "Filter by the object’s `oraclePrice` field."
+    oraclePrice: BigFloatFilter
+    "Filter by the object’s `rate` field."
+    rate: BigFloatFilter
+    "Filter by the object’s `remainingCollateral` field."
+    remainingCollateral: BigFloatFilter
+    "Filter by the object’s `remainingDebt` field."
+    remainingDebt: BigFloatFilter
+    "Filter by the object’s `timestamp` field."
+    timestamp: DatetimeFilter
+    "Filter by the object’s `transferFrom` field."
+    transferFrom: StringFilter
+    "Filter by the object’s `transferTo` field."
+    transferTo: StringFilter
+    "Filter by the object’s `txId` field."
+    txId: IntFilter
+    "Filter by the object’s `urn` field."
+    urn: StringFilter
+    "Filter by the object’s `vaultCreator` field."
+    vaultCreator: StringFilter
+}
+
+"""
+
+A condition to be used against `VaultMultiplyEvent` object types. All fields are
+tested for equality and combined with a logical ‘and.’
+"""
+input VaultMultiplyEventCondition {
+    "Checks for equality with the object’s `blockId` field."
+    blockId: Int
+    "Checks for equality with the object’s `cdpId` field."
+    cdpId: String
+    "Checks for equality with the object’s `collateralLeft` field."
+    collateralLeft: BigFloat
+    "Checks for equality with the object’s `daiLeft` field."
+    daiLeft: BigFloat
+    "Checks for equality with the object’s `flBorrowed` field."
+    flBorrowed: BigFloat
+    "Checks for equality with the object’s `flDue` field."
+    flDue: BigFloat
+    "Checks for equality with the object’s `hash` field."
+    hash: String
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `ilk` field."
+    ilk: String
+    "Checks for equality with the object’s `kind` field."
+    kind: String
+    "Checks for equality with the object’s `liquidationRatio` field."
+    liquidationRatio: BigFloat
+    "Checks for equality with the object’s `logIndex` field."
+    logIndex: Int
+    "Checks for equality with the object’s `methodName` field."
+    methodName: String
+    "Checks for equality with the object’s `oazoFee` field."
+    oazoFee: BigFloat
+    "Checks for equality with the object’s `swapMinAmount` field."
+    swapMinAmount: BigFloat
+    "Checks for equality with the object’s `swapOptimistAmount` field."
+    swapOptimistAmount: BigFloat
+    "Checks for equality with the object’s `timestamp` field."
+    timestamp: Datetime
+    "Checks for equality with the object’s `txId` field."
+    txId: Int
+}
+
+"A filter to be used against `VaultMultiplyEvent` object types. All fields are combined with a logical ‘and.’"
+input VaultMultiplyEventFilter {
+    "Checks for all expressions in this list."
+    and: [VaultMultiplyEventFilter!]
+    "Filter by the object’s `blockId` field."
+    blockId: IntFilter
+    "Filter by the object’s `cdpId` field."
+    cdpId: StringFilter
+    "Filter by the object’s `collateralLeft` field."
+    collateralLeft: BigFloatFilter
+    "Filter by the object’s `daiLeft` field."
+    daiLeft: BigFloatFilter
+    "Filter by the object’s `flBorrowed` field."
+    flBorrowed: BigFloatFilter
+    "Filter by the object’s `flDue` field."
+    flDue: BigFloatFilter
+    "Filter by the object’s `hash` field."
+    hash: StringFilter
+    "Filter by the object’s `id` field."
+    id: IntFilter
+    "Filter by the object’s `ilk` field."
+    ilk: StringFilter
+    "Filter by the object’s `kind` field."
+    kind: StringFilter
+    "Filter by the object’s `liquidationRatio` field."
+    liquidationRatio: BigFloatFilter
+    "Filter by the object’s `logIndex` field."
+    logIndex: IntFilter
+    "Filter by the object’s `methodName` field."
+    methodName: StringFilter
+    "Negates the expression."
+    not: VaultMultiplyEventFilter
+    "Filter by the object’s `oazoFee` field."
+    oazoFee: BigFloatFilter
+    "Checks for any expressions in this list."
+    or: [VaultMultiplyEventFilter!]
+    "Filter by the object’s `swapMinAmount` field."
+    swapMinAmount: BigFloatFilter
+    "Filter by the object’s `swapOptimistAmount` field."
+    swapOptimistAmount: BigFloatFilter
+    "Filter by the object’s `timestamp` field."
+    timestamp: DatetimeFilter
+    "Filter by the object’s `txId` field."
+    txId: IntFilter
+}
+
+"""
+
+A condition to be used against `VaultMultiplyHistory` object types. All fields
+are tested for equality and combined with a logical ‘and.’
+"""
+input VaultMultiplyHistoryCondition {
+    "Checks for equality with the object’s `auctionId` field."
+    auctionId: String
+    "Checks for equality with the object’s `beforeCollateralizationRatio` field."
+    beforeCollateralizationRatio: BigFloat
+    "Checks for equality with the object’s `beforeDebt` field."
+    beforeDebt: BigFloat
+    "Checks for equality with the object’s `beforeLiquidationPrice` field."
+    beforeLiquidationPrice: BigFloat
+    "Checks for equality with the object’s `beforeLockedCollateral` field."
+    beforeLockedCollateral: BigFloat
+    "Checks for equality with the object’s `beforeMultiple` field."
+    beforeMultiple: BigFloat
+    "Checks for equality with the object’s `blockHash` field."
+    blockHash: String
+    "Checks for equality with the object’s `blockId` field."
+    blockId: Int
+    "Checks for equality with the object’s `blockNumber` field."
+    blockNumber: Int
+    "Checks for equality with the object’s `bought` field."
+    bought: BigFloat
+    "Checks for equality with the object’s `cdpId` field."
+    cdpId: String
+    "Checks for equality with the object’s `collateral` field."
+    collateral: String
+    "Checks for equality with the object’s `collateralAmount` field."
+    collateralAmount: BigFloat
+    "Checks for equality with the object’s `collateralPrice` field."
+    collateralPrice: BigFloat
+    "Checks for equality with the object’s `collateralTaken` field."
+    collateralTaken: BigFloat
+    "Checks for equality with the object’s `collateralizationRatio` field."
+    collateralizationRatio: BigFloat
+    "Checks for equality with the object’s `coveredDebt` field."
+    coveredDebt: BigFloat
+    "Checks for equality with the object’s `daiAmount` field."
+    daiAmount: BigFloat
+    "Checks for equality with the object’s `debt` field."
+    debt: BigFloat
+    "Checks for equality with the object’s `depositCollateral` field."
+    depositCollateral: BigFloat
+    "Checks for equality with the object’s `depositDai` field."
+    depositDai: BigFloat
+    "Checks for equality with the object’s `depositor` field."
+    depositor: String
+    "Checks for equality with the object’s `ethPrice` field."
+    ethPrice: BigFloat
+    "Checks for equality with the object’s `exitCollateral` field."
+    exitCollateral: BigFloat
+    "Checks for equality with the object’s `exitDai` field."
+    exitDai: BigFloat
+    "Checks for equality with the object’s `gasFee` field."
+    gasFee: BigFloat
+    "Checks for equality with the object’s `hash` field."
+    hash: String
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `ilk` field."
+    ilk: String
+    "Checks for equality with the object’s `kind` field."
+    kind: String
+    "Checks for equality with the object’s `liqPenalty` field."
+    liqPenalty: BigFloat
+    "Checks for equality with the object’s `liquidationPrice` field."
+    liquidationPrice: BigFloat
+    "Checks for equality with the object’s `loanFee` field."
+    loanFee: BigFloat
+    "Checks for equality with the object’s `lockedCollateral` field."
+    lockedCollateral: BigFloat
+    "Checks for equality with the object’s `logIndex` field."
+    logIndex: Int
+    "Checks for equality with the object’s `marketPrice` field."
+    marketPrice: BigFloat
+    "Checks for equality with the object’s `multiple` field."
+    multiple: BigFloat
+    "Checks for equality with the object’s `netValue` field."
+    netValue: BigFloat
+    "Checks for equality with the object’s `oazoFee` field."
+    oazoFee: BigFloat
+    "Checks for equality with the object’s `oraclePrice` field."
+    oraclePrice: BigFloat
+    "Checks for equality with the object’s `rate` field."
+    rate: BigFloat
+    "Checks for equality with the object’s `remainingCollateral` field."
+    remainingCollateral: BigFloat
+    "Checks for equality with the object’s `remainingDebt` field."
+    remainingDebt: BigFloat
+    "Checks for equality with the object’s `sold` field."
+    sold: BigFloat
+    "Checks for equality with the object’s `timestamp` field."
+    timestamp: Datetime
+    "Checks for equality with the object’s `totalFee` field."
+    totalFee: BigFloat
+    "Checks for equality with the object’s `transferFrom` field."
+    transferFrom: String
+    "Checks for equality with the object’s `transferTo` field."
+    transferTo: String
+    "Checks for equality with the object’s `txId` field."
+    txId: Int
+    "Checks for equality with the object’s `urn` field."
+    urn: String
+    "Checks for equality with the object’s `vaultCreator` field."
+    vaultCreator: String
+    "Checks for equality with the object’s `withdrawnCollateral` field."
+    withdrawnCollateral: BigFloat
+    "Checks for equality with the object’s `withdrawnDai` field."
+    withdrawnDai: BigFloat
+}
+
+"A filter to be used against `VaultMultiplyHistory` object types. All fields are combined with a logical ‘and.’"
+input VaultMultiplyHistoryFilter {
+    "Checks for all expressions in this list."
+    and: [VaultMultiplyHistoryFilter!]
+    "Filter by the object’s `auctionId` field."
+    auctionId: StringFilter
+    "Filter by the object’s `beforeCollateralizationRatio` field."
+    beforeCollateralizationRatio: BigFloatFilter
+    "Filter by the object’s `beforeDebt` field."
+    beforeDebt: BigFloatFilter
+    "Filter by the object’s `beforeLiquidationPrice` field."
+    beforeLiquidationPrice: BigFloatFilter
+    "Filter by the object’s `beforeLockedCollateral` field."
+    beforeLockedCollateral: BigFloatFilter
+    "Filter by the object’s `beforeMultiple` field."
+    beforeMultiple: BigFloatFilter
+    "Filter by the object’s `blockHash` field."
+    blockHash: StringFilter
+    "Filter by the object’s `blockId` field."
+    blockId: IntFilter
+    "Filter by the object’s `blockNumber` field."
+    blockNumber: IntFilter
+    "Filter by the object’s `bought` field."
+    bought: BigFloatFilter
+    "Filter by the object’s `cdpId` field."
+    cdpId: StringFilter
+    "Filter by the object’s `collateral` field."
+    collateral: StringFilter
+    "Filter by the object’s `collateralAmount` field."
+    collateralAmount: BigFloatFilter
+    "Filter by the object’s `collateralPrice` field."
+    collateralPrice: BigFloatFilter
+    "Filter by the object’s `collateralTaken` field."
+    collateralTaken: BigFloatFilter
+    "Filter by the object’s `collateralizationRatio` field."
+    collateralizationRatio: BigFloatFilter
+    "Filter by the object’s `coveredDebt` field."
+    coveredDebt: BigFloatFilter
+    "Filter by the object’s `daiAmount` field."
+    daiAmount: BigFloatFilter
+    "Filter by the object’s `debt` field."
+    debt: BigFloatFilter
+    "Filter by the object’s `depositCollateral` field."
+    depositCollateral: BigFloatFilter
+    "Filter by the object’s `depositDai` field."
+    depositDai: BigFloatFilter
+    "Filter by the object’s `depositor` field."
+    depositor: StringFilter
+    "Filter by the object’s `ethPrice` field."
+    ethPrice: BigFloatFilter
+    "Filter by the object’s `exitCollateral` field."
+    exitCollateral: BigFloatFilter
+    "Filter by the object’s `exitDai` field."
+    exitDai: BigFloatFilter
+    "Filter by the object’s `gasFee` field."
+    gasFee: BigFloatFilter
+    "Filter by the object’s `hash` field."
+    hash: StringFilter
+    "Filter by the object’s `id` field."
+    id: IntFilter
+    "Filter by the object’s `ilk` field."
+    ilk: StringFilter
+    "Filter by the object’s `kind` field."
+    kind: StringFilter
+    "Filter by the object’s `liqPenalty` field."
+    liqPenalty: BigFloatFilter
+    "Filter by the object’s `liquidationPrice` field."
+    liquidationPrice: BigFloatFilter
+    "Filter by the object’s `loanFee` field."
+    loanFee: BigFloatFilter
+    "Filter by the object’s `lockedCollateral` field."
+    lockedCollateral: BigFloatFilter
+    "Filter by the object’s `logIndex` field."
+    logIndex: IntFilter
+    "Filter by the object’s `marketPrice` field."
+    marketPrice: BigFloatFilter
+    "Filter by the object’s `multiple` field."
+    multiple: BigFloatFilter
+    "Filter by the object’s `netValue` field."
+    netValue: BigFloatFilter
+    "Negates the expression."
+    not: VaultMultiplyHistoryFilter
+    "Filter by the object’s `oazoFee` field."
+    oazoFee: BigFloatFilter
+    "Checks for any expressions in this list."
+    or: [VaultMultiplyHistoryFilter!]
+    "Filter by the object’s `oraclePrice` field."
+    oraclePrice: BigFloatFilter
+    "Filter by the object’s `rate` field."
+    rate: BigFloatFilter
+    "Filter by the object’s `remainingCollateral` field."
+    remainingCollateral: BigFloatFilter
+    "Filter by the object’s `remainingDebt` field."
+    remainingDebt: BigFloatFilter
+    "Filter by the object’s `sold` field."
+    sold: BigFloatFilter
+    "Filter by the object’s `timestamp` field."
+    timestamp: DatetimeFilter
+    "Filter by the object’s `totalFee` field."
+    totalFee: BigFloatFilter
+    "Filter by the object’s `transferFrom` field."
+    transferFrom: StringFilter
+    "Filter by the object’s `transferTo` field."
+    transferTo: StringFilter
+    "Filter by the object’s `txId` field."
+    txId: IntFilter
+    "Filter by the object’s `urn` field."
+    urn: StringFilter
+    "Filter by the object’s `vaultCreator` field."
+    vaultCreator: StringFilter
+    "Filter by the object’s `withdrawnCollateral` field."
+    withdrawnCollateral: BigFloatFilter
+    "Filter by the object’s `withdrawnDai` field."
+    withdrawnDai: BigFloatFilter
+}

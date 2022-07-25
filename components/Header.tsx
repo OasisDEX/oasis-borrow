@@ -6,24 +6,30 @@ import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/
 import { useObservable } from 'helpers/observableHook'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { WithChildren } from 'helpers/types'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useOnboarding } from 'helpers/useOnboarding'
 import { useOutsideElementClickHandler } from 'helpers/useOutsideElementClickHandler'
 import { InitOptions } from 'i18next'
 import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { ContextConnected } from '../blockchain/network'
 import { LANDING_PILLS } from '../content/landing'
-import { useFeatureToggle } from '../helpers/useFeatureToggle'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
+import { NotificationsIconButton } from './notifications/NotificationsIconButton'
 import { useSharedUI } from './SharedUIProvider'
-import { UniswapWidget } from './uniswapWidget/UniswapWidget'
+import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
 export function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
@@ -31,7 +37,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
       withAccountPrefix={false}
       href="/"
       sx={{
-        color: 'primary',
+        color: 'primary100',
         fontWeight: 'semiBold',
         fontSize: '0px',
         cursor: 'pointer',
@@ -75,11 +81,11 @@ export function BackArrow() {
     <Box
       sx={{
         cursor: 'pointer',
-        color: 'onBackground',
+        color: 'neutral70',
         fontSize: '0',
         transition: TRANSITIONS.global,
         '&:hover': {
-          color: 'onSurface',
+          color: 'neutral80',
         },
       }}
     >
@@ -125,7 +131,10 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <PositionsLink sx={{ position: 'relative', ...sx }}>
-      <Button variant="menuButtonRound" sx={{ color: 'lavender', ':hover': { color: 'primary' } }}>
+      <Button
+        variant="menuButtonRound"
+        sx={{ color: 'neutral80', ':hover': { color: 'primary100' } }}
+      >
         <Icon name="home" size="auto" width="20" />
       </Button>
       {vaultCount && (
@@ -136,8 +145,8 @@ function PositionsButton({ sx }: { sx?: SxStyleProp }) {
             right: '-7px',
             width: '24px',
             height: '24px',
-            bg: 'link',
-            color: 'onPrimary',
+            bg: 'interactive100',
+            color: 'neutral10',
             borderRadius: '50%',
             justifyContent: 'center',
             alignItems: 'center',
@@ -184,10 +193,10 @@ function ButtonDropdown({
           p: 1,
           '&, :focus': {
             outline: isOpen ? '1px solid' : null,
-            outlineColor: 'primary',
+            outlineColor: 'primary100',
           },
-          color: 'lavender',
-          ':hover': { color: 'primary' },
+          color: 'neutral80',
+          ':hover': { color: 'primary100' },
         }}
       >
         {showNewBeacon && (
@@ -210,8 +219,8 @@ function ButtonDropdown({
           right: 0,
           bottom: 0,
           transform: 'translateY(calc(100% + 10px))',
-          bg: 'background',
-          boxShadow: 'userSettingsCardDropdown',
+          bg: 'neutral10',
+          boxShadow: 'elevation',
           borderRadius: 'mediumLarge',
           border: 'none',
           overflowX: 'visible',
@@ -228,15 +237,26 @@ function ButtonDropdown({
 }
 
 function UserDesktopMenu() {
-  const exchangeEnabled = useFeatureToggle('Exchange')
   const { t } = useTranslation()
-  const { accountData$, context$, web3Context$ } = useAppContext()
+  const { accountData$, context$, web3Context$, uiChanges } = useAppContext()
   const [context] = useObservable(context$)
   const [accountData] = useObservable(accountData$)
   const [web3Context] = useObservable(web3Context$)
   const vaultCount = useVaultCount()
   const [exchangeOnboarded] = useOnboarding('Exchange')
   const [exchangeOpened, setExchangeOpened] = useState(false)
+  const [widgetUiChanges] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+
+  // TODO: Update this once the the notifications pannel is available
+  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
+  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
+  const notificationsToggle = useFeatureToggle('Notifications')
+
+  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
+
+  const showNewUniswapWidgetBeacon = !exchangeOnboarded && !exchangeOpened
 
   const shouldHideSettings =
     !context ||
@@ -253,7 +273,11 @@ function UserDesktopMenu() {
         zIndex: 3,
       }}
     >
-      <Flex>
+      <Flex
+        sx={{
+          position: 'relative',
+        }}
+      >
         <PositionsLink sx={{ mr: 4, display: ['none', 'none', 'flex'] }}>
           <Icon
             name="home"
@@ -264,19 +288,48 @@ function UserDesktopMenu() {
           {t('my-positions')} {vaultCount && `(${vaultCount})`}
         </PositionsLink>
         <PositionsButton sx={{ mr: 3, display: ['none', 'flex', 'none'] }} />
-        {exchangeEnabled && (
-          <ButtonDropdown
-            ButtonContents={({ active }) => (
-              <Icon name="exchange" size="auto" width="20" color={active ? 'primary' : 'inherit'} />
-            )}
-            round={true}
-            showNewBeacon={!exchangeOnboarded && !exchangeOpened}
-            onOpen={() => setExchangeOpened(true)}
-            sx={{ mr: 3 }}
+        <Box>
+          <Button
+            variant="menuButtonRound"
+            onClick={() => {
+              setExchangeOpened(true)
+              uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                type: 'open',
+              })
+            }}
+            sx={{
+              mr: 2,
+              position: 'relative',
+              '&, :focus': {
+                outline: widgetOpen ? '1px solid' : null,
+                outlineColor: 'primary100',
+              },
+              color: 'neutral80',
+              ':hover': { color: 'primary100' },
+            }}
           >
-            <UniswapWidget />
-          </ButtonDropdown>
-        )}
+            {showNewUniswapWidgetBeacon && (
+              <Icon
+                name="new_beacon"
+                sx={{
+                  position: 'absolute',
+                  top: '-3px',
+                  right: '-3px',
+                }}
+                size="auto"
+                width={22}
+              />
+            )}
+            <Icon
+              name="exchange"
+              size="auto"
+              width="20"
+              color={widgetOpen ? 'primary100' : 'inherit'}
+            />
+          </Button>
+          <UniswapWidgetShowHide />
+        </Box>
+
         {!shouldHideSettings && (
           <ButtonDropdown
             ButtonContents={({ active }) => (
@@ -285,6 +338,17 @@ function UserDesktopMenu() {
           >
             <UserSettings sx={{ p: 4, minWidth: '380px' }} />
           </ButtonDropdown>
+        )}
+
+        {/* TODO: Should remove feature toggle */}
+        {!shouldHideSettings && notificationsToggle && (
+          <NotificationsIconButton
+            notificationsRef={notificationsRef}
+            onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
+            // TODO: Update to real vairable
+            notificationsCount="13"
+            notificationsPanelOpen={notificationsPanelOpen}
+          />
         )}
       </Flex>
     </Flex>
@@ -326,7 +390,7 @@ function MobileSettings() {
         <Button
           variant="menuButton"
           onClick={() => setOpened(true)}
-          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'lavender' }}
+          sx={{ p: 1, width: vaultFormToggleTitle ? undefined : '100%', color: 'neutral80' }}
         >
           <UserSettingsButtonContents {...{ context, accountData, web3Context }} />
         </Button>
@@ -346,7 +410,7 @@ function MobileSettings() {
             bottom: 0,
             transition: '0.3s transform ease-in-out',
             transform: `translateY(${opened ? '0' : '100'}%)`,
-            bg: 'background',
+            bg: 'neutral10',
             p: 3,
             pt: 0,
             zIndex: 'modal',
@@ -366,7 +430,7 @@ function MobileSettings() {
           >
             <ModalCloseIcon
               close={() => setOpened(false)}
-              sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+              sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
               size={3}
             />
           </Box>
@@ -380,7 +444,7 @@ function MobileSettings() {
 }
 
 function navLinkColor(isActive: boolean) {
-  return isActive ? 'primary' : 'lavender'
+  return isActive ? 'primary100' : 'neutral80'
 }
 
 const LINKS = {
@@ -393,11 +457,15 @@ const LINKS = {
 }
 
 function ConnectedHeader() {
+  const { uiChanges } = useAppContext()
   const { pathname } = useRouter()
   const { t } = useTranslation()
-  const earnEnabled = useFeatureToggle('EarnProduct')
-  const exchangeEnabled = useFeatureToggle('Exchange')
   const onMobile = useOnMobile()
+  const [widgetUiChanges] = useObservable(
+    uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
+  )
+
+  const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
   return (
     <React.Fragment>
@@ -437,15 +505,13 @@ function ConnectedHeader() {
                 >
                   {t('nav.borrow')}
                 </AppLink>
-                {earnEnabled && (
-                  <AppLink
-                    variant="links.navHeader"
-                    href={LINKS.earn}
-                    sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
-                  >
-                    {t('nav.earn')}
-                  </AppLink>
-                )}
+                <AppLink
+                  variant="links.navHeader"
+                  href={LINKS.earn}
+                  sx={{ mr: 4, color: navLinkColor(pathname.includes(LINKS.earn)) }}
+                >
+                  {t('nav.earn')}
+                </AppLink>
                 <AssetsDropdown />
               </Flex>
             </Flex>
@@ -461,30 +527,40 @@ function ConnectedHeader() {
             </Flex>
             <Flex sx={{ flexShrink: 0 }}>
               <PositionsButton sx={{ mr: 2 }} />
-              {exchangeEnabled && (
-                <ButtonDropdown
-                  ButtonContents={({ active }) => (
-                    <Icon
-                      name="exchange"
-                      size="auto"
-                      width="20"
-                      color={active ? 'primary' : 'inherit'}
-                    />
-                  )}
-                  round={true}
-                  sx={{ mr: 2 }}
-                  dropdownSx={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    right: 'unset',
-                    bottom: 'unset',
-                    transform: 'translateX(-50%) translateY(-50%)',
-                  }}
-                >
-                  <UniswapWidget />
-                </ButtonDropdown>
-              )}
+              <Button
+                variant="menuButtonRound"
+                onClick={() => {
+                  uiChanges.publish<SwapWidgetChangeAction>(SWAP_WIDGET_CHANGE_SUBJECT, {
+                    type: 'open',
+                  })
+                }}
+                sx={{
+                  mr: 2,
+                  '&, :focus': {
+                    outline: widgetOpen ? '1px solid' : null,
+                    outlineColor: 'primary100',
+                  },
+                  color: 'neutral80',
+                  ':hover': { color: 'primary100' },
+                }}
+              >
+                <Icon
+                  name="exchange"
+                  size="auto"
+                  width="20"
+                  color={widgetOpen ? 'primary100' : 'inherit'}
+                />
+              </Button>
+              <UniswapWidgetShowHide
+                sxWrapper={{
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  right: 'unset',
+                  bottom: 'unset',
+                  transform: 'translateX(-50%) translateY(-50%)',
+                }}
+              />
               <MobileMenu />
             </Flex>
             <MobileSettings />
@@ -508,7 +584,7 @@ function HeaderDropdown({
         '& .menu': { display: 'none' },
         '&:hover': {
           '& .trigger': {
-            color: 'primary',
+            color: 'primary100',
           },
           '& .menu': {
             display: 'block',
@@ -595,7 +671,7 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
   return (
     <Box
       sx={{
-        ':hover': { bg: '#F6F6F6' },
+        ':hover': { bg: 'neutral30' },
         borderRadius: 'medium',
         p: 3,
         textDecoration: 'none',
@@ -613,13 +689,16 @@ export function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)
-  const earnProductEnabled = useFeatureToggle('EarnProduct')
   const [showAssets, setShowAssets] = useState(false)
+
+  const [notificationsPanelOpen, setNotificationsPanelOpen] = useState(false)
+  const notificationsRef = useOutsideElementClickHandler(() => setNotificationsPanelOpen(false))
+  const notificationsToggle = useFeatureToggle('Notifications')
 
   const links = [
     { labelKey: 'nav.multiply', url: LINKS.multiply },
     { labelKey: 'nav.borrow', url: LINKS.borrow },
-    ...(earnProductEnabled ? [{ labelKey: 'nav.earn', url: LINKS.earn }] : []),
+    { labelKey: 'nav.earn', url: LINKS.earn },
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
@@ -638,7 +717,7 @@ export function MobileMenu() {
       )}
       <Box
         sx={{
-          backgroundColor: 'background',
+          backgroundColor: 'neutral10',
           position: 'fixed',
           top: 0,
           left: 0,
@@ -691,8 +770,8 @@ export function MobileMenu() {
         </Grid>
         <Box
           sx={{
-            color: 'lavender',
-            ':hover': { color: 'primary' },
+            color: 'neutral80',
+            ':hover': { color: 'primary100' },
             position: 'absolute',
             bottom: 5,
             left: '50%',
@@ -704,13 +783,22 @@ export function MobileMenu() {
           <Icon name="mobile_menu_close" size="auto" width="50" />
         </Box>
       </Box>
+      {notificationsToggle && (
+        <NotificationsIconButton
+          notificationsRef={notificationsRef}
+          onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
+          // TODO: Update to real vairable
+          notificationsCount="13"
+          notificationsPanelOpen={notificationsPanelOpen}
+        />
+      )}
       <Button variant="menuButtonRound">
         <Icon
           name={'menu'}
           onClick={() => setIsOpen(true)}
           size="auto"
           width="20px"
-          color="lavender"
+          color="neutral80"
         />
       </Button>
     </>
@@ -720,7 +808,6 @@ export function MobileMenu() {
 function DisconnectedHeader() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
-  const earnEnabled = useFeatureToggle('EarnProduct')
 
   return (
     <>
@@ -742,15 +829,13 @@ function DisconnectedHeader() {
             >
               {t('nav.borrow')}
             </AppLink>
-            {earnEnabled && (
-              <AppLink
-                variant="links.navHeader"
-                href={LINKS.earn}
-                sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
-              >
-                {t('nav.earn')}
-              </AppLink>
-            )}
+            <AppLink
+              variant="links.navHeader"
+              href={LINKS.earn}
+              sx={{ color: navLinkColor(pathname.includes(LINKS.earn)) }}
+            >
+              {t('nav.earn')}
+            </AppLink>
             <AssetsDropdown />
           </Grid>
           <Grid sx={{ alignItems: 'center', columnGap: 3, gridAutoFlow: 'column' }}>
@@ -759,7 +844,7 @@ function DisconnectedHeader() {
               href="/connect"
               sx={{
                 boxShadow: 'cardLanding',
-                bg: 'surface',
+                bg: 'neutral10',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',

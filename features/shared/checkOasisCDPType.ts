@@ -19,6 +19,9 @@ export function createCheckOasisCDPType$(
       if (charterIlks.includes(ilk)) {
         return VaultType.Insti
       }
+      if (['GUNIV3DAIUSDC1-A', 'GUNIV3DAIUSDC2-A'].includes(ilk)) {
+        return VaultType.Earn
+      }
       return vaultTypeFromApi
     }),
   )

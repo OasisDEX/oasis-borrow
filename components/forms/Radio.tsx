@@ -21,7 +21,7 @@ export function Radio({ children, checked, onChange, name }: React.PropsWithChil
           border-color ease-in 0.2s,
           box-shadow ease-in 0.2s`,
         '&:hover': {
-          borderColor: 'primary',
+          borderColor: 'primary100',
           boxShadow: 'medium',
         },
       }}

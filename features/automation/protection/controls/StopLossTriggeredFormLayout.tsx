@@ -32,7 +32,7 @@ interface StopLossSummaryInformationProps {
   slippage: BigNumber
 }
 
-function StopLossSummaryInformation({
+export function StopLossSummaryInformation({
   date,
   token,
   tokenPrice,
@@ -50,7 +50,7 @@ function StopLossSummaryInformation({
   const tokenSold = (
     <>
       {formatAmount(tokensSold, token)} {token}
-      <Text as="span" sx={{ color: 'text.subtitle', ml: 1 }}>
+      <Text as="span" sx={{ color: 'neutral80', ml: 1 }}>
         (${formatAmount(tokensSold.multipliedBy(tokenPrice), 'USD')})
       </Text>
     </>
@@ -58,12 +58,12 @@ function StopLossSummaryInformation({
 
   const tokenOrDaiWithdrawn = isToCollateral
     ? `${formatAmount(withdrawAmount, token)} ${token}`
-    : `${formatAmount(withdrawAmount.multipliedBy(tokenPrice), 'USD')} DAI`
+    : `${formatAmount(withdrawAmount, 'USD')} DAI`
 
   const impact = (
     <>
       {formatFiatBalance(tokenPrice)}
-      <Text as="span" sx={{ color: 'lavender', ml: 1 }}>
+      <Text as="span" sx={{ color: 'neutral80', ml: 1 }}>
         ({formatPercent(priceImpact, { precision: 2 })})
       </Text>
     </>
@@ -73,7 +73,7 @@ function StopLossSummaryInformation({
 
   const collateral = (
     <>
-      {formatAmount(withdrawAmount, token)} {token} <VaultChangesInformationArrow />
+      {formatAmount(tokensSold, token)} {token} <VaultChangesInformationArrow />
       {formatAmount(zero, token)}
     </>
   )
@@ -109,7 +109,7 @@ function StopLossSummaryInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.token-or-dai-withdrawn', {
-          token: isToCollateral ? token : 'DAI',
+          token,
         })}`}
         value={<Flex>{tokenOrDaiWithdrawn}</Flex>}
       />

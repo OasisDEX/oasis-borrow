@@ -29,14 +29,14 @@ function StopLossBannerSection({
         justifyContent: 'center',
       }}
     >
-      <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', mb: 2, color: 'lavender' }}>
+      <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', mb: 2, color: 'neutral80' }}>
         {text}
       </Text>
       <Text variant="header3" sx={{ fontWeight: 'semiBold' }}>
         {value}
       </Text>
       {afterValue && showAfterPill && (
-        <VaultDetailsAfterPill afterPillColors={{ bg: 'dimSuccess', color: 'onSuccess' }}>
+        <VaultDetailsAfterPill afterPillColors={{ bg: 'secondary60', color: 'success100' }}>
           {afterValue} after
         </VaultDetailsAfterPill>
       )}
@@ -109,7 +109,7 @@ export function StopLossBannerLayout({
               <Text variant="header3" sx={{ fontWeight: 'body', mr: 2 }}>
                 {`$${formatAmount(dynamicStopPrice, 'USD')}`}
               </Text>
-              <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'lavender', pt: 1 }}>
+              <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'neutral80', pt: 1 }}>
                 {t('protection.dynamic-stop-loss-price')}
               </Text>
             </StopLossBannerSectionCompact>
@@ -117,7 +117,7 @@ export function StopLossBannerLayout({
               <Text variant="header3" sx={{ fontWeight: 'body', fontSize: 2, mr: 2 }}>
                 {formatPercent(stopLossLevel.times(100), { precision: 2 })}
               </Text>
-              <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'lavender' }}>
+              <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>
                 {t('protection.stop-loss-coll-ratio')}
               </Text>
             </StopLossBannerSectionCompact>
@@ -132,7 +132,7 @@ export function StopLossBannerLayout({
           >
             <Box
               className="arrow"
-              sx={{ display: 'inline', position: 'absolute', color: 'lavender', fontSize: '20px' }}
+              sx={{ display: 'inline', position: 'absolute', color: 'neutral80', fontSize: '20px' }}
             >
               →
             </Box>
@@ -171,9 +171,14 @@ export function StopLossBannerLayout({
           }}
         >
           <Button variant="unStyled" onClick={handleClick} sx={{ p: 0 }}>
-            <WithArrow sx={{ color: 'link' }}>
+            <WithArrow sx={{ color: 'interactive100' }}>
               <Text
-                sx={{ display: 'inline', color: 'link', fontSize: 1, fontWeight: 'semiBold' }}
+                sx={{
+                  display: 'inline',
+                  color: 'interactive100',
+                  fontSize: 1,
+                  fontWeight: 'semiBold',
+                }}
                 variant="paragraph1"
               >
                 {t('protection.edit-vault-protection')}

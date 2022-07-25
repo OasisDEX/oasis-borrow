@@ -6,6 +6,8 @@ import { isEqual } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
+import { ExchangeAction, ExchangeType, Quote } from '../features/exchange/exchange'
+import { UserSettingsState } from '../features/userSettings/userSettings'
 import { zero } from '../helpers/zero'
 import { cdpManagerOwner } from './calls/cdpManager'
 import { GetCdpsArgs, GetCdpsResult } from './calls/getCdps'
@@ -13,7 +15,7 @@ import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 import { buildPosition } from './vault.maths'
 
 BigNumber.config({
@@ -73,9 +75,56 @@ export function createVaults$(
         ),
         distinctUntilChanged<Vault[]>(isEqual),
         switchMap((vaults) => (vaults.length === 0 ? of([]) : fetchVaultsType(vaults))),
-        shareReplay(1),
       ),
     ),
+    shareReplay(1),
+  )
+}
+
+export type VaultWithValue<V extends VaultWithType> = V & { value: BigNumber }
+// the value of the position in USD.  collateral prices can come from different places
+// depending on the vault type.
+export function decorateVaultsWithValue$<V extends VaultWithType>(
+  vaults$: (address: string) => Observable<V>,
+  exchangeQuote$: (
+    token: string,
+    slippage: BigNumber,
+    amount: BigNumber,
+    action: ExchangeAction,
+    exchangeType: ExchangeType,
+  ) => Observable<Quote>,
+  userSettings$: Observable<UserSettingsState>,
+  address: string,
+): Observable<VaultWithValue<V>[]> {
+  return combineLatest(vaults$(address), userSettings$).pipe(
+    switchMap(([vaults, userSettings]: [Array<VaultWithType>, UserSettingsState]) => {
+      if (vaults.length === 0) return of([])
+      return combineLatest(
+        vaults.map((vault) => {
+          if (vault.type === 'borrow') {
+            // use price from maker oracle
+            return of({ ...vault, value: vault.lockedCollateralUSD.minus(vault.debt) })
+          } else {
+            // use price from 1inch
+            return exchangeQuote$(
+              vault.token,
+              userSettings.slippage,
+              vault.lockedCollateral,
+              'BUY_COLLATERAL', // should be SELL_COLLATERAL but the manage multiply pipe uses BUY, and we want the values the same.
+              'defaultExchange',
+            ).pipe(
+              map((quote) => {
+                const collateralValue =
+                  quote.status === 'SUCCESS'
+                    ? vault.lockedCollateral.times(quote.tokenPrice)
+                    : vault.lockedCollateralUSD
+                return { ...vault, value: collateralValue.minus(vault.debt) }
+              }),
+            )
+          }
+        }),
+      )
+    }),
   )
 }
 
@@ -132,7 +181,7 @@ export function createVault$(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
   id: BigNumber,
@@ -144,7 +193,7 @@ export function createVault$(
           return combineLatest(
             vatUrns$({ ilk, urnAddress }),
             vatGem$({ ilk, urnAddress }),
-            oraclePriceData$(token),
+            oraclePriceData$({ token, requestedData: ['currentPrice', 'nextPrice'] }),
             ilkData$(ilk),
           ).pipe(
             switchMap(

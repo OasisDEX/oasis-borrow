@@ -1,7 +1,16 @@
 import { Icon } from '@makerdao/dai-ui-icons'
+import BigNumber from 'bignumber.js'
+import { ReferralBanner } from 'components/ReferralBanner'
+import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
+import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
+import { TermsOfService } from 'features/termsOfService/TermsOfService'
+import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
@@ -11,18 +20,16 @@ import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
 import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { TabSwitcher } from '../../components/TabSwitcher'
 import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { landingPageCardsData, ProductCardData } from '../../helpers/productCards'
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
+import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
 function TabContent(props: {
   paraText: JSX.Element
-  type: 'borrow' | 'multiply' | 'earn'
+  type: ProductTypes
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
   productCardsData: ProductCardData[]
 }) {
@@ -39,7 +46,7 @@ function TabContent(props: {
         variant="paragraph2"
         sx={{
           mt: 4,
-          color: 'lavender',
+          color: 'neutral80',
           maxWidth: 617,
           textAlign: 'center',
           mb: 5,
@@ -78,10 +85,10 @@ function Pill(props: PillProps) {
         borderRadius: 'round',
         variant: 'text.paragraph2',
         fontWeight: 'semiBold',
-        color: 'text.subtitle',
+        color: 'neutral80',
         py: 2,
         border: '1px solid',
-        borderColor: 'border',
+        borderColor: 'neutral20',
         transition: 'background 0.2s ease-in-out',
         '&:hover': {
           background: 'rgba(255, 255, 255, 0.8)',
@@ -94,25 +101,83 @@ function Pill(props: PillProps) {
   )
 }
 function Pills({ sx }: { sx?: SxProps }) {
-  const enabled = useFeatureToggle('EarnProduct')
-
-  const pills = enabled ? LANDING_PILLS : LANDING_PILLS.filter((pill) => pill.label !== 'DAI')
-
   return (
     <Flex sx={{ width: '100%', justifyContent: 'center', flexWrap: 'wrap', ...sx }}>
-      {pills.map((pill) => (
+      {LANDING_PILLS.map((pill) => (
         <Pill key={pill.label} label={pill.label} link={pill.link} icon={pill.icon} />
       ))}
     </Flex>
   )
 }
 
+function StatCell({ label, value }: { label: string; value: string }) {
+  return (
+    <Box sx={{ mb: [3, 1, 1] }}>
+      <Text
+        variant="paragraph2"
+        sx={{ textAlign: 'center', fontWeight: 'semiBold', color: 'neutral80' }}
+      >
+        {label}
+      </Text>
+      <Text variant="header2" sx={{ textAlign: 'center' }}>
+        {value}
+      </Text>
+    </Box>
+  )
+}
+
+function Stats({ sx }: { sx?: SxProps }) {
+  const { t } = useTranslation()
+  const { getOasisStats$ } = useAppContext()
+
+  const [oasisStatsValue] = useObservable(getOasisStats$())
+
+  if (!oasisStatsValue) {
+    return null
+  }
+
+  return (
+    <Grid columns={[1, 3, 3]} sx={{ justifyContent: 'center', ...sx }}>
+      <StatCell
+        label={t('landing.stats.30-day-volume')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.monthlyVolume), 2)}`}
+      />
+      <StatCell
+        label={t('landing.stats.managed-on-oasis')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.managedOnOasis), 2)}`}
+      />
+      <StatCell
+        label={t('landing.stats.median-vault')}
+        value={`$${formatAsShorthandNumbers(new BigNumber(oasisStatsValue.medianVaultSize), 2)}`}
+      />
+    </Grid>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
-  const isEarnEnabled = useFeatureToggle('EarnProduct')
-  const { context$, productCardsData$ } = useAppContext()
+
+  const referralsEnabled = useFeatureToggle('Referrals')
+  const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
   const [context] = useObservable(context$)
+  const [checkReferralLocal] = useObservable(checkReferralLocal$)
+  const [userReferral] = useObservable(userReferral$)
+  const [landedWithRef, setLandedWithRef] = useState('')
+  const [localReferral, setLocalReferral] = useLocalStorage('referral', null)
+
+  const router = useRouter()
+  const standardAnimationDuration = '0.7s'
+
+  useEffect(() => {
+    if (!localReferral && referralsEnabled) {
+      const linkReferral = router.query.ref as string
+      if (linkReferral) {
+        setLocalReferral(linkReferral)
+        setLandedWithRef(linkReferral)
+      }
+    }
+  }, [checkReferralLocal, router.isReady])
 
   return (
     <Box
@@ -120,17 +185,52 @@ export function HomepageView() {
         flex: 1,
       }}
     >
+      {referralsEnabled && (
+        <Flex
+          sx={{
+            justifyContent: 'center',
+            mt: '80px',
+            mb: 0,
+          }}
+        >
+          <ReferralBanner
+            heading={t('ref.banner')}
+            link={userReferral?.user ? `/referrals/${userReferral.user.address}` : '/referrals'}
+          ></ReferralBanner>
+        </Flex>
+      )}
+      {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
+        <NewReferralModal />
+      )}
+      {referralsEnabled && userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
           ...slideInAnimation,
           position: 'relative',
-          animationDuration: '0.7s',
+          animationDuration: standardAnimationDuration,
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         }}
       />
 
-      <Pills sx={{ mb: 6, ...slideInAnimation, position: 'relative', animationDuration: '0.7s' }} />
+      <Pills
+        sx={{
+          mb: 5,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
+
+      <Stats
+        sx={{
+          mb: 6,
+          ...slideInAnimation,
+          position: 'relative',
+          animationDuration: standardAnimationDuration,
+        }}
+      />
+
       <Box
         sx={{
           ...slideInAnimation,
@@ -138,6 +238,7 @@ export function HomepageView() {
           animationDuration: '0.3s',
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
           width: '100%',
+          mt: '126px',
         }}
         id="product-cards-wrapper"
       >
@@ -152,11 +253,14 @@ export function HomepageView() {
           >
             {([productCardsData]) => {
               return (
-                <TabSwitcher
-                  tabs={[
+                <TabBar
+                  variant="large"
+                  useDropdownOnMobile
+                  sections={[
                     {
-                      tabLabel: t('landing.tabs.multiply.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.multiply.tabLabel'),
+                      value: 'multiply',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -173,8 +277,9 @@ export function HomepageView() {
                       ),
                     },
                     {
-                      tabLabel: t('landing.tabs.borrow.tabLabel'),
-                      tabContent: (
+                      label: t('landing.tabs.borrow.tabLabel'),
+                      value: 'borrow',
+                      content: (
                         <TabContent
                           paraText={
                             <>
@@ -190,34 +295,27 @@ export function HomepageView() {
                         />
                       ),
                     },
-                    ...(isEarnEnabled
-                      ? [
-                          {
-                            tabLabel: t('landing.tabs.earn.tabLabel'),
-                            tabContent: (
-                              <TabContent
-                                paraText={
-                                  <>
-                                    {t('landing.tabs.earn.tabParaContent')}{' '}
-                                    <AppLink href="/multiply" variant="inText">
-                                      {t('landing.tabs.earn.tabParaLinkContent')}
-                                    </AppLink>
-                                  </>
-                                }
-                                type="earn"
-                                renderProductCard={ProductCardEarn}
-                                productCardsData={productCardsData}
-                              />
-                            ),
-                          },
-                        ]
-                      : []),
+
+                    {
+                      label: t('landing.tabs.earn.tabLabel'),
+                      value: 'earn',
+                      content: (
+                        <TabContent
+                          paraText={
+                            <>
+                              {t('landing.tabs.earn.tabParaContent')}{' '}
+                              <AppLink href="/multiply" variant="inText">
+                                {t('landing.tabs.earn.tabParaLinkContent')}
+                              </AppLink>
+                            </>
+                          }
+                          type="earn"
+                          renderProductCard={ProductCardEarn}
+                          productCardsData={productCardsData}
+                        />
+                      ),
+                    },
                   ]}
-                  narrowTabsSx={{
-                    display: ['block', 'none'],
-                    width: '100%',
-                  }}
-                  wideTabsSx={{ display: ['none', 'block'] }}
                 />
               )
             }}
@@ -361,7 +459,7 @@ export function HomepageView() {
           />
         </Grid>
       </Box>
-      <Flex mb={5} mt={7} sx={{ justifyContent: 'center' }}>
+      <Flex mb={4} mt={7} sx={{ justifyContent: 'center' }}>
         <NewsletterSection />
       </Flex>
     </Box>
@@ -370,7 +468,7 @@ export function HomepageView() {
 
 export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boolean }) {
   const { t } = useTranslation()
-
+  const referralsEnabled = useFeatureToggle('Referrals')
   const [heading, subheading] = ['landing.hero.headline', 'landing.hero.subheader']
 
   return (
@@ -380,14 +478,15 @@ export function Hero({ sx, isConnected }: { sx?: SxStyleProp; isConnected: boole
         justifySelf: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        my: 5,
+        mt: referralsEnabled ? '24px' : '64px',
+        mb: 5,
         flexDirection: 'column',
       }}
     >
       <Heading as="h1" variant="header1" sx={{ mb: 3 }}>
         {t(heading)}
       </Heading>
-      <Text variant="paragraph1" sx={{ mb: 4, color: 'lavender', maxWidth: '740px' }}>
+      <Text variant="paragraph1" sx={{ mb: 4, color: 'neutral80', maxWidth: '740px' }}>
         <Trans i18nKey={subheading} components={[<br />]} />
       </Text>
       <AppLink

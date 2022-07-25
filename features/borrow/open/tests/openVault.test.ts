@@ -42,7 +42,7 @@ describe('openVault', () => {
       expect(state()).to.be.undefined
       _ilks$.next(['WBTC-A'])
       expect(state().ilk).to.deep.equal('WBTC-A')
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should throw error if ilk is not valid', () => {
@@ -58,7 +58,7 @@ describe('openVault', () => {
     it('should start by default at the editing stage', () => {
       const state = getStateUnpacker(mockOpenVault$())
       expect(state().stage).to.deep.equal('editing')
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should update depositAmount', () => {
@@ -137,6 +137,24 @@ describe('openVault', () => {
       expect(state().depositAmountUSD!).to.deep.equal(depositAmountUSD)
     })
 
+    it('should update stop loss type', () => {
+      const closeVaultType = 'collateral'
+      const defaultCloseVaultType = 'dai'
+      const state = getStateUnpacker(mockOpenVault$())
+      expect(state().stopLossCloseType!).to.equal(defaultCloseVaultType)
+      state().setStopLossCloseType(closeVaultType)
+      expect(state().stopLossCloseType).to.equal(closeVaultType)
+    })
+
+    it('should update stop loss level', () => {
+      const stopLossLevel = new BigNumber(2)
+      const defaultStopLossLevel = zero
+      const state = getStateUnpacker(mockOpenVault$())
+      expect(state().stopLossLevel!).to.deep.equal(defaultStopLossLevel)
+      state().setStopLossLevel(stopLossLevel)
+      expect(state().stopLossLevel).to.deep.equal(stopLossLevel)
+    })
+
     it('should progress to proxy flow from editing when without proxy', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
@@ -162,7 +180,7 @@ describe('openVault', () => {
       )
 
       _proxyAddress$.next()
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().totalSteps).to.deep.equal(3)
       state().progress!()
       expect(state().stage).to.deep.equal('proxyWaitingForConfirmation')
       state().progress!()
@@ -172,8 +190,8 @@ describe('openVault', () => {
       expect(state().proxyAddress).to.deep.equal(DEFAULT_PROXY_ADDRESS)
       state().progress!()
       expect(state().stage).to.deep.equal('allowanceWaitingForConfirmation')
-      expect(state().currentStep).to.deep.equal(3)
-      expect(state().totalSteps).to.deep.equal(4)
+      expect(state().currentStep).to.deep.equal(2)
+      expect(state().totalSteps).to.deep.equal(3)
     })
 
     it('should handle proxy failure and back to editing after', () => {
@@ -376,6 +394,99 @@ describe('openVault', () => {
       expect(state().stage).to.deep.equal('txWaitingForConfirmation')
     })
 
+    it('should skip stop loss step', () => {
+      localStorage.setItem('features', '{"StopLossWrite":true}')
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      expect(state().totalSteps).to.deep.equal(3)
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossEditing')
+      state().skipStopLoss!()
+      expect(state().stopLossSkipped).to.deep.equal(true)
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+    })
+
+    it('should add stop loss successfully', () => {
+      localStorage.setItem('features', '{"StopLossWrite":true}')
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Success, newCDPTxReceipt),
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+      state().updateDeposit!(depositAmount)
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxSuccess')
+    })
+
+    it('should handle add stop loss failure', () => {
+      localStorage.setItem('features', '{"StopLossWrite":true}')
+      const depositAmount = new BigNumber('100')
+      const generateAmount = new BigNumber('20000')
+      const stopLossLevel = new BigNumber('2')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => {
+              if (meta.kind === 'open') {
+                return mockTxState(meta, TxStatus.Success, newCDPTxReceipt)
+              }
+              return mockTxState(meta, TxStatus.Failure)
+            },
+          }),
+          proxyAddress: DEFAULT_PROXY_ADDRESS,
+          allowance: maxUint256,
+          ilk: 'WBTC-A',
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      state().toggleGenerateOption!()
+      state().updateGenerate!(generateAmount)
+      state().progress!()
+      state().setStopLossLevel(stopLossLevel)
+      state().progress!()
+      expect(state().stage).to.deep.equal('txWaitingForConfirmation')
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxWaitingForConfirmation')
+      state().progress!()
+      state().stage = 'stopLossTxWaitingForConfirmation'
+      state().progress!()
+      expect(state().stage).to.deep.equal('stopLossTxFailure')
+    })
+
     it('should open vault successfully and progress to editing', () => {
       const depositAmount = new BigNumber('100')
       const generateAmount = new BigNumber('20000')
@@ -488,6 +599,31 @@ describe('openVault', () => {
       expect(state().errorMessages).to.deep.equal(['ledgerWalletContractDataDisabled'])
     })
 
+    it('should add meaningful message when user has insufficient ETH funds to pay for tx', () => {
+      const _proxyAddress$ = new Subject<string>()
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          _proxyAddress$,
+          _txHelpers$: of({
+            ...protoTxHelpers,
+            sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) =>
+              mockTxState(meta, TxStatus.Error).pipe(
+                map((txState) => ({
+                  ...txState,
+                  error: { message: 'insufficient funds for gas * price + value' },
+                })),
+              ),
+          }),
+          balanceInfo: { ethBalance: new BigNumber(0.001) },
+        }),
+      )
+      _proxyAddress$.next()
+      state().progress!()
+      state().progress!()
+
+      expect(state().errorMessages).to.deep.equal(['insufficientEthFundsForTx'])
+    })
+
     it('validates if deposit amount exceeds collateral balance or depositing all ETH', () => {
       const depositAmountExceeds = new BigNumber('2')
       const depositAmountAll = new BigNumber('1')
@@ -506,6 +642,41 @@ describe('openVault', () => {
       expect(state().errorMessages).to.deep.equal(['depositAmountExceedsCollateralBalance'])
       state().updateDeposit!(depositAmountAll)
       expect(state().errorMessages).to.deep.equal(['depositingAllEthBalance'])
+    })
+
+    it('validates if deposit amount leads to potential insufficient ETH funds for tx (ETH ilk case)', () => {
+      const depositAlmostAll = new BigNumber(10.9999)
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilks: ['ETH-A'],
+          ilk: 'ETH-A',
+          balanceInfo: {
+            ethBalance: new BigNumber(11),
+          },
+          gasEstimationUsd: new BigNumber(30),
+        }),
+      )
+
+      state().updateDeposit!(depositAlmostAll)
+      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
+    })
+
+    it('validates if deposit amount leads to potential insufficient ETH funds for tx (other ilk case)', () => {
+      const depositAmount = new BigNumber('10')
+
+      const state = getStateUnpacker(
+        mockOpenVault$({
+          ilk: 'WBTC-A',
+          balanceInfo: {
+            ethBalance: new BigNumber(0.001),
+          },
+          gasEstimationUsd: new BigNumber(30),
+        }),
+      )
+
+      state().updateDeposit!(depositAmount)
+      expect(state().warningMessages).to.deep.equal(['potentialInsufficientEthFundsForTx'])
     })
 
     it(`validates if generate doesn't exceeds debt ceiling and debt floor`, () => {

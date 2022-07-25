@@ -1,13 +1,13 @@
 import { BigNumber } from 'bignumber.js'
+import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 
 import { maxUint256 } from '../../blockchain/calls/erc20'
 import { isNullish } from '../../helpers/functions'
-import { STOP_LOSS_MARGIN } from '../../helpers/multiply/calculations'
 import { TxError } from '../../helpers/types'
 import { zero } from '../../helpers/zero'
 
 type CollateralAllowanceRadio = 'unlimited' | 'depositAmount' | 'custom'
-type DaiAllowanceRadio = 'unlimited' | 'paybackAmount' | 'custom'
+type DaiAllowanceRadio = 'unlimited' | 'actionAmount' | 'custom'
 
 export function vaultWillBeAtRiskLevelDangerValidator({
   inputAmountsEmpty,
@@ -99,6 +99,30 @@ export function depositingAllEthBalanceValidator({
   return token === 'ETH' && !!depositAmount?.eq(collateralBalance)
 }
 
+export function notEnoughETHtoPayForTx({
+  token,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  depositAmount,
+}: {
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  token?: string
+  gasEstimationUsd?: BigNumber
+  depositAmount?: BigNumber
+}) {
+  if (!gasEstimationUsd) {
+    return false
+  }
+
+  if (depositAmount && !depositAmount.isZero() && token === 'ETH') {
+    return ethBalance.minus(depositAmount).times(ethPrice).lt(gasEstimationUsd)
+  }
+
+  return ethBalance.times(ethPrice).lt(gasEstimationUsd)
+}
+
 export function customAllowanceAmountEmptyValidator({
   selectedAllowanceRadio,
   allowanceAmount,
@@ -138,6 +162,10 @@ export function customAllowanceAmountLessThanDepositAmountValidator({
 
 export function ledgerWalletContractDataDisabledValidator({ txError }: { txError?: TxError }) {
   return txError?.name === 'EthAppPleaseEnableContractData'
+}
+
+export function ethFundsForTxValidator({ txError }: { txError?: TxError }) {
+  return txError?.message === 'insufficient funds for gas * price + value'
 }
 
 export function debtIsLessThanDebtFloorValidator({
@@ -323,17 +351,25 @@ export function insufficientCollateralAllowanceValidator({
 
 export function insufficientDaiAllowanceValidator({
   paybackAmount,
+  depositDaiAmount,
   daiAllowance,
   debtOffset,
 }: {
   paybackAmount?: BigNumber
+  depositDaiAmount?: BigNumber
   daiAllowance?: BigNumber
   debtOffset: BigNumber
 }) {
+  const amountToValidate = paybackAmount?.gt(zero)
+    ? paybackAmount
+    : depositDaiAmount?.gt(zero)
+    ? depositDaiAmount
+    : zero
+
   return !!(
-    paybackAmount &&
-    !paybackAmount.isZero() &&
-    (!daiAllowance || paybackAmount.plus(debtOffset).gt(daiAllowance))
+    amountToValidate &&
+    !amountToValidate.isZero() &&
+    (!daiAllowance || amountToValidate.plus(debtOffset).gt(daiAllowance))
   )
 }
 
@@ -395,17 +431,65 @@ export function daiAllowanceProgressionDisabledValidator({
   )
 }
 
-export function afterCollRatioBelowStopLossRatioValidator({
+export function afterCollRatioThresholdRatioValidator({
   afterCollateralizationRatio,
   afterCollateralizationRatioAtNextPrice,
-  stopLossRatio,
+  threshold,
+  margin = new BigNumber(0.02),
+  type,
 }: {
   afterCollateralizationRatio: BigNumber
   afterCollateralizationRatioAtNextPrice: BigNumber
-  stopLossRatio: BigNumber
+  threshold: BigNumber
+  margin?: BigNumber
+  type: 'below' | 'above'
+}) {
+  if (afterCollateralizationRatio.isZero() || afterCollateralizationRatioAtNextPrice.isZero()) {
+    return false
+  }
+
+  switch (type) {
+    case 'below':
+      return (
+        afterCollateralizationRatio.lt(threshold) ||
+        afterCollateralizationRatioAtNextPrice.minus(margin).lte(threshold)
+      )
+    case 'above':
+      return (
+        afterCollateralizationRatio.gt(threshold) ||
+        afterCollateralizationRatioAtNextPrice.plus(margin).gte(threshold)
+      )
+    default:
+      return false
+  }
+}
+
+export function stopLossCloseToCollRatioValidator({
+  currentCollRatio,
+  stopLossLevel,
+}: {
+  currentCollRatio: BigNumber
+  stopLossLevel: BigNumber
+}) {
+  const alertRange = 3
+  const currentCollRatioFloor = currentCollRatio
+    .times(100)
+    .decimalPlaces(0, BigNumber.ROUND_DOWN)
+    .minus(alertRange)
+
+  return stopLossLevel.gte(currentCollRatioFloor)
+}
+
+export function stopLossTriggeredValidator({
+  vaultHistory,
+}: {
+  vaultHistory: VaultHistoryEvent[]
 }) {
   return (
-    afterCollateralizationRatio.lt(stopLossRatio) ||
-    afterCollateralizationRatioAtNextPrice.minus(STOP_LOSS_MARGIN).lte(stopLossRatio)
+    !!vaultHistory[1] &&
+    'triggerId' in vaultHistory[1] &&
+    vaultHistory[1].eventType === 'executed' &&
+    (vaultHistory[0].kind === 'CLOSE_VAULT_TO_COLLATERAL' ||
+      vaultHistory[0].kind === 'CLOSE_VAULT_TO_DAI')
   )
 }

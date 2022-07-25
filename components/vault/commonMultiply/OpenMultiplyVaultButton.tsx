@@ -1,14 +1,13 @@
 import { trackingEvents } from 'analytics/analytics'
 import { BigNumber } from 'bignumber.js'
 import { useAppContext } from 'components/AppContextProvider'
+import { OpenMultiplyVaultStage } from 'features/multiply/open/pipes/openMultiplyVault'
 import { useObservable } from 'helpers/observableHook'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
 import { useRedirect } from 'helpers/useRedirect'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Button, Divider, Flex, Spinner, Text } from 'theme-ui'
-
-import { Stage } from '../../../features/earn/guni/open/pipes/openGuniVault'
 
 function multiplyVaultPrimaryButtonText({
   stage,
@@ -69,7 +68,7 @@ function multiplyVaultPrimaryButtonText({
 }
 
 export interface OpenMultiplyVaultButtonProps {
-  stage: Stage
+  stage: OpenMultiplyVaultStage
   progress?: () => void
   regress?: () => void
   canRegress: boolean
@@ -159,7 +158,7 @@ export function OpenMultiplyVaultButton(props: OpenMultiplyVaultButtonProps) {
             <Text sx={{ position: 'relative' }} pl={2}>
               <Spinner
                 size={25}
-                color="surface"
+                color="neutral10"
                 sx={{
                   position: 'absolute',
                   left: 0,

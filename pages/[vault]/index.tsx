@@ -9,8 +9,8 @@ import { Box, Grid } from 'theme-ui'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
-import { VaultBannersView } from '../../features/banners/VaultsBannersView'
 import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
+import { VaultNoticesView } from '../../features/notices/VaultsNoticesView'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
 import { WithWalletAssociatedRisk } from '../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
@@ -27,13 +27,13 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
 function Vault({ id }: { id: string }) {
   const vaultId = new BigNumber(id)
   const isValidVaultId = vaultId.isInteger() && vaultId.gt(0)
-  const automationEnabled = useFeatureToggle('Automation')
+  const stopLossReadEnabled = useFeatureToggle('StopLossRead')
 
   return (
     <WithConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          {automationEnabled ? (
+          {stopLossReadEnabled ? (
             <>
               <BackgroundLight />
               {isValidVaultId ? (
@@ -49,7 +49,7 @@ function Vault({ id }: { id: string }) {
               <BackgroundLight />
               {isValidVaultId ? (
                 <>
-                  <VaultBannersView id={vaultId} />
+                  <VaultNoticesView id={vaultId} />
                   <GeneralManageVaultView id={vaultId} />
                 </>
               ) : (

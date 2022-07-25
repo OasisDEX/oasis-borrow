@@ -20,6 +20,7 @@ import { cdpRegistryCdps, cdpRegistryOwns } from 'blockchain/calls/cdpRegistry'
 import { charterNib, charterPeace, charterUline, charterUrnProxy } from 'blockchain/calls/charter'
 import { getCdps } from 'blockchain/calls/getCdps'
 import { createIlkToToken$ } from 'blockchain/calls/ilkToToken'
+import { ClaimMultipleData } from 'blockchain/calls/merkleRedeemer'
 import { pipHop, pipPeek, pipPeep, pipZzz } from 'blockchain/calls/osm'
 import {
   CreateDsProxyData,
@@ -42,10 +43,13 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
+  coinbaseOrderBook$,
+  coinGeckoTicker$,
+  coinPaprikaTicker$,
   createGasPrice$,
   createOraclePriceData$,
+  createTokenPriceInUSD$,
   GasPriceParams,
-  tokenPricesInUSD$,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -53,7 +57,13 @@ import {
   createBalance$,
   createCollateralTokens$,
 } from 'blockchain/tokens'
-import { createStandardCdps$, createVault$, createVaults$, Vault } from 'blockchain/vaults'
+import {
+  createStandardCdps$,
+  createVault$,
+  createVaults$,
+  decorateVaultsWithValue$,
+  Vault,
+} from 'blockchain/vaults'
 import { pluginDevModeHelpers } from 'components/devModeHelpers'
 import { createAccountData } from 'features/account/AccountData'
 import {
@@ -62,6 +72,24 @@ import {
   AddFormChangeAction,
   formChangeReducer,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
+import {
+  AUTOMATION_CHANGE_FEATURE,
+  AutomationChangeFeature,
+  AutomationChangeFeatureAction,
+  automationChangeFeatureReducer,
+} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
+import {
+  BASIC_BUY_FORM_CHANGE,
+  BASIC_SELL_FORM_CHANGE,
+  BasicBSChangeAction,
+  basicBSFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
+  MultiplyPillChange,
+  MultiplyPillChangeAction,
+  multiplyPillChangeReducer,
+} from 'features/automation/protection/common/UITypes/MultiplyVaultPillChange'
 import {
   PROTECTION_MODE_CHANGE_SUBJECT,
   ProtectionModeChange,
@@ -81,7 +109,6 @@ import {
   tabChangeReducer,
 } from 'features/automation/protection/common/UITypes/TabChange'
 import { createAutomationTriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
-import { createVaultsBanners$ } from 'features/banners/vaultsBanners'
 import {
   createManageVault$,
   ManageStandardBorrowVaultState,
@@ -92,10 +119,19 @@ import { currentContent } from 'features/content'
 import { createOpenGuniVault$ } from 'features/earn/guni/open/pipes/openGuniVault'
 import { createExchangeQuote$, ExchangeAction, ExchangeType } from 'features/exchange/exchange'
 import { createGeneralManageVault$ } from 'features/generalManageVault/generalManageVault'
+import { getOasisStats$ } from 'features/homepage/stats'
 import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
+import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
+import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
+import { createUserReferral$ } from 'features/referralOverview/user'
+import {
+  getReferralsFromApi$,
+  getUserFromApi$,
+  getWeeklyClaimsFromApi$,
+} from 'features/referralOverview/userApi'
 import { redirectState$ } from 'features/router/redirectState'
 import { createPriceInfo$ } from 'features/shared/priceInfo'
 import { checkVaultTypeUsingApi$, saveVaultUsingApi$ } from 'features/shared/vaultApi'
@@ -111,26 +147,43 @@ import {
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
 import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import { isEqual, mapValues, memoize } from 'lodash'
+import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
-import { cropperUrnProxy } from '../blockchain/calls/cropper'
+import {
+  cropperBonusTokenAddress,
+  cropperCrops,
+  cropperShare,
+  cropperStake,
+  cropperStock,
+  cropperUrnProxy,
+} from '../blockchain/calls/cropper'
 import { dogIlk } from '../blockchain/calls/dog'
 import {
   ApproveData,
   DisapproveData,
   tokenAllowance,
   tokenBalance,
+  tokenBalanceRawForJoin,
+  tokenDecimals,
+  tokenName,
+  tokenSymbol,
 } from '../blockchain/calls/erc20'
 import { jugIlk } from '../blockchain/calls/jug'
+import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
 import { observe } from '../blockchain/calls/observe'
+import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
+  ClaimRewardData,
   DepositAndGenerateData,
   OpenData,
   WithdrawAndPaybackData,
 } from '../blockchain/calls/proxyActions/adapters/ProxyActionsSmartContractAdapterInterface'
 import { proxyActionsAdapterResolver$ } from '../blockchain/calls/proxyActions/proxyActionsAdapterResolver'
+import { vaultActionsLogic } from '../blockchain/calls/proxyActions/vaultActionsLogic'
 import { spotIlk } from '../blockchain/calls/spot'
+import { getCollateralLocked$, getTotalValueLocked$ } from '../blockchain/collateral'
 import { charterIlks, cropJoinIlks, networksById } from '../blockchain/config'
 import {
   ContextConnected,
@@ -140,8 +193,17 @@ import {
   createInitializedAccount$,
   createOnEveryBlock$,
   createWeb3ContextConnected$,
+  every10Seconds$,
 } from '../blockchain/network'
 import { createTransactionManager } from '../features/account/transactionManager'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  swapWidgetChangeReducer,
+  SwapWidgetState,
+} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
+import { createBonusPipe$ } from '../features/bonus/bonusPipe'
+import { createMakerProtocolBonusAdapter } from '../features/bonus/makerProtocolBonusAdapter'
 import {
   InstitutionalBorrowManageAdapter,
   ManageInstiVaultState,
@@ -156,16 +218,31 @@ import {
   getGuniMintAmount,
   getToken1Balance,
 } from '../features/earn/guni/open/pipes/guniActionsCalls'
+import {
+  createMakerOracleTokenPrices$,
+  createMakerOracleTokenPricesForDates$,
+} from '../features/earn/makerOracleTokenPrices'
 import { VaultType } from '../features/generalManageVault/vaultType'
 import { BalanceInfo, createBalanceInfo$ } from '../features/shared/balanceInfo'
 import { createCheckOasisCDPType$ } from '../features/shared/checkOasisCDPType'
 import { jwtAuthSetupToken$ } from '../features/termsOfService/jwt'
 import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptance'
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
+import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
+import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
+import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
+import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
-import { createProductCardsData$ } from '../helpers/productCards'
+import {
+  createProductCardsData$,
+  createProductCardsWithBalance$,
+  supportedBorrowIlks,
+  supportedEarnIlks,
+  supportedMultiplyIlks,
+} from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -182,6 +259,8 @@ export type TxData =
   | AutomationBotAddTriggerData
   | AutomationBotRemoveTriggerData
   | CloseGuniMultiplyData
+  | ClaimRewardData
+  | ClaimMultipleData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -224,12 +303,19 @@ export type SupportedUIChangeType =
   | RemoveFormChange
   | TabChange
   | ProtectionModeChange
+  | MultiplyPillChange
+  | SwapWidgetState
+  | AutomationChangeFeature
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
+  BasicBSChange: BasicBSChangeAction
   RemoveFormChange: RemoveFormChangeAction
   TabChange: TabChangeAction
   ProtectionModeChange: ProtectionModeChangeAction
+  MultiplyPillChange: MultiplyPillChangeAction
+  SwapWidgetChange: SwapWidgetChangeAction
+  AutomationChangeFeature: AutomationChangeFeatureAction
 }
 
 export type UIChanges = {
@@ -311,9 +397,14 @@ function initializeUIChanges() {
   const uiChangesSubject = createUIChangesSubject()
 
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
+  uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
+  uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
+  uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
 
   return uiChangesSubject
 }
@@ -371,11 +462,25 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
+  const coninbasePrices$ = memoize(coinbaseOrderBook$)
+  const coinGeckoPrices$ = memoize(coinGeckoTicker$)
+
+  const tokenPriceUSD$ = memoize(
+    curry(createTokenPriceInUSD$)(
+      every10Seconds$,
+      coninbasePrices$,
+      coinPaprikaTicker$,
+      coinGeckoPrices$,
+    ),
+    (tokens: string[]) => tokens.sort().join(','),
+  )
+
+  const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
   ): Observable<S> {
-    return doGasEstimation(gasPrice$, tokenPricesInUSD$, txHelpers$, state, call)
+    return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
 
   // base
@@ -399,11 +504,19 @@ export function setupAppContext() {
   const charterUrnProxy$ = observe(onEveryBlock$, context$, charterUrnProxy)
 
   const cropperUrnProxy$ = observe(onEveryBlock$, context$, cropperUrnProxy)
+  const cropperStake$ = observe(onEveryBlock$, context$, cropperStake)
+  const cropperShare$ = observe(onEveryBlock$, context$, cropperShare)
+  const cropperStock$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperTotal$ = observe(onEveryBlock$, context$, cropperStock)
+  const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
+  const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
+
+  const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
 
   const getCdps$ = observe(onEveryBlock$, context$, getCdps)
 
@@ -415,6 +528,9 @@ export function setupAppContext() {
 
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    ({ token, requestedData }) => {
+      return `${token}-${requestedData.join(',')}`
+    },
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
@@ -425,9 +541,14 @@ export function setupAppContext() {
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+
   const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
 
-  const ilkToToken$ = curry(createIlkToToken$)(context$)
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -461,6 +582,39 @@ export function setupAppContext() {
     cdpRegistryOwns$,
     cdpManagerOwner$,
     proxyOwner$,
+  )
+
+  const bonusAdapter = memoize(
+    (cdpId: BigNumber) =>
+      createMakerProtocolBonusAdapter(
+        urnResolver$,
+        unclaimedCrvLdoRewardsForIlk$,
+        {
+          stake$: cropperStake$,
+          share$: cropperShare$,
+          bonusTokenAddress$: cropperBonusTokenAddress$,
+          stock$: cropperStock$,
+          total$: cropperTotal$,
+          crops$: cropperCrops$,
+        },
+        {
+          tokenDecimals$,
+          tokenSymbol$,
+          tokenName$,
+          tokenBalanceRawForJoin$,
+        },
+        connectedContext$,
+        txHelpers$,
+        vaultActionsLogic(new CropjoinProxyActionsContractAdapter()),
+        proxyAddress$,
+        cdpId,
+      ),
+    bigNumberTostring,
+  )
+
+  const bonus$ = memoize(
+    (cdpId: BigNumber) => createBonusPipe$(bonusAdapter, cdpId),
+    bigNumberTostring,
   )
 
   const vault$ = memoize(
@@ -569,6 +723,10 @@ export function setupAppContext() {
     (token: string, slippage: BigNumber, amount: BigNumber, action: string, exchangeType: string) =>
       `${token}_${slippage.toString()}_${amount.toString()}_${action}_${exchangeType}`,
   )
+  const vaultWithValue$ = memoize(
+    curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
+  )
+  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(
@@ -589,26 +747,6 @@ export function setupAppContext() {
 
   const token1Balance$ = observe(onEveryBlock$, context$, getToken1Balance)
   const getGuniMintAmount$ = observe(onEveryBlock$, context$, getGuniMintAmount)
-
-  const openGuniVault$ = memoize((ilk: string) =>
-    createOpenGuniVault$(
-      connectedContext$,
-      txHelpers$,
-      proxyAddress$,
-      allowance$,
-      priceInfo$,
-      balanceInfo$,
-      ilks$,
-      ilkData$,
-      psmExchangeQuote$,
-      onEveryBlock$,
-      addGasEstimation$,
-      ilk,
-      token1Balance$,
-      getGuniMintAmount$,
-      userSettings$,
-    ),
-  )
 
   const manageVault$ = memoize(
     (id: BigNumber) =>
@@ -706,15 +844,24 @@ export function setupAppContext() {
         addGasEstimation$,
         getProportions$,
         vaultHistory$,
-        userSettings$,
+        makerOracleTokenPrices$,
         id,
       ),
     bigNumberTostring,
   )
 
+  const uiChanges = initializeUIChanges()
+
   const checkOasisCDPType$: (id: BigNumber) => Observable<VaultType> = curry(
     createCheckOasisCDPType$,
-  )(curry(checkVaultTypeUsingApi$)(context$), cdpManagerIlks$, charterIlks)
+  )(
+    curry(checkVaultTypeUsingApi$)(
+      context$,
+      uiChanges.subscribe<MultiplyPillChange>(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT),
+    ),
+    cdpManagerIlks$,
+    charterIlks,
+  )
 
   const generalManageVault$ = memoize(
     curry(createGeneralManageVault$)(
@@ -730,14 +877,41 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
+  const productCardsData$ = createProductCardsData$(ilkDataList$, oraclePriceData$)
+  const productCardsWithBalance$ = createProductCardsWithBalance$(
+    ilksWithBalance$,
+    oraclePriceData$,
+  )
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
   )
 
-  const vaultsOverview$ = memoize(
-    curry(createVaultsOverview$)(vaults$, ilksWithBalance$, automationTriggersData$),
+  const vaultsHistoryAndValue$ = memoize(
+    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
+  )
+
+  const positionsList$ = memoize(
+    curry(createPositionsList$)(context$, ilksWithBalance$, vaultsHistoryAndValue$),
+  )
+
+  const vaultsOverview$ = memoize(curry(createVaultsOverview$)(positionsList$))
+
+  const assetActions$ = memoize(
+    curry(createAssetActions$)(
+      context$,
+      ilkToToken$,
+      {
+        borrow: supportedBorrowIlks,
+        multiply: supportedMultiplyIlks,
+        earn: supportedEarnIlks,
+      },
+      uiChanges,
+    ),
+  )
+
+  const positionsOverviewSummary$ = memoize(
+    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$, assetActions$),
   )
 
   const termsAcceptance$ = createTermsAcceptance$(
@@ -750,8 +924,19 @@ export function setupAppContext() {
 
   const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
 
+  const userReferral$ = createUserReferral$(
+    web3Context$,
+    txHelpers$,
+    getUserFromApi$,
+    getReferralsFromApi$,
+    getWeeklyClaimsFromApi$,
+    checkReferralLocalStorage$,
+  )
+
+  const checkReferralLocal$ = checkReferralLocalStorage$()
+
   const vaultBanners$ = memoize(
-    curry(createVaultsBanners$)(context$, priceInfo$, vault$, vaultHistory$),
+    curry(createVaultsNotices$)(context$, priceInfo$, vault$, vaultHistory$),
     bigNumberTostring,
   )
 
@@ -761,7 +946,60 @@ export function setupAppContext() {
   )
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
-  const uiChanges = initializeUIChanges()
+  const makerOracleTokenPrices$ = memoize(
+    curry(createMakerOracleTokenPrices$)(context$),
+    (token: string, timestamp: moment.Moment) => {
+      return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
+    },
+  )
+
+  const makerOracleTokenPricesForDates$ = memoize(
+    curry(createMakerOracleTokenPricesForDates$)(context$),
+    (token: string, timestamps: moment.Moment[]) => {
+      return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
+    },
+  )
+
+  const yields$ = memoize(
+    (ilk: string, date?: moment.Moment) => {
+      return getYields$(makerOracleTokenPricesForDates$, ilkData$, ilk, date)
+    },
+    (ilk: string, date: moment.Moment = moment()) => `${ilk}-${date.format('YYYY-MM-DD')}`,
+  )
+
+  const yieldsChange$ = memoize(
+    curry(getYieldChange$)(yields$),
+    (currentDate: moment.Moment, previousDate: moment.Moment, ilk: string) =>
+      `${ilk}_${currentDate.format('YYYY-MM-DD')}_${previousDate.format('YYYY-MM-DD')}`,
+  )
+
+  const collateralLocked$ = memoize(
+    curry(getCollateralLocked$)(connectedContext$, ilkToToken$, balance$),
+  )
+
+  const totalValueLocked$ = memoize(
+    curry(getTotalValueLocked$)(collateralLocked$, oraclePriceData$),
+  )
+
+  const openGuniVault$ = memoize((ilk: string) =>
+    createOpenGuniVault$(
+      connectedContext$,
+      txHelpers$,
+      proxyAddress$,
+      allowance$,
+      priceInfo$,
+      balanceInfo$,
+      ilks$,
+      ilkData$,
+      psmExchangeQuote$,
+      onEveryBlock$,
+      addGasEstimation$,
+      ilk,
+      token1Balance$,
+      getGuniMintAmount$,
+      userSettings$,
+    ),
+  )
 
   return {
     web3Context$,
@@ -786,6 +1024,7 @@ export function setupAppContext() {
     vaultBanners$,
     redirectState$,
     accountBalances$,
+    gasPrice$,
     automationTriggersData$,
     accountData$,
     vaultHistory$,
@@ -801,9 +1040,21 @@ export function setupAppContext() {
     uiChanges,
     connectedContext$,
     productCardsData$,
+    getOasisStats$: memoize(getOasisStats$),
+    productCardsWithBalance$,
     addGasEstimation$,
     instiVault$,
     ilkToToken$,
+    bonus$,
+    positionsOverviewSummary$,
+    priceInfo$,
+    yields$,
+    daiEthTokenPrice$,
+    totalValueLocked$,
+    yieldsChange$,
+    tokenPriceUSD$,
+    userReferral$,
+    checkReferralLocal$,
   }
 }
 

@@ -1,10 +1,11 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
+import { useSharedUI } from 'components/SharedUIProvider'
 import { ModalProps } from 'helpers/modalHook'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 import { TRANSITIONS } from 'theme'
 import {
@@ -33,7 +34,7 @@ interface ModalCloseIconProps extends ModalProps<WithChildren> {
   color?: string
 }
 
-export function ModalCloseIcon({ close, sx, size = 3, color = 'onSurface' }: ModalCloseIconProps) {
+export function ModalCloseIcon({ close, sx, size = 3, color = 'neutral80' }: ModalCloseIconProps) {
   const handleEscClose = useCallback((event) => {
     const { keyCode } = event
     if (keyCode === 27) {
@@ -63,7 +64,7 @@ export function ModalCloseIcon({ close, sx, size = 3, color = 'onSurface' }: Mod
         transition: TRANSITIONS.global,
         color,
         '&:hover': {
-          color: 'primary',
+          color: 'primary100',
         },
         ...sx,
       }}
@@ -216,7 +217,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           height: '98px',
           borderRadius: '50%',
           border: '2px solid',
-          borderColor: 'onError',
+          borderColor: 'critical100',
           alignItems: 'center',
           justifyContent: 'center',
           mx: 'auto',
@@ -224,7 +225,7 @@ export function ModalErrorMessage({ message }: { message: string }) {
           mb: 2,
         }}
       >
-        <Icon name="close_squared" color="onError" size={30} />
+        <Icon name="close_squared" color="critical100" size={30} />
       </Flex>
       <Text sx={{ fontSize: 5, textAlign: 'center', mt: 3 }}>{t(message)}</Text>
     </Box>
@@ -235,6 +236,49 @@ export function MobileSidePanelPortal({ children }: WithChildren) {
   const onMobile = useOnMobile()
 
   return onMobile ? ReactDOM.createPortal(children, document.body) : children
+}
+
+export function MobileSidePanel({
+  toggleTitle,
+  children,
+}: WithChildren & { toggleTitle: ReactNode }) {
+  const { vaultFormOpened, setVaultFormOpened, setVaultFormToggleTitle } = useSharedUI()
+
+  useEffect(() => {
+    setVaultFormToggleTitle(toggleTitle)
+
+    return () => {
+      setVaultFormToggleTitle(undefined)
+      setVaultFormOpened(false)
+    }
+  }, [])
+
+  const onClose = () => setVaultFormOpened(false)
+
+  return (
+    <MobileSidePanelPortal>
+      <Box
+        sx={{
+          display: 'block',
+          position: ['fixed', 'relative'],
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          transition: ['0.3s transform ease-in-out', '0s'],
+          transform: [`translateX(${vaultFormOpened ? '0' : '100'}%)`, 'translateX(0)'],
+          bg: ['neutral10', 'transparent'],
+          p: [3, 0],
+          pt: [0, 0],
+          overflowX: ['hidden', 'visible'],
+          zIndex: ['modal', 0],
+        }}
+      >
+        <MobileSidePanelClose opened={vaultFormOpened} onClose={onClose} />
+        {children}
+      </Box>
+    </MobileSidePanelPortal>
+  )
 }
 
 export function MobileSidePanelClose({
@@ -260,7 +304,7 @@ export function MobileSidePanelClose({
       >
         <ModalCloseIcon
           close={onClose}
-          sx={{ top: 0, right: 0, color: 'primary', position: 'relative' }}
+          sx={{ top: 0, right: 0, color: 'primary100', position: 'relative' }}
           size={3}
         />
       </Box>

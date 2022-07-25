@@ -1,74 +1,161 @@
 import { BigNumber } from 'bignumber.js'
-import { VaultWithType } from 'blockchain/vaults'
-import { IlkWithBalance } from 'features/ilks/ilksWithBalances'
-import { isEqual } from 'lodash'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
 import { Observable } from 'rxjs'
-import { combineLatest } from 'rxjs'
-import { map } from 'rxjs/internal/operators/map'
-import { distinctUntilChanged, switchMap } from 'rxjs/operators'
+import { map } from 'rxjs/operators'
 
-import { useFeatureToggle } from '../../helpers/useFeatureToggle'
-import { extractStopLossData } from '../automation/protection/common/StopLossTriggerDataExtractor'
-import { TriggersData } from '../automation/protection/triggers/AutomationTriggersData'
-import { ilksWithFilter$, IlksWithFilters } from '../ilks/ilksFilters'
-import { vaultsWithFilter$, VaultsWithFilters, VaultWithSLData } from './vaultsFilters'
+import { getToken } from '../../blockchain/tokensMetadata'
+import {
+  BorrowPositionVM,
+  EarnPositionVM,
+  MultiplyPositionVM,
+  PositionVM,
+} from '../../components/dumb/PositionList'
+import {
+  formatCryptoBalance,
+  formatFiatBalance,
+  formatPercent,
+} from '../../helpers/formatters/format'
+import { calculatePNL } from '../../helpers/multiply/calculations'
+import { zero } from '../../helpers/zero'
+import { calculateMultiply } from '../multiply/manage/pipes/manageMultiplyVaultCalculations'
+import { PositionDetails } from './pipes/positionsList'
 import { getVaultsSummary, VaultSummary } from './vaultSummary'
 
 export interface VaultsOverview {
-  vaults: {
-    borrow: VaultsWithFilters
-    multiply: VaultsWithFilters
-  }
+  positions: PositionVM[]
   vaultSummary: VaultSummary | undefined
-  ilksWithFilters: IlksWithFilters
 }
 
 export function createVaultsOverview$(
-  vaults$: (address: string) => Observable<VaultWithType[]>,
-  ilksListWithBalances$: Observable<IlkWithBalance[]>,
-  automationTriggersData$: (id: BigNumber) => Observable<TriggersData>,
+  positions$: (address: string) => Observable<PositionDetails[]>,
   address: string,
 ): Observable<VaultsOverview> {
-  const automationEnabled = useFeatureToggle('Automation')
-
-  const vaultsAddress$ = vaults$(address)
-
-  const vaultWithAutomationData$ = vaults$(address).pipe(
-    switchMap((vaults) => {
-      return combineLatest(
-        vaults.map((vault) => {
-          return automationTriggersData$(vault.id).pipe(
-            map((automationData) => ({ ...vault, ...extractStopLossData(automationData) })),
-          )
-        }),
-      )
+  return positions$(address).pipe(
+    map((positions) => {
+      return {
+        positions: mapToPositionVM(positions),
+        vaultSummary: getVaultsSummary(positions),
+      }
     }),
   )
+}
 
-  const borrowVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
-    map((vaults) => vaults.filter((vault) => vault.type === 'borrow')),
-    // TODO casting won't be necessary when Automation feature flag will be removed
-  ) as unknown) as Observable<VaultWithSLData>
-
-  const multiplyVaults = ((automationEnabled ? vaultWithAutomationData$ : vaults$(address)).pipe(
-    map((vaults) => vaults.filter((vault) => vault.type === 'multiply')),
-    // TODO casting won't be necessary when Automation feature flag will be removed
-  ) as unknown) as Observable<VaultWithSLData>
-
-  return combineLatest(
-    vaultsWithFilter$(borrowVaults),
-    vaultsWithFilter$(multiplyVaults),
-    vaultsAddress$.pipe(map(getVaultsSummary)),
-    ilksWithFilter$(ilksListWithBalances$),
-  ).pipe(
-    map(([borrow, multiply, vaultSummary, ilksWithFilters]) => ({
-      vaults: {
-        borrow,
-        multiply,
-      },
-      vaultSummary,
-      ilksWithFilters,
-    })),
-    distinctUntilChanged(isEqual),
+function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
+  const { borrow, multiply, earn } = vaults.reduce<{
+    borrow: PositionDetails[]
+    multiply: PositionDetails[]
+    earn: PositionDetails[]
+  }>(
+    (acc, vault) => {
+      if (vault.token === 'GUNIV3DAIUSDC1' || vault.token === 'GUNIV3DAIUSDC2') {
+        acc.earn.push(vault)
+      } else if (vault.type === 'borrow') {
+        acc.borrow.push(vault)
+      } else if (vault.type === 'multiply') {
+        acc.multiply.push(vault)
+      }
+      return acc
+    },
+    { borrow: [], multiply: [], earn: [] },
   )
+
+  const borrowVMs: BorrowPositionVM[] = borrow.map((position) => {
+    return {
+      type: 'borrow' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      collateralRatio: formatPercent(position.collateralizationRatio.times(100), { precision: 2 }),
+      inDanger: position.atRiskLevelDanger,
+      daiDebt: formatCryptoBalance(position.debt),
+      collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
+      variable: formatPercent(position.stabilityFee.times(100), { precision: 2 }),
+      automationEnabled: isAutomationEnabled(position),
+      protectionAmount: getProtectionAmount(position),
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+      },
+      automationLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Protection,
+      },
+      positionId: position.id.toString(),
+    }
+  })
+
+  const multiplyVMs: MultiplyPositionVM[] = multiply.map((position) => {
+    const fundingCost = position.value.gt(zero)
+      ? position.debt.div(position.value).multipliedBy(position.stabilityFee).times(100)
+      : zero
+    return {
+      type: 'multiply' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      positionId: position.id.toString(),
+      multiple: `${calculateMultiply({ ...position }).toFixed(2)}x`,
+      netValue: `$${formatFiatBalance(position.value)}`,
+      liquidationPrice: `$${formatFiatBalance(position.liquidationPrice)}`,
+      fundingCost: formatPercent(fundingCost, {
+        precision: 2,
+      }),
+      automationEnabled: isAutomationEnabled(position),
+      protectionAmount: getProtectionAmount(position),
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+        internalInNewTab: false,
+      },
+      automationLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Protection,
+        internalInNewTab: false,
+      },
+    }
+  })
+
+  const earnVMs: EarnPositionVM[] = earn.map((position) => {
+    return {
+      type: 'earn' as const,
+      isOwnerView: position.isOwner,
+      icon: getToken(position.token).iconCircle,
+      ilk: position.ilk,
+      positionId: position.id.toString(),
+      netValue: `$${formatFiatBalance(position.value)}`,
+      sevenDayYield: formatPercent(new BigNumber(0.12).times(100), { precision: 2 }), // TODO: Change in the future
+      pnl: `${formatPercent((getPnl(position) || zero).times(100), {
+        precision: 2,
+        roundMode: BigNumber.ROUND_DOWN,
+      })}`,
+      liquidity: `${formatCryptoBalance(position.ilkDebtAvailable)} DAI`,
+      editLinkProps: {
+        href: `/${position.id}`,
+        hash: VaultViewMode.Overview,
+        internalInNewTab: false,
+      },
+    }
+  })
+  return [...borrowVMs, ...multiplyVMs, ...earnVMs]
+}
+
+function getPnl(vault: PositionDetails): BigNumber {
+  const { lockedCollateralUSD, debt, history } = vault
+  const netValueUSD = lockedCollateralUSD.minus(debt)
+  return calculatePNL(history, netValueUSD)
+}
+
+function isAutomationEnabled(position: PositionDetails): boolean {
+  return position.stopLossData.isStopLossEnabled || position.basicSellData.isTriggerEnabled
+}
+
+function getProtectionAmount(position: PositionDetails): string {
+  let protectionAmount = zero
+
+  if (position.stopLossData.stopLossLevel.gt(zero))
+    protectionAmount = position.stopLossData.stopLossLevel.times(100)
+  else if (position.basicSellData.execCollRatio.gt(zero))
+    protectionAmount = position.basicSellData.execCollRatio
+
+  return formatPercent(protectionAmount)
 }

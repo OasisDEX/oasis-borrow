@@ -1,6 +1,8 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 
+import { TxError } from '../../../../../helpers/types'
+
 export const ADD_FORM_CHANGE = 'ADD_FORM_CHANGE'
 
 /* End of section */
@@ -11,6 +13,7 @@ export type AddFormChangeAction =
       type: 'tx-details'
       txDetails: {
         txStatus?: TxStatus
+        txError?: TxError
         txHash?: string
         txCost?: BigNumber
       }
@@ -37,6 +40,7 @@ export interface AddFormChange {
   collateralActive: boolean
   txDetails?: {
     txStatus?: TxStatus
+    txError?: TxError
     txHash?: string
     txCost?: BigNumber
   }

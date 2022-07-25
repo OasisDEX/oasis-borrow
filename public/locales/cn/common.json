@@ -290,6 +290,13 @@
       "collateral-locked-oracles": "我们使用从 Maker 喂价机得到的价格来计算抵押品的价值。你的抵押品的当前市场的价格有可能会与这个价格不同。"
     }
   },
+  "earn-vault": {
+    "headlines": {
+      "yield-7": "7 day net APY",
+      "yield-90": "90 day net APY",
+      "total-value-locked": "Total value locked"
+    }
+  },
   "manage-multiply-vault": {
     "tooltip": {
       "vaultId": "金库的 ID 是在 Oasis.app 上面针对你的 Maker 金库而生的独一无二数字码。",
@@ -319,7 +326,7 @@
       "gas-fees": "Gas fees",
       "market-price-unavailable": "Market price temporally unavailable, please check later",
       "formula": "The unrealised profit & loss is calculated by the following formula:\nUnrealised P&L = ((Net value + Cumulative value of the withdrawals - Gas fees spent) - Cumulative value of the deposits) / Cumulative value of the deposits",
-      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here <0>here</0>)"
+      "deposit-collateral-on-vault-under-debt-floor": "You cannot deposit to your vault while it is below the minimum debt required of {{debtFloor}}. To add more collateral, generate Dai to get above the minimum required. Learn more about the Minimum Vault Debt here here)"
     }
   },
   "max": "最多",
@@ -357,6 +364,7 @@
   "open-new-vault": "开启新金库",
   "open-vault": {
     "title": "开启金库",
+    "simulate": "Simulate",
     "warnings": {
       "potential-generate-amount-less-than-debt-floor": "初次开启金库最低需要生成 {{debtFloor}} Dai。请添加更多抵押品生成 {{debtFloor}} Dai。",
       "vault-will-be-at-risk-level-danger": "当前操作会让你的金库抵押率非常接近最低要求。",
@@ -472,7 +480,8 @@
     "vault-id": "金库 ID",
     "oracle-price": "Oracle Price",
     "market-price": "Market Price",
-    "max-multiple": "Max Multiple"
+    "max-multiple": "Max Multiple",
+    "position-info": "Position Info"
   },
   "to-the-following-address": "至此地址",
   "token-balance": "{{token}} 余额",
@@ -536,17 +545,19 @@
       "connected-viewer-noVaults": "{{address}} 地址下当前没有 Maker 金库",
       "connected-viewer-withVaults": "{{address}} 地址下的 Maker 金库",
       "notConnected-noVaults": "{{address}} 地址下当前没有 Maker 金库。<0/> 连接你的钱包开启金库。",
-      "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。"
+      "notConnected-withVaults": "{{address}} 地址下的 Maker 金库。<0/> 连接你的钱包。",
+      "vault-suggestions": "{{address}}, 在 Oasis.app 上做更多事情"
     },
     "number-of-vaults": "金库数量",
     "subheader-no-vaults": "开启 Maker 金库，存入抵押品，生成 Dai。",
+    "subheader-vault-suggestions": "Lorem ipsum dolor sit amet, consectetur, adipiscing elit. Ut fringilla dictum nibh etc aliquam dolor sit amet.",
     "total-debt": "总债务",
     "total-locked": "总锁定",
     "vaults": "所有金库",
     "vaults-at-risk": "风险金库",
     "your-vaults": "你的金库"
   },
-  "vault-banners": {
+  "vault-notices": {
     "ownership": {
       "header": "你正在查看 {{address}}  地址下的金库。",
       "subheader1": "请连接你的钱包开启，管理并查看你的所有金库。",
@@ -667,7 +678,10 @@
     "lowest-stabilityFee-and-cheapest": "The lowest Stability Fee and cheapest Vault for borrowing using {{token}}",
     "staking-rewards": "Great for Borrowing or Multiplying while earning staking rewards",
     "great-borrowing-and-multiplying": "Great for Borrowing or Multiplying your {{token}}",
-    "guni": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Earn on your Dai with exposure to the DAI/USDC 1bps pool on UNI V3",
+      "GUNIV3DAIUSDC1-A": "Earn on your Dai with exposure to the DAI/USDC 5bps pool on UNI V3"
+    },
     "tags": {
       "lowest-fees-for-borrowing": "Lowest fees for Borrowing",
       "staking-rewards": "Staking rewards",
@@ -679,7 +693,10 @@
     "borrow": "Borrow up to {{value}} DAI",
     "multiply": "Get up to {{value}} {{token}} exposure",
     "earn": "Earn {{value}} {{token}} a year",
-    "guni": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool"
+    "guni": {
+      "GUNIV3DAIUSDC2-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 1bps pool",
+      "GUNIV3DAIUSDC1-A": "Get up to {{value}} exposure to the DAI/USDC UNI V3 5bps pool"
+    }
   },
   "product-page": {
     "multiply": {
@@ -694,8 +711,22 @@
     },
     "earn": {
       "title": "Oasis Earn",
-      "description": "Put your crypto assets to work today. Start generating the best yields. Select your Base Asset below.",
+      "description": "Put your crypto assets to work today. Start generating the best yields. Select your EArn product below.",
       "link": "Learn more about Earn ->"
     }
+  },
+  "claim-rewards": {
+    "title": "{{ bonusTokenName }} 仓位奖励",
+    "text1": "当前你在这个仓位赚取{{ bonusTokenName }}奖励。按下按钮来认领{{ bonusAmount }}。 在",
+    "link-text": "这里",
+    "text2": "可以获取更多关于奖励的信息。",
+    "claim-button": {
+      "claim-rewards": "领取奖励"
+    }
+  },
+  "simulate-faq": {
+    "contents": "Contents",
+    "learn-more-heading": "Want to know more?",
+    "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   }
 }

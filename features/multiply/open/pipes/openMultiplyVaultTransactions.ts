@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { approve, ApproveData } from 'blockchain/calls/erc20'
+import { createDsProxy } from 'blockchain/calls/proxy'
 import { OpenMultiplyData, openMultiplyVault } from 'blockchain/calls/proxyActions/proxyActions'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { ContextConnected } from 'blockchain/network'
@@ -11,7 +12,7 @@ import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { transactionToX } from 'helpers/form'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { one, zero } from 'helpers/zero'
-import { Observable, of } from 'rxjs'
+import { iif, Observable, of } from 'rxjs'
 import { catchError, first, startWith, switchMap } from 'rxjs/operators'
 
 import { parseVaultIdFromReceiptLogs } from '../../../shared/transactions'
@@ -34,6 +35,14 @@ export function applyOpenMultiplyVaultTransaction(
       ...state,
       openTxHash,
       stage: 'txInProgress',
+    }
+  }
+
+  if (change.kind === 'openVaultConfirming') {
+    const { openVaultConfirmations } = change
+    return {
+      ...state,
+      openVaultConfirmations,
     }
   }
 
@@ -103,6 +112,8 @@ export function multiplyVault(
     fromTokenAmount,
     borrowedDaiAmount,
     oneInchAmount,
+    openFlowWithStopLoss,
+    openVaultSafeConfirmations,
   }: OpenMultiplyVaultState,
 ) {
   return getQuote$(
@@ -159,11 +170,26 @@ export function multiplyVault(
                 ).subscribe()
               }
 
+              if (openFlowWithStopLoss) {
+                return iif(
+                  () => (txState as any).confirmations < openVaultSafeConfirmations,
+                  of({
+                    kind: 'openVaultConfirming',
+                    openVaultConfirmations: (txState as any).confirmations,
+                  }),
+                  of({
+                    kind: 'stopLossTxWaitingForConfirmation',
+                    id: id!,
+                  }),
+                )
+              }
+
               return of({
                 kind: 'txSuccess',
                 id: id!,
               })
             },
+            !openFlowWithStopLoss ? undefined : openVaultSafeConfirmations,
           ),
         ),
       ),
@@ -178,7 +204,7 @@ export function applyEstimateGas(
   state: OpenMultiplyVaultState,
 ): Observable<OpenMultiplyVaultState> {
   return addGasEstimation$(state, ({ estimateGas }: TxHelpers) => {
-    const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL } = state
+    const { proxyAddress, depositAmount, ilk, token, account, swap, skipFL, isProxyStage } = state
 
     const daiAmount = swap?.status === 'SUCCESS' ? swap.daiAmount.div(one.minus(OAZO_FEE)) : zero
     const collateralAmount = swap?.status === 'SUCCESS' ? swap.collateralAmount : zero
@@ -199,6 +225,10 @@ export function applyEstimateGas(
         toTokenAmount: collateralAmount,
         fromTokenAmount: daiAmount,
       })
+    }
+
+    if (isProxyStage) {
+      return estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy })
     }
 
     return undefined
