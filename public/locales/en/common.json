@@ -1561,6 +1561,7 @@
     "enable-notifications-email-placeholder": "Enter email...",
     "confirm-btn": "Confirm",
     "change-btn": "Change",
-    "email-entered": "You have set up email notifcations successfully."
+    "email-entered": "You have set up email notifcations successfully.",
+    "enable-notifications-email-label": "Set up your email"
   }
 }

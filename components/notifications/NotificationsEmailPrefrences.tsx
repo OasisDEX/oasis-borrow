@@ -36,7 +36,7 @@ export function NotificationsEmailPrefrences() {
                 fontWeight: 'semiBold',
               }}
             >
-              Set up your email
+              {t('notifications.enable-notifications-email-label')}
             </Text>
             {/* TODO: Move this to a generic UI component as it can be resued */}
             <Input
