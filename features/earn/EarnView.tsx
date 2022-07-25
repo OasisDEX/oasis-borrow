@@ -3,8 +3,11 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { ProductCardsLoader, ProductCardsWrapper } from '../../components/ProductCardsWrapper'
+import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import {
+  ProductCardsLoader,
+  ProductCardsWrapper,
+} from '../../components/productCards/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'

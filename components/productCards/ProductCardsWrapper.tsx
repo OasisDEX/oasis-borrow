@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
 import { Box, Flex, Grid } from 'theme-ui'
 
-import { AppSpinner } from '../helpers/AppSpinner'
-import { fadeInAnimationDelay, slideInAnimation } from '../theme/animations'
-import { useTheme } from '../theme/useThemeUI'
+import { AppSpinner } from '../../helpers/AppSpinner'
+import { fadeInAnimationDelay, slideInAnimation } from '../../theme/animations'
+import { useTheme } from '../../theme/useThemeUI'
 
 interface ProductCardWrapperProps {
   children: Array<ReactNode>

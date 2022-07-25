@@ -2,8 +2,8 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardsFilter } from '../../components/ProductCardsFilter'
+import { ProductCardBorrow } from '../../components/productCards/ProductCardBorrow'
+import { ProductCardsFilter } from '../../components/productCards/ProductCardsFilter'
 import { ProductHeader } from '../../components/ProductHeader'
 import { borrowPageCardsData, productCardsConfig } from '../../helpers/productCards'
 

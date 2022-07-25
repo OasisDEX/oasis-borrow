@@ -2,9 +2,9 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import { WithLoadingIndicator } from '../helpers/AppSpinner'
-import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from '../helpers/observableHook'
+import { WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from '../../helpers/observableHook'
 import {
   ilkToEntryToken,
   IlkTokenMap,
@@ -12,8 +12,8 @@ import {
   ProductCardData,
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
-} from '../helpers/productCards'
-import { useAppContext } from './AppContextProvider'
+} from '../../helpers/productCards'
+import { useAppContext } from '../AppContextProvider'
 import { ProductCardsSelect } from './ProductCardsSelect'
 import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 

@@ -16,10 +16,13 @@ import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsLoader, ProductCardsWrapper } from '../../components/ProductCardsWrapper'
+import { ProductCardBorrow } from '../../components/productCards/ProductCardBorrow'
+import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import { ProductCardMultiply } from '../../components/productCards/ProductCardMultiply'
+import {
+  ProductCardsLoader,
+  ProductCardsWrapper,
+} from '../../components/productCards/ProductCardsWrapper'
 import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'

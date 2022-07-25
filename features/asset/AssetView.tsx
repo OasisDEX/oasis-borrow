@@ -1,9 +1,12 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardBorrow } from 'components/ProductCardBorrow'
-import { ProductCardMultiply } from 'components/ProductCardMultiply'
-import { ProductCardsLoader, ProductCardsWrapper } from 'components/ProductCardsWrapper'
+import { ProductCardBorrow } from 'components/productCards/ProductCardBorrow'
+import { ProductCardMultiply } from 'components/productCards/ProductCardMultiply'
+import {
+  ProductCardsLoader,
+  ProductCardsWrapper,
+} from 'components/productCards/ProductCardsWrapper'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
@@ -15,7 +18,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { ProductCardEarn } from '../../components/ProductCardEarn'
+import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
 
 type TabContentProps = {
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element

@@ -3,7 +3,7 @@ import EthGif from 'public/static/img/tokens/eth.gif'
 import EthImage from 'public/static/img/tokens/eth.png'
 import React from 'react'
 
-import { ProductCard, ProductCardProtocolLink } from '../ProductCard'
+import { ProductCard, ProductCardProtocolLink } from '../productCards/ProductCard'
 
 export const Borrow = () => {
   const { t } = useTranslation()
