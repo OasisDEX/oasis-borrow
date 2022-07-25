@@ -17,16 +17,16 @@ export function NotificationPrefrenceCard({
     <Card
       sx={{
         border: 'none',
-        padding: '8px',
+        padding: 2,
         mt: 3,
       }}
     >
       <Flex>
         <Text
           sx={{
-            fontWeight: 500,
+            fontWeight: 'heading',
             marginRight: 'auto',
-            fontSize: '14px',
+            fontSize: 2,
           }}
         >
           {heading}
@@ -40,8 +40,8 @@ export function NotificationPrefrenceCard({
       >
         <Text
           sx={{
-            color: '#787A9B',
-            fontSize: '14px',
+            color: 'neutral80',
+            fontSize: 2,
           }}
         >
           {description}

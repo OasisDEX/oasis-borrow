@@ -42,8 +42,8 @@ export function Toggle({ isChecked }: ToggleProps) {
             width: '20px',
             marginTop: '2px',
             ...(!checked && { marginLeft: '2px' }),
-            backgroundColor: checked ? '#575CFE' : '#80818A',
-            borderRadius: '50%',
+            backgroundColor: checked ? 'interactive100' : 'primary30',
+            borderRadius: 'circle',
             textAlign: 'center',
             lineHeight: checked ? '1.2' : '1',
             transition: '.4s',
@@ -55,9 +55,9 @@ export function Toggle({ isChecked }: ToggleProps) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: checked ? '#EDEDFF' : '#F1F3F4',
+          backgroundColor: checked ? 'interactive10' : 'secondary60',
           transition: '.4s',
-          borderRadius: '34px',
+          borderRadius: 'round',
         }}
       />
     </Box>
