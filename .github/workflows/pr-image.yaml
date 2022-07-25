@@ -50,7 +50,6 @@ jobs:
           file: ./Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          target: deploy
           build-args: |
             COMMIT_SHA=${{ env.SHA_TAG }}
             API_HOST=${{ secrets.API_HOST_STAGING }}
