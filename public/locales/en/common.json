@@ -1504,10 +1504,21 @@
     "total-cost-of-feature": "Total cost of feature",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "banner": {
-    "header": "Set up Constant Multiple",
-    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
-    "button": "Setup Constant Multiple"
-  }
+      "header": "Set up Constant Multiple",
+      "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
+      "button": "Setup Constant Multiple"
+    },
+    "vault-changes": {
+      "general-summary": "General Summary",
+      "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
+      "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
+      "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
+      "cost-per-adjustment": "Estimated  transaction cost per adjustment",
+      "eth-at-next-buy": "ETH to be purchased at next buy",
+      "max-price-buy": "Max price to perform auto buy",
+      "eth-at-next-sell": "ETH to be sold at next sell",
+      "max-price-sell": "Min price to perform auto sell"
+    }
   },
   "ref": {
     "banner": "Introducing Refer a Friend. Earn DAI today",
