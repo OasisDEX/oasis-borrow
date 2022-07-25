@@ -1,4 +1,5 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
@@ -15,7 +16,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-export default function ReferralsPage() {
+function ReferralsPage() {
   const referralsEnabled = useFeatureToggle('Referrals')
 
   return (
@@ -29,3 +30,11 @@ export default function ReferralsPage() {
 }
 
 ReferralsPage.layout = AppLayout
+ReferralsPage.seoTags = (
+  <PageSEOTags
+    title="seo.referrals.title"
+    description="seo.referrals.description"
+    url="/referrals"
+  />
+)
+export default ReferralsPage

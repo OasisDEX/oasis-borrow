@@ -20,7 +20,7 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
         marginBottom: 0,
         overflow: 'hidden',
         borderRadius: '50px',
-        maxWidth: '412px',
+        maxWidth: ['230px', '335px'],
         p: '3px 8px 3px 4px',
         '&:hover': {
           opacity: '80%',
@@ -67,7 +67,13 @@ export function ReferralBanner({ heading, link }: ReferralBannerProps) {
               5%
             </Text>
           </Flex>
-          <Flex sx={{ flexDirection: ['column', 'row', 'row', 'row'], mr: '7px' }}>
+          <Flex
+            sx={{
+              flexDirection: ['column', 'row', 'row', 'row'],
+              mr: '7px',
+              alignItems: 'flex-start',
+            }}
+          >
             <Text
               variant="text.paragraph3"
               sx={{ zIndex: 1, fontWeight: 'semiBold', wordBreak: 'normal' }}
