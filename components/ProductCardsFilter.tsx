@@ -2,7 +2,7 @@ import { Icon } from '@makerdao/dai-ui-icons'
 import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
-import { AppSpinner, WithLoadingIndicator } from '../helpers/AppSpinner'
+import { WithLoadingIndicator } from '../helpers/AppSpinner'
 import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../helpers/observableHook'
 import {
@@ -15,27 +15,29 @@ import {
 } from '../helpers/productCards'
 import { useAppContext } from './AppContextProvider'
 import { ProductCardsSelect } from './ProductCardsSelect'
-import { ProductCardsWrapper } from './ProductCardsWrapper'
+import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
-interface TokenTabsProps {
+interface ProductCardFilterProps {
   filters: Array<ProductLandingPagesFilter>
   productCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
-  filterCardsFunction: ({
-    ilkToTokenMapping,
-    cardsFilter,
-  }: {
-    ilkToTokenMapping: Array<IlkTokenMap>
-    cardsFilter?: ProductLandingPagesFiltersKeys
-  }) => Array<IlkTokenMap>
+  filterCardsFunction: FilterCardsFunction
 }
+
+type FilterCardsFunction = ({
+  ilkToTokenMapping,
+  cardsFilter,
+}: {
+  ilkToTokenMapping: Array<IlkTokenMap>
+  cardsFilter?: ProductLandingPagesFiltersKeys
+}) => Array<IlkTokenMap>
 
 export function ProductCardsFilter({
   filters,
   productCardComponent,
   selectedFilter,
   filterCardsFunction,
-}: TokenTabsProps) {
+}: ProductCardFilterProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
@@ -107,14 +109,7 @@ export function ProductCardsFilter({
         />
       </Flex>
       <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsData]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
           {([productCardsData]) => (
             <ProductCardsWrapper>
               {productCardsData.map((cardData) => (

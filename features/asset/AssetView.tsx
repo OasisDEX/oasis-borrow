@@ -3,11 +3,11 @@ import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
 import { ProductCardBorrow } from 'components/ProductCardBorrow'
 import { ProductCardMultiply } from 'components/ProductCardMultiply'
-import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
+import { ProductCardsLoader, ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
+import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
 import { ProductCardData } from 'helpers/productCards'
@@ -16,14 +16,6 @@ import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { ProductCardEarn } from '../../components/ProductCardEarn'
-
-function Loader() {
-  return (
-    <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-      <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-    </Flex>
-  )
-}
 
 type TabContentProps = {
   renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
@@ -39,7 +31,7 @@ function TabContent(props: TabContentProps) {
   return (
     <Box mt={5}>
       <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsData]) => (
             <ProductCardsWrapper>
               {_productCardsData.map((cardData) => (

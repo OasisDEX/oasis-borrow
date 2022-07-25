@@ -19,8 +19,8 @@ import { AppLink } from '../../components/Links'
 import { ProductCardBorrow } from '../../components/ProductCardBorrow'
 import { ProductCardEarn } from '../../components/ProductCardEarn'
 import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { ProductCardsLoader, ProductCardsWrapper } from '../../components/ProductCardsWrapper'
+import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
 import { ProductCardData, productCardsConfig, ProductTypes } from '../../helpers/productCards'
@@ -58,14 +58,7 @@ function TabContent(props: TabContentProps) {
       </Text>
 
       <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsData]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
           {([_productCardsData]) => (
             <ProductCardsWrapper>
               {_productCardsData.map((cardData) => (
