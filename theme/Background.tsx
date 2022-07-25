@@ -11,6 +11,7 @@ export function Background() {
         left: 'calc((100% - 1882px) / 2)',
         top: '-200px',
         right: 0,
+        zIndex: -1,
         backgroundColor: 'white',
         overflow: 'hidden',
         '&::after': {
