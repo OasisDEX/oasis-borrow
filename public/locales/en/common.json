@@ -1514,9 +1514,7 @@
       "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
       "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
       "cost-per-adjustment": "Estimated  transaction cost per adjustment",
-      "eth-at-next-buy": "ETH to be purchased at next buy",
       "max-price-buy": "Max price to perform auto buy",
-      "eth-at-next-sell": "ETH to be sold at next sell",
       "max-price-sell": "Min price to perform auto sell"
     }
   },

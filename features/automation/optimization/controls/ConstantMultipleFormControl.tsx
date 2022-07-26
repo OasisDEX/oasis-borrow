@@ -115,6 +115,7 @@ export function ConstantMultipleFormControl({
 
   return (
     <SidebarSetupConstantMultiple
+      vault={vault}
       stage={'editing'}
       constantMultipleState={constantMultipleState}
       isAddForm={true}

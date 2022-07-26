@@ -1,10 +1,38 @@
+import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ConstantMultipleProps {}
+interface ConstantMultipleInfoSectionProps {
+  token: string
+  targetColRatio: BigNumber
+  multiplier: number
+  slippage: BigNumber
+  triggerColRatioToBuy: BigNumber
+  nextBuyPrice: BigNumber
+  collateralToBePurchased: BigNumber
+  maxPriceToBuy?: BigNumber
+  triggerColRatioToSell: BigNumber
+  nextSellPrice: BigNumber
+  collateralToBeSold: BigNumber
+  minPriceToSell?: BigNumber
+}
 
-export function ConstantMultipleInfoSection({}: ConstantMultipleProps) {
+export function ConstantMultipleInfoSection({
+  token,
+  targetColRatio,
+  multiplier,
+  slippage,
+  triggerColRatioToBuy,
+  nextBuyPrice,
+  collateralToBePurchased,
+  maxPriceToBuy,
+  triggerColRatioToSell,
+  nextSellPrice,
+  collateralToBeSold,
+  minPriceToSell,
+}: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
   return (
@@ -12,24 +40,26 @@ export function ConstantMultipleInfoSection({}: ConstantMultipleProps) {
       title={t('constant-multiple.vault-changes.general-summary')}
       items={[
         {
-          label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),
-          value: '0',
+          label: t('constant-multiple.vault-changes.target-col-ratio-after-buy-sell'),
+          value: `${targetColRatio}%`,
         },
         {
           label: t('constant-multiple.vault-changes.target-multiple-ratio-after-buy-sell'),
-          value: '0',
+          value: `${multiplier}x`,
         },
         {
           label: t('vault-changes.slippage-limit'),
-          value: '0',
+          value: `${slippage}%`,
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
-          value: '0',
+          // TODO: PK calculate this value
+          value: '$0',
         },
         {
           label: t('auto-sell.setup-transaction-cost'),
-          value: '0',
+          // TODO: PK calculate this value
+          value: '$0',
         },
         {
           label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),
@@ -37,35 +67,35 @@ export function ConstantMultipleInfoSection({}: ConstantMultipleProps) {
           dropdownValues: [
             {
               label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-              value: '0',
+              value: `${triggerColRatioToBuy}%`,
             },
             {
               label: t('auto-buy.next-buy-prices'),
-              value: '0',
+              value: `$${formatAmount(nextBuyPrice, 'USD')}`,
             },
             {
-              label: t('constant-multiple.vault-changes.eth-at-next-buy'),
-              value: '0',
+              label: t('auto-buy.col-to-be-purchased', { token }),
+              value: `${formatCryptoBalance(collateralToBePurchased)} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-buy'),
-              value: '0',
+              value: maxPriceToBuy ? `$${formatAmount(maxPriceToBuy, 'USD')}` : t('protection.no-threshold'),
             },
             {
               label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-              value: '0',
+              value: `${triggerColRatioToSell}%`,
             },
             {
               label: t('auto-sell.next-sell-prices'),
-              value: '0',
+              value: `$${formatAmount(nextSellPrice, 'USD')}`,
             },
             {
-              label: t('constant-multiple.vault-changes.eth-at-next-sell'),
-              value: '0',
+              label: t('auto-sell.col-to-be-sold', { token }),
+              value: `${formatCryptoBalance(collateralToBeSold)} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-sell'),
-              value: '0',
+              value: minPriceToSell ? `$${formatAmount(minPriceToSell, 'USD')}` : t('protection.no-threshold'),
             },
           ],
         },

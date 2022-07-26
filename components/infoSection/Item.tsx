@@ -126,7 +126,7 @@ export function Item({
           {dropdownValues && (
             <Grid
               as="ul"
-              gap={2}
+              gap={!isHeading ? 2 : 3}
               sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 3, listStyle: 'none' }}
             >
               {dropdownValues.map((item, idx) => (
