@@ -1,25 +1,25 @@
 import { TxStatus } from '@oasisdex/transactions'
+import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
+import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
+import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
+import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
-import {prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
-import BigNumber from 'bignumber.js'
-import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
-import { zero } from 'helpers/zero'
-import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { IlkData } from 'blockchain/ilks'
-import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
@@ -30,20 +30,19 @@ interface ConstantMultipleFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-
 }
 
 export function ConstantMultipleFormControl({
-  context,
-  isConstantMultipleActive,
+  // TODO ŁW commented out values will probably be used in next stories
+  // context,
+  // isConstantMultipleActive,
   txHelpers,
   vault,
   ethMarketPrice,
   ilkData,
-
   stopLossTriggerData,
-autoSellTriggerData,
-autoBuyTriggerData,
+  // autoSellTriggerData,
+  autoBuyTriggerData,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
@@ -63,26 +62,31 @@ autoBuyTriggerData,
     ? 'txFailure'
     : 'editing'
 
-  const isAddForm = true
+  const isAddForm = true // TODO ŁW , handle when implementing middle stages
   // const isAddForm = constantMultipleState.currentForm === 'add'
   const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
   const addTxData = useMemo(
-    () => 
-    prepareAddConstantMultipleTriggerData({
-      groupId: constantMultipleState.triggerId, // TODO ŁW - consider changing triggerId to groupId
-      vaultData: vault,
-      maxBuyPrice: constantMultipleState.buyWithThreshold ? constantMultipleState.maxBuyPrice || maxUint256 : maxUint256,
-      minSellPrice: constantMultipleState.sellWithThreshold ? constantMultipleState.minSellPrice  || zero : zero,
-      buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio,
-      sellExecutionCollRatio:  constantMultipleState.sellExecutionCollRatio,
-      buyWithThreshold: constantMultipleState.buyWithThreshold,
-      sellWithThreshold: constantMultipleState. sellWithThreshold,
-      targetCollRatio: constantMultipleState.targetCollRatio, // TODO calculate using constantMultipleState.multiplier
-      continuous: constantMultipleState.continuous,
-      deviation: constantMultipleState. deviation,
-      maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
-    }), [
+    () =>
+      prepareAddConstantMultipleTriggerData({
+        groupId: constantMultipleState.triggerId, // TODO ŁW - consider changing triggerId to groupId
+        vaultData: vault,
+        maxBuyPrice: constantMultipleState.buyWithThreshold
+          ? constantMultipleState.maxBuyPrice || maxUint256
+          : maxUint256,
+        minSellPrice: constantMultipleState.sellWithThreshold
+          ? constantMultipleState.minSellPrice || zero
+          : zero,
+        buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio,
+        sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio,
+        buyWithThreshold: constantMultipleState.buyWithThreshold,
+        sellWithThreshold: constantMultipleState.sellWithThreshold,
+        targetCollRatio: constantMultipleState.targetCollRatio, // TODO calculate using constantMultipleState.multiplier
+        continuous: constantMultipleState.continuous,
+        deviation: constantMultipleState.deviation,
+        maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
+      }),
+    [
       1, //triggerid
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
@@ -95,7 +99,7 @@ autoBuyTriggerData,
       constantMultipleState.continuous,
       constantMultipleState.deviation?.toNumber(),
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
-    ]
+    ],
   )
 
   function txHandler() {
@@ -112,10 +116,9 @@ autoBuyTriggerData,
       } else {
         if (isAddForm) {
           addConstantMultipleTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice)
-          // addBasicBSTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice, BASIC_BUY_FORM_CHANGE)
         }
         if (isRemoveForm) {
-          // TODO ŁW can't remove as can't load from cache
+          // TODO ŁW can't remove for now as can't load from cache
         }
       }
     }
@@ -134,8 +137,8 @@ autoBuyTriggerData,
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,
-          targetCollRatio: targetCollRatioForSelectedMultiplier
-        })    
+          targetCollRatio: targetCollRatioForSelectedMultiplier,
+        })
       }}
       txHandler={txHandler}
       ilkData={ilkData}

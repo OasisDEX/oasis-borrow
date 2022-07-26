@@ -15,25 +15,25 @@ export type BasicBSTriggerResetData = Pick<
 }
 
 export type AutomationChangeAction =
-| { type: 'target-coll-ratio'; targetCollRatio: BigNumber }
-| { type: 'continuous'; continuous: boolean }
-| { type: 'deviation'; deviation: BigNumber }
-| { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
-| { type: 'current-form'; currentForm: CurrentBSForm }
-| { type: 'reset'; resetData: BasicBSTriggerResetData }
-| {
-  type: 'tx-details'
-  txDetails: {
-    txStatus?: TxStatus
-    txError?: TxError
-    txHash?: string
-    txCost?: BigNumber
-  }
-}
+  | { type: 'target-coll-ratio'; targetCollRatio: BigNumber }
+  | { type: 'continuous'; continuous: boolean }
+  | { type: 'deviation'; deviation: BigNumber }
+  | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
+  | { type: 'current-form'; currentForm: CurrentBSForm }
+  | { type: 'reset'; resetData: BasicBSTriggerResetData }
+  | {
+      type: 'tx-details'
+      txDetails: {
+        txStatus?: TxStatus
+        txError?: TxError
+        txHash?: string
+        txCost?: BigNumber
+      }
+    }
 
 export type BasicBSChangeAction =
-| AutomationChangeAction
-| { type: 'trigger-id'; triggerId: BigNumber }
+  | AutomationChangeAction
+  | { type: 'trigger-id'; triggerId: BigNumber }
   | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }

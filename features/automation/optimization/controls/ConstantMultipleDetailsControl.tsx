@@ -19,8 +19,8 @@ export function ConstantMultipleDetailsControl({
   vault,
   vaultHistory,
   tokenMarketPrice,
-  // TODO: PK get constantMultiplyTriggerData here
-}: ConstantMultipleDetailsControlProps) {
+}: // TODO: PK get constantMultiplyTriggerData here
+ConstantMultipleDetailsControlProps) {
   const { debt, lockedCollateral, token } = vault
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
   // TODO: PK get those values from constantMultiplyTriggerData when there is actual data

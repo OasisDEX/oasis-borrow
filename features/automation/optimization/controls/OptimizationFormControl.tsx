@@ -15,7 +15,6 @@ import {
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { PriceInfo } from 'features/shared/priceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import React, { useEffect } from 'react'
@@ -50,7 +49,7 @@ export function OptimizationFormControl({
   const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
-    isConstantMultipleOn: false, //TODO ŁW for now it will be always false as contract  is not deployed yet
+    isConstantMultipleOn: false, //TODO ŁW for now it will be always false as cache is not implemented yet, cannot determine if trigger exist
     section: 'form',
   })
 
@@ -66,7 +65,7 @@ export function OptimizationFormControl({
 
   return (
     <>
-    <AutoBuyFormControl
+      <AutoBuyFormControl
         vault={vault}
         ilkData={ilkData}
         balanceInfo={balanceInfo}
@@ -77,20 +76,21 @@ export function OptimizationFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
-        isAutoBuyActive={isAutoBuyActive}  />
+        isAutoBuyActive={isAutoBuyActive}
+      />
       {constantMultipleEnabled && (
         <ConstantMultipleFormControl
           context={context}
           isConstantMultipleActive={isConstantMultipleActive}
           txHelpers={txHelpers}
           vault={vault}
-          ethMarketPrice={ethMarketPrice} 
-          ilkData={ilkData} 
-          autoSellTriggerData={autoSellTriggerData} 
-          autoBuyTriggerData={autoBuyTriggerData} 
-          stopLossTriggerData={stopLossTriggerData}        />
+          ethMarketPrice={ethMarketPrice}
+          ilkData={ilkData}
+          autoSellTriggerData={autoSellTriggerData}
+          autoBuyTriggerData={autoBuyTriggerData}
+          stopLossTriggerData={stopLossTriggerData}
+        />
       )}
     </>
-
   )
 }

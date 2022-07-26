@@ -17,7 +17,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const autoTriggersData$ = automationTriggersData$(id)
   const [autoTriggersData, autoTriggersDataError] = useObservable(autoTriggersData$)
-// get autoTriggersAggregatedData$ , then pass it to GeneralManageLayout
   useEffect(() => {
     return () => {
       generalManageVault?.state.clear()

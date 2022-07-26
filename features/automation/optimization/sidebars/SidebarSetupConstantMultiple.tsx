@@ -9,7 +9,6 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
-import { DEFAULT_SL_SLIDER_BOUNDARY } from 'features/automation/protection/common/consts/automationDefaults'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -28,17 +27,17 @@ import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 const SLIDER_MAX_FOR_BIG_VAULTS = 500
 
 interface SidebarSetupConstantMultipleProps {
   stage: SidebarVaultStages
-  constantMultipleState: ConstantMultipleFormChange // TODO state needs to be initialized
+  constantMultipleState: ConstantMultipleFormChange
   isAddForm: boolean
   isRemoveForm: boolean
-  // isEditing: boolean
+  // isEditing: boolean //TODO ŁW, will be used in middle stages
   isDisabled: boolean
   isFirstSetup: boolean
 
@@ -58,7 +57,6 @@ export function SidebarSetupConstantMultiple({
   isDisabled,
   isFirstSetup,
   stage,
-  // multiplier =2,
   onChange: onMultiplierChange,
   constantMultipleState,
   txHandler,
@@ -80,7 +78,7 @@ export function SidebarSetupConstantMultiple({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
   function handleChangeMultiplier(multiplier: number) {
-        onMultiplierChange(multiplier)
+    onMultiplierChange(multiplier)
   }
 
   const { min: sliderMin } = getBasicSellMinMaxValues({
@@ -88,7 +86,14 @@ export function SidebarSetupConstantMultiple({
     stopLossTriggerData,
     ilkData,
   })
-  const sliderMax = min([vault.lockedCollateralUSD.div(ilkData.debtFloor).multipliedBy(100).decimalPlaces(0, BigNumber.ROUND_DOWN).toNumber(), SLIDER_MAX_FOR_BIG_VAULTS])
+  const sliderMax = min([
+    vault.lockedCollateralUSD
+      .div(ilkData.debtFloor)
+      .multipliedBy(100)
+      .decimalPlaces(0, BigNumber.ROUND_DOWN)
+      .toNumber(),
+    SLIDER_MAX_FOR_BIG_VAULTS,
+  ])
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -154,7 +159,7 @@ export function SidebarSetupConstantMultiple({
           />
           <MultipleRangeSlider
             min={sliderMin.toNumber()}
-            max={sliderMax? sliderMax : SLIDER_MAX_FOR_BIG_VAULTS}
+            max={sliderMax || SLIDER_MAX_FOR_BIG_VAULTS}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',
@@ -254,8 +259,8 @@ function textButtonHandler(): void {
   alert('switch to remove')
 }
 
-interface ConstantMultipleInfoSectionControlProps {}
+// interface ConstantMultipleInfoSectionControlProps {} // TODO ŁW use when some props will appear
 
-function ConstantMultipleInfoSectionControl({}: ConstantMultipleInfoSectionControlProps) {
+function ConstantMultipleInfoSectionControl(/*{}: ConstantMultipleInfoSectionControlProps*/) {
   return <ConstantMultipleInfoSection />
 }

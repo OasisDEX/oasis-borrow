@@ -242,6 +242,7 @@ export function AutoBuyFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
-      isAutoBuyActive={isAutoBuyActive}    />
+      isAutoBuyActive={isAutoBuyActive}
+    />
   )
 }

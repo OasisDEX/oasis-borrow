@@ -14,8 +14,8 @@ const flowsWithoutProxy = [
   'editBasicSell',
   'editBasicBuy',
   'addConstantMultiple',
-   'cancelConstantMultiple',
-    'editConstantMultiple',
+  'cancelConstantMultiple',
+  'editConstantMultiple',
 ]
 const UNREACHABLE_CASE_MESSAGE = ''
 

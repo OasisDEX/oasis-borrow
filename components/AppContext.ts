@@ -7,6 +7,7 @@ import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
+import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -84,7 +85,11 @@ import {
   BasicBSChangeAction,
   basicBSFormChangeReducer,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { ConstantMultipleChangeAction, constantMultipleFormChangeReducer, CONSTANT_MULTIPLE_FORM_CHANGE } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleChangeAction,
+  constantMultipleFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -243,7 +248,6 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
-import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -408,7 +412,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
-  uiChangesSubject.configureSubject(CONSTANT_MULTIPLE_FORM_CHANGE, constantMultipleFormChangeReducer)
+  uiChangesSubject.configureSubject(
+    CONSTANT_MULTIPLE_FORM_CHANGE,
+    constantMultipleFormChangeReducer,
+  )
 
   return uiChangesSubject
 }
