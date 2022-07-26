@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 import { Toggle } from 'ui'
 
-interface NotificationPrefrenceCardPtops {
+interface NotificationPrefrenceCardProps {
   heading: string
   description: string
   checked: boolean
@@ -14,22 +14,22 @@ export function NotificationPrefrenceCard({
   heading,
   description,
   checked,
-  onChangeHandler,
-}: NotificationPrefrenceCardPtops) {
+  onChangeHandler
+}: NotificationPrefrenceCardProps) {
   return (
     <Card
       sx={{
         border: 'none',
-        padding: '8px',
+        padding: 2,
         mt: 3,
       }}
     >
       <Flex>
         <Text
           sx={{
-            fontWeight: 500,
+            fontWeight: 'heading',
             marginRight: 'auto',
-            fontSize: '14px',
+            fontSize: 2,
           }}
         >
           {heading}
@@ -49,8 +49,8 @@ export function NotificationPrefrenceCard({
       >
         <Text
           sx={{
-            color: '#787A9B',
-            fontSize: '14px',
+            color: 'neutral80',
+            fontSize: 2,
           }}
         >
           {description}
