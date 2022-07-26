@@ -143,6 +143,7 @@ autoBuyTriggerData,
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      vault={vault}
     />
   )
 }

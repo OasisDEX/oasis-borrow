@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
@@ -25,9 +26,12 @@ import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Grid } from 'theme-ui'
+
+const SLIDER_MAX_FOR_BIG_VAULTS = 500
 
 interface SidebarSetupConstantMultipleProps {
   stage: SidebarVaultStages
@@ -44,6 +48,7 @@ interface SidebarSetupConstantMultipleProps {
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  vault: Vault
 }
 
 export function SidebarSetupConstantMultiple({
@@ -58,8 +63,9 @@ export function SidebarSetupConstantMultiple({
   constantMultipleState,
   txHandler,
   ilkData,
-autoBuyTriggerData,
-stopLossTriggerData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
+  vault,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -88,8 +94,7 @@ stopLossTriggerData,
     stopLossTriggerData,
     ilkData,
   })
-
-  const sliderMax = ilkData.debtCeiling.minus(DEFAULT_SL_SLIDER_BOUNDARY)
+  const sliderMax = min([vault.lockedCollateralUSD.div(ilkData.debtFloor).multipliedBy(100).decimalPlaces(0, BigNumber.ROUND_DOWN).toNumber(), SLIDER_MAX_FOR_BIG_VAULTS])
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -155,7 +160,7 @@ stopLossTriggerData,
           />
           <MultipleRangeSlider
             min={sliderMin.toNumber()}
-            max={sliderMax.toNumber()}
+            max={sliderMax? sliderMax : SLIDER_MAX_FOR_BIG_VAULTS}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',
