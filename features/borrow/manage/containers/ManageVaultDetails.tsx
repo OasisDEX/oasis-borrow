@@ -138,7 +138,6 @@ export function ManageVaultDetails(
     stopLossTriggered,
     basicSellData,
   } = props
-  console.log('basicSellData', basicSellData)
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(id)
