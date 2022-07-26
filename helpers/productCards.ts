@@ -361,12 +361,12 @@ export const productCardsConfig: {
     },
     'GUNIV3DAIUSDC1-A': {
       link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+        'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
       name: 'Maker/Gelato/Uniswap',
     },
     'GUNIV3DAIUSDC2-A': {
       link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+        'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
       name: 'Maker/Gelato/Uniswap',
     },
     'UNIV2USDCETH-A': {
