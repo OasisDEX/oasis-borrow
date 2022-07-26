@@ -63,8 +63,7 @@ export function OptimizationFormControl({
     }
   }, [])
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-  console.log('activeAutomationFeature')
-  console.log(activeAutomationFeature)
+
   return (
     <>
     <AutoBuyFormControl
@@ -85,8 +84,11 @@ export function OptimizationFormControl({
           isConstantMultipleActive={isConstantMultipleActive}
           txHelpers={txHelpers}
           vault={vault}
-          ethMarketPrice={ethMarketPrice}
-        />
+          ethMarketPrice={ethMarketPrice} 
+          ilkData={ilkData} 
+          autoSellTriggerData={autoSellTriggerData} 
+          autoBuyTriggerData={autoBuyTriggerData} 
+          stopLossTriggerData={stopLossTriggerData}        />
       )}
     </>
 

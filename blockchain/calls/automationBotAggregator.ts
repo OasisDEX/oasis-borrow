@@ -6,15 +6,16 @@ import BigNumber from 'bignumber.js'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { TxMetaKind } from './txMeta'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
+import { AutomationBotAddTriggerData } from './automationBot'
 
 
 export type AutomationBotAggregatorBaseTriggerData = {}
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
     // cdpId: BigNumber
-    groupId: BigNumber
+    // groupId: BigNumber
     groupTypeId: number,
-    replacedTriggerId: string,
-    triggersData: string,
+    replacedTriggerId: any, // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef 
+    triggersData: any, //AutomationBotAddTriggerData[],
     proxyAddress: string
     kind: TxMetaKind.addTriggerGroup
 }
@@ -46,10 +47,38 @@ function getAddAutomationAggregatotTriggerCallData(
   data: AutomationBotAddAggregatorTriggerData,
   context: ContextConnected,
 ) {
+  console.log('data')
+  console.log(data)
+  console.log('context')
+  console.log(context)
   const { contract, automationBotAggregator } = context
-  return contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
+  console.log('contract')
+  console.log(contract)
+  console.log('automationBotAggregator')
+  console.log(automationBotAggregator)
+  console.log(`contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
     CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
     data.groupId, // replacedTriggerId
+    data.triggersData, // triggersData`
+  ) 
+  console.log(contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
+    CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
+    [0,0], // replacedTriggerId
+    data.triggersData, // triggersData
+  ))
+
+//   const dataToSupply = AutomationBotAggregatorInstance.interface.encodeFunctionData('addTriggerGroup', [
+//     groupTypeId,
+//     replacedTriggerId,
+//     [bbTriggerData, bsTriggerData],
+// ])
+
+console.log('data.triggersData')
+console.log(data.triggersData)
+
+  return contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
+    CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
+    [0,0], // replacedTriggerId
     data.triggersData, // triggersData
   )
 }

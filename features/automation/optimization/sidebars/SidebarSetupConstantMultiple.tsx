@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { IlkData } from 'blockchain/ilks'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
@@ -7,7 +8,10 @@ import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarS
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
+import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
@@ -22,9 +26,12 @@ import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { handleNumericInput } from 'helpers/input'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
+
+const SLIDER_MAX_FOR_BIG_VAULTS = 500
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
@@ -39,6 +46,9 @@ interface SidebarSetupConstantMultipleProps {
   // multiplier?: number
   onChange: (multiplier: number) => void
   txHandler: () => void
+  ilkData: IlkData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
 }
 
 export function SidebarSetupConstantMultiple({
@@ -53,6 +63,9 @@ export function SidebarSetupConstantMultiple({
   onChange: onMultiplierChange,
   constantMultipleState,
   txHandler,
+  ilkData,
+  autoBuyTriggerData,
+  stopLossTriggerData,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -68,13 +81,7 @@ export function SidebarSetupConstantMultiple({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
   function handleChangeMultiplier(multiplier: number) {
-    alert(`multiplier changed to ${multiplier}`)
-    useCallback(
-      (multiplier: number) => {
-        onMultiplierChange(multiplier)
-      },
-      [onMultiplierChange],
-    )
+    onMultiplierChange(multiplier)
   }
 
   const nextBuyPrice = collateralPriceAtRatio({
@@ -97,6 +104,19 @@ export function SidebarSetupConstantMultiple({
   // })
   const collateralToBePurchased = new BigNumber(1.125)
   const collateralToBeSold = new BigNumber(1.125)
+  const { min: sliderMin } = getBasicSellMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+  })
+  const sliderMax = min([
+    vault.lockedCollateralUSD
+      .div(ilkData.debtFloor)
+      .multipliedBy(100)
+      .decimalPlaces(0, BigNumber.ROUND_DOWN)
+      .toNumber(),
+    SLIDER_MAX_FOR_BIG_VAULTS,
+  ])
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -161,8 +181,8 @@ export function SidebarSetupConstantMultiple({
             ]}
           />
           <MultipleRangeSlider
-            min={200} // TODO ŁW min, max
-            max={500}
+            min={sliderMin.toNumber()}
+            max={sliderMax || SLIDER_MAX_FOR_BIG_VAULTS}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',
@@ -228,12 +248,6 @@ export function SidebarSetupConstantMultiple({
                 type: 'sell-with-threshold',
                 sellWithThreshold: toggleStatus,
               })
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'min-sell-price',
-                // minSellPrice: !toggleStatus
-                //   ? undefined
-                //   : autoSellTriggerData.maxBuyOrMinSellPrice,
-              })
             }}
             defaultToggle={constantMultipleState?.sellWithThreshold}
             showToggle={true}
@@ -270,9 +284,6 @@ export function SidebarSetupConstantMultiple({
   return null
 }
 
-function txHandler(): void {
-  alert('adding trigger')
-}
 function textButtonHandler(): void {
   alert('switch to remove')
 }

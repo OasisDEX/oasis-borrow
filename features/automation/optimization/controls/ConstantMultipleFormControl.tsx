@@ -15,14 +15,22 @@ import React, { useMemo } from 'react'
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 import {prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import BigNumber from 'bignumber.js'
-import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { zero } from 'helpers/zero'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
+import { IlkData } from 'blockchain/ilks'
+import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
   txHelpers?: TxHelpers
   vault: Vault
   ethMarketPrice: BigNumber
+  ilkData: IlkData
+  autoSellTriggerData: BasicBSTriggerData
+  autoBuyTriggerData: BasicBSTriggerData
+  stopLossTriggerData: StopLossTriggerData
+
 }
 
 export function ConstantMultipleFormControl({
@@ -31,6 +39,11 @@ export function ConstantMultipleFormControl({
   txHelpers,
   vault,
   ethMarketPrice,
+  ilkData,
+
+  stopLossTriggerData,
+autoSellTriggerData,
+autoBuyTriggerData,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
@@ -65,14 +78,12 @@ export function ConstantMultipleFormControl({
       sellExecutionCollRatio:  constantMultipleState.sellExecutionCollRatio,
       buyWithThreshold: constantMultipleState.buyWithThreshold,
       sellWithThreshold: constantMultipleState. sellWithThreshold,
-      targetCollRatio: new BigNumber(300), // TODO calculate using constantMultipleState.multiplier
+      targetCollRatio: constantMultipleState.targetCollRatio, // TODO calculate using constantMultipleState.multiplier
       continuous: constantMultipleState.continuous,
       deviation: constantMultipleState. deviation,
       maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
     }), [
-
-      // constantMultipleState.triggerId.toNumber(),
-      1,
+      1, //triggerid
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
@@ -80,15 +91,12 @@ export function ConstantMultipleFormControl({
       constantMultipleState.sellExecutionCollRatio?.toNumber(),
       constantMultipleState.buyWithThreshold,
       constantMultipleState.sellWithThreshold,
+      constantMultipleState.targetCollRatio,
       constantMultipleState.continuous,
       constantMultipleState.deviation?.toNumber(),
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
     ]
   )
-
-  console.log('addTxData')
-  console.log(addTxData)
- 
 
   function txHandler() {
     if (txHelpers) {
@@ -123,12 +131,18 @@ export function ConstantMultipleFormControl({
       isDisabled={false}
       isFirstSetup={true}
       onChange={(multiplier) => {
+        const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,
+          targetCollRatio: targetCollRatioForSelectedMultiplier
         })    
       }}
       txHandler={txHandler}
+      ilkData={ilkData}
+      autoBuyTriggerData={autoBuyTriggerData}
+      stopLossTriggerData={stopLossTriggerData}
+      vault={vault}
     />
   )
 }

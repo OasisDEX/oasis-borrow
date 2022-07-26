@@ -5,7 +5,7 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
   return maxBuyOrMinSellPrice.isZero() || maxBuyOrMinSellPrice.isEqualTo(maxUint256)
@@ -117,4 +117,8 @@ export function getBasicBSVaultChange({
         FF: LOAN_FEE,
       })
     : { debtDelta: zero, collateralDelta: zero }
+}
+
+export function calculateCollRatioForMultiply(multiplier: number) {
+  return one.div(multiplier).plus(one).decimalPlaces(0, BigNumber.ROUND_DOWN)
 }
