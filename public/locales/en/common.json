@@ -1381,7 +1381,6 @@
   },
   "claim-rewards": {
     "title": "{{ bonusTokenName }} position rewards",
-
     "for-this-position": "For this position you are currently earning {{ name }} rewards.",
     "instructions": {
       "tokens-to-claim": "Press the button to claim {{ readableAmount }}.",
@@ -1398,18 +1397,15 @@
     }
   },
   "help-shape-the-future-of-multiply": "Help shape the future of Multiply",
-
   "simulate-faq": {
     "contents": "Contents",
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
-
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
   },
-
   "auto-sell": {
     "sell-title": "Basic Auto Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
@@ -1460,7 +1456,6 @@
       "button": "Setup Auto Sell"
     }
   },
-
   "auto-buy": {
     "title": "Auto-Buy",
     "cancel-summary-title": "Cancel Auto-Buy order summary",
@@ -1574,5 +1569,14 @@
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."
     }
+  },
+  "notifications": {
+    "enable-notifications-email-heading": "Enable email notifications",
+    "enable-notifications-email-description": "You are able to receive the email updates on Oasis.app",
+    "enable-notifications-email-placeholder": "Enter email...",
+    "confirm-btn": "Confirm",
+    "change-btn": "Change",
+    "email-entered": "You have set up email notifcations successfully.",
+    "enable-notifications-email-label": "Set up your email"
   }
 }
