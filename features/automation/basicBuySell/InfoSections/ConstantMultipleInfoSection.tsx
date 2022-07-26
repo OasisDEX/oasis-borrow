@@ -33,6 +33,7 @@ export function ConstantMultipleInfoSection({}: ConstantMultipleProps) {
         },
         {
           label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),
+          isHeading: true,
           dropdownValues: [
             {
               label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
