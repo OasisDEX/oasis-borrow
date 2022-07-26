@@ -16,7 +16,11 @@ import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
-import { MultiplyProductCardsContainer } from '../../components/productCards/ProductCardsContainer'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from '../../components/productCards/ProductCardsContainer'
 import { useObservable } from '../../helpers/observableHook'
 import { productCardsConfig } from '../../helpers/productCards'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
@@ -265,7 +269,7 @@ export function HomepageView() {
                     </>
                   }
                   cards={
-                    <MultiplyProductCardsContainer
+                    <BorrowProductCardsContainer
                       ilks={productCardsConfig.landing.featuredCards['borrow']}
                     />
                   }
@@ -287,7 +291,7 @@ export function HomepageView() {
                     </>
                   }
                   cards={
-                    <MultiplyProductCardsContainer
+                    <EarnProductCardsContainer
                       ilks={productCardsConfig.landing.featuredCards['earn']}
                     />
                   }
