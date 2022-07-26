@@ -2,7 +2,6 @@ import { expect } from 'chai'
 import NodeCache from 'node-cache'
 import sinon from 'sinon'
 
-import { BatchCache } from './BatchCache'
 import { BatchManager, Request } from './BatchManager'
 
 const mockConnection = 'https://www.goingnowhere.com'
