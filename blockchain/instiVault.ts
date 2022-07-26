@@ -8,7 +8,7 @@ import { vatGem, vatUrns } from './calls/vat'
 import { VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
 import { Context } from './network'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 import { buildPosition, collateralPriceAtRatio } from './vault.maths'
 import { Vault } from './vaults'
 
@@ -28,7 +28,7 @@ export function createInstiVault$(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
 
@@ -53,7 +53,7 @@ export function createInstiVault$(
           return combineLatest(
             vatUrns$({ ilk, urnAddress }),
             vatGem$({ ilk, urnAddress }),
-            oraclePriceData$(token),
+            oraclePriceData$({ token, requestedData: ['currentPrice', 'nextPrice'] }),
             ilkData$(ilk),
           ).pipe(
             switchMap(

@@ -1,12 +1,12 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { DefinitionList } from 'components/DefinitionList'
 import { useObservable } from 'helpers/observableHook'
 import { flatten } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Card, Heading } from 'theme-ui'
 
-import { DefinitionList } from '../../components/DefinitionList'
-import { splitEvents, VaultHistoryEvent } from './vaultHistory'
+import { mapAutomationEvents, splitEvents, VaultHistoryEvent } from './vaultHistory'
 import { VaultHistoryEntry } from './VaultHistoryEntry'
 
 export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryEvent[] }) {
@@ -14,7 +14,8 @@ export function VaultHistoryView({ vaultHistory }: { vaultHistory: VaultHistoryE
   const [context] = useObservable(context$)
   const { t } = useTranslation()
 
-  const spitedEvents = flatten(vaultHistory.map(splitEvents))
+  const mappedAuto = mapAutomationEvents(vaultHistory)
+  const spitedEvents = flatten(mappedAuto.map(splitEvents))
 
   return (
     <>

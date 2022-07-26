@@ -31,6 +31,7 @@ const FOOTER_SECTIONS = [
       { labelKey: 'nav.team', url: '/about' },
       { labelKey: 'nav.careers', url: '/careers' },
       { labelKey: 'nav.privacy', url: '/privacy' },
+      { labelKey: 'nav.cookie', url: '/cookie' },
       { labelKey: 'nav.terms', url: '/terms' },
       { labelKey: 'nav.contact', url: `${apiHost}/daiwallet/contact` },
     ],
@@ -173,7 +174,7 @@ export function Footer() {
 
   return (
     <Box as="footer" sx={{ position: 'relative', zIndex: 'footer' }}>
-      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 4, pt: 2 }}>
+      <Container sx={{ maxWidth: '1200px', mb: 5, pb: 0, pt: 2 }}>
         <Grid
           sx={{
             pl: 0,

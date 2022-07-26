@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 
 interface HistoryEventBase {
   hash: string
@@ -216,48 +218,39 @@ interface AutomationBaseEvent {
   triggerId: string
   hash: string
   timestamp: string
+  triggerData: string
+  commandAddress: string
+  addTriggerData: BasicBSTriggerData | StopLossTriggerData
+  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
+  kind: 'basic-sell' | 'basic-buy' | 'stop-loss'
+  eventType: 'added' | 'updated' | 'removed'
+  token: string
 }
 
-interface StopLossBaseEvent extends AutomationBaseEvent {
-  kind: 'stop-loss'
-}
+type StopLossCloseEvent = CloseVaultExitDaiMultipleEvent | CloseVaultExitCollateralMultipleEvent
 
-interface StopLossExecutedEvent extends StopLossBaseEvent {
+type StopLossExecutedEvent = StopLossCloseEvent & {
   eventType: 'executed'
-}
-interface StopLossAddedEvent extends StopLossBaseEvent {
-  eventType: 'added'
-}
-interface StopLossRemovedEvent extends StopLossBaseEvent {
-  eventType: 'removed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: BasicBSTriggerData | StopLossTriggerData
+  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
 }
 
-interface BasicBuyBaseEvent extends AutomationBaseEvent {
-  kind: 'basic-buy'
-}
-
-interface BasicBuyExecutedEvent extends BasicBuyBaseEvent {
+export interface BasicBuyExecutedEvent extends IncreaseMultipleEvent {
   eventType: 'executed'
-}
-interface BasicBuyAddedEvent extends BasicBuyBaseEvent {
-  eventType: 'added'
-}
-interface BasicBuyRemovedEvent extends BasicBuyBaseEvent {
-  eventType: 'removed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: BasicBSTriggerData | StopLossTriggerData
+  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
 }
 
-interface BasicSellBaseEvent extends AutomationBaseEvent {
-  kind: 'basic-sell'
-}
-
-interface BasicSellExecutedEvent extends BasicSellBaseEvent {
+export interface BasicSellExecutedEvent extends DecreaseMultipleEvent {
   eventType: 'executed'
-}
-interface BasicSellAddedEvent extends BasicSellBaseEvent {
-  eventType: 'added'
-}
-interface BasicSellRemovedEvent extends BasicSellBaseEvent {
-  eventType: 'removed'
+  triggerId: string
+  triggerData: string
+  addTriggerData: BasicBSTriggerData | StopLossTriggerData
+  removeTriggerData: BasicBSTriggerData | StopLossTriggerData
 }
 
 export type MultiplyEvent =
@@ -269,16 +262,11 @@ export type MultiplyEvent =
   | CloseGuniVaultExitDaiMultipleEvent
   | CloseVaultExitCollateralMultipleEvent
 
-type AutomationEvent =
+export type AutomationEvent =
   | StopLossExecutedEvent
-  | StopLossAddedEvent
-  | StopLossRemovedEvent
   | BasicBuyExecutedEvent
-  | BasicBuyAddedEvent
-  | BasicBuyRemovedEvent
   | BasicSellExecutedEvent
-  | BasicSellAddedEvent
-  | BasicSellRemovedEvent
+  | AutomationBaseEvent
 
 export interface ReturnedEvent {
   kind: string

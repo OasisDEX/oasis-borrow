@@ -1,3 +1,5 @@
+import { Box } from '@theme-ui/components'
+import { IlkData } from 'blockchain/ilks'
 import { getToken } from 'blockchain/tokensMetadata'
 import { useAppContext } from 'components/AppContextProvider'
 import { DetailsSection } from 'components/DetailsSection'
@@ -17,10 +19,13 @@ import {
   VaultDetailsSummaryContainer,
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { overrideWarningAutoSellTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -131,8 +136,8 @@ export function ManageVaultDetails(
     inputAmountsEmpty,
     stage,
     stopLossTriggered,
+    basicSellData,
   } = props
-
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
   const autoTriggersData$ = automationTriggersData$(id)
@@ -145,44 +150,56 @@ export function ManageVaultDetails(
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
+  const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
+
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBannerControl />}</>}
       <DetailsSection
         title={t('system.overview')}
         content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
-              vaultId={id}
-            />
-            <ContentCardCollateralizationRatio
-              collateralizationRatio={collateralizationRatio}
-              collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
-              afterCollateralizationRatio={afterCollateralizationRatio}
-              changeVariant={changeVariant}
-            />
-            <ContentCardCollateralLocked
-              token={token}
-              lockedCollateralUSD={lockedCollateralUSD}
-              lockedCollateral={lockedCollateral}
-              afterLockedCollateralUSD={afterLockedCollateralUSD}
-              changeVariant={changeVariant}
-            />
-            {slData && slData.isStopLossEnabled && (
-              <ContentCardDynamicStopPriceWithColRatio
-                slData={slData}
+          <>
+            {overrideWarningAutoSellTriggerIds.includes(basicSellTriggerId) && (
+              <Box mb={3}>
+                <VaultWarnings
+                  warningMessages={['autoSellOverride']}
+                  ilkData={{ debtFloor: zero } as IlkData}
+                />
+              </Box>
+            )}
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
                 liquidationPrice={liquidationPrice}
-                afterLiquidationPrice={afterLiquidationPrice}
                 liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardCollateralizationRatio
+                collateralizationRatio={collateralizationRatio}
+                collateralizationRatioAtNextPrice={collateralizationRatioAtNextPrice}
+                afterCollateralizationRatio={afterCollateralizationRatio}
                 changeVariant={changeVariant}
               />
-            )}
-          </DetailsSectionContentCardWrapper>
+              <ContentCardCollateralLocked
+                token={token}
+                lockedCollateralUSD={lockedCollateralUSD}
+                lockedCollateral={lockedCollateral}
+                afterLockedCollateralUSD={afterLockedCollateralUSD}
+                changeVariant={changeVariant}
+              />
+              {slData && slData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={slData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>

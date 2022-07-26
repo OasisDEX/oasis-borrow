@@ -36,7 +36,7 @@ export function SuccessfulJoinModal({ account, userReferral, heading }: NewRefer
                 {heading}
               </Heading>
               <Text variant="paragraph3" sx={{ color: 'neutral80', mb: '8px' }}>
-                {t('ref.modal.successful-body')}
+                {t('ref.modal.joined-body')}
               </Text>
               <>
                 <AppLink href="/">

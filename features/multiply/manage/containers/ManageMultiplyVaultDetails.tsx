@@ -1,10 +1,15 @@
+import { Box } from '@theme-ui/components'
+import { IlkData } from 'blockchain/ilks'
 import { useAppContext } from 'components/AppContextProvider'
 import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detailsSection/ContentCardDynamicStopPriceWithColRatio'
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
+import { overrideWarningAutoSellTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { useObservable } from 'helpers/observableHook'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -45,6 +50,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
     totalGasSpentUSD,
     priceInfo,
     stopLossTriggered,
+    basicSellData,
   } = props
   const { t } = useTranslation()
   const { automationTriggersData$ } = useAppContext()
@@ -59,51 +65,63 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const oraclePrice = priceInfo.currentCollateralPrice
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
+  const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
+
   return (
     <Grid>
       {stopLossReadEnabled && <>{stopLossTriggered && <StopLossTriggeredBannerControl />}</>}
       <DetailsSection
         title={t('system.overview')}
         content={
-          <DetailsSectionContentCardWrapper>
-            <ContentCardLiquidationPrice
-              liquidationPrice={liquidationPrice}
-              liquidationRatio={liquidationRatio}
-              liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
-              afterLiquidationPrice={afterLiquidationPrice}
-              changeVariant={changeVariant}
-              vaultId={id}
-            />
-            <ContentCardBuyingPower
-              token={token}
-              buyingPower={buyingPower}
-              buyingPowerUSD={buyingPowerUSD}
-              afterBuyingPowerUSD={afterBuyingPowerUSD}
-              changeVariant={changeVariant}
-            />
-            <ContentCardNetValue
-              token={token}
-              oraclePrice={oraclePrice}
-              marketPrice={marketPrice}
-              netValueUSD={netValueUSD}
-              afterNetValueUSD={afterNetValueUSD}
-              totalGasSpentUSD={totalGasSpentUSD}
-              currentPnL={currentPnL}
-              lockedCollateral={lockedCollateral}
-              lockedCollateralUSD={lockedCollateralUSD}
-              debt={debt}
-              changeVariant={changeVariant}
-            />
-            {slData && slData.isStopLossEnabled && (
-              <ContentCardDynamicStopPriceWithColRatio
-                slData={slData}
+          <>
+            {overrideWarningAutoSellTriggerIds.includes(basicSellTriggerId) && (
+              <Box mb={3}>
+                <VaultWarnings
+                  warningMessages={['autoSellOverride']}
+                  ilkData={{ debtFloor: zero } as IlkData}
+                />
+              </Box>
+            )}
+            <DetailsSectionContentCardWrapper>
+              <ContentCardLiquidationPrice
                 liquidationPrice={liquidationPrice}
-                afterLiquidationPrice={afterLiquidationPrice}
                 liquidationRatio={liquidationRatio}
+                liquidationPriceCurrentPriceDifference={liquidationPriceCurrentPriceDifference}
+                afterLiquidationPrice={afterLiquidationPrice}
+                changeVariant={changeVariant}
+                vaultId={id}
+              />
+              <ContentCardBuyingPower
+                token={token}
+                buyingPower={buyingPower}
+                buyingPowerUSD={buyingPowerUSD}
+                afterBuyingPowerUSD={afterBuyingPowerUSD}
                 changeVariant={changeVariant}
               />
-            )}
-          </DetailsSectionContentCardWrapper>
+              <ContentCardNetValue
+                token={token}
+                oraclePrice={oraclePrice}
+                marketPrice={marketPrice}
+                netValueUSD={netValueUSD}
+                afterNetValueUSD={afterNetValueUSD}
+                totalGasSpentUSD={totalGasSpentUSD}
+                currentPnL={currentPnL}
+                lockedCollateral={lockedCollateral}
+                lockedCollateralUSD={lockedCollateralUSD}
+                debt={debt}
+                changeVariant={changeVariant}
+              />
+              {slData && slData.isStopLossEnabled && (
+                <ContentCardDynamicStopPriceWithColRatio
+                  slData={slData}
+                  liquidationPrice={liquidationPrice}
+                  afterLiquidationPrice={afterLiquidationPrice}
+                  liquidationRatio={liquidationRatio}
+                  changeVariant={changeVariant}
+                />
+              )}
+            </DetailsSectionContentCardWrapper>
+          </>
         }
         footer={
           <DetailsSectionFooterItemWrapper>

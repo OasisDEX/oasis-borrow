@@ -146,12 +146,25 @@ function verifyAcceptance$(
     ? checkAcceptance$(token, version)
     : of({ acceptance: false, updated: false })
   ).pipe(
-    switchMap(({ acceptance }) => {
+    switchMap(({ acceptance, updated }) => {
       if (acceptance) {
         return of({ stage: 'acceptanceAccepted' })
       }
 
       const jwtAuth$ = new Subject<boolean>()
+      if (updated) {
+        return jwtAuthSetupToken$(web3, account).pipe(
+          switchMap((token) => {
+            return checkAcceptance(token, version, magicLinkEmail)
+          }),
+          catchError(() => {
+            return withClose({ stage: 'jwtAuthFailed' })
+          }),
+          startWith({
+            stage: 'jwtAuthInProgress',
+          }),
+        )
+      }
       return jwtAuth$.pipe(
         switchMap((jwtAuthAccepted) => {
           if (!jwtAuthAccepted) {

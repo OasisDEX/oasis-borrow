@@ -1,20 +1,25 @@
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid } from 'theme-ui'
+import { Grid } from 'theme-ui'
 
 import { useAppContext } from '../../components/AppContextProvider'
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
+import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import {
+  ProductCardsLoader,
+  ProductCardsWrapper,
+} from '../../components/productCards/ProductCardsWrapper'
 import { ProductHeader } from '../../components/ProductHeader'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithLoadingIndicator } from '../../helpers/AppSpinner'
 import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../helpers/observableHook'
-import { earnPageCardsData } from '../../helpers/productCards'
+import { supportedEarnIlks } from '../../helpers/productCards'
 
 export function EarnView() {
   const { t } = useTranslation()
   const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const [productCardsData, productCardsDataError] = useObservable(
+    productCardsData$(supportedEarnIlks),
+  )
 
   return (
     <Grid
@@ -34,17 +39,10 @@ export function EarnView() {
       />
 
       <WithErrorHandler error={[productCardsDataError]}>
-        <WithLoadingIndicator
-          value={[productCardsData]}
-          customLoader={
-            <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-              <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-            </Flex>
-          }
-        >
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
           {([productCardsData]) => (
             <ProductCardsWrapper>
-              {earnPageCardsData({ productCardsData }).map((cardData) => (
+              {productCardsData.map((cardData) => (
                 <ProductCardEarn cardData={cardData} key={cardData.ilk} />
               ))}
             </ProductCardsWrapper>

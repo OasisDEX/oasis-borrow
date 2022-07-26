@@ -57,6 +57,7 @@ export function SidebarOpenMultiplyVault(props: OpenMultiplyVaultState) {
   const flow: SidebarFlow = !isStopLossEditingStage ? 'openMultiply' : 'addSl'
   const firstCDP = isFirstCdp(accountData)
   const gasData = extractGasDataFromState(props)
+
   const primaryButtonLabelParams = extractPrimaryButtonLabelParams(props)
   const sidebarTxData = extractSidebarTxData(props)
   const stopLossData = getDataForStopLoss(props, 'multiply')
