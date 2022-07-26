@@ -14,7 +14,7 @@ export function NotificationPrefrenceCard({
   heading,
   description,
   checked,
-  onChangeHandler
+  onChangeHandler,
 }: NotificationPrefrenceCardProps) {
   return (
     <Card
