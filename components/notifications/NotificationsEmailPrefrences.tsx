@@ -26,7 +26,7 @@ export function NotificationsEmailPrefrences() {
           <Box
             sx={{
               background: 'neutral30',
-              p: '16px',
+              p: 3,
               borderRadius: 'medium',
             }}
           >

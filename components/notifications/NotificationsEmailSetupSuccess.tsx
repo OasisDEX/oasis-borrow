@@ -9,7 +9,7 @@ export function NotificationsSetupSuccess() {
   return (
     <Flex
       sx={{
-        p: '16px',
+        p: 3,
         justifyContent: 'space-between',
         alignItems: 'center',
         background: 'success10',
