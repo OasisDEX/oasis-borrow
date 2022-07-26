@@ -84,8 +84,11 @@ export function OptimizationFormControl({
           isConstantMultipleActive={isConstantMultipleActive}
           txHelpers={txHelpers}
           vault={vault}
-          ethMarketPrice={ethMarketPrice}
-        />
+          ethMarketPrice={ethMarketPrice} 
+          ilkData={ilkData} 
+          autoSellTriggerData={autoSellTriggerData} 
+          autoBuyTriggerData={autoBuyTriggerData} 
+          stopLossTriggerData={stopLossTriggerData}        />
       )}
     </>
 
