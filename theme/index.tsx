@@ -273,6 +273,18 @@ export const oasisBaseTheme = {
       variant: 'layout.appContainer',
       maxWidth: '712px',
       mt: 5,
+      table: {
+        border: '1px solid black',
+        borderCollapse: 'collapse',
+        fontSize: ['2vw', '14px'],
+      },
+      th: {
+        border: '1px solid black',
+      },
+      td: {
+        border: '1px solid black',
+        padding: '5px',
+      },
     },
     modal: {
       variant: 'layout.appContainer',

@@ -254,12 +254,19 @@
     "total-fees": "Total fees",
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
-    "basic-sell": "Auto-Sell trigger"
+    "basic-sell": "Auto-Sell trigger",
+    "close-to": "Close to",
+    "trigger-col-ratio": "Trigger Col. Ratio",
+    "target-col-ratio": "Target Col. Ratio",
+    "max-gas-fee-in-gwei": "Max gas fee in Gwei",
+    "minimum-sell-price": "Minimum sell price",
+    "maximum-buy-price": "Maximum buy price"
   },
   "triggers": {
     "added": "added",
     "removed": "removed",
-    "executed": "executed"
+    "executed": "executed",
+    "updated": "updated"
   },
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
@@ -341,14 +348,14 @@
       }
     },
     "cookie-banner": {
-      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Privacy Policy</0>.",
+      "message": "We use the cookies on the website to improve your experience, analyze traffic, and for basic functionality. Cookies are anonymous and do not link to user data. You can still use the website without cookies. For more information, please read our <0>Cookie Policy</0>.",
       "settings-toggle": "Manage settings",
       "accept": "Accept",
       "reject": "Reject",
       "cookies": {
         "marketing": {
           "title": "Marketing Cookies",
-          "description": "Oasis.app uses anonymised cookies for marketing purposes."
+          "description": "Oasis.app uses anonymised cookies from adRoll to be able to apply retargeting campaigns on advertising platforms."
         },
         "analytics": {
           "title": "Analytics Cookies",
@@ -555,7 +562,8 @@
     "assets": "Assets",
     "earn": "Earn",
     "select-an-asset": "Select an asset",
-    "referrals": "Referrals"
+    "referrals": "Referrals",
+    "cookie": "Cookie Policy"
   },
   "new-to-ethereum": "New to Ethereum? ",
   "next": "Next",
@@ -635,6 +643,10 @@
     "about": {
       "title": "About Us",
       "description": "Oasis mission is to provide the best and most trusted entry point to deploy your capital."
+    },
+    "referrals": {
+      "title": "Refer a friend and earn Dai",
+      "description": "Refer a friend is a way to reward Oasis.app users. You can invite people to use our products, and both of you earn a percentage of the referred user's fees."
     }
   },
   "set-allowance-for": "Set Allowance for {{token}}",
@@ -868,7 +880,8 @@
     "auto-buy-target-close-to-stop-loss-trigger": "Setting a lower Target Ratio would trigger your existing Stop-Loss. If you want to use a lower target ratio, please adjust your Stop-Loss trigger first.",
     "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
-    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio"
+    "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
+    "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -961,7 +974,7 @@
     },
     "get-protection": {
       "header": "Get vault protection",
-      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from if it drops below your chosen collateralization ratio.",
+      "content": "Set up Stop-Loss protection or an Auto-Sell to protect your vault from liquidation if it drops below your chosen collateralization ratio.",
       "button": "Protect your Vault"
     },
     "what-are-the-risks": {
@@ -1151,6 +1164,7 @@
     "placeholder": "Email Address",
     "button": "Subscribe",
     "success": "Thank you for subscribing the newsletter!",
+    "gdpr": "By entering your email address, you acknowledge that Oazo Apps Limited will collect and process your personal data for marketing purposes (e.g. newsletter, updates). For more information please refer to our <1>Privacy Policy.</1>",
     "errors": {
       "unknown": "Something went wrong. Please try again.",
       "email-is-invalid": "Please enter a valid email address",
@@ -1394,7 +1408,7 @@
   },
 
   "basic-buy-sell-generic": {
-    "max-gas-fee-trans-value": "Max Gas Fee (% of Transaction Value)",
+    "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
   },
 
@@ -1504,13 +1518,13 @@
     "total-cost-of-feature": "Total cost of feature",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "banner": {
-    "header": "Set up Constant Multiple",
-    "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
-    "button": "Setup Constant Multiple"
-  }
+      "header": "Set up Constant Multiple",
+      "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
+      "button": "Setup Constant Multiple"
+    }
   },
   "ref": {
-    "banner": "Introducing Refer a Friend. Earn DAI today",
+    "banner": "Refer a Friend. Earn DAI today",
     "ref-a-friend": "Refer a Friend",
     "intro-1": "Refer someone to us and you both get rewarded with 5% of all fees they generate on Oasis.app... forever! Read more about ",
     "intro-link": "Oasis Refer a Friend",
@@ -1525,7 +1539,7 @@
     "copy": "Copy",
     "copied": "Copied",
     "explanation": "Once someone clicks your referral link and accepts then you will see them appear in the “Accounts you’ve referred” below. Then you are all set, fee sharing is active! Your link is reusable as many times as you like.",
-    "faq-link": "Read more in Oasis Referral F.A.Q",
+    "faq-link": "Read more in Oasis Referral Guide",
     "you-referred": "Accounts you've referred",
     "not-referred-yet": "You haven’t referred anyone yet",
     "you-were-not-referred": "No account has referred you to Oasis.app",
@@ -1540,7 +1554,7 @@
     "how-p2": "2. Share your link with potential Oasis.app users",
     "how-p3": "3. Both receive 5% of the Oasis.app fees generated forever!",
     "need-help": "Need help?",
-    "help-link-1": "Oasis Referrals FAQ’s",
+    "help-link-1": "Oasis Referrals Guide",
     "help-link-2": "Visit Oasis Knowledge Centre",
     "etherscan": "Etherscan",
     "modal": {
@@ -1558,7 +1572,8 @@
       "joined-body": "You will now receive 5% of all fees that you generate on Oasis.app. You can now go directly to the Oasis.app homepage and start exploring products to deploy capital into Defi.",
       "go-home": "Go to Oasis.app homepage ",
       "go-dashboard": "Go to referral dashboard ",
-      "link": "Oasis.app Referral Blog Post, Referral FAQs",
+      "link-1": "Oasis.app Referral Blog Post, ",
+      "link-2": "Referral Guide",
       "successful-body": "You will now receive 5% of all fees that they generate on Oasis.app. You can now go directly to the Oasis.app homepage or see your referral dashboard.",
       "successful-head": "You have successfully referred  <1>{{referred}}</1> to the Oasis.app Refer a Friend program.",
       "successful-join": "You have successfully joined the Oasis.app Refer a Friend program."

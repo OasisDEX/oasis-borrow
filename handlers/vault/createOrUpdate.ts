@@ -22,6 +22,10 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
     owner_address: user.address,
     chain_id: params.chainId,
   }
+
+  const insertQuery = `INSERT INTO vault (vault_id, chain_id, type, owner_address) VALUES (${vaultData.vault_id},${vaultData.chain_id},'${vaultData.type}','${vaultData.owner_address}')`
+  const updateQuery = `UPDATE vault SET type='${vaultData.type}' WHERE vault_id=${vaultData.vault_id} AND chain_id = ${vaultData.chain_id}`
+
   if (params.type !== 'borrow' && params.type !== 'multiply') {
     return res.status(403).send('Incorrect type of vault')
   }
@@ -29,16 +33,11 @@ export async function createOrUpdate(req: NextApiRequest, res: NextApiResponse) 
   const vault = await selectVaultByIdAndChainId(vaultData)
 
   if (vault === null || vault.owner_address === user.address) {
-    await prisma.vault.upsert({
-      where: {
-        vault_vault_id_chain_id_unique_constraint: {
-          vault_id: vaultData.vault_id,
-          chain_id: vaultData.chain_id,
-        },
-      },
-      update: vaultData,
-      create: vaultData,
-    })
+    if (vault === null) {
+      await prisma.$executeRawUnsafe(insertQuery)
+    } else {
+      await prisma.$executeRawUnsafe(updateQuery)
+    }
     return res.status(200).send('OK')
   } else {
     return res.status(401).send('Unauthorized')

@@ -3,7 +3,7 @@ import { combineLatest, Observable } from 'rxjs'
 import { map, switchMap } from 'rxjs/operators'
 
 import { ContextConnected } from './network'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export interface CollateralLocked {
   ilk: string
@@ -31,13 +31,13 @@ export function getCollateralLocked$(
 
 export function getTotalValueLocked$(
   getCollateralLocked$: (ilk: string) => Observable<CollateralLocked>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   ilk: string,
 ): Observable<TotalValueLocked> {
   return getCollateralLocked$(ilk).pipe(
     switchMap((collateralLocked) => {
       const token = collateralLocked.token
-      return oraclePriceData$(token).pipe(
+      return oraclePriceData$({ token, requestedData: ['currentPrice'] }).pipe(
         map((oraclePriceData) => {
           const { currentPrice } = oraclePriceData
           const { collateral } = collateralLocked
