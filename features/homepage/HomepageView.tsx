@@ -16,53 +16,11 @@ import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
 import { useAppContext } from '../../components/AppContextProvider'
 import { InfoCard } from '../../components/InfoCard'
 import { AppLink } from '../../components/Links'
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
-import { AppSpinner, WithLoadingIndicator } from '../../helpers/AppSpinner'
-import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { MultiplyProductCardsContainer } from '../../components/productCards/ProductCardsContainer'
 import { useObservable } from '../../helpers/observableHook'
-import { landingPageCardsData, ProductCardData, ProductTypes } from '../../helpers/productCards'
+import { productCardsConfig } from '../../helpers/productCards'
 import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
-
-function TabContent(props: {
-  paraText: JSX.Element
-  type: ProductTypes
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  productCardsData: ProductCardData[]
-}) {
-  const ProductCard = props.renderProductCard
-
-  const landingCards = landingPageCardsData({
-    productCardsData: props.productCardsData,
-    product: props.type,
-  })
-
-  return (
-    <Flex key={props.type} sx={{ flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-      <Text
-        variant="paragraph2"
-        sx={{
-          mt: 4,
-          color: 'neutral80',
-          maxWidth: 617,
-          textAlign: 'center',
-          mb: 5,
-          ...fadeInAnimation,
-        }}
-      >
-        {props.paraText}
-      </Text>
-      <ProductCardsWrapper>
-        {landingCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
-    </Flex>
-  )
-}
 
 interface PillProps {
   label: string
@@ -154,12 +112,38 @@ function Stats({ sx }: { sx?: SxProps }) {
   )
 }
 
+function HomepageTabLayout(props: { paraText?: JSX.Element; cards: JSX.Element }) {
+  return (
+    <Flex
+      sx={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      <Text
+        variant="paragraph2"
+        sx={{
+          mt: 4,
+          color: 'neutral80',
+          maxWidth: 617,
+          textAlign: 'center',
+          mb: 5,
+          ...fadeInAnimation,
+        }}
+      >
+        {props.paraText}
+      </Text>
+      {props.cards}
+    </Flex>
+  )
+}
+
 export function HomepageView() {
   const { t } = useTranslation()
 
   const referralsEnabled = useFeatureToggle('Referrals')
-  const { context$, productCardsData$, checkReferralLocal$, userReferral$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
+  const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
   const [userReferral] = useObservable(userReferral$)
@@ -242,85 +226,76 @@ export function HomepageView() {
         }}
         id="product-cards-wrapper"
       >
-        <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator
-            value={[productCardsData]}
-            customLoader={
-              <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-                <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-              </Flex>
-            }
-          >
-            {([productCardsData]) => {
-              return (
-                <TabBar
-                  variant="large"
-                  useDropdownOnMobile
-                  sections={[
-                    {
-                      label: t('landing.tabs.multiply.tabLabel'),
-                      value: 'multiply',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              {t('landing.tabs.multiply.tabParaContent')}{' '}
-                              <AppLink href="/multiply" variant="inText">
-                                {t('landing.tabs.multiply.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="multiply"
-                          renderProductCard={ProductCardMultiply}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
-                    {
-                      label: t('landing.tabs.borrow.tabLabel'),
-                      value: 'borrow',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
-                              <AppLink href="/borrow" variant="inText">
-                                {t('landing.tabs.borrow.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="borrow"
-                          renderProductCard={ProductCardBorrow}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
-
-                    {
-                      label: t('landing.tabs.earn.tabLabel'),
-                      value: 'earn',
-                      content: (
-                        <TabContent
-                          paraText={
-                            <>
-                              {t('landing.tabs.earn.tabParaContent')}{' '}
-                              <AppLink href="/multiply" variant="inText">
-                                {t('landing.tabs.earn.tabParaLinkContent')}
-                              </AppLink>
-                            </>
-                          }
-                          type="earn"
-                          renderProductCard={ProductCardEarn}
-                          productCardsData={productCardsData}
-                        />
-                      ),
-                    },
-                  ]}
+        <TabBar
+          variant="large"
+          useDropdownOnMobile
+          sections={[
+            {
+              label: t('landing.tabs.multiply.tabLabel'),
+              value: 'multiply',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      {t('landing.tabs.multiply.tabParaContent')}{' '}
+                      <AppLink href="/multiply" variant="inText">
+                        {t('landing.tabs.multiply.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['multiply']}
+                    />
+                  }
                 />
-              )
-            }}
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+              ),
+            },
+            {
+              label: t('landing.tabs.borrow.tabLabel'),
+              value: 'borrow',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      <Text as="p">{t('landing.tabs.borrow.tabParaContent')} </Text>
+                      <AppLink href="/borrow" variant="inText">
+                        {t('landing.tabs.borrow.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['borrow']}
+                    />
+                  }
+                />
+              ),
+            },
+
+            {
+              label: t('landing.tabs.earn.tabLabel'),
+              value: 'earn',
+              content: (
+                <HomepageTabLayout
+                  paraText={
+                    <>
+                      {t('landing.tabs.earn.tabParaContent')}{' '}
+                      <AppLink href="/earn" variant="inText">
+                        {t('landing.tabs.earn.tabParaLinkContent')}
+                      </AppLink>
+                    </>
+                  }
+                  cards={
+                    <MultiplyProductCardsContainer
+                      ilks={productCardsConfig.landing.featuredCards['earn']}
+                    />
+                  }
+                />
+              ),
+            },
+          ]}
+        />
       </Box>
       <Box
         sx={{
