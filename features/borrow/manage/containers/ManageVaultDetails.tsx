@@ -20,7 +20,7 @@ import {
   VaultDetailsSummaryItem,
 } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { overrideWarningTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
+import { overrideWarningAutoSellTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { formatAmount } from 'helpers/formatters/format'
@@ -150,7 +150,6 @@ export function ManageVaultDetails(
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
-  // TO BE REMOVED AS SOON AS THESE TRIGGERS WILL BE REPLACED
   const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
 
   return (
@@ -160,7 +159,7 @@ export function ManageVaultDetails(
         title={t('system.overview')}
         content={
           <>
-            {overrideWarningTriggerIds.includes(basicSellTriggerId) && (
+            {overrideWarningAutoSellTriggerIds.includes(basicSellTriggerId) && (
               <Box mb={3}>
                 <VaultWarnings
                   warningMessages={['autoSellOverride']}

@@ -6,5 +6,5 @@ export const MAX_DEBT_FOR_SETTING_STOP_LOSS = new BigNumber(20000000)
 
 export const DEFAULT_BASIC_BS_MAX_SLIDER_VALUE = new BigNumber(5)
 
-// TO BE REMOVED AS SOON AS THESE TRIGGERS WILL BE REPLACED
-export const overrideWarningTriggerIds = [352, 367]
+// TO BE REMOVED AS SOON AS THESE AUTO-SELL TRIGGERS WILL BE REPLACED
+export const overrideWarningAutoSellTriggerIds = [352, 367]

@@ -5,7 +5,7 @@ import { ContentCardDynamicStopPriceWithColRatio } from 'components/vault/detail
 import { ContentFooterItemsMultiply } from 'components/vault/detailsSection/ContentFooterItemsMultiply'
 import { getCollRatioColor } from 'components/vault/VaultDetails'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { overrideWarningTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
+import { overrideWarningAutoSellTriggerIds } from 'features/automation/protection/common/consts/automationDefaults'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { GetProtectionBannerControl } from 'features/automation/protection/controls/GetProtectionBannerControl'
 import { useObservable } from 'helpers/observableHook'
@@ -65,7 +65,6 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
   const oraclePrice = priceInfo.currentCollateralPrice
   const slData = automationTriggersData ? extractStopLossData(automationTriggersData) : null
 
-  // TO BE REMOVED AS SOON AS THESE TRIGGERS WILL BE REPLACED
   const basicSellTriggerId = basicSellData?.triggerId.toNumber() || 0
 
   return (
@@ -75,7 +74,7 @@ export function ManageMultiplyVaultDetails(props: ManageMultiplyVaultState) {
         title={t('system.overview')}
         content={
           <>
-            {overrideWarningTriggerIds.includes(basicSellTriggerId) && (
+            {overrideWarningAutoSellTriggerIds.includes(basicSellTriggerId) && (
               <Box mb={3}>
                 <VaultWarnings
                   warningMessages={['autoSellOverride']}
