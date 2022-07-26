@@ -80,7 +80,6 @@ export function SidebarSetupConstantMultiple({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
   function handleChangeMultiplier(multiplier: number) {
-    alert(`multiplier changed to ${multiplier}`)
     useCallback(
       (multiplier: number) => {
         onMultiplierChange(multiplier)
@@ -226,12 +225,6 @@ export function SidebarSetupConstantMultiple({
                 type: 'sell-with-threshold',
                 sellWithThreshold: toggleStatus,
               })
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'min-sell-price',
-                // minSellPrice: !toggleStatus
-                //   ? undefined
-                //   : autoSellTriggerData.maxBuyOrMinSellPrice,
-              })
             }}
             defaultToggle={constantMultipleState?.sellWithThreshold}
             showToggle={true}
@@ -262,9 +255,6 @@ export function SidebarSetupConstantMultiple({
   return null
 }
 
-function txHandler(): void {
-  alert('adding trigger')
-}
 function textButtonHandler(): void {
   alert('switch to remove')
 }

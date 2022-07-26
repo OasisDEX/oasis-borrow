@@ -19,6 +19,7 @@ import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basic
 import { zero } from 'helpers/zero'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { IlkData } from 'blockchain/ilks'
+import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
@@ -77,7 +78,7 @@ autoBuyTriggerData,
       sellExecutionCollRatio:  constantMultipleState.sellExecutionCollRatio,
       buyWithThreshold: constantMultipleState.buyWithThreshold,
       sellWithThreshold: constantMultipleState. sellWithThreshold,
-      targetCollRatio: new BigNumber(300), // TODO calculate using constantMultipleState.multiplier
+      targetCollRatio: constantMultipleState.targetCollRatio, // TODO calculate using constantMultipleState.multiplier
       continuous: constantMultipleState.continuous,
       deviation: constantMultipleState. deviation,
       maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
@@ -92,6 +93,7 @@ autoBuyTriggerData,
       constantMultipleState.sellExecutionCollRatio?.toNumber(),
       constantMultipleState.buyWithThreshold,
       constantMultipleState.sellWithThreshold,
+      constantMultipleState.targetCollRatio,
       constantMultipleState.continuous,
       constantMultipleState.deviation?.toNumber(),
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
@@ -134,9 +136,11 @@ autoBuyTriggerData,
       isDisabled={false}
       isFirstSetup={true}
       onChange={(multiplier) => {
+        const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,
+          targetCollRatio: targetCollRatioForSelectedMultiplier
         })    
       }}
       txHandler={txHandler}
