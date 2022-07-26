@@ -126,6 +126,7 @@ export function ConstantMultipleFormControl({
 
   return (
     <SidebarSetupConstantMultiple
+      vault={vault}
       stage={'editing'}
       constantMultipleState={constantMultipleState}
       isAddForm={true}
@@ -144,7 +145,6 @@ export function ConstantMultipleFormControl({
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
-      vault={vault}
     />
   )
 }

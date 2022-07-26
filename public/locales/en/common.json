@@ -1521,6 +1521,15 @@
       "header": "Set up Constant Multiple",
       "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
       "button": "Setup Constant Multiple"
+    },
+    "vault-changes": {
+      "general-summary": "General Summary",
+      "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
+      "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
+      "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
+      "cost-per-adjustment": "Estimated  transaction cost per adjustment",
+      "max-price-buy": "Max price to perform auto buy",
+      "max-price-sell": "Min price to perform auto sell"
     }
   },
   "ref": {

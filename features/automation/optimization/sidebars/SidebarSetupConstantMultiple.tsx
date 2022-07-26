@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
+import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
@@ -33,6 +34,7 @@ import { Grid } from 'theme-ui'
 const SLIDER_MAX_FOR_BIG_VAULTS = 500
 
 interface SidebarSetupConstantMultipleProps {
+  vault: Vault
   stage: SidebarVaultStages
   constantMultipleState: ConstantMultipleFormChange
   isAddForm: boolean
@@ -47,10 +49,10 @@ interface SidebarSetupConstantMultipleProps {
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  vault: Vault
 }
 
 export function SidebarSetupConstantMultiple({
+  vault,
   isAddForm,
   isRemoveForm,
   // isEditing,
@@ -63,11 +65,11 @@ export function SidebarSetupConstantMultiple({
   ilkData,
   autoBuyTriggerData,
   stopLossTriggerData,
-  vault,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
+  const { debt, lockedCollateral, token } = vault
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -81,6 +83,26 @@ export function SidebarSetupConstantMultiple({
     onMultiplierChange(multiplier)
   }
 
+  const nextBuyPrice = collateralPriceAtRatio({
+    // TODO: PK get value from constantMultipleState
+    colRatio: new BigNumber(3),
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
+  const nextSellPrice = collateralPriceAtRatio({
+    // TODO: PK get value from constantMultipleState
+    colRatio: new BigNumber(2),
+    collateral: lockedCollateral,
+    vaultDebt: debt,
+  })
+  // TODO: PK get both values based on function:
+  // const { debtDelta } = getBasicBSVaultChange({
+  //   basicBSState: basicBuyState,
+  //   vault,
+  //   executionPrice,
+  // })
+  const collateralToBePurchased = new BigNumber(1.125)
+  const collateralToBeSold = new BigNumber(1.125)
   const { min: sliderMin } = getBasicSellMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,
@@ -232,7 +254,13 @@ export function SidebarSetupConstantMultiple({
             toggleOffLabel={t('protection.set-threshold')}
             toggleOffPlaceholder={t('protection.no-threshold')}
           />
-          <ConstantMultipleInfoSectionControl />
+          <ConstantMultipleInfoSectionControl
+            token={token}
+            nextBuyPrice={nextBuyPrice}
+            nextSellPrice={nextSellPrice}
+            collateralToBePurchased={collateralToBePurchased}
+            collateralToBeSold={collateralToBeSold}
+          />
         </Grid>
       ),
       primaryButton: {
@@ -259,8 +287,45 @@ function textButtonHandler(): void {
   alert('switch to remove')
 }
 
-// interface ConstantMultipleInfoSectionControlProps {} // TODO ŁW use when some props will appear
+interface ConstantMultipleInfoSectionControlProps {
+  token: string
+  nextBuyPrice: BigNumber
+  nextSellPrice: BigNumber
+  collateralToBePurchased: BigNumber
+  collateralToBeSold: BigNumber
+  // TODO: PK get constantMultipleState here
+}
 
-function ConstantMultipleInfoSectionControl(/*{}: ConstantMultipleInfoSectionControlProps*/) {
-  return <ConstantMultipleInfoSection />
+function ConstantMultipleInfoSectionControl({
+  token,
+  nextBuyPrice,
+  nextSellPrice,
+  collateralToBePurchased,
+  collateralToBeSold,
+}: ConstantMultipleInfoSectionControlProps) {
+  // TODO: PK get those values from constantMultipleState when there is actual data
+  const targetColRatio = new BigNumber(200)
+  const multiplier = 2
+  const slippage = new BigNumber(0.5)
+  const triggerColRatioToBuy = new BigNumber(200)
+  const triggerColRatioToSell = new BigNumber(300)
+  const maxPriceToBuy = new BigNumber(1600)
+  const minPriceToSell = new BigNumber(1200)
+
+  return (
+    <ConstantMultipleInfoSection
+      token={token}
+      targetColRatio={targetColRatio}
+      multiplier={multiplier}
+      slippage={slippage}
+      triggerColRatioToBuy={triggerColRatioToBuy}
+      nextBuyPrice={nextBuyPrice}
+      collateralToBePurchased={collateralToBePurchased}
+      maxPriceToBuy={maxPriceToBuy}
+      triggerColRatioToSell={triggerColRatioToSell}
+      nextSellPrice={nextSellPrice}
+      collateralToBeSold={collateralToBeSold}
+      minPriceToSell={minPriceToSell}
+    />
+  )
 }
