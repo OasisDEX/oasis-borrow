@@ -22,10 +22,7 @@ export function addConstantMultipleTrigger(
     uiChanges: UIChanges,
     ethPrice: BigNumber,
     ) {
-      console.log("odpalilo sie")
-    // sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
-    //   .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
-    //   .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+
   send(addAutomationBotAggregatorTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))

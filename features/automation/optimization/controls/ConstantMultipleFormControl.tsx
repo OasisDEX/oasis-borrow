@@ -83,9 +83,7 @@ autoBuyTriggerData,
       deviation: constantMultipleState. deviation,
       maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
     }), [
-
-      // constantMultipleState.triggerId.toNumber(),
-      1,
+      1, //triggerid
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
@@ -99,10 +97,6 @@ autoBuyTriggerData,
       constantMultipleState.maxBaseFeeInGwei?.toNumber(),
     ]
   )
-
-  console.log('addTxData')
-  console.log(addTxData)
- 
 
   function txHandler() {
     if (txHelpers) {

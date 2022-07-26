@@ -80,12 +80,7 @@ export function SidebarSetupConstantMultiple({
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
   const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
   function handleChangeMultiplier(multiplier: number) {
-    useCallback(
-      (multiplier: number) => {
         onMultiplierChange(multiplier)
-      },
-      [onMultiplierChange],
-    )
   }
 
   const { min: sliderMin } = getBasicSellMinMaxValues({
