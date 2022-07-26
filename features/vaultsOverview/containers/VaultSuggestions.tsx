@@ -36,14 +36,12 @@ export function VaultSuggestions({ address }: Props) {
   const { productCardsWithBalance$, context$, accountData$ } = useAppContext()
   const [context, contextError] = useObservable(context$)
   const [productCardsDataValue, productCardsDataError] = useObservable(productCardsWithBalance$)
-  const [accountData, accountDataError] = useObservable(accountData$)
-  console.log('VaultSuggestions[context]', context)
-  console.log('VaultSuggestions[productCardsDataValue]', productCardsDataValue)
-  console.log('VaultSuggestions[accountData]', accountData)
+  const [accountData] = useObservable(accountData$)
+
   return (
-    <WithErrorHandler error={[contextError, productCardsDataError, accountDataError]}>
-      <WithLoadingIndicator value={[context, productCardsDataValue, accountData]}>
-        {([_context, _productCardsDataValue, _accountData]) => (
+    <WithErrorHandler error={[contextError, productCardsDataError]}>
+      <WithLoadingIndicator value={[context, productCardsDataValue]}>
+        {([_context, _productCardsDataValue]) => (
           <VaultSuggestionsView
             address={accountData?.ensName || address}
             context={_context}

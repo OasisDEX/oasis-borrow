@@ -14,6 +14,7 @@ export type PositionView = {
   contentsUsd?: BigNumber
   url?: string
   proportion?: BigNumber
+  missingPriceData: boolean
   actions?: Array<AssetAction>
 }
 
@@ -34,6 +35,7 @@ export type Position = {
 
 type WalletAssets = {
   balanceUsd: BigNumber
+  missingPriceData: boolean
   token: string
   assetActions: Array<AssetAction>
 }
@@ -64,6 +66,7 @@ export function createPositionsOverviewSummary$(
       ).pipe(
         map(([balance, token, priceData, assetActions]) => {
           return {
+            missingPriceData: !priceData[token],
             balanceUsd: balance.multipliedBy(priceData[token] || zero),
             token,
             assetActions,
@@ -97,7 +100,7 @@ export function createPositionsOverviewSummary$(
         })
         .filter((token) => {
           const valueUsd = getPositionOrAssetValue(token)
-          return valueUsd.decimalPlaces(2).gt(zero) // only care about meaningful dollar values
+          return valueUsd.decimalPlaces(2).gt(zero) || (token as WalletAssets)?.missingPriceData // only care about meaningful dollar values
         }),
     ),
   )
@@ -108,6 +111,7 @@ export function createPositionsOverviewSummary$(
       flattenedTokenBalances.map((assetOrPosition) => {
         if (isPosition(assetOrPosition)) {
           return {
+            missingPriceData: false,
             token: assetOrPosition.token,
             title: assetOrPosition.title,
             contentsUsd: assetOrPosition.contentsUsd,
@@ -115,6 +119,7 @@ export function createPositionsOverviewSummary$(
           }
         } else {
           return {
+            missingPriceData: assetOrPosition.missingPriceData,
             token: assetOrPosition.token,
             title: assetOrPosition.token,
             contentsUsd: assetOrPosition.balanceUsd,

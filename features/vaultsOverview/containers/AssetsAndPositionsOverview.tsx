@@ -20,20 +20,63 @@ import { zero } from '../../../helpers/zero'
 import { useBreakpointIndex } from '../../../theme/useBreakpointIndex'
 import { AssetAction, isUrlAction } from '../pipes/assetActions'
 import { PositionView, TopAssetsAndPositionsViewModal } from '../pipes/positionsOverviewSummary'
-import { VaultsOverviewView } from '../VaultOverviewView'
 
 function tokenColor(symbol: string) {
   return getToken(symbol)?.color || '#999'
 }
 
 function AssetRow(props: PositionView) {
+  if (props.missingPriceData) {
+    return (
+      <Flex
+        sx={{
+          alignItems: 'center',
+          color: 'neutral60',
+          cursor: 'pointer',
+          pt: '11px',
+          pb: '11px',
+          pl: '12px',
+          pr: '14px',
+          borderRadius: '12px',
+        }}
+        title={`${props.title}  |  We were unable to fetch the price data for this token`}
+      >
+        <Icon
+          name={getToken(props.token).iconCircle}
+          size="32px"
+          sx={{ verticalAlign: 'sub', flexShrink: 0 }}
+        />
+        <Text
+          variant="paragraph2"
+          sx={{
+            fontWeight: 'semiBold',
+            ml: '8px',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden',
+          }}
+        >
+          {props.title}
+        </Text>
+        <Text
+          variant="paragraph3"
+          sx={{
+            ml: '8px',
+          }}
+        >
+          {`No price data`}
+        </Text>
+      </Flex>
+    )
+  }
+
   return (
     <Flex
       sx={{
         alignItems: 'center',
-        color: '#708390',
+        color: 'neutral60',
         '&:hover': {
-          backgroundColor: '#F1F3F4',
+          backgroundColor: 'neutral30',
         },
         cursor: 'pointer',
         pt: '11px',
@@ -101,6 +144,8 @@ function LinkedRow(props: PositionView) {
         <AssetRow {...props} />
       </AppLink>
     )
+  } else if (props.missingPriceData) {
+    return <AssetRow {...props} />
   } else {
     return (
       <Box
@@ -247,7 +292,14 @@ function AssetsAndPositionsView(props: TopAssetsAndPositionsViewModal) {
           {breakpointIndex !== 0 && (
             <>
               <TotalAssetsContent totalValueUsd={props.totalValueUsd} />
-              <Box sx={{ borderLeft: 'solid 1px #EAEAEA', ml: '45px', mr: '45px' }} />
+              <Box
+                sx={{
+                  borderLeft: 'solid 1px',
+                  borderLeftColor: 'neutral20',
+                  ml: '45px',
+                  mr: '45px',
+                }}
+              />
             </>
           )}
           <Box sx={{ flexGrow: 1 }}>
@@ -282,7 +334,7 @@ export function AssetsAndPositionsOverview({ address }: { address: string }) {
   const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(
     positionsOverviewSummary$(checksumAddress),
   )
-  console.log('AssetsAndPositionsOverview[positionsOverviewSummary]', positionsOverviewSummary)
+  console.log('positionsOverviewSummary:', positionsOverviewSummary)
   return (
     <WithErrorHandler error={[positionOverviewSummaryError]}>
       <WithLoadingIndicator value={[positionsOverviewSummary]}>
