@@ -145,7 +145,6 @@ export function ConstantMultipleFormControl({
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
-      vault={vault}
     />
   )
 }

@@ -79,7 +79,9 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('constant-multiple.vault-changes.max-price-buy'),
-              value: maxPriceToBuy ? `$${formatAmount(maxPriceToBuy, 'USD')}` : t('protection.no-threshold'),
+              value: maxPriceToBuy
+                ? `$${formatAmount(maxPriceToBuy, 'USD')}`
+                : t('protection.no-threshold'),
             },
             {
               label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
@@ -95,7 +97,9 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('constant-multiple.vault-changes.max-price-sell'),
-              value: minPriceToSell ? `$${formatAmount(minPriceToSell, 'USD')}` : t('protection.no-threshold'),
+              value: minPriceToSell
+                ? `$${formatAmount(minPriceToSell, 'USD')}`
+                : t('protection.no-threshold'),
             },
           ],
         },
