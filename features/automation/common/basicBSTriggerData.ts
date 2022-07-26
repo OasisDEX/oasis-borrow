@@ -64,7 +64,7 @@ function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: R
       deviation: new BigNumber(deviation.toString()).div(100),
       maxBaseFeeInGwei: maxBaseFeeInGwei
         ? new BigNumber(maxBaseFeeInGwei.toString())
-        : new BigNumber(100), // handling for old command address
+        : new BigNumber(300), // handling for old command address
       isTriggerEnabled: true,
     } as BasicBSTriggerData
   })
@@ -77,23 +77,27 @@ const defaultBasicSellData = {
   maxBuyOrMinSellPrice: zero,
   continuous: false,
   deviation: new BigNumber(1),
-  maxBaseFeeInGwei: new BigNumber(100),
+  maxBaseFeeInGwei: new BigNumber(300),
   isTriggerEnabled: false,
 }
 
 interface ConstantMultipleTriggerPairData {
-  [TriggerType.BasicBuy]: BasicBSTriggerData, [TriggerType.BasicSell]: BasicBSTriggerData
+  [TriggerType.BasicBuy]: BasicBSTriggerData
+  [TriggerType.BasicSell]: BasicBSTriggerData
 }
 
-export function extractGroupTriggersData(data: TriggersData, triggerIds: number[] | undefined): ConstantMultipleTriggerPairData {
+export function extractGroupTriggersData(
+  data: TriggersData,
+  triggerIds: number[] | undefined,
+): ConstantMultipleTriggerPairData {
   const groupData: TriggersData = {
     isAutomationEnabled: data.isAutomationEnabled,
-    triggers: data.triggers?.filter(trigger => triggerIds?.includes(trigger.triggerId))
+    triggers: data.triggers?.filter((trigger) => triggerIds?.includes(trigger.triggerId)),
   }
 
   return {
     [TriggerType.BasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
-    [TriggerType.BasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell)
+    [TriggerType.BasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
   }
 }
 
@@ -108,12 +112,7 @@ export function extractBasicBSData(data: TriggersData, type: TriggerType): Basic
 
   return defaultBasicSellData
 }
-// TODO ŁW, AS difference for cm method that would merge pareams from basic sell
-// exec coll ratio for basic buy and basic sell
-// could call this method twice - for buy and sell, merge the result, to determine maxBuy, minSell
-// Group type instead of triggerType as returned value (as POC)
-// replaceTriggerId atm send empty array for cm
-// triggersData will be array, one will be for basic buy, other for basic sell
+
 export function prepareBasicBSTriggerData({
   vaultData,
   triggerType,

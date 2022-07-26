@@ -127,7 +127,6 @@ export function getActiveOptimizationFeature({
   section: 'form' | 'details'
   currentOptimizationFeature?: AutomationOptimizationFeatures
 }) {
-  // const basicBSEnabled = useFeatureToggle('BasicBS')
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   if (section === 'form') {

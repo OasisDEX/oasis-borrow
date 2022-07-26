@@ -1,7 +1,7 @@
 import { WithConnection } from 'components/connectWallet/ConnectWallet'
+import { PageSEOTags } from 'components/HeadTags'
 import { AppLayout } from 'components/Layouts'
 import { ReferralLandingSummary } from 'features/referralOverview/ReferralLanding'
-import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -16,19 +16,25 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-export default function ReferralsPage() {
+function ReferralsPage() {
   const referralsEnabled = useFeatureToggle('Referrals')
 
   return (
     <>
       <WithConnection>
-        <WithTermsOfService>
-          <BackgroundLight />
-          {referralsEnabled ? <ReferralLandingSummary /> : null}
-        </WithTermsOfService>
+        <BackgroundLight />
+        {referralsEnabled ? <ReferralLandingSummary /> : null}
       </WithConnection>
     </>
   )
 }
 
 ReferralsPage.layout = AppLayout
+ReferralsPage.seoTags = (
+  <PageSEOTags
+    title="seo.referrals.title"
+    description="seo.referrals.description"
+    url="/referrals"
+  />
+)
+export default ReferralsPage

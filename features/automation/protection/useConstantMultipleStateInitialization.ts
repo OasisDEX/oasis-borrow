@@ -5,13 +5,16 @@ import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useEffect } from 'react'
-import { BasicBSTriggerData, extractBasicBSData, extractGroupTriggersData } from '../common/basicBSTriggerData'
-import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/helpers'
 
+import { extractGroupTriggersData } from '../common/basicBSTriggerData'
+import {
+  calculateCollRatioForMultiply,
+  resolveMaxBuyOrMinSellPrice,
+  resolveWithThreshold,
+} from '../common/helpers'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
-import { TriggersData } from './triggers/AutomationTriggersData'
 import { AggregtedTriggersData } from './triggers/AggregatedTriggersData'
-import { one } from 'helpers/zero'
+import { TriggersData } from './triggers/AutomationTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
 
@@ -30,15 +33,24 @@ export function useConstantMultipleStateInitialization(
   aggregatedTriggersData: AggregtedTriggersData,
 ) {
   const { uiChanges } = useAppContext()
-  
+
   const constantMultipleTriggerIds = extractConstantMultipleIds(aggregatedTriggersData)
-  const constantMultipleTriggersData = extractGroupTriggersData(autoTriggersData, constantMultipleTriggerIds )
+  const constantMultipleTriggersData = extractGroupTriggersData(
+    autoTriggersData,
+    constantMultipleTriggerIds,
+  )
   const buyTriggerData = constantMultipleTriggersData[TriggerType.BasicBuy]
   const sellTriggerData = constantMultipleTriggersData[TriggerType.BasicSell]
-  const maxBuyPrice  = buyTriggerData.maxBuyOrMinSellPrice
-  const buyWithThresholdResolved = resolveWithThreshold({ maxBuyOrMinSellPrice: maxBuyPrice, triggerId: buyTriggerData.triggerId })
+  const maxBuyPrice = buyTriggerData.maxBuyOrMinSellPrice
+  const buyWithThresholdResolved = resolveWithThreshold({
+    maxBuyOrMinSellPrice: maxBuyPrice,
+    triggerId: buyTriggerData.triggerId,
+  })
   const minSellPrice = sellTriggerData.maxBuyOrMinSellPrice
-  const sellWithThresholdResolved = resolveWithThreshold({maxBuyOrMinSellPrice: minSellPrice, triggerId: sellTriggerData.triggerId})
+  const sellWithThresholdResolved = resolveWithThreshold({
+    maxBuyOrMinSellPrice: minSellPrice,
+    triggerId: sellTriggerData.triggerId,
+  })
   const maxBuyPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyPrice)
   const minSellPriceResolved = resolveMaxBuyOrMinSellPrice(minSellPrice)
   const buyExecutionCollRatio = buyTriggerData.execCollRatio
@@ -47,14 +59,11 @@ export function useConstantMultipleStateInitialization(
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
   const publishKey = CONSTANT_MULTIPLE_FORM_CHANGE
 
-  // TODO ŁW multiplier is result of target ratio of both triggers, 
-  // such value is not used in smart contract
-  const targetCollRatio = calculateTargetCollRatioFromSelectedMultiplier(INITIAL_MULTIPLIER_SELECTED)
-
   useEffect(() => {
     uiChanges.publish(publishKey, {
       type: 'multiplier',
       multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists
+      targetCollRatio: calculateCollRatioForMultiply(INITIAL_MULTIPLIER_SELECTED),
     })
     uiChanges.publish(publishKey, {
       type: 'buy-execution-coll-ratio',
@@ -64,17 +73,17 @@ export function useConstantMultipleStateInitialization(
       type: 'sell-execution-coll-ratio',
       sellExecutionCollRatio,
     })
-    uiChanges.publish(publishKey, {
-      type: 'target-coll-ratio',
-      targetCollRatio,
-    })
+    // uiChanges.publish(publishKey, {
+    //   type: 'target-coll-ratio',
+    //   targetCollRatio,
+    // })
     uiChanges.publish(publishKey, {
       type: 'max-buy-price',
       maxBuyPrice: maxBuyPriceResolved,
     })
     uiChanges.publish(publishKey, {
       type: 'min-sell-price',
-      minSellPrice: minSellPriceResolved
+      minSellPrice: minSellPriceResolved,
     })
     uiChanges.publish(publishKey, {
       type: 'continuous',
@@ -99,10 +108,7 @@ export function useConstantMultipleStateInitialization(
   }, [/*groupId,*/ collateralizationRatio])
 }
 function extractConstantMultipleIds(aggregatedTriggersData: AggregtedTriggersData) {
-  return aggregatedTriggersData? aggregatedTriggersData.triggers?.flatMap(trigger => trigger.triggerIds) : []
+  return aggregatedTriggersData
+    ? aggregatedTriggersData.triggers?.flatMap((trigger) => trigger.triggerIds)
+    : []
 }
-
-function calculateTargetCollRatioFromSelectedMultiplier(multiplier: number) {
-  return new BigNumber(300) // TODO ŁW implement function
-}
-

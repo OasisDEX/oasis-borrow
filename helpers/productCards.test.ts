@@ -2,12 +2,15 @@ import { BigNumber } from 'bignumber.js'
 import { expect } from 'chai'
 import { mockIlkData } from 'helpers/mocks/ilks.mock'
 import { getStateUnpacker } from 'helpers/testHelpers'
-import { of } from 'rxjs'
+import { Observable, of } from 'rxjs'
 
-import { mockPriceInfo$ } from './mocks/priceInfo.mock'
+import { IlkData } from '../blockchain/ilks'
+import { OraclePriceData } from '../blockchain/prices'
 import {
   borrowPageCardsData,
   createProductCardsData$,
+  Ilk,
+  ilkToEntryToken,
   landingPageCardsData,
   multiplyPageCardsData,
 } from './productCards'
@@ -108,9 +111,39 @@ const crv = mockIlkData({
   ilkDebtAvailable: new BigNumber('100'),
 })()
 
+function mockOraclePriceData$(): Observable<OraclePriceData> {
+  return of({
+    currentPrice: new BigNumber('550'),
+    nextPrice: new BigNumber('2'),
+    isStaticPrice: false,
+    percentageChange: new BigNumber('0.1'),
+  })
+}
+
+const mockIlkDataMapping: Record<Ilk, IlkData> = {
+  'WBTC-A': wbtcA,
+  'WBTC-B': wbtcB,
+  'WBTC-C': wbtcC,
+  'RENBTC-A': renbtc,
+  'ETH-A': ethA,
+  'ETH-B': ethB,
+  'ETH-C': ethC,
+  'LINK-A': linkA,
+  'WSTETH-A': wstethA,
+  'WSTETH-B': wstethB,
+  'GUNIV3DAIUSDC2-A': guni,
+  'CRVV1ETHSTETH-A': crv,
+}
+
+function mockIlkData$(ilk: string): Observable<IlkData> {
+  return of(mockIlkDataMapping[ilk])
+}
+
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
-    const state = getStateUnpacker(createProductCardsData$(of([wbtcA]), () => mockPriceInfo$()))
+    const state = getStateUnpacker(
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-A']),
+    )
 
     expect(state()[0]).to.eql({
       background: 'linear-gradient(147.66deg, #FEF1E1 0%, #FDF2CA 88.25%)',
@@ -130,7 +163,7 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-B', 'ETH-B', 'WSTETH-A']),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -183,11 +216,11 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcB, ethB, guni, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-B', 'ETH-B', 'WSTETH-A']),
     )
 
     const multiplyPageData = multiplyPageCardsData({
-      productCardsData: state(),
+      ilkToTokenMapping: state(),
       cardsFilter: 'Featured',
     })
 
@@ -239,11 +272,11 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, linkA, wstethA]), () => mockPriceInfo$()),
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['ETH-A', 'WSTETH-A']),
     )
 
     const multiplyPageData = multiplyPageCardsData({
-      productCardsData: state(),
+      ilkToTokenMapping: state(),
       cardsFilter: 'ETH',
     })
 
@@ -280,10 +313,12 @@ describe('createProductCardsData$', () => {
   })
 
   it('maps one product card correctly', () => {
-    const state = getStateUnpacker(createProductCardsData$(of([wbtcC]), () => mockPriceInfo$()))
+    const state = getStateUnpacker(
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-C']),
+    )
 
     const borrowPageData = borrowPageCardsData({
-      productCardsData: state(),
+      ilkToTokenMapping: state(),
       cardsFilter: 'Featured',
     })
 
@@ -305,11 +340,16 @@ describe('createProductCardsData$', () => {
 
   it('sorts and filters product cards', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcC, ethA, ethC, linkA, wstethB, crv]), () => mockPriceInfo$()),
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, [
+        'WBTC-C',
+        'ETH-C',
+        'WSTETH-B',
+        'CRVV1ETHSTETH-A',
+      ]),
     )
 
     const borrowPageData = borrowPageCardsData({
-      productCardsData: state(),
+      ilkToTokenMapping: state(),
       cardsFilter: 'Featured',
     })
 
@@ -321,12 +361,10 @@ describe('createProductCardsData$', () => {
 
   it('should return correct borrow page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(of([wbtcA, ethA, ethC, linkA, wstethA, renbtc]), () =>
-        mockPriceInfo$(),
-      ),
+      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['RENBTC-A', 'WBTC-A']),
     )
 
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'BTC' })
+    const borrowPageData = borrowPageCardsData({ ilkToTokenMapping: state(), cardsFilter: 'BTC' })
 
     expect(borrowPageData).to.eql([
       {
@@ -361,14 +399,10 @@ describe('createProductCardsData$', () => {
   })
 
   it('should custom sort the cards', () => {
-    const state = getStateUnpacker(
-      createProductCardsData$(
-        of([wbtcA, ethA, ethC, linkA, wstethA, renbtc, ethB, wbtcB, wbtcC]),
-        () => mockPriceInfo$(),
-      ),
-    )
-
-    const borrowPageData = borrowPageCardsData({ productCardsData: state(), cardsFilter: 'ETH' })
+    const borrowPageData = borrowPageCardsData({
+      ilkToTokenMapping: ilkToEntryToken,
+      cardsFilter: 'ETH',
+    })
 
     expect(borrowPageData[0].ilk).to.eql(ethC.ilk)
     expect(borrowPageData[1].ilk).to.eql(ethA.ilk)
@@ -376,7 +410,7 @@ describe('createProductCardsData$', () => {
     expect(borrowPageData[3].ilk).to.eql(ethB.ilk)
 
     const multiplyCardData = multiplyPageCardsData({
-      productCardsData: state(),
+      ilkToTokenMapping: ilkToEntryToken,
       cardsFilter: 'BTC',
     })
 
@@ -385,6 +419,4 @@ describe('createProductCardsData$', () => {
     expect(multiplyCardData[2].ilk).to.eql(renbtc.ilk)
     expect(multiplyCardData[3].ilk).to.eql(wbtcC.ilk)
   })
-
-  it('does not sort product cards that have no custom ordering')
 })

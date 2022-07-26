@@ -36,10 +36,10 @@ const SLIDER_MAX_FOR_BIG_VAULTS = 500
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
   stage: SidebarVaultStages
-  constantMultipleState: ConstantMultipleFormChange // TODO state needs to be initialized
+  constantMultipleState: ConstantMultipleFormChange
   isAddForm: boolean
   isRemoveForm: boolean
-  // isEditing: boolean
+  // isEditing: boolean //TODO ŁW, will be used in middle stages
   isDisabled: boolean
   isFirstSetup: boolean
 
@@ -59,7 +59,6 @@ export function SidebarSetupConstantMultiple({
   isDisabled,
   isFirstSetup,
   stage,
-  // multiplier =2,
   onChange: onMultiplierChange,
   constantMultipleState,
   txHandler,

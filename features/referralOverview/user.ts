@@ -9,6 +9,7 @@ import { networksById } from 'blockchain/config'
 import { TxHelpers } from 'components/AppContext'
 import { gql, GraphQLClient } from 'graphql-request'
 import { formatAmount } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
 import { first, map, share, startWith, switchMap } from 'rxjs/operators'
 
@@ -79,7 +80,9 @@ export function createUserReferral$(
           const filteredWeeklyClaims = weeklyClaims?.filter(
             (item) => !claimedWeeks.includes(item.week_number),
           )
-
+          const totalClaims = weeklyClaims
+            ? weeklyClaims.reduce((p, c) => p.plus(c.amount), zero)
+            : zero
           const claimsOut = {
             weeks: filteredWeeklyClaims?.map((item) => new BigNumber(item.week_number)),
             amounts: filteredWeeklyClaims?.map((item) => new BigNumber(item.amount)),
@@ -149,7 +152,7 @@ export function createUserReferral$(
               invitePending: user.user_that_referred_address && !user.accepted,
               claims: claimsOut.amounts && claimsOut.amounts.length > 0,
               performClaimMultiple: claimAllFunction,
-              totalAmount: formatAmount(amountFromWei(new BigNumber(user.total_amount)), 'USD'),
+              totalAmount: formatAmount(amountFromWei(new BigNumber(totalClaims)), 'USD'),
               totalClaim: claimsOut.amounts
                 ? formatAmount(
                     amountFromWei(

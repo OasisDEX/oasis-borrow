@@ -1,12 +1,5 @@
 // TODO async function loadTriggerDataFromCache ?
 
-import BigNumber from "bignumber.js"
-import { networksById } from "blockchain/config"
-import { Context, every5Seconds$ } from "blockchain/network"
-import { Vault } from "blockchain/vaults"
-import { Observable } from "rxjs"
-import { distinctUntilChanged, mergeMap, shareReplay, withLatestFrom } from "rxjs/operators"
-
 export interface AggregatedTriggerRecord {
   groupId: number
   groupTypeId: 1

@@ -16,5 +16,5 @@ export enum TxMetaKind {
   removeTrigger = 'removeTrigger',
   claimReward = 'claimReward',
   claimReferralFees = 'claimReferralFees',
-  addTriggerGroup= 'addTriggerGroup',
+  addTriggerGroup = 'addTriggerGroup',
 }

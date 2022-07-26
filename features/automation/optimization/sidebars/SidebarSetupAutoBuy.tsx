@@ -132,8 +132,8 @@ export function SidebarSetupAutoBuy({
   const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
   const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
 
-    if (isAutoBuyActive) {
-  const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
+  if (isAutoBuyActive) {
+    const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),

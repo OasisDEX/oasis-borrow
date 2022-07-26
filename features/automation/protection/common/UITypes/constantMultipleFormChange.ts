@@ -10,9 +10,9 @@ export type ConstantMultipleChangeAction =
   | { type: 'min-sell-price'; minSellPrice?: BigNumber }
   | { type: 'buy-with-threshold'; buyWithThreshold: boolean }
   | { type: 'sell-with-threshold'; sellWithThreshold: boolean }
-  | { type: 'multiplier'; multiplier: number, targetCollRatio: BigNumber }
-  | {type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
-  | {type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
+  | { type: 'multiplier'; multiplier: number; targetCollRatio: BigNumber }
+  | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
+  | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
