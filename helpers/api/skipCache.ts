@@ -6,7 +6,7 @@ function isLocalhost(url: string) {
 }
 
 function isUsingHardhat(chainId: string) {
-  return (networksByName['hardhat'].id = chainId)
+  return chainId === networksByName['hardhat'].id
 }
 
 export function skipCache(chainId: string) {

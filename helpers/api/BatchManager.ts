@@ -1,7 +1,6 @@
 import { Network } from '@ethersproject/networks/src.ts/types'
+import crypto from 'crypto'
 import { fetchJson } from 'ethers/lib/utils'
-
-import { BatchCache } from './BatchCache'
 
 export interface Request {
   method: any
@@ -11,30 +10,60 @@ export interface Request {
   jsonrpc: string
 }
 
+interface Cache {
+  getStats: () => void
+  get: (hash: string) => unknown
+  set: (hash: string, entry: unknown) => void
+}
+
+interface Options {
+  fetchJsonFn?: typeof fetchJson
+  debug?: boolean
+}
+
 export class BatchManager {
-  private _cache: BatchCache
+  private _cache: Cache
   private _connection: string
   private _fetchJson: typeof fetchJson
+  private _debug: boolean | undefined
 
-  constructor(url: string, cache: BatchCache, fetchJsonFn?: typeof fetchJson) {
+  constructor(url: string, cache: Cache, options?: Options) {
     this._cache = cache
     this._connection = url
-    this._fetchJson = fetchJsonFn || fetchJson
+    this._fetchJson = options?.fetchJsonFn || fetchJson
+    this._debug = options?.debug
+  }
+
+  private _createHash(request: Request) {
+    const requestExtract = {
+      method: request.method,
+      params: { data: request.params[0].data, to: request.params[0].to },
+      network: request.network,
+    }
+
+    const hashString = JSON.stringify(requestExtract)
+    const hash = crypto.createHash('sha256').update(hashString).digest('hex')
+
+    return hash
   }
 
   async batchCall(batchCallData: Array<Request>) {
     // 1. Extract cache hits
     const batchResults: Array<{
+      requestIdx: number
       data: unknown
       callData: Request
       fromCache: boolean
-    }> = batchCallData.map((callData) => {
-      const hash = this._cache.createHash(callData)
+    }> = batchCallData.map((callData, index) => {
+      const hash = this._createHash(callData)
       const cachedResult = this._cache.get(hash)
-      if (cachedResult) {
-        return { data: cachedResult, callData, fromCache: true }
+
+      return {
+        data: cachedResult,
+        callData,
+        fromCache: !!cachedResult,
+        requestIdx: index,
       }
-      return { data: null, callData, fromCache: false }
     })
 
     // 2. Extract cache miss requests
@@ -43,18 +72,15 @@ export class BatchManager {
       .map((call) => call.callData)
 
     // 3. Make the call to infura
-    let batchResponse: Array<unknown> = []
+    let batchResponse: Array<{ data: unknown; error?: Error }> = []
     if (batchRequests.length > 0) {
       batchResponse = await this._fetchJson(this._connection, JSON.stringify(batchRequests)).then(
         (responses) => {
           return responses.map(
             (response: { result?: string; error: Error } | null, index: number) => {
               if (response?.result) {
-                this._cache.set(
-                  this._cache.createHash(batchRequests[index] as Request),
-                  response.result,
-                )
-                return { data: response?.result, fromCache: false }
+                this._cache.set(this._createHash(batchRequests[index] as Request), response.result)
+                return { data: response?.result }
               }
               if (response?.error) {
                 return { error: new Error(response?.error.message) }
@@ -66,12 +92,15 @@ export class BatchManager {
       )
     }
 
-    // 4. Integrate responses into batchResults
+    // 4. Print stats (Debug mode only)
+    this._debug && console.log(this._cache.getStats())
+
+    // 5. Integrate responses into batchResults
     return batchResults.map((result) => {
       if (result.fromCache) {
-        return { data: result.data, fromCache: true }
+        return result
       } else {
-        return batchResponse.shift()
+        return { ...result, ...batchResponse.shift() }
       }
     })
   }

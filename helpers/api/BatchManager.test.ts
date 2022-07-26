@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import NodeCache from 'node-cache'
 import sinon from 'sinon'
 
 import { BatchCache } from './BatchCache'
@@ -24,6 +25,7 @@ describe('BatchManager', () => {
     const batchManager = createBatchManager(mockFetchJson)
     await batchManager.batchCall(mockBatch)
 
+    expect(mockFetchJson).to.have.been.calledOnce
     expect(mockFetchJson).to.have.been.calledWith(mockConnection, JSON.stringify(mockBatch))
   })
 
@@ -39,12 +41,11 @@ describe('BatchManager', () => {
 
     // First call
     await batchManager.batchCall(mockBatch)
-    mockFetchJson.reset()
 
     // Second call
     await batchManager.batchCall(mockBatch)
 
-    expect(mockFetchJson).to.not.have.been.called
+    expect(mockFetchJson).to.have.been.calledOnce
   })
 
   it('should skip cache if cache ttl is exceeded between batches', async () => {
@@ -71,24 +72,113 @@ describe('BatchManager', () => {
       JSON.stringify(mockBatch),
     )
   })
+
+  it('should maintain request order when served 100% via cache', async () => {
+    const mockBatch = createMockBatch()
+    const resolvesTo = mockBatch.map(() => ({
+      result: 'cached-result',
+    }))
+    const mockFetchJson = sinon.stub().resolves(resolvesTo) as any
+    mockFetchJson.onSecondCall().resolves(resolvesTo)
+    const batchManager = createBatchManager(mockFetchJson)
+
+    // First call
+    await batchManager.batchCall(mockBatch)
+
+    // Second call (all from cache)
+    const batchResults = await batchManager.batchCall(mockBatch)
+
+    batchResults.forEach(function (result, index) {
+      expect(result?.requestIdx).to.equal(index)
+    })
+  })
+  it('should maintain request order when served partially <100% by the cache', async () => {
+    const firstBatch = createMockBatch(0, 3)
+    const secondBatch = createMockBatch(6, 9)
+    const thirdBatch = createMockBatch(3, 6)
+
+    const mockFetchJson = sinon.stub().resolves(
+      firstBatch.map(() => ({
+        result: 'cached-result',
+      })),
+    ) as any
+    mockFetchJson.onSecondCall().resolves(
+      secondBatch.map(() => ({
+        result: 'cached-result',
+      })),
+    ) as any
+
+    mockFetchJson.onCall(2).resolves(
+      thirdBatch.map(() => ({
+        result: 'cached-result',
+      })),
+    ) as any
+
+    const batchManager = createBatchManager(mockFetchJson)
+
+    await batchManager.batchCall(firstBatch)
+    await batchManager.batchCall(secondBatch)
+
+    // Final call with cached requests interwoven with uncached
+    const batchResults = await batchManager.batchCall([
+      ...firstBatch,
+      ...thirdBatch,
+      ...secondBatch,
+    ])
+
+    batchResults.forEach(function (result, index) {
+      expect(result?.requestIdx).to.equal(index)
+    })
+  })
+
+  it('should maintain the request order when all requests skip cache', async () => {
+    const firstBatch = createMockBatch(0, 3)
+    const secondBatch = createMockBatch(6, 9)
+    const thirdBatch = createMockBatch(3, 6)
+
+    const mockFetchJson = sinon.stub().resolves([]) as any
+    mockFetchJson.onSecondCall().resolves([]) as any
+    mockFetchJson.onCall(2).resolves([]) as any
+
+    const batchManager = createBatchManager(mockFetchJson)
+
+    await batchManager.batchCall(firstBatch)
+    await batchManager.batchCall(secondBatch)
+
+    // Final call with no results cached
+    const batchResults = await batchManager.batchCall([
+      ...firstBatch,
+      ...thirdBatch,
+      ...secondBatch,
+    ])
+
+    batchResults.forEach(function (result, index) {
+      expect(result?.requestIdx).to.equal(index)
+    })
+  })
 })
 
 function createBatchManager(mockFetchJson: any) {
   const mockConstructorProps = {
     url: mockConnection,
-    fetchJson: undefined,
-    cache: new BatchCache(),
+    cache: new NodeCache({ stdTTL: 15 }),
   }
-  mockConstructorProps.fetchJson = mockFetchJson
 
-  return new BatchManager(
-    mockConstructorProps.url,
-    mockConstructorProps.cache,
-    mockConstructorProps.fetchJson,
-  )
+  return new BatchManager(mockConstructorProps.url, mockConstructorProps.cache, {
+    fetchJsonFn: mockFetchJson,
+    debug: true,
+  })
 }
 
-function createMockBatch(): Request[] {
+function createMockBatch(startSliceIndex: number = 0, endSliceIndex: number = 9): Request[] {
+  if (startSliceIndex < 0 || startSliceIndex >= 9) {
+    throw new Error(`Start Index must be greater than or equal to zero and less than 9`)
+  }
+
+  if (endSliceIndex < 1 || endSliceIndex > 9) {
+    throw new Error(`End Index must be greater than zero and less than or equal to 9`)
+  }
+
   return [
     {
       method: 'eth_call',
@@ -243,5 +333,5 @@ function createMockBatch(): Request[] {
       id: 217,
       jsonrpc: '2.0',
     },
-  ]
+  ].slice(startSliceIndex, endSliceIndex)
 }
