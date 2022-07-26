@@ -36,39 +36,48 @@ jobs:
       run: |
         echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
-    - name: Build, tag, and push image to Amazon ECR
+    - name: Set up Docker Buildx
+      id: buildex
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+    - name: Build, tag, and push image to Amazon ECR and Dockerhub
       id: build-image
+      uses: docker/build-push-action@v3
       env:
         SHA_TAG: ${{ steps.vars.outputs.sha_short }}
         LATEST_TAG: latest
         ENVIRONMENT_TAG: prod
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
-                     --build-arg API_HOST=${{ secrets.API_HOST }} \
-                     --build-arg MIXPANEL_ENV=production \
-                     --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }} \
-                     --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }} \
-                     --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_PROD }} \
-                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }} \
-                     --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
-                     --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
-                     --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
-                     --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
-                     --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY }} \
-                     --build-arg SHOW_BUILD_INFO=0 \
-                     --build-arg NODE_ENV=production \
-                     --build-arg NEXT_PUBLIC_SENTRY_ENV=production \
-                     --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
-                     --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-                     .
-        docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
+      with:
+        context: .
+        file: ./Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        build-args: |
+          COMMIT_SHA=${{ env.SHA_TAG }}
+          API_HOST=${{ secrets.API_HOST }}
+          MIXPANEL_ENV=production
+          MIXPANEL_KEY=${{ secrets.MIXPANEL_PROD_KEY }}
+          ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_PROD }}
+          ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_PROD }}
+          MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL }}
+          MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }}
+          MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }}
+          INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }}
+          ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}
+          BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_API_KEY }}
+          SHOW_BUILD_INFO=1
+          NODE_ENV=production
+          NEXT_PUBLIC_SENTRY_ENV=production
+          SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+        tags: |
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.ENVIRONMENT_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.LATEST_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
+        cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache
+        cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache,mode=max
 
     - name: Update ECS service with latest Docker image
       id: service-update

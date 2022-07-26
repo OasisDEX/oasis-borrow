@@ -30,57 +30,55 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
     - name: Extract commit hash
       id: vars
       shell: bash
       run: |
         echo "::set-output name=sha_short::$(git rev-parse --short HEAD)"
 
+    - name: Set up Docker Buildx
+      id: buildex
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+
     - name: Build, tag, and push image to Amazon ECR and Dockerhub
       id: build-image
+      uses: docker/build-push-action@v3
       env:
         SHA_TAG: ${{ steps.vars.outputs.sha_short }}
         LATEST_TAG: latest
         ENVIRONMENT_TAG: staging
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        REPO_NAME: ${{ github.event.repository.name }}
-        DOCKERHUB_ORG: "oasisdexorg"
-        DOCKER_BUILDKIT: 1
-      run: |
-        # Build a docker container and
-        # push it to ECR so that it can
-        # be deployed to ECS.
-        docker build --build-arg COMMIT_SHA=${{ env.SHA_TAG }} \
-                     --build-arg API_HOST=${{ secrets.API_HOST_STAGING }} \
-                     --build-arg MIXPANEL_ENV=staging \
-                     --build-arg MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }} \
-                     --build-arg ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }} \
-                     --build-arg ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_STAGING }} \
-                     --build-arg MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL_STAGING }} \
-                     --build-arg MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }} \
-                     --build-arg MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }} \
-                     --build-arg INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }} \
-                     --build-arg ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} \
-                     --build-arg BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_STAGING_API_KEY }} \
-                     --build-arg SHOW_BUILD_INFO=1 \
-                     --build-arg NODE_ENV=production \
-                     --build-arg NEXT_PUBLIC_SENTRY_ENV=staging \
-                     --build-arg SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }} \
-                     --cache-from=$ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$SHA_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$LATEST_TAG \
-                     -t $ECR_REGISTRY/$ECR_REPO_NAME:$ENVIRONMENT_TAG \
-                     -t $DOCKERHUB_ORG/$REPO_NAME:$SHA_TAG \
-                     -t $DOCKERHUB_ORG/$REPO_NAME:$LATEST_TAG \
-                     .
-        docker push $ECR_REGISTRY/$ECR_REPO_NAME --all-tags
-        docker push $DOCKERHUB_ORG/$REPO_NAME --all-tags
+      with:
+        context: .
+        file: ./Dockerfile
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        build-args: |
+          COMMIT_SHA=${{ env.SHA_TAG }}
+          API_HOST=${{ secrets.API_HOST_STAGING }}
+          MIXPANEL_ENV=staging
+          MIXPANEL_KEY=${{ secrets.MIXPANEL_STAGING_KEY }}
+          ADROLL_ADV_ID=${{ secrets.ADROLL_ADV_ID_STAGING }}
+          ADROLL_PIX_ID=${{ secrets.ADROLL_PIX_ID_STAGING }}
+          MAINNET_CACHE_URL=${{ secrets.MAINNET_CACHE_URL_STAGING }}
+          MAILCHIMP_ENDPOINT=${{ secrets.MAILCHIMP_ENDPOINT }}
+          MAILCHIMP_API_KEY=${{ secrets.MAILCHIMP_API_KEY }}
+          INFURA_PROJECT_ID=${{ secrets.INFURA_PROJECT_ID }}
+          ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }}
+          BLOCKNATIVE_API_KEY=${{ secrets.BLOCKNATIVE_STAGING_API_KEY }}
+          SHOW_BUILD_INFO=1
+          NODE_ENV=production
+          NEXT_PUBLIC_SENTRY_ENV=staging
+          SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+        tags: |
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.ENVIRONMENT_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.LATEST_TAG }}
+          ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:${{ env.SHA_TAG }}
+        cache-from: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache
+        cache-to: type=registry,ref=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO_NAME }}:buildcache,mode=max
 
     - name: Update ECS service with latest Docker image
       id: service-update
