@@ -1072,7 +1072,7 @@ export function setupAppContext() {
     priceInfo$,
     yields$,
     daiEthTokenPrice$,
-    totalValueLocked$,S
+    totalValueLocked$,
     yieldsChange$,
     tokenPriceUSD$,
     userReferral$,
