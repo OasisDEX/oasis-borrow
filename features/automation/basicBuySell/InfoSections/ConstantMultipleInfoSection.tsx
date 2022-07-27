@@ -45,7 +45,7 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('constant-multiple.vault-changes.target-multiple-ratio-after-buy-sell'),
-          value: `${multiplier}x`,
+          value: `${multiplier.toFixed(2)}x`,
         },
         {
           label: t('vault-changes.slippage-limit'),

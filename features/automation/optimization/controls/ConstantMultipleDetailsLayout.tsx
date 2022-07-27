@@ -68,10 +68,7 @@ export function ConstantMultipleDetailsLayout({
               />
               <ContentCardTotalCostOfFeature
                 totalCost={totalCost}
-                // TODO: PK: how to calculate this value change dynamically?
-                afterTotalCost={undefined}
                 PnLSinceEnabled={PnLSinceEnabled}
-                changeVariant="positive"
               />
               <ContentCardTriggerColRatioToBuy
                 token={token}

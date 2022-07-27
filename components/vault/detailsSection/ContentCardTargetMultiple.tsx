@@ -24,7 +24,7 @@ export function ContentCardTargetMultiple({
   const { t } = useTranslation()
 
   const formatted = {
-    targetMultiple: `${targetMultiple?.toFixed(1)}x`,
+    targetMultiple: `${targetMultiple?.toFixed(2)}x`,
     afterTargetMultiple: `${afterTargetMultiple?.toFixed(2)}x`,
     targetColRatio:
       targetColRatio &&
