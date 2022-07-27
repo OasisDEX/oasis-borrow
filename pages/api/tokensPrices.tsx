@@ -1,6 +1,5 @@
 import { withSentry } from '@sentry/nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { getCoinPaprikaTickers } from 'server/services/coinPaprica'
 
 import { cacheObject } from '../../helpers/cacheObject'
 import { getTokenTickers } from '../../helpers/getTokenTickers'

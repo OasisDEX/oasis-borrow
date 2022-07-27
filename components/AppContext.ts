@@ -43,15 +43,11 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
-  coinbaseOrderBook$,
-  coinGeckoTicker$,
-  coinPaprikaTicker$,
   createGasPrice$,
   createOraclePriceData$,
   createTokenPriceInUSD$,
   GasPriceParams,
   tokenPrices$,
-  tokenTicker$,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
