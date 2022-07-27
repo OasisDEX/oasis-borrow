@@ -8,7 +8,7 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, first, flatMap, map, startWith, switchMap } from 'rxjs/operators'
 import { OmitProperties, ValueOf } from 'ts-essentials'
 
-import { GasPriceParams, Ticker } from '../blockchain/prices'
+import { GasPriceParams, Tickers } from '../blockchain/prices'
 import { ErrorTxState } from '@oasisdex/transactions/lib/src/types'
 
 export enum FormStage {
@@ -285,7 +285,7 @@ export interface HasGasEstimation extends HasGasEstimationCost {
 
 export function doGasEstimation<S extends HasGasEstimation>(
   gasPrice$: Observable<GasPriceParams>,
-  tokenPricesInUSD$: Observable<Ticker>,
+  tokenPricesInUSD$: Observable<Tickers>,
   txHelpers$: TxHelpers$,
   state: S,
   call: (send: TxHelpers, state: S) => Observable<number> | undefined,

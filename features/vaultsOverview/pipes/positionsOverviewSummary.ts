@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Ticker } from 'blockchain/prices'
+import { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/uniswapWidget/tokenList'
 import { zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
@@ -51,7 +51,7 @@ tokensWeCareAbout.push('ETH')
 
 export function createPositionsOverviewSummary$(
   walletBalance$: (token: string, address: string) => Observable<BigNumber>,
-  createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Ticker>,
+  createTokenPriceInUSD$: (tokens: Array<string>) => Observable<Tickers>,
   createPositions$: (address: string) => Observable<Position[]>,
   createAssetActions$: (token: string) => Observable<Array<AssetAction>>,
   address: string,

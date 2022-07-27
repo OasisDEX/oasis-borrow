@@ -9,6 +9,7 @@ import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { formatAddress } from 'helpers/formatters/format'
 import { useObservable } from 'helpers/observableHook'
 import { Trans, useTranslation } from 'next-i18next'
+import React from 'react'
 import { Box, Heading } from 'theme-ui'
 
 interface Props {
@@ -21,7 +22,7 @@ export function Connect(props: Props) {
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [context, contextError] = useObservable(context$)
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
-  console.log('Connect[vaultsOverview]', vaultsOverview)
+
   return (
     <WithErrorHandler error={[contextError, vaultsOverviewError]}>
       <WithLoadingIndicator value={[context, vaultsOverview]}>

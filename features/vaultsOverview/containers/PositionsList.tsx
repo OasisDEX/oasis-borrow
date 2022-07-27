@@ -4,6 +4,7 @@ import { getAddress } from 'ethers/lib/utils'
 import { WithLoadingIndicator } from 'helpers/AppSpinner'
 import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from 'helpers/observableHook'
+import React from 'react'
 import { Card } from 'theme-ui'
 
 function PositionsListView({ positions }: { positions: PositionVM[] }) {
@@ -29,7 +30,7 @@ export function PositionsList({ address }: { address: string }) {
   const { vaultsOverview$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())
   const [vaultsOverview, vaultsOverviewError] = useObservable(vaultsOverview$(checksumAddress))
-  console.log('PositionsList[vaultsOverview]', vaultsOverview)
+
   return (
     <WithErrorHandler error={[vaultsOverviewError]}>
       <WithLoadingIndicator value={[vaultsOverview]}>
