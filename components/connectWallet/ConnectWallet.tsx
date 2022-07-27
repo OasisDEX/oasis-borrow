@@ -1,6 +1,8 @@
 import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { Icon } from '@makerdao/dai-ui-icons'
-import { MewConnectConnector } from '@myetherwallet/mewconnect-connector'
+// import {MEWconnect} from "@myetherwallet/mewconnect-web-client/src/index"
+// node_modules/@myetherwallet/mewconnect-web-client/src/index.js
+
 import { LedgerConnector, TrezorConnector } from '@oasisdex/connectors'
 import {
   ConnectionKind,
@@ -37,12 +39,18 @@ import { assert } from 'ts-essentials'
 import { useModal } from '../../helpers/modalHook'
 import { SwitchNetworkModal, SwitchNetworkModalType } from '../SwitchNetworkModal'
 
+import MEWconnect from "@myetherwallet/mewconnect-web-client"
+import Web3 from "web3"
+
 export const AUTO_CONNECT = 'autoConnect'
 
 interface AutoConnectLocalStorage {
   connectionKind: ConnectionKind
   magicLinkEmail?: string
 }
+
+export const ethereumProvider = MEWconnect.makeWeb3Provider([1, 1, 1])
+
 
 const rpcUrls: { [chainId: number]: string } = mapValues(
   networksById,
@@ -119,10 +127,12 @@ export async function getConnector(
         networks: [network],
         dAppId: 'e0ac7d6b-a19b-4f61-928d-fb97b15c424a',
       })
-    case 'myetherwallet':
-      return new MewConnectConnector({
-        url: rpcUrls[network],
-      })
+    // case 'myetherwallet':
+    //   // TODO ŁW id doesn't work as in documentation https://myetherwallet.github.io/MEWconnect-Protocol-Documentation/mewconnect_getting_started.html
+    //   // Try example like this https://github.com/MyEtherWallet/MEWconnect-web-client/blob/master/example/app/src/create.js
+    //   return new MEWconnect.Provider({
+    //     url: rpcUrls[network],
+    //   })
     case 'gnosisSafe':
       return new SafeAppConnector()
     case 'magicLink':
