@@ -17,26 +17,21 @@ export function openAaveStateMachine(
       key: 'aaveOpen',
       initial: 'editing',
       context: {
-        tokenBalances$,
-        getProxyStateMachine,
-        proxyAddress$,
+        dependencies: {
+          tokenBalances$,
+          getProxyStateMachine,
+          proxyAddress$,
+        },
       },
       states: {
         editing: {
           entry: [
-            assign({
-              token: () => 'ETH',
-            }),
-            assign({
-              totalSteps: (context) => (context.proxyAddress ? 2 : 3),
-            }),
-            assign({
-              currentStep: (_) => 1,
-            }),
-            assign({
-              canGoToNext: (context) =>
-                context.proxyAddress === undefined || context.amount?.gt(zero),
-            }),
+            assign((context) => ({
+              currentStep: 1,
+              token: 'ETH',
+              totalSteps: context.proxyAddress ? 2 : 3,
+              canGoToNext: context.proxyAddress === undefined || context.amount?.gt(zero),
+            })),
           ],
           invoke: {
             src: getNameOfService('initMachine'),
@@ -44,27 +39,27 @@ export function openAaveStateMachine(
           on: {
             SET_BALANCE: {
               actions: [
-                assign({
-                  tokenBalance: (_, event) => event.balance,
-                }),
-                assign({
-                  tokenPrice: (_, event) => event.tokenPrice,
-                }),
+                assign((_, event) => ({
+                  tokenBalance: event.balance,
+                  tokenPrice: event.tokenPrice,
+                })),
+              ],
+            },
+            PROXY_ADDRESS_RECEIVED: {
+              actions: [
+                assign((_, event) => ({
+                  proxyAddress: event.proxyAddress,
+                  totalSteps: event.proxyAddress ? 2 : 3,
+                })),
               ],
             },
             SET_AMOUNT: {
               actions: [
-                assign({
-                  amount: (_, event) => event.amount,
-                }),
-                assign({
-                  auxiliaryAmount: (context, event) =>
-                    event.amount.times(context.tokenPrice || zero),
-                }),
-                assign({
-                  canGoToNext: (context, event) =>
-                    context.proxyAddress === undefined || event.amount.gt(0),
-                }),
+                assign((context, event) => ({
+                  amount: event.amount,
+                  auxiliaryAmount: event.amount.times(context.tokenPrice || zero),
+                  canGoToNext: context.proxyAddress === undefined || event.amount.gt(0),
+                })),
               ],
             },
             CREATE_PROXY: {
@@ -79,31 +74,22 @@ export function openAaveStateMachine(
         },
         proxyCreating: {
           entry: [
-            assign({
-              refProxyMachine: ({ getProxyStateMachine }, _) =>
-                spawn(getProxyStateMachine(), {
-                  name: 'proxy',
-                  sync: true,
-                }),
-            }),
+            assign(({ dependencies }) => ({
+              refProxyMachine: spawn(dependencies.getProxyStateMachine(), {
+                name: 'proxy',
+                sync: true,
+              }),
+            })),
           ],
           on: {
             PROXY_CREATED: {
               target: 'editing',
-              actions: [
-                assign({
-                  proxyAddress: (context, event) => event.proxyAddress,
-                }),
-              ],
+              actions: [assign((_, event) => ({ proxyAddress: event.proxyAddress }))],
             },
           },
         },
         reviewing: {
-          entry: [
-            assign({
-              currentStep: (_) => 2,
-            }),
-          ],
+          entry: [assign((_) => ({ currentStep: 2 }))],
           on: {
             START_CREATING_POSITION: {
               target: 'txInProgress',
@@ -118,19 +104,11 @@ export function openAaveStateMachine(
           on: {
             TRANSACTION_SUCCESS: {
               target: 'txSuccess',
-              actions: [
-                assign({
-                  vaultNumber: (_, event) => event.vaultNumber,
-                }),
-              ],
+              actions: [assign((_, event) => ({ vaultNumber: event.vaultNumber }))],
             },
             TRANSACTION_FAILURE: {
               target: 'txFailure',
-              actions: [
-                assign({
-                  txError: (_, event) => event.txError,
-                }),
-              ],
+              actions: [assign((_, event) => ({ txError: event.txError }))],
             },
           },
           initial: 'txWaitingForApproval',
@@ -139,11 +117,7 @@ export function openAaveStateMachine(
               on: {
                 TRANSACTION_IN_PROGRESS: {
                   target: 'txInProgress',
-                  actions: [
-                    assign({
-                      txHash: (_, event) => event.txHash,
-                    }),
-                  ],
+                  actions: [assign((_, event) => ({ txHash: event.txHash }))],
                 },
               },
             },
@@ -152,9 +126,9 @@ export function openAaveStateMachine(
                 TRANSACTION_CONFIRMED: {
                   target: 'txInProgress',
                   actions: [
-                    assign({
-                      confirmations: (_, event) => event.confirmations,
-                    }),
+                    assign((_, event) => ({
+                      confirmations: event.confirmations,
+                    })),
                   ],
                 },
               },

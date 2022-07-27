@@ -4,7 +4,7 @@ import { sendParent } from 'xstate/lib/actions'
 
 import { TxHelpers } from '../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
-import { services } from './proxyStateMachine.services'
+import { getNameOfService, services } from './proxyStateMachine.services'
 import { ProxyContext, ProxyEvent, ProxyState } from './proxyStateMachine.types'
 
 export function createProxyStateMachine(
@@ -17,48 +17,42 @@ export function createProxyStateMachine(
     {
       id: 'proxy',
       context: {
-        txHelper,
-        proxyAddress$,
-        getGasEstimation$,
-        safeConfirmations,
+        dependencies: {
+          txHelper,
+          proxyAddress$,
+          getGasEstimation$,
+          safeConfirmations,
+        },
       },
       initial: 'proxyIdle',
       states: {
         proxyIdle: {
           invoke: {
-            src: 'estimateGas',
+            src: getNameOfService('estimateGas'),
           },
           entry: [
-            assign({
-              gasData: () => ({
-                gasEstimationStatus: GasEstimationStatus.calculating,
-              }),
-            }),
+            assign(() => ({
+              gasData: { status: GasEstimationStatus.calculating },
+            })),
           ],
           on: {
             START: {
               target: 'proxyInProgress',
             },
             GAS_COST_ESTIMATION: {
-              actions: [
-                assign({
-                  gasData: (_, event) => event.gasData,
-                }),
-              ],
+              actions: [assign((context, event) => ({ gasData: event.gasData }))],
             },
           },
         },
         proxyInProgress: {
           invoke: {
-            src: 'createProxy',
+            src: getNameOfService('createProxy'),
           },
           on: {
             SUCCESS: {
               target: 'proxySuccess',
               actions: [
-                assign({
-                  proxyAddress: (_, event) => event.proxyAddress,
-                }),
+                assign((_, event) => ({ proxyAddress: event.proxyAddress })),
                 sendParent((_, event) => ({
                   type: 'proxyCreated',
                   proxyAddress: event.proxyAddress,
@@ -67,11 +61,7 @@ export function createProxyStateMachine(
             },
             FAILURE: {
               target: 'proxyFailure',
-              actions: [
-                assign({
-                  txError: (context, event) => event.txError,
-                }),
-              ],
+              actions: [assign((_, event) => ({ txError: event.txError }))],
             },
           },
           initial: 'proxyWaitingForApproval',
@@ -80,11 +70,7 @@ export function createProxyStateMachine(
               on: {
                 IN_PROGRESS: {
                   target: 'proxyInProgress',
-                  actions: [
-                    assign({
-                      txHash: (context, event) => event.proxyTxHash,
-                    }),
-                  ],
+                  actions: [assign((_, event) => ({ txHash: event.proxyTxHash }))],
                 },
               },
             },
@@ -93,9 +79,9 @@ export function createProxyStateMachine(
                 CONFIRMED: {
                   target: 'proxyInProgress',
                   actions: [
-                    assign({
-                      proxyConfirmations: (context, event) => event.proxyConfirmations,
-                    }),
+                    assign((_, event) => ({
+                      proxyConfirmations: event.proxyConfirmations,
+                    })),
                   ],
                 },
               },

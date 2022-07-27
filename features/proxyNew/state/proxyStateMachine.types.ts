@@ -6,10 +6,13 @@ import { HasGasEstimation } from '../../../helpers/form'
 import { createProxyStateMachine } from './proxyStateMachine'
 
 export interface ProxyContext {
-  readonly txHelper: TxHelpers
-  readonly proxyAddress$: Observable<string | undefined>
-  readonly getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>
-  readonly safeConfirmations: number
+  readonly dependencies: {
+    readonly txHelper: TxHelpers
+    readonly proxyAddress$: Observable<string | undefined>
+    readonly getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>
+    readonly safeConfirmations: number
+  }
+
   gasData?: HasGasEstimation
   txHash?: string
   txError?: string
@@ -48,15 +51,12 @@ export type ProxyEvent =
       gasData: HasGasEstimation
     }
 
-export const PROXY_STAGES = [
-  'proxyIdle',
-  'proxyWaitingForApproval',
-  'proxyInProgress',
-  'proxyFailure',
-  'proxySuccess',
-] as const
-
-export type ProxyStages = typeof PROXY_STAGES[number]
+export type ProxyStage =
+  | 'proxyIdle'
+  | 'proxyWaitingForApproval'
+  | 'proxyInProgress'
+  | 'proxyFailure'
+  | 'proxySuccess'
 
 function spawnProxy<S extends ProxyStateMachine>(s: S) {
   return spawn(s)
@@ -71,6 +71,6 @@ export type ProxySateMachineState = ReturnType<typeof createProxyStateMachine>['
 export type ProxyActorRef = ReturnType<typeof spawnProxy>
 
 export interface ProxyState {
-  value: ProxyStages
+  value: ProxyStage
   context: ProxyContext
 }

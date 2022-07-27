@@ -9,9 +9,12 @@ import {
 import { openAaveStateMachine } from './openAaveStateMachine'
 
 export interface OpenAaveContext {
-  readonly tokenBalances$: Observable<TokenBalances>
-  readonly proxyAddress$: Observable<string | undefined>
-  readonly getProxyStateMachine: () => ProxyStateMachine
+  readonly dependencies: {
+    readonly tokenBalances$: Observable<TokenBalances>
+    readonly proxyAddress$: Observable<string | undefined>
+    readonly getProxyStateMachine: () => ProxyStateMachine
+  }
+
   currentStep?: number
   totalSteps?: number
   tokenBalance?: BigNumber
@@ -28,94 +31,62 @@ export interface OpenAaveContext {
   txError?: string
 }
 
-interface DepositEvent {
-  type: 'CONFIRM_DEPOSIT'
-}
-
-interface ProxyAddressReceivedEvent {
-  type: 'PROXY_ADDRESS_RECEIVED'
-  proxyAddress: string | undefined
-}
-
-interface CreateProxyEvent {
-  type: 'CREATE_PROXY'
-}
-
-interface ProxyCreatedEvent {
-  type: 'PROXY_CREATED'
-  proxyAddress: string
-}
-
-interface SetAmountEvent {
-  type: 'SET_AMOUNT'
-  amount: BigNumber
-}
-
-interface SetBalanceEvent {
-  type: 'SET_BALANCE'
-  balance: BigNumber
-  tokenPrice: BigNumber
-}
-
-interface PositionOpenedEvent {
-  type: 'POSITION_OPENED'
-}
-
-interface StartCreatingPositionEvent {
-  type: 'START_CREATING_POSITION'
-}
-
-interface TransactionWaitingForApprovalEvent {
-  type: 'TRANSACTION_WAITING_FOR_APPROVAL'
-}
-
-interface TransactionInProgressEvent {
-  type: 'TRANSACTION_IN_PROGRESS'
-  txHash: string
-}
-
-interface TransactionSuccessEvent {
-  type: 'TRANSACTION_SUCCESS'
-  vaultNumber: BigNumber
-}
-
-interface TransactionConfirmedEvent {
-  type: 'TRANSACTION_CONFIRMED'
-  confirmations: number
-}
-
-interface TransactionFailureEvent {
-  type: 'TRANSACTION_FAILURE'
-  txError?: string
-}
-
 export type OpenAaveEvent =
-  | DepositEvent
-  | ProxyAddressReceivedEvent
-  | CreateProxyEvent
-  | ProxyCreatedEvent
-  | SetAmountEvent
-  | SetBalanceEvent
-  | PositionOpenedEvent
-  | StartCreatingPositionEvent
-  | TransactionWaitingForApprovalEvent
-  | TransactionInProgressEvent
-  | TransactionSuccessEvent
-  | TransactionConfirmedEvent
-  | TransactionFailureEvent
+  | {
+      type: 'CONFIRM_DEPOSIT'
+    }
+  | { type: 'PROXY_ADDRESS_RECEIVED'; proxyAddress: string | undefined }
+  | {
+      type: 'CREATE_PROXY'
+    }
+  | {
+      type: 'PROXY_CREATED'
+      proxyAddress: string
+    }
+  | {
+      type: 'SET_AMOUNT'
+      amount: BigNumber
+    }
+  | {
+      type: 'SET_BALANCE'
+      balance: BigNumber
+      tokenPrice: BigNumber
+    }
+  | {
+      type: 'POSITION_OPENED'
+    }
+  | {
+      type: 'START_CREATING_POSITION'
+    }
+  | {
+      type: 'TRANSACTION_WAITING_FOR_APPROVAL'
+    }
+  | {
+      type: 'TRANSACTION_IN_PROGRESS'
+      txHash: string
+    }
+  | {
+      type: 'TRANSACTION_SUCCESS'
+      vaultNumber: BigNumber
+    }
+  | {
+      type: 'TRANSACTION_CONFIRMED'
+      confirmations: number
+    }
+  | {
+      type: 'TRANSACTION_FAILURE'
+      txError?: string
+    }
 
-const OPEN_AAVE_STAGES = [
-  'editing',
-  'proxyCreating',
-  'reviewing',
-  'txWaitingForConfirmation',
-  'txWaitingForApproval',
-  'txInProgress',
-  'txFailure',
-  'txSuccess',
-] as const
-
-type OpenAaveStage = typeof OPEN_AAVE_STAGES[number]
+type OpenAaveStage =
+  | 'editing'
+  | 'proxyCreating'
+  | 'reviewing'
+  | 'txWaitingForConfirmation'
+  | 'txWaitingForApproval'
+  | 'txInProgress'
+  | 'txFailure'
+  | 'txSuccess'
 
 export interface OpenAaveState {
   value: OpenAaveStage

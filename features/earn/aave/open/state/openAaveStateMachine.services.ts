@@ -4,15 +4,18 @@ import { map } from 'rxjs/operators'
 
 import { OpenAaveObservableService } from './openAaveStateMachine.types'
 
-const getProxyAddress: OpenAaveObservableService = (context, _) => {
-  return context.proxyAddress$.pipe(
-    map((address) => ({ type: 'PROXY_ADDRESS_RECEIVED', proxyAddress: address })),
+const getProxyAddress: OpenAaveObservableService = ({ dependencies }, _) => {
+  return dependencies.proxyAddress$.pipe(
+    map((address) => ({
+      type: 'PROXY_ADDRESS_RECEIVED',
+      proxyAddress: address,
+    })),
   )
 }
 
-const getBalance: OpenAaveObservableService = (context, _) => {
-  return context.tokenBalances$.pipe(
-    map((balances) => balances[context.token!]),
+const getBalance: OpenAaveObservableService = ({ dependencies, token }, _) => {
+  return dependencies.tokenBalances$.pipe(
+    map((balances) => balances[token!]),
     map(({ balance, price }) => ({
       type: 'SET_BALANCE',
       balance: balance,

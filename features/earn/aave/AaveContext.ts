@@ -1,4 +1,3 @@
-import { memoize } from 'lodash'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
@@ -24,22 +23,19 @@ export function setupAaveContext({
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  const proxyStateMachine$ = curry(
-    memoize(() =>
-      getOpenProxyStateMachine$(contextForAddress$, txHelpers$, proxyForAccount$, gasEstimation$),
-    ),
-  )()
+  const proxyStateMachine$ = getOpenProxyStateMachine$(
+    contextForAddress$,
+    txHelpers$,
+    proxyForAccount$,
+    gasEstimation$,
+  )
 
-  const aaveStateMachine$ = curry(
-    memoize(() =>
-      getOpenAaveStateMachine(
-        contextForAddress$,
-        accountBalances$,
-        proxyForAccount$,
-        proxyStateMachine$,
-      ),
-    ),
-  )()
+  const aaveStateMachine$ = getOpenAaveStateMachine(
+    contextForAddress$,
+    accountBalances$,
+    proxyForAccount$,
+    proxyStateMachine$,
+  )
 
   return {
     aaveStateMachine$,

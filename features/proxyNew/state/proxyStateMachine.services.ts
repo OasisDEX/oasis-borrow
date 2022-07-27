@@ -8,11 +8,12 @@ import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { transactionToX } from '../../../helpers/form'
 import { ProxyContext, ProxyEvent, ProxyObservableService } from './proxyStateMachine.types'
 
-const createProxy: ProxyObservableService = (
-  { proxyAddress$, txHelper, safeConfirmations }: ProxyContext,
-  _: ProxyEvent,
-) => {
-  const { sendWithGasEstimation } = txHelper
+const createProxy: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
+  const {
+    proxyAddress$,
+    safeConfirmations,
+    txHelper: { sendWithGasEstimation },
+  } = dependencies
 
   return sendWithGasEstimation(createDsProxy, {
     kind: TxMetaKind.createDsProxy,
@@ -56,12 +57,9 @@ const createProxy: ProxyObservableService = (
   )
 }
 
-const estimateGas: ProxyObservableService = (
-  { txHelper, getGasEstimation$ }: ProxyContext,
-  _: ProxyEvent,
-) => {
-  return txHelper.estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
-    switchMap((gasData) => getGasEstimation$(gasData)),
+const estimateGas: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
+  return dependencies.txHelper.estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
+    switchMap((gasData) => dependencies.getGasEstimation$(gasData)),
     first(),
     map((gas) => ({ type: 'GAS_COST_ESTIMATION', gasData: gas })),
   )
