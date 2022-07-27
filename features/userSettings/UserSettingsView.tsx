@@ -7,6 +7,7 @@ import {
   getWalletKind,
 } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
+import { useSocket } from 'components/NotificationSocketProvider'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -309,6 +310,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
+  const { socket } = useSocket()
 
   return (
     <Box sx={sx}>
@@ -329,7 +331,10 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
           display: 'flex',
           alignItems: 'center',
         }}
-        onClick={() => disconnect(web3Context)}
+        onClick={() => {
+          socket?.disconnect()
+          disconnect(web3Context)
+        }}
       >
         <Icon name="sign_out" color="primary60" size="auto" width={20} />
         <Text variant="paragraph3" sx={{ fontWeight: 'medium', color: 'primary60', ml: 2 }}>

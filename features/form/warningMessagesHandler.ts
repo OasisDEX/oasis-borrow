@@ -20,6 +20,7 @@ export type VaultWarningMessage =
   | 'autoBuyTargetCloseToAutoSellTrigger'
   | 'autoBuyTriggeredImmediately'
   | 'autoSellTriggeredImmediately'
+  | 'autoSellOverride'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
