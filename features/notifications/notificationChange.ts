@@ -1,4 +1,8 @@
-import { dummyChannels, dummyNotifications, dummySubscriptions } from 'features/notifications/tempData'
+import {
+  dummyChannels,
+  dummyNotifications,
+  dummySubscriptions,
+} from 'features/notifications/tempData'
 import {
   Notification,
   NotificationChannels,
@@ -10,7 +14,7 @@ export const notificationInitialState: NotificationChange = {
   allNotifications: dummyNotifications,
   allActiveSubscriptions: dummySubscriptions,
   allActiveChannels: dummyChannels,
-  error: ''
+  error: '',
 }
 
 export type NotificationChangeAction =
