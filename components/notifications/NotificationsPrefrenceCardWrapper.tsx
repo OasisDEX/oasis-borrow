@@ -1,16 +1,87 @@
-import React from 'react'
+import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
+import { NotificationsEmailPreferences } from 'components/notifications/NotificationsEmailPreferences'
+import { useNotificationSocket } from 'components/NotificationSocketProvider'
+import { notificationPreferences } from 'features/notifications/consts'
+import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import {
+  NotificationChannelTypes,
+  NotificationSubscriptionTypes,
+} from 'features/notifications/types'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import React, { useCallback } from 'react'
 import { Box } from 'theme-ui'
 
-import { NotificationPrefrenceCard } from './NotificationPrefrenceCard'
-import { NOTIFICATION_PREFRENCES_DUMMY_DATA } from './tempData'
+interface NotificationPreferenceCardWrapperProps {
+  account: string
+}
 
-export function NotificationPrefrenceCardWrapper() {
+export function NotificationPreferenceCardWrapper({
+  account,
+}: NotificationPreferenceCardWrapperProps) {
+  const { socket } = useNotificationSocket()
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
+
+  const subscriptionsHandler = useCallback(
+    (subscriptionType: NotificationSubscriptionTypes, isEnabled: boolean) => {
+      if (isEnabled) {
+        socket?.emit('setsubscriptions', {
+          address: account,
+          subscriptionTypes: [...notificationsState.allActiveSubscriptions, subscriptionType],
+        })
+        if (
+          !notificationsState.allActiveChannels.find(
+            (item) => item.id === NotificationChannelTypes.APPLICATION,
+          )
+        ) {
+          socket?.emit('setchannels', {
+            address: account,
+            channels: [
+              { id: NotificationChannelTypes.APPLICATION, channelConfiguration: '' },
+              ...notificationsState.allActiveChannels,
+            ],
+          })
+        }
+      } else {
+        const afterSubscriptions = notificationsState.allActiveSubscriptions.filter(
+          (item) => item.id !== subscriptionType,
+        )
+        socket?.emit('setsubscriptions', {
+          address: account,
+          subscriptionTypes: afterSubscriptions,
+        })
+
+        if (!afterSubscriptions.length) {
+          socket?.emit('setchannels', {
+            address: account,
+            channels: notificationsState.allActiveChannels.filter(
+              (item) => item.id !== NotificationChannelTypes.APPLICATION,
+            ),
+          })
+        }
+      }
+    },
+    [socket, notificationsState],
+  )
+
   return (
     <Box>
-      {NOTIFICATION_PREFRENCES_DUMMY_DATA &&
-        NOTIFICATION_PREFRENCES_DUMMY_DATA.map((prefrence, index) => (
-          <NotificationPrefrenceCard key={index.toString()} {...prefrence} />
+      <Box sx={{ pb: 3, borderBottom: '1px solid', borderColor: 'neutral20' }}>
+        {notificationPreferences.map((preference) => (
+          <NotificationPreferenceCard
+            key={preference.notificationType}
+            checked={
+              !!notificationsState.allActiveSubscriptions.find(
+                (item) => item.id === preference.notificationType,
+              )
+            }
+            {...preference}
+            onChangeHandler={(isEnabled) =>
+              subscriptionsHandler(preference.notificationType, isEnabled)
+            }
+          />
         ))}
+      </Box>
+      <NotificationsEmailPreferences account={account} />
     </Box>
   )
 }

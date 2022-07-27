@@ -1,17 +1,20 @@
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
-import React, { useState } from 'react'
-import { Box, Input } from 'theme-ui'
+import React, { useCallback, useState } from 'react'
+import { Box, Input, SxStyleProp } from 'theme-ui'
 
 interface ToggleProps {
   isChecked: boolean
-  onChangeHandler?: () => void
-  sx?: any
+  onChange: (checked: boolean) => void
+  sx?: SxStyleProp
 }
 
-export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
-  // TODO: Update this
-  const checked = isChecked
-  const [, setChecked] = useState(isChecked)
+export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
+  const [checked, setChecked] = useState(isChecked)
+
+  const handleToggle = useCallback(() => {
+    onChange(!checked)
+    setChecked((prev) => !prev)
+  }, [checked])
 
   return (
     <Box
@@ -31,15 +34,13 @@ export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
           height: 0,
         }}
         type="checkbox"
-        // TODO: Update this to use only parsed handler
-        onChange={onChangeHandler ? () => onChangeHandler() : () => setChecked(!checked)}
+        onChange={handleToggle}
       />
       <Box
         as="span"
         sx={{
           '&:before': {
             position: 'absolute',
-            // TODO: Possibly create a function to do this so that is more readable
             content: checked ? checkedToggleDataIcon : notCheckedToggleDataIcon,
             height: '20px',
             display: 'block',

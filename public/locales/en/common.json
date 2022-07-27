@@ -1577,6 +1577,9 @@
     "confirm-btn": "Confirm",
     "change-btn": "Change",
     "email-entered": "You have set up email notifcations successfully.",
-    "enable-notifications-email-label": "Set up your email"
+    "enable-notifications-email-label": "Set up your email",
+    "approaching-liquidation": "Your vault #{{vaultId}} is close to the liquidation price ${{liquidationPrice}}.",
+    "approaching-trigger": "Your vault #{{vaultId}} is approaching {{trigger}} trigger. <1><2>View vault</2></1>",
+    "email-save-failure": "We couldn't save your e-mail address. Please try again later."
   }
 }

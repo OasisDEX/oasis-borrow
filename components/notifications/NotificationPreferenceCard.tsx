@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 import { Toggle } from 'ui'
 
@@ -6,16 +6,17 @@ interface NotificationPrefrenceCardProps {
   heading: string
   description: string
   checked: boolean
-  // TODO: Make this required prop
-  onChangeHandler?: () => void
+  onChangeHandler: (isEnabled: boolean) => void
 }
 
-export function NotificationPrefrenceCard({
+export function NotificationPreferenceCard({
   heading,
   description,
   checked,
   onChangeHandler,
 }: NotificationPrefrenceCardProps) {
+  const handleToggle = useCallback((checked) => onChangeHandler(checked), [])
+
   return (
     <Card
       sx={{
@@ -36,7 +37,7 @@ export function NotificationPrefrenceCard({
         </Text>
         <Toggle
           isChecked={checked}
-          onChangeHandler={onChangeHandler}
+          onChange={handleToggle}
           sx={{
             transition: '0.4s',
           }}
