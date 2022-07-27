@@ -1,8 +1,5 @@
 import BigNumber from 'bignumber.js'
-import {
-  ContentCardProps,
-  DetailsSectionContentCard,
-} from 'components/DetailsSectionContentCard'
+import { ContentCardProps, DetailsSectionContentCard } from 'components/DetailsSectionContentCard'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
