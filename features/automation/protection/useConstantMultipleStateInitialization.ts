@@ -13,7 +13,7 @@ import {
   resolveWithThreshold,
 } from '../common/helpers'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
-import { AggregtedTriggersData } from './triggers/AggregatedTriggersData'
+import { AggregtedTriggersData } from './triggers/aggregatedTriggersData'
 import { TriggersData } from './triggers/AutomationTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
@@ -109,6 +109,6 @@ export function useConstantMultipleStateInitialization(
 }
 function extractConstantMultipleIds(aggregatedTriggersData: AggregtedTriggersData) {
   return aggregatedTriggersData
-    ? aggregatedTriggersData.triggers?.flatMap((trigger) => trigger.triggerIds)
+    ? aggregatedTriggersData.triggers?.flatMap((trigger: any) => trigger.triggerIds)
     : []
 }

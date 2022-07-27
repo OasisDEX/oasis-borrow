@@ -10,6 +10,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
+import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -31,8 +32,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-const SLIDER_MAX_FOR_BIG_VAULTS = 500
-
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
   stage: SidebarVaultStages
@@ -51,6 +50,9 @@ interface SidebarSetupConstantMultipleProps {
   stopLossTriggerData: StopLossTriggerData
 }
 
+const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
+  .decimalPlaces(0, BigNumber.ROUND_DOWN)
+  .toNumber()
 export function SidebarSetupConstantMultiple({
   vault,
   isAddForm,
@@ -114,7 +116,7 @@ export function SidebarSetupConstantMultiple({
       .multipliedBy(100)
       .decimalPlaces(0, BigNumber.ROUND_DOWN)
       .toNumber(),
-    SLIDER_MAX_FOR_BIG_VAULTS,
+    largestSliderValueAllowed,
   ])
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
@@ -134,54 +136,19 @@ export function SidebarSetupConstantMultiple({
                 : INITIAL_MULTIPLIER_SELECTED.toString()
             }
             variant="secondary"
-            items={[
-              {
-                id: acceptableMultipliers[0].toString(),
-                label: `${acceptableMultipliers[0]}X`,
+            items={acceptableMultipliers.map((multiplier) => {
+              return {
+                id: multiplier.toString(),
+                label: `${multiplier}X`,
                 action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[0])
+                  handleChangeMultiplier(multiplier)
                 },
-              },
-              {
-                id: acceptableMultipliers[1].toString(),
-                label: `${acceptableMultipliers[1]}X`,
-                action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[1])
-                },
-              },
-              {
-                id: acceptableMultipliers[2].toString(),
-                label: `${acceptableMultipliers[2]}X`,
-                action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[2])
-                },
-              },
-              {
-                id: acceptableMultipliers[3].toString(),
-                label: `${acceptableMultipliers[3]}X`,
-                action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[3])
-                },
-              },
-              {
-                id: acceptableMultipliers[4].toString(),
-                label: `${acceptableMultipliers[4]}X`,
-                action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[4])
-                },
-              },
-              {
-                id: acceptableMultipliers[5].toString(),
-                label: `${acceptableMultipliers[5]}X`,
-                action: () => {
-                  handleChangeMultiplier(acceptableMultipliers[5])
-                },
-              },
-            ]}
+              }
+            })}
           />
           <MultipleRangeSlider
             min={sliderMin.toNumber()}
-            max={sliderMax || SLIDER_MAX_FOR_BIG_VAULTS}
+            max={sliderMax || largestSliderValueAllowed}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',

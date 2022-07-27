@@ -72,7 +72,6 @@ export function basicBSFormChangeReducer(
 
 export type AutomationFormChange = {
   triggerId: BigNumber
-  execCollRatio: BigNumber
   targetCollRatio: BigNumber
   continuous: boolean
   deviation: BigNumber
@@ -90,4 +89,5 @@ export type AutomationFormChange = {
 export type BasicBSFormChange = AutomationFormChange & {
   maxBuyOrMinSellPrice?: BigNumber
   withThreshold: boolean
+  execCollRatio: BigNumber
 }

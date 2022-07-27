@@ -59,7 +59,7 @@ export function prepareAddConstantMultipleTriggerData({
   return {
     // groupId,
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
-    replacedTriggerId: [0, 0],
+    replacedTriggerIds: [0, 0],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
     proxyAddress: vaultData.owner,
     kind: TxMetaKind.addTriggerGroup,

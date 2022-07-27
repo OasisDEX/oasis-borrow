@@ -10,7 +10,7 @@ import { TxMetaKind } from './txMeta'
 export type AutomationBotAggregatorBaseTriggerData = {}
 export type AutomationBotAddAggregatorTriggerData = AutomationBotAggregatorBaseTriggerData & {
   groupTypeId: number
-  replacedTriggerId: any // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef
+  replacedTriggerIds: any // TODO ŁW replace any https://app.shortcut.com/oazo-apps/story/5388/change-types-in-transactiondef
   triggersData: any //AutomationBotAddTriggerData[],
   proxyAddress: string
   kind: TxMetaKind.addTriggerGroup

@@ -10,13 +10,7 @@ import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from '../protection/common/UITypes/constantMultipleFormChange'
-
-const takeUntilTxState = [
-  TxStatus.Success,
-  TxStatus.Failure,
-  TxStatus.Error,
-  TxStatus.CancelledByTheUser,
-]
+import { takeUntilTxState } from './basicBStxHandlers'
 
 export function addConstantMultipleTrigger(
   // { sendWithGasEstimation, send }: TxHelpers,
@@ -46,7 +40,7 @@ function handleTriggerTx({
     txState.status === TxStatus.Success ? new BigNumber(txState.receipt.effectiveGasPrice) : zero
 
   const totalCost =
-    !gasUsed.eq(0) && !effectiveGasPrice.eq(0)
+    !gasUsed.eq(zero) && !effectiveGasPrice.eq(zero)
       ? amountFromWei(gasUsed.multipliedBy(effectiveGasPrice)).multipliedBy(ethPrice)
       : zero
 
