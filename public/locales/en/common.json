@@ -1578,8 +1578,12 @@
     "change-btn": "Change",
     "email-entered": "You have set up email notifcations successfully.",
     "enable-notifications-email-label": "Set up your email",
-    "approaching-liquidation": "Your vault #{{vaultId}} is close to the liquidation price ${{liquidationPrice}}.",
+    "approaching-liquidation": "Your vault #{{vaultId}} col. ratio got within 5% of the liquidation price on {{humanDate}}.",
     "approaching-trigger": "Your vault #{{vaultId}} is approaching {{trigger}} trigger. <1><2>View vault</2></1>",
-    "email-save-failure": "We couldn't save your e-mail address. Please try again later."
+    "email-save-failure": "We couldn't save your e-mail address. Please try again later.",
+    "vault-liquidated": "Your vault #{{vaultId}} was liquidated on {{humanDate}} at ${{usdPrice}}.",
+    "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}."
   }
 }

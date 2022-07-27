@@ -37,7 +37,8 @@ export interface NotificationChannels {
 
 export interface NotificationAdditionalData {
   vaultId: number
-  liquidationPrice?: number
+  usdPrice?: number
+  timestamp?: number
 }
 
 export interface Notification {

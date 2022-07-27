@@ -26,16 +26,71 @@ export function getNotificationTitle({
   vaultId: number
   additionalData: NotificationAdditionalData
 }) {
-  const liquidationPrice = new BigNumber(additionalData?.liquidationPrice || 0)
+  const usdPrice = new BigNumber(additionalData?.usdPrice || 0)
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  }
+
+  const humanDate = additionalData?.timestamp
+    ? new Date(additionalData?.timestamp * 1000).toLocaleDateString('en-US', options)
+    : '[date unavailable]'
 
   switch (type) {
+    case NotificationTypes.VAULT_LIQUIDATED:
+      return (
+        <Trans
+          i18nKey="notifications.vault-liquidated"
+          values={{
+            vaultId: vaultId,
+            usdPrice: formatAmount(usdPrice, 'USD'),
+            humanDate,
+          }}
+        />
+      )
+    case NotificationTypes.STOP_LOSS_TRIGGERED:
+      return (
+        <Trans
+          i18nKey="notifications.stop-loss-executed"
+          values={{
+            vaultId: vaultId,
+            usdPrice: formatAmount(usdPrice, 'USD'),
+            humanDate,
+          }}
+        />
+      )
+    case NotificationTypes.AUTO_BUY_TRIGGERED:
+      return (
+        <Trans
+          i18nKey="notifications.auto-buy-executed"
+          values={{
+            vaultId: vaultId,
+            usdPrice: formatAmount(usdPrice, 'USD'),
+            humanDate,
+          }}
+        />
+      )
+    case NotificationTypes.AUTO_SELL_TRIGGERED:
+      return (
+        <Trans
+          i18nKey="notifications.auto-sell-executed"
+          values={{
+            vaultId: vaultId,
+            usdPrice: formatAmount(usdPrice, 'USD'),
+            humanDate,
+          }}
+        />
+      )
     case NotificationTypes.APPROACHING_LIQUIDATION:
       return (
         <Trans
           i18nKey="notifications.approaching-liquidation"
           values={{
             vaultId: vaultId,
-            liquidationPrice: formatAmount(liquidationPrice, 'USD'),
+            humanDate,
           }}
         />
       )

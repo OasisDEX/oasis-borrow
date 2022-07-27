@@ -14,14 +14,14 @@ export const dummyNotifications: Notification[] = [
     lastModified: 1658296560,
     notificationType: NotificationTypes.APPROACHING_LIQUIDATION,
     read: false,
-    additionalData: { liquidationPrice: 15000, vaultId: 1234 },
+    additionalData: { usdPrice: 15000, vaultId: 1234, timestamp: 1658296560 },
   },
   {
     id: 2,
     lastModified: 1658296560,
     notificationType: NotificationTypes.APPROACHING_LIQUIDATION,
     read: true,
-    additionalData: { liquidationPrice: 15000, vaultId: 1234 },
+    additionalData: { usdPrice: 15000, vaultId: 1234, timestamp: 1658296560 },
   },
   {
     id: 3,
@@ -49,7 +49,7 @@ export const dummyNotifications: Notification[] = [
     lastModified: 1658296560,
     notificationType: NotificationTypes.APPROACHING_LIQUIDATION,
     read: false,
-    additionalData: { liquidationPrice: 15000, vaultId: 1234 },
+    additionalData: { usdPrice: 15000, vaultId: 1234, timestamp: 1658296560 },
   },
   {
     id: 7,
