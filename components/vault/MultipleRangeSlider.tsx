@@ -93,7 +93,7 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
-  middleMarkOffset=5,
+  middleMarkOffset = 5,
   leftThumbColor = 'warning100',
   rightThumbColor = 'success100',
   leftDescription,
@@ -243,7 +243,7 @@ export function MultipleRangeSlider({
             background: sliderBackground,
             '&::-webkit-slider-thumb': {
               backgroundColor: leftThumbColor,
-              pointerEvents: 'all'
+              pointerEvents: 'all',
             },
           }}
         />
