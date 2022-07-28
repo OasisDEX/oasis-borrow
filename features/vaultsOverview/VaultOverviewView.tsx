@@ -2,7 +2,7 @@ import React from 'react'
 import { Flex, Grid } from 'theme-ui'
 
 import { AssetsAndPositionsOverview } from './containers/AssetsAndPositionsOverview'
-import { Connect } from './containers/Connect'
+import { ConnectWalletPrompt } from './containers/ConnectWalletPrompt'
 import { PositionsList } from './containers/PositionsList'
 import { VaultOwnershipNotice } from './containers/VaultOwnershipNotice'
 import { VaultSuggestions } from './containers/VaultSuggestions'
@@ -17,7 +17,7 @@ export function VaultsOverviewView({ address }: Props) {
       <VaultOwnershipNotice address={address} />
       <Flex sx={{ mt: 5, flexDirection: 'column' }}>
         <AssetsAndPositionsOverview address={address} />
-        <Connect address={address} />
+        <ConnectWalletPrompt address={address} />
       </Flex>
       <PositionsList address={address} />
       <VaultSuggestions address={address} />

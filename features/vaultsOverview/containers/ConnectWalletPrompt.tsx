@@ -16,7 +16,7 @@ interface Props {
   address: string
 }
 
-export function Connect(props: Props) {
+export function ConnectWalletPrompt(props: Props) {
   const { address } = props
   const { context$, vaultsOverview$ } = useAppContext()
   const checksumAddress = getAddress(address.toLocaleLowerCase())

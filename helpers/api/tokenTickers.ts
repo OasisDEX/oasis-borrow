@@ -2,7 +2,7 @@ import { getCoinbaseTickers } from 'server/services/coinbase'
 import { getCoingeckoTickers } from 'server/services/coingecko'
 import { getCoinPaprikaTickers } from 'server/services/coinPaprica'
 
-export async function getTokenTickers() {
+export async function tokenTickers() {
   const results = await Promise.all([
     getCoinPaprikaTickers(),
     getCoinbaseTickers(),
