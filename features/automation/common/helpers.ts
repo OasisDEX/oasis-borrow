@@ -5,7 +5,7 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { one, zero } from 'helpers/zero'
+import { zero } from 'helpers/zero'
 
 export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
   return maxBuyOrMinSellPrice.isZero() || maxBuyOrMinSellPrice.isEqualTo(maxUint256)
@@ -120,5 +120,7 @@ export function getBasicBSVaultChange({
 }
 
 export function calculateCollRatioForMultiply(multiplier: number) {
-  return one.div(multiplier).plus(one).decimalPlaces(0, BigNumber.ROUND_DOWN)
+  console.log('wewn multipliera')
+  console.log(multiplier / (multiplier - 1))
+  return new BigNumber(multiplier / (multiplier - 1)).decimalPlaces(2, BigNumber.ROUND_DOWN).times(100)
 }

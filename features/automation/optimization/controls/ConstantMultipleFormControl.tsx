@@ -135,6 +135,10 @@ export function ConstantMultipleFormControl({
       isFirstSetup={true}
       onChange={(multiplier) => {
         const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
+        console.log('multiplier')
+        console.log(multiplier)
+        console.log('targetCollRatioForSelectedMultiplier')
+        console.log(targetCollRatioForSelectedMultiplier.toFixed(2))
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,

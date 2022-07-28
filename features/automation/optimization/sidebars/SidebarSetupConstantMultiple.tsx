@@ -172,6 +172,10 @@ export function SidebarSetupConstantMultiple({
             rightDescription={t('auto-buy.trigger-coll-ratio')}
             leftThumbColor="onSuccess"
             rightThumbColor="onWarning"
+            middleMark={{
+              text: constantMultipleState.multiplier.toString(),
+              value: constantMultipleState.targetCollRatio.toNumber(),
+            }}
           />
           <VaultActionInput
             action={t('auto-buy.set-max-buy-price')}

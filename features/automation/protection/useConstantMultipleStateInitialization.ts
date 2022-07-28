@@ -106,6 +106,8 @@ export function useConstantMultipleStateInitialization(
       sellWithThreshold: sellWithThresholdResolved,
     })
   }, [/*groupId,*/ collateralizationRatio])
+
+  return false //TODO ŁW as trigger even if exist, wont be loaded from cache
 }
 function extractConstantMultipleIds(aggregatedTriggersData: AggregtedTriggersData) {
   return aggregatedTriggersData
