@@ -10,6 +10,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
@@ -70,7 +71,6 @@ export function SidebarSetupConstantMultiple({
   balanceInfo,
   isAddForm,
   isRemoveForm,
-  // isEditing,
   isDisabled,
   isFirstSetup,
   stage,
@@ -102,25 +102,30 @@ export function SidebarSetupConstantMultiple({
   }
 
   const nextBuyPrice = collateralPriceAtRatio({
-    // TODO: PK get value from constantMultipleState
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
   const nextSellPrice = collateralPriceAtRatio({
-    // TODO: PK get value from constantMultipleState
     colRatio: constantMultipleState.sellExecutionCollRatio.div(100),
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
-  // TODO: PK get both values based on function:
-  // const { debtDelta } = getBasicBSVaultChange({
-  //   basicBSState: basicBuyState,
-  //   vault,
-  //   executionPrice,
-  // })
-  const collateralToBePurchased = new BigNumber(1.125)
-  const collateralToBeSold = new BigNumber(1.125)
+  const { collateralDelta: collateralToBePurchased } = getBasicBSVaultChange({
+    targetCollRatio: constantMultipleState.targetCollRatio,
+    execCollRatio: constantMultipleState.buyExecutionCollRatio,
+    deviation: constantMultipleState.deviation,
+    executionPrice: nextBuyPrice,
+    vault,
+  })
+  const { collateralDelta: collateralToBeSold } = getBasicBSVaultChange({
+    targetCollRatio: constantMultipleState.targetCollRatio,
+    execCollRatio: constantMultipleState.sellExecutionCollRatio,
+    deviation: constantMultipleState.deviation,
+    executionPrice: nextSellPrice,
+    vault,
+  })
+
   const { min: sliderMin } = getBasicSellMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,

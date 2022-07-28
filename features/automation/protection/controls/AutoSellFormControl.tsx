@@ -209,9 +209,11 @@ export function AutoSellFormControl({
     vaultDebt: vault.debt,
   })
   const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    basicBSState: basicSellState,
-    vault,
+    targetCollRatio: basicSellState.targetCollRatio,
+    execCollRatio: basicSellState.execCollRatio,
+    deviation: basicSellState.deviation,
     executionPrice,
+    vault,
   })
 
   return (

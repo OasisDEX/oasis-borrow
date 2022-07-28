@@ -91,24 +91,28 @@ export function checkIfDisabledBasicBS({
 }
 
 export function getBasicBSVaultChange({
-  basicBSState,
+  targetCollRatio,
+  execCollRatio,
+  deviation,
   executionPrice,
   vault,
 }: {
-  basicBSState: BasicBSFormChange
+  targetCollRatio: BigNumber
+  execCollRatio: BigNumber
   executionPrice: BigNumber
+  deviation: BigNumber
   vault: Vault
 }) {
-  return basicBSState.targetCollRatio.gt(zero) &&
-    basicBSState.execCollRatio.gt(zero) &&
+  return targetCollRatio.gt(zero) &&
+    execCollRatio.gt(zero) &&
     executionPrice.gt(zero)
     ? getVaultChange({
         currentCollateralPrice: executionPrice,
         marketPrice: executionPrice,
-        slippage: basicBSState.deviation.div(100),
+        slippage: deviation.div(100),
         debt: vault.debt,
         lockedCollateral: vault.lockedCollateral,
-        requiredCollRatio: basicBSState.targetCollRatio.div(100),
+        requiredCollRatio: targetCollRatio.div(100),
         depositAmount: zero,
         paybackAmount: zero,
         generateAmount: zero,

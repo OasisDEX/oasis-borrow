@@ -75,7 +75,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-buy.col-to-be-purchased', { token }),
-              value: `${formatCryptoBalance(collateralToBePurchased)} ${token}`,
+              value: `${formatCryptoBalance(collateralToBePurchased.abs())} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-buy'),
@@ -93,7 +93,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-sell.col-to-be-sold', { token }),
-              value: `${formatCryptoBalance(collateralToBeSold)} ${token}`,
+              value: `${formatCryptoBalance(collateralToBeSold.abs())} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-sell'),
