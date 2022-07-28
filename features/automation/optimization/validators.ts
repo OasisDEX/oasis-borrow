@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
 import { warningMessagesHandler } from 'features/form/warningMessagesHandler'
@@ -79,5 +80,38 @@ export function errorsBasicBuyValidation({
     insufficientEthFundsForTx,
     autoBuyMaxBuyPriceNotSpecified,
     autoBuyTriggerLowerThanAutoSellTarget,
+  })
+}
+
+export function warningsConstantMultipleValidation({
+  vault,
+  gasEstimationUsd,
+  ethBalance,
+  ethPrice,
+  sliderMin,
+  isStopLossEnabled,
+  constantMultipleState,
+}: {
+  vault: Vault
+  ethBalance: BigNumber
+  ethPrice: BigNumber
+  sliderMin: BigNumber
+  gasEstimationUsd?: BigNumber
+  isStopLossEnabled: boolean
+  constantMultipleState: ConstantMultipleFormChange
+}) {
+  const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
+    token: vault.token,
+    gasEstimationUsd,
+    ethBalance,
+    ethPrice,
+  })
+
+  const constantMultipleSellTriggerCloseToStopLossTrigger =
+    isStopLossEnabled && constantMultipleState.sellExecutionCollRatio.isEqualTo(sliderMin)
+
+  return warningMessagesHandler({
+    potentialInsufficientEthFundsForTx,
+    constantMultipleSellTriggerCloseToStopLossTrigger,
   })
 }

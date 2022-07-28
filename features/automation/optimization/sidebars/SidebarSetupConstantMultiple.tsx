@@ -7,9 +7,11 @@ import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
+import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -22,10 +24,15 @@ import {
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { handleNumericInput } from 'helpers/input'
+import {
+  extractConstantMultipleCommonWarnings,
+  extractConstantMultipleSliderWarnings,
+} from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
@@ -34,6 +41,7 @@ import { Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
+  balanceInfo: BalanceInfo
   stage: SidebarVaultStages
   constantMultipleState: ConstantMultipleFormChange
   isAddForm: boolean
@@ -48,6 +56,8 @@ interface SidebarSetupConstantMultipleProps {
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  ethMarketPrice: BigNumber
+  gasEstimationUsd?: BigNumber
 }
 
 const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
@@ -55,6 +65,7 @@ const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
   .toNumber()
 export function SidebarSetupConstantMultiple({
   vault,
+  balanceInfo,
   isAddForm,
   isRemoveForm,
   // isEditing,
@@ -67,6 +78,8 @@ export function SidebarSetupConstantMultiple({
   ilkData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  ethMarketPrice,
+  gasEstimationUsd,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -118,6 +131,16 @@ export function SidebarSetupConstantMultiple({
       .toNumber(),
     largestSliderValueAllowed,
   ])
+
+  const warnings = warningsConstantMultipleValidation({
+    vault,
+    gasEstimationUsd,
+    ethBalance: balanceInfo.ethBalance,
+    ethPrice: ethMarketPrice,
+    sliderMin,
+    isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    constantMultipleState,
+  })
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -177,6 +200,10 @@ export function SidebarSetupConstantMultiple({
               value: constantMultipleState.targetCollRatio.toNumber(),
             }}
           />
+          <VaultWarnings
+            warningMessages={extractConstantMultipleSliderWarnings(warnings)}
+            ilkData={ilkData}
+          />
           <VaultActionInput
             action={t('auto-buy.set-max-buy-price')}
             amount={constantMultipleState?.maxBuyPrice}
@@ -224,6 +251,10 @@ export function SidebarSetupConstantMultiple({
             toggleOnLabel={t('protection.set-no-threshold')}
             toggleOffLabel={t('protection.set-threshold')}
             toggleOffPlaceholder={t('protection.no-threshold')}
+          />
+          <VaultWarnings
+            warningMessages={extractConstantMultipleCommonWarnings(warnings)}
+            ilkData={ilkData}
           />
           <ConstantMultipleInfoSectionControl
             token={token}

@@ -15,11 +15,13 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { BalanceInfo } from 'features/shared/balanceInfo'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
 
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
+
 interface ConstantMultipleFormControlProps {
   context: Context
   isConstantMultipleActive: boolean
@@ -30,6 +32,7 @@ interface ConstantMultipleFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  balanceInfo: BalanceInfo
 }
 
 export function ConstantMultipleFormControl({
@@ -43,6 +46,7 @@ export function ConstantMultipleFormControl({
   stopLossTriggerData,
   // autoSellTriggerData,
   autoBuyTriggerData,
+  balanceInfo,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
@@ -135,10 +139,6 @@ export function ConstantMultipleFormControl({
       isFirstSetup={true}
       onChange={(multiplier) => {
         const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
-        console.log('multiplier')
-        console.log(multiplier)
-        console.log('targetCollRatioForSelectedMultiplier')
-        console.log(targetCollRatioForSelectedMultiplier.toFixed(2))
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
           type: 'multiplier',
           multiplier: multiplier,
@@ -149,6 +149,8 @@ export function ConstantMultipleFormControl({
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      ethMarketPrice={ethMarketPrice}
+      balanceInfo={balanceInfo}
     />
   )
 }

@@ -18,7 +18,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { extractCancelAutoBuyErrors, extractCancelAutoBuyWarnings } from 'helpers/messageMappers'
+import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
@@ -129,8 +129,8 @@ export function SidebarSetupAutoBuy({
     withThreshold: basicBuyState.withThreshold,
   })
 
-  const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
-  const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
+  const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
+  const cancelAutoBuyErrors = extractCancelBSErrors(errors)
 
   if (isAutoBuyActive) {
     const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
