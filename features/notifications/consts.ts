@@ -16,27 +16,26 @@ export const criticalNotifications = [
 
 export const notificationPreferences = [
   {
-    heading: 'Vault action notifications',
-    description:
-      'You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.',
+    heading: 'notifications.action-notifications',
+    description: 'notifications.action-notifications-description',
     notificationType: NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS,
   },
   {
-    heading: 'Vault info notifications',
-    description:
-      'Something explains users will get the latest updates if they turn on notifications',
+    heading: 'notifications.info-notifications',
+    description: 'notifications.info-notifications-description',
     notificationType: NotificationSubscriptionTypes.VAULT_INFO_NOTIFICATIONS,
   },
   {
-    heading: 'Oasis.app user communication notifications',
-    description:
-      'Something explains users will get the latest updates if they turn on notifications',
+    heading: 'notifications.user-communication-notifications',
+    description: 'notifications.user-communication-notifications-description',
     notificationType: NotificationSubscriptionTypes.OASIS_DIRECT_NOTIFICATIONS,
   },
   {
-    heading: 'Oasis.app news notifications',
-    description:
-      'Something explains users will get the latest updates if they turn on notifications',
+    heading: 'notifications.news-notifications',
+    description: 'notifications.news-notifications-description',
     notificationType: NotificationSubscriptionTypes.OASIS_NEWS_NOTIFICATIONS,
   },
 ]
+
+export const maxNumberOfNotifications = 50
+export const firstNotificationsRelevantDate = 1658296560000

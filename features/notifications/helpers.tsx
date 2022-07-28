@@ -19,11 +19,11 @@ function linkComponents(href: string) {
 
 export function getNotificationTitle({
   type,
-  vaultId,
+  lastModified,
   additionalData,
 }: {
   type: NotificationTypes
-  vaultId: number
+  lastModified: number
   additionalData: NotificationAdditionalData
 }) {
   const usdPrice = new BigNumber(additionalData?.usdPrice || 0)
@@ -35,9 +35,8 @@ export function getNotificationTitle({
     minute: 'numeric',
   }
 
-  const humanDate = additionalData?.timestamp
-    ? new Date(additionalData?.timestamp * 1000).toLocaleDateString('en-US', options)
-    : '[date unavailable]'
+  const humanDate = new Date(lastModified * 1000).toLocaleDateString('en-US', options)
+  const vaultId = additionalData?.vaultId || 'n/a'
 
   switch (type) {
     case NotificationTypes.VAULT_LIQUIDATED:
@@ -137,7 +136,7 @@ export function getUnreadNotificationCount(notifications: Notification[]) {
   }
 
   return notifications.reduce((acc, curr) => {
-    if (!curr.read) {
+    if (!curr.isRead) {
       return acc + 1
     }
     return acc

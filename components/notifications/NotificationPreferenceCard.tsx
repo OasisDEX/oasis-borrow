@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 import { Toggle } from 'ui'
@@ -16,6 +17,7 @@ export function NotificationPreferenceCard({
   onChangeHandler,
 }: NotificationPrefrenceCardProps) {
   const handleToggle = useCallback((checked) => onChangeHandler(checked), [])
+  const { t } = useTranslation()
 
   return (
     <Card
@@ -33,7 +35,7 @@ export function NotificationPreferenceCard({
             fontSize: 2,
           }}
         >
-          {heading}
+          {t(heading)}
         </Text>
         <Toggle
           isChecked={checked}
@@ -54,7 +56,7 @@ export function NotificationPreferenceCard({
             fontSize: 2,
           }}
         >
-          {description}
+          {t(description)}
         </Text>
       </Box>
     </Card>

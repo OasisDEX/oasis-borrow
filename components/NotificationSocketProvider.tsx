@@ -1,4 +1,8 @@
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
+import {
+  firstNotificationsRelevantDate,
+  maxNumberOfNotifications,
+} from 'features/notifications/consts'
 import { prepareNotificationMessageHandlers } from 'features/notifications/handlers'
 import {
   NOTIFICATION_CHANGE,
@@ -42,8 +46,9 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     allActiveSubscriptionsHandler,
     allActiveChannelsHandler,
   } = prepareNotificationMessageHandlers(uiChanges)
-
+  console.log('heh')
   useEffect(() => {
+    console.log('update')
     if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
         socket.disconnect()
@@ -66,12 +71,10 @@ export function NotificationSocketProvider({ children }: WithChildren) {
         socketInstance.on('allactivechannels', allActiveChannelsHandler)
         socketInstance.on('connect_error', (err) => {
           uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: err.message })
-          console.log(err.message)
         })
         // generic error handled manually on backend, i.e errors due to db failure
         socketInstance.on('error', (err) => {
           uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: err.message })
-          console.log(err.message)
         })
 
         // subscription & reconnect handling
@@ -79,8 +82,8 @@ export function NotificationSocketProvider({ children }: WithChildren) {
           socketInstance.emit('initialize', {
             address: account,
             notificationPreferences: {
-              maxNumberOfNotifications: 50,
-              firstRelevantDate: 1658296560,
+              maxNumberOfNotifications,
+              firstRelevantDate: firstNotificationsRelevantDate,
             },
           })
         })

@@ -36,15 +36,14 @@ export interface NotificationChannels {
 }
 
 export interface NotificationAdditionalData {
-  vaultId: number
+  vaultId?: number
   usdPrice?: number
-  timestamp?: number
 }
 
 export interface Notification {
   id: number
   notificationType: NotificationTypes
   lastModified: number
-  read: boolean
+  isRead: boolean
   additionalData: NotificationAdditionalData
 }

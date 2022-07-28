@@ -7,10 +7,10 @@ import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useMemo } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 
-function getNotificationCardSx({ isCritical, read }: { isCritical: boolean; read: boolean }) {
+function getNotificationCardSx({ isCritical, isRead }: { isCritical: boolean; isRead: boolean }) {
   return isCritical
     ? {
-        boxShadow: read ? 'unset' : 'vaultDetailsCard',
+        boxShadow: isRead ? 'unset' : 'vaultDetailsCard',
         border: 'unset',
         '&:hover': {
           boxShadow: 'surface',
@@ -30,8 +30,8 @@ function getNotificationCardSx({ isCritical, read }: { isCritical: boolean; read
       }
 }
 
-function getStatusDotColor({ read, isCritical }: { read: boolean; isCritical: boolean }) {
-  return read ? 'neutral20' : isCritical ? 'critical100' : 'interactive100'
+function getStatusDotColor({ isRead, isCritical }: { isRead: boolean; isCritical: boolean }) {
+  return isRead ? 'neutral20' : isCritical ? 'critical100' : 'interactive100'
 }
 
 function getEditVaultLinkHash(type: NotificationTypes) {
@@ -66,19 +66,22 @@ export function NotificationCard({
   title,
   lastModified,
   notificationType,
-  read,
+  isRead,
   editHandler,
   markReadHandler,
   additionalData,
 }: NotificationCardProps) {
   const { t } = useTranslation()
   const isCritical = criticalNotifications.includes(notificationType)
-  const cardSx = useMemo(() => getNotificationCardSx({ isCritical, read }), [
+  const cardSx = useMemo(() => getNotificationCardSx({ isCritical, isRead }), [
     notificationType,
-    read,
+    isRead,
   ])
   const linkHash = useMemo(() => getEditVaultLinkHash(notificationType), [notificationType])
-  const statusDotColor = useMemo(() => getStatusDotColor({ read, isCritical }), [read, isCritical])
+  const statusDotColor = useMemo(() => getStatusDotColor({ isRead, isCritical }), [
+    isRead,
+    isCritical,
+  ])
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'short',
@@ -100,7 +103,7 @@ export function NotificationCard({
           left: '16px',
         }}
       />
-      <Text as="div" variant="paragraph3" sx={{ mb: 2, fontWeight: read ? 'body' : 'semiBold' }}>
+      <Text as="div" variant="paragraph3" sx={{ mb: 2, fontWeight: isRead ? 'body' : 'semiBold' }}>
         {title}
       </Text>
       <Text
@@ -124,7 +127,7 @@ export function NotificationCard({
               {t('edit-vault')}
             </Button>
           </AppLink>
-          {!read && (
+          {!isRead && (
             <Button
               variant="textual"
               sx={{ color: 'primary', fontSize: 1, py: 1 }}

@@ -36,7 +36,7 @@ export function NotificationCardsWrapper({ account }: NotificationCardsWrapperPr
           {...item}
           title={getNotificationTitle({
             type: item.notificationType,
-            vaultId: item.additionalData.vaultId,
+            lastModified: item.lastModified,
             additionalData: item.additionalData,
           })}
           markReadHandler={markReadHandler}
