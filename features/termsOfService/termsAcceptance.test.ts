@@ -126,7 +126,6 @@ describe('termsAcceptance', () => {
         jwtAuthSetupToken$: () => of('xxx'),
       }),
     )
-    ;(state() as any).acceptJwtAuth()
     expect(state().stage).to.be.deep.eq('acceptanceWaiting4TOSAcceptance')
     expect(state().updated).to.be.deep.eq(true)
   })

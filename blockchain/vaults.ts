@@ -15,7 +15,7 @@ import { CallObservable } from './calls/observe'
 import { vatGem, vatUrns } from './calls/vat'
 import { MakerVaultType, VaultResolve } from './calls/vaultResolver'
 import { IlkData } from './ilks'
-import { OraclePriceData } from './prices'
+import { OraclePriceData, OraclePriceDataArgs } from './prices'
 import { buildPosition } from './vault.maths'
 
 BigNumber.config({
@@ -181,7 +181,7 @@ export function createVault$(
   vatUrns$: CallObservable<typeof vatUrns>,
   vatGem$: CallObservable<typeof vatGem>,
   ilkData$: (ilk: string) => Observable<IlkData>,
-  oraclePriceData$: (token: string) => Observable<OraclePriceData>,
+  oraclePriceData$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   ilkToToken$: (ilk: string) => Observable<string>,
   context$: Observable<Context>,
   id: BigNumber,
@@ -193,7 +193,7 @@ export function createVault$(
           return combineLatest(
             vatUrns$({ ilk, urnAddress }),
             vatGem$({ ilk, urnAddress }),
-            oraclePriceData$(token),
+            oraclePriceData$({ token, requestedData: ['currentPrice', 'nextPrice'] }),
             ilkData$(ilk),
           ).pipe(
             switchMap(

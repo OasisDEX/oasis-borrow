@@ -5,10 +5,10 @@ import React from 'react'
 import { Box, Flex, Heading, Text } from 'theme-ui'
 
 import { AppLink } from '../../components/Links'
-import { ProductCardBorrow } from '../../components/ProductCardBorrow'
-import { ProductCardEarn } from '../../components/ProductCardEarn'
-import { ProductCardMultiply } from '../../components/ProductCardMultiply'
-import { ProductCardsWrapper } from '../../components/ProductCardsWrapper'
+import { ProductCardBorrow } from '../../components/productCards/ProductCardBorrow'
+import { ProductCardEarn } from '../../components/productCards/ProductCardEarn'
+import { ProductCardMultiply } from '../../components/productCards/ProductCardMultiply'
+import { ProductCardsWrapper } from '../../components/productCards/ProductCardsWrapper'
 import { formatAddress } from '../../helpers/formatters/format'
 import {
   borrowPageCardsData,
@@ -43,7 +43,7 @@ function filterCards(props: {
       if (filter) {
         return cards.concat(
           filterCardsDataByProduct({
-            productCardsData: props.productCardsData,
+            ilkToTokenMapping: props.productCardsData,
             cardsFilter: filter,
           }),
         )

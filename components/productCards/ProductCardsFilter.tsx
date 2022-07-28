@@ -1,26 +1,56 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import React, { ReactNode, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Flex, Text } from 'theme-ui'
 
+import { WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { useObservable } from '../../helpers/observableHook'
 import {
+  ilkToEntryToken,
+  IlkTokenMap,
   mapUrlFragmentToFilter,
+  ProductCardData,
   ProductLandingPagesFilter,
   ProductLandingPagesFiltersKeys,
-} from '../helpers/productCards'
+} from '../../helpers/productCards'
+import { useAppContext } from '../AppContextProvider'
 import { ProductCardsSelect } from './ProductCardsSelect'
+import { ProductCardsLoader, ProductCardsWrapper } from './ProductCardsWrapper'
 
-interface TokenTabsProps {
+interface ProductCardFilterProps {
   filters: Array<ProductLandingPagesFilter>
-  children: (token: ProductLandingPagesFiltersKeys) => ReactNode
+  productCardComponent: (props: { cardData: ProductCardData }) => JSX.Element
   selectedFilter?: string
+  filterCardsFunction: FilterCardsFunction
 }
 
-export function ProductCardsFilter({ filters, children, selectedFilter }: TokenTabsProps) {
+type FilterCardsFunction = ({
+  ilkToTokenMapping,
+  cardsFilter,
+}: {
+  ilkToTokenMapping: Array<IlkTokenMap>
+  cardsFilter?: ProductLandingPagesFiltersKeys
+}) => Array<IlkTokenMap>
+
+export function ProductCardsFilter({
+  filters,
+  productCardComponent,
+  selectedFilter,
+  filterCardsFunction,
+}: ProductCardFilterProps) {
   const [currentFilter, setCurrentFilter] = useState(
     ((selectedFilter && mapUrlFragmentToFilter(selectedFilter)) || filters[0]).name,
   )
+  const productsToDisplay = filterCardsFunction({
+    ilkToTokenMapping: ilkToEntryToken,
+    cardsFilter: currentFilter,
+  })
+  const { productCardsData$ } = useAppContext()
+  const [productCardsData, productCardsDataError] = useObservable(
+    productCardsData$(productsToDisplay.map(({ ilk }) => ilk)),
+  )
   const [hover, setHover] = useState('')
-
+  const ProductCardComponent = productCardComponent
   function handleTabClick(token: ProductLandingPagesFiltersKeys) {
     setCurrentFilter(token)
   }
@@ -78,8 +108,17 @@ export function ProductCardsFilter({ filters, children, selectedFilter }: TokenT
           currentFilter={currentFilter}
         />
       </Flex>
-
-      {children(currentFilter)}
+      <WithErrorHandler error={[productCardsDataError]}>
+        <WithLoadingIndicator value={[productCardsData]} customLoader={<ProductCardsLoader />}>
+          {([productCardsData]) => (
+            <ProductCardsWrapper>
+              {productCardsData.map((cardData) => (
+                <ProductCardComponent cardData={cardData} key={cardData.ilk} />
+              ))}
+            </ProductCardsWrapper>
+          )}
+        </WithLoadingIndicator>
+      </WithErrorHandler>
     </>
   )
 }

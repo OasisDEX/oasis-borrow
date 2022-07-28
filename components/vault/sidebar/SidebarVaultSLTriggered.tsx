@@ -36,7 +36,7 @@ export function SidebarVaultSLTriggered({ closeEvent }: SidebarVaultSLTriggeredP
   const isToCollateral = closeEvent.kind === 'CLOSE_VAULT_TO_COLLATERAL'
   const priceImpact = calculatePriceImpact(marketPrice, offerPrice)
   const withdrawAmount = isToCollateral ? closeEvent.exitCollateral : exitDai
-  const fee = BigNumber.sum(totalFee, amountFromWei(gasFee, token).times(ethPrice))
+  const fee = BigNumber.sum(totalFee, amountFromWei(gasFee, 'ETH').times(ethPrice))
 
   return (
     <>

@@ -1,11 +1,14 @@
 import { IlkData } from 'blockchain/ilks'
+import { AppLink } from 'components/Links'
 import { MessageCard } from 'components/MessageCard'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { formatCryptoBalance } from 'helpers/formatters/format'
 import { UnreachableCaseError } from 'helpers/UnreachableCaseError'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Dictionary } from 'ts-essentials'
+
+const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
@@ -65,6 +68,9 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
         return translate('auto-buy-triggered-immediately')
       case 'autoSellTriggeredImmediately':
         return translate('auto-sell-triggered-immediately')
+      // TEMPORARY override message as banner in overview details
+      case 'autoSellOverride':
+        return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
       default:
         throw new UnreachableCaseError(message)
     }
