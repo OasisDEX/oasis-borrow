@@ -9,6 +9,9 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
+const ConstantMultipleKBLink = (
+  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/" />
+)
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
@@ -71,6 +74,13 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
       // TEMPORARY override message as banner in overview details
       case 'autoSellOverride':
         return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
+      case 'constantMultipleSellTriggerCloseToStopLossTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.constant-multiple-sell-trigger-close-to-stop-loss-trigger"
+            components={[ConstantMultipleKBLink]}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }

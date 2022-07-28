@@ -21,6 +21,7 @@ export type VaultWarningMessage =
   | 'autoBuyTriggeredImmediately'
   | 'autoSellTriggeredImmediately'
   | 'autoSellOverride'
+  | 'constantMultipleSellTriggerCloseToStopLossTrigger'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -42,6 +43,7 @@ interface WarningMessagesHandler {
   autoBuyTargetCloseToAutoSellTrigger?: boolean
   autoSellTriggeredImmediately?: boolean
   autoBuyTriggeredImmediately?: boolean
+  constantMultipleSellTriggerCloseToStopLossTrigger?: boolean
 }
 
 export function warningMessagesHandler({
@@ -62,6 +64,7 @@ export function warningMessagesHandler({
   autoBuyTargetCloseToAutoSellTrigger,
   autoSellTriggeredImmediately,
   autoBuyTriggeredImmediately,
+  constantMultipleSellTriggerCloseToStopLossTrigger,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -132,13 +135,9 @@ export function warningMessagesHandler({
     warningMessages.push('autoSellTriggeredImmediately')
   }
 
-  // if (highSlippage) {
-  //   warningMessages.push('highSlippage')
-  // }
-
-  // if (customSlippageOverridden) {
-  //   warningMessages.push('customSlippageOverridden')
-  // }
+  if (constantMultipleSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('constantMultipleSellTriggerCloseToStopLossTrigger')
+  }
 
   return warningMessages
 }
