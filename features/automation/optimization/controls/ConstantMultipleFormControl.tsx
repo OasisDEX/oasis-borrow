@@ -128,6 +128,9 @@ export function ConstantMultipleFormControl({
     }
   }
 
+  // TODO: get this value based on something similar to checkIfEditingBasicBS
+  const isEditing = true
+
   return (
     <SidebarSetupConstantMultiple
       vault={vault}
@@ -151,6 +154,7 @@ export function ConstantMultipleFormControl({
       stopLossTriggerData={stopLossTriggerData}
       ethMarketPrice={ethMarketPrice}
       balanceInfo={balanceInfo}
+      isEditing={isEditing}
     />
   )
 }

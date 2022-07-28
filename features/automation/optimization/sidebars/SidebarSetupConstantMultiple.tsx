@@ -34,6 +34,7 @@ import {
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { zero } from 'helpers/zero'
 import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
@@ -58,6 +59,7 @@ interface SidebarSetupConstantMultipleProps {
   stopLossTriggerData: StopLossTriggerData
   ethMarketPrice: BigNumber
   gasEstimationUsd?: BigNumber
+  isEditing: boolean
 }
 
 const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
@@ -80,6 +82,7 @@ export function SidebarSetupConstantMultiple({
   stopLossTriggerData,
   ethMarketPrice,
   gasEstimationUsd,
+  isEditing,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -100,13 +103,13 @@ export function SidebarSetupConstantMultiple({
 
   const nextBuyPrice = collateralPriceAtRatio({
     // TODO: PK get value from constantMultipleState
-    colRatio: new BigNumber(3),
+    colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
   const nextSellPrice = collateralPriceAtRatio({
     // TODO: PK get value from constantMultipleState
-    colRatio: new BigNumber(2),
+    colRatio: constantMultipleState.sellExecutionCollRatio.div(100),
     collateral: lockedCollateral,
     vaultDebt: debt,
   })
@@ -256,13 +259,16 @@ export function SidebarSetupConstantMultiple({
             warningMessages={extractConstantMultipleCommonWarnings(warnings)}
             ilkData={ilkData}
           />
-          <ConstantMultipleInfoSectionControl
-            token={token}
-            nextBuyPrice={nextBuyPrice}
-            nextSellPrice={nextSellPrice}
-            collateralToBePurchased={collateralToBePurchased}
-            collateralToBeSold={collateralToBeSold}
-          />
+          {isEditing && (
+            <ConstantMultipleInfoSectionControl
+              token={token}
+              nextBuyPrice={nextBuyPrice}
+              nextSellPrice={nextSellPrice}
+              collateralToBePurchased={collateralToBePurchased}
+              collateralToBeSold={collateralToBeSold}
+              constantMultipleState={constantMultipleState}
+            />
+          )}
         </Grid>
       ),
       primaryButton: {
@@ -295,7 +301,7 @@ interface ConstantMultipleInfoSectionControlProps {
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
-  // TODO: PK get constantMultipleState here
+  constantMultipleState: ConstantMultipleFormChange
 }
 
 function ConstantMultipleInfoSectionControl({
@@ -304,30 +310,33 @@ function ConstantMultipleInfoSectionControl({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
+  constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
-  // TODO: PK get those values from constantMultipleState when there is actual data
-  const targetColRatio = new BigNumber(200)
-  const multiplier = 2
+  // TODO: PK where do I get slippage?
   const slippage = new BigNumber(0.5)
-  const triggerColRatioToBuy = new BigNumber(200)
-  const triggerColRatioToSell = new BigNumber(300)
-  const maxPriceToBuy = new BigNumber(1600)
-  const minPriceToSell = new BigNumber(1200)
 
   return (
     <ConstantMultipleInfoSection
       token={token}
-      targetColRatio={targetColRatio}
-      multiplier={multiplier}
+      targetColRatio={constantMultipleState.targetCollRatio}
+      multiplier={constantMultipleState.multiplier}
       slippage={slippage}
-      triggerColRatioToBuy={triggerColRatioToBuy}
+      triggerColRatioToBuy={constantMultipleState.buyExecutionCollRatio}
       nextBuyPrice={nextBuyPrice}
       collateralToBePurchased={collateralToBePurchased}
-      maxPriceToBuy={maxPriceToBuy}
-      triggerColRatioToSell={triggerColRatioToSell}
+      maxPriceToBuy={
+        constantMultipleState.buyWithThreshold
+          ? constantMultipleState.maxBuyPrice || zero
+          : undefined
+      }
+      triggerColRatioToSell={constantMultipleState.sellExecutionCollRatio}
       nextSellPrice={nextSellPrice}
       collateralToBeSold={collateralToBeSold}
-      minPriceToSell={minPriceToSell}
+      minPriceToSell={
+        constantMultipleState.sellWithThreshold
+          ? constantMultipleState.minSellPrice || zero
+          : undefined
+      }
     />
   )
 }
