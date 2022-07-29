@@ -208,5 +208,6 @@ export interface AdjustSlFormLayoutProps {
   redirectToCloseVault: () => void
   isStopLossEnabled: boolean
   isAutoSellEnabled: boolean
+  isConstantMultipleEnabled: boolean
   autoBuyTriggerData: BasicBSTriggerData
 }
