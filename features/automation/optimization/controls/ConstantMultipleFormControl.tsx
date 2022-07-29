@@ -1,5 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
+import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -16,6 +17,8 @@ import {
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
+import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
@@ -48,7 +51,7 @@ export function ConstantMultipleFormControl({
   autoBuyTriggerData,
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
-  const { uiChanges /*, addGasEstimation$*/ } = useAppContext()
+  const { uiChanges, addGasEstimation$ } = useAppContext()
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
@@ -106,6 +109,21 @@ export function ConstantMultipleFormControl({
     ],
   )
 
+  const addTriggerGasEstimationData$ = useMemo(() => {
+    return addGasEstimation$(
+      { gasEstimationStatus: GasEstimationStatus.unset },
+      ({ estimateGas }) => estimateGas(addAutomationBotAggregatorTrigger, addTxData),
+    )
+  }, [addTxData])
+
+  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
+  // const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
+  const addTriggerGasEstimationUsd =
+    addTriggerGasEstimationData &&
+    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
+
+  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : undefined
+
   function txHandler() {
     if (txHelpers) {
       if (stage === 'txSuccess') {
@@ -155,6 +173,8 @@ export function ConstantMultipleFormControl({
       ethMarketPrice={ethMarketPrice}
       balanceInfo={balanceInfo}
       isEditing={isEditing}
+      gasEstimationUsd={gasEstimationUsd}
+      addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
     />
   )
 }

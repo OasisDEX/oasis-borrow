@@ -17,6 +17,7 @@ interface ConstantMultipleInfoSectionProps {
   nextSellPrice: BigNumber
   collateralToBeSold: BigNumber
   minPriceToSell?: BigNumber
+  addTriggerGasEstimationUsd?: BigNumber
 }
 
 export function ConstantMultipleInfoSection({
@@ -32,6 +33,7 @@ export function ConstantMultipleInfoSection({
   nextSellPrice,
   collateralToBeSold,
   minPriceToSell,
+  addTriggerGasEstimationUsd,
 }: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -58,8 +60,8 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('auto-sell.setup-transaction-cost'),
-          // TODO: PK calculate this value
-          value: '$0',
+          value: addTriggerGasEstimationUsd && `$${formatAmount(addTriggerGasEstimationUsd, 'USD')}`,
+          isLoading: addTriggerGasEstimationUsd === undefined,
         },
         {
           label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),

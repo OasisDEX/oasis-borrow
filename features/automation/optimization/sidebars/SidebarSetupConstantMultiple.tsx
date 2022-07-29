@@ -59,8 +59,9 @@ interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   ethMarketPrice: BigNumber
-  gasEstimationUsd?: BigNumber
   isEditing: boolean
+  gasEstimationUsd?: BigNumber
+  addTriggerGasEstimationUsd?: BigNumber
 }
 
 const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
@@ -81,8 +82,9 @@ export function SidebarSetupConstantMultiple({
   autoBuyTriggerData,
   stopLossTriggerData,
   ethMarketPrice,
-  gasEstimationUsd,
   isEditing,
+  gasEstimationUsd,
+  addTriggerGasEstimationUsd,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -271,6 +273,7 @@ export function SidebarSetupConstantMultiple({
               nextSellPrice={nextSellPrice}
               collateralToBePurchased={collateralToBePurchased}
               collateralToBeSold={collateralToBeSold}
+              addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
               constantMultipleState={constantMultipleState}
             />
           )}
@@ -306,6 +309,7 @@ interface ConstantMultipleInfoSectionControlProps {
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
+  addTriggerGasEstimationUsd?: BigNumber
   constantMultipleState: ConstantMultipleFormChange
 }
 
@@ -315,6 +319,7 @@ function ConstantMultipleInfoSectionControl({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
+  addTriggerGasEstimationUsd,
   constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
   // TODO: PK where do I get slippage?
@@ -342,6 +347,7 @@ function ConstantMultipleInfoSectionControl({
           ? constantMultipleState.minSellPrice || zero
           : undefined
       }
+      addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
     />
   )
 }
