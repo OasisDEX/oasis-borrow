@@ -60,7 +60,8 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('auto-sell.setup-transaction-cost'),
-          value: addTriggerGasEstimationUsd && `$${formatAmount(addTriggerGasEstimationUsd, 'USD')}`,
+          value:
+            addTriggerGasEstimationUsd && `$${formatAmount(addTriggerGasEstimationUsd, 'USD')}`,
           isLoading: addTriggerGasEstimationUsd === undefined,
         },
         {
