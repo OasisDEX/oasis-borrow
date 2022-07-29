@@ -153,5 +153,9 @@ export function warningMessagesHandler({
     warningMessages.push('addingConstantMultipleWhenAutoSellOrBuyEnabled')
   }
 
+  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
+  }
+
   return warningMessages
 }

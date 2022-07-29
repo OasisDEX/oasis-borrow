@@ -104,7 +104,10 @@ export function extractCancelBSErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => cancelAutoBuyErrors.includes(message))
 }
 
-const constantMultipleSliderWarnings = ['constantMultipleSellTriggerCloseToStopLossTrigger']
+const constantMultipleSliderWarnings = [
+  'constantMultipleSellTriggerCloseToStopLossTrigger',
+  'stopLossTriggerCloseToConstantMultipleSellTrigger',
+]
 
 export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => constantMultipleSliderWarnings.includes(message))

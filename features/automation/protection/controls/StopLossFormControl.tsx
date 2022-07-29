@@ -34,6 +34,7 @@ interface StopLossFormsProps {
   stopLossTriggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: any
   ethMarketPrice: BigNumber
   txHelpers?: TxHelpers
 }
@@ -51,6 +52,7 @@ function StopLossForms({
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   ethMarketPrice,
 }: StopLossFormsProps) {
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
@@ -79,6 +81,7 @@ function StopLossForms({
       triggerData={stopLossTriggerData}
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       tx={txHelpers}
       ctx={context}
       accountIsController={accountIsController}
@@ -99,6 +102,7 @@ interface StopLossFormControlProps {
   stopLossTriggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: any
   priceInfo: PriceInfo
   vault: Vault
   balanceInfo: BalanceInfo
@@ -114,6 +118,7 @@ export function StopLossFormControl({
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   priceInfo,
   vault,
   account,
@@ -155,6 +160,7 @@ export function StopLossFormControl({
         stopLossTriggerData={stopLossTriggerData}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         ethMarketPrice={ethMarketPrice}
       />
     ) : (
@@ -174,6 +180,7 @@ export function StopLossFormControl({
       stopLossTriggerData={stopLossTriggerData}
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       ethMarketPrice={ethMarketPrice}
     />
   )

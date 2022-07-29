@@ -105,6 +105,13 @@ export function VaultWarnings({
             components={[ConstantMultipleKBLink]}
           />
         )
+      case 'stopLossTriggerCloseToConstantMultipleSellTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.stop-loss-trigger-close-to-constant-multiple-sell-trigger"
+            components={[ConstantMultipleKBLink]}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }
