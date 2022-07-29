@@ -44,7 +44,7 @@ export function ConstantMultipleFormControl({
   ethMarketPrice,
   ilkData,
   stopLossTriggerData,
-  // autoSellTriggerData,
+  autoSellTriggerData,
   autoBuyTriggerData,
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
@@ -148,6 +148,7 @@ export function ConstantMultipleFormControl({
       txHandler={txHandler}
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
+      autoSellTriggerData={autoSellTriggerData}
       stopLossTriggerData={stopLossTriggerData}
       ethMarketPrice={ethMarketPrice}
       balanceInfo={balanceInfo}

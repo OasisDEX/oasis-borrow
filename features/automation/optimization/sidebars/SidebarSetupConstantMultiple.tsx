@@ -55,6 +55,7 @@ interface SidebarSetupConstantMultipleProps {
   txHandler: () => void
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   ethMarketPrice: BigNumber
   gasEstimationUsd?: BigNumber
@@ -77,6 +78,7 @@ export function SidebarSetupConstantMultiple({
   txHandler,
   ilkData,
   autoBuyTriggerData,
+  autoSellTriggerData,
   stopLossTriggerData,
   ethMarketPrice,
   gasEstimationUsd,
@@ -139,6 +141,8 @@ export function SidebarSetupConstantMultiple({
     ethPrice: ethMarketPrice,
     sliderMin,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
+    isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
+    isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
   })
 
@@ -255,6 +259,8 @@ export function SidebarSetupConstantMultiple({
           <VaultWarnings
             warningMessages={extractConstantMultipleCommonWarnings(warnings)}
             ilkData={ilkData}
+            isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
+            isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
           />
           <ConstantMultipleInfoSectionControl
             token={token}

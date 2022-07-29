@@ -90,6 +90,8 @@ export function warningsConstantMultipleValidation({
   ethPrice,
   sliderMin,
   isStopLossEnabled,
+  isAutoBuyEnabled,
+  isAutoSellEnabled,
   constantMultipleState,
 }: {
   vault: Vault
@@ -98,6 +100,8 @@ export function warningsConstantMultipleValidation({
   sliderMin: BigNumber
   gasEstimationUsd?: BigNumber
   isStopLossEnabled: boolean
+  isAutoBuyEnabled: boolean
+  isAutoSellEnabled: boolean
   constantMultipleState: ConstantMultipleFormChange
 }) {
   const potentialInsufficientEthFundsForTx = notEnoughETHtoPayForTx({
@@ -110,8 +114,11 @@ export function warningsConstantMultipleValidation({
   const constantMultipleSellTriggerCloseToStopLossTrigger =
     isStopLossEnabled && constantMultipleState.sellExecutionCollRatio.isEqualTo(sliderMin)
 
+  const addingConstantMultipleWhenAutoSellOrBuyEnabled = isAutoBuyEnabled || isAutoSellEnabled
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     constantMultipleSellTriggerCloseToStopLossTrigger,
+    addingConstantMultipleWhenAutoSellOrBuyEnabled,
   })
 }
