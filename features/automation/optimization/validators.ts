@@ -60,10 +60,12 @@ export function warningsBasicBuyValidation({
 export function errorsBasicBuyValidation({
   basicBuyState,
   autoSellTriggerData,
+  constantMultipleTriggerData,
   isRemoveForm,
 }: {
   basicBuyState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: any
   isRemoveForm: boolean
 }) {
   const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = basicBuyState
@@ -76,10 +78,14 @@ export function errorsBasicBuyValidation({
     autoSellTriggerData.isTriggerEnabled &&
     execCollRatio.minus(5).lt(autoSellTriggerData.targetCollRatio)
 
+  const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
+    constantMultipleTriggerData.isTriggerEnabled
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     autoBuyMaxBuyPriceNotSpecified,
     autoBuyTriggerLowerThanAutoSellTarget,
+    cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   })
 }
 

@@ -34,6 +34,7 @@ interface SidebarSetupAutoSellProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -63,6 +64,7 @@ export function SidebarSetupAutoSell({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
 
   isAutoSellActive,
   basicSellState,
@@ -108,6 +110,7 @@ export function SidebarSetupAutoSell({
     debtDelta,
     basicSellState,
     autoBuyTriggerData,
+    constantMultipleTriggerData,
     isRemoveForm,
   })
 

@@ -35,6 +35,7 @@ interface SidebarSetupAutoBuyProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -65,6 +66,7 @@ export function SidebarSetupAutoBuy({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
 
   basicBuyState,
   txHandler,
@@ -107,6 +109,7 @@ export function SidebarSetupAutoBuy({
   const errors = errorsBasicBuyValidation({
     basicBuyState,
     autoSellTriggerData,
+    constantMultipleTriggerData,
     isRemoveForm,
   })
 

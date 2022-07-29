@@ -90,6 +90,7 @@ export function ProtectionFormControl({
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
         stopLossTriggerData={stopLossTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoSellActive={isAutoSellActive}
         context={context}
         txHelpers={txHelpers}
