@@ -8,7 +8,6 @@ import React from 'react'
 import { Image, Text } from 'theme-ui'
 
 import {
-  getEstimatedGasFeeText,
   getEstimatedGasFeeTextOld,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,

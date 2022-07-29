@@ -27,12 +27,12 @@ export function SidebarCancelStopLossEditingStage({
 }: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
 
-  const gasEstimation = useGasEstimationContext();
+  const gasEstimation = useGasEstimationContext()
 
   const errors = errorsStopLossValidation({ txError, debt: debt })
   const warnings = warningsStopLossValidation({
     token,
-    gasEstimationUsd:gasEstimation.usdValue,
+    gasEstimationUsd: gasEstimation.usdValue,
     ethBalance,
     ethPrice,
   })

@@ -95,11 +95,7 @@ export function EstimationError({ withBrackets }: { withBrackets: boolean }) {
   return <Text sx={{ color: 'critical100' }}>{withBrackets ? `(${textError})` : textError}</Text>
 }
 
-export function getEstimatedGasFeeTextOld(
-  gasEstimation?: HasGasEstimation,
-  withBrackets = false,
-) {
-
+export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, withBrackets = false) {
   if (!gasEstimation) {
     return <EstimationError withBrackets={withBrackets} />
   }

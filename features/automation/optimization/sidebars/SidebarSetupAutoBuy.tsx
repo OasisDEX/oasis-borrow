@@ -86,7 +86,7 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
-  const gasEstimationContext = useGasEstimationContext();
+  const gasEstimationContext = useGasEstimationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -119,7 +119,7 @@ export function SidebarSetupAutoBuy({
 
   const warnings = warningsBasicBuyValidation({
     vault,
-    gasEstimationUsd:gasEstimationContext.usdValue,
+    gasEstimationUsd: gasEstimationContext.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicBuyState.maxBuyOrMinSellPrice,

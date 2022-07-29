@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
@@ -32,11 +31,10 @@ import {
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarSetupAutoSell } from 'features/automation/protection/controls/sidebar/SidebarSetupAutoSell'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 interface AutoSellFormControlProps {
   vault: Vault
@@ -64,8 +62,9 @@ export function AutoSellFormControl({
   ethMarketPrice,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
-  const { uiChanges, addGasEstimation$ } = useAppContext()
-
+  const { uiChanges } = useAppContext()
+  // const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
+  // console.log('txData', txData)
   const isOwner = context.status === 'connected' && context.account === vault.controller
 
   const addTxData = useMemo(
@@ -105,26 +104,29 @@ export function AutoSellFormControl({
 
   const isAddForm = basicSellState.currentForm === 'add'
   const isRemoveForm = basicSellState.currentForm === 'remove'
-  
-  if (isAddForm) {
-    uiChanges.publish(TX_DATA_CHANGE, {
-      type: 'add-trigger',
-      tx: {
-        data: addTxData,
-        transaction: addAutomationBotTrigger,
-      },
-    })
-  }
 
-  if (isRemoveForm) {
-    uiChanges.publish(TX_DATA_CHANGE, {
-      type: 'remove-trigger',
-      tx: {
-        data: cancelTxData,
-        transaction: removeAutomationBotTrigger,
-      },
-    })
-  }
+  useEffect(() => {
+    if (isAddForm) {
+      console.log('publish')
+      uiChanges.publish(TX_DATA_CHANGE, {
+        type: 'add-trigger',
+        tx: {
+          data: addTxData,
+          transaction: addAutomationBotTrigger,
+        },
+      })
+    }
+
+    if (isRemoveForm) {
+      uiChanges.publish(TX_DATA_CHANGE, {
+        type: 'remove-trigger',
+        tx: {
+          data: cancelTxData,
+          transaction: removeAutomationBotTrigger,
+        },
+      })
+    }
+  }, [addTxData, cancelTxData])
 
   const txStatus = basicSellState.txDetails?.txStatus
   const isSuccessStage = txStatus === TxStatus.Success

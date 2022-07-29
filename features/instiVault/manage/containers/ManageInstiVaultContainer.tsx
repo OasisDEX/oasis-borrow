@@ -3,7 +3,6 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import {
   EstimationError,
-  getEstimatedGasFeeText,
   getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'

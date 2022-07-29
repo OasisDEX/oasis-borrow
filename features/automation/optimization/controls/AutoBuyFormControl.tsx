@@ -29,14 +29,12 @@ import {
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
   BASIC_BUY_FORM_CHANGE,
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useEffect, useMemo } from 'react'
 
@@ -165,25 +163,27 @@ export function AutoBuyFormControl({
   const isAddForm = basicBuyState.currentForm === 'add'
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
-  if (isAddForm) {
-    uiChanges.publish(TX_DATA_CHANGE, {
-      type: 'add-trigger',
-      tx: {
-        data: addTxData,
-        transaction: addAutomationBotTrigger,
-      },
-    })
-  }
+  useEffect(() => {
+    if (isAddForm) {
+      uiChanges.publish(TX_DATA_CHANGE, {
+        type: 'add-trigger',
+        tx: {
+          data: addTxData,
+          transaction: addAutomationBotTrigger,
+        },
+      })
+    }
 
-  if (isRemoveForm) {
-    uiChanges.publish(TX_DATA_CHANGE, {
-      type: 'remove-trigger',
-      tx: {
-        data: cancelTxData,
-        transaction: removeAutomationBotTrigger,
-      },
-    })
-  }
+    if (isRemoveForm) {
+      uiChanges.publish(TX_DATA_CHANGE, {
+        type: 'remove-trigger',
+        tx: {
+          data: cancelTxData,
+          transaction: removeAutomationBotTrigger,
+        },
+      })
+    }
+  }, [addTxData, cancelTxData])
 
   const isEditing = checkIfEditingBasicBS({
     basicBSTriggerData: autoBuyTriggerData,

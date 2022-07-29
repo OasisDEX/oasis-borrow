@@ -26,7 +26,7 @@ import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { extractCancelAutoSellErrors, extractCancelAutoSellWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoSellProps {
@@ -81,8 +81,8 @@ export function SidebarSetupAutoSell({
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
 
-  const gasEstimation = useGasEstimationContext();
-
+  const gasEstimation = useGasEstimationContext()
+  console.log('gasEstimation', gasEstimation)
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicSell'
     : isFirstSetup
@@ -116,7 +116,7 @@ export function SidebarSetupAutoSell({
 
   const warnings = warningsBasicSellValidation({
     vault,
-    gasEstimationUsd:gasEstimation.usdValue,
+    gasEstimationUsd: gasEstimation.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,

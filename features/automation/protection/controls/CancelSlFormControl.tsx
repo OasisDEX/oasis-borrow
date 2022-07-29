@@ -5,7 +5,6 @@ import {
   AutomationBotRemoveTriggerData,
   removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
-import { TX_DATA_CHANGE } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
@@ -24,6 +23,7 @@ import {
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import React, { useMemo } from 'react'
@@ -123,8 +123,6 @@ export function CancelSlFormControl({
       const sendTxErrorHandler = () => {
         finishLoader(false)
       }
-
-
 
       // TODO circular dependency waitForTx <-> txSendSuccessHandler
       const waitForTx = tx

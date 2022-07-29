@@ -1,7 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import {
-  getEstimatedGasFeeText,
   getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,

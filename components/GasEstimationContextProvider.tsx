@@ -1,16 +1,15 @@
 import BigNumber from 'bignumber.js'
 import {
-  TxPayloadChange,
   TxPayloadChangeBase,
-  TX_DATA_CHANGE,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useContext, useEffect, useState, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo,useState } from 'react'
 
 import { WithChildren } from '../helpers/types'
-import { useAppContext } from './AppContextProvider'
+import { isAppContextAvailable, useAppContext } from './AppContextProvider'
 
 export type GasEstimationContex = {
   isSuccessful: boolean
@@ -41,15 +40,19 @@ export function useGasEstimationContext(): GasEstimationContex {
 */
 
 export function GasEstimationContextProvider({ children }: WithChildren) {
+  if (!isAppContextAvailable()) {
+    return null
+  }
   const [gasEstimate, setEstimate] = useState<GasEstimationContex | undefined>(undefined)
+
   const { addGasEstimation$ } = useAppContext()
 
   const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
-
+  console.log('txData', txData)
   const gasEstimationData$ = useMemo(() => {
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(txData.transaction, txData.data),
+      ({ estimateGas }) => estimateGas(txData.transaction, txData.tx.data),
     )
   }, [txData])
 
@@ -60,6 +63,7 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
     : undefined
 
   useEffect(() => {
+    console.log('heheheheh', estimate)
     setEstimate({
       gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : new BigNumber(0),
       isSuccessful: !!estimate && estimate.gasEstimationStatus == GasEstimationStatus.calculated,
