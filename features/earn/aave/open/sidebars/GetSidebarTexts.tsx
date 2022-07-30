@@ -1,16 +1,13 @@
-import { Event, EventData, SingleOrArray } from 'xstate'
+import { getProxyButtonSettings } from '@oasis-borrow/proxy'
+import { ProxyStateMachineInstance } from '@oasis-borrow/proxy/state'
 
 import { SidebarSectionFooterButtonSettings } from '../../../../../components/sidebar/SidebarSectionFooter'
-import { getProxyButtonSettings } from '../../../../proxyNew/getProxyButtonSettings'
-import { OpenAaveEvent, OpenAaveStateMachineState } from '../state/openAaveStateMachine.types'
+import { OpenAaveStateMachineInstance } from '../state/types'
 
 export function GetSidebarTexts(
-  state: OpenAaveStateMachineState,
+  [state, send]: OpenAaveStateMachineInstance,
+  proxy: ProxyStateMachineInstance | undefined,
   t: (key: string, options?: any) => string,
-  send: (
-    event: SingleOrArray<Event<OpenAaveEvent>>,
-    payload?: EventData | undefined,
-  ) => OpenAaveStateMachineState,
 ): SidebarSectionFooterButtonSettings {
   const isSuccessStage = state.matches('txSuccess')
   const isLoading = state.matches('txInProgress')
@@ -28,6 +25,7 @@ export function GetSidebarTexts(
     isLoading,
     url,
     disabled: !state.context.canGoToNext,
+    label: t('open-earn.aave.vault-form.open-btn'),
   }
 
   switch (true) {
@@ -44,15 +42,10 @@ export function GetSidebarTexts(
         },
       }
     case state.matches('proxyCreating'):
-      return getProxyButtonSettings(
-        state.context.refProxyMachine!.state,
-        state.context.refProxyMachine!.send,
-        t,
-      )
+      return getProxyButtonSettings(proxy, t) || { ...baseSettings }
     default:
       return {
         ...baseSettings,
-        label: t('open-earn.aave.vault-form.open-btn'),
       }
   }
 }

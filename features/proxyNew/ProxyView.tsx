@@ -1,4 +1,4 @@
-import { useActor } from '@xstate/react'
+import { useMachine } from '@xstate/react'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -11,16 +11,16 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../components/vault/VaultChangesInformation'
-import { ProxyActorRef } from './state/proxyStateMachine.types'
+import { ProxyStateMachine } from './state'
 
 interface ProxyViewProps {
-  stage: ProxyActorRef
+  proxyMachine: ProxyStateMachine
 }
 
-export function ProxyView({ stage }: ProxyViewProps) {
+export function ProxyView({ proxyMachine }: ProxyViewProps) {
   const { t } = useTranslation()
 
-  const [state] = useActor(stage)
+  const [state] = useMachine(proxyMachine)
 
   const isProxyInfoStage = [
     'proxyIdle',

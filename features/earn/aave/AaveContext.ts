@@ -1,10 +1,9 @@
+import { getGasEstimation$, getOpenProxyStateMachine$ } from '@oasis-borrow/proxy/pipelines'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
 import { AppContext } from '../../../components/AppContext'
-import { getGasEstimation$ } from '../../proxyNew/pipelines/getGasEstimation'
-import { getOpenProxyStateMachine$ } from '../../proxyNew/pipelines/getOpenProxyStateMachine'
 import { getOpenAaveStateMachine } from './pipelines/getOpenAaveStateMachine'
 
 export function setupAaveContext({

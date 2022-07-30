@@ -1,13 +1,14 @@
-import { Event, EventData } from 'xstate'
-
 import { SidebarSectionFooterButtonSettings } from '../../components/sidebar/SidebarSectionFooter'
-import { ProxyEvent, ProxySateMachineState } from './state/proxyStateMachine.types'
+import { ProxyStateMachineInstance } from './state'
 
 export function getProxyButtonSettings(
-  state: ProxySateMachineState,
-  send: (event: Event<ProxyEvent>, payload?: EventData | undefined) => void,
+  proxy: ProxyStateMachineInstance | undefined,
   t: (key: string, options?: any) => string,
-): SidebarSectionFooterButtonSettings {
+): SidebarSectionFooterButtonSettings | undefined {
+  if (proxy === undefined) {
+    return undefined
+  }
+  const [state, send] = proxy
   const isLoading = state.matches('proxyInProgress')
 
   const baseSettings = {

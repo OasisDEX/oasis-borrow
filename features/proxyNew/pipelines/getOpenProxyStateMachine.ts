@@ -4,8 +4,7 @@ import { map, switchMap } from 'rxjs/operators'
 import { ContextConnected } from '../../../blockchain/network'
 import { TxHelpers } from '../../../components/AppContext'
 import { HasGasEstimation } from '../../../helpers/form'
-import { createProxyStateMachine } from '../state/proxyStateMachine'
-import { ProxyStateMachine } from '../state/proxyStateMachine.types'
+import { createProxyStateMachine, ProxyStateMachine } from '../state'
 
 export function getOpenProxyStateMachine$(
   contextConnected$: Observable<ContextConnected>,

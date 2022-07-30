@@ -8956,6 +8956,13 @@
   resolved "https://registry.yarnpkg.com/@xstate/graph/-/graph-1.4.2.tgz#14987fc1f6d4cf11dca31fe5e6cb14e802f7b299"
   integrity sha512-XIh6opCf9ukXRj4dXe2fv2kwFFUl15B5Ob8ELNOOqDXB2BPyNwp6TaLe5KJn/na3gzC9B7LyOo+2d0dPkC8PWQ==
 
+"@xstate/inspect@^0.7.0":
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/@xstate/inspect/-/inspect-0.7.0.tgz#0e3011d0fb8eca6d68f06a7c384ab1390801e176"
+  integrity sha512-3wrTf8TfBYprH1gBFdxmOQUBDpBazlICWvGdFzr8IHFL4MbiexEZdAsL2QC/WAmW9BqNYTWTwgfbvKHKg+FrlA==
+  dependencies:
+    fast-safe-stringify "^2.1.1"
+
 "@xstate/react@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@xstate/react/-/react-3.0.0.tgz#888d9a6f128c70b632c18ad55f1f851f6ab092ba"
@@ -15360,6 +15367,11 @@ fast-safe-stringify@^2.0.6:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.0.7.tgz#124aa885899261f68aedb42a7c080de9da608743"
   integrity sha512-Utm6CdzT+6xsDk2m8S6uL8VHxNwI6Jub+e9NYTcAms28T84pTa25GJQV9j0CY0N1rM8hK4x6grpF2BQf+2qwVA==
+
+fast-safe-stringify@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/fast-safe-stringify/-/fast-safe-stringify-2.1.1.tgz#c406a83b6e70d9e35ce3b30a81141df30aeba884"
+  integrity sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==
 
 fastparse@^1.1.1:
   version "1.1.1"
@@ -24960,6 +24972,11 @@ storybook-addon-next-router@^3.1.1:
   integrity sha512-Z14dED37vNXkN7+VY80HhF9itGReWoBAlKREHEk2By/dW7zSSqcSyXYV4bDMXIMAFYHMaA1svcBC1idVG8FhAw==
   dependencies:
     tslib "^2.3.0"
+
+storybook-xstate-addon@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/storybook-xstate-addon/-/storybook-xstate-addon-2.3.1.tgz#9668f71d0fbd2e84c6d9d100e51cf383620057cb"
+  integrity sha512-O+eukhUkP8r+z1I17/SVwhxVLro+e6Tn7P1l6y4vEf1B/Hy12aCqFtKkpd69i2qMdwCXumAHAw1uN9xvijnG9A==
 
 stream-blackhole@^1.0.3:
   version "1.0.3"

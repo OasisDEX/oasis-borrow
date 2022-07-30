@@ -5,7 +5,7 @@ import { Grid } from 'theme-ui'
 
 import { VaultActionInput } from '../../../../../components/vault/VaultActionInput'
 import { handleNumericInput } from '../../../../../helpers/input'
-import { OpenAaveStateMachineState } from '../state/openAaveStateMachine.types'
+import { OpenAaveStateMachineState } from '../state/types'
 
 export interface OpenAaveEditingStateProps {
   state: OpenAaveStateMachineState

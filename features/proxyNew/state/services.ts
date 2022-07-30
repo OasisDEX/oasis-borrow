@@ -6,7 +6,7 @@ import { filter, first, map, switchMap } from 'rxjs/operators'
 import { createDsProxy, CreateDsProxyData } from '../../../blockchain/calls/proxy'
 import { TxMetaKind } from '../../../blockchain/calls/txMeta'
 import { transactionToX } from '../../../helpers/form'
-import { ProxyContext, ProxyEvent, ProxyObservableService } from './proxyStateMachine.types'
+import { ProxyContext, ProxyEvent, ProxyObservableService } from './types'
 
 const createProxy: ProxyObservableService = ({ dependencies }: ProxyContext, _: ProxyEvent) => {
   const {
@@ -69,5 +69,3 @@ export const services = {
   createProxy,
   estimateGas,
 }
-
-export const getNameOfService = (name: Extract<keyof typeof services, string>): string => name

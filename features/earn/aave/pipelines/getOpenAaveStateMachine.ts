@@ -1,11 +1,11 @@
+import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 import { ContextConnected } from '../../../../blockchain/network'
 import { TokenBalances } from '../../../../blockchain/tokens'
-import { ProxyStateMachine } from '../../../proxyNew/state/proxyStateMachine.types'
-import { openAaveStateMachine } from '../open/state/openAaveStateMachine'
-import { OpenAaveStateMachine } from '../open/state/openAaveStateMachine.types'
+import { createOpenAaveStateMachine } from '../open/state/machine'
+import { OpenAaveStateMachine } from '../open/state/types'
 
 export function getOpenAaveStateMachine(
   context$: Observable<ContextConnected>,
@@ -15,7 +15,7 @@ export function getOpenAaveStateMachine(
 ): Observable<OpenAaveStateMachine> {
   return combineLatest(context$, getProxyStateMachine$).pipe(
     map(([{ account }, proxyStateMachine]) =>
-      openAaveStateMachine(accountBalances$(account), proxyAddress$, () => proxyStateMachine),
+      createOpenAaveStateMachine(accountBalances$(account), proxyAddress$, () => proxyStateMachine),
     ),
   )
 }
