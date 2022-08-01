@@ -46,9 +46,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     allActiveSubscriptionsHandler,
     allActiveChannelsHandler,
   } = prepareNotificationMessageHandlers(uiChanges)
-  console.log('heh')
   useEffect(() => {
-    console.log('update')
     if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
         socket.disconnect()

@@ -26,7 +26,10 @@ export function NotificationPreferenceCardWrapper({
       if (isEnabled) {
         socket?.emit('setsubscriptions', {
           address: account,
-          subscriptionTypes: [...notificationsState.allActiveSubscriptions, subscriptionType],
+          subscriptionTypes: [
+            ...notificationsState.allActiveSubscriptions.map((item) => item.id),
+            subscriptionType,
+          ],
         })
         if (
           !notificationsState.allActiveChannels.find(
@@ -42,15 +45,15 @@ export function NotificationPreferenceCardWrapper({
           })
         }
       } else {
-        const afterSubscriptions = notificationsState.allActiveSubscriptions.filter(
-          (item) => item.id !== subscriptionType,
-        )
+        const afterSubscriptions = notificationsState.allActiveSubscriptions
+          .filter((item) => item.id !== subscriptionType)
+          .map((item) => item.id)
         socket?.emit('setsubscriptions', {
           address: account,
           subscriptionTypes: afterSubscriptions,
         })
 
-        if (!afterSubscriptions.length) {
+        if (!afterSubscriptions.length && notificationsState.allActiveSubscriptions.length === 1) {
           socket?.emit('setchannels', {
             address: account,
             channels: notificationsState.allActiveChannels.filter(
