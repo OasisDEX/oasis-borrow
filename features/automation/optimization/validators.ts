@@ -122,9 +122,19 @@ export function warningsConstantMultipleValidation({
 
   const addingConstantMultipleWhenAutoSellOrBuyEnabled = isAutoBuyEnabled || isAutoSellEnabled
 
+  const constantMultipleAutoSellTriggeredImmediately = constantMultipleState.sellExecutionCollRatio
+    .div(100)
+    .gte(vault.collateralizationRatioAtNextPrice)
+
+  const constantMultipleAutoBuyTriggeredImmediately = constantMultipleState.buyExecutionCollRatio
+    .div(100)
+    .lte(vault.collateralizationRatioAtNextPrice)
+
   return warningMessagesHandler({
     potentialInsufficientEthFundsForTx,
     constantMultipleSellTriggerCloseToStopLossTrigger,
     addingConstantMultipleWhenAutoSellOrBuyEnabled,
+    constantMultipleAutoSellTriggeredImmediately,
+    constantMultipleAutoBuyTriggeredImmediately,
   })
 }
