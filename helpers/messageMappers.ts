@@ -113,7 +113,10 @@ export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarn
   return warningMessages.filter((message) => constantMultipleSliderWarnings.includes(message))
 }
 
-const constantMultipleCommonWarnings = ['potentialInsufficientEthFundsForTx']
+const constantMultipleCommonWarnings = [
+  'potentialInsufficientEthFundsForTx',
+  'addingConstantMultipleWhenAutoSellOrBuyEnabled',
+]
 
 export function extractConstantMultipleCommonWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => constantMultipleCommonWarnings.includes(message))

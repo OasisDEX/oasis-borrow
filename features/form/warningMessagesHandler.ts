@@ -23,6 +23,7 @@ export type VaultWarningMessage =
   | 'autoSellOverride'
   | 'constantMultipleSellTriggerCloseToStopLossTrigger'
   | 'stopLossTriggerCloseToConstantMultipleSellTrigger'
+  | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -46,6 +47,7 @@ interface WarningMessagesHandler {
   autoBuyTriggeredImmediately?: boolean
   constantMultipleSellTriggerCloseToStopLossTrigger?: boolean
   stopLossTriggerCloseToConstantMultipleSellTrigger?: boolean
+  addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
 }
 
 export function warningMessagesHandler({
@@ -68,6 +70,7 @@ export function warningMessagesHandler({
   autoBuyTriggeredImmediately,
   constantMultipleSellTriggerCloseToStopLossTrigger,
   stopLossTriggerCloseToConstantMultipleSellTrigger,
+  addingConstantMultipleWhenAutoSellOrBuyEnabled,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -140,6 +143,14 @@ export function warningMessagesHandler({
 
   if (constantMultipleSellTriggerCloseToStopLossTrigger) {
     warningMessages.push('constantMultipleSellTriggerCloseToStopLossTrigger')
+  }
+
+  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
+  }
+
+  if (addingConstantMultipleWhenAutoSellOrBuyEnabled) {
+    warningMessages.push('addingConstantMultipleWhenAutoSellOrBuyEnabled')
   }
 
   if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
