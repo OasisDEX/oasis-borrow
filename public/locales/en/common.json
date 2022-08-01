@@ -1534,7 +1534,9 @@
       "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
       "cost-per-adjustment": "Estimated  transaction cost per adjustment",
       "max-price-buy": "Max price to perform auto buy",
-      "max-price-sell": "Min price to perform auto sell"
+      "max-price-sell": "Min price to perform auto sell",
+      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-max-gas-fee": "Estimated max gas fee"
     }
   },
   "ref": {

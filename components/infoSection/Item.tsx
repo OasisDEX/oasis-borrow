@@ -51,10 +51,10 @@ export function Item({
     >
       <Flex
         sx={{
-          cursor: dropdownValues?.length ? 'pointer' : 'auto',
+          cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
         }}
         onClick={() => {
-          dropdownValues?.length && setOpen(!open)
+          !isLoading && dropdownValues?.length && setOpen(!open)
         }}
       >
         {label && (
@@ -111,7 +111,7 @@ export function Item({
           )}
         </Text>
       </Flex>
-      {open && (
+      {!isLoading && open && (
         <>
           {subLabel && (
             <Text

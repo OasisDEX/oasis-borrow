@@ -9,14 +9,17 @@ interface ConstantMultipleInfoSectionProps {
   targetColRatio: BigNumber
   multiplier: number
   slippage: BigNumber
-  triggerColRatioToBuy: BigNumber
+  buyExecutionCollRatio: BigNumber
   nextBuyPrice: BigNumber
   collateralToBePurchased: BigNumber
   maxPriceToBuy?: BigNumber
-  triggerColRatioToSell: BigNumber
+  sellExecutionCollRatio: BigNumber
   nextSellPrice: BigNumber
   collateralToBeSold: BigNumber
   minPriceToSell?: BigNumber
+  addTriggerGasEstimationUsd?: BigNumber
+  estimatedOasisFee: BigNumber[]
+  estimatedGasCostOnTrigger?: BigNumber
 }
 
 export function ConstantMultipleInfoSection({
@@ -24,14 +27,17 @@ export function ConstantMultipleInfoSection({
   targetColRatio,
   multiplier,
   slippage,
-  triggerColRatioToBuy,
+  buyExecutionCollRatio,
   nextBuyPrice,
   collateralToBePurchased,
   maxPriceToBuy,
-  triggerColRatioToSell,
+  sellExecutionCollRatio,
   nextSellPrice,
   collateralToBeSold,
   minPriceToSell,
+  addTriggerGasEstimationUsd,
+  estimatedOasisFee,
+  estimatedGasCostOnTrigger,
 }: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -53,13 +59,35 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
-          // TODO: PK calculate this value
-          value: '$0',
+          value:
+            estimatedGasCostOnTrigger &&
+            estimatedOasisFee
+              .map((feeItem) => {
+                return `$${formatAmount(feeItem.plus(estimatedGasCostOnTrigger), 'USD')}`
+              })
+              .join(' - '),
+          isLoading: estimatedGasCostOnTrigger === undefined,
+          dropdownValues: [
+            {
+              label: t('constant-multiple.vault-changes.estimated-oasis-fee'),
+              value: estimatedOasisFee
+                .map((feeItem) => {
+                  return `$${formatAmount(feeItem, 'USD')}`
+                })
+                .join(' - '),
+            },
+            {
+              label: t('constant-multiple.vault-changes.estimated-max-gas-fee'),
+              value:
+                estimatedGasCostOnTrigger && `$${formatAmount(estimatedGasCostOnTrigger, 'USD')}`,
+            },
+          ],
         },
         {
           label: t('auto-sell.setup-transaction-cost'),
-          // TODO: PK calculate this value
-          value: '$0',
+          value:
+            addTriggerGasEstimationUsd && `$${formatAmount(addTriggerGasEstimationUsd, 'USD')}`,
+          isLoading: addTriggerGasEstimationUsd === undefined,
         },
         {
           label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),
@@ -67,7 +95,7 @@ export function ConstantMultipleInfoSection({
           dropdownValues: [
             {
               label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-              value: `${triggerColRatioToBuy}%`,
+              value: `${buyExecutionCollRatio}%`,
             },
             {
               label: t('auto-buy.next-buy-prices'),
@@ -75,7 +103,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-buy.col-to-be-purchased', { token }),
-              value: `${formatCryptoBalance(collateralToBePurchased)} ${token}`,
+              value: `${formatCryptoBalance(collateralToBePurchased.abs())} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-buy'),
@@ -85,7 +113,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-              value: `${triggerColRatioToSell}%`,
+              value: `${sellExecutionCollRatio}%`,
             },
             {
               label: t('auto-sell.next-sell-prices'),
@@ -93,7 +121,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-sell.col-to-be-sold', { token }),
-              value: `${formatCryptoBalance(collateralToBeSold)} ${token}`,
+              value: `${formatCryptoBalance(collateralToBeSold.abs())} ${token}`,
             },
             {
               label: t('constant-multiple.vault-changes.max-price-sell'),
