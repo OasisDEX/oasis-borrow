@@ -64,6 +64,7 @@ export function errorsBasicSellValidation({
   isRemoveForm,
   basicSellState,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
 }: {
   vault: Vault
   ilkData: IlkData
@@ -71,6 +72,7 @@ export function errorsBasicSellValidation({
   isRemoveForm: boolean
   basicSellState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: any
 }) {
   const {
     execCollRatio,
@@ -92,10 +94,14 @@ export function errorsBasicSellValidation({
     autoBuyTriggerData.isTriggerEnabled &&
     execCollRatio.plus(5).gt(autoBuyTriggerData.targetCollRatio)
 
+  const cantSetupAutoBuyOrSellWhenConstantMultipleEnabled =
+    constantMultipleTriggerData.isTriggerEnabled
+
   return errorMessagesHandler({
     insufficientEthFundsForTx,
     targetCollRatioExceededDustLimitCollRatio,
     minimumSellPriceNotProvided,
     autoSellTriggerHigherThanAutoBuyTarget,
+    cantSetupAutoBuyOrSellWhenConstantMultipleEnabled,
   })
 }

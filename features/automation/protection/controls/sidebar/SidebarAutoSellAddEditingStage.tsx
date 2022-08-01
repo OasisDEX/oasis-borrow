@@ -223,7 +223,7 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}

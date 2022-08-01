@@ -43,6 +43,7 @@ export function OptimizationFormControl({
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
+  const constantMultipleTriggerData = {} as any
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -72,6 +73,7 @@ export function OptimizationFormControl({
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
         stopLossTriggerData={stopLossTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoBuyOn={autoBuyTriggerData.isTriggerEnabled}
         context={context}
         txHelpers={txHelpers}

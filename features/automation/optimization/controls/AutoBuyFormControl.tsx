@@ -45,6 +45,7 @@ interface AutoBuyFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -59,6 +60,7 @@ export function AutoBuyFormControl({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
   isAutoBuyOn,
   txHelpers,
   context,
@@ -228,6 +230,7 @@ export function AutoBuyFormControl({
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       isAutoBuyOn={isAutoBuyOn}
       context={context}
       ethMarketPrice={ethMarketPrice}
