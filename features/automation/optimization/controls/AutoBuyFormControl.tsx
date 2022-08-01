@@ -216,7 +216,8 @@ export function AutoBuyFormControl({
     execCollRatio: basicBuyState.execCollRatio,
     deviation: basicBuyState.deviation,
     executionPrice,
-    vault,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
   })
 
   return (

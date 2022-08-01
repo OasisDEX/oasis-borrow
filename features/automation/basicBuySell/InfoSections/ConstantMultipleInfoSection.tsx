@@ -9,17 +9,17 @@ interface ConstantMultipleInfoSectionProps {
   targetColRatio: BigNumber
   multiplier: number
   slippage: BigNumber
-  triggerColRatioToBuy: BigNumber
+  buyExecutionCollRatio: BigNumber
   nextBuyPrice: BigNumber
   collateralToBePurchased: BigNumber
   maxPriceToBuy?: BigNumber
-  triggerColRatioToSell: BigNumber
+  sellExecutionCollRatio: BigNumber
   nextSellPrice: BigNumber
   collateralToBeSold: BigNumber
   minPriceToSell?: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
   estimatedOasisFee: BigNumber[]
-  estimatedGasPriceOnTrigger?: BigNumber
+  estimatedGasCostOnTrigger?: BigNumber
 }
 
 export function ConstantMultipleInfoSection({
@@ -27,17 +27,17 @@ export function ConstantMultipleInfoSection({
   targetColRatio,
   multiplier,
   slippage,
-  triggerColRatioToBuy,
+  buyExecutionCollRatio,
   nextBuyPrice,
   collateralToBePurchased,
   maxPriceToBuy,
-  triggerColRatioToSell,
+  sellExecutionCollRatio,
   nextSellPrice,
   collateralToBeSold,
   minPriceToSell,
   addTriggerGasEstimationUsd,
   estimatedOasisFee,
-  estimatedGasPriceOnTrigger,
+  estimatedGasCostOnTrigger,
 }: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -60,13 +60,13 @@ export function ConstantMultipleInfoSection({
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
           value:
-            estimatedGasPriceOnTrigger &&
+            estimatedGasCostOnTrigger &&
             estimatedOasisFee
               .map((feeItem) => {
-                return `$${formatAmount(feeItem.plus(estimatedGasPriceOnTrigger), 'USD')}`
+                return `$${formatAmount(feeItem.plus(estimatedGasCostOnTrigger), 'USD')}`
               })
               .join(' - '),
-          isLoading: estimatedGasPriceOnTrigger === undefined,
+          isLoading: estimatedGasCostOnTrigger === undefined,
           dropdownValues: [
             {
               label: t('constant-multiple.vault-changes.estimated-oasis-fee'),
@@ -79,7 +79,7 @@ export function ConstantMultipleInfoSection({
             {
               label: t('constant-multiple.vault-changes.estimated-max-gas-fee'),
               value:
-                estimatedGasPriceOnTrigger && `$${formatAmount(estimatedGasPriceOnTrigger, 'USD')}`,
+                estimatedGasCostOnTrigger && `$${formatAmount(estimatedGasCostOnTrigger, 'USD')}`,
             },
           ],
         },
@@ -95,7 +95,7 @@ export function ConstantMultipleInfoSection({
           dropdownValues: [
             {
               label: t('auto-buy.trigger-col-ratio-to-perfrom-buy'),
-              value: `${triggerColRatioToBuy}%`,
+              value: `${buyExecutionCollRatio}%`,
             },
             {
               label: t('auto-buy.next-buy-prices'),
@@ -113,7 +113,7 @@ export function ConstantMultipleInfoSection({
             },
             {
               label: t('auto-sell.trigger-col-ratio-to-perfrom-sell'),
-              value: `${triggerColRatioToSell}%`,
+              value: `${sellExecutionCollRatio}%`,
             },
             {
               label: t('auto-sell.next-sell-prices'),

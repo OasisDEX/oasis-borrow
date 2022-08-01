@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
@@ -95,21 +94,23 @@ export function getBasicBSVaultChange({
   execCollRatio,
   deviation,
   executionPrice,
-  vault,
+  debt,
+  lockedCollateral,
 }: {
   targetCollRatio: BigNumber
   execCollRatio: BigNumber
   executionPrice: BigNumber
   deviation: BigNumber
-  vault: Vault
+  debt: BigNumber
+  lockedCollateral: BigNumber
 }) {
   return targetCollRatio.gt(zero) && execCollRatio.gt(zero) && executionPrice.gt(zero)
     ? getVaultChange({
         currentCollateralPrice: executionPrice,
         marketPrice: executionPrice,
         slippage: deviation.div(100),
-        debt: vault.debt,
-        lockedCollateral: vault.lockedCollateral,
+        debt: debt,
+        lockedCollateral: lockedCollateral,
         requiredCollRatio: targetCollRatio.div(100),
         depositAmount: zero,
         paybackAmount: zero,

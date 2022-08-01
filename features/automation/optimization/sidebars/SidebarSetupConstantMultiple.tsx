@@ -63,7 +63,7 @@ interface SidebarSetupConstantMultipleProps {
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
   gasEstimationUsd?: BigNumber
-  estimatedGasPriceOnTrigger?: BigNumber
+  estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
@@ -93,7 +93,7 @@ export function SidebarSetupConstantMultiple({
   collateralToBePurchased,
   collateralToBeSold,
   gasEstimationUsd,
-  estimatedGasPriceOnTrigger,
+  estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
   addTriggerGasEstimationUsd,
@@ -261,7 +261,7 @@ export function SidebarSetupConstantMultiple({
               collateralToBePurchased={collateralToBePurchased}
               collateralToBeSold={collateralToBeSold}
               addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
-              estimatedGasPriceOnTrigger={estimatedGasPriceOnTrigger}
+              estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
               estimatedBuyFee={estimatedBuyFee}
               estimatedSellFee={estimatedSellFee}
               constantMultipleState={constantMultipleState}
@@ -300,7 +300,7 @@ interface ConstantMultipleInfoSectionControlProps {
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
-  estimatedGasPriceOnTrigger?: BigNumber
+  estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
   constantMultipleState: ConstantMultipleFormChange
@@ -313,7 +313,7 @@ function ConstantMultipleInfoSectionControl({
   collateralToBePurchased,
   collateralToBeSold,
   addTriggerGasEstimationUsd,
-  estimatedGasPriceOnTrigger,
+  estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
   constantMultipleState,
@@ -331,7 +331,7 @@ function ConstantMultipleInfoSectionControl({
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}
       slippage={slippage}
-      triggerColRatioToBuy={constantMultipleState.buyExecutionCollRatio}
+      buyExecutionCollRatio={constantMultipleState.buyExecutionCollRatio}
       nextBuyPrice={nextBuyPrice}
       collateralToBePurchased={collateralToBePurchased}
       maxPriceToBuy={
@@ -339,7 +339,7 @@ function ConstantMultipleInfoSectionControl({
           ? constantMultipleState.maxBuyPrice || zero
           : undefined
       }
-      triggerColRatioToSell={constantMultipleState.sellExecutionCollRatio}
+      sellExecutionCollRatio={constantMultipleState.sellExecutionCollRatio}
       nextSellPrice={nextSellPrice}
       collateralToBeSold={collateralToBeSold}
       minPriceToSell={
@@ -349,7 +349,7 @@ function ConstantMultipleInfoSectionControl({
       }
       addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
       estimatedOasisFee={estimatedOasisFee}
-      estimatedGasPriceOnTrigger={estimatedGasPriceOnTrigger}
+      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
     />
   )
 }

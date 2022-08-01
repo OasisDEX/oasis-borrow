@@ -213,7 +213,8 @@ export function AutoSellFormControl({
     execCollRatio: basicSellState.execCollRatio,
     deviation: basicSellState.deviation,
     executionPrice,
-    vault,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
   })
 
   return (
