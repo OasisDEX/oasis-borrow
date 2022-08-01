@@ -40,7 +40,7 @@ import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   coinbaseOrderBook$,
@@ -665,9 +665,9 @@ export function setupAppContext() {
     ]),
   )
 
-  const ilks$ = createIlks$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
-  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
+  const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balance$,
@@ -675,7 +675,7 @@ export function setupAppContext() {
     oraclePriceData$,
   )
 
-  const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilkDataList$ = createIlkDataList$(ilkData$, ilksSupportedOnNetwork$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
@@ -699,7 +699,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
@@ -744,7 +744,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
@@ -886,7 +886,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = memoize(
-    curry(createProductCardsData$)(ilkData$, oraclePriceData$),
+    curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkData$, oraclePriceData$),
     (ilks: string[]) => {
       return ilks.join(',')
     },
@@ -1001,7 +1001,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       psmExchangeQuote$,
       onEveryBlock$,
@@ -1026,7 +1026,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    ilks$,
+    ilks$: ilksSupportedOnNetwork$,
     openVault$,
     manageVault$,
     manageInstiVault$,

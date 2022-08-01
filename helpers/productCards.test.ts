@@ -142,7 +142,7 @@ function mockIlkData$(ilk: string): Observable<IlkData> {
 describe('createProductCardsData$', () => {
   it('should return correct product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-A']),
+      createProductCardsData$(of(['WBTC-A']), mockIlkData$, mockOraclePriceData$, ['WBTC-A']),
     )
 
     expect(state()[0]).to.eql({
@@ -163,7 +163,12 @@ describe('createProductCardsData$', () => {
 
   it('should return correct landing page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-B', 'ETH-B', 'WSTETH-A']),
+      createProductCardsData$(
+        of(['WBTC-B', 'ETH-B', 'WSTETH-A']),
+        mockIlkData$,
+        mockOraclePriceData$,
+        ['WBTC-B', 'ETH-B', 'WSTETH-A'],
+      ),
     )
 
     const landingPageData = landingPageCardsData({ productCardsData: state() })
@@ -216,7 +221,12 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-B', 'ETH-B', 'WSTETH-A']),
+      createProductCardsData$(
+        of(['WBTC-B', 'ETH-B', 'WSTETH-A']),
+        mockIlkData$,
+        mockOraclePriceData$,
+        ['WBTC-B', 'ETH-B', 'WSTETH-A'],
+      ),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -272,7 +282,10 @@ describe('createProductCardsData$', () => {
 
   it('should return correct multiple page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['ETH-A', 'WSTETH-A']),
+      createProductCardsData$(of(['ETH-A', 'WSTETH-A']), mockIlkData$, mockOraclePriceData$, [
+        'ETH-A',
+        'WSTETH-A',
+      ]),
     )
 
     const multiplyPageData = multiplyPageCardsData({
@@ -314,7 +327,7 @@ describe('createProductCardsData$', () => {
 
   it('maps one product card correctly', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['WBTC-C']),
+      createProductCardsData$(of(['WBTC-C']), mockIlkData$, mockOraclePriceData$, ['WBTC-C']),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -340,12 +353,12 @@ describe('createProductCardsData$', () => {
 
   it('sorts and filters product cards', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, [
-        'WBTC-C',
-        'ETH-C',
-        'WSTETH-B',
-        'CRVV1ETHSTETH-A',
-      ]),
+      createProductCardsData$(
+        of(['WBTC-C', 'ETH-C', 'WSTETH-B', 'CRVV1ETHSTETH-A']),
+        mockIlkData$,
+        mockOraclePriceData$,
+        ['WBTC-C', 'ETH-C', 'WSTETH-B', 'CRVV1ETHSTETH-A'],
+      ),
     )
 
     const borrowPageData = borrowPageCardsData({
@@ -361,7 +374,10 @@ describe('createProductCardsData$', () => {
 
   it('should return correct borrow page token product data', () => {
     const state = getStateUnpacker(
-      createProductCardsData$(mockIlkData$, mockOraclePriceData$, ['RENBTC-A', 'WBTC-A']),
+      createProductCardsData$(of(['RENBTC-A', 'WBTC-A']), mockIlkData$, mockOraclePriceData$, [
+        'RENBTC-A',
+        'WBTC-A',
+      ]),
     )
 
     const borrowPageData = borrowPageCardsData({ ilkToTokenMapping: state(), cardsFilter: 'BTC' })
