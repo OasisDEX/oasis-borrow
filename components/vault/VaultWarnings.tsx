@@ -81,6 +81,10 @@ export function VaultWarnings({
       // TEMPORARY override message as banner in overview details
       case 'autoSellOverride':
         return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
+      case 'constantMultipleAutoSellTriggeredImmediately':
+        return translate('constant-multiple-auto-sell-triggered-immediately')
+      case 'constantMultipleAutoBuyTriggeredImmediately':
+        return translate('constant-multiple-auto-buy-triggered-immediately')
       case 'constantMultipleSellTriggerCloseToStopLossTrigger':
         return (
           <Trans
