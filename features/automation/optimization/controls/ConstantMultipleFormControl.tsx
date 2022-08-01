@@ -136,7 +136,8 @@ export function ConstantMultipleFormControl({
     execCollRatio: constantMultipleState.buyExecutionCollRatio,
     deviation: constantMultipleState.deviation,
     executionPrice: nextBuyPrice,
-    vault,
+    lockedCollateral,
+    debt,
   })
   const {
     collateralDelta: collateralToBeSold,
@@ -146,7 +147,8 @@ export function ConstantMultipleFormControl({
     execCollRatio: constantMultipleState.sellExecutionCollRatio,
     deviation: constantMultipleState.deviation,
     executionPrice: nextSellPrice,
-    vault,
+    lockedCollateral,
+    debt,
   })
 
   const addTriggerGasEstimationData$ = useMemo(() => {
@@ -164,7 +166,7 @@ export function ConstantMultipleFormControl({
   const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : undefined
 
   const adjustMultiplyGasEstimation = new BigNumber(1100000) // average based on historical data from blockchain
-  const estimatedGasPriceOnTrigger = gasPrice
+  const estimatedGasCostOnTrigger = gasPrice
     ? amountFromWei(
         adjustMultiplyGasEstimation
           .multipliedBy(gasPrice?.maxFeePerGas)
@@ -228,7 +230,7 @@ export function ConstantMultipleFormControl({
       collateralToBePurchased={collateralToBePurchased}
       collateralToBeSold={collateralToBeSold}
       gasEstimationUsd={gasEstimationUsd}
-      estimatedGasPriceOnTrigger={estimatedGasPriceOnTrigger}
+      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
       estimatedBuyFee={estimatedBuyFee}
       estimatedSellFee={estimatedSellFee}
       addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
