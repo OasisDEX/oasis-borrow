@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Box, Flex, Grid, Text } from '@theme-ui/components'
-import { GasEstimationContex } from 'components/GasEstimationContextProvider'
+import { GasEstimationContext } from 'components/GasEstimationContextProvider'
 import { Tooltip, useTooltip } from 'components/Tooltip'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
 import { formatAmount } from 'helpers/formatters/format'
@@ -118,11 +118,10 @@ export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, with
   }
 }
 
-export function getEstimatedGasFeeText(gasEstimation: GasEstimationContex, withBrackets = false) {
-  if (!gasEstimation.isSuccessful) {
-    return <EstimationError withBrackets={withBrackets} />
+export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, withBrackets = false) {
+  if (!gasEstimation) {
+    return 'n/a'
   }
-
   const status: GasEstimationStatus = gasEstimation.isCompleted
     ? gasEstimation.isSuccessful
       ? GasEstimationStatus.calculated

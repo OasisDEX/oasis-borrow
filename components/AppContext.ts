@@ -71,8 +71,6 @@ import {
   AddFormChange,
   AddFormChangeAction,
   formChangeReducer,
-  TxPayloadChange,
-  TxPayloadChangeAction,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -147,7 +145,12 @@ import {
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
-import { gasEstimationReducer, TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import {
+  gasEstimationReducer,
+  TX_DATA_CHANGE,
+  TxPayloadChange,
+  TxPayloadChangeAction,
+} from 'helpers/gasEstimate'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
@@ -308,8 +311,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
-  | TxPayloadChange<AutomationBotAddTriggerData>
-  | TxPayloadChange<AutomationBotRemoveTriggerData>
+  | TxPayloadChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction

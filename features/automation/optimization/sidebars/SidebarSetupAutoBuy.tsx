@@ -23,7 +23,7 @@ import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLa
 import { extractCancelAutoBuyErrors, extractCancelAutoBuyWarnings } from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyAdditionStage'
@@ -44,8 +44,6 @@ export interface SidebarSetupAutoBuyProps {
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarVaultStages
-  addTriggerGasEstimation: ReactNode
-  cancelTriggerGasEstimation: ReactNode
   isAddForm: boolean
   isRemoveForm: boolean
   isEditing: boolean
@@ -72,9 +70,6 @@ export function SidebarSetupAutoBuy({
   textButtonHandler,
   stage,
 
-  addTriggerGasEstimation,
-  cancelTriggerGasEstimation,
-
   isAddForm,
   isRemoveForm,
   isEditing,
@@ -86,7 +81,7 @@ export function SidebarSetupAutoBuy({
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
 
-  const gasEstimationContext = useGasEstimationContext()
+  const gasEstimation = useGasEstimationContext()
 
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -119,7 +114,7 @@ export function SidebarSetupAutoBuy({
 
   const warnings = warningsBasicBuyValidation({
     vault,
-    gasEstimationUsd: gasEstimationContext.usdValue,
+    gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicBuyState.maxBuyOrMinSellPrice,
@@ -151,7 +146,6 @@ export function SidebarSetupAutoBuy({
                   autoBuyTriggerData={autoBuyTriggerData}
                   errors={errors}
                   warnings={warnings}
-                  addTriggerGasEstimation={addTriggerGasEstimation}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
                   sliderMin={min}
@@ -164,7 +158,6 @@ export function SidebarSetupAutoBuy({
                   ilkData={ilkData}
                   errors={cancelAutoBuyErrors}
                   warnings={cancelAutoBuyWarnings}
-                  cancelTriggerGasEstimation={cancelTriggerGasEstimation}
                   basicBuyState={basicBuyState}
                 />
               )}

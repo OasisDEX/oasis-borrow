@@ -162,20 +162,20 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
             <Global styles={globalStyles} />
             <Web3ReactProvider {...{ getLibrary }}>
               <AppContextProvider>
-                <GasEstimationContextProvider>
-                  <ModalProvider>
-                    <HeadTags />
-                    {seoTags}
-                    <SetupWeb3Context>
-                      <SharedUIProvider>
+                <ModalProvider>
+                  <HeadTags />
+                  {seoTags}
+                  <SetupWeb3Context>
+                    <SharedUIProvider>
+                      <GasEstimationContextProvider>
                         <Layout {...layoutProps}>
                           <Component {...pageProps} />
                           <CookieBanner setValue={setValue} value={value} />
                         </Layout>
-                      </SharedUIProvider>
-                    </SetupWeb3Context>
-                  </ModalProvider>
-                </GasEstimationContextProvider>
+                      </GasEstimationContextProvider>
+                    </SharedUIProvider>
+                  </SetupWeb3Context>
+                </ModalProvider>
               </AppContextProvider>
             </Web3ReactProvider>
           </MDXProvider>

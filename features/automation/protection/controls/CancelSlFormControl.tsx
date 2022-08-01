@@ -20,13 +20,17 @@ import {
   ADD_FORM_CHANGE,
   AddFormChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
+import {
+  PROTECTION_MODE_CHANGE_SUBJECT,
+  ProtectionModeChange,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
 import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
@@ -61,6 +65,7 @@ export function CancelSlFormControl({
   const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
   const txData = useMemo(
@@ -68,13 +73,12 @@ export function CancelSlFormControl({
     [triggerId],
   )
 
-  uiChanges.publish(TX_DATA_CHANGE, {
-    type: 'remove-trigger',
-    tx: {
+  useEffect(() => {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'remove-trigger',
       data: txData,
-      transaction: removeAutomationBotTrigger,
-    },
-  })
+    })
+  }, [txData, currentForm])
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
 

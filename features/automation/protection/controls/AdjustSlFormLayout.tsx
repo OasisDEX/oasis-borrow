@@ -11,11 +11,12 @@ import {
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { GasEstimation } from 'features/gasEstimation/GasEstimation'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Flex } from 'theme-ui'
 
 interface AdjustSlFormInformationProps {
@@ -88,7 +89,6 @@ interface SetDownsideProtectionInformationProps {
   vault: Vault
   ilkData: IlkData
   token: string
-  gasEstimation: ReactNode
   afterStopLossRatio: BigNumber
   tokenPrice: BigNumber
   ethPrice: BigNumber
@@ -97,7 +97,6 @@ interface SetDownsideProtectionInformationProps {
   selectedSLValue: BigNumber
   ethBalance: BigNumber
   txError?: TxError
-  gasEstimationUsd?: BigNumber
   currentCollateralRatio: BigNumber
 }
 
@@ -105,7 +104,6 @@ export function SetDownsideProtectionInformation({
   vault,
   ilkData,
   token,
-  gasEstimation,
   afterStopLossRatio,
   tokenPrice,
   ethPrice,
@@ -169,9 +167,10 @@ export function SetDownsideProtectionInformation({
         value={<Flex>${estimatedFeesWhenSlTriggered}</Flex>}
         tooltip={<Box>{t('protection.sl-triggered-gas-estimation')}</Box>}
       />
-      {gasEstimation && (
-        <VaultChangesInformationItem label={`${t('protection.max-cost')}`} value={gasEstimation} />
-      )}
+      <VaultChangesInformationItem
+        label={`${t('protection.max-cost')}`}
+        value={<GasEstimation />}
+      />
     </VaultChangesInformationContainer>
   )
 }
@@ -181,7 +180,6 @@ export interface AdjustSlFormLayoutProps {
   closePickerConfig: PickCloseStateProps
   slValuePickerConfig: SliderValuePickerProps
   addTriggerConfig: RetryableLoadingButtonProps
-  gasEstimation: ReactNode
   accountIsController: boolean
   txProgressing: boolean
   txState?: TxStatus
@@ -200,7 +198,6 @@ export interface AdjustSlFormLayoutProps {
   firstStopLossSetup: boolean
   isEditing: boolean
   collateralizationRatioAtNextPrice: BigNumber
-  gasEstimationUsd?: BigNumber
   ethBalance: BigNumber
   currentCollateralRatio: BigNumber
   stage: 'stopLossEditing' | 'txInProgress' | 'txSuccess' | 'txFailure'

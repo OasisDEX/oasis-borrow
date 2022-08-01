@@ -1,15 +1,12 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   maxUint256,
@@ -66,9 +63,6 @@ export function AutoBuyFormControl({
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges } = useAppContext()
 
-  const gasEstimationContext = useGasEstimationContext()
-  const gasEstimationText = getEstimatedGasFeeText(gasEstimationContext)
-
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
 
   const addTxData = useMemo(
@@ -105,8 +99,6 @@ export function AutoBuyFormControl({
       }),
     [basicBuyState.triggerId.toNumber()],
   )
-
-  const cancelTriggerGasEstimationUsd = gasEstimationContext.usdValue
 
   const txStatus = basicBuyState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
@@ -163,33 +155,28 @@ export function AutoBuyFormControl({
   const isAddForm = basicBuyState.currentForm === 'add'
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
-  useEffect(() => {
-    if (isAddForm) {
-      uiChanges.publish(TX_DATA_CHANGE, {
-        type: 'add-trigger',
-        tx: {
-          data: addTxData,
-          transaction: addAutomationBotTrigger,
-        },
-      })
-    }
-
-    if (isRemoveForm) {
-      uiChanges.publish(TX_DATA_CHANGE, {
-        type: 'remove-trigger',
-        tx: {
-          data: cancelTxData,
-          transaction: removeAutomationBotTrigger,
-        },
-      })
-    }
-  }, [addTxData, cancelTxData])
-
   const isEditing = checkIfEditingBasicBS({
     basicBSTriggerData: autoBuyTriggerData,
     basicBSState: basicBuyState,
     isRemoveForm,
   })
+
+  useEffect(() => {
+    if (isEditing) {
+      if (isAddForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'add-trigger',
+          data: addTxData,
+        })
+      }
+      if (isRemoveForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'remove-trigger',
+          data: cancelTxData,
+        })
+      }
+    }
+  }, [addTxData, cancelTxData, isEditing])
 
   const isDisabled = checkIfDisabledBasicBS({
     isProgressStage,
@@ -229,8 +216,6 @@ export function AutoBuyFormControl({
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}
-      addTriggerGasEstimation={gasEstimationText}
-      cancelTriggerGasEstimation={gasEstimationText}
       isAddForm={isAddForm}
       isRemoveForm={isRemoveForm}
       isEditing={isEditing}

@@ -57,7 +57,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   })
   const warnings = warningsStopLossValidation({
     token,
-    gasEstimationUsd: gasEstimationContext.usdValue,
+    gasEstimationUsd: gasEstimationContext?.usdValue,
     ethBalance,
     ethPrice,
     sliderMax: slValuePickerConfig.maxBoundry,

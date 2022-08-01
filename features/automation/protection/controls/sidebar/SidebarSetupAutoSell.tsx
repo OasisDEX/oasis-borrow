@@ -5,7 +5,6 @@ import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   errorsBasicSellValidation,
@@ -82,7 +81,7 @@ export function SidebarSetupAutoSell({
   const { uiChanges } = useAppContext()
 
   const gasEstimation = useGasEstimationContext()
-  console.log('gasEstimation', gasEstimation)
+
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicSell'
     : isFirstSetup
@@ -116,7 +115,7 @@ export function SidebarSetupAutoSell({
 
   const warnings = warningsBasicSellValidation({
     vault,
-    gasEstimationUsd: gasEstimation.usdValue,
+    gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
@@ -153,7 +152,6 @@ export function SidebarSetupAutoSell({
                   autoSellTriggerData={autoSellTriggerData}
                   errors={errors}
                   warnings={warnings}
-                  addTriggerGasEstimation={getEstimatedGasFeeText(gasEstimation)}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
                   sliderMin={min}
@@ -166,7 +164,6 @@ export function SidebarSetupAutoSell({
                   ilkData={ilkData}
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
-                  cancelTriggerGasEstimation={getEstimatedGasFeeText(gasEstimation)}
                   basicSellState={basicSellState}
                 />
               )}

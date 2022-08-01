@@ -1,7 +1,6 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -105,28 +104,27 @@ export function AutoSellFormControl({
   const isAddForm = basicSellState.currentForm === 'add'
   const isRemoveForm = basicSellState.currentForm === 'remove'
 
+  const isEditing = checkIfEditingBasicBS({
+    basicBSTriggerData: autoSellTriggerData,
+    basicBSState: basicSellState,
+    isRemoveForm,
+  })
   useEffect(() => {
-    if (isAddForm) {
-      console.log('publish')
-      uiChanges.publish(TX_DATA_CHANGE, {
-        type: 'add-trigger',
-        tx: {
+    if (isEditing && isAutoSellActive) {
+      if (isAddForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'add-trigger',
           data: addTxData,
-          transaction: addAutomationBotTrigger,
-        },
-      })
-    }
-
-    if (isRemoveForm) {
-      uiChanges.publish(TX_DATA_CHANGE, {
-        type: 'remove-trigger',
-        tx: {
+        })
+      }
+      if (isRemoveForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'remove-trigger',
           data: cancelTxData,
-          transaction: removeAutomationBotTrigger,
-        },
-      })
+        })
+      }
     }
-  }, [addTxData, cancelTxData])
+  }, [addTxData, cancelTxData, isAutoSellActive])
 
   const txStatus = basicSellState.txDetails?.txStatus
   const isSuccessStage = txStatus === TxStatus.Success
@@ -179,12 +177,6 @@ export function AutoSellFormControl({
       resetData: prepareBasicBSResetData(autoSellTriggerData),
     })
   }
-
-  const isEditing = checkIfEditingBasicBS({
-    basicBSTriggerData: autoSellTriggerData,
-    basicBSState: basicSellState,
-    isRemoveForm,
-  })
 
   const isDisabled = checkIfDisabledBasicBS({
     isProgressStage,

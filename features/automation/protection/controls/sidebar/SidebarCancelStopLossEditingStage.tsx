@@ -1,6 +1,5 @@
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { MessageCard } from 'components/MessageCard'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import {
@@ -32,7 +31,7 @@ export function SidebarCancelStopLossEditingStage({
   const errors = errorsStopLossValidation({ txError, debt: debt })
   const warnings = warningsStopLossValidation({
     token,
-    gasEstimationUsd: gasEstimation.usdValue,
+    gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance,
     ethPrice,
   })
@@ -45,10 +44,9 @@ export function SidebarCancelStopLossEditingStage({
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
       <CancelDownsideProtectionInformation
-        gasEstimationText={getEstimatedGasFeeText(gasEstimation)}
         liquidationPrice={liquidationPrice}
         ethPrice={ethPrice}
-        gasEstimationUsd={gasEstimation.usdValue}
+        gasEstimationUsd={gasEstimation?.usdValue}
         ethBalance={ethBalance}
         txError={txError}
         selectedSLValue={selectedSLValue}

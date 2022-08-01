@@ -1,44 +1,47 @@
-//TODO: Move to different file
-import { TxMeta } from '@oasisdex/transactions'
 import {
   addAutomationBotTrigger,
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
+  removeAutomationBotTrigger,
 } from 'blockchain/calls/automationBot'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
-import {
-  AddFormChange,
-} from 'features/automation/protection/common/UITypes/AddFormChange'
 
 export const TX_DATA_CHANGE = 'TX_DATA_CHANGE'
 
-export interface TxPayloadChange<T extends TxMeta> {
-  data: T
-  transaction: TransactionDef<T>
+interface AutoAddTriggerChange {
+  data: AutomationBotAddTriggerData
+  transaction: TransactionDef<AutomationBotAddTriggerData>
 }
 
-export interface TxPayloadChangeBase {
-  data: any
-  transaction: any
+interface AutoRemoveTriggerChange {
+  data: AutomationBotRemoveTriggerData
+  transaction: TransactionDef<AutomationBotRemoveTriggerData>
 }
+
+export type TxPayloadChange = AutoAddTriggerChange | AutoRemoveTriggerChange | undefined
 
 export type TxPayloadChangeAction =
   | {
       type: 'add-trigger'
-      tx: TxPayloadChange<AutomationBotAddTriggerData>
+      data: AutomationBotAddTriggerData
     }
   | {
       type: 'remove-trigger'
-      tx: TxPayloadChange<AutomationBotRemoveTriggerData>
+      data: AutomationBotRemoveTriggerData
     }
+  | { type: 'reset' }
 
 export function gasEstimationReducer(
   state: TxPayloadChange,
   action: TxPayloadChangeAction,
-): AddFormChange {
+): TxPayloadChange {
   switch (action.type) {
     case 'add-trigger':
-      return { tx: action.tx, transaction: addAutomationBotTrigger }
+      return { data: action.data, transaction: addAutomationBotTrigger }
+    case 'remove-trigger':
+      return { data: action.data, transaction: removeAutomationBotTrigger }
+    case 'reset':
+      return undefined
     default:
       return state
   }

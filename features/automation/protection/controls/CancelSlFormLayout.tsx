@@ -9,16 +9,16 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
+import { GasEstimation } from 'features/gasEstimation/GasEstimation'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Flex } from 'theme-ui'
 
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 
 interface CancelDownsideProtectionInformationProps {
-  gasEstimationText: ReactNode
   liquidationPrice: BigNumber
   ethPrice: BigNumber
   ethBalance: BigNumber
@@ -28,7 +28,6 @@ interface CancelDownsideProtectionInformationProps {
 }
 
 export function CancelDownsideProtectionInformation({
-  gasEstimationText,
   liquidationPrice,
   ethPrice,
   ethBalance,
@@ -66,7 +65,7 @@ export function CancelDownsideProtectionInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.max-cost')}`}
-        value={gasEstimationText}
+        value={<GasEstimation />}
       />
       {potentialInsufficientEthFundsForTx && (
         <MessageCard

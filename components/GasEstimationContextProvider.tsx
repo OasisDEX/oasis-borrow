@@ -1,58 +1,49 @@
 import BigNumber from 'bignumber.js'
-import {
-  TxPayloadChangeBase,
-} from 'features/automation/protection/common/UITypes/AddFormChange'
+import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
+import { TX_DATA_CHANGE, TxPayloadChange } from 'helpers/gasEstimate'
 import { useObservable } from 'helpers/observableHook'
+import { WithChildren } from 'helpers/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useContext, useEffect, useMemo,useState } from 'react'
+import { zero } from 'helpers/zero'
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { of } from 'rxjs'
 
-import { WithChildren } from '../helpers/types'
 import { isAppContextAvailable, useAppContext } from './AppContextProvider'
 
-export type GasEstimationContex = {
+export type GasEstimationContext = {
   isSuccessful: boolean
   isCompleted: boolean
   gasAmount: BigNumber
   usdValue: BigNumber
 }
 
-export const gasEstimationContext = React.createContext<GasEstimationContex | undefined>(undefined)
+export const gasEstimationContext = createContext<GasEstimationContext | undefined>(undefined)
 
-export function isGasEstimationContextAvailable(): boolean {
-  return !!useContext(gasEstimationContext)
-}
-
-export function useGasEstimationContext(): GasEstimationContex {
-  const ac = useContext(gasEstimationContext)
-  if (!ac) {
-    throw new Error("AppContext not available! useAppContext can't be used serverside")
-  }
-  return ac
-}
+export const useGasEstimationContext = () => useContext(gasEstimationContext)
 
 /*
-  This component is providing streams of data used for rendering whole app (AppContext).
-  It depends on web3 - which for now is only provided by Client side.
-  To block rendering of given page eg. '/trade' setup conditional rendering
-  on top of that page with isAppContextAvailable.
+  This component is providing data regarding gas based on txData received from uiChanges.
 */
 
 export function GasEstimationContextProvider({ children }: WithChildren) {
   if (!isAppContextAvailable()) {
     return null
   }
-  const [gasEstimate, setEstimate] = useState<GasEstimationContex | undefined>(undefined)
-
+  const [gasEstimate, setEstimate] = useState<GasEstimationContext | undefined>(undefined)
   const { addGasEstimation$ } = useAppContext()
 
-  const [txData] = useUIChanges<TxPayloadChangeBase>(TX_DATA_CHANGE)
-  console.log('txData', txData)
+  const [txData] = useUIChanges<TxPayloadChange>(TX_DATA_CHANGE)
+
   const gasEstimationData$ = useMemo(() => {
+    if (!txData) {
+      return of(undefined)
+    }
+
     return addGasEstimation$(
       { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(txData.transaction, txData.tx.data),
+      ({ estimateGas }) =>
+        estimateGas(txData!.transaction as TransactionDef<typeof txData.data>, txData.data),
     )
   }, [txData])
 
@@ -63,17 +54,15 @@ export function GasEstimationContextProvider({ children }: WithChildren) {
     : undefined
 
   useEffect(() => {
-    console.log('heheheheh', estimate)
     setEstimate({
-      gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : new BigNumber(0),
-      isSuccessful: !!estimate && estimate.gasEstimationStatus == GasEstimationStatus.calculated,
-      usdValue: estimate ? estimate.gasEstimationUsd! : new BigNumber(0),
+      gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : zero,
+      isSuccessful: !!estimate && estimate.gasEstimationStatus === GasEstimationStatus.calculated,
+      usdValue: estimate ? estimate.gasEstimationUsd! : zero,
       isCompleted:
         !!estimate &&
-        (estimate.gasEstimationStatus == GasEstimationStatus.error ||
-          estimate.gasEstimationStatus == GasEstimationStatus.calculated),
+        (estimate.gasEstimationStatus === GasEstimationStatus.error ||
+          estimate.gasEstimationStatus === GasEstimationStatus.calculated),
     })
-    // TODO: Add actual estimation here
   }, [gasEstimationData])
 
   return (
