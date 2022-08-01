@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
-import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
@@ -10,7 +9,6 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
@@ -60,7 +58,14 @@ interface SidebarSetupConstantMultipleProps {
   stopLossTriggerData: StopLossTriggerData
   ethMarketPrice: BigNumber
   isEditing: boolean
+  nextBuyPrice: BigNumber
+  nextSellPrice: BigNumber
+  collateralToBePurchased: BigNumber
+  collateralToBeSold: BigNumber
   gasEstimationUsd?: BigNumber
+  estimatedGasPriceOnTrigger?: BigNumber
+  estimatedBuyFee: BigNumber
+  estimatedSellFee: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
 }
 
@@ -83,13 +88,20 @@ export function SidebarSetupConstantMultiple({
   stopLossTriggerData,
   ethMarketPrice,
   isEditing,
+  nextBuyPrice,
+  nextSellPrice,
+  collateralToBePurchased,
+  collateralToBeSold,
   gasEstimationUsd,
+  estimatedGasPriceOnTrigger,
+  estimatedBuyFee,
+  estimatedSellFee,
   addTriggerGasEstimationUsd,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
-  const { debt, lockedCollateral, token } = vault
+  const { token } = vault
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -102,31 +114,6 @@ export function SidebarSetupConstantMultiple({
   function handleChangeMultiplier(multiplier: number) {
     onMultiplierChange(multiplier)
   }
-
-  const nextBuyPrice = collateralPriceAtRatio({
-    colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
-    collateral: lockedCollateral,
-    vaultDebt: debt,
-  })
-  const nextSellPrice = collateralPriceAtRatio({
-    colRatio: constantMultipleState.sellExecutionCollRatio.div(100),
-    collateral: lockedCollateral,
-    vaultDebt: debt,
-  })
-  const { collateralDelta: collateralToBePurchased } = getBasicBSVaultChange({
-    targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: constantMultipleState.buyExecutionCollRatio,
-    deviation: constantMultipleState.deviation,
-    executionPrice: nextBuyPrice,
-    vault,
-  })
-  const { collateralDelta: collateralToBeSold } = getBasicBSVaultChange({
-    targetCollRatio: constantMultipleState.targetCollRatio,
-    execCollRatio: constantMultipleState.sellExecutionCollRatio,
-    deviation: constantMultipleState.deviation,
-    executionPrice: nextSellPrice,
-    vault,
-  })
 
   const { min: sliderMin } = getBasicSellMinMaxValues({
     autoBuyTriggerData,
@@ -274,6 +261,9 @@ export function SidebarSetupConstantMultiple({
               collateralToBePurchased={collateralToBePurchased}
               collateralToBeSold={collateralToBeSold}
               addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
+              estimatedGasPriceOnTrigger={estimatedGasPriceOnTrigger}
+              estimatedBuyFee={estimatedBuyFee}
+              estimatedSellFee={estimatedSellFee}
               constantMultipleState={constantMultipleState}
             />
           )}
@@ -310,6 +300,9 @@ interface ConstantMultipleInfoSectionControlProps {
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
+  estimatedGasPriceOnTrigger?: BigNumber
+  estimatedBuyFee: BigNumber
+  estimatedSellFee: BigNumber
   constantMultipleState: ConstantMultipleFormChange
 }
 
@@ -320,10 +313,17 @@ function ConstantMultipleInfoSectionControl({
   collateralToBePurchased,
   collateralToBeSold,
   addTriggerGasEstimationUsd,
+  estimatedGasPriceOnTrigger,
+  estimatedBuyFee,
+  estimatedSellFee,
   constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
   // TODO: PK where do I get slippage?
   const slippage = new BigNumber(0.5)
+  const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
+  const estimatedOasisFee = feeDiff.gt(new BigNumber(3))
+    ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
+    : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
 
   return (
     <ConstantMultipleInfoSection
@@ -348,6 +348,8 @@ function ConstantMultipleInfoSectionControl({
           : undefined
       }
       addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
+      estimatedOasisFee={estimatedOasisFee}
+      estimatedGasPriceOnTrigger={estimatedGasPriceOnTrigger}
     />
   )
 }

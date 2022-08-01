@@ -18,6 +18,8 @@ interface ConstantMultipleInfoSectionProps {
   collateralToBeSold: BigNumber
   minPriceToSell?: BigNumber
   addTriggerGasEstimationUsd?: BigNumber
+  estimatedOasisFee: BigNumber[]
+  estimatedGasPriceOnTrigger?: BigNumber
 }
 
 export function ConstantMultipleInfoSection({
@@ -34,6 +36,8 @@ export function ConstantMultipleInfoSection({
   collateralToBeSold,
   minPriceToSell,
   addTriggerGasEstimationUsd,
+  estimatedOasisFee,
+  estimatedGasPriceOnTrigger,
 }: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
@@ -55,8 +59,29 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
-          // TODO: PK calculate this value
-          value: '$0',
+          value:
+            estimatedGasPriceOnTrigger &&
+            estimatedOasisFee
+              .map((feeItem) => {
+                return `$${formatAmount(feeItem.plus(estimatedGasPriceOnTrigger), 'USD')}`
+              })
+              .join(' - '),
+          isLoading: estimatedGasPriceOnTrigger === undefined,
+          dropdownValues: [
+            {
+              label: t('constant-multiple.vault-changes.estimated-oasis-fee'),
+              value: estimatedOasisFee
+                .map((feeItem) => {
+                  return `$${formatAmount(feeItem, 'USD')}`
+                })
+                .join(' - '),
+            },
+            {
+              label: t('constant-multiple.vault-changes.estimated-max-gas-fee'),
+              value:
+                estimatedGasPriceOnTrigger && `$${formatAmount(estimatedGasPriceOnTrigger, 'USD')}`,
+            },
+          ],
         },
         {
           label: t('auto-sell.setup-transaction-cost'),

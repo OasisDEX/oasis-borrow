@@ -103,9 +103,7 @@ export function getBasicBSVaultChange({
   deviation: BigNumber
   vault: Vault
 }) {
-  return targetCollRatio.gt(zero) &&
-    execCollRatio.gt(zero) &&
-    executionPrice.gt(zero)
+  return targetCollRatio.gt(zero) && execCollRatio.gt(zero) && executionPrice.gt(zero)
     ? getVaultChange({
         currentCollateralPrice: executionPrice,
         marketPrice: executionPrice,
