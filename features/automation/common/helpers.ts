@@ -125,8 +125,6 @@ export function getBasicBSVaultChange({
 }
 
 export function calculateCollRatioForMultiply(multiplier: number) {
-  console.log('wewn multipliera')
-  console.log(multiplier / (multiplier - 1))
   return new BigNumber(multiplier / (multiplier - 1))
     .decimalPlaces(2, BigNumber.ROUND_DOWN)
     .times(100)
