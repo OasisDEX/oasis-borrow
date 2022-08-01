@@ -8,7 +8,7 @@
   "private": true,
   "workspaces": [
     "utils",
-    "features/proxyNew"
+    "features/**"
   ],
   "scripts": {
     "start": "next dev",
