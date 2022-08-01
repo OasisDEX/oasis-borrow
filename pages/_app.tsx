@@ -11,6 +11,7 @@ import { GasEstimationContextProvider } from 'components/GasEstimationContextPro
 import { HeadTags, PageSEOTags } from 'components/HeadTags'
 import { AppLayout, MarketingLayoutProps } from 'components/Layouts'
 import { CustomMDXLink } from 'components/Links'
+import { NotificationSocketProvider } from 'components/NotificationSocketProvider'
 import { SharedUIProvider } from 'components/SharedUIProvider'
 import { cache } from 'emotion'
 import { ModalProvider } from 'helpers/modalHook'
@@ -168,10 +169,12 @@ function App({ Component, pageProps }: AppProps & CustomAppProps) {
                   <SetupWeb3Context>
                     <SharedUIProvider>
                       <GasEstimationContextProvider>
-                        <Layout {...layoutProps}>
-                          <Component {...pageProps} />
-                          <CookieBanner setValue={setValue} value={value} />
-                        </Layout>
+                        <NotificationSocketProvider>
+                          <Layout {...layoutProps}>
+                            <Component {...pageProps} />
+                            <CookieBanner setValue={setValue} value={value} />
+                          </Layout>
+                        </NotificationSocketProvider>
                       </GasEstimationContextProvider>
                     </SharedUIProvider>
                   </SetupWeb3Context>

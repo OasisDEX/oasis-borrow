@@ -1,70 +1,29 @@
 import { Icon } from '@makerdao/dai-ui-icons'
-import { useAppContext } from 'components/AppContextProvider'
 import { AppLink } from 'components/Links'
-import { ProductCardBorrow } from 'components/ProductCardBorrow'
-import { ProductCardMultiply } from 'components/ProductCardMultiply'
-import { ProductCardsWrapper } from 'components/ProductCardsWrapper'
 import { TabBar, TabSection } from 'components/TabBar'
 import { WithArrow } from 'components/WithArrow'
 import { AssetPageContent } from 'content/assets'
-import { AppSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
-import { useObservable } from 'helpers/observableHook'
-import { ProductCardData, ProductTypes } from 'helpers/productCards'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
 
-import { ProductCardEarn } from '../../components/ProductCardEarn'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from '../../components/productCards/ProductCardsContainer'
 
-function Loader() {
-  return (
-    <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
-      <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
-    </Flex>
-  )
-}
-
-function TabContent(props: {
-  type: ProductTypes
-  renderProductCard: (props: { cardData: ProductCardData }) => JSX.Element
-  ilks: string[]
-  productCardsData: ProductCardData[]
-}) {
-  const ProductCard = props.renderProductCard
-  const filteredCards = props.ilks
-    .map((ilk) => props.productCardsData.find((card) => card.ilk === ilk))
-    .filter(
-      (cardData: ProductCardData | undefined): cardData is ProductCardData =>
-        cardData !== null && cardData !== undefined,
-    )
-
-  return (
-    <Box mt={5}>
-      <ProductCardsWrapper>
-        {filteredCards.map((cardData) => (
-          <ProductCard cardData={cardData} key={cardData.ilk} />
-        ))}
-      </ProductCardsWrapper>
-    </Box>
-  )
-}
 export function AssetView({ content }: { content: AssetPageContent }) {
   const { t } = useTranslation()
-  const { productCardsData$ } = useAppContext()
-  const [productCardsData, productCardsDataError] = useObservable(productCardsData$)
 
-  const tabs = (productCardsData: ProductCardData[]) => {
+  const tabs = () => {
     const borrowTab = content.borrowIlks && {
       label: t('landing.tabs.borrow.tabLabel'),
       value: 'borrow',
       content: (
-        <TabContent
-          ilks={content.borrowIlks}
-          type="borrow"
-          renderProductCard={ProductCardBorrow}
-          productCardsData={productCardsData}
-        />
+        <Box sx={{ mt: 5 }}>
+          <BorrowProductCardsContainer ilks={content.borrowIlks} />
+        </Box>
       ),
     }
 
@@ -72,12 +31,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       label: t('landing.tabs.multiply.tabLabel'),
       value: 'multiply',
       content: (
-        <TabContent
-          ilks={content.multiplyIlks}
-          type="multiply"
-          renderProductCard={ProductCardMultiply}
-          productCardsData={productCardsData}
-        />
+        <Box sx={{ mt: 5 }}>
+          <MultiplyProductCardsContainer ilks={content.multiplyIlks} />
+        </Box>
       ),
     }
 
@@ -85,12 +41,9 @@ export function AssetView({ content }: { content: AssetPageContent }) {
       label: t('landing.tabs.earn.tabLabel'),
       value: 'earn',
       content: (
-        <TabContent
-          ilks={content.earnIlks}
-          type="earn"
-          renderProductCard={ProductCardEarn}
-          productCardsData={productCardsData}
-        />
+        <Box sx={{ mt: 5 }}>
+          <EarnProductCardsContainer ilks={content.earnIlks} />
+        </Box>
       ),
     }
 
@@ -121,15 +74,7 @@ export function AssetView({ content }: { content: AssetPageContent }) {
         </Box>
       </Flex>
       <Grid sx={{ flex: 1, position: 'relative', mt: 5, mb: '184px' }}>
-        <WithErrorHandler error={[productCardsDataError]}>
-          <WithLoadingIndicator value={[productCardsData]} customLoader={<Loader />}>
-            {([productCardsData]) => {
-              return (
-                <TabBar useDropdownOnMobile variant="large" sections={tabs(productCardsData)} />
-              )
-            }}
-          </WithLoadingIndicator>
-        </WithErrorHandler>
+        <TabBar useDropdownOnMobile variant="large" sections={tabs()} />
       </Grid>
     </Grid>
   )

@@ -5,15 +5,15 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Text } from 'theme-ui'
 
-import { WithLoadingIndicator } from '../helpers/AppSpinner'
-import { WithErrorHandler } from '../helpers/errorHandlers/WithErrorHandler'
-import { formatCryptoBalance, formatPercent } from '../helpers/formatters/format'
-import { useObservable } from '../helpers/observableHook'
-import { ProductCardData, productCardsConfig } from '../helpers/productCards'
-import { one, zero } from '../helpers/zero'
-import { useAppContext } from './AppContextProvider'
+import { WithLoadingIndicator } from '../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../helpers/errorHandlers/WithErrorHandler'
+import { formatCryptoBalance, formatPercent } from '../../helpers/formatters/format'
+import { useObservable } from '../../helpers/observableHook'
+import { ProductCardData, productCardsConfig } from '../../helpers/productCards'
+import { one, zero } from '../../helpers/zero'
+import { useAppContext } from '../AppContextProvider'
+import { StatefulTooltip } from '../Tooltip'
 import { calculateTokenAmount, ProductCard, ProductCardProtocolLink } from './ProductCard'
-import { StatefulTooltip } from './Tooltip'
 
 interface UnprofitableTooltipProps {
   value: string

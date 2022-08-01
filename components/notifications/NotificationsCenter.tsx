@@ -7,6 +7,7 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { NotificationsCenterContent } from './NotificationsCenterContent'
 import { NotificationsCenterHeader } from './NotificationsCenterHeader'
+import { NotificationPrefrenceCardWrapper } from './NotificationsPrefrenceCardWrapper'
 
 // TODO: This component should have props that look something like
 // interface NotificationsCenterProps {
@@ -52,7 +53,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
       <NotificationsCenterContent>
         <Grid sx={{ px: 2, mt: 3 }}>
           {showPrefrencesTab ? (
-            <p>Prefrences</p>
+            <NotificationPrefrenceCardWrapper />
           ) : (
             <NotificationCardsWrapper notificationCards={dummyNotifications} />
           )}

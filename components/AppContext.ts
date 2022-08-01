@@ -124,6 +124,12 @@ import { createIlkDataListWithBalances$ } from 'features/ilks/ilksWithBalances'
 import { createManageMultiplyVault$ } from 'features/multiply/manage/pipes/manageMultiplyVault'
 import { createOpenMultiplyVault$ } from 'features/multiply/open/pipes/openMultiplyVault'
 import { createVaultsNotices$ } from 'features/notices/vaultsNotices'
+import {
+  NOTIFICATION_CHANGE,
+  NotificationChange,
+  NotificationChangeAction,
+  notificationReducer,
+} from 'features/notifications/notificationChange'
 import { createReclaimCollateral$ } from 'features/reclaimCollateral/reclaimCollateral'
 import { checkReferralLocalStorage$ } from 'features/referralOverview/referralLocal'
 import { createUserReferral$ } from 'features/referralOverview/user'
@@ -311,6 +317,7 @@ export type SupportedUIChangeType =
   | MultiplyPillChange
   | SwapWidgetState
   | AutomationChangeFeature
+  | NotificationChange
   | TxPayloadChange
 
 export type LegalUiChanges = {
@@ -322,6 +329,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
 }
 
@@ -412,6 +420,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
 
   return uiChangesSubject
@@ -536,6 +545,9 @@ export function setupAppContext() {
 
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    ({ token, requestedData }) => {
+      return `${token}-${requestedData.join(',')}`
+    },
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
@@ -882,8 +894,17 @@ export function setupAppContext() {
 
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
-  const productCardsData$ = createProductCardsData$(ilkDataList$, priceInfo$)
-  const productCardsWithBalance$ = createProductCardsWithBalance$(ilksWithBalance$, priceInfo$)
+  const productCardsData$ = memoize(
+    curry(createProductCardsData$)(ilkData$, oraclePriceData$),
+    (ilks: string[]) => {
+      return ilks.join(',')
+    },
+  )
+
+  const productCardsWithBalance$ = createProductCardsWithBalance$(
+    ilksWithBalance$,
+    oraclePriceData$,
+  )
 
   const automationTriggersData$ = memoize(
     curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),

@@ -147,7 +147,7 @@ const protoMain = {
   mcdEnd: contractDesc(mcdEnd, mainnetAddresses.MCD_END),
   mcdSpot: contractDesc(mcdSpot, mainnetAddresses.MCD_SPOT),
   mcdDog: contractDesc(mcdDog, mainnetAddresses.MCD_DOG),
-  merkleRedeemer: contractDesc(merkleRedeemer, '0xC66AB83418C20A65C3f8e83B3d11c8C3a6097b6F'),
+  merkleRedeemer: contractDesc(merkleRedeemer, '0xd9fabf81Ed15ea71FBAd0C1f77529a4755a38054'),
   dssCharter: contractDesc(dssCharter, '0x0000123'),
   dssCdpManager: contractDesc(dssCdpManager, mainnetAddresses.CDP_MANAGER),
   otcSupportMethods: contractDesc(otcSupport, '0x9b3f075b12513afe56ca2ed838613b7395f57839'),
