@@ -6,6 +6,8 @@ import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
 
+export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
+
 export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
   return maxBuyOrMinSellPrice.isZero() || maxBuyOrMinSellPrice.isEqualTo(maxUint256)
     ? undefined

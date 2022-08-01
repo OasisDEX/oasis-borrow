@@ -9,6 +9,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
@@ -321,7 +322,7 @@ function ConstantMultipleInfoSectionControl({
   // TODO: PK where do I get slippage?
   const slippage = new BigNumber(0.5)
   const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
-  const estimatedOasisFee = feeDiff.gt(new BigNumber(3))
+  const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
     ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
     : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
 
