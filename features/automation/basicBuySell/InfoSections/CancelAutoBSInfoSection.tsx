@@ -1,16 +1,16 @@
 import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 interface CancelAutoBSInfoSectionProps {
   collateralizationRatio: BigNumber
   liquidationPrice: BigNumber
   debt: BigNumber
-  estimatedTransactionCost: ReactNode
   title: string
   basicBSState: BasicBSFormChange
 }
@@ -19,7 +19,6 @@ export function CancelAutoBSInfoSection({
   collateralizationRatio,
   liquidationPrice,
   debt,
-  estimatedTransactionCost,
   title,
   basicBSState,
 }: CancelAutoBSInfoSectionProps) {
@@ -63,7 +62,7 @@ export function CancelAutoBSInfoSection({
             ]),
         {
           label: t('auto-sell.estimated-transaction-cost'),
-          value: estimatedTransactionCost,
+          value: <GasEstimation />,
         },
       ]}
     />

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
@@ -17,7 +18,6 @@ interface ConstantMultipleInfoSectionProps {
   nextSellPrice: BigNumber
   collateralToBeSold: BigNumber
   minPriceToSell?: BigNumber
-  addTriggerGasEstimationUsd?: BigNumber
   estimatedOasisFee: BigNumber[]
   estimatedGasCostOnTrigger?: BigNumber
 }
@@ -35,7 +35,6 @@ export function ConstantMultipleInfoSection({
   nextSellPrice,
   collateralToBeSold,
   minPriceToSell,
-  addTriggerGasEstimationUsd,
   estimatedOasisFee,
   estimatedGasCostOnTrigger,
 }: ConstantMultipleInfoSectionProps) {
@@ -85,9 +84,7 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('auto-sell.setup-transaction-cost'),
-          value:
-            addTriggerGasEstimationUsd && `$${formatAmount(addTriggerGasEstimationUsd, 'USD')}`,
-          isLoading: addTriggerGasEstimationUsd === undefined,
+          value: <GasEstimation />,
         },
         {
           label: t('constant-multiple.vault-changes.buy-sell-trigger-summary'),

@@ -4,15 +4,15 @@ import { WithArrow } from 'components/WithArrow'
 import { ManageBorrowVaultStage } from 'features/borrow/manage/pipes/manageVault'
 import { OpenVaultStage } from 'features/borrow/open/pipes/openVault'
 import { ManageMultiplyVaultStage } from 'features/multiply/manage/pipes/manageMultiplyVault'
+import { HasGasEstimation } from 'helpers/form'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { CommonVaultState } from 'helpers/types'
 import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Box, Image, Text } from 'theme-ui'
 
-import { HasGasEstimation } from '../../helpers/form'
 import { TxStatusCardProgress, TxStatusCardSuccess } from './TxStatusCard'
-import { getEstimatedGasFeeText, VaultChangesInformationItem } from './VaultChangesInformation'
+import { getEstimatedGasFeeTextOld, VaultChangesInformationItem } from './VaultChangesInformation'
 
 export function VaultProxyStatusCard({
   stage,
@@ -75,7 +75,7 @@ export function VaultProxyContentBox({
               </Text>
               <VaultChangesInformationItem
                 label={t('transaction-fee')}
-                value={getEstimatedGasFeeText(gasData)}
+                value={getEstimatedGasFeeTextOld(gasData)}
               />
             </Box>
           )}
