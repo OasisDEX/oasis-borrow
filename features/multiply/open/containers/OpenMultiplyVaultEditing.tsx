@@ -56,7 +56,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
   return (
     <Grid gap={4}>
       <Grid gap={2}>
-        <Text variant="strong">Deposit your {token}</Text>
+        <Text variant="boldParagraph2">Deposit your {token}</Text>
         <VaultActionInput
           action="Deposit"
           currencyCode={token}
@@ -75,7 +75,7 @@ export function OpenMultiplyVaultEditing(props: OpenMultiplyVaultState) {
         />
       </Grid>
       <Grid gap={2}>
-        <Text variant="strong" mb={2}>
+        <Text variant="boldParagraph2" mb={2}>
           Adjust your multiply
         </Text>
         <Box>

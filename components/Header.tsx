@@ -44,6 +44,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
+        height: '22px',
         ...sx,
       }}
     >
@@ -858,7 +859,7 @@ function DisconnectedHeader() {
                 flexShrink: 0,
               }}
             >
-              <Text variant="strong">{t('connect-wallet-button')}</Text>
+              <Text variant="boldParagraph2">{t('connect-wallet-button')}</Text>
               <Icon
                 name="arrow_right"
                 size="15px"

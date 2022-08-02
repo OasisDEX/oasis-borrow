@@ -14,7 +14,7 @@ export function AppSpinner({
 }) {
   return (
     // fontSize: 0px used to hide empty space created below Spinner SVG
-    <Box sx={{ fontSize: '0px', textAlign: 'center' }}>
+    <Flex sx={{ fontSize: '0px', textAlign: 'center', alignItems: 'center' }}>
       <Spinner
         variant={variant || 'styles.spinner.default'}
         sx={{
@@ -25,7 +25,7 @@ export function AppSpinner({
           }),
         }}
       />
-    </Box>
+    </Flex>
   )
 }
 

@@ -48,7 +48,7 @@ export function Banner({ title, description, button, image, sx }: BannerProps) {
             flexGrow: 1,
           }}
         >
-          <Heading as="h3" variant="headerSettings" sx={{ mb: 1 }}>
+          <Heading as="p" variant="boldParagraph1" sx={{ mb: 1 }}>
             {title}
           </Heading>
           <Text

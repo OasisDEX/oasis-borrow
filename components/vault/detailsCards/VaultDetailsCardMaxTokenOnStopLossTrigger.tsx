@@ -21,7 +21,7 @@ function VaultDetailsCardMaxTokenOnStopLossTriggerModal({
         <Heading variant="header3">
           {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
         </Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger-desc', {
             token,
             liquidationPenalty: formatPercent(liquidationPenalty.multipliedBy(100), {

@@ -55,10 +55,10 @@ function TOSWaiting4Signature({
   return (
     <Grid gap={3}>
       <Box px={2}>
-        <Heading sx={{ textAlign: 'center', pb: 1, pt: 3, fontSize: 7 }}>
+        <Heading variant="header4" sx={{ textAlign: 'center', pb: 1, pt: 3 }}>
           {t(`tos-welcome${updated ? '-updated' : ''}`)}
         </Heading>
-        <Text mt={3} sx={{ fontWeight: '400', fontSize: '14px' }}>
+        <Text mt={3} variant="paragraph3">
           {t('tos-jwt-signature-message')}
         </Text>
       </Box>

@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { PieChart } from '../../../components/dumb/PieChart'
@@ -210,9 +210,9 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
           ]}
         />
       </Text>
-      <Text sx={{ fontWeight: 'medium', fontSize: 7, mt: '4px' }}>
+      <Heading variant="header3" sx={{ mt: '4px' }}>
         ${formatAmount(props.totalValueUsd, 'USD')}
-      </Text>
+      </Heading>
     </Box>
   )
 }
