@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
-import { Box, Flex, Grid,  Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
 import { CollRatioColor, VaultDetailsCardModal } from './vault/VaultDetails'

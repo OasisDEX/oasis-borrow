@@ -106,7 +106,7 @@ export function StopLossBannerLayout({
           </Flex>
           <Flex sx={{ flex: 1, flexDirection: 'column', justifyContent: 'center', ml: 2 }}>
             <StopLossBannerSectionCompact>
-              <Text variant="header3" sx={{ fontWeight: 'body', mr: 2 }}>
+              <Text variant="header3" sx={{ fontWeight: 'regular', mr: 2 }}>
                 {`$${formatAmount(dynamicStopPrice, 'USD')}`}
               </Text>
               <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'neutral80', pt: 1 }}>
@@ -114,7 +114,7 @@ export function StopLossBannerLayout({
               </Text>
             </StopLossBannerSectionCompact>
             <StopLossBannerSectionCompact>
-              <Text variant="header3" sx={{ fontWeight: 'body', fontSize: 2, mr: 2 }}>
+              <Text variant="header3" sx={{ fontWeight: 'regular', fontSize: 2, mr: 2 }}>
                 {formatPercent(stopLossLevel.times(100), { precision: 2 })}
               </Text>
               <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>

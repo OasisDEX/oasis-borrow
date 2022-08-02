@@ -205,7 +205,7 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
             <AppLink
               href="https://kb.oasis.app/help/curated-token-list"
               target="_blank"
-              sx={{ fontWeight: 'body', fontSize: 3 }}
+              sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}
         />

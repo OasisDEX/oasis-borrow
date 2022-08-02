@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Box, Flex,  Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 import {
   DetailsSectionContentCardChangePill,

@@ -130,7 +130,7 @@ export const oasisBaseTheme = {
     },
     paragraph1: {
       fontFamily: 'body',
-      fontWeight: 'regular',
+
       lineHeight: '28px',
       fontSize: '18px',
       color: 'primary100',
@@ -144,7 +144,7 @@ export const oasisBaseTheme = {
     },
     paragraph2: {
       fontFamily: 'body',
-      fontWeight: 'regular',
+
       lineHeight: '24px',
       fontSize: '16px',
       color: 'primary100',
@@ -158,7 +158,7 @@ export const oasisBaseTheme = {
     },
     paragraph3: {
       fontFamily: 'body',
-      fontWeight: 'regular',
+
       lineHeight: '22px',
       fontSize: '14px',
       color: 'primary100',
@@ -850,7 +850,7 @@ export const oasisBaseTheme = {
       border: 'light',
       borderColor: 'neutral80',
       color: 'neutral80',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       fontFamily: 'body',
       p: 3,
       lineHeight: 'tight',
@@ -935,7 +935,7 @@ export const oasisBaseTheme = {
       bg: 'txManagerBg',
       color: 'primary100',
       borderRadius: 'large',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       px: 2,
       py: 3,
       lineHeight: 'loose',
@@ -983,7 +983,7 @@ export const oasisBaseTheme = {
     root: {
       fontFamily: 'body',
       lineHeight: 'body',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       fontSize: 3,
     },
     spinner: {

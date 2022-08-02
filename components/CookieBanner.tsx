@@ -153,7 +153,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
           </Flex>
           <Button
             variant="textual"
-            sx={{ fontWeight: 'body', pl: 0 }}
+            sx={{ fontWeight: 'regular', pl: 0 }}
             onClick={() => setShowSettings(!showSettings)}
           >
             {t('landing.cookie-banner.settings-toggle')}

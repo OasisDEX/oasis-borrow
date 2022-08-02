@@ -637,7 +637,7 @@ function AssetsDropdown() {
           <AppLink
             href={asset.link}
             key={asset.label}
-            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular', fontSize: 3 }}
             variant="links.nav"
           >
             <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
