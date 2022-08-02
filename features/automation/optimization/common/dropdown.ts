@@ -2,29 +2,29 @@ import { UIChanges } from 'components/AppContext'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { TFunction } from 'next-i18next'
 
-export function commonProtectionDropdownItems(uiChanges: UIChanges, t: TFunction) {
+export function commonOptimizationDropdownItems(uiChanges: UIChanges, t: TFunction) {
   return [
     {
-      label: t('system.stop-loss'),
+      label: t('system.basic-buy'),
       iconShrink: 2,
       icon: 'circle_exchange',
-      panel: 'stopLoss',
+      panel: 'autoBuy',
       action: () => {
         uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-          type: 'Protection',
-          currentProtectionFeature: 'stopLoss',
+          type: 'Optimization',
+          currentOptimizationFeature: 'autoBuy',
         })
       },
     },
     {
-      label: t('system.basic-sell'),
+      label: t('system.constant-multiple'),
       iconShrink: 2,
       icon: 'circle_exchange',
-      panel: 'autoSell',
+      panel: 'constantMultiple',
       action: () => {
         uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
-          type: 'Protection',
-          currentProtectionFeature: 'autoSell',
+          type: 'Optimization',
+          currentOptimizationFeature: 'constantMultiple',
         })
       },
     },

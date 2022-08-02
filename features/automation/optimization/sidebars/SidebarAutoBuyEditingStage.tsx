@@ -165,7 +165,7 @@ export function SidebarAutoBuyEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Buy" />
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}

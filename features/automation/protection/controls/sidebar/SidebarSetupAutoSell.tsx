@@ -23,7 +23,7 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { extractCancelAutoSellErrors, extractCancelAutoSellWarnings } from 'helpers/messageMappers'
+import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -35,6 +35,7 @@ interface SidebarSetupAutoSellProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -61,6 +62,7 @@ export function SidebarSetupAutoSell({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
 
   isAutoSellActive,
   basicSellState,
@@ -104,6 +106,7 @@ export function SidebarSetupAutoSell({
     debtDelta,
     basicSellState,
     autoBuyTriggerData,
+    constantMultipleTriggerData,
     isRemoveForm,
   })
 
@@ -126,8 +129,8 @@ export function SidebarSetupAutoSell({
     sliderMax: max,
   })
 
-  const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
-  const cancelAutoSellErrors = extractCancelAutoSellErrors(errors)
+  const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
+  const cancelAutoSellErrors = extractCancelBSErrors(errors)
 
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 

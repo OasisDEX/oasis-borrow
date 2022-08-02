@@ -23,6 +23,7 @@
   "account-support": "Support",
   "account-terms": "Terms",
   "activity": "Activity",
+  "and": "and",
   "address": "Address",
   "address-invalid": "Address not found",
   "add-stop-loss": "Add Stop-Loss",
@@ -268,6 +269,7 @@
     "executed": "executed",
     "updated": "updated"
   },
+  "active-triggers": "active triggers",
   "jwt-auth-failed": "Signature failed",
   "jwt-auth-in-progress": "Waiting for signature...",
   "jwt-auth-rejected": "Signature rejected",
@@ -735,6 +737,8 @@
     "optimization": "Optimization",
     "stop-loss": "Stop-Loss",
     "basic-sell": "Auto-Sell",
+    "basic-buy": "Auto-Buy",
+    "constant-multiple": "Constant Multiple",
     "history": "History",
     "vaultinfo": "Vault Info",
     "position-info": "Position Info",
@@ -857,7 +861,8 @@
     "minimum-sell-price-not-provided": "Please enter a minimum sell price or select <1>Set No Threshold<1>",
     "auto-sell-trigger-higher-than-auto-buy-target": "Setting your an Auto-Sell trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
     "stop-loss-trigger-higher-than-auto-buy-target": "Setting your an Stop-Loss trigger at this level could result in it being executed by your Auto-Buy. Please adjust your Auto-Buy Target ratio first",
-    "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first"
+    "auto-buy-trigger-lower-than-auto-sell-target": "Setting your an Auto-Buy trigger at this level could result in it being executed by your Auto-Sell. Please adjust your Auto-Sell Target ratio first",
+    "cant-setup-auto-buy-or-sell-when-constant-multiple-enabled": "You cannot set up an {{autoType}} if you have an existing Constant Multiple set up. Please remove your Constant Multiple before continuing."
   },
   "vault-warnings": {
     "potential-generate-amount-less-than-debt-floor": "Minimum Dai required to open a Vault is {{debtFloor}}. Please add more collateral to generate {{debtFloor}} Dai",
@@ -879,7 +884,12 @@
     "auto-buy-target-close-to-auto-sell-trigger": "Setting a lower Target Ratio would trigger your existing Auto-Sell. If you want to use a lower target ratio, please adjust your Auto-Sell trigger first.",
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
-    "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>"
+    "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>",
+    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "You cannot set your Constant Multiple Sell trigger below your stop loss trigger. Find out more about how this works <0>here</0>",
+    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "You cannot set your Stop Loss Trigger above the existing Constant Multiple Trigger. Find out more about how this works <0>here</0>",
+    "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
+    "constant-multiple-auto-sell-triggered-immediately": "Setting your Sell Trigger at this ratio would result in it being executed immediately",
+    "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately"
   },
   "vault-info-messages": {
     "earn-overview": "This {{token}} position is earning trading fees in Uniswap V3. The supplied DAI is multiplied by using the Maker protocol, giving the user a bigger exposure to the Uniswap pool. Currently the only actions you can take is to <1>close this Vault</1>.",
@@ -1507,11 +1517,24 @@
   "constant-multiple": {
     "title": "Constant Multiple",
     "target-multiple": "Target Multiple",
+    "target-col-ratio": "Target Col. Ratio {{amount}}",
     "total-cost-of-feature": "Total cost of feature",
+    "pnl-since-enabled": "P&L since enabled: {{amount}}",
     "banner": {
       "header": "Set up Constant Multiple",
       "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
       "button": "Setup Constant Multiple"
+    },
+    "vault-changes": {
+      "general-summary": "General Summary",
+      "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
+      "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
+      "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
+      "cost-per-adjustment": "Estimated  transaction cost per adjustment",
+      "max-price-buy": "Max price to perform auto buy",
+      "max-price-sell": "Min price to perform auto sell",
+      "estimated-oasis-fee": "Estimated Oasis fee",
+      "estimated-max-gas-fee": "Estimated max gas fee"
     }
   },
   "ref": {

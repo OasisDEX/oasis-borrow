@@ -40,6 +40,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     ethBalance,
     ethPrice,
     isAutoSellEnabled,
+    isConstantMultipleEnabled,
     txError,
     vault: { debt },
     autoBuyTriggerData,
@@ -63,6 +64,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     sliderMax: slValuePickerConfig.maxBoundry,
     triggerRatio: selectedSLValue,
     isAutoSellEnabled,
+    isConstantMultipleEnabled,
   })
 
   const sidebarSectionProps: SidebarSectionProps = {

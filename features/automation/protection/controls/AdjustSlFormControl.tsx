@@ -54,6 +54,8 @@ interface AdjustSlFormControlProps {
   triggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  // TODO best way to handle it would be to map this triggerData to the same key-value pairs as we have on ui
+  constantMultipleTriggerData: any
   ctx: Context
   accountIsController: boolean
   toggleForms: () => void
@@ -69,6 +71,7 @@ export function AdjustSlFormControl({
   triggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   ctx,
   accountIsController,
   toggleForms,
@@ -150,6 +153,8 @@ export function AdjustSlFormControl({
 
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
+    : constantMultipleTriggerData.isTriggerEnabled
+    ? constantMultipleTriggerData.sellExecutionCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
     : vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -330,6 +335,7 @@ export function AdjustSlFormControl({
     currentCollateralRatio: vault.collateralizationRatio,
     isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     autoBuyTriggerData,
   }
 

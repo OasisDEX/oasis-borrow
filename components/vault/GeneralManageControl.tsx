@@ -17,7 +17,6 @@ export function GeneralManageControl({ id }: GeneralManageControlProps) {
   const [generalManageVault, generalManageVaultError] = useObservable(generalManageVaultWithId$)
   const autoTriggersData$ = automationTriggersData$(id)
   const [autoTriggersData, autoTriggersDataError] = useObservable(autoTriggersData$)
-
   useEffect(() => {
     return () => {
       generalManageVault?.state.clear()

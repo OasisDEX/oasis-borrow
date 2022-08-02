@@ -42,6 +42,7 @@ interface AutoSellFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -55,6 +56,7 @@ export function AutoSellFormControl({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
   isAutoSellActive,
   txHelpers,
   context,
@@ -195,9 +197,12 @@ export function AutoSellFormControl({
     vaultDebt: vault.debt,
   })
   const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    basicBSState: basicSellState,
-    vault,
+    targetCollRatio: basicSellState.targetCollRatio,
+    execCollRatio: basicSellState.execCollRatio,
+    deviation: basicSellState.deviation,
     executionPrice,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
   })
 
   return (
@@ -208,6 +213,7 @@ export function AutoSellFormControl({
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       isAutoSellActive={isAutoSellActive}
       context={context}
       ethMarketPrice={ethMarketPrice}

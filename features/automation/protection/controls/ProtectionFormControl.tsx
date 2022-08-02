@@ -46,6 +46,7 @@ export function ProtectionFormControl({
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+  const constantMultipleTriggerData = {} as any
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
 
@@ -72,6 +73,7 @@ export function ProtectionFormControl({
         stopLossTriggerData={stopLossTriggerData}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         priceInfo={priceInfo}
         vault={vault}
         account={account}
@@ -88,6 +90,7 @@ export function ProtectionFormControl({
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
         stopLossTriggerData={stopLossTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoSellActive={isAutoSellActive}
         context={context}
         txHelpers={txHelpers}

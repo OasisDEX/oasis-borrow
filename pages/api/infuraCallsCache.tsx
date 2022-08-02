@@ -21,7 +21,7 @@ function respond(
   }
 }
 
-const cache = new NodeCache({ stdTTL: 15 })
+const cache = new NodeCache({ stdTTL: 60 })
 
 async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse) {
   const encodedBatchCallData = req.body.encoded

@@ -7,6 +7,7 @@ import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
+import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -40,7 +41,7 @@ import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   coinbaseOrderBook$,
@@ -84,6 +85,11 @@ import {
   BasicBSChangeAction,
   basicBSFormChangeReducer,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleChangeAction,
+  constantMultipleFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -272,6 +278,7 @@ export type TxData =
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
+  | AutomationBotAddAggregatorTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -329,6 +336,7 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
   TxPayloadChange: TxPayloadChangeAction
 }
@@ -420,6 +428,10 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(
+    CONSTANT_MULTIPLE_FORM_CHANGE,
+    constantMultipleFormChangeReducer,
+  )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
   uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
 
@@ -674,9 +686,9 @@ export function setupAppContext() {
     ]),
   )
 
-  const ilks$ = createIlks$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
-  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
+  const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balance$,
@@ -684,7 +696,7 @@ export function setupAppContext() {
     oraclePriceData$,
   )
 
-  const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilkDataList$ = createIlkDataList$(ilkData$, ilksSupportedOnNetwork$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
@@ -708,7 +720,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
@@ -753,7 +765,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
@@ -895,7 +907,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = memoize(
-    curry(createProductCardsData$)(ilkData$, oraclePriceData$),
+    curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkData$, oraclePriceData$),
     (ilks: string[]) => {
       return ilks.join(',')
     },
@@ -1010,7 +1022,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       psmExchangeQuote$,
       onEveryBlock$,
@@ -1035,7 +1047,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    ilks$,
+    ilks$: ilksSupportedOnNetwork$,
     openVault$,
     manageVault$,
     manageInstiVault$,
