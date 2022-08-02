@@ -1,5 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { StatefulTooltip } from 'components/Tooltip'
+import { checkIfVaultLiquidated } from 'helpers/functions'
 import { WithChildren } from 'helpers/types'
 import { TFunction } from 'i18next'
 import _ from 'lodash'
@@ -109,12 +110,22 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
   const { t } = useTranslation()
 
   const { automationLinkProps } = position
+  const hasBeenLiquidated = checkIfVaultLiquidated(position)
 
   if (position.automationEnabled) {
     return (
       <AppLink {...automationLinkProps}>
-        <Button variant="actionActiveGreen" sx={{ px: '24px', py: '11px' }}>
-          {t('earn.automation-button-on')} {position.protectionAmount}
+        <Button
+          variant={hasBeenLiquidated ? 'action' : 'actionActivegreen'}
+          sx={{ px: '24px', py: '11px' }}
+        >
+          {hasBeenLiquidated ? (
+            <>{t('earn.automation-button-active')}</>
+          ) : (
+            <>
+              {t('earn.automation-button-on')} {position.protectionAmount}
+            </>
+          )}
         </Button>
       </AppLink>
     )

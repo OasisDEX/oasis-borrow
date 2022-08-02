@@ -1320,6 +1320,7 @@
     "automation-button-on": "On",
     "automation-button-off": "Activate",
     "automation-button-off-disabled": "No protection",
+    "automation-button-active": "Active",
     "position-headers": {
       "asset": {
         "label": "Asset",
