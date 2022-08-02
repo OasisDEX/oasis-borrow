@@ -8,7 +8,7 @@ import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentCardTriggerColRatioProps {
+interface ContentCardTriggerColRatioToBuyProps {
   token: string
   triggerColRatio?: BigNumber
   afterTriggerColRatio?: BigNumber
@@ -16,13 +16,13 @@ interface ContentCardTriggerColRatioProps {
   changeVariant?: ChangeVariantType
 }
 
-export function ContentCardTriggerColRatio({
+export function ContentCardTriggerColRatioToBuy({
   token,
   triggerColRatio,
   afterTriggerColRatio,
   nextBuyPrice,
   changeVariant,
-}: ContentCardTriggerColRatioProps) {
+}: ContentCardTriggerColRatioToBuyProps) {
   const { t } = useTranslation()
 
   const formatted = {

@@ -6,7 +6,7 @@ interface Cached<T> {
 }
 export function cacheObject<R>(
   fetchFunction: () => Promise<R>,
-  stdTTL: number,
+  stdTTL: number, // seconds
 ): () => Promise<Cached<R>> {
   const statsCache = new NodeCache({ stdTTL })
 

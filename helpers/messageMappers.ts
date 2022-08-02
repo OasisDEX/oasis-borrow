@@ -92,26 +92,34 @@ export function extractCommonWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => commonWarnings.includes(message))
 }
 
-const cancelAutoSellWarnings = ['potentialInsufficientEthFundsForTx']
-
-export function extractCancelAutoSellWarnings(warningMessages: VaultWarningMessage[]) {
-  return warningMessages.filter((message) => cancelAutoSellWarnings.includes(message))
-}
-
-const cancelAutoSellErrors = ['insufficientEthFundsForTx']
-
-export function extractCancelAutoSellErrors(errorMessages: VaultErrorMessage[]) {
-  return errorMessages.filter((message) => cancelAutoSellErrors.includes(message))
-}
-
 const cancelAutoBuyWarnings = ['potentialInsufficientEthFundsForTx']
 
-export function extractCancelAutoBuyWarnings(warningMessages: VaultWarningMessage[]) {
+export function extractCancelBSWarnings(warningMessages: VaultWarningMessage[]) {
   return warningMessages.filter((message) => cancelAutoBuyWarnings.includes(message))
 }
 
 const cancelAutoBuyErrors = ['insufficientEthFundsForTx']
 
-export function extractCancelAutoBuyErrors(errorMessages: VaultErrorMessage[]) {
+export function extractCancelBSErrors(errorMessages: VaultErrorMessage[]) {
   return errorMessages.filter((message) => cancelAutoBuyErrors.includes(message))
+}
+
+const constantMultipleSliderWarnings = [
+  'constantMultipleSellTriggerCloseToStopLossTrigger',
+  'stopLossTriggerCloseToConstantMultipleSellTrigger',
+  'constantMultipleAutoSellTriggeredImmediately',
+  'constantMultipleAutoBuyTriggeredImmediately',
+]
+
+export function extractConstantMultipleSliderWarnings(warningMessages: VaultWarningMessage[]) {
+  return warningMessages.filter((message) => constantMultipleSliderWarnings.includes(message))
+}
+
+const constantMultipleCommonWarnings = [
+  'potentialInsufficientEthFundsForTx',
+  'addingConstantMultipleWhenAutoSellOrBuyEnabled',
+]
+
+export function extractConstantMultipleCommonWarnings(warningMessages: VaultWarningMessage[]) {
+  return warningMessages.filter((message) => constantMultipleCommonWarnings.includes(message))
 }

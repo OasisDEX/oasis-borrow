@@ -1,11 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
 import { zero } from 'helpers/zero'
+
+export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
 
 export function resolveMaxBuyOrMinSellPrice(maxBuyOrMinSellPrice: BigNumber) {
   return maxBuyOrMinSellPrice.isZero() || maxBuyOrMinSellPrice.isEqualTo(maxUint256)
@@ -91,24 +92,28 @@ export function checkIfDisabledBasicBS({
 }
 
 export function getBasicBSVaultChange({
-  basicBSState,
+  targetCollRatio,
+  execCollRatio,
+  deviation,
   executionPrice,
-  vault,
+  debt,
+  lockedCollateral,
 }: {
-  basicBSState: BasicBSFormChange
+  targetCollRatio: BigNumber
+  execCollRatio: BigNumber
   executionPrice: BigNumber
-  vault: Vault
+  deviation: BigNumber
+  debt: BigNumber
+  lockedCollateral: BigNumber
 }) {
-  return basicBSState.targetCollRatio.gt(zero) &&
-    basicBSState.execCollRatio.gt(zero) &&
-    executionPrice.gt(zero)
+  return targetCollRatio.gt(zero) && execCollRatio.gt(zero) && executionPrice.gt(zero)
     ? getVaultChange({
         currentCollateralPrice: executionPrice,
         marketPrice: executionPrice,
-        slippage: basicBSState.deviation.div(100),
-        debt: vault.debt,
-        lockedCollateral: vault.lockedCollateral,
-        requiredCollRatio: basicBSState.targetCollRatio.div(100),
+        slippage: deviation.div(100),
+        debt: debt,
+        lockedCollateral: lockedCollateral,
+        requiredCollRatio: targetCollRatio.div(100),
         depositAmount: zero,
         paybackAmount: zero,
         generateAmount: zero,
@@ -117,4 +122,10 @@ export function getBasicBSVaultChange({
         FF: LOAN_FEE,
       })
     : { debtDelta: zero, collateralDelta: zero }
+}
+
+export function calculateCollRatioForMultiply(multiplier: number) {
+  return new BigNumber(multiplier / (multiplier - 1))
+    .decimalPlaces(2, BigNumber.ROUND_DOWN)
+    .times(100)
 }

@@ -4,8 +4,8 @@ import { Banner, bannerGradientPresets } from 'components/Banner'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
 import { AppLink } from 'components/Links'
-import { ContentCardTargetColRatio } from 'components/vault/detailsSection/ContentCardTargetColRatio'
-import { ContentCardTriggerColRatio } from 'components/vault/detailsSection/ContentCardTriggerColRatio'
+import { ContentCardTargetColRatioAfterBuy } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterBuy'
+import { ContentCardTriggerColRatioToBuy } from 'components/vault/detailsSection/ContentCardTriggerColRatioToBuy'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -51,14 +51,14 @@ export function BasicBuyDetailsLayout({
           badge={isAutoBuyOn}
           content={
             <DetailsSectionContentCardWrapper>
-              <ContentCardTriggerColRatio
+              <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatio}
                 afterTriggerColRatio={uiState.execCollRatio}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
               />
-              <ContentCardTargetColRatio
+              <ContentCardTargetColRatioAfterBuy
                 targetColRatio={targetColRatio}
                 afterTargetColRatio={uiState.targetCollRatio}
                 threshold={threshold}

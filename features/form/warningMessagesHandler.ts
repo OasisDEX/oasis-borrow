@@ -21,6 +21,11 @@ export type VaultWarningMessage =
   | 'autoBuyTriggeredImmediately'
   | 'autoSellTriggeredImmediately'
   | 'autoSellOverride'
+  | 'constantMultipleSellTriggerCloseToStopLossTrigger'
+  | 'stopLossTriggerCloseToConstantMultipleSellTrigger'
+  | 'addingConstantMultipleWhenAutoSellOrBuyEnabled'
+  | 'constantMultipleAutoSellTriggeredImmediately'
+  | 'constantMultipleAutoBuyTriggeredImmediately'
 
 interface WarningMessagesHandler {
   potentialGenerateAmountLessThanDebtFloor?: boolean
@@ -42,6 +47,11 @@ interface WarningMessagesHandler {
   autoBuyTargetCloseToAutoSellTrigger?: boolean
   autoSellTriggeredImmediately?: boolean
   autoBuyTriggeredImmediately?: boolean
+  constantMultipleSellTriggerCloseToStopLossTrigger?: boolean
+  stopLossTriggerCloseToConstantMultipleSellTrigger?: boolean
+  addingConstantMultipleWhenAutoSellOrBuyEnabled?: boolean
+  constantMultipleAutoSellTriggeredImmediately?: boolean
+  constantMultipleAutoBuyTriggeredImmediately?: boolean
 }
 
 export function warningMessagesHandler({
@@ -62,6 +72,11 @@ export function warningMessagesHandler({
   autoBuyTargetCloseToAutoSellTrigger,
   autoSellTriggeredImmediately,
   autoBuyTriggeredImmediately,
+  constantMultipleSellTriggerCloseToStopLossTrigger,
+  stopLossTriggerCloseToConstantMultipleSellTrigger,
+  addingConstantMultipleWhenAutoSellOrBuyEnabled,
+  constantMultipleAutoSellTriggeredImmediately,
+  constantMultipleAutoBuyTriggeredImmediately,
 }: WarningMessagesHandler) {
   const warningMessages: VaultWarningMessage[] = []
 
@@ -132,13 +147,29 @@ export function warningMessagesHandler({
     warningMessages.push('autoSellTriggeredImmediately')
   }
 
-  // if (highSlippage) {
-  //   warningMessages.push('highSlippage')
-  // }
+  if (constantMultipleSellTriggerCloseToStopLossTrigger) {
+    warningMessages.push('constantMultipleSellTriggerCloseToStopLossTrigger')
+  }
 
-  // if (customSlippageOverridden) {
-  //   warningMessages.push('customSlippageOverridden')
-  // }
+  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
+  }
+
+  if (addingConstantMultipleWhenAutoSellOrBuyEnabled) {
+    warningMessages.push('addingConstantMultipleWhenAutoSellOrBuyEnabled')
+  }
+
+  if (stopLossTriggerCloseToConstantMultipleSellTrigger) {
+    warningMessages.push('stopLossTriggerCloseToConstantMultipleSellTrigger')
+  }
+
+  if (constantMultipleAutoSellTriggeredImmediately) {
+    warningMessages.push('constantMultipleAutoSellTriggeredImmediately')
+  }
+
+  if (constantMultipleAutoBuyTriggeredImmediately) {
+    warningMessages.push('constantMultipleAutoBuyTriggeredImmediately')
+  }
 
   return warningMessages
 }

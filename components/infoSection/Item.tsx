@@ -4,8 +4,7 @@ import { VaultChangesInformationArrow } from 'components/vault/VaultChangesInfor
 import { AppSpinner } from 'helpers/AppSpinner'
 import { ReactNode, useState } from 'react'
 import React from 'react'
-import { theme } from 'theme'
-import { Box, Flex, Grid, IconButton, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 export interface DropDownValue {
   label?: string
@@ -23,6 +22,7 @@ export interface ItemProps {
   secondaryValue?: string
   dropdownValues?: DropDownValue[]
   isLoading?: boolean
+  isHeading?: boolean
 }
 
 // TODO: Add tooltip and loading state
@@ -36,6 +36,7 @@ export function Item({
   isLoading,
   dropDownElementType,
   labelColorPrimary,
+  isHeading = false,
 }: ItemProps) {
   const [open, setOpen] = useState(false)
 
@@ -48,83 +49,91 @@ export function Item({
         listStyle: 'none',
       }}
     >
-      <Flex>
+      <Flex
+        sx={{
+          cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
+        }}
+        onClick={() => {
+          !isLoading && dropdownValues?.length && setOpen(!open)
+        }}
+      >
         {label && (
           <Text
-            sx={{
-              mr: 'auto',
-              color: labelColorPrimary ? 'primary100' : theme.colors.neutral80,
-            }}
-            as="p"
+            {...(!isHeading
+              ? {
+                  as: 'p',
+                  sx: {
+                    mr: 'auto',
+                    color: labelColorPrimary ? 'primary100' : 'neutral80',
+                  },
+                }
+              : {
+                  as: 'h4',
+                  variant: 'paragraph3',
+                  sx: {
+                    color: 'primary100',
+                    fontWeight: 'semiBold',
+                  },
+                })}
           >
             {label}
           </Text>
         )}
-        <Box>
-          <Text
-            sx={{
-              color: 'primary100',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-            as="div"
-          >
-            {isLoading ? (
-              <AppSpinner />
-            ) : (
-              <>
-                {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
-                {secondaryValue && (
-                  <>
-                    <VaultChangesInformationArrow />
-                    {`${secondaryValue}`}
-                  </>
-                )}
-                {dropdownValues?.length && (
-                  <IconButton
-                    onClick={() => setOpen(!open)}
-                    sx={{
-                      height: '100%',
-                      cursor: 'pointer',
-                      width: 'fit-content',
-                      display: 'flex',
-                      justifyContent: 'right',
-                      ml: 1,
-                    }}
-                  >
-                    <ExpandableArrow
-                      direction={open ? 'up' : 'down'}
-                      sx={{
-                        pr: 0,
-                      }}
-                    />
-                  </IconButton>
-                )}
-              </>
-            )}
-          </Text>
-        </Box>
+        <Text
+          sx={{
+            color: 'primary100',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          as="div"
+        >
+          {isLoading ? (
+            <AppSpinner />
+          ) : (
+            <>
+              {value && <>{React.isValidElement(value) ? value : `${value}`}</>}
+              {secondaryValue && (
+                <>
+                  <VaultChangesInformationArrow />
+                  {`${secondaryValue}`}
+                </>
+              )}
+              {dropdownValues?.length && (
+                <ExpandableArrow
+                  direction={open ? 'up' : 'down'}
+                  sx={{
+                    mt: !isHeading ? 0 : '2px',
+                    ml: 2,
+                  }}
+                />
+              )}
+            </>
+          )}
+        </Text>
       </Flex>
-      {open && (
+      {!isLoading && open && (
         <>
           {subLabel && (
             <Text
               sx={{
                 fontWeight: 400,
-                color: theme.colors.neutral80,
+                color: 'neutral80',
               }}
             >
               {subLabel}
             </Text>
           )}
-          <Grid
-            as="ul"
-            gap={2}
-            sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 2, listStyle: 'none' }}
-          >
-            {dropdownValues &&
-              dropdownValues.map((item, idx) => <Item {...item} key={item.label || idx} />)}
-          </Grid>
+          {dropdownValues && (
+            <Grid
+              as="ul"
+              gap={!isHeading ? 2 : 3}
+              sx={{ p: 0, m: 0, pl: dropDownElementType ? 'unset' : 3, mt: 3, listStyle: 'none' }}
+            >
+              {dropdownValues.map((item, idx) => (
+                <Item {...item} key={item.label || idx} />
+              ))}
+            </Grid>
+          )}
         </>
       )}
     </Box>

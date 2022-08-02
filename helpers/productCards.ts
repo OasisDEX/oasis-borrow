@@ -360,13 +360,11 @@ export const productCardsConfig: {
       name: 'Maker (YFI-A)',
     },
     'GUNIV3DAIUSDC1-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
       name: 'Maker/Gelato/Uniswap',
     },
     'GUNIV3DAIUSDC2-A': {
-      link:
-        'https://kb.oasis.app/help/collaterals-supported-in-oasis-app#h_1653695461291652792950901',
+      link: 'https://kb.oasis.app/help/earn-with-dai-and-g-uni-multiply',
       name: 'Maker/Gelato/Uniswap',
     },
     'UNIV2USDCETH-A': {
@@ -588,6 +586,7 @@ export function createProductCardsWithBalance$(
 }
 
 export function createProductCardsData$(
+  supportedIlks$: Observable<string[]>,
   ilkData$: (ilk: string) => Observable<IlkData>,
   oraclePrice$: (args: OraclePriceDataArgs) => Observable<OraclePriceData>,
   visibleIlks: Array<Ilk>,
@@ -596,16 +595,27 @@ export function createProductCardsData$(
     return of([])
   }
 
-  const hydratedIlkData$ = combineLatest(visibleIlks.map((ilk) => ilkData$(ilk)))
+  const hydratedIlkData$ = supportedIlks$.pipe(
+    switchMap((ilksSupportedOnNetwork) => {
+      const displayedIlks = visibleIlks.filter((ilk) => ilksSupportedOnNetwork.includes(ilk))
+      if (displayedIlks.length === 0) {
+        return of([])
+      }
+      return combineLatest(displayedIlks.map((ilk) => ilkData$(ilk)))
+    }),
+  )
 
   const hydratedOraclePriceData$ = hydratedIlkData$.pipe(
-    switchMap((ilkDatas) =>
-      combineLatest(
+    switchMap((ilkDatas) => {
+      if (ilkDatas.length === 0) {
+        return of([])
+      }
+      return combineLatest(
         ilkDatas.map((ilkData) =>
           oraclePrice$({ token: ilkData.token, requestedData: ['currentPrice'] }),
         ),
-      ),
-    ),
+      )
+    }),
   )
 
   return combineLatest(hydratedIlkData$, hydratedOraclePriceData$).pipe(
