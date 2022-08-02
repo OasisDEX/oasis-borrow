@@ -1,7 +1,7 @@
+import { Toggle } from 'components/Toggle'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
-import { Toggle } from 'ui'
 
 interface NotificationPrefrenceCardProps {
   heading: string

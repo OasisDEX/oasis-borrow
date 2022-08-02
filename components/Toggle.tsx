@@ -1,5 +1,5 @@
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { Box, Input, SxStyleProp } from 'theme-ui'
 
 interface ToggleProps {
@@ -9,12 +9,9 @@ interface ToggleProps {
 }
 
 export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
-  const [checked, setChecked] = useState(isChecked)
-
   const handleToggle = useCallback(() => {
-    onChange(!checked)
-    setChecked((prev) => !prev)
-  }, [checked])
+    onChange(!isChecked)
+  }, [isChecked])
 
   return (
     <Box
@@ -41,18 +38,18 @@ export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
         sx={{
           '&:before': {
             position: 'absolute',
-            content: checked ? checkedToggleDataIcon : notCheckedToggleDataIcon,
+            content: isChecked ? checkedToggleDataIcon : notCheckedToggleDataIcon,
             height: '20px',
             display: 'block',
             width: '20px',
             marginTop: '2px',
-            ...(!checked && { marginLeft: '2px' }),
-            backgroundColor: checked ? 'interactive100' : 'primary30',
+            ...(!isChecked && { marginLeft: '2px' }),
+            backgroundColor: isChecked ? 'interactive100' : 'primary30',
             borderRadius: 'circle',
             textAlign: 'center',
-            lineHeight: checked ? '1.2' : '1',
+            lineHeight: isChecked ? '1.2' : '1',
             transition: '.4s',
-            ...(checked && { transform: 'translateX(26px)' }),
+            ...(isChecked && { transform: 'translateX(26px)' }),
           },
           position: 'absolute',
           cursor: 'pointer',
@@ -60,7 +57,7 @@ export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: checked ? 'interactive10' : 'secondary60',
+          backgroundColor: isChecked ? 'interactive10' : 'secondary60',
           transition: '.4s',
           borderRadius: 'round',
         }}
