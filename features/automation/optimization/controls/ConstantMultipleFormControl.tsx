@@ -41,6 +41,7 @@ interface ConstantMultipleFormControlProps {
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   balanceInfo: BalanceInfo
+  shouldRemoveAllowance: boolean
 }
 
 export function ConstantMultipleFormControl({
@@ -54,6 +55,7 @@ export function ConstantMultipleFormControl({
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  // shouldRemoveAllowance, // TODO to be used in cancel trigger txData
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges, gasPrice$ } = useAppContext()

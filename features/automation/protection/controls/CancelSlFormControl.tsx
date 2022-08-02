@@ -46,6 +46,7 @@ interface CancelSlFormControlProps {
   priceInfo: PriceInfo
   balanceInfo: BalanceInfo
   ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   tx?: TxHelpers
 }
 
@@ -60,17 +61,17 @@ export function CancelSlFormControl({
   ilkData,
   tx,
   ethMarketPrice,
+  shouldRemoveAllowance,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = triggerData
   const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
   const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
-  // TODO: if there will be no existing triggers left after removal, allowance should be set to true
-  const removeAllowance = false
+
   const txData = useMemo(
-    () => prepareRemoveStopLossTriggerData(vault, triggerId, removeAllowance),
-    [triggerId],
+    () => prepareRemoveStopLossTriggerData(vault, triggerId, shouldRemoveAllowance),
+    [triggerId, shouldRemoveAllowance],
   )
 
   useEffect(() => {

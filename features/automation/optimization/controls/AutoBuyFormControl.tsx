@@ -46,6 +46,7 @@ interface AutoBuyFormControlProps {
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
   isAutoBuyActive: boolean
 }
@@ -63,6 +64,7 @@ export function AutoBuyFormControl({
   context,
   ethMarketPrice,
   isAutoBuyActive,
+  shouldRemoveAllowance,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges } = useAppContext()
@@ -100,8 +102,9 @@ export function AutoBuyFormControl({
         vaultData: vault,
         triggerType: TriggerType.BasicBuy,
         triggerId: basicBuyState.triggerId,
+        shouldRemoveAllowance,
       }),
-    [basicBuyState.triggerId.toNumber()],
+    [basicBuyState.triggerId.toNumber(), shouldRemoveAllowance],
   )
 
   const txStatus = basicBuyState?.txDetails?.txStatus
