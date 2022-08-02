@@ -3,13 +3,13 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { GasEstimation } from 'features/gasEstimation/GasEstimation'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { useTranslation } from 'next-i18next'

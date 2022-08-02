@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
-import { GasEstimation } from 'features/gasEstimation/GasEstimation'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'

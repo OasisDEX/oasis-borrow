@@ -6,12 +6,12 @@ import { Vault } from 'blockchain/vaults'
 import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
+import { GasEstimation } from 'components/GasEstimation'
 import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { GasEstimation } from 'features/gasEstimation/GasEstimation'
 import { formatAmount, formatFiatBalance, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { one } from 'helpers/zero'

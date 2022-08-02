@@ -119,6 +119,8 @@ export function getEstimatedGasFeeTextOld(gasEstimation?: HasGasEstimation, with
 }
 
 export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, withBrackets = false) {
+  const { t } = useTranslation()
+
   if (!gasEstimation) {
     return 'n/a'
   }
@@ -130,10 +132,12 @@ export function getEstimatedGasFeeText(gasEstimation?: GasEstimationContext, wit
 
   switch (status) {
     case GasEstimationStatus.calculating:
-      const textPending = 'Pending...'
+      const textPending = t('pending')
 
       return (
-        <Text sx={{ color: 'neutral80' }}>{withBrackets ? `(${textPending})` : textPending}</Text>
+        <Text as="span" sx={{ color: 'neutral80' }}>
+          {withBrackets ? `(${textPending})` : textPending}
+        </Text>
       )
     case GasEstimationStatus.error:
     case undefined:
