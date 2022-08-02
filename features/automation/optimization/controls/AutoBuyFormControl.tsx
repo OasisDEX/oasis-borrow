@@ -166,7 +166,7 @@ export function AutoBuyFormControl({
   })
 
   useEffect(() => {
-    if (isEditing) {
+    if (isEditing && isAutoBuyActive) {
       if (isAddForm) {
         uiChanges.publish(TX_DATA_CHANGE, {
           type: 'add-trigger',
@@ -180,7 +180,7 @@ export function AutoBuyFormControl({
         })
       }
     }
-  }, [addTxData, cancelTxData, isEditing])
+  }, [addTxData, cancelTxData, isEditing, isAutoBuyActive])
 
   const isDisabled = checkIfDisabledBasicBS({
     isProgressStage,
