@@ -121,9 +121,5 @@ export function getBasicBSVaultChange({
 }
 
 export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
-  if (automationTriggersData.triggers) {
-    return automationTriggersData.triggers.length === 1
-  }
-
-  return false
+  return automationTriggersData.triggers?.length === 1
 }
