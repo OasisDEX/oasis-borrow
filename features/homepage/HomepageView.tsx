@@ -191,7 +191,7 @@ export function HomepageView() {
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
-      {notificationsEnabled && <TermsOfService userReferral={userReferral} />}
+      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
