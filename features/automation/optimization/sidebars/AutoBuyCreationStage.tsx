@@ -7,17 +7,17 @@ import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-interface SidebarAutoBuyCreationStageProps {
+interface AutoBuyCreationStageProps {
   stage: SidebarVaultStages
   isAddForm: boolean
   isRemoveForm: boolean
 }
 
-export function SidebarAutoBuyCreationStage({
+export function AutoBuyCreationStage({
   stage,
   isAddForm,
   isRemoveForm,
-}: SidebarAutoBuyCreationStageProps) {
+}: AutoBuyCreationStageProps) {
   const { t } = useTranslation()
 
   switch (stage) {

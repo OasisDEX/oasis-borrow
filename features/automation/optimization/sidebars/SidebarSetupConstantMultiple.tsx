@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-import { ActionPills } from 'components/ActionPills'
+// import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
-import { VaultActionInput } from 'components/vault/VaultActionInput'
-import { VaultWarnings } from 'components/vault/VaultWarnings'
+// import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
+// import { VaultActionInput } from 'components/vault/VaultActionInput'
+// import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
@@ -21,25 +21,26 @@ import {
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import {
-  CONSTANT_MULTIPLE_FORM_CHANGE,
+  // CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
-import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { handleNumericInput } from 'helpers/input'
-import {
-  extractConstantMultipleCommonWarnings,
-  extractConstantMultipleSliderWarnings,
-} from 'helpers/messageMappers'
+// import { handleNumericInput } from 'helpers/input'
+// import {
+//   extractConstantMultipleCommonWarnings,
+//   extractConstantMultipleSliderWarnings,
+// } from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
+
+import { ConstantMultipleEditingStage } from './ConstantMultipleEditingStage'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
@@ -73,6 +74,7 @@ interface SidebarSetupConstantMultipleProps {
 const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
   .decimalPlaces(0, BigNumber.ROUND_DOWN)
   .toNumber()
+
 export function SidebarSetupConstantMultiple({
   vault,
   balanceInfo,
@@ -94,7 +96,7 @@ export function SidebarSetupConstantMultiple({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
-  estimatedGasCostOnTrigger,
+  // estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
 }: SidebarSetupConstantMultipleProps) {
@@ -102,7 +104,7 @@ export function SidebarSetupConstantMultiple({
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
-  const { token } = vault
+  // const { token } = vault
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -111,10 +113,7 @@ export function SidebarSetupConstantMultiple({
     : 'editConstantMultiple'
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
-  function handleChangeMultiplier(multiplier: number) {
-    onMultiplierChange(multiplier)
-  }
+  // const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
 
   const { min: sliderMin } = getBasicSellMinMaxValues({
     autoBuyTriggerData,
@@ -141,7 +140,9 @@ export function SidebarSetupConstantMultiple({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
   })
-
+  function handleChangeMultiplier(multiplier: number) {
+    onMultiplierChange(multiplier)
+  }
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
@@ -152,124 +153,32 @@ export function SidebarSetupConstantMultiple({
       },
       content: (
         <Grid gap={3}>
-          <ActionPills
-            active={
-              constantMultipleState?.multiplier
-                ? constantMultipleState.multiplier.toString()
-                : INITIAL_MULTIPLIER_SELECTED.toString()
-            }
-            variant="secondary"
-            items={acceptableMultipliers.map((multiplier) => {
-              return {
-                id: multiplier.toString(),
-                label: `${multiplier}X`,
-                action: () => {
-                  handleChangeMultiplier(multiplier)
-                },
-              }
-            })}
-          />
-          <MultipleRangeSlider
-            min={sliderMin.toNumber()}
-            max={sliderMax || largestSliderValueAllowed}
-            onChange={(value) => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'sell-execution-coll-ratio',
-                sellExecutionCollRatio: new BigNumber(value.value0),
-              })
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'buy-execution-coll-ratio',
-                buyExecutionCollRatio: new BigNumber(value.value1),
-              })
-            }}
-            value={{
-              value0: constantMultipleState.sellExecutionCollRatio.toNumber(),
-              value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
-            }}
-            valueColors={{
-              value0: 'onSuccess',
-              value1: 'onWarning',
-            }}
-            step={1}
-            leftDescription={t('auto-sell.sell-trigger-ratio')}
-            rightDescription={t('auto-buy.trigger-coll-ratio')}
-            leftThumbColor="onSuccess"
-            rightThumbColor="onWarning"
-            middleMark={{
-              text: constantMultipleState.multiplier.toString(),
-              value: constantMultipleState.targetCollRatio.toNumber(),
-            }}
-          />
-          <VaultWarnings
-            warningMessages={extractConstantMultipleSliderWarnings(warnings)}
-            ilkData={ilkData}
-          />
-          <VaultActionInput
-            action={t('auto-buy.set-max-buy-price')}
-            amount={constantMultipleState?.maxBuyPrice}
-            hasAuxiliary={false}
-            hasError={false}
-            currencyCode="USD"
-            onChange={handleNumericInput((maxBuyPrice) => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'max-buy-price',
-                maxBuyPrice: maxBuyPrice,
-              })
-            })}
-            onToggle={(toggleStatus) => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'buy-with-threshold',
-                buyWithThreshold: toggleStatus,
-              })
-            }}
-            showToggle={true}
-            toggleOnLabel={t('protection.set-no-threshold')}
-            toggleOffLabel={t('protection.set-threshold')}
-            toggleOffPlaceholder={t('protection.no-threshold')}
-            defaultToggle={constantMultipleState?.buyWithThreshold}
-          />
-          <VaultActionInput
-            action={t('auto-sell.set-min-sell-price')}
-            amount={constantMultipleState?.minSellPrice}
-            hasAuxiliary={false}
-            hasError={false}
-            currencyCode="USD"
-            onChange={handleNumericInput((minSellPrice) => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'min-sell-price',
-                minSellPrice,
-              })
-            })}
-            onToggle={(toggleStatus) => {
-              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                type: 'sell-with-threshold',
-                sellWithThreshold: toggleStatus,
-              })
-            }}
-            defaultToggle={constantMultipleState?.sellWithThreshold}
-            showToggle={true}
-            toggleOnLabel={t('protection.set-no-threshold')}
-            toggleOffLabel={t('protection.set-threshold')}
-            toggleOffPlaceholder={t('protection.no-threshold')}
-          />
-          <VaultWarnings
-            warningMessages={extractConstantMultipleCommonWarnings(warnings)}
-            ilkData={ilkData}
-            isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
-            isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
-          />
-          {isEditing && (
-            <ConstantMultipleInfoSectionControl
-              token={token}
-              nextBuyPrice={nextBuyPrice}
-              nextSellPrice={nextSellPrice}
-              collateralToBePurchased={collateralToBePurchased}
-              collateralToBeSold={collateralToBeSold}
-              estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-              estimatedBuyFee={estimatedBuyFee}
-              estimatedSellFee={estimatedSellFee}
-              constantMultipleState={constantMultipleState}
-            />
+          {(stage === 'editing' || stage === 'txFailure') && (
+            <>
+              <ConstantMultipleEditingStage
+                ilkData={ilkData}
+                isEditing={isEditing}
+                // basicBuyState={undefined}
+                autoBuyTriggerData={autoBuyTriggerData}
+                // errors={[]}
+                warnings={warnings}
+                // debtDelta={new BigNumber()}
+                // collateralDelta={new BigNumber()}
+                sliderMin={sliderMin}
+                sliderMax={sliderMax !== undefined ? sliderMax : largestSliderValueAllowed}
+                token={''}
+                constantMultipleState={constantMultipleState}
+                // onChange={onMultiplierChange}
+                handleChangeMultiplier={handleChangeMultiplier}
+                autoSellTriggerData={autoSellTriggerData}
+                nextBuyPrice={nextBuyPrice}
+                nextSellPrice={nextSellPrice}
+                collateralToBePurchased={collateralToBePurchased}
+                collateralToBeSold={collateralToBeSold}
+                estimatedBuyFee={estimatedBuyFee}
+                estimatedSellFee={estimatedSellFee}
+              />
+            </>
           )}
         </Grid>
       ),
@@ -309,7 +218,7 @@ interface ConstantMultipleInfoSectionControlProps {
   constantMultipleState: ConstantMultipleFormChange
 }
 
-function ConstantMultipleInfoSectionControl({
+export function ConstantMultipleInfoSectionControl({
   token,
   nextBuyPrice,
   nextSellPrice,
