@@ -81,6 +81,26 @@ const defaultBasicSellData = {
   isTriggerEnabled: false,
 }
 
+interface ConstantMultipleTriggerPairData {
+  [TriggerType.BasicBuy]: BasicBSTriggerData
+  [TriggerType.BasicSell]: BasicBSTriggerData
+}
+
+export function extractGroupTriggersData(
+  data: TriggersData,
+  triggerIds: number[] | undefined,
+): ConstantMultipleTriggerPairData {
+  const groupData: TriggersData = {
+    isAutomationEnabled: data.isAutomationEnabled,
+    triggers: data.triggers?.filter((trigger) => triggerIds?.includes(trigger.triggerId)),
+  }
+
+  return {
+    [TriggerType.BasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
+    [TriggerType.BasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
+  }
+}
+
 export function extractBasicBSData(data: TriggersData, type: TriggerType): BasicBSTriggerData {
   if (data.triggers && data.triggers.length > 0) {
     const basicBSTriggers = getTriggersByType(data.triggers, [type])

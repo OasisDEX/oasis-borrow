@@ -17,6 +17,7 @@ import * as dssProxyActionsCharter from './abi/dss-proxy-actions-charter.json'
 import * as dssProxyActionsCropjoin from './abi/dss-proxy-actions-cropjoin.json'
 import * as dssProxyActionsDsr from './abi/dss-proxy-actions-dsr.json'
 import * as dssProxyActions from './abi/dss-proxy-actions.json'
+import * as dummyAutomationBotAggregator from './abi/dummy-automation-bot-aggregator.json'
 import * as erc20 from './abi/erc20.json'
 import * as exchange from './abi/exchange.json'
 import * as getCdps from './abi/get-cdps.json'
@@ -158,6 +159,7 @@ const protoMain = {
   dssProxyActions: contractDesc(dssProxyActions, mainnetAddresses.PROXY_ACTIONS),
   dssProxyActionsCharter: contractDesc(dssProxyActionsCharter, '0x0000'),
   automationBot: contractDesc(automationBot, '0x6E87a7A0A03E51A741075fDf4D1FCce39a4Df01b'),
+  automationBotAggregator: contractDesc(dummyAutomationBotAggregator, '0x'), //TODO address ŁW
   serviceRegistry: '0x9b4Ae7b164d195df9C4Da5d08Be88b2848b2EaDA',
   guniProxyActions: contractDesc(guniProxyActions, '0xed3a954c0adfc8e3f85d92729c051ff320648e30'),
   guniResolver: '0x0317650Af6f184344D7368AC8bB0bEbA5EDB214a',
@@ -252,6 +254,7 @@ const kovan: NetworkConfig = {
   ),
   guniProxyActions: contractDesc(guniProxyActions, '0x'), // TODO: add address
   automationBot: contractDesc(automationBot, '0x'), // TODO: add address
+  automationBotAggregator: contractDesc(dummyAutomationBotAggregator, '0x'), //TODO address ŁW
   serviceRegistry: '0x', // TODO: add address
   guniResolver: '0x',
   guniRouter: '0x',
@@ -334,6 +337,10 @@ const goerli: NetworkConfig = {
   guniResolver: '0x',
   guniRouter: '0x',
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
+  automationBotAggregator: contractDesc(
+    dummyAutomationBotAggregator,
+    '0x59C47BA3a71DC5d049Ea88b65F1Af2504D93b885',
+  ),
   serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
   defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
   lowerFeesExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),

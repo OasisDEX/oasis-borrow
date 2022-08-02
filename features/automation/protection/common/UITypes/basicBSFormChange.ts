@@ -14,16 +14,12 @@ export type BasicBSTriggerResetData = Pick<
   withThreshold: boolean
 }
 
-export type BasicBSChangeAction =
-  | { type: 'trigger-id'; triggerId: BigNumber }
-  | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
+export type AutomationChangeAction =
   | { type: 'target-coll-ratio'; targetCollRatio: BigNumber }
-  | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
   | { type: 'continuous'; continuous: boolean }
   | { type: 'deviation'; deviation: BigNumber }
   | { type: 'max-gas-fee-in-gwei'; maxBaseFeeInGwei: BigNumber }
   | { type: 'current-form'; currentForm: CurrentBSForm }
-  | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
   | {
       type: 'tx-details'
@@ -34,6 +30,13 @@ export type BasicBSChangeAction =
         txCost?: BigNumber
       }
     }
+
+export type BasicBSChangeAction =
+  | AutomationChangeAction
+  | { type: 'trigger-id'; triggerId: BigNumber }
+  | { type: 'max-buy-or-sell-price'; maxBuyOrMinSellPrice?: BigNumber }
+  | { type: 'with-threshold'; withThreshold: boolean }
+  | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
 
 export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
@@ -67,14 +70,11 @@ export function basicBSFormChangeReducer(
   }
 }
 
-export interface BasicBSFormChange {
+export type AutomationFormChange = {
   triggerId: BigNumber
-  execCollRatio: BigNumber
   targetCollRatio: BigNumber
-  maxBuyOrMinSellPrice?: BigNumber
   continuous: boolean
   deviation: BigNumber
-  withThreshold: boolean
   maxBaseFeeInGwei: BigNumber
   currentForm: CurrentBSForm
   resetData: BasicBSTriggerResetData
@@ -84,4 +84,10 @@ export interface BasicBSFormChange {
     txHash?: string
     txCost?: BigNumber
   }
+}
+
+export type BasicBSFormChange = AutomationFormChange & {
+  maxBuyOrMinSellPrice?: BigNumber
+  withThreshold: boolean
+  execCollRatio: BigNumber
 }
