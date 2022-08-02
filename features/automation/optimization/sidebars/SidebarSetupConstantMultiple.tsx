@@ -9,11 +9,12 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
+import {
+  ACCEPTABLE_FEE_DIFF, calculateMultipleFromTargetCollRatio,
+} from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
+import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
-import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
-import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   AUTOMATION_CHANGE_FEATURE,
@@ -35,7 +36,6 @@ import {
 } from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import { min } from 'lodash'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -71,9 +71,8 @@ interface SidebarSetupConstantMultipleProps {
   addTriggerGasEstimationUsd?: BigNumber
 }
 
-const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
-  .decimalPlaces(0, BigNumber.ROUND_DOWN)
-  .toNumber()
+const AMOUNT_OF_MULTIPLIERS = 6
+
 export function SidebarSetupConstantMultiple({
   vault,
   balanceInfo,
@@ -113,36 +112,66 @@ export function SidebarSetupConstantMultiple({
     : 'editConstantMultiple'
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
   function handleChangeMultiplier(multiplier: number) {
     onMultiplierChange(multiplier)
   }
 
-  const { min: sliderMin } = getBasicSellMinMaxValues({
+  const { min, max } = getConstantMutliplyMinMaxValues({
     autoBuyTriggerData,
     stopLossTriggerData,
     ilkData,
+    lockedCollateralUSD: vault.lockedCollateralUSD,
   })
-  const sliderMax = min([
-    vault.lockedCollateralUSD
-      .div(ilkData.debtFloor)
-      .multipliedBy(100)
-      .decimalPlaces(0, BigNumber.ROUND_DOWN)
-      .toNumber(),
-    largestSliderValueAllowed,
-  ])
 
   const warnings = warningsConstantMultipleValidation({
     vault,
     gasEstimationUsd,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
-    sliderMin,
+    sliderMin: min,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
   })
+
+  const minMultiple = calculateMultipleFromTargetCollRatio(max)
+  const maxMultiple = calculateMultipleFromTargetCollRatio(min)
+  const multipleStep = maxMultiple
+    .minus(minMultiple)
+    .div(new BigNumber(AMOUNT_OF_MULTIPLIERS - 1)) // minus first
+  const allowedMultipliers = [
+    minMultiple,
+    ...[...Array(AMOUNT_OF_MULTIPLIERS - 2)].map((_, i) => { // minus first and last
+      return minMultiple.plus(multipleStep.times(i + 1))
+    }),
+    maxMultiple,
+  ]
+  
+  const colRatioOffset = max.minus(min).div(new BigNumber(AMOUNT_OF_MULTIPLIERS - 1)) // minus first
+  const allowedColRatios = [
+      min.plus(5), // trigger offset
+      ...[...Array(AMOUNT_OF_MULTIPLIERS - 2)].map((_, i) => { // minus first and last
+        return min.plus(colRatioOffset.times(i + 1))
+      }),
+      max.minus(5), // trigger offset
+    ]
+
+  // const acceptableMultipliers = allowedMultipliers.map((item) => {
+  //   return item.decimalPlaces(2, BigNumber.ROUND_FLOOR).toNumber()
+  // })
+  // const acceptableMultipliers = allowedColRatios.reverse().map((item) => {
+  //   return calculateMultipleFromTargetCollRatio(item).decimalPlaces(2, BigNumber.ROUND_FLOOR).toNumber()
+  // })
+  const acceptableMultipliers = allowedColRatios.reverse().map((item, i) => {
+    return i + 1 < allowedColRatios.length
+    ? Math.ceil(calculateMultipleFromTargetCollRatio(item).toNumber() * 20) / 20
+    : Math.floor(calculateMultipleFromTargetCollRatio(item).toNumber() * 20) / 20
+    // return calculateMultipleFromTargetCollRatio(item).decimalPlaces(2).toNumber()
+  })
+  console.log(acceptableMultipliers)
+
+  // const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -172,8 +201,8 @@ export function SidebarSetupConstantMultiple({
             })}
           />
           <MultipleRangeSlider
-            min={sliderMin.toNumber()}
-            max={sliderMax || largestSliderValueAllowed}
+            min={min.toNumber()}
+            max={max.toNumber()}
             onChange={(value) => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'sell-execution-coll-ratio',
