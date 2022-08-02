@@ -104,7 +104,6 @@ export function SidebarSetupConstantMultiple({
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
-  // const { token } = vault
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -113,7 +112,6 @@ export function SidebarSetupConstantMultiple({
     : 'editConstantMultiple'
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  // const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
 
   const { min: sliderMin } = getBasicSellMinMaxValues({
     autoBuyTriggerData,
@@ -168,7 +166,6 @@ export function SidebarSetupConstantMultiple({
                 sliderMax={sliderMax !== undefined ? sliderMax : largestSliderValueAllowed}
                 token={''}
                 constantMultipleState={constantMultipleState}
-                // onChange={onMultiplierChange}
                 handleChangeMultiplier={handleChangeMultiplier}
                 autoSellTriggerData={autoSellTriggerData}
                 nextBuyPrice={nextBuyPrice}
