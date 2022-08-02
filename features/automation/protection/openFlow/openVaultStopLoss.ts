@@ -135,7 +135,6 @@ export function getDataForStopLoss(
     isEditing: !stopLossLevel.isZero(),
     collateralizationRatioAtNextPrice: afterCollateralizationRatioAtNextPrice,
     ethBalance,
-    gasEstimation: null,
     currentCollateralRatio: afterCollateralizationRatio,
     isAutoSellEnabled: false,
     isStopLossEnabled: false,

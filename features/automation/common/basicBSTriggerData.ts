@@ -201,10 +201,12 @@ export function prepareRemoveBasicBSTriggerData({
   vaultData,
   triggerType,
   triggerId,
+  shouldRemoveAllowance,
 }: {
   vaultData: Vault
   triggerType: BasicBSTriggerTypes
   triggerId: BigNumber
+  shouldRemoveAllowance: boolean
 }): AutomationBotRemoveTriggerData {
   const baseTriggerData = prepareBasicBSTriggerData({
     vaultData,
@@ -221,6 +223,6 @@ export function prepareRemoveBasicBSTriggerData({
     ...baseTriggerData,
     kind: TxMetaKind.removeTrigger,
     triggerId: triggerId.toNumber(),
-    removeAllowance: false,
+    removeAllowance: shouldRemoveAllowance,
   }
 }

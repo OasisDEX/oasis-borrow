@@ -36,6 +36,7 @@ interface StopLossFormsProps {
   autoBuyTriggerData: BasicBSTriggerData
   constantMultipleTriggerData: any
   ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
 }
 
@@ -54,6 +55,7 @@ function StopLossForms({
   autoBuyTriggerData,
   constantMultipleTriggerData,
   ethMarketPrice,
+  shouldRemoveAllowance,
 }: StopLossFormsProps) {
   return currentForm?.currentMode === AutomationFromKind.CANCEL ? (
     <CancelSlFormControl
@@ -72,6 +74,7 @@ function StopLossForms({
       priceInfo={priceInfo}
       balanceInfo={balanceInfo}
       ethMarketPrice={ethMarketPrice}
+      shouldRemoveAllowance={shouldRemoveAllowance}
     />
   ) : (
     <AdjustSlFormControl
@@ -111,6 +114,7 @@ interface StopLossFormControlProps {
   context: Context
   ethMarketPrice: BigNumber
   account?: string
+  shouldRemoveAllowance: boolean
 }
 
 export function StopLossFormControl({
@@ -127,6 +131,7 @@ export function StopLossFormControl({
   context,
   txHelpers,
   ethMarketPrice,
+  shouldRemoveAllowance,
 }: StopLossFormControlProps) {
   const { uiChanges } = useAppContext()
   const { setVaultFormOpened } = useSharedUI()
@@ -162,6 +167,7 @@ export function StopLossFormControl({
         autoBuyTriggerData={autoBuyTriggerData}
         constantMultipleTriggerData={constantMultipleTriggerData}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
       />
     ) : (
       <></>
@@ -182,6 +188,7 @@ export function StopLossFormControl({
       autoBuyTriggerData={autoBuyTriggerData}
       constantMultipleTriggerData={constantMultipleTriggerData}
       ethMarketPrice={ethMarketPrice}
+      shouldRemoveAllowance={shouldRemoveAllowance}
     />
   )
 }

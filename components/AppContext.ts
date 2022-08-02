@@ -157,6 +157,12 @@ import {
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import {
+  gasEstimationReducer,
+  TX_DATA_CHANGE,
+  TxPayloadChange,
+  TxPayloadChangeAction,
+} from 'helpers/gasEstimate'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
@@ -319,6 +325,7 @@ export type SupportedUIChangeType =
   | SwapWidgetState
   | AutomationChangeFeature
   | NotificationChange
+  | TxPayloadChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -331,6 +338,7 @@ export type LegalUiChanges = {
   AutomationChangeFeature: AutomationChangeFeatureAction
   ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
+  TxPayloadChange: TxPayloadChangeAction
 }
 
 export type UIChanges = {
@@ -425,6 +433,8 @@ function initializeUIChanges() {
     constantMultipleFormChangeReducer,
   )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
+  uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
+
   return uiChangesSubject
 }
 

@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
+import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
 import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 
 interface BuyInfoSectionProps {
   token: string
@@ -22,7 +23,6 @@ interface BuyInfoSectionProps {
   collateralToBePurchased: BigNumber
   targetRatioWithDeviationFloor: BigNumber
   targetRatioWithDeviationCeiling: BigNumber
-  estimatedTransactionCost: ReactNode
 }
 
 export function AddAutoBuyInfoSection({
@@ -32,7 +32,6 @@ export function AddAutoBuyInfoSection({
   collateralAfterNextBuy: collatAfterNextBuy,
   outstandingDebtAfterNextBuy,
   collateralToBePurchased,
-  estimatedTransactionCost,
   execCollRatio,
   token,
   targetRatioWithDeviationFloor,
@@ -92,7 +91,7 @@ export function AddAutoBuyInfoSection({
         },
         {
           label: t('auto-sell.estimated-transaction-cost'),
-          value: estimatedTransactionCost,
+          value: <GasEstimation />,
         },
       ]}
     />
