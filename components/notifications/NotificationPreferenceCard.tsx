@@ -16,7 +16,10 @@ export function NotificationPreferenceCard({
   checked,
   onChangeHandler,
 }: NotificationPrefrenceCardProps) {
-  const handleToggle = useCallback((checked) => onChangeHandler(checked), [])
+  const handleToggle = useCallback((checked) => onChangeHandler(checked), [
+    onChangeHandler,
+    checked,
+  ])
   const { t } = useTranslation()
 
   return (

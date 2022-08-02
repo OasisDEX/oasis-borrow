@@ -11,7 +11,7 @@ interface ToggleProps {
 export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
   const handleToggle = useCallback(() => {
     onChange(!isChecked)
-  }, [isChecked])
+  }, [isChecked, onChange])
 
   return (
     <Box

@@ -10,6 +10,26 @@ import { useTranslation } from 'next-i18next'
 import React, { useCallback, useMemo, useState } from 'react'
 import { Box, Button, Input, Text } from 'theme-ui'
 
+interface EmailErrorProps {
+  text: string
+}
+
+function EmailError({ text }: EmailErrorProps) {
+  return (
+    <Text
+      sx={{
+        fontSize: '12px',
+        color: 'critical100',
+        fontWeight: 600,
+        px: '2px',
+        mb: 2,
+      }}
+    >
+      {text}
+    </Text>
+  )
+}
+
 interface NotificationsEmailPreferencesProps {
   account: string
 }
@@ -50,14 +70,22 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
 
   const handleButton = useCallback(() => {
     setSubmitted(true)
-    socket?.emit('setchannels', {
-      address: account,
-      channels: [
-        ...notificationsState.allActiveChannels,
-        { id: NotificationChannelTypes.EMAIL, channelConfiguration: email },
-      ],
-    })
-  }, [socket, notificationsState])
+
+    if (isEmailValid) {
+      setIsChanging(false)
+      const updatedChannel = notificationsState.allActiveChannels.filter(
+        (item) => item.id !== NotificationChannelTypes.EMAIL,
+      )
+
+      socket?.emit('setchannels', {
+        address: account,
+        channels: [
+          ...updatedChannel,
+          { id: NotificationChannelTypes.EMAIL, channelConfiguration: email },
+        ],
+      })
+    }
+  }, [socket, notificationsState, isEmailValid])
 
   const handleOnChange = useCallback((e) => {
     setSubmitted(false)
@@ -87,7 +115,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
             }}
           >
             {/* TODO: Move this to a generic UI component as it can be resued */}
-            {isChanging ? (
+            {(!defaultEmail || isChanging) && (
               <>
                 <Text
                   sx={{
@@ -116,16 +144,10 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                 />
                 {/* error types to be defined */}
                 {notificationsState?.error === 'email-save-failure' && (
-                  <Text
-                    sx={{
-                      fontSize: '12px',
-                      color: '#D94A1E',
-                      fontWeight: 600,
-                      px: '2px',
-                    }}
-                  >
-                    {t('notifications.email-save-failure')}
-                  </Text>
+                  <EmailError text={t('notifications.email-save-failure')} />
+                )}
+                {!isEmailValid && submitted && (
+                  <EmailError text={t('notifications.invalid-email')} />
                 )}
                 <Button
                   sx={{
@@ -139,20 +161,21 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                     lineHeight: '1',
                     justifyContent: 'center',
                   }}
-                  disabled={!isEmailValid || defaultEmail === email}
+                  disabled={defaultEmail === email}
                   onClick={handleButton}
                 >
                   {t('notifications.confirm-btn')}
                 </Button>
               </>
-            ) : (
+            )}
+            {defaultEmail && !isChanging && (
               <NotificationsChangeEmailButton
                 currentEmail={email}
                 handleIsChanging={handleIsChanging}
               />
             )}
           </Box>
-          {defaultEmail === email && submitted && <NotificationsSetupSuccess />}
+          {defaultEmail === email && submitted && !isChanging && <NotificationsSetupSuccess />}
         </Box>
       )}
     </Box>

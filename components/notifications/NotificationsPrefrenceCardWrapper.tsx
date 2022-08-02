@@ -48,12 +48,13 @@ export function NotificationPreferenceCardWrapper({
         const afterSubscriptions = notificationsState.allActiveSubscriptions
           .filter((item) => item.id !== subscriptionType)
           .map((item) => item.id)
+
         socket?.emit('setsubscriptions', {
           address: account,
           subscriptionTypes: afterSubscriptions,
         })
 
-        if (!afterSubscriptions.length && notificationsState.allActiveSubscriptions.length === 1) {
+        if (!afterSubscriptions.length) {
           socket?.emit('setchannels', {
             address: account,
             channels: notificationsState.allActiveChannels.filter(
