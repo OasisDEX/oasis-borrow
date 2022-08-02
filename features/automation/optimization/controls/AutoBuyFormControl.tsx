@@ -45,10 +45,12 @@ interface AutoBuyFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
   txHelpers?: TxHelpers
+  isAutoBuyActive: boolean
 }
 
 export function AutoBuyFormControl({
@@ -58,10 +60,12 @@ export function AutoBuyFormControl({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
   isAutoBuyOn,
   txHelpers,
   context,
   ethMarketPrice,
+  isAutoBuyActive,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -210,9 +214,12 @@ export function AutoBuyFormControl({
   })
 
   const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    basicBSState: basicBuyState,
-    vault,
+    targetCollRatio: basicBuyState.targetCollRatio,
+    execCollRatio: basicBuyState.execCollRatio,
+    deviation: basicBuyState.deviation,
     executionPrice,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
   })
 
   return (
@@ -223,6 +230,7 @@ export function AutoBuyFormControl({
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       isAutoBuyOn={isAutoBuyOn}
       context={context}
       ethMarketPrice={ethMarketPrice}
@@ -240,6 +248,7 @@ export function AutoBuyFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
+      isAutoBuyActive={isAutoBuyActive}
     />
   )
 }

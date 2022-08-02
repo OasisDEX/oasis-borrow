@@ -2,25 +2,24 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
+import { useAppContext } from 'components/AppContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
 import {
   errorsBasicBuyValidation,
   warningsBasicBuyValidation,
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import {
-  AUTOMATION_CHANGE_FEATURE,
-  AutomationChangeFeature,
-} from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
+import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { extractCancelAutoBuyErrors, extractCancelAutoBuyWarnings } from 'helpers/messageMappers'
-import { useUIChanges } from 'helpers/uiChangesHook'
+import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
+import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode } from 'react'
 import { Grid } from 'theme-ui'
@@ -29,13 +28,14 @@ import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyAdditionStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
-export interface SidebarSetupAutoBuyProps {
+interface SidebarSetupAutoBuyProps {
   vault: Vault
   ilkData: IlkData
   balanceInfo: BalanceInfo
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -53,6 +53,7 @@ export interface SidebarSetupAutoBuyProps {
   isFirstSetup: boolean
   debtDelta: BigNumber
   collateralDelta: BigNumber
+  isAutoBuyActive: boolean
 }
 
 export function SidebarSetupAutoBuy({
@@ -65,8 +66,8 @@ export function SidebarSetupAutoBuy({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
 
-  isAutoBuyOn,
   basicBuyState,
   txHandler,
   textButtonHandler,
@@ -84,9 +85,11 @@ export function SidebarSetupAutoBuy({
 
   debtDelta,
   collateralDelta,
+  isAutoBuyActive,
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
-  const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
+  const { uiChanges } = useAppContext()
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicBuy'
@@ -106,6 +109,7 @@ export function SidebarSetupAutoBuy({
   const errors = errorsBasicBuyValidation({
     basicBuyState,
     autoSellTriggerData,
+    constantMultipleTriggerData,
     isRemoveForm,
   })
 
@@ -128,14 +132,21 @@ export function SidebarSetupAutoBuy({
     withThreshold: basicBuyState.withThreshold,
   })
 
-  const cancelAutoBuyWarnings = extractCancelAutoBuyWarnings(warnings)
-  const cancelAutoBuyErrors = extractCancelAutoBuyErrors(errors)
+  const cancelAutoBuyWarnings = extractCancelBSWarnings(warnings)
+  const cancelAutoBuyErrors = extractCancelBSErrors(errors)
 
-  const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
+  if (isAutoBuyActive) {
+    const validationErrors = isAddForm ? errors : cancelAutoBuyErrors
 
-  if (isAutoBuyOn || activeAutomationFeature?.currentOptimizationFeature === 'autoBuy') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('auto-buy.form-title'),
+      ...(constantMultipleEnabled && {
+        dropdown: {
+          forcePanel: 'autoBuy',
+          disabled: isDropdownDisabled({ stage }),
+          items: commonOptimizationDropdownItems(uiChanges, t),
+        },
+      }),
       content: (
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (

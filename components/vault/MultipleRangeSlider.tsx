@@ -78,6 +78,7 @@ interface MultipleRangeSliderProps {
   rightDescription: ReactNode
   middleMark?: { text: string; value: number }
   step?: number
+  middleMarkOffset?: number
   leftThumbColor?: string
   rightThumbColor?: string
   minDescription?: ReactNode
@@ -92,6 +93,7 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
+  middleMarkOffset = 5,
   leftThumbColor = 'warning100',
   rightThumbColor = 'success100',
   leftDescription,
@@ -125,8 +127,8 @@ export function MultipleRangeSlider({
   useEffect(() => {
     if (middleMark) {
       const newValue = {
-        value0: middleMark.value - step,
-        value1: middleMark.value + step,
+        value0: middleMark.value - middleMarkOffset,
+        value1: middleMark.value + middleMarkOffset,
       }
       onChange(newValue)
     }
