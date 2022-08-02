@@ -1,29 +1,29 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import BigNumber from 'bignumber.js'
+import { useAppContext } from 'components/AppContextProvider'
+import { InfoCard } from 'components/InfoCard'
+import { AppLink } from 'components/Links'
+import {
+  BorrowProductCardsContainer,
+  EarnProductCardsContainer,
+  MultiplyProductCardsContainer,
+} from 'components/productCards/ProductCardsContainer'
 import { ReferralBanner } from 'components/ReferralBanner'
 import { TabBar } from 'components/TabBar'
 import { LANDING_PILLS } from 'content/landing'
 import { NewReferralModal } from 'features/referralOverview/NewReferralModal'
 import { TermsOfService } from 'features/termsOfService/TermsOfService'
 import { formatAsShorthandNumbers } from 'helpers/formatters/format'
+import { useObservable } from 'helpers/observableHook'
+import { productCardsConfig } from 'helpers/productCards'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useLocalStorage } from 'helpers/useLocalStorage'
 import { Trans, useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Box, Flex, Grid, Heading, SxProps, SxStyleProp, Text } from 'theme-ui'
+import { fadeInAnimation, slideInAnimation } from 'theme/animations'
 
-import { useAppContext } from '../../components/AppContextProvider'
-import { InfoCard } from '../../components/InfoCard'
-import { AppLink } from '../../components/Links'
-import {
-  BorrowProductCardsContainer,
-  EarnProductCardsContainer,
-  MultiplyProductCardsContainer,
-} from '../../components/productCards/ProductCardsContainer'
-import { useObservable } from '../../helpers/observableHook'
-import { productCardsConfig } from '../../helpers/productCards'
-import { fadeInAnimation, slideInAnimation } from '../../theme/animations'
 import { NewsletterSection } from '../newsletter/NewsletterView'
 
 interface PillProps {
@@ -147,6 +147,7 @@ export function HomepageView() {
   const { t } = useTranslation()
 
   const referralsEnabled = useFeatureToggle('Referrals')
+  const notificationsEnabled = useFeatureToggle('Notifications')
   const { context$, checkReferralLocal$, userReferral$ } = useAppContext()
   const [context] = useObservable(context$)
   const [checkReferralLocal] = useObservable(checkReferralLocal$)
@@ -190,7 +191,7 @@ export function HomepageView() {
       {referralsEnabled && landedWithRef && context?.status === 'connectedReadonly' && (
         <NewReferralModal />
       )}
-      {referralsEnabled && userReferral?.referrer && <TermsOfService userReferral={userReferral} />}
+      {(referralsEnabled || notificationsEnabled) && <TermsOfService userReferral={userReferral} />}
       <Hero
         isConnected={context?.status === 'connected'}
         sx={{
