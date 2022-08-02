@@ -268,10 +268,7 @@ function UserDesktopMenu() {
     !accountData ||
     web3Context?.status !== 'connected'
 
-  // todo remove + notificationsState?.numberOfNotifications, its added for now for WS connection check
-  const unreadNotificationCount =
-    getUnreadNotificationCount(notificationsState?.allNotifications) +
-    notificationsState?.numberOfNotifications
+  const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
   return (
     <Flex
