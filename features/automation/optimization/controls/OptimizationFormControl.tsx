@@ -6,6 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import { AUTOMATION_CHANGE_FEATURE } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
@@ -37,6 +38,8 @@ export function OptimizationFormControl({
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const { uiChanges } = useAppContext()
 
+  const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
+
   useEffect(() => {
     if (autoBuyTriggerData.isTriggerEnabled) {
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
@@ -58,6 +61,7 @@ export function OptimizationFormControl({
       context={context}
       txHelpers={txHelpers}
       ethMarketPrice={ethMarketPrice}
+      shouldRemoveAllowance={shouldRemoveAllowance}
     />
   )
 }

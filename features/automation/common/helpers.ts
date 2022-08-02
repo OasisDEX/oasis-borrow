@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -117,4 +118,12 @@ export function getBasicBSVaultChange({
         FF: LOAN_FEE,
       })
     : { debtDelta: zero, collateralDelta: zero }
+}
+
+export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
+  if (automationTriggersData.triggers) {
+    return automationTriggersData.triggers.length === 1
+  }
+
+  return false
 }

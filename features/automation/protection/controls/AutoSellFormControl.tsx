@@ -48,6 +48,7 @@ interface AutoSellFormControlProps {
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
 }
 
@@ -62,6 +63,7 @@ export function AutoSellFormControl({
   txHelpers,
   context,
   ethMarketPrice,
+  shouldRemoveAllowance,
 }: AutoSellFormControlProps) {
   const [basicSellState] = useUIChanges<BasicBSFormChange>(BASIC_SELL_FORM_CHANGE)
   const { uiChanges, addGasEstimation$ } = useAppContext()
@@ -112,8 +114,9 @@ export function AutoSellFormControl({
         vaultData: vault,
         triggerType: TriggerType.BasicSell,
         triggerId: basicSellState.triggerId,
+        shouldRemoveAllowance,
       }),
-    [basicSellState.triggerId.toNumber()],
+    [basicSellState.triggerId.toNumber(), shouldRemoveAllowance],
   )
 
   const cancelTriggerGasEstimationData$ = useMemo(() => {
