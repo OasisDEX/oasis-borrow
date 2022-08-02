@@ -1,6 +1,7 @@
 import { withSentry } from '@sentry/nextjs'
 import { BatchManager } from 'helpers/api/BatchManager'
 import { NextApiRequest, NextApiResponse } from 'next'
+import getConfig from 'next/config'
 import NodeCache from 'node-cache'
 
 import { networksById } from '../../blockchain/config'
@@ -21,7 +22,13 @@ function respond(
   }
 }
 
-const cache = new NodeCache({ stdTTL: 60 })
+// seconds
+const cacheTtl =
+  (process.env.INFURA_CACHE_TTL && parseInt(process.env.INFURA_CACHE_TTL)) ||
+  getConfig()?.publicRuntimeConfig?.infuraCacheTtl ||
+  10
+
+const cache = new NodeCache({ stdTTL: cacheTtl })
 
 async function infuraCallsCacheHandler(req: NextApiRequest, res: NextApiResponse) {
   const encodedBatchCallData = req.body.encoded

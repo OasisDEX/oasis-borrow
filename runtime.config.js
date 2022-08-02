@@ -19,6 +19,8 @@ const publicRuntimeConfig = {
     process.env.USE_DUMMY === '1' ? process.env.DUMMY_EXCHANGE : process.env.EXCHANGE,
   multiplyProxyActions: process.env.MULTIPLY_PROXY_ACTIONS,
   mainnetCacheURL: process.env.MAINNET_CACHE_URL,
+  infuraCacheEnabled: process.env.INFURA_CACHE_ENABLED === 'true',
+  infuraCacheTtl: process.env.INFURA_CACHE_TTL === 10,
 }
 
 module.exports = {
