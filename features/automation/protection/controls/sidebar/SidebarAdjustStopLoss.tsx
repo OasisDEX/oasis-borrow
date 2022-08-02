@@ -1,4 +1,5 @@
 import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { backToVaultOverview } from 'features/automation/protection/common/helpers'
@@ -24,6 +25,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
   const stopLossWriteEnabled = useFeatureToggle('StopLossWrite')
+  const gasEstimationContext = useGasEstimationContext()
 
   const {
     addTriggerConfig,
@@ -35,7 +37,6 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
     token,
     slValuePickerConfig,
     selectedSLValue,
-    gasEstimationUsd,
     ethBalance,
     ethPrice,
     isAutoSellEnabled,
@@ -57,7 +58,7 @@ export function SidebarAdjustStopLoss(props: AdjustSlFormLayoutProps) {
   })
   const warnings = warningsStopLossValidation({
     token,
-    gasEstimationUsd,
+    gasEstimationUsd: gasEstimationContext?.usdValue,
     ethBalance,
     ethPrice,
     sliderMax: slValuePickerConfig.maxBoundry,

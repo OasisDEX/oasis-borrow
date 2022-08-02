@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotAggregatorTrigger } from 'blockchain/calls/automationBotAggregator'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
@@ -22,12 +21,12 @@ import {
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { OAZO_FEE } from 'helpers/multiply/calculations'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 
@@ -47,7 +46,7 @@ interface ConstantMultipleFormControlProps {
 export function ConstantMultipleFormControl({
   // TODO ŁW commented out values will probably be used in next stories
   // context,
-  // isConstantMultipleActive,
+  isConstantMultipleActive,
   txHelpers,
   vault,
   ethMarketPrice,
@@ -57,7 +56,7 @@ export function ConstantMultipleFormControl({
   autoBuyTriggerData,
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
-  const { uiChanges, addGasEstimation$, gasPrice$ } = useAppContext()
+  const { uiChanges, gasPrice$ } = useAppContext()
   const [gasPrice] = useObservable(gasPrice$)
   const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
     CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -118,6 +117,24 @@ export function ConstantMultipleFormControl({
     ],
   )
 
+  useEffect(() => {
+    if (isEditing && isConstantMultipleActive) {
+      if (isAddForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'add-aggregator-trigger',
+          data: addTxData,
+        })
+      }
+      // TODO uncomment when remove form will be ready
+      // if (isRemoveForm) {
+      //   uiChanges.publish(TX_DATA_CHANGE, {
+      //     type: 'remove-aggregator-trigger',
+      //     data: cancelTxData,
+      //   })
+      // }
+    }
+  }, [addTxData /* cancelTxData, isEditing */, isConstantMultipleActive])
+
   const nextBuyPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
     collateral: lockedCollateral,
@@ -150,20 +167,6 @@ export function ConstantMultipleFormControl({
     lockedCollateral,
     debt,
   })
-
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotAggregatorTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const addTriggerGasEstimationUsd =
-    addTriggerGasEstimationData &&
-    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
-
-  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : undefined
 
   const adjustMultiplyGasEstimation = new BigNumber(1100000) // average based on historical data from blockchain
   const estimatedGasCostOnTrigger = gasPrice
@@ -230,11 +233,9 @@ export function ConstantMultipleFormControl({
       nextSellPrice={nextSellPrice}
       collateralToBePurchased={collateralToBePurchased}
       collateralToBeSold={collateralToBeSold}
-      gasEstimationUsd={gasEstimationUsd}
       estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
       estimatedBuyFee={estimatedBuyFee}
       estimatedSellFee={estimatedSellFee}
-      addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
     />
   )
 }

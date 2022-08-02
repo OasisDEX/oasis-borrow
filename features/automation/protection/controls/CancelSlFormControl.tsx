@@ -20,14 +20,17 @@ import {
   ADD_FORM_CHANGE,
   AddFormChange,
 } from 'features/automation/protection/common/UITypes/AddFormChange'
+import {
+  PROTECTION_MODE_CHANGE_SUBJECT,
+  ProtectionModeChange,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import { SidebarCancelStopLoss } from 'features/automation/protection/controls/sidebar/SidebarCancelStopLoss'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
 import { REMOVE_FORM_CHANGE, RemoveFormChange } from '../common/UITypes/RemoveFormChange'
@@ -59,9 +62,10 @@ export function CancelSlFormControl({
   ethMarketPrice,
 }: CancelSlFormControlProps) {
   const { triggerId, isStopLossEnabled } = triggerData
-  const { addGasEstimation$, uiChanges } = useAppContext()
+  const { uiChanges } = useAppContext()
   const [uiState] = useUIChanges<RemoveFormChange>(REMOVE_FORM_CHANGE)
   const [addSlUiState] = useUIChanges<AddFormChange>(ADD_FORM_CHANGE)
+  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
   // TODO: if there will be no existing triggers left after removal, allowance should be set to true
   const removeAllowance = false
   const txData = useMemo(
@@ -69,14 +73,12 @@ export function CancelSlFormControl({
     [triggerId],
   )
 
-  const gasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, txData),
-    )
-  }, [txData])
-
-  const [gasEstimationData] = useObservable(gasEstimationData$)
+  useEffect(() => {
+    uiChanges.publish(TX_DATA_CHANGE, {
+      type: 'remove-trigger',
+      data: txData,
+    })
+  }, [txData, currentForm])
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
 
@@ -155,9 +157,6 @@ export function CancelSlFormControl({
   const { token } = vault
   const etherscan = ctx.etherscan.url
 
-  const gasEstimationUsd =
-    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
-
   const props: CancelSlFormLayoutProps = {
     liquidationPrice: vault.liquidationPrice,
     tokenPrice: priceInfo.currentCollateralPrice,
@@ -165,8 +164,6 @@ export function CancelSlFormControl({
     txState: uiState?.txDetails?.txStatus,
     txHash: uiState?.txDetails?.txHash,
     txError: uiState?.txDetails?.txError,
-    gasEstimation: gasEstimationData as HasGasEstimation,
-    gasEstimationUsd: gasEstimationUsd,
     accountIsController,
     actualCancelTxCost: uiState?.txDetails?.totalCost,
     toggleForms,
