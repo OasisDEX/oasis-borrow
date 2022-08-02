@@ -120,7 +120,7 @@ function AutomationButton({ position }: { position: BorrowPositionVM | MultiplyP
           sx={{ px: '24px', py: '11px' }}
         >
           {hasBeenLiquidated ? (
-            <>{t('earn.automation-button-active')}</>
+            <>{t('earn.automation-button-off')}</>
           ) : (
             <>
               {t('earn.automation-button-on')} {position.protectionAmount}
