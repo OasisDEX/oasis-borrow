@@ -6,7 +6,9 @@ import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
+import { preTransactionSequenceMachine } from '../../transaction/preTransactionSequenceMachine'
 import { createOpenAaveStateMachine } from './machine'
+import { services } from './services'
 import { OpenAaveEvent } from './types'
 
 const stories = storiesOf('Open Aave State Machine', module)
@@ -28,17 +30,25 @@ const proxyStateMachine = createProxyStateMachine(
   },
 })
 
+const openAaveServices: typeof services = {
+  getProxyAddress: (() => {}) as any,
+  getBalance: (() => {}) as any,
+  createPosition: (() => {}) as any,
+  initMachine: (() => {}) as any,
+  getTransactionParameters: (() => {}) as any,
+  invokeProxyMachine: () => proxyStateMachine,
+  estimateGas: (() => {}) as any,
+}
+
 const openAaveStateMachine = createOpenAaveStateMachine(
+  undefined as any,
   {} as any,
   {} as any,
   () => proxyStateMachine,
+  {} as any,
+  preTransactionSequenceMachine,
 ).withConfig({
-  services: {
-    getProxyAddress: (() => {}) as any,
-    getBalance: (() => {}) as any,
-    createPosition: (() => {}) as any,
-    initMachine: (() => {}) as any,
-  },
+  services: openAaveServices,
 })
 
 const Machine = () => {

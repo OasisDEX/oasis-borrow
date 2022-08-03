@@ -32,6 +32,7 @@ export function AaveOpenView() {
                   content: (
                     <Grid variant="vaultContainer">
                       <Box>[OPEN AAVE DETAILS]</Box>
+                      {/*<Box> {_stateMachine.type}</Box>*/}
                       <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
                     </Grid>
                   ),

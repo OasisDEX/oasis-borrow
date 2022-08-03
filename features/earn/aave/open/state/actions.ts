@@ -1,4 +1,4 @@
-import { assign } from 'xstate'
+import { assign, send } from 'xstate'
 
 import { zero } from '../../../../../helpers/zero'
 import { OpenAaveContext, OpenAaveEvent } from './types'
@@ -8,6 +8,7 @@ const initContextValues = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
   token: 'ETH',
   totalSteps: context.proxyAddress ? 2 : 3,
   canGoToNext: context.proxyAddress === undefined || context.amount?.gt(zero),
+  multiply: 2,
 }))
 
 const setTokenBalanceFromEvent = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
@@ -25,6 +26,19 @@ const setReceivedProxyAddress = assign<OpenAaveContext, OpenAaveEvent>((_, event
     proxyAddress: event.proxyAddress,
   }
 })
+
+const sendUpdateToParametersCaller = send<OpenAaveContext, OpenAaveEvent>(
+  (context, event) => {
+    if (event.type !== 'SET_AMOUNT') return event // In the future add change token or multiply
+    return {
+      type: 'TRANSACTION_PARAMETERS_CHANGED',
+      amount: event.amount,
+      multiply: context.multiply,
+      token: context.token,
+    }
+  },
+  { to: 'getTransactionParameters' },
+)
 
 const setTxHash = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
   if (event.type !== 'TRANSACTION_IN_PROGRESS') return {}
@@ -97,4 +111,5 @@ export const actions = {
   calculateAuxiliaryAmount,
   getProxyAddressFromProxyMachine,
   createProxyMachine,
+  sendUpdateToParametersCaller,
 }

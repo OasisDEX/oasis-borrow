@@ -5,6 +5,10 @@ import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
 import { AppContext } from '../../../components/AppContext'
 import { getOpenAaveStateMachine } from './pipelines/getOpenAaveStateMachine'
+import {
+  getPreTransactionMachine$,
+  getPreTransactionMachineServices$,
+} from './transaction/getPreTransactionMachineServices'
 
 export function setupAaveContext({
   connectedContext$,
@@ -14,13 +18,18 @@ export function setupAaveContext({
   daiEthTokenPrice$,
   accountBalances$,
 }: AppContext) {
-  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
-
   const contextForAddress$ = connectedContext$.pipe(distinctUntilKeyChanged('account'))
-
+  const gasEstimation$ = curry(getGasEstimation$)(gasPrice$, daiEthTokenPrice$)
   const proxyForAccount$: Observable<string | undefined> = contextForAddress$.pipe(
     switchMap(({ account }) => proxyAddress$(account)),
   )
+
+  const preTransactionMachineServices$ = getPreTransactionMachineServices$(
+    txHelpers$,
+    gasEstimation$,
+  )
+
+  const preTransactionMachine$ = getPreTransactionMachine$(preTransactionMachineServices$)
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,
@@ -30,14 +39,18 @@ export function setupAaveContext({
   )
 
   const aaveStateMachine$ = getOpenAaveStateMachine(
+    txHelpers$,
     contextForAddress$,
     accountBalances$,
     proxyForAccount$,
     proxyStateMachine$,
+    gasEstimation$,
+    preTransactionMachine$,
   )
 
   return {
     aaveStateMachine$,
+    preTransactionMachine$,
   }
 }
 

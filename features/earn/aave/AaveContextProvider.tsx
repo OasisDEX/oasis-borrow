@@ -23,7 +23,9 @@ export function AaveContextProvider({ children }: WithChildren) {
   const [context, setContext] = useState<AaveContext | undefined>(undefined)
 
   useEffect(() => {
-    setContext(setupAaveContext(appContext))
+    if (appContext) {
+      setContext(setupAaveContext(appContext))
+    }
   }, [appContext])
 
   return <aaveContext.Provider value={context}>{children}</aaveContext.Provider>

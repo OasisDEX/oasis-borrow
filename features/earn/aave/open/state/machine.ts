@@ -1,9 +1,12 @@
 import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { nameofFactory } from '@oasis-borrow/utils'
 import { Observable } from 'rxjs'
-import { Machine } from 'xstate'
+import { assign, Machine, spawn } from 'xstate'
 
 import { TokenBalances } from '../../../../../blockchain/tokens'
+import { TxHelpers } from '../../../../../components/AppContext'
+import { HasGasEstimation } from '../../../../../helpers/form'
+import { PreTransactionSequenceMachineType } from '../../transaction/preTransactionSequenceMachine'
 import { actions } from './actions'
 import { emptyProxyAddress, enoughBalance } from './guards'
 import { services } from './services'
@@ -17,7 +20,6 @@ export interface OpenAaveStateMachineSchema {
     txInProgress: {}
     txFailure: {}
     txSuccess: {}
-    opened: {}
   }
 }
 
@@ -25,9 +27,12 @@ const nameOfAction = nameofFactory<typeof actions>()
 const nameOfService = nameofFactory<typeof services>()
 
 export function createOpenAaveStateMachine(
+  txHelper: TxHelpers,
   tokenBalances$: Observable<TokenBalances>,
   proxyAddress$: Observable<string | undefined>,
   proxyStateMachineCreator: () => ProxyStateMachine,
+  getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>,
+  preTransactionMachine: PreTransactionSequenceMachineType,
 ) {
   return Machine<OpenAaveContext, OpenAaveStateMachineSchema, OpenAaveEvent>(
     {
@@ -35,19 +40,34 @@ export function createOpenAaveStateMachine(
       initial: 'editing',
       context: {
         dependencies: {
+          txHelper,
           tokenBalances$,
           proxyStateMachineCreator,
           proxyAddress$,
+          getGasEstimation$,
         },
       },
       states: {
         editing: {
-          entry: [nameOfAction('initContextValues')],
-          invoke: {
-            src: nameOfService('initMachine'),
-            id: nameOfService('initMachine'),
-            description: 'Initialize the machine - get token balances, proxy address, etc.',
-          },
+          entry: [
+            nameOfAction('initContextValues'),
+            assign(() => {
+              return {
+                refTransactionHelper: spawn(preTransactionMachine, 'transactionHelper'),
+              }
+            }),
+          ],
+          invoke: [
+            {
+              src: nameOfService('initMachine'),
+              id: nameOfService('initMachine'),
+              description: 'Initialize the machine - get token balances, proxy address, etc.',
+            },
+            {
+              src: nameOfService('getTransactionParameters'),
+              id: 'getTransactionParameters',
+            },
+          ],
           on: {
             SET_BALANCE: {
               actions: [nameOfAction('setTokenBalanceFromEvent')],
@@ -56,7 +76,11 @@ export function createOpenAaveStateMachine(
               actions: [nameOfAction('setReceivedProxyAddress'), nameOfAction('updateTotalSteps')],
             },
             SET_AMOUNT: {
-              actions: [nameOfAction('setAmount'), nameOfAction('calculateAuxiliaryAmount')],
+              actions: [
+                nameOfAction('setAmount'),
+                nameOfAction('calculateAuxiliaryAmount'),
+                nameOfAction('sendUpdateToParametersCaller'),
+              ],
             },
             CREATE_PROXY: {
               target: 'proxyCreating',
@@ -113,8 +137,7 @@ export function createOpenAaveStateMachine(
           },
         },
         txFailure: {},
-        txSuccess: {},
-        opened: {
+        txSuccess: {
           type: 'final',
         },
       },
