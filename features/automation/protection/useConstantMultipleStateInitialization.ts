@@ -39,8 +39,8 @@ export function useConstantMultipleStateInitialization(
     autoTriggersData,
     constantMultipleTriggerIds,
   )
-  const buyTriggerData = constantMultipleTriggersData[TriggerType.BasicBuy]
-  const sellTriggerData = constantMultipleTriggersData[TriggerType.BasicSell]
+  const buyTriggerData = constantMultipleTriggersData[TriggerType.CMBasicBuy]
+  const sellTriggerData = constantMultipleTriggersData[TriggerType.CMBasicSell]
   const maxBuyPrice = buyTriggerData.maxBuyOrMinSellPrice
   const buyWithThresholdResolved = resolveWithThreshold({
     maxBuyOrMinSellPrice: maxBuyPrice,

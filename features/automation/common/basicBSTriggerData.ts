@@ -29,7 +29,11 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-type BasicBSTriggerTypes = TriggerType.BasicSell | TriggerType.BasicBuy
+type BasicBSTriggerTypes =
+  | TriggerType.BasicBuy
+  | TriggerType.BasicSell
+  | TriggerType.CMBasicBuy
+  | TriggerType.CMBasicSell
 
 function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
   return basicSellTriggers.map((trigger) => {
@@ -81,9 +85,9 @@ const defaultBasicSellData = {
   isTriggerEnabled: false,
 }
 
-interface ConstantMultipleTriggerPairData {
-  [TriggerType.BasicBuy]: BasicBSTriggerData
-  [TriggerType.BasicSell]: BasicBSTriggerData
+type ConstantMultipleTriggerPairData = {
+  [TriggerType.CMBasicBuy]: BasicBSTriggerData
+  [TriggerType.CMBasicSell]: BasicBSTriggerData
 }
 
 export function extractGroupTriggersData(
@@ -96,8 +100,8 @@ export function extractGroupTriggersData(
   }
 
   return {
-    [TriggerType.BasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
-    [TriggerType.BasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
+    [TriggerType.CMBasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
+    [TriggerType.CMBasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
   }
 }
 
@@ -148,6 +152,8 @@ export function prepareBasicBSTriggerData({
   const commands = {
     [TriggerType.BasicSell]: CommandContractType.BasicSellCommand,
     [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
+    [TriggerType.CMBasicBuy]: CommandContractType.CMBasicBuyCommand,
+    [TriggerType.CMBasicSell]: CommandContractType.CMBasicSellCommand,
   }
 
   return {
