@@ -68,7 +68,11 @@ export const dummyNotifications: Notification[] = [
 ]
 
 export const dummySubscriptions: NotificationSubscription[] = [
-  { id: NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS, lastModified: 1658296560 },
+  {
+    id: NotificationSubscriptionTypes.VAULT_ACTION_NOTIFICATIONS,
+    channelId: NotificationChannelTypes.APPLICATION,
+    lastModified: 1658296560,
+  },
 ]
 
 export const dummyChannels: NotificationChannels[] = [

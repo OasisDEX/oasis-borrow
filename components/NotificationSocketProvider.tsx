@@ -77,6 +77,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
 
         // subscription & reconnect handling
         socketInstance.on('connect', () => {
+          uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: '' })
           socketInstance.emit('initialize', {
             address: account,
             notificationPreferences: {

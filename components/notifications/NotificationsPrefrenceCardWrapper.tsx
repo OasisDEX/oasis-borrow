@@ -8,7 +8,7 @@ import {
   NotificationSubscriptionTypes,
 } from 'features/notifications/types'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Box } from 'theme-ui'
 
 interface NotificationPreferenceCardWrapperProps {
@@ -21,6 +21,22 @@ export function NotificationPreferenceCardWrapper({
   const { socket } = useNotificationSocket()
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
+  useEffect(() => {
+    if (
+      !notificationsState.allActiveChannels.find(
+        (item) => item.id === NotificationChannelTypes.APPLICATION,
+      )
+    ) {
+      socket?.emit('setchannels', {
+        address: account,
+        channels: [
+          { id: NotificationChannelTypes.APPLICATION, channelConfiguration: '' },
+          ...notificationsState.allActiveChannels,
+        ],
+      })
+    }
+  }, [])
+
   const subscriptionsHandler = useCallback(
     (subscriptionType: NotificationSubscriptionTypes, isEnabled: boolean) => {
       if (isEnabled) {
@@ -31,19 +47,6 @@ export function NotificationPreferenceCardWrapper({
             subscriptionType,
           ],
         })
-        if (
-          !notificationsState.allActiveChannels.find(
-            (item) => item.id === NotificationChannelTypes.APPLICATION,
-          )
-        ) {
-          socket?.emit('setchannels', {
-            address: account,
-            channels: [
-              { id: NotificationChannelTypes.APPLICATION, channelConfiguration: '' },
-              ...notificationsState.allActiveChannels,
-            ],
-          })
-        }
       } else {
         const afterSubscriptions = notificationsState.allActiveSubscriptions
           .filter((item) => item.id !== subscriptionType)
@@ -53,15 +56,6 @@ export function NotificationPreferenceCardWrapper({
           address: account,
           subscriptionTypes: afterSubscriptions,
         })
-
-        if (!afterSubscriptions.length) {
-          socket?.emit('setchannels', {
-            address: account,
-            channels: notificationsState.allActiveChannels.filter(
-              (item) => item.id !== NotificationChannelTypes.APPLICATION,
-            ),
-          })
-        }
       }
     },
     [socket, notificationsState],

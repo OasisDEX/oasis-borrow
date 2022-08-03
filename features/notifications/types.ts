@@ -21,6 +21,7 @@ export enum NotificationSubscriptionTypes {
 
 export interface NotificationSubscription {
   id: NotificationSubscriptionTypes
+  channelId: NotificationChannelTypes
   lastModified: number
 }
 

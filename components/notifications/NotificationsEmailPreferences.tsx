@@ -7,7 +7,7 @@ import { NotificationChannelTypes } from 'features/notifications/types'
 import { validateEmail } from 'helpers/formValidation'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Button, Input, Text } from 'theme-ui'
 
 interface EmailErrorProps {
@@ -40,13 +40,22 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
   const defaultEmail =
-    notificationsState?.allActiveChannels.find((item) => item.id === NotificationChannelTypes.EMAIL)
+    notificationsState.allActiveChannels.find((item) => item.id === NotificationChannelTypes.EMAIL)
       ?.channelConfiguration || ''
 
   const [enableEmailPreferences, setEnableEmailPreferences] = useState(!!defaultEmail)
   const [email, setEmail] = useState(defaultEmail)
   const [isChanging, setIsChanging] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  useEffect(() => {
+    if (defaultEmail !== email) {
+      setIsChanging(false)
+      setSubmitted(false)
+      setEmail(defaultEmail)
+      setEnableEmailPreferences(!!defaultEmail)
+    }
+  }, [account, defaultEmail])
 
   const isEmailValid = useMemo(() => validateEmail(email), [email])
 
@@ -59,7 +68,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
         setEmail(defaultEmail)
         socket?.emit('setchannels', {
           address: account,
-          channels: notificationsState?.allActiveChannels.filter(
+          channels: notificationsState.allActiveChannels.filter(
             (item) => item.id !== NotificationChannelTypes.EMAIL,
           ),
         })
@@ -114,7 +123,6 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
               borderRadius: 'medium',
             }}
           >
-            {/* TODO: Move this to a generic UI component as it can be resued */}
             {(!defaultEmail || isChanging) && (
               <>
                 <Text
@@ -142,8 +150,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                   onChange={handleOnChange}
                   value={email}
                 />
-                {/* error types to be defined */}
-                {notificationsState?.error === 'email-save-failure' && (
+                {notificationsState.error && (
                   <EmailError text={t('notifications.email-save-failure')} />
                 )}
                 {!isEmailValid && submitted && (
