@@ -86,8 +86,8 @@ const defaultBasicSellData = {
 }
 
 type ConstantMultipleTriggerPairData = {
-  [TriggerType.BasicBuy]: BasicBSTriggerData
-  [TriggerType.BasicSell]: BasicBSTriggerData
+  [TriggerType.CMBasicBuy]: BasicBSTriggerData
+  [TriggerType.CMBasicSell]: BasicBSTriggerData
 }
 
 export function extractGroupTriggersData(
@@ -100,8 +100,8 @@ export function extractGroupTriggersData(
   }
 
   return {
-    [TriggerType.BasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
-    [TriggerType.BasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
+    [TriggerType.CMBasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
+    [TriggerType.CMBasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
   }
 }
 
