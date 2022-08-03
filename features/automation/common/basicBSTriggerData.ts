@@ -152,7 +152,8 @@ export function prepareBasicBSTriggerData({
   const commands = {
     [TriggerType.BasicSell]: CommandContractType.BasicSellCommand,
     [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
-    // [TriggerType.]: CommandContractType.CMBasicBuyCommand,
+    [TriggerType.CMBasicBuy]: CommandContractType.CMBasicBuyCommand,
+    [TriggerType.CMBasicSell]: CommandContractType.CMBasicSellCommand,
   }
 
   return {
