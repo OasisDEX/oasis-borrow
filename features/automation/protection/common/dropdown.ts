@@ -6,8 +6,7 @@ export function commonProtectionDropdownItems(uiChanges: UIChanges, t: TFunction
   return [
     {
       label: t('system.stop-loss'),
-      shortLabel: t('system.stop-loss'),
-      iconShrink: 3,
+      iconShrink: 2,
       icon: 'circle_exchange',
       panel: 'stopLoss',
       action: () => {
@@ -19,8 +18,7 @@ export function commonProtectionDropdownItems(uiChanges: UIChanges, t: TFunction
     },
     {
       label: t('system.basic-sell'),
-      shortLabel: t('system.basic-sell'),
-      iconShrink: 3,
+      iconShrink: 2,
       icon: 'circle_exchange',
       panel: 'autoSell',
       action: () => {

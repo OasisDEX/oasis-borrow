@@ -3,7 +3,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { DefaultVaultHeader } from 'components/vault/DefaultVaultHeader'
 import {
   EstimationError,
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
 import { VaultIlkDetailsItem } from 'components/vault/VaultHeader'
@@ -112,7 +112,7 @@ export function ManageInstiVaultContainer({ manageVault }: { manageVault: Manage
                     />
                     <VaultChangesInformationItem
                       label={'Estimated gas fee'}
-                      value={getEstimatedGasFeeText(manageVault)}
+                      value={getEstimatedGasFeeTextOld(manageVault)}
                     />
                   </Grid>
                 )}

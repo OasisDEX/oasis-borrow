@@ -9,13 +9,23 @@ import React from 'react'
 import { Dictionary } from 'ts-essentials'
 
 const SupportLink = <AppLink sx={{ color: 'warning100' }} href="mailto:support@oasis.app" />
+const ConstantMultipleKBLink = (
+  <AppLink sx={{ color: 'warning100' }} href="https://kb.oasis.app/help/" />
+)
 
 interface VaultWarningsProps {
   warningMessages: VaultWarningMessage[]
   ilkData: IlkData
+  isAutoSellEnabled?: boolean
+  isAutoBuyEnabled?: boolean
 }
 
-export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: VaultWarningsProps) {
+export function VaultWarnings({
+  warningMessages,
+  ilkData: { debtFloor },
+  isAutoSellEnabled,
+  isAutoBuyEnabled,
+}: VaultWarningsProps) {
   const { t } = useTranslation()
   if (!warningMessages.length) return null
 
@@ -71,6 +81,41 @@ export function VaultWarnings({ warningMessages, ilkData: { debtFloor } }: Vault
       // TEMPORARY override message as banner in overview details
       case 'autoSellOverride':
         return <Trans i18nKey="vault-warnings.auto-sell-override" components={[SupportLink]} />
+      case 'constantMultipleAutoSellTriggeredImmediately':
+        return translate('constant-multiple-auto-sell-triggered-immediately')
+      case 'constantMultipleAutoBuyTriggeredImmediately':
+        return translate('constant-multiple-auto-buy-triggered-immediately')
+      case 'constantMultipleSellTriggerCloseToStopLossTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.constant-multiple-sell-trigger-close-to-stop-loss-trigger"
+            components={[ConstantMultipleKBLink]}
+          />
+        )
+      case 'addingConstantMultipleWhenAutoSellOrBuyEnabled':
+        return (
+          <Trans
+            i18nKey="vault-warnings.adding-constant-multiple-when-auto-sell-or-buy-enabled"
+            values={{
+              enabledTriggers:
+                isAutoSellEnabled && isAutoBuyEnabled
+                  ? `Auto-Sell ${t('and')} Auto-Buy`
+                  : isAutoSellEnabled
+                  ? 'Auto-Sell'
+                  : isAutoBuyEnabled
+                  ? 'Auto-Buy'
+                  : t('active-triggers'),
+            }}
+            components={[ConstantMultipleKBLink]}
+          />
+        )
+      case 'stopLossTriggerCloseToConstantMultipleSellTrigger':
+        return (
+          <Trans
+            i18nKey="vault-warnings.stop-loss-trigger-close-to-constant-multiple-sell-trigger"
+            components={[ConstantMultipleKBLink]}
+          />
+        )
       default:
         throw new UnreachableCaseError(message)
     }
