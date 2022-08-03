@@ -25,22 +25,23 @@ import {
 } from 'helpers/messageMappers'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
+import React from 'react'
 
 interface SidebaConstantMultiplerEditingStageProps {
-//   vault: Vault
+  //   vault: Vault
   ilkData: IlkData
   isEditing: boolean
-//   basicBuyState: BasicBSFormChange
+  //   basicBuyState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
-//   errors: VaultErrorMessage[]
+  //   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-//   debtDelta: BigNumber
-//   collateralDelta: BigNumber
+  //   debtDelta: BigNumber
+  //   collateralDelta: BigNumber
   sliderMin: BigNumber
   sliderMax: number
   token: string
   constantMultipleState: ConstantMultipleFormChange
-//   onChange: (multiplier: number) => void
+  //   onChange: (multiplier: number) => void
   handleChangeMultiplier: (multiplier: number) => void
   autoSellTriggerData: BasicBSTriggerData
   nextBuyPrice: BigNumber
@@ -53,12 +54,12 @@ interface SidebaConstantMultiplerEditingStageProps {
 }
 
 export function ConstantMultipleEditingStage({
-//   vault,
+  //   vault,
   ilkData,
   isEditing,
-//   basicBuyState,
+  //   basicBuyState,
   autoBuyTriggerData,
-//   errors,
+  //   errors,
   warnings,
   sliderMin,
   sliderMax,
