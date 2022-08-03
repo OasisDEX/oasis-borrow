@@ -25,7 +25,6 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
-import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
@@ -53,7 +52,6 @@ interface SidebarSetupConstantMultipleProps {
   isFirstSetup: boolean
 
   // multiplier?: number
-  onChange: (multiplier: number) => void
   txHandler: () => void
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
@@ -80,7 +78,6 @@ export function SidebarSetupConstantMultiple({
   isDisabled,
   isFirstSetup,
   stage,
-  onChange: onMultiplierChange,
   constantMultipleState,
   txHandler,
   ilkData,
@@ -111,9 +108,6 @@ export function SidebarSetupConstantMultiple({
     : 'editConstantMultiple'
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-  function handleChangeMultiplier(multiplier: number) {
-    onMultiplierChange(multiplier)
-  }
 
   const { min, max } = getConstantMutliplyMinMaxValues({
     autoBuyTriggerData,
@@ -140,6 +134,13 @@ export function SidebarSetupConstantMultiple({
     maxColRatio: max,
   })
 
+  if (!acceptableMultipliers.includes(constantMultipleState.multiplier)) {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'multiplier',
+      multiplier: acceptableMultipliers[1],
+    })
+  }
+
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
@@ -151,18 +152,17 @@ export function SidebarSetupConstantMultiple({
       content: (
         <Grid gap={3}>
           <ActionPills
-            active={
-              constantMultipleState?.multiplier
-                ? constantMultipleState.multiplier.toString()
-                : INITIAL_MULTIPLIER_SELECTED.toString()
-            }
+            active={constantMultipleState.multiplier.toString()}
             variant="secondary"
             items={acceptableMultipliers.map((multiplier) => {
               return {
                 id: multiplier.toString(),
                 label: `${multiplier}X`,
                 action: () => {
-                  handleChangeMultiplier(multiplier)
+                  uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                    type: 'multiplier',
+                    multiplier: multiplier,
+                  })
                 },
               }
             })}

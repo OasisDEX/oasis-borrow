@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
 
 import { AutomationChangeAction, AutomationFormChange } from './basicBSFormChange'
 
@@ -10,7 +11,7 @@ export type ConstantMultipleChangeAction =
   | { type: 'min-sell-price'; minSellPrice?: BigNumber }
   | { type: 'buy-with-threshold'; buyWithThreshold: boolean }
   | { type: 'sell-with-threshold'; sellWithThreshold: boolean }
-  | { type: 'multiplier'; multiplier: number; targetCollRatio: BigNumber }
+  | { type: 'multiplier'; multiplier: number }
   | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
   | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
 
@@ -56,7 +57,11 @@ export function constantMultipleFormChangeReducer(
     case 'sell-with-threshold':
       return { ...state, sellWithThreshold: action.sellWithThreshold }
     case 'multiplier':
-      return { ...state, multiplier: action.multiplier, targetCollRatio: action.targetCollRatio }
+      return {
+        ...state,
+        multiplier: action.multiplier,
+        targetCollRatio: calculateCollRatioForMultiply(action.multiplier),
+      }
     default:
       return state
   }
