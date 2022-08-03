@@ -10,10 +10,11 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
-  ACCEPTABLE_FEE_DIFF, calculateMultipleFromTargetCollRatio,
+  ACCEPTABLE_FEE_DIFF,
 } from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
+import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -71,8 +72,6 @@ interface SidebarSetupConstantMultipleProps {
   addTriggerGasEstimationUsd?: BigNumber
 }
 
-const AMOUNT_OF_MULTIPLIERS = 6
-
 export function SidebarSetupConstantMultiple({
   vault,
   balanceInfo,
@@ -103,7 +102,7 @@ export function SidebarSetupConstantMultiple({
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
-  const { token } = vault
+  const { ilk, token } = vault
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelConstantMultiple'
@@ -135,43 +134,11 @@ export function SidebarSetupConstantMultiple({
     constantMultipleState,
   })
 
-  const minMultiple = calculateMultipleFromTargetCollRatio(max)
-  const maxMultiple = calculateMultipleFromTargetCollRatio(min)
-  const multipleStep = maxMultiple
-    .minus(minMultiple)
-    .div(new BigNumber(AMOUNT_OF_MULTIPLIERS - 1)) // minus first
-  const allowedMultipliers = [
-    minMultiple,
-    ...[...Array(AMOUNT_OF_MULTIPLIERS - 2)].map((_, i) => { // minus first and last
-      return minMultiple.plus(multipleStep.times(i + 1))
-    }),
-    maxMultiple,
-  ]
-  
-  const colRatioOffset = max.minus(min).div(new BigNumber(AMOUNT_OF_MULTIPLIERS - 1)) // minus first
-  const allowedColRatios = [
-      min.plus(5), // trigger offset
-      ...[...Array(AMOUNT_OF_MULTIPLIERS - 2)].map((_, i) => { // minus first and last
-        return min.plus(colRatioOffset.times(i + 1))
-      }),
-      max.minus(5), // trigger offset
-    ]
-
-  // const acceptableMultipliers = allowedMultipliers.map((item) => {
-  //   return item.decimalPlaces(2, BigNumber.ROUND_FLOOR).toNumber()
-  // })
-  // const acceptableMultipliers = allowedColRatios.reverse().map((item) => {
-  //   return calculateMultipleFromTargetCollRatio(item).decimalPlaces(2, BigNumber.ROUND_FLOOR).toNumber()
-  // })
-  const acceptableMultipliers = allowedColRatios.reverse().map((item, i) => {
-    return i + 1 < allowedColRatios.length
-    ? Math.ceil(calculateMultipleFromTargetCollRatio(item).toNumber() * 20) / 20
-    : Math.floor(calculateMultipleFromTargetCollRatio(item).toNumber() * 20) / 20
-    // return calculateMultipleFromTargetCollRatio(item).decimalPlaces(2).toNumber()
+  const acceptableMultipliers = getConstantMultipleMultipliers({
+    ilk,
+    minColRatio: min,
+    maxColRatio: max,
   })
-  console.log(acceptableMultipliers)
-
-  // const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
 
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
     const sidebarSectionProps: SidebarSectionProps = {
