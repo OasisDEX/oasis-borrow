@@ -1,4 +1,5 @@
 import { useMachine } from '@xstate/react'
+import BigNumber from 'bignumber.js'
 import { AppLink } from 'components/Links'
 import { ListWithIcon } from 'components/ListWithIcon'
 import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
@@ -6,11 +7,14 @@ import { Trans, useTranslation } from 'next-i18next'
 import React from 'react'
 import { Image, Text } from 'theme-ui'
 
+import { GasEstimationContext } from '../../components/GasEstimationContextProvider'
 import {
   getEstimatedGasFeeText,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../components/vault/VaultChangesInformation'
+import { GasEstimationStatus, HasGasEstimation } from '../../helpers/form'
+import { zero } from '../../helpers/zero'
 import { ProxyStateMachine } from './state'
 
 interface ProxyViewProps {
@@ -60,7 +64,7 @@ export function ProxyView({ proxyMachine }: ProxyViewProps) {
           <VaultChangesInformationContainer title={t('creating-proxy-contract')}>
             <VaultChangesInformationItem
               label={t('transaction-fee')}
-              value={getEstimatedGasFeeText(state.context.gasData)}
+              value={getEstimatedGasFeeText(GetContext(state.context.gasData))}
             />
           </VaultChangesInformationContainer>
         </>
@@ -72,4 +76,16 @@ export function ProxyView({ proxyMachine }: ProxyViewProps) {
       )}
     </>
   )
+}
+
+function GetContext(estimate?: HasGasEstimation): GasEstimationContext {
+  return {
+    gasAmount: estimate ? new BigNumber(estimate.gasEstimation!) : zero,
+    isSuccessful: !!estimate && estimate.gasEstimationStatus === GasEstimationStatus.calculated,
+    usdValue: estimate ? estimate.gasEstimationUsd! : zero,
+    isCompleted:
+      !!estimate &&
+      (estimate.gasEstimationStatus === GasEstimationStatus.error ||
+        estimate.gasEstimationStatus === GasEstimationStatus.calculated),
+  }
 }

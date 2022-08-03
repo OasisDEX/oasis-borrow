@@ -8,6 +8,7 @@
   "private": true,
   "workspaces": [
     "utils",
+    "utils/**",
     "features/**",
     "types"
   ],

@@ -6,7 +6,7 @@ import React from 'react'
 import { Box, Button, Grid } from 'theme-ui'
 
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
-import { preTransactionSequenceMachine } from '../../transaction/preTransactionSequenceMachine'
+import { openAaveParametersStateMachine } from '../transaction'
 import { createOpenAaveStateMachine } from './machine'
 import { services } from './services'
 import { OpenAaveEvent } from './types'
@@ -46,7 +46,7 @@ const openAaveStateMachine = createOpenAaveStateMachine(
   {} as any,
   () => proxyStateMachine,
   {} as any,
-  preTransactionSequenceMachine,
+  openAaveParametersStateMachine,
 ).withConfig({
   services: openAaveServices,
 })

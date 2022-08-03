@@ -4,11 +4,11 @@ import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
 import { AppContext } from '../../../components/AppContext'
-import { getOpenAaveStateMachine } from './pipelines/getOpenAaveStateMachine'
 import {
-  getPreTransactionMachine$,
-  getPreTransactionMachineServices$,
-} from './transaction/getPreTransactionMachineServices'
+  getOpenAaveParametersStateMachine$,
+  getOpenAaveParametersStateMachineServices$,
+} from './open/transaction'
+import { getOpenAaveStateMachine } from './pipelines/getOpenAaveStateMachine'
 
 export function setupAaveContext({
   connectedContext$,
@@ -24,12 +24,12 @@ export function setupAaveContext({
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  const preTransactionMachineServices$ = getPreTransactionMachineServices$(
+  const preTransactionMachineServices$ = getOpenAaveParametersStateMachineServices$(
     txHelpers$,
     gasEstimation$,
   )
 
-  const preTransactionMachine$ = getPreTransactionMachine$(preTransactionMachineServices$)
+  const preTransactionMachine$ = getOpenAaveParametersStateMachine$(preTransactionMachineServices$)
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,

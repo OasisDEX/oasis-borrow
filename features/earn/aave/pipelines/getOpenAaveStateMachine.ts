@@ -8,7 +8,7 @@ import { TxHelpers } from '../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../helpers/form'
 import { createOpenAaveStateMachine } from '../open/state/machine'
 import { OpenAaveStateMachine } from '../open/state/types'
-import { PreTransactionSequenceMachineType } from '../transaction/preTransactionSequenceMachine'
+import { OpenAaveParametersStateMachineType } from '../open/transaction'
 
 export function getOpenAaveStateMachine(
   txHelpers$: Observable<TxHelpers>,
@@ -17,7 +17,7 @@ export function getOpenAaveStateMachine(
   proxyAddress$: Observable<string | undefined>,
   getProxyStateMachine$: Observable<ProxyStateMachine>,
   getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>,
-  preTransactionSequenceMachine$: Observable<PreTransactionSequenceMachineType>,
+  preTransactionSequenceMachine$: Observable<OpenAaveParametersStateMachineType>,
 ): Observable<OpenAaveStateMachine> {
   return combineLatest(
     context$,

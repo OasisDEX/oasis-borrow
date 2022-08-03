@@ -6,7 +6,7 @@ import { assign, Machine, spawn } from 'xstate'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { PreTransactionSequenceMachineType } from '../../transaction/preTransactionSequenceMachine'
+import { OpenAaveParametersStateMachineType } from '../transaction'
 import { actions } from './actions'
 import { emptyProxyAddress, enoughBalance } from './guards'
 import { services } from './services'
@@ -32,7 +32,7 @@ export function createOpenAaveStateMachine(
   proxyAddress$: Observable<string | undefined>,
   proxyStateMachineCreator: () => ProxyStateMachine,
   getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>,
-  preTransactionMachine: PreTransactionSequenceMachineType,
+  preTransactionMachine: OpenAaveParametersStateMachineType,
 ) {
   return Machine<OpenAaveContext, OpenAaveStateMachineSchema, OpenAaveEvent>(
     {

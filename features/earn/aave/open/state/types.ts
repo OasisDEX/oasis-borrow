@@ -9,7 +9,7 @@ import { ActorRefFrom } from 'xstate/lib/types'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
-import { PreTransactionSequenceMachineType } from '../../transaction/preTransactionSequenceMachine'
+import { OpenAaveParametersStateMachineType } from '../transaction'
 import { createOpenAaveStateMachine } from './machine'
 
 export interface OpenAaveContext {
@@ -21,7 +21,7 @@ export interface OpenAaveContext {
     readonly proxyStateMachineCreator: () => ProxyStateMachine
   }
 
-  refTransactionHelper?: ActorRefFrom<PreTransactionSequenceMachineType>
+  refTransactionHelper?: ActorRefFrom<OpenAaveParametersStateMachineType>
 
   currentStep?: number
   totalSteps?: number

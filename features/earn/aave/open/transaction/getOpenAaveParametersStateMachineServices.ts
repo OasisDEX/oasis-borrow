@@ -1,23 +1,23 @@
 import { Observable } from 'rxjs'
 import { first, map } from 'rxjs/operators'
 
-import { TxMetaKind } from '../../../../blockchain/calls/txMeta'
-import { TxHelpers } from '../../../../components/AppContext'
-import { HasGasEstimation } from '../../../../helpers/form'
-import { zero } from '../../../../helpers/zero'
-import { getOpenAaveParameters } from '../../../aave'
-import { openAavePosition } from '../open/pipelines/openAavePosition'
+import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
+import { TxHelpers } from '../../../../../components/AppContext'
+import { HasGasEstimation } from '../../../../../helpers/form'
+import { zero } from '../../../../../helpers/zero'
+import { getOpenAaveParameters } from '../../../../aave'
+import { openAavePosition } from '../pipelines/openAavePosition'
 import {
-  preTransactionSequenceMachine,
+  openAaveParametersStateMachine,
+  OpenAaveParametersStateMachineType,
   PreTransactionSequenceMachineServices,
-  PreTransactionSequenceMachineType,
-} from './preTransactionSequenceMachine'
+} from './openAaveParametersStateMachine'
 
 /*
   This function is used to set up the preTransactionSequenceMachine
   It would be great if we could pass promises to that. Then we could return plain object of services
  */
-export function getPreTransactionMachineServices$(
+export function getOpenAaveParametersStateMachineServices$(
   txHelpers$: Observable<TxHelpers>,
   gasEstimation$: (gas: number) => Observable<HasGasEstimation>,
 ): Observable<PreTransactionSequenceMachineServices> {
@@ -49,12 +49,12 @@ export function getPreTransactionMachineServices$(
   )
 }
 
-export function getPreTransactionMachine$(
+export function getOpenAaveParametersStateMachine$(
   services$: Observable<PreTransactionSequenceMachineServices>,
-): Observable<PreTransactionSequenceMachineType> {
+): Observable<OpenAaveParametersStateMachineType> {
   return services$.pipe(
     map((services) => {
-      return preTransactionSequenceMachine.withConfig({
+      return openAaveParametersStateMachine.withConfig({
         services: {
           ...services,
         },
