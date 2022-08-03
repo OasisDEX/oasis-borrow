@@ -9,9 +9,7 @@ import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import {
-  ACCEPTABLE_FEE_DIFF,
-} from 'features/automation/common/helpers'
+import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
 import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
@@ -34,11 +32,12 @@ import {
   extractConstantMultipleCommonWarnings,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
+import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Grid } from 'theme-ui'
+import { Box, Grid } from 'theme-ui'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
@@ -98,7 +97,8 @@ export function SidebarSetupConstantMultiple({
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const { uiChanges } = useAppContext()
+  const { uiChanges, userSettings$ } = useAppContext()
+  const [userSettings] = useObservable(userSettings$)
   const { ilk, token } = vault
 
   const flow: SidebarFlow = isRemoveForm
@@ -151,22 +151,24 @@ export function SidebarSetupConstantMultiple({
       },
       content: (
         <Grid gap={3}>
-          <ActionPills
-            active={constantMultipleState.multiplier.toString()}
-            variant="secondary"
-            items={acceptableMultipliers.map((multiplier) => {
-              return {
-                id: multiplier.toString(),
-                label: `${multiplier}X`,
-                action: () => {
-                  uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                    type: 'multiplier',
-                    multiplier: multiplier,
-                  })
-                },
-              }
-            })}
-          />
+          <Box sx={{ mb: 2 }}>
+            <ActionPills
+              active={constantMultipleState.multiplier.toString()}
+              variant="secondary"
+              items={acceptableMultipliers.map((multiplier) => {
+                return {
+                  id: multiplier.toString(),
+                  label: `${multiplier}x`,
+                  action: () => {
+                    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                      type: 'multiplier',
+                      multiplier: multiplier,
+                    })
+                  },
+                }
+              })}
+            />
+          </Box>
           <MultipleRangeSlider
             min={min.toNumber()}
             max={max.toNumber()}
@@ -185,16 +187,16 @@ export function SidebarSetupConstantMultiple({
               value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
             }}
             valueColors={{
-              value0: 'onSuccess',
-              value1: 'onWarning',
+              value0: 'warning100',
+              value1: 'success100',
             }}
             step={1}
             leftDescription={t('auto-sell.sell-trigger-ratio')}
             rightDescription={t('auto-buy.trigger-coll-ratio')}
-            leftThumbColor="onSuccess"
-            rightThumbColor="onWarning"
+            leftThumbColor="warning100"
+            rightThumbColor="success100"
             middleMark={{
-              text: constantMultipleState.multiplier.toString(),
+              text: `${constantMultipleState.multiplier}x`,
               value: constantMultipleState.targetCollRatio.toNumber(),
             }}
           />
@@ -259,6 +261,7 @@ export function SidebarSetupConstantMultiple({
           {isEditing && (
             <ConstantMultipleInfoSectionControl
               token={token}
+              slippage={userSettings?.slippage}
               nextBuyPrice={nextBuyPrice}
               nextSellPrice={nextSellPrice}
               collateralToBePurchased={collateralToBePurchased}
@@ -298,6 +301,7 @@ function textButtonHandler(): void {
 
 interface ConstantMultipleInfoSectionControlProps {
   token: string
+  slippage?: BigNumber
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -311,6 +315,7 @@ interface ConstantMultipleInfoSectionControlProps {
 
 function ConstantMultipleInfoSectionControl({
   token,
+  slippage,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -321,8 +326,6 @@ function ConstantMultipleInfoSectionControl({
   estimatedSellFee,
   constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
-  // TODO: PK where do I get slippage?
-  const slippage = new BigNumber(0.5)
   const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
   const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
     ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))

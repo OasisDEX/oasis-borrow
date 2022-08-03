@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -8,7 +9,7 @@ interface ConstantMultipleInfoSectionProps {
   token: string
   targetColRatio: BigNumber
   multiplier: number
-  slippage: BigNumber
+  slippage?: BigNumber
   buyExecutionCollRatio: BigNumber
   nextBuyPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -55,7 +56,7 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('vault-changes.slippage-limit'),
-          value: `${slippage}%`,
+          value: formatPercent(slippage?.times(100) || zero, { precision: 2 }),
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
