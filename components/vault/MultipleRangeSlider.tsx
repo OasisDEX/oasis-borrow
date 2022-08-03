@@ -285,7 +285,7 @@ export function MultipleRangeSlider({
                   transform: 'translateX(-50%)',
                   backgroundColor: 'interactive50',
                   left: `${middleMarkPercentagePosition}%`,
-                  borderRadius: 'small'
+                  borderRadius: 'small',
                 }}
               />
               <Box
