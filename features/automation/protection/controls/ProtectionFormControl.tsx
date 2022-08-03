@@ -6,6 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -50,6 +51,8 @@ export function ProtectionFormControl({
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
 
+  const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
+
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
     currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
     isAutoSellOn: autoSellTriggerData.isTriggerEnabled,
@@ -82,6 +85,7 @@ export function ProtectionFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
       />
       <AutoSellFormControl
         vault={vault}
@@ -95,6 +99,7 @@ export function ProtectionFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
       />
     </>
   )

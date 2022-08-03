@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
@@ -132,4 +133,8 @@ export function calculateCollRatioForMultiply(multiplier: number) {
 
 export function calculateMultipleFromTargetCollRatio(targetCollRatio: BigNumber) {
   return one.div(targetCollRatio.div(100).minus(one)).plus(one)
+}
+
+export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {
+  return automationTriggersData.triggers?.length === 1
 }

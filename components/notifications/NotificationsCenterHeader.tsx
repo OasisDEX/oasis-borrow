@@ -1,14 +1,15 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
 import { Button, Flex, Text } from 'theme-ui'
+
 interface NotificationsCenterHeaderProps {
   onButtonClick: () => void
-  showPrefrencesTab: boolean
+  showPreferencesTab: boolean
 }
 
 export function NotificationsCenterHeader({
   onButtonClick,
-  showPrefrencesTab,
+  showPreferencesTab,
 }: NotificationsCenterHeaderProps) {
   return (
     <Flex
@@ -47,7 +48,7 @@ export function NotificationsCenterHeader({
         onClick={onButtonClick}
       >
         <Icon
-          name={showPrefrencesTab ? 'close' : 'settings'}
+          name={showPreferencesTab ? 'close' : 'settings'}
           size="auto"
           width="16"
           color="neutral80"

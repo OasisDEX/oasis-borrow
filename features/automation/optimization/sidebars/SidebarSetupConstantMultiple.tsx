@@ -3,6 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -62,11 +63,9 @@ interface SidebarSetupConstantMultipleProps {
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
-  gasEstimationUsd?: BigNumber
   estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
-  addTriggerGasEstimationUsd?: BigNumber
 }
 
 export function SidebarSetupConstantMultiple({
@@ -89,16 +88,15 @@ export function SidebarSetupConstantMultiple({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
-  gasEstimationUsd,
   estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
-  addTriggerGasEstimationUsd,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges, userSettings$ } = useAppContext()
   const [userSettings] = useObservable(userSettings$)
+  const gasEstimation = useGasEstimationContext()
   const { ilk, token } = vault
 
   const flow: SidebarFlow = isRemoveForm
@@ -118,7 +116,7 @@ export function SidebarSetupConstantMultiple({
 
   const warnings = warningsConstantMultipleValidation({
     vault,
-    gasEstimationUsd,
+    gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     sliderMin: min,
@@ -266,7 +264,6 @@ export function SidebarSetupConstantMultiple({
               nextSellPrice={nextSellPrice}
               collateralToBePurchased={collateralToBePurchased}
               collateralToBeSold={collateralToBeSold}
-              addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
               estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
               estimatedBuyFee={estimatedBuyFee}
               estimatedSellFee={estimatedSellFee}
@@ -306,7 +303,6 @@ interface ConstantMultipleInfoSectionControlProps {
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
   collateralToBeSold: BigNumber
-  addTriggerGasEstimationUsd?: BigNumber
   estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
@@ -320,7 +316,6 @@ function ConstantMultipleInfoSectionControl({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
-  addTriggerGasEstimationUsd,
   estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
@@ -353,7 +348,6 @@ function ConstantMultipleInfoSectionControl({
           ? constantMultipleState.minSellPrice || zero
           : undefined
       }
-      addTriggerGasEstimationUsd={addTriggerGasEstimationUsd}
       estimatedOasisFee={estimatedOasisFee}
       estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
     />

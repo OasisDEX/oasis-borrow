@@ -1,17 +1,17 @@
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
-import React, { useState } from 'react'
-import { Box, Input } from 'theme-ui'
+import React, { useCallback } from 'react'
+import { Box, Input, SxStyleProp } from 'theme-ui'
 
 interface ToggleProps {
   isChecked: boolean
-  onChangeHandler?: () => void
-  sx?: any
+  onChange: (checked: boolean) => void
+  sx?: SxStyleProp
 }
 
-export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
-  // TODO: Update this
-  const checked = isChecked
-  const [, setChecked] = useState(isChecked)
+export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
+  const handleToggle = useCallback(() => {
+    onChange(!isChecked)
+  }, [isChecked, onChange])
 
   return (
     <Box
@@ -31,27 +31,25 @@ export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
           height: 0,
         }}
         type="checkbox"
-        // TODO: Update this to use only parsed handler
-        onChange={onChangeHandler ? () => onChangeHandler() : () => setChecked(!checked)}
+        onChange={handleToggle}
       />
       <Box
         as="span"
         sx={{
           '&:before': {
             position: 'absolute',
-            // TODO: Possibly create a function to do this so that is more readable
-            content: checked ? checkedToggleDataIcon : notCheckedToggleDataIcon,
+            content: isChecked ? checkedToggleDataIcon : notCheckedToggleDataIcon,
             height: '20px',
             display: 'block',
             width: '20px',
             marginTop: '2px',
-            ...(!checked && { marginLeft: '2px' }),
-            backgroundColor: checked ? 'interactive100' : 'primary30',
+            ...(!isChecked && { marginLeft: '2px' }),
+            backgroundColor: isChecked ? 'interactive100' : 'primary30',
             borderRadius: 'circle',
             textAlign: 'center',
-            lineHeight: checked ? '1.2' : '1',
+            lineHeight: isChecked ? '1.2' : '1',
             transition: '.4s',
-            ...(checked && { transform: 'translateX(26px)' }),
+            ...(isChecked && { transform: 'translateX(26px)' }),
           },
           position: 'absolute',
           cursor: 'pointer',
@@ -59,7 +57,7 @@ export function Toggle({ isChecked, onChangeHandler, sx }: ToggleProps) {
           left: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: checked ? 'interactive10' : 'secondary60',
+          backgroundColor: isChecked ? 'interactive10' : 'secondary60',
           transition: '.4s',
           borderRadius: 'round',
         }}

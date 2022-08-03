@@ -9,6 +9,7 @@ interface NotificationsIconButtonProps {
   notificationsRef: LegacyRef<HTMLDivElement>
   notificationsCount: number
   onButtonClick: () => void
+  disabled: boolean
 }
 
 export function NotificationsIconButton({
@@ -16,6 +17,7 @@ export function NotificationsIconButton({
   notificationsCount,
   notificationsRef,
   onButtonClick,
+  disabled,
 }: NotificationsIconButtonProps) {
   return (
     <Box
@@ -27,6 +29,7 @@ export function NotificationsIconButton({
       <Button
         variant="menuButtonRound"
         onClick={onButtonClick}
+        disabled={disabled}
         sx={{
           mr: 3,
           position: 'relative',
