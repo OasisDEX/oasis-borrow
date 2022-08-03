@@ -1,9 +1,18 @@
 import { isAppContextAvailable, useAppContext } from 'components/AppContextProvider'
-import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import {
+  firstNotificationsRelevantDate,
+  maxNumberOfNotifications,
+} from 'features/notifications/consts'
+import { prepareNotificationMessageHandlers } from 'features/notifications/handlers'
+import {
+  NOTIFICATION_CHANGE,
+  notificationInitialState,
+} from 'features/notifications/notificationChange'
 import { jwtAuthGetToken } from 'features/termsOfService/jwt'
 import { useObservable } from 'helpers/observableHook'
 import { WithChildren } from 'helpers/types'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
+import getConfig from 'next/config'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import io, { Socket } from 'socket.io-client'
 
@@ -13,17 +22,14 @@ interface WebSocket {
 
 export const NotificationSocketContext = createContext<WebSocket | {}>({})
 
-export const useSocket = () => useContext(NotificationSocketContext) as WebSocket
-
-const initialState: NotificationChange = {
-  numberOfNotifications: 0,
-  notificationList: [],
-}
+export const useNotificationSocket = () => useContext(NotificationSocketContext) as WebSocket
 
 export function NotificationSocketProvider({ children }: WithChildren) {
   if (!isAppContextAvailable()) {
     return null
   }
+
+  const notificationsHost = getConfig()?.publicRuntimeConfig?.notificationsHost
 
   const notificationsToggle = useFeatureToggle('Notifications')
   const { context$, uiChanges } = useAppContext()
@@ -34,13 +40,12 @@ export function NotificationSocketProvider({ children }: WithChildren) {
   const account = context?.status === 'connected' ? context.account : ''
   const jwtToken = jwtAuthGetToken(account)
 
-  function handler(count: number) {
-    uiChanges.publish(NOTIFICATION_CHANGE, {
-      type: 'number-of-notifications',
-      numberOfNotifications: count,
-    })
-  }
-
+  const {
+    numberOfNotificationsHandler,
+    allNotificationsHandler,
+    allActiveSubscriptionsHandler,
+    allActiveChannelsHandler,
+  } = prepareNotificationMessageHandlers(uiChanges)
   useEffect(() => {
     if (jwtToken && notificationsToggle) {
       if (jwtToken !== token && socket) {
@@ -49,23 +54,36 @@ export function NotificationSocketProvider({ children }: WithChildren) {
       }
 
       if (!socket) {
-        const socketInstance = io('ws://localhost:3005', { auth: { token: `Bearer ${jwtToken}` } })
+        const socketInstance = io(notificationsHost, { auth: { token: `Bearer ${jwtToken}` } })
 
         // initialize state
         uiChanges.publish(NOTIFICATION_CHANGE, {
           type: 'initialize-state',
-          initializeState: initialState,
+          initializeState: notificationInitialState,
         })
 
         // initialize watchers
-        socketInstance.on('notificationcount', handler)
+        socketInstance.on('notificationcount', numberOfNotificationsHandler)
+        socketInstance.on('allnotifications', allNotificationsHandler)
+        socketInstance.on('allactivesubscriptions', allActiveSubscriptionsHandler)
+        socketInstance.on('allactivechannels', allActiveChannelsHandler)
+        socketInstance.on('connect_error', (err) => {
+          uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: err.message })
+        })
+        // generic error handled manually on backend, i.e errors due to db failure
+        socketInstance.on('error', (err) => {
+          uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: err.message })
+        })
 
         // subscription & reconnect handling
         socketInstance.on('connect', () => {
-          socketInstance.emit('subscribecount', {
+          uiChanges.publish(NOTIFICATION_CHANGE, { type: 'error', error: '' })
+          socketInstance.emit('initialize', {
             address: account,
-            signature: 'signature',
-            messageHash: 'messageHash',
+            notificationPreferences: {
+              maxNumberOfNotifications,
+              firstRelevantDate: firstNotificationsRelevantDate,
+            },
           })
         })
 
@@ -75,7 +93,10 @@ export function NotificationSocketProvider({ children }: WithChildren) {
     }
 
     return () => {
-      socket?.off('notificationcount', handler)
+      socket?.off('notificationcount', numberOfNotificationsHandler)
+      socket?.off('allnotifications', allNotificationsHandler)
+      socket?.off('allactivesubscriptions', allActiveSubscriptionsHandler)
+      socket?.off('allactivechannels', allActiveChannelsHandler)
     }
   }, [jwtToken, socket])
 

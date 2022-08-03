@@ -4,10 +4,12 @@ import { Button, Flex, Text } from 'theme-ui'
 
 interface NotificationsChangeEmailButtonProps {
   currentEmail: string
+  handleIsChanging: () => void
 }
 
 export function NotificationsChangeEmailButton({
   currentEmail,
+  handleIsChanging,
 }: NotificationsChangeEmailButtonProps) {
   const { t } = useTranslation()
 
@@ -15,10 +17,8 @@ export function NotificationsChangeEmailButton({
     <Flex
       sx={{
         background: 'neutral30',
-        height: '54px',
         alignItems: 'center',
         borderRadius: 'medium',
-        p: 3,
       }}
     >
       <Text
@@ -37,10 +37,12 @@ export function NotificationsChangeEmailButton({
           background: 'transparent',
           ml: 'auto !important',
           pr: 0,
+          py: 0,
           ':hover': {
             background: 'transparent',
           },
         }}
+        onClick={handleIsChanging}
       >
         {t('notifications.change-btn')}
       </Button>

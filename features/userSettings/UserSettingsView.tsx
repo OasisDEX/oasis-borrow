@@ -7,7 +7,7 @@ import {
   getWalletKind,
 } from 'components/connectWallet/ConnectWallet'
 import { AppLink } from 'components/Links'
-import { useSocket } from 'components/NotificationSocketProvider'
+import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { AppSpinner } from 'helpers/AppSpinner'
 import { BigNumberInput } from 'helpers/BigNumberInput'
 import { formatAddress, formatCryptoBalance } from 'helpers/formatters/format'
@@ -310,7 +310,7 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
   const { t } = useTranslation()
   const { web3Context$ } = useAppContext()
   const [web3Context] = useObservable(web3Context$)
-  const { socket } = useSocket()
+  const { socket } = useNotificationSocket()
 
   return (
     <Box sx={sx}>

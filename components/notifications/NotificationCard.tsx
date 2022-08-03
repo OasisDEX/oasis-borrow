@@ -1,65 +1,94 @@
 import { Button } from '@theme-ui/components'
-import { BigNumber } from 'bignumber.js'
-import { NotificationTypes } from 'features/notifications/types'
+import { AppLink } from 'components/Links'
+import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
+import { criticalNotifications } from 'features/notifications/consts'
+import { Notification, NotificationTypes } from 'features/notifications/types'
 import { useTranslation } from 'next-i18next'
 import React, { ReactNode, useMemo } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
 
-function getNotificationCardSx({ type, isRead }: { type: NotificationTypes; isRead: boolean }) {
-  const sxProps = {
-    [NotificationTypes.CRITICAL]: {
-      boxShadow: isRead ? 'unset' : 'vaultDetailsCard',
-      border: 'unset',
-      '&:hover': {
-        boxShadow: 'surface',
-        '> div:first-child': {
-          bg: 'critical100',
+function getNotificationCardSx({ isCritical, isRead }: { isCritical: boolean; isRead: boolean }) {
+  return isCritical
+    ? {
+        boxShadow: isRead ? 'unset' : 'vaultDetailsCard',
+        border: 'unset',
+        '&:hover': {
+          boxShadow: 'surface',
+          '> div:first-child': {
+            bg: 'critical100',
+          },
         },
-      },
-    },
-    [NotificationTypes.NON_CRITICAL]: {
-      border: 'unset',
-      '&:hover': {
-        bg: 'neutral30',
-        '> div:first-child': {
-          bg: 'interactive100',
+      }
+    : {
+        border: 'unset',
+        '&:hover': {
+          bg: 'neutral30',
+          '> div:first-child': {
+            bg: 'interactive100',
+          },
         },
-      },
-    },
-  }
-
-  return sxProps[type]
+      }
 }
 
 function getStatusDotColor({ isRead, isCritical }: { isRead: boolean; isCritical: boolean }) {
   return isRead ? 'neutral20' : isCritical ? 'critical100' : 'interactive100'
 }
 
-export interface NotificationCardProps {
-  title: ReactNode
-  timestamp: ReactNode
-  type: NotificationTypes
-  isRead: boolean
-  editHandler?: () => void
-  markReadHandler?: () => void
-  vaultId: BigNumber
+function getEditVaultLinkHash(type: NotificationTypes) {
+  switch (type) {
+    case NotificationTypes.APPROACHING_STOP_LOSS:
+    case NotificationTypes.APPROACHING_AUTO_SELL:
+    case NotificationTypes.STOP_LOSS_TRIGGERED:
+    case NotificationTypes.AUTO_SELL_TRIGGERED:
+      return VaultViewMode.Protection
+    case NotificationTypes.APPROACHING_AUTO_BUY:
+    case NotificationTypes.APPROACHING_CONSTANT_MULTIPLE:
+    case NotificationTypes.AUTO_BUY_TRIGGERED:
+    case NotificationTypes.CONSTANT_MULTIPLE_TRIGGERED:
+      return VaultViewMode.Optimization
+    case NotificationTypes.VAULT_LIQUIDATED:
+    case NotificationTypes.APPROACHING_LIQUIDATION:
+    case NotificationTypes.ORACLE_PRICE_CHANGED:
+      return VaultViewMode.Overview
+    default:
+      return VaultViewMode.Overview
+  }
 }
 
+export type NotificationCardProps = {
+  title: ReactNode
+  editHandler: (id: number) => void
+  markReadHandler: (id: number) => void
+} & Notification
+
 export function NotificationCard({
+  id,
   title,
-  timestamp,
-  type,
+  lastModified,
+  notificationType,
   isRead,
   editHandler,
   markReadHandler,
+  additionalData,
 }: NotificationCardProps) {
   const { t } = useTranslation()
-  const isCritical = type === NotificationTypes.CRITICAL
-  const cardSx = useMemo(() => getNotificationCardSx({ type, isRead }), [type, isRead])
+  const isCritical = criticalNotifications.includes(notificationType)
+  const cardSx = useMemo(() => getNotificationCardSx({ isCritical, isRead }), [
+    notificationType,
+    isRead,
+  ])
+  const linkHash = useMemo(() => getEditVaultLinkHash(notificationType), [notificationType])
   const statusDotColor = useMemo(() => getStatusDotColor({ isRead, isCritical }), [
     isRead,
     isCritical,
   ])
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }
+
+  const humanDate = new Date(lastModified * 1000).toLocaleDateString('en-US', options)
 
   return (
     <Card sx={{ pl: '4', position: 'relative', ...cardSx }}>
@@ -74,7 +103,7 @@ export function NotificationCard({
           left: '16px',
         }}
       />
-      <Text as="p" variant="paragraph3" sx={{ mb: 2, fontWeight: isRead ? 'body' : 'semiBold' }}>
+      <Text as="div" variant="paragraph3" sx={{ mb: 2, fontWeight: isRead ? 'body' : 'semiBold' }}>
         {title}
       </Text>
       <Text
@@ -85,18 +114,24 @@ export function NotificationCard({
           color: 'text.subtitle',
         }}
       >
-        {timestamp}
+        {humanDate}
       </Text>
       {isCritical && (
         <Flex sx={{ justifyContent: 'flex-start', gap: 2 }}>
-          <Button variant="bean" sx={{ px: '24px', py: 1, height: '28px' }} onClick={editHandler}>
-            {t('edit-vault')}
-          </Button>
+          <AppLink href={`/${additionalData.vaultId}`} hash={linkHash}>
+            <Button
+              variant="bean"
+              sx={{ px: '24px', py: 1, height: '28px' }}
+              onClick={() => editHandler(id)}
+            >
+              {t('edit-vault')}
+            </Button>
+          </AppLink>
           {!isRead && (
             <Button
               variant="textual"
               sx={{ color: 'primary', fontSize: 1, py: 1 }}
-              onClick={markReadHandler}
+              onClick={() => markReadHandler(id)}
             >
               {t('mark-as-read')}
             </Button>
@@ -106,68 +141,3 @@ export function NotificationCard({
     </Card>
   )
 }
-
-export const dummyNotifications: NotificationCardProps[] = [
-  {
-    title: 'Vault #1234 is close to the liqudation price $15,000.00',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.CRITICAL,
-    isRead: false,
-    markReadHandler: () => console.log('mark read handler - probably api call'),
-    editHandler: () => console.log('edit handler - probably just redirect'),
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is close to the liqudation price $15,000.00',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.CRITICAL,
-    isRead: true,
-    markReadHandler: () => console.log('mark read handler - probably api call'),
-    editHandler: () => console.log('edit handler - probably just redirect'),
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is approaching  Basic Buy Trigger',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.NON_CRITICAL,
-    isRead: false,
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is approaching  Basic Buy Trigger',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.NON_CRITICAL,
-    isRead: true,
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is approaching  Basic Buy Trigger',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.NON_CRITICAL,
-    isRead: true,
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is close to the liqudation price $15,000.00',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.CRITICAL,
-    isRead: false,
-    markReadHandler: () => console.log('mark read handler - probably api call'),
-    editHandler: () => console.log('edit handler - probably just redirect'),
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is approaching  Basic Buy Trigger',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.NON_CRITICAL,
-    isRead: true,
-    vaultId: new BigNumber(1234),
-  },
-  {
-    title: 'Vault #1234 is approaching  Basic Buy Trigger',
-    timestamp: 'Mar 17, 2022',
-    type: NotificationTypes.NON_CRITICAL,
-    isRead: true,
-    vaultId: new BigNumber(1234),
-  },
-]

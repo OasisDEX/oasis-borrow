@@ -1601,6 +1601,22 @@
     "confirm-btn": "Confirm",
     "change-btn": "Change",
     "email-entered": "You have set up email notifcations successfully.",
-    "enable-notifications-email-label": "Set up your email"
+    "enable-notifications-email-label": "Set up your email",
+    "approaching-liquidation": "Your vault #{{vaultId}} col. ratio got within 5% of the liquidation price on {{humanDate}}.",
+    "approaching-trigger": "Your vault #{{vaultId}} is approaching {{trigger}} trigger. <1><2>View vault</2></1>",
+    "email-save-failure": "We couldn't save your e-mail address. Please try again later.",
+    "invalid-email": "Invalid email address format, please try again.",
+    "vault-liquidated": "Your vault #{{vaultId}} was liquidated on {{humanDate}} at ${{usdPrice}}.",
+    "stop-loss-executed": "Your Stop-Loss Protection on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "auto-buy-executed": "Your Auto-Buy on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "auto-sell-executed": "Your Auto-Sell on vault #{{vaultId}} was executed on {{humanDate}} at ${{usdPrice}}.",
+    "action-notifications": "Vault action notifications",
+    "action-notifications-description": "You will be able to receive notifications when triggering Automation, Liquidation, or opening a vault.",
+    "info-notifications": "Vault info notifications",
+    "info-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "user-communication-notifications": "Oasis.app user communication notifications",
+    "user-communication-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
+    "news-notifications": "Oasis.app news notifications",
+    "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications"
   }
 }

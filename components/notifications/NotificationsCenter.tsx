@@ -1,5 +1,8 @@
-import { dummyNotifications } from 'components/notifications/NotificationCard'
+import { useAppContext } from 'components/AppContextProvider'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
+import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import { useObservable } from 'helpers/observableHook'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import React, { useMemo, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Grid } from 'theme-ui'
@@ -7,20 +10,16 @@ import { useOnMobile } from 'theme/useBreakpointIndex'
 
 import { NotificationsCenterContent } from './NotificationsCenterContent'
 import { NotificationsCenterHeader } from './NotificationsCenterHeader'
-import { NotificationPrefrenceCardWrapper } from './NotificationsPrefrenceCardWrapper'
-
-// TODO: This component should have props that look something like
-// interface NotificationsCenterProps {
-//   notifications: Notification[];
-//   prefrences: Prefrences;
-//   email: string;
-//   ..ect
-// }
-// Rendering is then handle below
+import { NotificationPreferenceCardWrapper } from './NotificationsPrefrenceCardWrapper'
 
 export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
   const onMobile = useOnMobile()
-  const [showPrefrencesTab, setShowPrefencesTab] = useState(false)
+  const [showPreferencesTab, setShowPrefencesTab] = useState(false)
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
+  const { context$ } = useAppContext()
+  const [context] = useObservable(context$)
+
+  const account = context?.status === 'connected' ? context.account : ''
 
   const notificationCenterStyles = useMemo(
     () => ({
@@ -44,21 +43,24 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         ...notificationCenterStyles,
         transition: 'transform 0.3s ease-in-out',
         transform: !isOpen ? 'translateX(400%)' : 'translateX(0)',
+        visibility: isOpen ? 'visible' : 'hidden',
       }}
     >
       <NotificationsCenterHeader
-        onButtonClick={() => setShowPrefencesTab(!showPrefrencesTab)}
-        showPrefrencesTab={showPrefrencesTab}
+        onButtonClick={() => setShowPrefencesTab(!showPreferencesTab)}
+        showPreferencesTab={showPreferencesTab}
       />
-      <NotificationsCenterContent>
-        <Grid sx={{ px: 2, mt: 3 }}>
-          {showPrefrencesTab ? (
-            <NotificationPrefrenceCardWrapper />
-          ) : (
-            <NotificationCardsWrapper notificationCards={dummyNotifications} />
-          )}
-        </Grid>
-      </NotificationsCenterContent>
+      {!!notificationsState && (
+        <NotificationsCenterContent>
+          <Grid sx={{ px: 2, mt: 3 }}>
+            {showPreferencesTab ? (
+              <NotificationPreferenceCardWrapper account={account} />
+            ) : (
+              <NotificationCardsWrapper account={account} />
+            )}
+          </Grid>
+        </NotificationsCenterContent>
+      )}
     </Box>
   )
 }
