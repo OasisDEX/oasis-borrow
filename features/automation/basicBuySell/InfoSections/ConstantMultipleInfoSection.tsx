@@ -55,7 +55,7 @@ export function ConstantMultipleInfoSection({
         },
         {
           label: t('vault-changes.slippage-limit'),
-          value: formatPercent(slippage, { precision: 2 }),
+          value: formatPercent(slippage.times(100), { precision: 2 }),
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),
