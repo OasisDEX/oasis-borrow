@@ -1,14 +1,19 @@
 import { createProxyStateMachine, ProxyEvent } from '@oasis-borrow/proxy/state'
 import { storiesOf } from '@storybook/react'
-import { useMachine } from '@xstate/react'
+import { useActor, useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import React from 'react'
+import { interval } from 'rxjs'
+import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
+import { ActorRefFrom } from 'xstate'
 
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
-import { openAaveParametersStateMachine } from '../transaction'
+import { OpenPositionResult } from '../../../../aave'
+import { openAaveParametersStateMachine, OpenAaveParametersStateMachineType } from '../transaction'
+import { machineConfig } from '../transaction/openAaveParametersStateMachine'
 import { createOpenAaveStateMachine } from './machine'
-import { services } from './services'
+import { OpenAaveStateMachineServices, services } from './services'
 import { OpenAaveEvent } from './types'
 
 const stories = storiesOf('Open Aave State Machine', module)
@@ -30,32 +35,69 @@ const proxyStateMachine = createProxyStateMachine(
   },
 })
 
-const openAaveServices: typeof services = {
-  getProxyAddress: (() => {}) as any,
-  getBalance: (() => {}) as any,
-  createPosition: (() => {}) as any,
-  initMachine: (() => {}) as any,
-  getTransactionParameters: (() => {}) as any,
-  invokeProxyMachine: () => proxyStateMachine,
-  estimateGas: (() => {}) as any,
+function delay() {
+  return interval(2000).pipe(first()).toPromise()
 }
 
-const openAaveStateMachine = createOpenAaveStateMachine(
-  undefined as any,
-  {} as any,
-  {} as any,
-  () => proxyStateMachine,
-  {} as any,
-  openAaveParametersStateMachine,
-).withConfig({
-  services: openAaveServices,
+const parametersMachine = openAaveParametersStateMachine.withConfig({
+  services: {
+    [machineConfig.services.getParameters]: async () => {
+      await delay()
+      return {} as OpenPositionResult
+    },
+    [machineConfig.services.estimateGas]: async () => {
+      await delay()
+      return 10
+    },
+    [machineConfig.services.estimateGasPrice]: async () => {
+      await delay()
+      return {} as HasGasEstimation
+    },
+  },
 })
+
+const openAaveServices: OpenAaveStateMachineServices = {
+  [services.getProxyAddress]: (() => {}) as any,
+  [services.getBalance]: (() => {}) as any,
+  [services.createPosition]: (() => {}) as any,
+  // [services.invokeGetTransactionParametersMachine]: () => parametersMachine,
+  [services.invokeProxyMachine]: () => proxyStateMachine,
+}
+
+const openAaveStateMachine = createOpenAaveStateMachine
+  .withConfig({
+    services: openAaveServices,
+  })
+  .withContext({
+    dependencies: {
+      parametersStateMachine: parametersMachine.withContext({ hasParent: true }),
+      proxyStateMachine: proxyStateMachine,
+    },
+    token: 'ETH',
+    multiply: 2,
+  })
+
+const ActorView = ({
+  parametersMachine,
+}: {
+  parametersMachine: ActorRefFrom<OpenAaveParametersStateMachineType>
+}) => {
+  const [state] = useActor(parametersMachine)
+
+  return (
+    <Box sx={{ width: '75%' }}>
+      <Grid columns={2} gap={2}>
+        <Box>Current State:</Box>
+        <Box sx={{ fontWeight: '900' }}>{state.value}</Box>
+      </Grid>
+    </Box>
+  )
+}
 
 const Machine = () => {
   const [state, send] = useMachine(openAaveStateMachine, { devTools: true })
-  const [, proxySend] = state.context.proxyStateMachine
-    ? useMachine(state.context.proxyStateMachine, { devTools: true })
-    : [undefined, undefined]
+  const [, proxySend] = useMachine(state.context.dependencies.proxyStateMachine, { devTools: true })
+
   const ProxyButton = (event: ProxyEvent) => (
     <Box
       sx={{
@@ -97,6 +139,9 @@ const Machine = () => {
         <ProxyButton type={'FAILURE'} txError={'Error'} />
         <ProxyButton type={'RETRY'} />
       </Grid>
+      {state.context.refParametersStateMachine && (
+        <ActorView parametersMachine={state.context.refParametersStateMachine} />
+      )}
     </>
   )
 }

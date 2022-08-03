@@ -1,14 +1,16 @@
-import { getGasEstimation$, getOpenProxyStateMachine$ } from '@oasis-borrow/proxy/pipelines'
+import { getGasEstimation$, getOpenProxyStateMachine$ } from 'features/proxyNew/pipelines'
 import { curry } from 'ramda'
 import { Observable } from 'rxjs'
 import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
+import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { getOpenAaveStateMachine$ } from './open/state/getOpenAaveStateMachine'
+import { getOpenAavePositionStateMachineServices } from './open/state/services'
 import {
   getOpenAaveParametersStateMachine$,
   getOpenAaveParametersStateMachineServices$,
 } from './open/transaction'
-import { getOpenAaveStateMachine } from './pipelines/getOpenAaveStateMachine'
 
 export function setupAaveContext({
   connectedContext$,
@@ -24,12 +26,18 @@ export function setupAaveContext({
     switchMap(({ account }) => proxyAddress$(account)),
   )
 
-  const preTransactionMachineServices$ = getOpenAaveParametersStateMachineServices$(
+  const tokenBalances$: Observable<TokenBalances> = contextForAddress$.pipe(
+    switchMap(({ account }) => accountBalances$(account)),
+  )
+
+  const openAaveParametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
     txHelpers$,
     gasEstimation$,
   )
 
-  const preTransactionMachine$ = getOpenAaveParametersStateMachine$(preTransactionMachineServices$)
+  const openAaveParametersStateMachine$ = getOpenAaveParametersStateMachine$(
+    openAaveParametersStateMachineServices$,
+  )
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
     contextForAddress$,
@@ -38,19 +46,21 @@ export function setupAaveContext({
     gasEstimation$,
   )
 
-  const aaveStateMachine$ = getOpenAaveStateMachine(
-    txHelpers$,
+  const openAaveStateMachineServices = getOpenAavePositionStateMachineServices(
     contextForAddress$,
-    accountBalances$,
+    txHelpers$,
+    tokenBalances$,
     proxyForAccount$,
+  )
+
+  const aaveStateMachine$ = getOpenAaveStateMachine$(
+    openAaveStateMachineServices,
+    openAaveParametersStateMachine$,
     proxyStateMachine$,
-    gasEstimation$,
-    preTransactionMachine$,
   )
 
   return {
     aaveStateMachine$,
-    preTransactionMachine$,
   }
 }
 

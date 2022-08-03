@@ -6,7 +6,7 @@ import { OpenAaveStateMachineInstance } from '../state/types'
 
 export function GetSidebarTexts(
   [state, send]: OpenAaveStateMachineInstance,
-  proxy: ProxyStateMachineInstance | undefined,
+  proxy: ProxyStateMachineInstance,
   t: (key: string, options?: any) => string,
 ): SidebarSectionFooterButtonSettings {
   const isSuccessStage = state.matches('txSuccess')
@@ -24,7 +24,7 @@ export function GetSidebarTexts(
     steps,
     isLoading,
     url,
-    disabled: !state.context.canGoToNext,
+    disabled: false,
     label: t('open-earn.aave.vault-form.open-btn'),
   }
 

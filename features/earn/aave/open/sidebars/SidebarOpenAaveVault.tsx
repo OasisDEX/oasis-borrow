@@ -17,14 +17,10 @@ export interface OpenAaveVaultProps {
 export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
   const { t } = useTranslation()
 
-  console.log('Trying to create machine')
   const machine = useMachine(aaveStateMachine, { devTools: true })
-  console.log('Machine created')
   const [state, send] = machine
 
-  const proxy = state.context.proxyStateMachine
-    ? useMachine(state.context.proxyStateMachine)
-    : undefined
+  const proxy = useMachine(state.context.dependencies.proxyStateMachine)
 
   const isSuccessStage = state.matches('txSuccess')
 

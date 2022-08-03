@@ -1,13 +1,18 @@
 import { OpenPositionResult } from '@oasis-borrow/aave'
 import { assertEventType } from '@oasis-borrow/xstate'
 import BigNumber from 'bignumber.js'
-import { AnyStateMachine, assign, Machine, sendUpdate } from 'xstate'
+import { assign, Machine, sendUpdate } from 'xstate'
 import { choose } from 'xstate/lib/actions'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+enum services {
+  getParameters = 'getParameters',
+  estimateGas = 'estimateGas',
+  estimateGasPrice = 'estimateGasPrice',
+}
 
 type OpenAaveParametersStateMachineContext = {
-  readonly parent?: AnyStateMachine
+  readonly hasParent: boolean | false
 
   token?: string
   amount?: BigNumber
@@ -26,17 +31,19 @@ export type OpenAaveParametersStateMachineEvents =
       readonly multiply: number
     }
   | {
-      type: `done.invoke.${services.getParameters}`
+      type: 'done.invoke.getParameters'
       data: OpenPositionResult
-    } | {
-  type: `done.invoke.${services.estimateGas}`
-  data: number
-} | {
-  type: `done.invoke.${services.estimateGasPrice}`
-  data: HasGasEstimation
-}
+    }
+  | {
+      type: 'done.invoke.estimateGas'
+      data: number
+    }
+  | {
+      type: 'done.invoke.estimateGasPrice'
+      data: HasGasEstimation
+    }
 
- type OpenAaveParametersStateMachineSchema = {
+type OpenAaveParametersStateMachineSchema = {
   states: {
     idle: {}
     gettingParameters: {}
@@ -49,12 +56,6 @@ type PromiseService<T> = (
   context: OpenAaveParametersStateMachineContext,
   event: OpenAaveParametersStateMachineEvents,
 ) => Promise<T>
-
-enum services {
-  getParameters = 'getParameters',
-  estimateGas = 'estimateGas',
-  estimateGasPrice = 'estimateGasPrice',
-}
 
 enum actions {
   assignReceivedParameters = 'assignReceivedParameters',
@@ -83,6 +84,7 @@ export const openAaveParametersStateMachine = Machine<
   {
     id: 'openAaveParameters',
     initial: 'idle',
+    context: {} as OpenAaveParametersStateMachineContext,
     schema: {
       services: {} as {
         [services.getParameters]: {
@@ -114,6 +116,12 @@ export const openAaveParametersStateMachine = Machine<
             actions: [actions.assignTransactionParameters],
           },
         },
+        on: {
+          VARIABLES_RECEIVED: {
+            target: 'gettingParameters',
+            actions: [actions.assignReceivedParameters],
+          },
+        },
       },
       estimatingGas: {
         invoke: {
@@ -121,9 +129,13 @@ export const openAaveParametersStateMachine = Machine<
           id: services.estimateGas,
           onDone: {
             target: 'estimatingPrice',
-            actions: [
-              actions.assignEstimatedGas
-            ],
+            actions: [actions.assignEstimatedGas],
+          },
+        },
+        on: {
+          VARIABLES_RECEIVED: {
+            target: 'gettingParameters',
+            actions: [actions.assignReceivedParameters],
           },
         },
       },
@@ -133,10 +145,13 @@ export const openAaveParametersStateMachine = Machine<
           id: services.estimateGasPrice,
           onDone: {
             target: 'idle',
-            actions: [
-              actions.assignEstimatedGasPrice,
-              actions.notifyParent
-            ],
+            actions: [actions.assignEstimatedGasPrice, actions.notifyParent],
+          },
+        },
+        on: {
+          VARIABLES_RECEIVED: {
+            target: 'gettingParameters',
+            actions: [actions.assignReceivedParameters],
           },
         },
       },
@@ -187,15 +202,15 @@ export const openAaveParametersStateMachine = Machine<
           gasPriceEstimation: event.data,
         }
       }),
-      [actions.notifyParent]: choose<OpenAaveParametersStateMachineContext, OpenAaveParametersStateMachineEvents>([
+      [actions.notifyParent]: choose<
+        OpenAaveParametersStateMachineContext,
+        OpenAaveParametersStateMachineEvents
+      >([
         {
-          cond: (context) => context.parent !== undefined, // If you know better way to check parent please tell me
-          actions: [ sendUpdate()]
+          cond: (context) => context.hasParent, // If you know better way to check parent please tell me
+          actions: [sendUpdate()],
         },
-        {
-          actions: []
-        }
-      ])
+      ]),
     },
     services: {
       [services.getParameters]: () => {

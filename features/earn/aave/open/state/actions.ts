@@ -1,14 +1,14 @@
-import { assign, send } from 'xstate'
+import { ActionObject, assign, send, spawn } from 'xstate'
+import { choose } from 'xstate/lib/actions'
 
 import { zero } from '../../../../../helpers/zero'
+import { assertEventType } from '../../../../../utils/xstate'
+import { OpenAaveParametersStateMachineEvents } from '../transaction/openAaveParametersStateMachine'
 import { OpenAaveContext, OpenAaveEvent } from './types'
 
 const initContextValues = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
   currentStep: 1,
-  token: 'ETH',
   totalSteps: context.proxyAddress ? 2 : 3,
-  canGoToNext: context.proxyAddress === undefined || context.amount?.gt(zero),
-  multiply: 2,
 }))
 
 const setTokenBalanceFromEvent = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
@@ -27,25 +27,26 @@ const setReceivedProxyAddress = assign<OpenAaveContext, OpenAaveEvent>((_, event
   }
 })
 
-const sendUpdateToParametersCaller = send<OpenAaveContext, OpenAaveEvent>(
-  (context, event) => {
-    if (event.type !== 'SET_AMOUNT') return event // In the future add change token or multiply
-    return {
-      type: 'TRANSACTION_PARAMETERS_CHANGED',
-      amount: event.amount,
-      multiply: context.multiply,
-      token: context.token,
-    }
+const sendUpdateToParametersMachine = choose<OpenAaveContext, OpenAaveEvent>([
+  {
+    cond: (context, event) =>
+      event.type === 'SET_AMOUNT' && context.refParametersStateMachine !== undefined,
+    actions: [
+      send<OpenAaveContext, OpenAaveEvent>(
+        (context, event): OpenAaveParametersStateMachineEvents => {
+          assertEventType(event, 'SET_AMOUNT')
+          return {
+            type: 'VARIABLES_RECEIVED',
+            amount: event.amount,
+            multiply: context.multiply,
+            token: context.token,
+          }
+        },
+        { to: (context) => context.refParametersStateMachine!, delay: 1000 },
+      ),
+    ],
   },
-  { to: 'getTransactionParameters' },
-)
-
-const setTxHash = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
-  if (event.type !== 'TRANSACTION_IN_PROGRESS') return {}
-  return {
-    txHash: event.txHash,
-  }
-})
+])
 
 const updateTotalSteps = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
   totalSteps: context.proxyAddress ? 2 : 3,
@@ -65,27 +66,13 @@ const setVaultNumber = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
   }
 })
 
-const setTxError = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
-  if (event.type !== 'TRANSACTION_FAILURE') return {}
-  return {
-    txError: event.txError,
-  }
-})
-
-const setConfirmations = assign<OpenAaveContext, OpenAaveEvent>((_, event) => {
-  if (event.type !== 'TRANSACTION_CONFIRMED') return {}
-  return {
-    confirmations: event.confirmations,
-  }
-})
-
 const calculateAuxiliaryAmount = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
   auxiliaryAmount: context.amount?.times(context.tokenPrice || zero),
 }))
 
 const getProxyAddressFromProxyMachine = assign<OpenAaveContext, OpenAaveEvent>(
-  ({ proxyStateMachine }) => ({
-    proxyAddress: proxyStateMachine?.context.proxyAddress,
+  ({ dependencies }) => ({
+    proxyAddress: dependencies.proxyStateMachine.context.proxyAddress,
   }),
 )
 
@@ -93,23 +80,51 @@ const setCurrentStepToTwo = assign<OpenAaveContext, OpenAaveEvent>(() => ({
   currentStep: 2,
 }))
 
-const createProxyMachine = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
-  proxyStateMachine: context.dependencies.proxyStateMachineCreator(),
-}))
+const spawnParametersMachine = assign<OpenAaveContext, OpenAaveEvent>((context) => {
+  if (context.refParametersStateMachine) return {}
+  return {
+    refParametersStateMachine: spawn(context.dependencies.parametersStateMachine),
+  }
+})
 
-export const actions = {
+const getTransactionParametersFromParametersMachine = assign<OpenAaveContext, OpenAaveEvent>(
+  (context) => {
+    if (context.refParametersStateMachine === undefined) return {}
+    return {
+      transactionParameters: context.refParametersStateMachine.state.context.transactionParameters,
+      estimatedGasPrice: context.refParametersStateMachine.state.context.gasPriceEstimation,
+    }
+  },
+)
+
+export enum actions {
+  initContextValues = 'initContextValues',
+  setTokenBalanceFromEvent = 'setTokenBalanceFromEvent',
+  setReceivedProxyAddress = 'setReceivedProxyAddress',
+  updateTotalSteps = 'updateTotalSteps',
+  setAmount = 'setAmount',
+  setVaultNumber = 'setVaultNumber',
+  setCurrentStepToTwo = 'setCurrentStepToTwo',
+  calculateAuxiliaryAmount = 'calculateAuxiliaryAmount',
+  getProxyAddressFromProxyMachine = 'getProxyAddressFromProxyMachine',
+  sendUpdateToParametersMachine = 'sendUpdateToParametersMachine',
+  spawnParametersMachine = 'spawnParametersMachine',
+  getTransactionParametersFromParametersMachine = 'getTransactionParametersFromParametersMachine',
+}
+
+export const openAaveMachineActions: {
+  [key in actions]: ActionObject<OpenAaveContext, OpenAaveEvent>
+} = {
   initContextValues,
   setTokenBalanceFromEvent,
   setReceivedProxyAddress,
-  setTxHash,
   updateTotalSteps,
   setAmount,
   setVaultNumber,
-  setTxError,
-  setConfirmations,
   setCurrentStepToTwo,
   calculateAuxiliaryAmount,
   getProxyAddressFromProxyMachine,
-  createProxyMachine,
-  sendUpdateToParametersCaller,
+  sendUpdateToParametersMachine,
+  spawnParametersMachine,
+  getTransactionParametersFromParametersMachine,
 }

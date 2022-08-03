@@ -3,44 +3,34 @@ import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
-import { AnyStateMachine, Receiver, Sender } from 'xstate'
-import { ActorRefFrom } from 'xstate/lib/types'
+import { ActorRefFrom, AnyStateMachine } from 'xstate'
 
-import { TokenBalances } from '../../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../../components/AppContext'
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { OpenAaveParametersStateMachineType } from '../transaction'
 import { createOpenAaveStateMachine } from './machine'
 
 export interface OpenAaveContext {
   readonly dependencies: {
-    readonly txHelper: TxHelpers
-    getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>
-    readonly tokenBalances$: Observable<TokenBalances>
-    readonly proxyAddress$: Observable<string | undefined>
-    readonly proxyStateMachineCreator: () => ProxyStateMachine
+    readonly proxyStateMachine: ProxyStateMachine
+    readonly parametersStateMachine: OpenAaveParametersStateMachineType
   }
+  multiply: number
+  token: string
 
-  refTransactionHelper?: ActorRefFrom<OpenAaveParametersStateMachineType>
+  refProxyStateMachine?: ActorRefFrom<ProxyStateMachine>
+  refParametersStateMachine?: ActorRefFrom<OpenAaveParametersStateMachineType>
 
   currentStep?: number
   totalSteps?: number
   tokenBalance?: BigNumber
   amount?: BigNumber
-  multiply?: number
-  token?: string
   tokenPrice?: BigNumber
   auxiliaryAmount?: BigNumber
   proxyAddress?: string
   vaultNumber?: BigNumber
-  canGoToNext?: boolean
-  txHash?: string
-  confirmations?: number
-  txError?: string
-  proxyStateMachine?: ProxyStateMachine
-  transactionParameters?: OpenPositionResult
 
-  gasData?: HasGasEstimation
+  transactionParameters?: OpenPositionResult
+  estimatedGasPrice?: HasGasEstimation
 }
 
 export type OpenAaveEvent =
@@ -106,23 +96,27 @@ export type OpenAaveEvent =
       readonly type: 'GAS_COST_ESTIMATION'
       readonly gasData: HasGasEstimation
     }
+  | {
+      readonly type: 'BACK_TO_EDITING'
+    }
+  | {
+      readonly type: 'RETRY'
+    }
+  | {
+      readonly type: 'xstate.update' // https://xstate.js.org/docs/guides/actors.html#sending-updates
+    }
 
 export type OpenAaveObservableService = (
   context: OpenAaveContext,
   event: OpenAaveEvent,
 ) => Observable<OpenAaveEvent>
 
-export type OpenAaveCallbackService = (
-  context: OpenAaveContext,
-  event: OpenAaveEvent,
-) => (callback: Sender<OpenAaveEvent>, onReceive: Receiver<OpenAaveEvent>) => void
-
-export type OpenAaveMachineService = (context: OpenAaveContext) => AnyStateMachine
+export type OpenAaveInvokeMachineService = (context: OpenAaveContext) => AnyStateMachine
 
 function useOpenAaveStateMachine(machine: OpenAaveStateMachine) {
   return useMachine(machine)
 }
 
-export type OpenAaveStateMachine = ReturnType<typeof createOpenAaveStateMachine>
+export type OpenAaveStateMachine = typeof createOpenAaveStateMachine
 export type OpenAaveStateMachineInstance = ReturnType<typeof useOpenAaveStateMachine>
 export type OpenAaveStateMachineState = OpenAaveStateMachine['initialState']

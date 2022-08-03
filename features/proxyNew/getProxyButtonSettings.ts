@@ -2,12 +2,9 @@ import { SidebarSectionFooterButtonSettings } from '../../components/sidebar/Sid
 import { ProxyStateMachineInstance } from './state'
 
 export function getProxyButtonSettings(
-  proxy: ProxyStateMachineInstance | undefined,
+  proxy: ProxyStateMachineInstance,
   t: (key: string, options?: any) => string,
 ): SidebarSectionFooterButtonSettings | undefined {
-  if (proxy === undefined) {
-    return undefined
-  }
   const [state, send] = proxy
   const isLoading = state.matches('proxyInProgress')
 

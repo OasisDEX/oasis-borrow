@@ -1,115 +1,78 @@
 /* eslint-disable func-style */
-import { TxStatus } from '@oasisdex/transactions'
-import BigNumber from 'bignumber.js'
-import { merge, of } from 'rxjs'
-import { first, map, switchMap } from 'rxjs/operators'
 
-import { createDsProxy } from '../../../../../blockchain/calls/proxy'
+import {
+  createTransactionServices,
+  createTransactionStateMachine,
+} from '@oasis-borrow/state-machines/transaction'
+import { Observable } from 'rxjs'
+import { map } from 'rxjs/operators'
+import { AnyStateMachine } from 'xstate'
+
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
-import { transactionToX } from '../../../../../helpers/form'
-import { getOpenAaveParameters } from '../../../../aave'
+import { ContextConnected } from '../../../../../blockchain/network'
+import { TokenBalances } from '../../../../../blockchain/tokens'
+import { TxHelpers } from '../../../../../components/AppContext'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import {
-  OpenAaveCallbackService,
+  OpenAaveContext,
   OpenAaveEvent,
-  OpenAaveMachineService,
+  OpenAaveInvokeMachineService,
   OpenAaveObservableService,
 } from './types'
 
-const getProxyAddress: OpenAaveObservableService = ({ dependencies }, _) => {
-  return dependencies.proxyAddress$.pipe(
-    map((address) => ({
-      type: 'PROXY_ADDRESS_RECEIVED',
-      proxyAddress: address,
-    })),
-  )
+export enum services {
+  getProxyAddress = 'getProxyAddress',
+  getBalance = 'getBalance',
+  invokeProxyMachine = 'invokeProxyMachine',
+  // invokeGetTransactionParametersMachine = 'invokeGetTransactionParametersMachine',
+  createPosition = 'createPosition',
 }
 
-const getBalance: OpenAaveObservableService = ({ dependencies, token }, _) => {
-  return dependencies.tokenBalances$.pipe(
-    map((balances) => balances[token!]),
-    map(({ balance, price }) => ({
-      type: 'SET_BALANCE',
-      balance: balance,
-      tokenPrice: price,
-    })),
-  )
+export type OpenAaveStateMachineServices = {
+  [key in services]: OpenAaveObservableService | OpenAaveInvokeMachineService
 }
 
-const getTransactionParameters: OpenAaveCallbackService = () => (callback, onReceive) => {
-  onReceive(async (e) => {
-    if (e.type === 'TRANSACTION_PARAMETERS_CHANGED') {
-      const result = await getOpenAaveParameters(e.amount, e.multiply, e.token)
-      callback({
-        type: 'TRANSACTION_PARAMETERS_RECEIVED',
-        parameters: result,
+export function getOpenAavePositionStateMachineServices(
+  context$: Observable<ContextConnected>,
+  txHelpers$: Observable<TxHelpers>,
+  tokenBalances$: Observable<TokenBalances>,
+  proxyAddress$: Observable<string | undefined>,
+): OpenAaveStateMachineServices {
+  return {
+    [services.getBalance]: (context, _): Observable<OpenAaveEvent> => {
+      return tokenBalances$.pipe(
+        map((balances) => balances[context.token!]),
+        map(({ balance, price }) => ({
+          type: 'SET_BALANCE',
+          balance: balance,
+          tokenPrice: price,
+        })),
+      )
+    },
+    [services.getProxyAddress]: (): Observable<OpenAaveEvent> => {
+      return proxyAddress$.pipe(
+        map((address) => ({
+          type: 'PROXY_ADDRESS_RECEIVED',
+          proxyAddress: address,
+        })),
+      )
+    },
+    [services.invokeProxyMachine]: (context: OpenAaveContext): AnyStateMachine =>
+      context.dependencies.proxyStateMachine,
+
+    [services.createPosition]: (context: OpenAaveContext): AnyStateMachine => {
+      return createTransactionStateMachine(openAavePosition, {
+        kind: TxMetaKind.operationExecutor,
+        calls: context.transactionParameters!.calls as any,
+        operationName: context.transactionParameters!.operationName,
+        token: context.token,
+        proxyAddress: context.proxyAddress!,
+        amount: context.amount!,
+      }).withConfig({
+        services: {
+          ...createTransactionServices<OpenAavePositionData>(txHelpers$, context$),
+        },
       })
-    }
-  })
+    },
+  }
 }
-
-const invokeProxyMachine: OpenAaveMachineService = ({ proxyStateMachine }) => proxyStateMachine!
-
-const createPosition: OpenAaveObservableService = (context) => {
-  const { sendWithGasEstimation } = context.dependencies.txHelper
-  // @ts-ignore
-  return sendWithGasEstimation(openAavePosition, {
-    kind: TxMetaKind.operationExecutor,
-    calls: context.transactionParameters!.calls,
-    operationName: context.transactionParameters!.operationName,
-    token: context.token!,
-    proxyAddress: context.proxyAddress!,
-  }).pipe(
-    transactionToX<OpenAaveEvent, OpenAavePositionData>(
-      {
-        type: 'TRANSACTION_WAITING_FOR_APPROVAL',
-      },
-      (txState) =>
-        of({
-          type: 'TRANSACTION_IN_PROGRESS',
-          txHash: (txState as any).txHash as string,
-        }),
-      (txState) =>
-        of({
-          type: 'TRANSACTION_FAILURE',
-          txError:
-            txState.status === TxStatus.Error || txState.status === TxStatus.CancelledByTheUser
-              ? txState.error
-              : undefined,
-        }),
-      (_) => {
-        const id = new BigNumber(123)
-        // saving the position
-
-        return of({
-          type: 'TRANSACTION_SUCCESS',
-          vaultNumber: id,
-        })
-      },
-    ),
-  )
-}
-
-const estimateGas: OpenAaveObservableService = ({ dependencies }, _) => {
-  return dependencies.txHelper.estimateGas(createDsProxy, { kind: TxMetaKind.createDsProxy }).pipe(
-    switchMap((gasData) => dependencies.getGasEstimation$(gasData)),
-    first(),
-    map((gas) => ({ type: 'GAS_COST_ESTIMATION', gasData: gas })),
-  )
-}
-
-export const initMachine: OpenAaveObservableService = (context, event) => {
-  return merge(getBalance(context, event), getProxyAddress(context, event))
-}
-
-export const services = {
-  getProxyAddress,
-  getBalance,
-  createPosition,
-  initMachine,
-  invokeProxyMachine,
-  getTransactionParameters,
-  estimateGas,
-}
-
-export type Services = typeof services

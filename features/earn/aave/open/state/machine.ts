@@ -1,13 +1,6 @@
-import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
-import { nameofFactory } from '@oasis-borrow/utils'
-import { Observable } from 'rxjs'
-import { assign, Machine, spawn } from 'xstate'
+import { Machine } from 'xstate'
 
-import { TokenBalances } from '../../../../../blockchain/tokens'
-import { TxHelpers } from '../../../../../components/AppContext'
-import { HasGasEstimation } from '../../../../../helpers/form'
-import { OpenAaveParametersStateMachineType } from '../transaction'
-import { actions } from './actions'
+import { actions, openAaveMachineActions } from './actions'
 import { emptyProxyAddress, enoughBalance } from './guards'
 import { services } from './services'
 import { OpenAaveContext, OpenAaveEvent } from './types'
@@ -23,133 +16,114 @@ export interface OpenAaveStateMachineSchema {
   }
 }
 
-const nameOfAction = nameofFactory<typeof actions>()
-const nameOfService = nameofFactory<typeof services>()
-
-export function createOpenAaveStateMachine(
-  txHelper: TxHelpers,
-  tokenBalances$: Observable<TokenBalances>,
-  proxyAddress$: Observable<string | undefined>,
-  proxyStateMachineCreator: () => ProxyStateMachine,
-  getGasEstimation$: (estimatedGasCost: number) => Observable<HasGasEstimation>,
-  preTransactionMachine: OpenAaveParametersStateMachineType,
-) {
-  return Machine<OpenAaveContext, OpenAaveStateMachineSchema, OpenAaveEvent>(
-    {
-      key: 'aaveOpen',
-      initial: 'editing',
-      context: {
-        dependencies: {
-          txHelper,
-          tokenBalances$,
-          proxyStateMachineCreator,
-          proxyAddress$,
-          getGasEstimation$,
+export const createOpenAaveStateMachine = Machine<
+  OpenAaveContext,
+  OpenAaveStateMachineSchema,
+  OpenAaveEvent
+>(
+  {
+    key: 'aaveOpen',
+    initial: 'editing',
+    states: {
+      editing: {
+        entry: [actions.initContextValues, actions.spawnParametersMachine],
+        invoke: [
+          {
+            src: services.getBalance,
+            id: services.getBalance,
+          },
+          {
+            src: services.getProxyAddress,
+            id: services.getProxyAddress,
+          },
+        ],
+        on: {
+          SET_BALANCE: {
+            actions: [actions.setTokenBalanceFromEvent],
+          },
+          PROXY_ADDRESS_RECEIVED: {
+            actions: [actions.setReceivedProxyAddress, actions.updateTotalSteps],
+          },
+          SET_AMOUNT: {
+            actions: [
+              actions.setAmount,
+              actions.calculateAuxiliaryAmount,
+              actions.sendUpdateToParametersMachine,
+            ],
+          },
+          CREATE_PROXY: {
+            target: 'proxyCreating',
+            cond: emptyProxyAddress,
+          },
+          CONFIRM_DEPOSIT: {
+            target: 'reviewing',
+            cond: enoughBalance,
+          },
+          'xstate.update': {
+            actions: [actions.getTransactionParametersFromParametersMachine],
+          },
         },
       },
-      states: {
-        editing: {
-          entry: [
-            nameOfAction('initContextValues'),
-            assign(() => {
-              return {
-                refTransactionHelper: spawn(preTransactionMachine, 'transactionHelper'),
-              }
-            }),
-          ],
-          invoke: [
-            {
-              src: nameOfService('initMachine'),
-              id: nameOfService('initMachine'),
-              description: 'Initialize the machine - get token balances, proxy address, etc.',
-            },
-            {
-              src: nameOfService('getTransactionParameters'),
-              id: 'getTransactionParameters',
-            },
-          ],
-          on: {
-            SET_BALANCE: {
-              actions: [nameOfAction('setTokenBalanceFromEvent')],
-            },
-            PROXY_ADDRESS_RECEIVED: {
-              actions: [nameOfAction('setReceivedProxyAddress'), nameOfAction('updateTotalSteps')],
-            },
-            SET_AMOUNT: {
-              actions: [
-                nameOfAction('setAmount'),
-                nameOfAction('calculateAuxiliaryAmount'),
-                nameOfAction('sendUpdateToParametersCaller'),
-              ],
-            },
-            CREATE_PROXY: {
-              target: 'proxyCreating',
-              cond: emptyProxyAddress,
-              actions: [nameOfAction('createProxyMachine')],
-            },
-            CONFIRM_DEPOSIT: {
-              target: 'reviewing',
-              cond: enoughBalance,
-            },
+      proxyCreating: {
+        invoke: {
+          src: services.invokeProxyMachine,
+          id: services.invokeProxyMachine,
+          description: 'Create a proxy if one does not exist.',
+          onDone: {
+            target: 'editing',
+            actions: [actions.getProxyAddressFromProxyMachine],
           },
         },
-        proxyCreating: {
-          invoke: {
-            src: nameOfService('invokeProxyMachine'),
-            id: nameOfService('invokeProxyMachine'),
-            description: 'Create a proxy if one does not exist.',
-            onDone: {
-              target: 'editing',
-              actions: [nameOfAction('getProxyAddressFromProxyMachine')],
-            },
+      },
+      reviewing: {
+        entry: [actions.setCurrentStepToTwo],
+        on: {
+          START_CREATING_POSITION: {
+            target: 'txInProgress',
+          },
+          BACK_TO_EDITING: {
+            target: 'editing',
           },
         },
-        reviewing: {
-          entry: [nameOfAction('setCurrentStepToTwo')],
-          on: {
-            START_CREATING_POSITION: {
-              target: 'txInProgress',
-            },
-          },
-        },
+      },
 
-        txInProgress: {
-          invoke: {
-            src: nameOfService('createPosition'),
-            id: nameOfService('createPosition'),
-            description: 'Invoking transaction on blockchain.',
-          },
-          on: {
-            TRANSACTION_IN_PROGRESS: {
-              actions: [nameOfAction('setTxHash')],
-            },
-            TRANSACTION_CONFIRMED: {
-              actions: [nameOfAction('setConfirmations')],
-            },
-            TRANSACTION_SUCCESS: {
-              target: 'txSuccess',
-              actions: [nameOfAction('setVaultNumber')],
-            },
-            TRANSACTION_FAILURE: {
-              target: 'txFailure',
-              actions: [nameOfAction('setTxError')],
-            },
-          },
+      txInProgress: {
+        invoke: {
+          src: services.createPosition,
+          id: services.createPosition,
+          description: 'Invoking transaction on blockchain.',
+          onDone: 'txSuccess',
+          onError: 'txFailure',
         },
-        txFailure: {},
-        txSuccess: {
-          type: 'final',
+      },
+      txFailure: {
+        on: {
+          RETRY: 'reviewing',
         },
+      },
+      txSuccess: {
+        type: 'final',
       },
     },
-    {
-      guards: {},
-      actions: {
-        ...actions,
+  },
+  {
+    guards: {},
+    actions: {
+      ...openAaveMachineActions,
+    },
+    services: {
+      [services.getProxyAddress]: () => {
+        throw new Error('getProxyAddress not implemented. Pass it via config')
       },
-      services: {
-        ...services,
+      [services.getBalance]: () => {
+        throw new Error('getBalance not implemented. Pass it via config')
+      },
+      [services.invokeProxyMachine]: () => {
+        throw new Error('invokeProxyMachine not implemented. Pass it via config')
+      },
+      [services.createPosition]: () => {
+        throw new Error('createPosition not implemented. Pass it via config')
       },
     },
-  )
-}
+  },
+)
