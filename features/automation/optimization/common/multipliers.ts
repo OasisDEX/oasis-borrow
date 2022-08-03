@@ -20,7 +20,7 @@ const multipliersPresets = {
 const ilksMultipliers: { [key: string]: number[] } = {
   'ETH-A': multipliersPresets['1.5-3'],
   'ETH-B': multipliersPresets['2-4'],
-  'ETH-C': multipliersPresets['1.5-2.25'],
+  // 'ETH-C': multipliersPresets['1.5-2.25'],
   'LINK-A': multipliersPresets['1.5-2.25'],
   'MATIC-A': multipliersPresets['1.25-2'],
   'RENBTC-A': multipliersPresets['1.5-2.25'],
