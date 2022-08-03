@@ -47,7 +47,7 @@ export function prepareAddConstantMultipleTriggerData({
 
   const sellTriggerData = prepareBasicBSTriggerData({
     vaultData,
-    triggerType: TriggerType.CMBasicBuy,
+    triggerType: TriggerType.CMBasicSell,
     execCollRatio: sellExecutionCollRatio,
     targetCollRatio,
     maxBuyOrMinSellPrice: minSellPrice,

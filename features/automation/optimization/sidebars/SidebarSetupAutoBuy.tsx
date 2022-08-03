@@ -175,11 +175,7 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <AutoBuyCreationStage
-              stage={stage}
-              isAddForm={isAddForm}
-              isRemoveForm={isRemoveForm}
-            />
+            <AutoBuyCreationStage stage={stage} isAddForm={isAddForm} isRemoveForm={isRemoveForm} />
           )}
         </Grid>
       ),
