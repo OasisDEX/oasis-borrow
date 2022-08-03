@@ -39,23 +39,23 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
   const { socket } = useNotificationSocket()
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
 
-  const defaultEmail =
+  const initialEmail =
     notificationsState.allActiveChannels.find((item) => item.id === NotificationChannelTypes.EMAIL)
       ?.channelConfiguration || ''
 
-  const [enableEmailPreferences, setEnableEmailPreferences] = useState(!!defaultEmail)
-  const [email, setEmail] = useState(defaultEmail)
+  const [enableEmailPreferences, setEnableEmailPreferences] = useState(!!initialEmail)
+  const [email, setEmail] = useState(initialEmail)
   const [isChanging, setIsChanging] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
   useEffect(() => {
-    if (defaultEmail !== email) {
+    if (initialEmail !== email) {
       setIsChanging(false)
       setSubmitted(false)
-      setEmail(defaultEmail)
-      setEnableEmailPreferences(!!defaultEmail)
+      setEmail(initialEmail)
+      setEnableEmailPreferences(!!initialEmail)
     }
-  }, [account, defaultEmail])
+  }, [account, initialEmail])
 
   const isEmailValid = useMemo(() => validateEmail(email), [email])
 
@@ -65,7 +65,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
     (isEnabled) => {
       setEnableEmailPreferences(isEnabled)
       if (!isEnabled) {
-        setEmail(defaultEmail)
+        setEmail(initialEmail)
         socket?.emit('setchannels', {
           address: account,
           channels: notificationsState.allActiveChannels.filter(
@@ -123,7 +123,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
               borderRadius: 'medium',
             }}
           >
-            {(!defaultEmail || isChanging) && (
+            {(!initialEmail || isChanging) && (
               <>
                 <Text
                   sx={{
@@ -168,21 +168,21 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                     lineHeight: '1',
                     justifyContent: 'center',
                   }}
-                  disabled={defaultEmail === email}
+                  disabled={initialEmail === email}
                   onClick={handleButton}
                 >
                   {t('notifications.confirm-btn')}
                 </Button>
               </>
             )}
-            {defaultEmail && !isChanging && (
+            {initialEmail && !isChanging && (
               <NotificationsChangeEmailButton
                 currentEmail={email}
                 handleIsChanging={handleIsChanging}
               />
             )}
           </Box>
-          {defaultEmail === email && submitted && !isChanging && <NotificationsSetupSuccess />}
+          {initialEmail === email && submitted && !isChanging && <NotificationsSetupSuccess />}
         </Box>
       )}
     </Box>
