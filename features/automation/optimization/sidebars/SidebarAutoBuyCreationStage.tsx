@@ -13,7 +13,7 @@ interface AutoBuyCreationStageProps {
   isRemoveForm: boolean
 }
 
-export function AutoBuyCreationStage({
+export function SidebarAutoBuyCreationStage({
   stage,
   isAddForm,
   isRemoveForm,

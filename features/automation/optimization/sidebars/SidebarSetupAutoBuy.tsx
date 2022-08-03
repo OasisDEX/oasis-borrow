@@ -25,7 +25,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { AutoBuyCreationStage } from './AutoBuyCreationStage'
+import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
@@ -175,7 +175,11 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <AutoBuyCreationStage stage={stage} isAddForm={isAddForm} isRemoveForm={isRemoveForm} />
+            <SidebarAutoBuyCreationStage
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
           )}
         </Grid>
       ),

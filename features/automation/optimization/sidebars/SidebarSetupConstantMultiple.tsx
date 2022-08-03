@@ -1,13 +1,9 @@
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
-// import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
-// import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
-// import { VaultActionInput } from 'components/vault/VaultActionInput'
-// import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
@@ -20,19 +16,11 @@ import {
   AUTOMATION_CHANGE_FEATURE,
   AutomationChangeFeature,
 } from 'features/automation/protection/common/UITypes/AutomationFeatureChange'
-import {
-  // CONSTANT_MULTIPLE_FORM_CHANGE,
-  ConstantMultipleFormChange,
-} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-// import { handleNumericInput } from 'helpers/input'
-// import {
-//   extractConstantMultipleCommonWarnings,
-//   extractConstantMultipleSliderWarnings,
-// } from 'helpers/messageMappers'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { min } from 'lodash'
@@ -52,8 +40,6 @@ interface SidebarSetupConstantMultipleProps {
   // isEditing: boolean //TODO ŁW, will be used in middle stages
   isDisabled: boolean
   isFirstSetup: boolean
-
-  // multiplier?: number
   onChange: (multiplier: number) => void
   txHandler: () => void
   ilkData: IlkData
@@ -96,7 +82,6 @@ export function SidebarSetupConstantMultiple({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
-  // estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
 }: SidebarSetupConstantMultipleProps) {
