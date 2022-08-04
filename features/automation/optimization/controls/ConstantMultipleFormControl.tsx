@@ -209,6 +209,18 @@ export function ConstantMultipleFormControl({
   console.log('isRemoveForm')
   console.log(isRemoveForm)
 
+  function textButtonHandler() {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: isAddForm ? 'remove' : 'add',
+    })
+    // TODO ŁW Reset Button
+    // uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+    //   type: 'reset',
+    //   resetData: prepareBasicBSResetData(autoBuyTriggerData),
+    // })
+  }
+
   return (
     <SidebarSetupConstantMultiple
       vault={vault}
@@ -241,6 +253,7 @@ export function ConstantMultipleFormControl({
       estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
       estimatedBuyFee={estimatedBuyFee}
       estimatedSellFee={estimatedSellFee}
+      textButtonHandler={textButtonHandler}
     />
   )
 }

@@ -57,6 +57,7 @@ interface SidebarSetupConstantMultipleProps {
   estimatedGasCostOnTrigger?: BigNumber
   estimatedBuyFee: BigNumber
   estimatedSellFee: BigNumber
+  textButtonHandler: () => void
 }
 
 const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
@@ -86,6 +87,7 @@ export function SidebarSetupConstantMultiple({
   collateralToBeSold,
   estimatedBuyFee,
   estimatedSellFee,
+  textButtonHandler,
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
@@ -129,6 +131,7 @@ export function SidebarSetupConstantMultiple({
     onMultiplierChange(multiplier)
   }
   if (activeAutomationFeature?.currentOptimizationFeature === 'constantMultiple') {
+    console.log('stage', stage)
     const sidebarSectionProps: SidebarSectionProps = {
       title: t('constant-multiple.title'),
       dropdown: {
@@ -193,7 +196,7 @@ export function SidebarSetupConstantMultiple({
       ...(stage !== 'txInProgress' && {
         textButton: {
           label: isAddForm ? t('system.remove-trigger') : t('system.add-trigger'),
-          hidden: true,
+          hidden: false , //constantMultipleState.triggerId.isZero(), // TODO ŁW triggerId or groupId?
           action: () => textButtonHandler(),
         },
       }),
@@ -202,10 +205,6 @@ export function SidebarSetupConstantMultiple({
     return <SidebarSection {...sidebarSectionProps} />
   }
   return null
-}
-
-function textButtonHandler(): void {
-  alert('switch to remove')
 }
 
 interface ConstantMultipleInfoSectionControlProps {
