@@ -3,7 +3,7 @@ import { NotificationCardsWrapper } from 'components/notifications/NotificationC
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Grid } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
@@ -28,6 +28,10 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
     }),
     [onMobile],
   )
+
+  useEffect(() => {
+    setShowPrefencesTab(false)
+  }, [account])
 
   return (
     <Box

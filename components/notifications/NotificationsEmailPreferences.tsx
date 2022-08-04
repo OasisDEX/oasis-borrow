@@ -4,11 +4,12 @@ import { NotificationsSetupSuccess } from 'components/notifications/Notification
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { NotificationChannelTypes } from 'features/notifications/types'
+import { AppSpinner } from 'helpers/AppSpinner'
 import { validateEmail } from 'helpers/formValidation'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { Box, Button, Input, Text } from 'theme-ui'
+import { Box, Button, Flex, Input, Text } from 'theme-ui'
 
 interface EmailErrorProps {
   text: string
@@ -17,6 +18,7 @@ interface EmailErrorProps {
 function EmailError({ text }: EmailErrorProps) {
   return (
     <Text
+      as="span"
       sx={{
         fontSize: '12px',
         color: 'critical100',
@@ -47,15 +49,15 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
   const [email, setEmail] = useState(initialEmail)
   const [isChanging, setIsChanging] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [deactivateClick, setDeactivateClick] = useState(false)
 
   useEffect(() => {
-    if (initialEmail !== email) {
+    if (submitted && initialEmail === email) {
       setIsChanging(false)
-      setSubmitted(false)
       setEmail(initialEmail)
       setEnableEmailPreferences(!!initialEmail)
     }
-  }, [account, initialEmail])
+  }, [submitted, initialEmail, email])
 
   const isEmailValid = useMemo(() => validateEmail(email), [email])
 
@@ -64,7 +66,11 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
   const handleEmailToggle = useCallback(
     (isEnabled) => {
       setEnableEmailPreferences(isEnabled)
+      setDeactivateClick(false)
+      setSubmitted(false)
+
       if (!isEnabled) {
+        setDeactivateClick(true)
         setEmail(initialEmail)
         socket?.emit('setchannels', {
           address: account,
@@ -81,7 +87,6 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
     setSubmitted(true)
 
     if (isEmailValid) {
-      setIsChanging(false)
       const updatedChannel = notificationsState.allActiveChannels.filter(
         (item) => item.id !== NotificationChannelTypes.EMAIL,
       )
@@ -101,6 +106,9 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
     setEmail(e.target.value)
   }, [])
 
+  const isLoading = initialEmail !== email && submitted && !!isEmailValid
+  const isLoadingDeactivate = initialEmail !== '' && deactivateClick
+
   return (
     <Box>
       <NotificationPreferenceCard
@@ -108,6 +116,7 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
         description={t('notifications.enable-notifications-email-description')}
         checked={enableEmailPreferences}
         onChangeHandler={handleEmailToggle}
+        isLoading={isLoadingDeactivate}
       />
 
       {enableEmailPreferences && (
@@ -168,10 +177,13 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                     lineHeight: '1',
                     justifyContent: 'center',
                   }}
-                  disabled={initialEmail === email}
+                  disabled={initialEmail === email || isLoading}
                   onClick={handleButton}
                 >
-                  {t('notifications.confirm-btn')}
+                  <Flex sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                    {t('notifications.confirm-btn')}
+                    {isLoading && <AppSpinner sx={{ color: 'white', ml: 2 }} />}
+                  </Flex>
                 </Button>
               </>
             )}
