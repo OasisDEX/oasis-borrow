@@ -14,7 +14,7 @@ import {
   OpenAaveParametersStateMachineEvents,
 } from './openAaveParametersStateMachine'
 
-const stories = storiesOf('Sequence Machine for Openning AAVE Position', module)
+const stories = storiesOf('Xstate Machines/Sequence Machine for Opening AAVE Position', module)
 
 function delay() {
   return interval(2000).pipe(first()).toPromise()

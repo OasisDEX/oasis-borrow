@@ -2,8 +2,10 @@ import { ActionObject, assign, send, spawn } from 'xstate'
 import { choose } from 'xstate/lib/actions'
 
 import { zero } from '../../../../../helpers/zero'
-import { assertEventType } from '../../../../../utils/xstate'
+import { TransactionStateMachineEvents } from '../../../../stateMachines/transaction'
+import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachineEvents } from '../transaction/openAaveParametersStateMachine'
+import { contextToTransactionParameters } from './services'
 import { OpenAaveContext, OpenAaveEvent } from './types'
 
 const initContextValues = assign<OpenAaveContext, OpenAaveEvent>((context) => ({
@@ -29,15 +31,13 @@ const setReceivedProxyAddress = assign<OpenAaveContext, OpenAaveEvent>((_, event
 
 const sendUpdateToParametersMachine = choose<OpenAaveContext, OpenAaveEvent>([
   {
-    cond: (context, event) =>
-      event.type === 'SET_AMOUNT' && context.refParametersStateMachine !== undefined,
+    cond: (context) => context.refParametersStateMachine !== undefined,
     actions: [
       send<OpenAaveContext, OpenAaveEvent>(
-        (context, event): OpenAaveParametersStateMachineEvents => {
-          assertEventType(event, 'SET_AMOUNT')
+        (context): OpenAaveParametersStateMachineEvents => {
           return {
             type: 'VARIABLES_RECEIVED',
-            amount: event.amount,
+            amount: context.amount!,
             multiply: context.multiply,
             token: context.token,
           }
@@ -71,8 +71,8 @@ const calculateAuxiliaryAmount = assign<OpenAaveContext, OpenAaveEvent>((context
 }))
 
 const getProxyAddressFromProxyMachine = assign<OpenAaveContext, OpenAaveEvent>(
-  ({ dependencies }) => ({
-    proxyAddress: dependencies.proxyStateMachine.context.proxyAddress,
+  ({ refProxyStateMachine }) => ({
+    proxyAddress: refProxyStateMachine?.state.context.proxyAddress,
   }),
 )
 
@@ -87,6 +87,22 @@ const spawnParametersMachine = assign<OpenAaveContext, OpenAaveEvent>((context) 
   }
 })
 
+const spawnTransactionMachine = assign<OpenAaveContext, OpenAaveEvent>((context) => {
+  if (context.refTransactionStateMachine) return {}
+  return {
+    refTransactionStateMachine: spawn(context.dependencies.transactionStateMachine, {
+      name: 'transaction',
+    }),
+  }
+})
+
+const spawnProxyMachine = assign<OpenAaveContext, OpenAaveEvent>((context) => {
+  if (context.refProxyStateMachine) return {}
+  return {
+    refProxyStateMachine: spawn(context.dependencies.proxyStateMachine, { name: 'proxy' }),
+  }
+})
+
 const getTransactionParametersFromParametersMachine = assign<OpenAaveContext, OpenAaveEvent>(
   (context) => {
     if (context.refParametersStateMachine === undefined) return {}
@@ -96,6 +112,38 @@ const getTransactionParametersFromParametersMachine = assign<OpenAaveContext, Op
     }
   },
 )
+
+const startTransaction = choose<OpenAaveContext, OpenAaveEvent>([
+  {
+    cond: (context) => context.refTransactionStateMachine !== undefined,
+    actions: [
+      send<OpenAaveContext, OpenAaveEvent>(
+        (): TransactionStateMachineEvents<OpenAavePositionData> => {
+          return {
+            type: 'START',
+          }
+        },
+        { to: (context) => context.refTransactionStateMachine! },
+      ),
+    ],
+  },
+])
+
+const updateTransactionParameters = choose<OpenAaveContext, OpenAaveEvent>([
+  {
+    cond: (context) => context.refTransactionStateMachine !== undefined,
+    actions: [
+      send<OpenAaveContext, OpenAaveEvent>(
+        (context): TransactionStateMachineEvents<OpenAavePositionData> => {
+          return {
+            type: 'PARAMETERS_CHANGED',
+            parameters: contextToTransactionParameters(context),
+          }
+        },
+      ),
+    ],
+  },
+])
 
 export enum actions {
   initContextValues = 'initContextValues',
@@ -109,7 +157,11 @@ export enum actions {
   getProxyAddressFromProxyMachine = 'getProxyAddressFromProxyMachine',
   sendUpdateToParametersMachine = 'sendUpdateToParametersMachine',
   spawnParametersMachine = 'spawnParametersMachine',
+  spawnProxyMachine = 'spawnProxyMachine',
+  spawnTransactionMachine = 'spawnTransactionMachine',
   getTransactionParametersFromParametersMachine = 'getTransactionParametersFromParametersMachine',
+  startTransaction = 'startTransaction',
+  updateTransactionParameters = 'updateTransactionParameters',
 }
 
 export const openAaveMachineActions: {
@@ -126,5 +178,9 @@ export const openAaveMachineActions: {
   getProxyAddressFromProxyMachine,
   sendUpdateToParametersMachine,
   spawnParametersMachine,
+  spawnProxyMachine,
+  spawnTransactionMachine,
   getTransactionParametersFromParametersMachine,
+  startTransaction,
+  updateTransactionParameters,
 }

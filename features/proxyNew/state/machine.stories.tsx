@@ -7,7 +7,7 @@ import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 import { createProxyStateMachine } from './machine'
 import { ProxyEvent } from './types'
 
-const stories = storiesOf('Proxy State Machine', module)
+const stories = storiesOf('Xstate Machines/Proxy State Machine', module)
 
 const hasGasEstimation: HasGasEstimation = {
   gasEstimationStatus: GasEstimationStatus.calculated,

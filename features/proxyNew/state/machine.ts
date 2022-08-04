@@ -42,6 +42,7 @@ export function createProxyStateMachine(
         proxyIdle: {
           invoke: {
             src: nameOfService('estimateGas'),
+            id: nameOfService('estimateGas'),
           },
           entry: [nameOfAction('initGasData')],
           on: {
@@ -56,6 +57,7 @@ export function createProxyStateMachine(
         proxyInProgress: {
           invoke: {
             src: nameOfService('createProxy'),
+            id: nameOfService('createProxy'),
             onDone: 'proxySuccess',
             onError: 'proxyFailure',
           },

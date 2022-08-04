@@ -6,6 +6,8 @@ import { Observable } from 'rxjs'
 import { ActorRefFrom, AnyStateMachine } from 'xstate'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { TransactionStateMachine } from '../../../../stateMachines/transaction'
+import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachineType } from '../transaction'
 import { createOpenAaveStateMachine } from './machine'
 
@@ -13,12 +15,14 @@ export interface OpenAaveContext {
   readonly dependencies: {
     readonly proxyStateMachine: ProxyStateMachine
     readonly parametersStateMachine: OpenAaveParametersStateMachineType
+    readonly transactionStateMachine: TransactionStateMachine<OpenAavePositionData>
   }
   multiply: number
   token: string
 
   refProxyStateMachine?: ActorRefFrom<ProxyStateMachine>
   refParametersStateMachine?: ActorRefFrom<OpenAaveParametersStateMachineType>
+  refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
 
   currentStep?: number
   totalSteps?: number
@@ -104,6 +108,18 @@ export type OpenAaveEvent =
     }
   | {
       readonly type: 'xstate.update' // https://xstate.js.org/docs/guides/actors.html#sending-updates
+    }
+  | {
+      readonly type: 'done.invoke.transaction'
+    }
+  | {
+      readonly type: 'error.platform.transaction'
+    }
+  | {
+      readonly type: 'done.invoke.proxy'
+    }
+  | {
+      readonly type: 'error.platform.proxy'
     }
 
 export type OpenAaveObservableService = (

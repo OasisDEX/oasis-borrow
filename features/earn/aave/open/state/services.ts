@@ -61,18 +61,25 @@ export function getOpenAavePositionStateMachineServices(
       context.dependencies.proxyStateMachine,
 
     [services.createPosition]: (context: OpenAaveContext): AnyStateMachine => {
-      return createTransactionStateMachine(openAavePosition, {
-        kind: TxMetaKind.operationExecutor,
-        calls: context.transactionParameters!.calls as any,
-        operationName: context.transactionParameters!.operationName,
-        token: context.token,
-        proxyAddress: context.proxyAddress!,
-        amount: context.amount!,
-      }).withConfig({
+      return createTransactionStateMachine(
+        openAavePosition,
+        contextToTransactionParameters(context),
+      ).withConfig({
         services: {
           ...createTransactionServices<OpenAavePositionData>(txHelpers$, context$),
         },
       })
     },
+  }
+}
+
+export function contextToTransactionParameters(context: OpenAaveContext): OpenAavePositionData {
+  return {
+    kind: TxMetaKind.operationExecutor,
+    calls: context.transactionParameters!.calls as any,
+    operationName: context.transactionParameters!.operationName,
+    token: context.token,
+    proxyAddress: context.proxyAddress!,
+    amount: context.amount!,
   }
 }

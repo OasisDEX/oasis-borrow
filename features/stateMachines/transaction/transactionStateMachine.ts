@@ -1,7 +1,7 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import { combineLatest, Observable, of } from 'rxjs'
 import { first, switchMap } from 'rxjs/operators'
-import { ActorRefFrom, assign, Machine } from 'xstate'
+import { assign, Machine, StateMachine } from 'xstate'
 import { choose, escalate } from 'xstate/lib/actions'
 
 import { TransactionDef } from '../../../blockchain/calls/callsHelpers'
@@ -13,16 +13,17 @@ import { assertEventType } from '../../../utils/xstate'
 type TransactionStateMachineContext<T extends TxMeta> = {
   readonly hasParent: boolean | false
   readonly transactionDef: TransactionDef<T>
-  readonly transactionParameters: T
 
-  refTransaction?: ActorRefFrom<Observable<TransactionStateMachineEvents>>
+  transactionParameters: T
+
   txHash?: string
   txError?: string
   confirmations?: number
 }
 
-export type TransactionStateMachineEvents =
+export type TransactionStateMachineEvents<T extends TxMeta> =
   | { type: 'START' }
+  | { type: 'PARAMETERS_CHANGED'; parameters: T }
   | { type: 'WAITING_FOR_APPROVAL' }
   | { type: 'IN_PROGRESS'; txHash: string }
   | { type: 'FAILURE'; txError?: string }
@@ -38,6 +39,7 @@ type TransactionStateMachineSchema = {
 }
 
 enum actions {
+  assignParameters = 'assignParameters',
   assignTxHash = 'assignTxHash',
   assignTxError = 'assignTxError',
   assignConfirmations = 'assignConfirmations',
@@ -48,17 +50,26 @@ enum services {
   startTransaction = 'startTransaction',
 }
 
+export type TransactionStateMachine<T extends TxMeta> = StateMachine<
+  TransactionStateMachineContext<T>,
+  TransactionStateMachineSchema,
+  TransactionStateMachineEvents<T>
+>
+
 export function createTransactionStateMachine<T extends TxMeta>(
   transactionDef: TransactionDef<T>,
   transactionParameters: T,
+  withParent: boolean = false,
 ) {
   return Machine<
     TransactionStateMachineContext<T>,
     TransactionStateMachineSchema,
-    TransactionStateMachineEvents
+    TransactionStateMachineEvents<T>
   >(
     {
+      id: 'transaction',
       context: {
+        hasParent: withParent,
         transactionDef,
         transactionParameters,
       } as TransactionStateMachineContext<T>,
@@ -69,12 +80,17 @@ export function createTransactionStateMachine<T extends TxMeta>(
             START: {
               target: 'inProgress',
             },
+            PARAMETERS_CHANGED: {},
           },
         },
         inProgress: {
           invoke: {
             src: services.startTransaction,
-            onDone: 'success',
+            id: services.startTransaction,
+            onDone: {
+              target: 'success',
+              description: 'Transaction success',
+            },
             onError: 'failure',
           },
           on: {
@@ -94,6 +110,7 @@ export function createTransactionStateMachine<T extends TxMeta>(
         },
         failure: {
           entry: [actions.raiseError],
+          always: 'idle',
         },
         success: {
           type: 'final',
@@ -102,6 +119,12 @@ export function createTransactionStateMachine<T extends TxMeta>(
     },
     {
       actions: {
+        [actions.assignParameters]: assign((context, event) => {
+          assertEventType(event, 'PARAMETERS_CHANGED')
+          return {
+            transactionParameters: event.parameters,
+          }
+        }),
         [actions.assignTxHash]: assign((context, event) => {
           assertEventType(event, 'IN_PROGRESS')
           return {
@@ -122,7 +145,7 @@ export function createTransactionStateMachine<T extends TxMeta>(
         }),
         [actions.raiseError]: choose<
           TransactionStateMachineContext<T>,
-          TransactionStateMachineEvents
+          TransactionStateMachineEvents<T>
         >([
           {
             cond: (context) => context.hasParent,
@@ -145,15 +168,15 @@ export function createTransactionServices<T extends TxMeta>(
 ): {
   [services.startTransaction]: (
     context: TransactionStateMachineContext<T>,
-    event: TransactionStateMachineEvents,
-  ) => Observable<TransactionStateMachineEvents>
+    event: TransactionStateMachineEvents<T>,
+  ) => Observable<TransactionStateMachineEvents<T>>
 } {
   function startTransaction(context: TransactionStateMachineContext<T>) {
     return combineLatest(context$, txHelpers$).pipe(
       first(),
       switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {
         return sendWithGasEstimation(context.transactionDef, context.transactionParameters).pipe(
-          transactionToX<TransactionStateMachineEvents, T>(
+          transactionToX<TransactionStateMachineEvents<T>, T>(
             {
               type: 'WAITING_FOR_APPROVAL',
             },

@@ -60,23 +60,27 @@ export const createOpenAaveStateMachine = Machine<
             cond: enoughBalance,
           },
           'xstate.update': {
-            actions: [actions.getTransactionParametersFromParametersMachine],
+            actions: [
+              actions.getTransactionParametersFromParametersMachine,
+              actions.updateTransactionParameters,
+            ],
           },
         },
       },
       proxyCreating: {
-        invoke: {
-          src: services.invokeProxyMachine,
-          id: services.invokeProxyMachine,
-          description: 'Create a proxy if one does not exist.',
-          onDone: {
+        entry: [actions.spawnProxyMachine],
+        on: {
+          'done.invoke.proxy': {
             target: 'editing',
             actions: [actions.getProxyAddressFromProxyMachine],
+          },
+          'error.platform.proxy': {
+            target: 'editing',
           },
         },
       },
       reviewing: {
-        entry: [actions.setCurrentStepToTwo],
+        entry: [actions.setCurrentStepToTwo, actions.sendUpdateToParametersMachine],
         on: {
           START_CREATING_POSITION: {
             target: 'txInProgress',
@@ -84,16 +88,24 @@ export const createOpenAaveStateMachine = Machine<
           BACK_TO_EDITING: {
             target: 'editing',
           },
+          'xstate.update': {
+            actions: [
+              actions.getTransactionParametersFromParametersMachine,
+              actions.updateTransactionParameters,
+            ],
+          },
         },
       },
 
       txInProgress: {
-        invoke: {
-          src: services.createPosition,
-          id: services.createPosition,
-          description: 'Invoking transaction on blockchain.',
-          onDone: 'txSuccess',
-          onError: 'txFailure',
+        entry: [actions.spawnTransactionMachine, actions.startTransaction],
+        on: {
+          'done.invoke.transaction': {
+            target: 'txSuccess',
+          },
+          'error.platform.transaction': {
+            target: 'txFailure',
+          },
         },
       },
       txFailure: {
