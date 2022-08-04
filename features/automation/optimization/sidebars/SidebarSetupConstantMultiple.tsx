@@ -29,6 +29,7 @@ import React from 'react'
 import { Grid } from 'theme-ui'
 
 import { ConstantMultipleEditingStage } from './ConstantMultipleEditingStage'
+import { ConstantMultipleRemovalEditingStage } from './ConstantMultipleRemovalEditingStage'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
@@ -138,28 +139,38 @@ export function SidebarSetupConstantMultiple({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              <ConstantMultipleEditingStage
-                ilkData={ilkData}
-                isEditing={isEditing}
-                // basicBuyState={undefined}
-                autoBuyTriggerData={autoBuyTriggerData}
-                // errors={[]}
-                warnings={warnings}
-                // debtDelta={new BigNumber()}
-                // collateralDelta={new BigNumber()}
-                sliderMin={sliderMin}
-                sliderMax={sliderMax !== undefined ? sliderMax : largestSliderValueAllowed}
-                token={''}
-                constantMultipleState={constantMultipleState}
-                handleChangeMultiplier={handleChangeMultiplier}
-                autoSellTriggerData={autoSellTriggerData}
-                nextBuyPrice={nextBuyPrice}
-                nextSellPrice={nextSellPrice}
-                collateralToBePurchased={collateralToBePurchased}
-                collateralToBeSold={collateralToBeSold}
-                estimatedBuyFee={estimatedBuyFee}
-                estimatedSellFee={estimatedSellFee}
-              />
+              {isAddForm && (
+                <ConstantMultipleEditingStage
+                  ilkData={ilkData}
+                  isEditing={isEditing}
+                  // basicBuyState={undefined}
+                  autoBuyTriggerData={autoBuyTriggerData}
+                  // errors={[]}
+                  warnings={warnings}
+                  // debtDelta={new BigNumber()}
+                  // collateralDelta={new BigNumber()}
+                  sliderMin={sliderMin}
+                  sliderMax={sliderMax !== undefined ? sliderMax : largestSliderValueAllowed}
+                  token={''}
+                  constantMultipleState={constantMultipleState}
+                  handleChangeMultiplier={handleChangeMultiplier}
+                  autoSellTriggerData={autoSellTriggerData}
+                  nextBuyPrice={nextBuyPrice}
+                  nextSellPrice={nextSellPrice}
+                  collateralToBePurchased={collateralToBePurchased}
+                  collateralToBeSold={collateralToBeSold}
+                  estimatedBuyFee={estimatedBuyFee}
+                  estimatedSellFee={estimatedSellFee}
+                />
+              )}
+              {isRemoveForm && (
+                <ConstantMultipleRemovalEditingStage
+                  constantMultipleState={constantMultipleState}
+                  errors={[]}
+                  warnings={warnings}
+                  ilkData={ilkData}
+                />
+              )}
             </>
           )}
         </Grid>
@@ -217,9 +228,10 @@ export function ConstantMultipleInfoSectionControl({
   const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
     ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
     : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
-
+  const { t } = useTranslation()
   return (
     <ConstantMultipleInfoSection
+      title={t('constant-multiple.vault-changes.general-summary')}
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}

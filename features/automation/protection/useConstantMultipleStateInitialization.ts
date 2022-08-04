@@ -105,6 +105,10 @@ export function useConstantMultipleStateInitialization(
       type: 'sell-with-threshold',
       sellWithThreshold: sellWithThresholdResolved,
     })
+    uiChanges.publish(publishKey, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
   }, [/*groupId,*/ collateralizationRatio])
 
   return false //TODO ŁW as trigger even if exist, wont be loaded from cache

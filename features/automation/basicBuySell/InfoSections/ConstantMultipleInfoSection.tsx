@@ -20,6 +20,7 @@ interface ConstantMultipleInfoSectionProps {
   minPriceToSell?: BigNumber
   estimatedOasisFee: BigNumber[]
   estimatedGasCostOnTrigger?: BigNumber
+  title: string
 }
 
 export function ConstantMultipleInfoSection({
@@ -37,12 +38,13 @@ export function ConstantMultipleInfoSection({
   minPriceToSell,
   estimatedOasisFee,
   estimatedGasCostOnTrigger,
+  title,
 }: ConstantMultipleInfoSectionProps) {
   const { t } = useTranslation()
 
   return (
     <InfoSection
-      title={t('constant-multiple.vault-changes.general-summary')}
+      title={title}
       items={[
         {
           label: t('constant-multiple.vault-changes.target-col-ratio-after-buy-sell'),

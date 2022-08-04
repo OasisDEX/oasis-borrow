@@ -25,10 +25,11 @@ export function SidebarAutoBuyRemovalEditingStage({
   warnings,
   basicBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
+  const { t } = useTranslation()
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
+        {t('auto-buy.to-cancel-auto-buy')}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />

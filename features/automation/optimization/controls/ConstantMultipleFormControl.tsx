@@ -79,8 +79,7 @@ export function ConstantMultipleFormControl({
     ? 'txFailure'
     : 'editing'
 
-  const isAddForm = true // TODO ŁW , handle when implementing middle stages
-  // const isAddForm = constantMultipleState.currentForm === 'add'
+  const isAddForm = constantMultipleState.currentForm === 'add'
   const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
   const addTxData = useMemo(
@@ -205,14 +204,18 @@ export function ConstantMultipleFormControl({
 
   // TODO: get this value based on something similar to checkIfEditingBasicBS
   const isEditing = true
+  console.log('isAddForm')
+  console.log(isAddForm)
+  console.log('isRemoveForm')
+  console.log(isRemoveForm)
 
   return (
     <SidebarSetupConstantMultiple
       vault={vault}
       stage={'editing'}
       constantMultipleState={constantMultipleState}
-      isAddForm={true}
-      isRemoveForm={false}
+      isAddForm={isAddForm}
+      isRemoveForm={isRemoveForm}
       isDisabled={false}
       isFirstSetup={true}
       onChange={(multiplier) => {

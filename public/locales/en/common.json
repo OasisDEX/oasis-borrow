@@ -1506,7 +1506,8 @@
     "setting-auto-buy": "Setting up your Auto-Buy",
     "cancelling-auto-buy": "Cancelling your Auto-Buy",
     "set-trigger-description": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}, with a Max Buy price of ${{minBuyPrice}}/{{token}}. Learn More ",
-    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More "
+    "set-trigger-description-no-threshold": "You are creating a recurring Buy action to trigger at a collateralization ratio of {{execCollRatio}}%, Reducing it to your Target Ratio of {{targetCollRatio}}%. Initially it will execute with at ${{executionPrice}}/{{token}}. With no min buy price. Learn More ",
+    "to-cancel-auto-buy": "To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction."
   },
   "optimization": {
     "zero-debt-heading": "You need to Generate DAI before you can set up Optimization",
@@ -1536,7 +1537,9 @@
       "max-price-sell": "Min price to perform auto sell",
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-max-gas-fee": "Estimated max gas fee"
-    }
+    },
+    "cancel-summary-title": "Cancel Constant Multiple order summary",
+    "to-cancel-constant-multiple": "To cancel the Constant Multiple you’ll need to click the button below and confirm the transaction."
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",

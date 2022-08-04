@@ -236,9 +236,10 @@ export function ConstantMultipleInfoSectionControl({
   const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
     ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
     : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
-
+  const { t } = useTranslation()
   return (
     <ConstantMultipleInfoSection
+      title={t('constant-multiple.vault-changes.general-summary')}
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}
