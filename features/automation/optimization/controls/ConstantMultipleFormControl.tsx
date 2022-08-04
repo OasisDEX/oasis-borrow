@@ -9,10 +9,7 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
-import {
-  calculateCollRatioForMultiply,
-  getBasicBSVaultChange,
-} from 'features/automation/common/helpers'
+import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -215,14 +212,6 @@ export function ConstantMultipleFormControl({
       isRemoveForm={false}
       isDisabled={false}
       isFirstSetup={true}
-      onChange={(multiplier) => {
-        const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'multiplier',
-          multiplier: multiplier,
-          targetCollRatio: targetCollRatioForSelectedMultiplier,
-        })
-      }}
       txHandler={txHandler}
       ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}

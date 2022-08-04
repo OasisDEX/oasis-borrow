@@ -9,7 +9,6 @@ interface ConstantMultipleInfoSectionProps {
   token: string
   targetColRatio: BigNumber
   multiplier: number
-  slippage: BigNumber
   buyExecutionCollRatio: BigNumber
   nextBuyPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -26,7 +25,6 @@ export function ConstantMultipleInfoSection({
   token,
   targetColRatio,
   multiplier,
-  slippage,
   buyExecutionCollRatio,
   nextBuyPrice,
   collateralToBePurchased,
@@ -51,10 +49,6 @@ export function ConstantMultipleInfoSection({
         {
           label: t('constant-multiple.vault-changes.target-multiple-ratio-after-buy-sell'),
           value: `${multiplier.toFixed(2)}x`,
-        },
-        {
-          label: t('vault-changes.slippage-limit'),
-          value: `${slippage}%`,
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),

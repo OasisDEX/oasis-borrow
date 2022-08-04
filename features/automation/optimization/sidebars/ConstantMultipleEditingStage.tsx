@@ -1,4 +1,3 @@
-// import { Vault } from '@prisma/client'
 import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
@@ -9,14 +8,11 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
-import { DEFAULT_BASIC_BS_MAX_SLIDER_VALUE } from 'features/automation/protection/common/consts/automationDefaults'
-// import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
-import { INITIAL_MULTIPLIER_SELECTED } from 'features/automation/protection/useConstantMultipleStateInitialization'
-// import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import {
@@ -26,23 +22,18 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { Box } from 'theme-ui'
 
 interface SidebaConstantMultiplerEditingStageProps {
-  //   vault: Vault
   ilkData: IlkData
   isEditing: boolean
-  //   basicBuyState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
   //   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  //   debtDelta: BigNumber
-  //   collateralDelta: BigNumber
-  sliderMin: BigNumber
-  sliderMax: number
+  min: BigNumber
+  max: BigNumber
   token: string
   constantMultipleState: ConstantMultipleFormChange
-  //   onChange: (multiplier: number) => void
-  handleChangeMultiplier: (multiplier: number) => void
   autoSellTriggerData: BasicBSTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
@@ -54,18 +45,15 @@ interface SidebaConstantMultiplerEditingStageProps {
 }
 
 export function ConstantMultipleEditingStage({
-  //   vault,
   ilkData,
   isEditing,
-  //   basicBuyState,
   autoBuyTriggerData,
   //   errors,
   warnings,
-  sliderMin,
-  sliderMax,
+  min,
+  max,
   token,
   constantMultipleState,
-  handleChangeMultiplier,
   autoSellTriggerData,
   nextBuyPrice,
   nextSellPrice,
@@ -78,32 +66,40 @@ export function ConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
-  const acceptableMultipliers = [1.25, 1.5, 2, 2.5, 3, 4]
-  const largestSliderValueAllowed = DEFAULT_BASIC_BS_MAX_SLIDER_VALUE.times(100)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-    .toNumber()
+  const acceptableMultipliers = getConstantMultipleMultipliers({
+    ilk: ilkData.ilk,
+    minColRatio: min,
+    maxColRatio: max,
+  })
+
+  if (!acceptableMultipliers.includes(constantMultipleState.multiplier)) {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'multiplier',
+      multiplier: acceptableMultipliers[1],
+    })
+  }
+
   return (
     <>
-      <ActionPills
-        active={
-          constantMultipleState?.multiplier
-            ? constantMultipleState.multiplier.toString()
-            : INITIAL_MULTIPLIER_SELECTED.toString()
-        }
-        variant="secondary"
-        items={acceptableMultipliers.map((multiplier) => {
-          return {
+      <Box sx={{ mb: 2 }}>
+        <ActionPills
+          active={constantMultipleState.multiplier.toString()}
+          variant="secondary"
+          items={acceptableMultipliers.map((multiplier) => ({
             id: multiplier.toString(),
-            label: `${multiplier}X`,
+            label: `${multiplier}x`,
             action: () => {
-              handleChangeMultiplier(multiplier)
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'multiplier',
+                multiplier: multiplier,
+              })
             },
-          }
-        })}
-      />
+          }))}
+        />
+      </Box>
       <MultipleRangeSlider
-        min={sliderMin.toNumber()}
-        max={sliderMax || largestSliderValueAllowed}
+        min={min.toNumber()}
+        max={max.toNumber()}
         onChange={(value) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-execution-coll-ratio',
@@ -119,16 +115,16 @@ export function ConstantMultipleEditingStage({
           value1: constantMultipleState.buyExecutionCollRatio.toNumber(),
         }}
         valueColors={{
-          value0: 'onSuccess',
-          value1: 'onWarning',
+          value0: 'warning100',
+          value1: 'success100',
         }}
         step={1}
         leftDescription={t('auto-sell.sell-trigger-ratio')}
         rightDescription={t('auto-buy.trigger-coll-ratio')}
-        leftThumbColor="onSuccess"
-        rightThumbColor="onWarning"
+        leftThumbColor="warning100"
+        rightThumbColor="success100"
         middleMark={{
-          text: constantMultipleState.multiplier.toString(),
+          text: `${constantMultipleState.multiplier}x`,
           value: constantMultipleState.targetCollRatio.toNumber(),
         }}
       />
@@ -219,7 +215,7 @@ interface ConstantMultipleInfoSectionControlProps {
   constantMultipleState: ConstantMultipleFormChange
 }
 
-export function ConstantMultipleInfoSectionControl({
+function ConstantMultipleInfoSectionControl({
   token,
   nextBuyPrice,
   nextSellPrice,
@@ -230,8 +226,6 @@ export function ConstantMultipleInfoSectionControl({
   estimatedSellFee,
   constantMultipleState,
 }: ConstantMultipleInfoSectionControlProps) {
-  // TODO: PK where do I get slippage?
-  const slippage = new BigNumber(0.5)
   const feeDiff = estimatedBuyFee.minus(estimatedSellFee).abs()
   const estimatedOasisFee = feeDiff.gt(ACCEPTABLE_FEE_DIFF)
     ? [estimatedBuyFee, estimatedSellFee].sort((a, b) => (a.gt(b) ? 0 : -1))
@@ -242,7 +236,6 @@ export function ConstantMultipleInfoSectionControl({
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}
-      slippage={slippage}
       buyExecutionCollRatio={constantMultipleState.buyExecutionCollRatio}
       nextBuyPrice={nextBuyPrice}
       collateralToBePurchased={collateralToBePurchased}

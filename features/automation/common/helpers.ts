@@ -5,7 +5,7 @@ import { TriggersData } from 'features/automation/protection/triggers/Automation
 import { getVaultChange } from 'features/multiply/manage/pipes/manageMultiplyVaultCalculations'
 import { SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
 import { LOAN_FEE, OAZO_FEE } from 'helpers/multiply/calculations'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 
 export const ACCEPTABLE_FEE_DIFF = new BigNumber(3)
 
@@ -129,6 +129,10 @@ export function calculateCollRatioForMultiply(multiplier: number) {
   return new BigNumber(multiplier / (multiplier - 1))
     .decimalPlaces(2, BigNumber.ROUND_DOWN)
     .times(100)
+}
+
+export function calculateMultipleFromTargetCollRatio(targetCollRatio: BigNumber) {
+  return one.div(targetCollRatio.div(100).minus(one)).plus(one)
 }
 
 export function getShouldRemoveAllowance(automationTriggersData: TriggersData) {

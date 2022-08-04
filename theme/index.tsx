@@ -65,7 +65,6 @@ export const oasisBaseTheme = {
       secondary: '#FEB343',
       surface: '#FFDBC7',
     },
-    sliderTrackFill: '#9DA3DA',
   },
   fonts: {
     body: '"Inter", "Helvetica Neue", sans-serif',

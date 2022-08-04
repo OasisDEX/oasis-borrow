@@ -7,11 +7,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useEffect } from 'react'
 
 import { extractGroupTriggersData } from '../common/basicBSTriggerData'
-import {
-  calculateCollRatioForMultiply,
-  resolveMaxBuyOrMinSellPrice,
-  resolveWithThreshold,
-} from '../common/helpers'
+import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/helpers'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
 import { AggregtedTriggersData } from './triggers/aggregatedTriggersData'
 import { TriggersData } from './triggers/AutomationTriggersData'
@@ -63,7 +59,6 @@ export function useConstantMultipleStateInitialization(
     uiChanges.publish(publishKey, {
       type: 'multiplier',
       multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists
-      targetCollRatio: calculateCollRatioForMultiply(INITIAL_MULTIPLIER_SELECTED),
     })
     uiChanges.publish(publishKey, {
       type: 'buy-execution-coll-ratio',

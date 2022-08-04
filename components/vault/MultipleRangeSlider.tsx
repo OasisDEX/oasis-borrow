@@ -54,7 +54,7 @@ function getSliderBackgroundGradient({
 }) {
   const { colors } = theme
   return `linear-gradient(to right, ${colors.neutral60}  0%, ${colors.neutral60} ${value0InPercent}%,
-    ${colors.sliderTrackFill} ${value0InPercent}%,  ${colors.sliderTrackFill} ${value1InPercent}%,
+    ${colors.interactive50} ${value0InPercent}%,  ${colors.interactive50} ${value1InPercent}%,
     ${colors.neutral60} ${value1InPercent}%, ${colors.neutral60} 100%)`
 }
 
@@ -268,11 +268,11 @@ export function MultipleRangeSlider({
           <Box
             sx={{
               position: 'absolute',
-              top: '-13px',
+              top: '-8px',
               left: `50%`,
               transform: 'translateX(-50%)',
               width: 'calc(100% - 20px)',
-              height: '30px',
+              height: '20px',
               pointerEvents: 'none',
             }}
           >
@@ -281,10 +281,11 @@ export function MultipleRangeSlider({
                 sx={{
                   position: 'absolute',
                   width: '3px',
-                  height: '30px',
+                  height: '20px',
                   transform: 'translateX(-50%)',
                   backgroundColor: 'interactive50',
                   left: `${middleMarkPercentagePosition}%`,
+                  borderRadius: 'small',
                 }}
               />
               <Box
