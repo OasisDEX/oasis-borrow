@@ -1,5 +1,4 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
@@ -18,13 +17,15 @@ import { TriggersData } from './triggers/AutomationTriggersData'
 export const INITIAL_MULTIPLIER_SELECTED = 2
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
 
-export interface ConstantMultipleTriggerData {
-  groupTriggerId: BigNumber
-  // groupTypeId: BigNumber ŁW for now it's always 1
-  // group of triggers also will have some unique id
-  autoTriggersData: TriggersData
-  aggregatedTriggersData: AggregtedTriggersData
-}
+// TODO ŁW - at the moment it's not used trigger data is passed as any
+// export interface ConstantMultipleTriggerData {
+//   triggerId: BigNumber
+//   groupId: BigNumber
+//   // groupTypeId: BigNumber ŁW for now it's always 1
+//   // group of triggers also will have some unique id
+//   autoTriggersData: TriggersData
+//   aggregatedTriggersData: AggregtedTriggersData
+// }
 
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
@@ -58,8 +59,13 @@ export function useConstantMultipleStateInitialization(
 
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
   const publishKey = CONSTANT_MULTIPLE_FORM_CHANGE
+  const groupId = aggregatedTriggersData.groupId
 
   useEffect(() => {
+    uiChanges.publish(publishKey, {
+      type: 'group-id',
+      groupId,
+    })
     uiChanges.publish(publishKey, {
       type: 'multiplier',
       multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists

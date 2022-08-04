@@ -1,5 +1,7 @@
 // TODO async function loadTriggerDataFromCache ?
 
+import BigNumber from "bignumber.js"
+
 export interface AggregatedTriggerRecord {
   groupId: number
   groupTypeId: 1
@@ -8,6 +10,7 @@ export interface AggregatedTriggerRecord {
 
 export interface AggregtedTriggersData {
   // isAutomationEnabled: boolean // TODO will we need it here ?
+  groupId: BigNumber
   triggers?: AggregatedTriggerRecord[]
 }
 
