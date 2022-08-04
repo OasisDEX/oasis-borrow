@@ -8,6 +8,7 @@ interface NotificationPrefrenceCardProps {
   description: string
   checked: boolean
   onChangeHandler: (isEnabled: boolean) => void
+  isLoading?: boolean
 }
 
 export function NotificationPreferenceCard({
@@ -15,6 +16,7 @@ export function NotificationPreferenceCard({
   description,
   checked,
   onChangeHandler,
+  isLoading,
 }: NotificationPrefrenceCardProps) {
   const handleToggle = useCallback((checked) => onChangeHandler(checked), [
     onChangeHandler,
@@ -43,6 +45,7 @@ export function NotificationPreferenceCard({
         <Toggle
           isChecked={checked}
           onChange={handleToggle}
+          isLoading={isLoading}
           sx={{
             transition: '0.4s',
           }}

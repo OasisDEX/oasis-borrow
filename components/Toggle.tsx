@@ -1,17 +1,33 @@
+import { AppSpinner } from 'helpers/AppSpinner'
 import { checkedToggleDataIcon, notCheckedToggleDataIcon } from 'helpers/icons'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, Input, SxStyleProp } from 'theme-ui'
 
 interface ToggleProps {
   isChecked: boolean
   onChange: (checked: boolean) => void
+  isLoading?: boolean
   sx?: SxStyleProp
 }
 
-export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
+export function Toggle({ isChecked, onChange, isLoading, sx }: ToggleProps) {
+  const [clicked, setClicked] = useState(false)
+  const [toggle, setToggle] = useState(isChecked)
+
   const handleToggle = useCallback(() => {
+    setClicked(true)
+    setToggle(!isChecked)
     onChange(!isChecked)
   }, [isChecked, onChange])
+
+  useEffect(() => {
+    if (clicked && toggle === isChecked) {
+      setToggle(isChecked)
+      setClicked(false)
+    }
+  }, [isChecked, toggle, clicked])
+
+  const isToggleLoading = toggle !== isChecked || isLoading
 
   return (
     <Box
@@ -62,6 +78,7 @@ export function Toggle({ isChecked, onChange, sx }: ToggleProps) {
           borderRadius: 'round',
         }}
       />
+      {isToggleLoading && <AppSpinner />}
     </Box>
   )
 }
