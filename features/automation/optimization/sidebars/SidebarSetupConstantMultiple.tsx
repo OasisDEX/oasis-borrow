@@ -71,6 +71,7 @@ export function SidebarSetupConstantMultiple({
   nextSellPrice,
   collateralToBePurchased,
   collateralToBeSold,
+  estimatedGasCostOnTrigger,
   estimatedBuyFee,
   estimatedSellFee,
 }: SidebarSetupConstantMultipleProps) {
@@ -133,6 +134,7 @@ export function SidebarSetupConstantMultiple({
                 nextSellPrice={nextSellPrice}
                 collateralToBePurchased={collateralToBePurchased}
                 collateralToBeSold={collateralToBeSold}
+                estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
                 estimatedBuyFee={estimatedBuyFee}
                 estimatedSellFee={estimatedSellFee}
               />
