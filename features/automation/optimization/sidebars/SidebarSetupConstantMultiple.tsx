@@ -151,18 +151,16 @@ export function SidebarSetupConstantMultiple({
             <ActionPills
               active={constantMultipleState.multiplier.toString()}
               variant="secondary"
-              items={acceptableMultipliers.map((multiplier) => {
-                return {
-                  id: multiplier.toString(),
-                  label: `${multiplier}x`,
-                  action: () => {
-                    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-                      type: 'multiplier',
-                      multiplier: multiplier,
-                    })
-                  },
-                }
-              })}
+              items={acceptableMultipliers.map((multiplier) => ({
+                id: multiplier.toString(),
+                label: `${multiplier}x`,
+                action: () => {
+                  uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                    type: 'multiplier',
+                    multiplier: multiplier,
+                  })
+                },
+              }))}
             />
           </Box>
           <MultipleRangeSlider
