@@ -35,7 +35,6 @@ interface SidebarSetupConstantMultipleProps {
   // isEditing: boolean //TODO ŁW, will be used in middle stages
   isDisabled: boolean
   isFirstSetup: boolean
-  onChange: (multiplier: number) => void
   txHandler: () => void
   ilkData: IlkData
   autoBuyTriggerData: BasicBSTriggerData
