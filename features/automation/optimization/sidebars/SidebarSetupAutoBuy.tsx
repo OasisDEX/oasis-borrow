@@ -25,7 +25,7 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyAdditionStage'
+import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 

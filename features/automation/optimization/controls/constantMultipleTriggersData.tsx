@@ -36,7 +36,7 @@ export function prepareAddConstantMultipleTriggerData({
 }): AutomationBotAddAggregatorTriggerData {
   const buyTriggerData = prepareBasicBSTriggerData({
     vaultData,
-    triggerType: TriggerType.BasicBuy,
+    triggerType: TriggerType.CMBasicBuy,
     execCollRatio: buyExecutionCollRatio,
     targetCollRatio,
     maxBuyOrMinSellPrice: maxBuyPrice,
@@ -47,7 +47,7 @@ export function prepareAddConstantMultipleTriggerData({
 
   const sellTriggerData = prepareBasicBSTriggerData({
     vaultData,
-    triggerType: TriggerType.BasicSell,
+    triggerType: TriggerType.CMBasicSell,
     execCollRatio: sellExecutionCollRatio,
     targetCollRatio,
     maxBuyOrMinSellPrice: minSellPrice,
