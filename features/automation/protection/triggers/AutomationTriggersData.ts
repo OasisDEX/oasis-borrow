@@ -17,6 +17,7 @@ import { Observable } from 'rxjs'
 import { distinctUntilChanged, map, mergeMap, shareReplay, withLatestFrom } from 'rxjs/operators'
 
 import { getAllActiveTriggers } from '../common/service/allActiveTriggers'
+import { AggregtedTriggersData } from './aggregatedTriggersData'
 
 // TODO - ŁW - Implement tests for this file
 
@@ -85,4 +86,5 @@ export interface AutomationTriggersChange {
   stopLossData: StopLossTriggerData
   basicSellData: BasicBSTriggerData
   basicBuyData: BasicBSTriggerData
+  constantMultipleData: AggregtedTriggersData
 }
