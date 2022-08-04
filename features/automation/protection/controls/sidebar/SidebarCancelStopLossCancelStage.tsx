@@ -9,7 +9,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
-import { AddingStopLossAnimation } from 'theme/animations'
+import { AddingTriggerAnimation } from 'theme/animations'
 
 export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps) {
   const { t } = useTranslation()
@@ -26,7 +26,7 @@ export function SidebarCancelStopLossCancelStage(props: CancelSlFormLayoutProps)
           <Text variant="paragraph3" sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>
             {t('protection.position-again-at-risk')}
           </Text>
-          <AddingStopLossAnimation />
+          <AddingTriggerAnimation />
         </>
       )
     case 'txSuccess':

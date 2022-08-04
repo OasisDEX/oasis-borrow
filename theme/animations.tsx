@@ -56,7 +56,7 @@ export function OpenVaultAnimation() {
   )
 }
 
-export function AddingStopLossAnimation() {
+export function AddingTriggerAnimation() {
   return (
     <Box mb={2}>
       <Lottie options={addingStopLossAnimationOptions} height={180} width={280} />

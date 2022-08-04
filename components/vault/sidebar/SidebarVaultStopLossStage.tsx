@@ -4,7 +4,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
-import { AddingStopLossAnimation } from 'theme/animations'
+import { AddingTriggerAnimation } from 'theme/animations'
 
 export function SidebarVaultStopLossStage(props: {
   stage: OpenVaultStage | OpenMultiplyVaultStage
@@ -19,7 +19,7 @@ export function SidebarVaultStopLossStage(props: {
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('open-vault-two-tx-setup-requirement')}
           </Text>
-          <AddingStopLossAnimation />
+          <AddingTriggerAnimation />
         </>
       )
     default:

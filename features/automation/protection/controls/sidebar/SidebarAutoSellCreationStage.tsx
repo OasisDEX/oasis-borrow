@@ -6,7 +6,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Flex, Image, Text } from 'theme-ui'
-import { AddingStopLossAnimation } from 'theme/animations'
+import { AddingTriggerAnimation } from 'theme/animations'
 
 interface SidebarAutoSellCreationStageProps {
   stage: SidebarVaultStages
@@ -25,7 +25,7 @@ export function SidebarAutoSellCreationStage({
     case 'txInProgress':
       return (
         <>
-          <AddingStopLossAnimation />
+          <AddingTriggerAnimation />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && t('auto-sell.add-content')}
             {isRemoveForm && t('auto-sell.remove-content')}

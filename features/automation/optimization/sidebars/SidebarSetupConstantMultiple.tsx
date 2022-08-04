@@ -30,7 +30,7 @@ import { Grid } from 'theme-ui'
 
 import { ConstantMultipleEditingStage } from './ConstantMultipleEditingStage'
 import { ConstantMultipleRemovalEditingStage } from './ConstantMultipleRemovalEditingStage'
-import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
+import { TriggerCreationStage } from './SidebarAutoBuyCreationStage'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
@@ -174,7 +174,7 @@ export function SidebarSetupConstantMultiple({
               )}
               {/* TODO ŁW handle creation stage */}
               {(stage === 'txSuccess' || stage === 'txInProgress') && (
-                <SidebarAutoBuyCreationStage
+                <TriggerCreationStage
                   stage={stage}
                   isAddForm={isAddForm}
                   isRemoveForm={isRemoveForm}

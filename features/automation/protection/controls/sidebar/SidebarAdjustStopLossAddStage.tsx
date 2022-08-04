@@ -5,7 +5,7 @@ import { staticFilesRuntimeUrl } from 'helpers/staticPaths'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Divider, Flex, Image, Text } from 'theme-ui'
-import { AddingStopLossAnimation } from 'theme/animations'
+import { AddingTriggerAnimation } from 'theme/animations'
 
 import { AdjustSlFormLayoutProps, ProtectionCompleteInformation } from '../AdjustSlFormLayout'
 
@@ -30,7 +30,7 @@ export function SidebarAdjustStopLossAddStage(props: AdjustSlFormLayoutProps) {
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {t('protection.setting-downside-protection-desc')}
           </Text>
-          <AddingStopLossAnimation />
+          <AddingTriggerAnimation />
         </>
       )
     case 'txSuccess':
