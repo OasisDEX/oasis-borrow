@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { GasEstimation } from 'components/GasEstimation'
 import { InfoSection } from 'components/infoSection/InfoSection'
-import { SLIPPAGE_DEFAULT } from 'features/userSettings/userSettings'
-import { formatAmount, formatCryptoBalance, formatPercent } from 'helpers/formatters/format'
+import { formatAmount, formatCryptoBalance } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
@@ -10,7 +9,6 @@ interface ConstantMultipleInfoSectionProps {
   token: string
   targetColRatio: BigNumber
   multiplier: number
-  slippage?: BigNumber
   buyExecutionCollRatio: BigNumber
   nextBuyPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -27,7 +25,6 @@ export function ConstantMultipleInfoSection({
   token,
   targetColRatio,
   multiplier,
-  slippage = SLIPPAGE_DEFAULT,
   buyExecutionCollRatio,
   nextBuyPrice,
   collateralToBePurchased,
@@ -52,10 +49,6 @@ export function ConstantMultipleInfoSection({
         {
           label: t('constant-multiple.vault-changes.target-multiple-ratio-after-buy-sell'),
           value: `${multiplier.toFixed(2)}x`,
-        },
-        {
-          label: t('vault-changes.slippage-limit'),
-          value: formatPercent(slippage.times(100), { precision: 2 }),
         },
         {
           label: t('constant-multiple.vault-changes.cost-per-adjustment'),

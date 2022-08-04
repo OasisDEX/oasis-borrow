@@ -33,7 +33,6 @@ import {
   extractConstantMultipleCommonWarnings,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
-import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
@@ -94,8 +93,7 @@ export function SidebarSetupConstantMultiple({
 }: SidebarSetupConstantMultipleProps) {
   const { t } = useTranslation()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
-  const { uiChanges, userSettings$ } = useAppContext()
-  const [userSettings] = useObservable(userSettings$)
+  const { uiChanges } = useAppContext()
   const gasEstimation = useGasEstimationContext()
   const { ilk, token } = vault
 
@@ -259,7 +257,6 @@ export function SidebarSetupConstantMultiple({
           {isEditing && (
             <ConstantMultipleInfoSectionControl
               token={token}
-              slippage={userSettings?.slippage}
               nextBuyPrice={nextBuyPrice}
               nextSellPrice={nextSellPrice}
               collateralToBePurchased={collateralToBePurchased}
@@ -298,7 +295,6 @@ function textButtonHandler(): void {
 
 interface ConstantMultipleInfoSectionControlProps {
   token: string
-  slippage?: BigNumber
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -311,7 +307,6 @@ interface ConstantMultipleInfoSectionControlProps {
 
 function ConstantMultipleInfoSectionControl({
   token,
-  slippage,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -331,7 +326,6 @@ function ConstantMultipleInfoSectionControl({
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}
-      slippage={slippage}
       buyExecutionCollRatio={constantMultipleState.buyExecutionCollRatio}
       nextBuyPrice={nextBuyPrice}
       collateralToBePurchased={collateralToBePurchased}
