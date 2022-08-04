@@ -18,6 +18,7 @@ interface EmailErrorProps {
 function EmailError({ text }: EmailErrorProps) {
   return (
     <Text
+      as="span"
       sx={{
         fontSize: '12px',
         color: 'critical100',
