@@ -1,6 +1,7 @@
 import { NotificationPreferenceCard } from 'components/notifications/NotificationPreferenceCard'
 import { NotificationsChangeEmailButton } from 'components/notifications/NotificationsChangeEmailButton'
 import { NotificationsSetupSuccess } from 'components/notifications/NotificationsEmailSetupSuccess'
+import { NotificationsError } from 'components/notifications/NotificationsError'
 import { useNotificationSocket } from 'components/NotificationSocketProvider'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { NotificationChannelTypes } from 'features/notifications/types'
@@ -10,27 +11,6 @@ import { useUIChanges } from 'helpers/uiChangesHook'
 import { useTranslation } from 'next-i18next'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Box, Button, Flex, Input, Text } from 'theme-ui'
-
-interface EmailErrorProps {
-  text: string
-}
-
-function EmailError({ text }: EmailErrorProps) {
-  return (
-    <Text
-      as="span"
-      sx={{
-        fontSize: '12px',
-        color: 'critical100',
-        fontWeight: 600,
-        px: '2px',
-        mb: 2,
-      }}
-    >
-      {text}
-    </Text>
-  )
-}
 
 interface NotificationsEmailPreferencesProps {
   account: string
@@ -160,10 +140,10 @@ export function NotificationsEmailPreferences({ account }: NotificationsEmailPre
                   value={email}
                 />
                 {notificationsState.error && (
-                  <EmailError text={t('notifications.email-save-failure')} />
+                  <NotificationsError text={t('notifications.email-save-failure')} />
                 )}
                 {!isEmailValid && submitted && (
-                  <EmailError text={t('notifications.invalid-email')} />
+                  <NotificationsError text={t('notifications.invalid-email')} />
                 )}
                 <Button
                   sx={{

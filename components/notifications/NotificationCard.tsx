@@ -88,7 +88,7 @@ export function NotificationCard({
     day: 'numeric',
   }
 
-  const humanDate = new Date(lastModified * 1000).toLocaleDateString('en-US', options)
+  const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
 
   return (
     <Card sx={{ pl: '4', position: 'relative', ...cardSx }}>

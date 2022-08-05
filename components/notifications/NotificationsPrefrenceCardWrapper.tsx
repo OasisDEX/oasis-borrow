@@ -47,6 +47,10 @@ export function NotificationPreferenceCardWrapper({
             subscriptionType,
           ],
         })
+        // TODO to be removed
+        socket?.emit('createdummy', {
+          address: account,
+        })
       } else {
         const afterSubscriptions = notificationsState.allActiveSubscriptions
           .filter((item) => item.id !== subscriptionType)

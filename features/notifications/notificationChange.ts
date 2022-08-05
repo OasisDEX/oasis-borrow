@@ -1,8 +1,3 @@
-// import {
-//   dummyChannels,
-//   dummyNotifications,
-//   dummySubscriptions,
-// } from 'features/notifications/tempData'
 import {
   Notification,
   NotificationChannels,
@@ -40,7 +35,19 @@ export function notificationReducer(state: NotificationChange, action: Notificat
     case 'number-of-notifications':
       return { ...state, numberOfNotifications: action.numberOfNotifications }
     case 'all-notifications':
-      return { ...state, allNotifications: action.allNotifications }
+      const merged = [...action.allNotifications, ...state.allNotifications]
+      const allNotifications = merged
+        .reduce((acc, curr) => {
+          const duplicatedNotification = acc.find((item) => item.id === curr.id)
+
+          if (duplicatedNotification) {
+            return acc
+          }
+
+          return [...acc, curr]
+        }, [] as Notification[])
+        .sort((a, b) => b.id - a.id)
+      return { ...state, allNotifications }
     case 'all-active-subscriptions':
       return { ...state, allActiveSubscriptions: action.allActiveSubscriptions }
     case 'all-active-channels':
