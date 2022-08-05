@@ -1625,7 +1625,9 @@
     "aave": {
       "vault-form": {
         "title": "Set up Earn strategy",
-        "open-btn": "Open Earn position"
+        "open-btn": "Open Earn position",
+        "confirm-btn": "Confirm",
+        "retry-btn": "Retry"
       }
     }
   }

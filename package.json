@@ -120,6 +120,7 @@
     "node-cache": "^5.1.2",
     "node-polyfill-webpack-plugin": "^1.1.4",
     "nyc": "^15.1.0",
+    "oasis-actions": "^0.0.2",
     "object-assign": "4.1.1",
     "pg": "^8.2.1",
     "postgres-migrations": "^4.0.3",

@@ -1,18 +1,13 @@
 /* eslint-disable func-style */
 
-import {
-  createTransactionServices,
-  createTransactionStateMachine,
-} from '@oasis-borrow/state-machines/transaction'
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
-import { AnyStateMachine } from 'xstate'
 
 import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { TokenBalances } from '../../../../../blockchain/tokens'
 import { TxHelpers } from '../../../../../components/AppContext'
-import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
+import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import {
   OpenAaveContext,
   OpenAaveEvent,
@@ -23,9 +18,7 @@ import {
 export enum services {
   getProxyAddress = 'getProxyAddress',
   getBalance = 'getBalance',
-  invokeProxyMachine = 'invokeProxyMachine',
-  // invokeGetTransactionParametersMachine = 'invokeGetTransactionParametersMachine',
-  createPosition = 'createPosition',
+  // createPosition = 'createPosition',
 }
 
 export type OpenAaveStateMachineServices = {
@@ -56,19 +49,6 @@ export function getOpenAavePositionStateMachineServices(
           proxyAddress: address,
         })),
       )
-    },
-    [services.invokeProxyMachine]: (context: OpenAaveContext): AnyStateMachine =>
-      context.dependencies.proxyStateMachine,
-
-    [services.createPosition]: (context: OpenAaveContext): AnyStateMachine => {
-      return createTransactionStateMachine(
-        openAavePosition,
-        contextToTransactionParameters(context),
-      ).withConfig({
-        services: {
-          ...createTransactionServices<OpenAavePositionData>(txHelpers$, context$),
-        },
-      })
     },
   }
 }

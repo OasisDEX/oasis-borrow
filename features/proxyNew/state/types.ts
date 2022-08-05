@@ -61,4 +61,5 @@ function useProxyMachine(machine: ProxyStateMachine) {
 }
 
 export type ProxyStateMachine = ReturnType<typeof createProxyStateMachine>
+export type ProxyStateMachineState = ProxyStateMachine['initialState']
 export type ProxyStateMachineInstance = ReturnType<typeof useProxyMachine>

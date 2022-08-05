@@ -1,8 +1,8 @@
 import { OpenPositionResult } from '@oasis-borrow/aave'
-import { assertEventType } from '@oasis-borrow/xstate'
+import { assertErrorEvent, assertEventType } from '@oasis-borrow/xstate'
 import BigNumber from 'bignumber.js'
 import { assign, Machine, sendUpdate } from 'xstate'
-import { choose } from 'xstate/lib/actions'
+import { choose, log } from 'xstate/lib/actions'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
 enum services {
@@ -23,12 +23,18 @@ type OpenAaveParametersStateMachineContext = {
   gasPriceEstimation?: HasGasEstimation
 }
 
+type servicesIds = 'getParameters' | 'estimateGas' | 'estimateGasPrice'
+type servicesEventType = 'error.platform'
+
+type ErrorEvent = { type: `${servicesEventType}.${servicesIds}`, data: unknown }
+
 export type OpenAaveParametersStateMachineEvents =
   | {
       type: 'VARIABLES_RECEIVED'
       readonly token: string
       readonly amount: BigNumber
       readonly multiply: number
+      readonly proxyAddress?: string
     }
   | {
       type: 'done.invoke.getParameters'
@@ -41,7 +47,7 @@ export type OpenAaveParametersStateMachineEvents =
   | {
       type: 'done.invoke.estimateGasPrice'
       data: HasGasEstimation
-    }
+    } | ErrorEvent
 
 type OpenAaveParametersStateMachineSchema = {
   states: {
@@ -63,6 +69,7 @@ enum actions {
   assignEstimatedGas = 'assignEstimatedGas',
   assignEstimatedGasPrice = 'assignEstimatedGasPrice',
   notifyParent = 'notifyParent',
+  logError = 'logError',
 }
 
 export interface PreTransactionSequenceMachineServices {
@@ -113,8 +120,12 @@ export const openAaveParametersStateMachine = Machine<
           id: services.getParameters,
           onDone: {
             target: 'estimatingGas',
-            actions: [actions.assignTransactionParameters],
+            actions: [actions.assignTransactionParameters, actions.notifyParent],
           },
+          onError: {
+            actions: [actions.logError],
+            target: 'idle',
+          }
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -131,6 +142,10 @@ export const openAaveParametersStateMachine = Machine<
             target: 'estimatingPrice',
             actions: [actions.assignEstimatedGas],
           },
+          onError: {
+            actions: [actions.logError],
+            target: 'idle',
+          }
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -147,6 +162,10 @@ export const openAaveParametersStateMachine = Machine<
             target: 'idle',
             actions: [actions.assignEstimatedGasPrice, actions.notifyParent],
           },
+          onError: {
+            actions: [actions.logError],
+            target: 'idle',
+          }
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -170,6 +189,7 @@ export const openAaveParametersStateMachine = Machine<
             token: event.token,
             amount: event.amount,
             multiply: event.multiply,
+            proxyAddress: event.proxyAddress,
           }
         },
       ),
@@ -211,6 +231,12 @@ export const openAaveParametersStateMachine = Machine<
           actions: [sendUpdate()],
         },
       ]),
+      [actions.logError]: log((context, event) => {
+        assertErrorEvent(event)
+        return {
+          error: event.data,
+        }
+      })
     },
     services: {
       [services.getParameters]: () => {

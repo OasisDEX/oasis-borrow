@@ -1,7 +1,8 @@
 import { ActionObject, assign, send, spawn } from 'xstate'
-import { choose } from 'xstate/lib/actions'
+import { choose, log } from 'xstate/lib/actions'
 
 import { zero } from '../../../../../helpers/zero'
+import { assertErrorEvent } from '../../../../../utils/xstate'
 import { TransactionStateMachineEvents } from '../../../../stateMachines/transaction'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachineEvents } from '../transaction/openAaveParametersStateMachine'
@@ -40,6 +41,7 @@ const sendUpdateToParametersMachine = choose<OpenAaveContext, OpenAaveEvent>([
             amount: context.amount!,
             multiply: context.multiply,
             token: context.token,
+            proxyAddress: context.proxyAddress,
           }
         },
         { to: (context) => context.refParametersStateMachine!, delay: 1000 },
@@ -99,7 +101,9 @@ const spawnTransactionMachine = assign<OpenAaveContext, OpenAaveEvent>((context)
 const spawnProxyMachine = assign<OpenAaveContext, OpenAaveEvent>((context) => {
   if (context.refProxyStateMachine) return {}
   return {
-    refProxyStateMachine: spawn(context.dependencies.proxyStateMachine, { name: 'proxy' }),
+    refProxyStateMachine: spawn(context.dependencies.proxyStateMachine, {
+      name: 'proxy',
+    }),
   }
 })
 
@@ -140,10 +144,18 @@ const updateTransactionParameters = choose<OpenAaveContext, OpenAaveEvent>([
             parameters: contextToTransactionParameters(context),
           }
         },
+        { to: (context) => context.refTransactionStateMachine! },
       ),
     ],
   },
 ])
+
+const logError = log<OpenAaveContext, OpenAaveEvent>((context, event) => {
+  assertErrorEvent(event)
+  return {
+    error: event.data,
+  }
+})
 
 export enum actions {
   initContextValues = 'initContextValues',
@@ -162,6 +174,7 @@ export enum actions {
   getTransactionParametersFromParametersMachine = 'getTransactionParametersFromParametersMachine',
   startTransaction = 'startTransaction',
   updateTransactionParameters = 'updateTransactionParameters',
+  logError = 'logError',
 }
 
 export const openAaveMachineActions: {
@@ -183,4 +196,5 @@ export const openAaveMachineActions: {
   getTransactionParametersFromParametersMachine,
   startTransaction,
   updateTransactionParameters,
+  logError,
 }

@@ -8,16 +8,16 @@ import { TransactionDef } from '../../../blockchain/calls/callsHelpers'
 import { ContextConnected } from '../../../blockchain/network'
 import { TxHelpers } from '../../../components/AppContext'
 import { transactionToX } from '../../../helpers/form'
-import { assertEventType } from '../../../utils/xstate'
+import { assertErrorEvent, assertEventType } from '../../../utils/xstate'
 
 type TransactionStateMachineContext<T extends TxMeta> = {
   readonly hasParent: boolean | false
   readonly transactionDef: TransactionDef<T>
 
-  transactionParameters: T
+  transactionParameters?: T
 
   txHash?: string
-  txError?: string
+  txError?: string | unknown
   confirmations?: number
 }
 
@@ -44,6 +44,7 @@ enum actions {
   assignTxError = 'assignTxError',
   assignConfirmations = 'assignConfirmations',
   raiseError = 'raiseError',
+  getError = 'getError',
 }
 
 enum services {
@@ -58,7 +59,6 @@ export type TransactionStateMachine<T extends TxMeta> = StateMachine<
 
 export function createTransactionStateMachine<T extends TxMeta>(
   transactionDef: TransactionDef<T>,
-  transactionParameters: T,
   withParent: boolean = false,
 ) {
   return Machine<
@@ -71,7 +71,6 @@ export function createTransactionStateMachine<T extends TxMeta>(
       context: {
         hasParent: withParent,
         transactionDef,
-        transactionParameters,
       } as TransactionStateMachineContext<T>,
       initial: 'idle',
       states: {
@@ -80,7 +79,9 @@ export function createTransactionStateMachine<T extends TxMeta>(
             START: {
               target: 'inProgress',
             },
-            PARAMETERS_CHANGED: {},
+            PARAMETERS_CHANGED: {
+              actions: [actions.assignParameters],
+            },
           },
         },
         inProgress: {
@@ -91,7 +92,10 @@ export function createTransactionStateMachine<T extends TxMeta>(
               target: 'success',
               description: 'Transaction success',
             },
-            onError: 'failure',
+            onError: {
+              actions: [actions.getError],
+              target: 'failure',
+            },
           },
           on: {
             WAITING_FOR_APPROVAL: {},
@@ -152,6 +156,12 @@ export function createTransactionStateMachine<T extends TxMeta>(
             actions: [escalate((context) => ({ error: context.txError }))],
           },
         ]),
+        [actions.getError]: assign((context, event) => {
+          assertErrorEvent(event)
+          return {
+            txError: event.data,
+          }
+        }),
       },
       services: {
         [services.startTransaction]: () => {
@@ -175,6 +185,9 @@ export function createTransactionServices<T extends TxMeta>(
     return combineLatest(context$, txHelpers$).pipe(
       first(),
       switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {
+        if (context.transactionParameters === undefined) {
+          throw new Error('transactionParameters not set')
+        }
         return sendWithGasEstimation(context.transactionDef, context.transactionParameters).pipe(
           transactionToX<TransactionStateMachineEvents<T>, T>(
             {

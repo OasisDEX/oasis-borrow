@@ -11,6 +11,7 @@ import {
   getOpenAaveParametersStateMachine$,
   getOpenAaveParametersStateMachineServices$,
 } from './open/transaction'
+import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
 
 export function setupAaveContext({
   connectedContext$,
@@ -31,6 +32,7 @@ export function setupAaveContext({
   )
 
   const openAaveParametersStateMachineServices$ = getOpenAaveParametersStateMachineServices$(
+    contextForAddress$,
     txHelpers$,
     gasEstimation$,
   )
@@ -53,10 +55,13 @@ export function setupAaveContext({
     proxyForAccount$,
   )
 
+  const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
+
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
     openAaveParametersStateMachine$,
     proxyStateMachine$,
+    transactionMachine,
   )
 
   return {
