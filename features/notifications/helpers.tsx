@@ -26,7 +26,7 @@ export function getNotificationTitle({
   lastModified: number
   additionalData: NotificationAdditionalData
 }) {
-  const usdPrice = new BigNumber(additionalData?.usdPrice || 0)
+  const usdPrice = new BigNumber(additionalData?.price || 0)
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
     month: 'numeric',
@@ -35,7 +35,7 @@ export function getNotificationTitle({
     minute: 'numeric',
   }
 
-  const humanDate = new Date(lastModified * 1000).toLocaleDateString('en-US', options)
+  const humanDate = new Date(lastModified).toLocaleDateString('en-US', options)
   const vaultId = additionalData?.vaultId || 'n/a'
 
   switch (type) {
@@ -45,6 +45,16 @@ export function getNotificationTitle({
           i18nKey="notifications.vault-liquidated"
           values={{
             vaultId: vaultId,
+            usdPrice: formatAmount(usdPrice, 'USD'),
+            humanDate,
+          }}
+        />
+      )
+    case NotificationTypes.ORACLE_PRICE_CHANGED:
+      return (
+        <Trans
+          i18nKey="notifications.oracle-price-changed"
+          values={{
             usdPrice: formatAmount(usdPrice, 'USD'),
             humanDate,
           }}

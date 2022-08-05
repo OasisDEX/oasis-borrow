@@ -64,7 +64,7 @@ export function NotificationSocketProvider({ children }: WithChildren) {
 
         // initialize watchers
         socketInstance.on('notificationcount', numberOfNotificationsHandler)
-        socketInstance.on('allnotifications', allNotificationsHandler)
+        socketInstance.on('allactivenotifications', allNotificationsHandler)
         socketInstance.on('allactivesubscriptions', allActiveSubscriptionsHandler)
         socketInstance.on('allactivechannels', allActiveChannelsHandler)
         socketInstance.on('connect_error', (err) => {

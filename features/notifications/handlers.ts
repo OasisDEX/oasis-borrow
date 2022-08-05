@@ -1,8 +1,8 @@
 import { UIChanges } from 'components/AppContext'
 import { NOTIFICATION_CHANGE } from 'features/notifications/notificationChange'
 import {
-  Notification,
   NotificationChannels,
+  NotificationRaw,
   NotificationSubscription,
 } from 'features/notifications/types'
 
@@ -14,10 +14,13 @@ export function prepareNotificationMessageHandlers(uiChanges: UIChanges) {
         numberOfNotifications: count,
       })
     },
-    allNotificationsHandler: function (message: { notifications: Notification[] }) {
+    allNotificationsHandler: function (message: { notifications: NotificationRaw[] }) {
       uiChanges.publish(NOTIFICATION_CHANGE, {
         type: 'all-notifications',
-        allNotifications: message.notifications,
+        allNotifications: message.notifications.map((item) => ({
+          ...item,
+          additionalData: JSON.parse(JSON.parse(item.additionalData)),
+        })),
       })
     },
     allActiveSubscriptionsHandler: function (message: {

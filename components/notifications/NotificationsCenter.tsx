@@ -1,8 +1,10 @@
 import { useAppContext } from 'components/AppContextProvider'
 import { NotificationCardsWrapper } from 'components/notifications/NotificationCardsWrapper'
+import { NotificationsError } from 'components/notifications/NotificationsError'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { useObservable } from 'helpers/observableHook'
 import { useUIChanges } from 'helpers/uiChangesHook'
+import { useTranslation } from 'next-i18next'
 import React, { useEffect, useMemo, useState } from 'react'
 import { theme } from 'theme'
 import { Box, Grid } from 'theme-ui'
@@ -18,6 +20,7 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
   const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
   const { context$ } = useAppContext()
   const [context] = useObservable(context$)
+  const { t } = useTranslation()
 
   const account = context?.status === 'connected' ? context.account : ''
 
@@ -54,9 +57,14 @@ export function NotificationsCenter({ isOpen }: { isOpen: boolean }) {
         onButtonClick={() => setShowPrefencesTab(!showPreferencesTab)}
         showPreferencesTab={showPreferencesTab}
       />
+      {notificationsState?.error && (
+        <Box my={2}>
+          <NotificationsError text={t('notifications.service-not-available')} />
+        </Box>
+      )}
       {!!notificationsState && (
         <NotificationsCenterContent>
-          <Grid sx={{ px: 2, mt: 3 }}>
+          <Grid sx={{ px: 2, mt: 3, mb: 2 }}>
             {showPreferencesTab ? (
               <NotificationPreferenceCardWrapper account={account} />
             ) : (
