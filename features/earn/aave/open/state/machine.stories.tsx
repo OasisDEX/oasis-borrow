@@ -14,7 +14,6 @@ import { first } from 'rxjs/operators'
 import { Box, Button, Grid } from 'theme-ui'
 import { ActorRefFrom } from 'xstate'
 
-import { TxMetaKind } from '../../../../../blockchain/calls/txMeta'
 import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
@@ -73,18 +72,7 @@ const mockTxHelpers$ = of({
   sendWithGasEstimation: <B extends TxMeta>(_proxy: any, meta: B) => mockTxState(meta),
 })
 
-const transactionMachine = createTransactionStateMachine(
-  openAavePosition,
-  {
-    kind: TxMetaKind.operationExecutor,
-    calls: {} as any,
-    operationName: 'operationName',
-    token: 'ETH',
-    proxyAddress: '0x0000000000000000000000000000000000000000',
-    amount: new BigNumber(100),
-  },
-  true,
-).withConfig({
+const transactionMachine = createTransactionStateMachine(openAavePosition, true).withConfig({
   services: {
     ...createTransactionServices<OpenAavePositionData>(mockTxHelpers$, mockContext$),
   },
@@ -93,8 +81,6 @@ const transactionMachine = createTransactionStateMachine(
 const openAaveServices: OpenAaveStateMachineServices = {
   [services.getProxyAddress]: (() => {}) as any,
   [services.getBalance]: (() => {}) as any,
-  [services.createPosition]: () => transactionMachine,
-  [services.invokeProxyMachine]: () => proxyStateMachine,
 }
 
 const openAaveStateMachine = createOpenAaveStateMachine

@@ -23,11 +23,6 @@ type OpenAaveParametersStateMachineContext = {
   gasPriceEstimation?: HasGasEstimation
 }
 
-type servicesIds = 'getParameters' | 'estimateGas' | 'estimateGasPrice'
-type servicesEventType = 'error.platform'
-
-type ErrorEvent = { type: `${servicesEventType}.${servicesIds}`, data: unknown }
-
 export type OpenAaveParametersStateMachineEvents =
   | {
       type: 'VARIABLES_RECEIVED'
@@ -47,7 +42,7 @@ export type OpenAaveParametersStateMachineEvents =
   | {
       type: 'done.invoke.estimateGasPrice'
       data: HasGasEstimation
-    } | ErrorEvent
+    }
 
 type OpenAaveParametersStateMachineSchema = {
   states: {
@@ -125,7 +120,7 @@ export const openAaveParametersStateMachine = Machine<
           onError: {
             actions: [actions.logError],
             target: 'idle',
-          }
+          },
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -145,7 +140,7 @@ export const openAaveParametersStateMachine = Machine<
           onError: {
             actions: [actions.logError],
             target: 'idle',
-          }
+          },
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -165,7 +160,7 @@ export const openAaveParametersStateMachine = Machine<
           onError: {
             actions: [actions.logError],
             target: 'idle',
-          }
+          },
         },
         on: {
           VARIABLES_RECEIVED: {
@@ -236,7 +231,7 @@ export const openAaveParametersStateMachine = Machine<
         return {
           error: event.data,
         }
-      })
+      }),
     },
     services: {
       [services.getParameters]: () => {
