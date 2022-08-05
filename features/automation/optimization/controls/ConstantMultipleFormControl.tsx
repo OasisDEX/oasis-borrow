@@ -1,3 +1,4 @@
+import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import { amountFromWei } from '@oasisdex/utils'
 import BigNumber from 'bignumber.js'
@@ -7,7 +8,7 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
+import { BasicBSTriggerData, ConstantMultipleTriggerPairData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
 import {
   calculateCollRatioForMultiply,
@@ -40,6 +41,7 @@ interface ConstantMultipleFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerPairData
   balanceInfo: BalanceInfo
   shouldRemoveAllowance: boolean
 }
@@ -55,6 +57,7 @@ export function ConstantMultipleFormControl({
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   // shouldRemoveAllowance, // TODO to be used in cancel trigger txData
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
@@ -103,7 +106,7 @@ export function ConstantMultipleFormControl({
         maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
       }),
     [
-      1, //triggerid
+      1, //triggerid - TODO ŁW - get it from trigger data
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
@@ -221,6 +224,8 @@ export function ConstantMultipleFormControl({
     // })
   }
 
+  const isFirstSetup = constantMultipleTriggerData[TriggerType.CMBasicBuy].triggerId.isZero() && constantMultipleTriggerData[TriggerType.CMBasicSell].triggerId.isZero()
+
   return (
     <SidebarSetupConstantMultiple
       vault={vault}
@@ -229,7 +234,7 @@ export function ConstantMultipleFormControl({
       isAddForm={isAddForm}
       isRemoveForm={isRemoveForm}
       isDisabled={false}
-      isFirstSetup={true}
+      isFirstSetup={isFirstSetup}
       onChange={(multiplier) => {
         const targetCollRatioForSelectedMultiplier = calculateCollRatioForMultiply(multiplier)
         uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {

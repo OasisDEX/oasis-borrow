@@ -5,7 +5,7 @@ import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { extractBasicBSData, extractGroupTriggersData } from 'features/automation/common/basicBSTriggerData'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/protection/common/helpers'
@@ -44,9 +44,13 @@ export function OptimizationFormControl({
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
-  const constantMultipleTriggerData = {} as any
   const constantMultipleBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.CMBasicBuy)
   const constantMultipleSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.CMBasicSell)
+  const constantMultipleTriggerData = {
+    [TriggerType.CMBasicBuy]: constantMultipleBuyTriggerData,
+    [TriggerType.CMBasicSell]: constantMultipleSellTriggerData,
+  }
+  
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
@@ -99,6 +103,7 @@ export function OptimizationFormControl({
           stopLossTriggerData={stopLossTriggerData}
           balanceInfo={balanceInfo}
           shouldRemoveAllowance={shouldRemoveAllowance}
+          constantMultipleTriggerData={constantMultipleTriggerData}
         />
       )}
     </>

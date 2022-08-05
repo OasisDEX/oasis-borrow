@@ -85,11 +85,11 @@ const defaultBasicSellData = {
   isTriggerEnabled: false,
 }
 
-type ConstantMultipleTriggerPairData = {
+export type ConstantMultipleTriggerPairData = {
   [TriggerType.CMBasicBuy]: BasicBSTriggerData
   [TriggerType.CMBasicSell]: BasicBSTriggerData
 }
-
+// TODO ŁW will that method make any more sense?
 export function extractGroupTriggersData(
   data: TriggersData,
   triggerIds: number[] | undefined,

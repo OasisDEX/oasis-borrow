@@ -9,6 +9,7 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import {
   BasicBSTriggerData,
+  ConstantMultipleTriggerPairData,
   maxUint256,
   prepareAddBasicBSTriggerData,
   prepareRemoveBasicBSTriggerData,
@@ -42,7 +43,7 @@ interface AutoBuyFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerPairData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
