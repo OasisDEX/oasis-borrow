@@ -35,16 +35,18 @@ function CareersPage({ careers }: { careers: Career[] }) {
       >
         {t('careers.heading')}
       </Heading>
-      <Text variant="light">{t('careers.intro')}</Text>
+      <Text variant="paragraph1" sx={{ color: 'neutral80' }}>
+        {t('careers.intro')}
+      </Text>
       {!!careers.length && (
         <Box sx={{ mt: 6 }}>
           {Object.entries(careersByArea).map(([area, careers]) => (
             <Box key={area} sx={{ mt: 5 }}>
-              <Flex sx={{ mb: 4, pl: 1 }}>
+              <Flex sx={{ mb: 4, pl: 1, alignItems: 'center' }}>
                 <Heading variant="header2">{area}</Heading>
                 <RoleCount
                   count={careers.length}
-                  sx={{ ml: 2, position: 'relative', top: '12px' }}
+                  sx={{ ml: 2, position: 'relative', top: '6px' }}
                 />
               </Flex>
               <Grid>
@@ -90,18 +92,36 @@ function CareersPage({ careers }: { careers: Career[] }) {
       )}
       {careers.length > 0 ? (
         <Box sx={{ mt: 6 }}>
-          <Text variant="light">{t('careers.no-positions-you-like')}</Text>
+          <Text variant="paragraph1" sx={{ color: 'neutral80' }}>
+            {t('careers.no-positions-you-like')}
+          </Text>
           <br />
-          <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
+          <Text variant="paragraph1" sx={{ color: 'neutral80' }}>
+            {t('careers.write-us')}{' '}
+            <Link
+              sx={{ variant: 'text.boldParagraph1', color: 'interactive100' }}
+              href="mailto:work@oasis.app"
+            >
+              work@oasis.app
+            </Link>
+            .
           </Text>
         </Box>
       ) : (
         <Box sx={{ mt: 5 }}>
-          <Text variant="light">{t('careers.no-open-positions')}</Text>
+          <Text variant="paragraph1" sx={{ color: 'neutral80' }}>
+            {t('careers.no-open-positions')}
+          </Text>
           <br />
-          <Text variant="light">
-            {t('careers.write-us')} <Link href="mailto:work@oasis.app">work@oasis.app</Link>.
+          <Text variant="paragraph1" sx={{ color: 'neutral80' }}>
+            {t('careers.write-us')}{' '}
+            <Link
+              sx={{ variant: 'text.boldParagraph1', color: 'interactive100' }}
+              href="mailto:work@oasis.app"
+            >
+              work@oasis.app
+            </Link>
+            .
           </Text>
         </Box>
       )}

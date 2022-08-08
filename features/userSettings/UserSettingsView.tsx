@@ -23,6 +23,7 @@ import {
   Card,
   Flex,
   Grid,
+  Heading,
   Link as ThemeLink,
   SxStyleProp,
   Text,
@@ -147,11 +148,11 @@ function SlippageSettingsForm() {
             {t('user-settings.slippage-limit.preset-description')}
           </Text>
           <Link href="/support#using-multiply" passHref>
-            <ThemeLink target="_self" sx={{ fontSize: 2, fontWeight: 'body', mt: -1 }}>
+            <ThemeLink target="_self" sx={{ mt: -1, fontWeight: 400 }}>
               {t('user-settings.slippage-limit.read-more')}
             </ThemeLink>
           </Link>
-          <Text variant="paragraph4" sx={{ fontWeight: 'semiBold', my: 3 }}>
+          <Text variant="paragraph4" sx={{ my: 3 }}>
             Your current slippage: {formatPercent(slippage.times(100), { precision: 2 })}
           </Text>
           <Flex>
@@ -268,7 +269,7 @@ function WalletInfo() {
         <Icon name={userIcon!} size={32} sx={{ mr: 2, flexShrink: 0 }} />
         <Grid sx={{ gap: 0, width: '100%' }}>
           <Flex sx={{ justifyContent: 'space-between' }}>
-            <Text variant="address" sx={{ fontSize: 2 }}>
+            <Text variant="boldParagraph3" sx={{ letterSpacing: '0.02em' }}>
               {formatAddress(account, 6)}
             </Text>
             <Text
@@ -290,16 +291,22 @@ function WalletInfo() {
               readOnly
             />
           </Flex>
-          <Flex>
-            {accountData && accountData.daiBalance && (
-              <>
-                <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
-                <Text variant="caption" sx={{ ml: 1, color: 'neutral80' }}>
-                  {formatCryptoBalance(accountData.daiBalance)}
-                </Text>
-              </>
-            )}
-          </Flex>
+
+          {accountData && accountData.daiBalance && (
+            <Flex sx={{ alignItems: 'center' }}>
+              <Icon sx={{ zIndex: 1 }} name="dai_color" size={16} />
+              <Text
+                variant="paragraph4"
+                sx={{
+                  ml: 1,
+                  color: 'neutral80',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {formatCryptoBalance(accountData.daiBalance)}
+              </Text>
+            </Flex>
+          )}
         </Grid>
       </Flex>
     </Grid>
@@ -314,15 +321,15 @@ export function UserSettings({ sx }: { sx?: SxStyleProp }) {
 
   return (
     <Box sx={sx}>
-      <Text variant="headerSettings" sx={{ mb: 3 }}>
+      <Heading as="p" variant="boldParagraph1" sx={{ mb: 3 }}>
         {t('wallet')}
-      </Text>
+      </Heading>
       <WalletInfo />
-      <Text variant="headerSettings" sx={{ mt: 4, mb: 3 }}>
+      <Heading as="p" variant="boldParagraph1" sx={{ mt: 4, mb: 3 }}>
         {t('user-settings.slippage-limit.preset-title')}
-      </Text>
+      </Heading>
       <SlippageSettingsForm />
-      <Box sx={{ borderTop: '1px solid neutral30', mt: 3 }} />
+      <Box variant="separator" sx={{ mt: '16px', mb: '24px' }} />
       <Button
         variant="textual"
         sx={{
@@ -384,8 +391,9 @@ export function UserSettingsButtonContents({ context, accountData, web3Context, 
       <Flex sx={{ alignItems: 'center' }}>
         <Icon name={userIcon!} size="auto" width="42" />
         <Text
-          variant="address"
-          sx={{ ml: 3, color: 'primary100', fontSize: 2, fontWeight: [600, 500] }}
+          as="p"
+          variant="paragraph3"
+          sx={{ ml: 3, color: 'primary100', fontWeight: 500, letterSpacing: '0.02em' }}
         >
           {accountData.ensName || formatAddress(context.account, 6)}
         </Text>

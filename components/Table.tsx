@@ -221,9 +221,10 @@ export function TableSortHeader<K extends string>({
         visibility: ['hidden', 'visible'],
         display: ['none', 'flex'],
         alignItems: 'center',
+        color: 'neutral80',
         ...sx,
       }}
-      variant="tableHeader"
+      variant="boldParagraph3"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
       <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary100' : 'neutral80' }}>

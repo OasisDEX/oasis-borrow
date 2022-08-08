@@ -26,7 +26,7 @@ export function ReferralModal({ heading, topButton, bottomButton }: ReferralModa
               width="240px"
             />
           </Flex>
-          <Heading as="h3" sx={{ mb: '12px', lineHeight: 1.5 }} variant="text.headerSettings">
+          <Heading as="h4" sx={{ mb: '12px', lineHeight: 1.5 }} variant="header4">
             {heading}
           </Heading>
           <Text variant="paragraph3" sx={{ color: 'neutral80', mb: '8px' }}>

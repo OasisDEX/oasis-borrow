@@ -39,7 +39,7 @@ export function VaultInformation({ items }: VaultInformationProps) {
         border: 'lightMuted',
       }}
     >
-      <Heading variant="headerSettings" sx={{ mb: 3 }}>
+      <Heading as="h4" variant="header4" sx={{ mb: 3 }}>
         {t('vault-information')}
       </Heading>
       <DefinitionList>

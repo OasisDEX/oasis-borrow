@@ -69,19 +69,16 @@ export function FeesView({ userReferral }: Props) {
             <Text
               sx={{
                 color: 'neutral80',
-                fontSize: 1,
               }}
-              variant="strong"
+              variant="paragraph4"
             >
               {t('ref.total')}
             </Text>
-            <Text
-              sx={{
-                fontSize: 7,
-              }}
-              variant="strong"
-            >
-              {`${userReferral.totalAmount}`} <span style={{ fontSize: '18px' }}>DAI</span>
+            <Text variant="header3">
+              {`${userReferral.totalAmount}`}{' '}
+              <Text variant="boldParagraph1" sx={{ display: 'inline' }}>
+                DAI
+              </Text>
             </Text>
           </Box>
           <Box sx={{ py: 1 }}>
@@ -89,24 +86,20 @@ export function FeesView({ userReferral }: Props) {
               <Text
                 sx={{
                   color: 'neutral80',
-                  fontSize: 1,
                 }}
-                variant="strong"
+                variant="paragraph4"
               >
                 {t('ref.not-claimed')}
               </Text>
-              <Text
-                sx={{
-                  fontSize: 7,
-                }}
-                variant="strong"
-              >
+              <Text variant="header3">
                 {/*  // leave this or delay querying the cache ? */}
                 {userReferral.claimTxnState === ClaimTxnState.SUCCEEDED
                   ? '0.0'
                   : userReferral.totalClaim}
                 {` `}
-                <span style={{ fontSize: '18px' }}>DAI</span>
+                <Text variant="boldParagraph1" sx={{ display: 'inline' }}>
+                  DAI
+                </Text>
               </Text>
             </Box>
           </Box>
@@ -158,7 +151,7 @@ export function FeesView({ userReferral }: Props) {
                 fontSize: 2,
                 mb: '3px',
               }}
-              variant="strong"
+              variant="boldParagraph2"
             >
               {t('ref.you-referred')}
             </Text>
@@ -169,11 +162,10 @@ export function FeesView({ userReferral }: Props) {
                   <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }} key={index}>
                     <Box sx={{ flex: '1 1 auto', pt: '16px' }}>
                       <Text
+                        variant="paragraph3"
                         sx={{
                           color: 'neutral80',
                           overflowWrap: 'break-word',
-                          fontSize: 2,
-                          ml: ['0px', '8px'],
                           fontVariantLigatures: 'no-contextual',
                         }}
                       >
@@ -211,11 +203,10 @@ export function FeesView({ userReferral }: Props) {
                 <Flex sx={{ pt: '12px', flexWrap: 'wrap' }}>
                   <Box sx={{ flex: '1 1 auto' }}>
                     <Text
+                      variant="paragraph3"
                       sx={{
                         color: 'neutral80',
                         overflowWrap: 'break-word',
-                        fontSize: 2,
-                        ml: ['0px', '8px'],
                       }}
                     >
                       {t('ref.not-referred-yet')}
@@ -241,7 +232,7 @@ export function FeesView({ userReferral }: Props) {
                 overflowWrap: 'break-word',
                 fontSize: 2,
               }}
-              variant="strong"
+              variant="boldParagraph2"
             >
               {t('ref.referred-you')}
             </Text>
@@ -249,11 +240,10 @@ export function FeesView({ userReferral }: Props) {
             <Flex sx={{ flexWrap: 'wrap', alignItems: 'center' }}>
               <Box sx={{ flex: '1 1 auto' }}>
                 <Text
+                  variant="paragraph3"
                   sx={{
                     color: 'neutral80',
                     overflowWrap: 'break-word',
-                    fontSize: 2,
-                    ml: ['0px', '8px'],
                     pt: '16px',
                     fontVariantLigatures: 'no-contextual',
                   }}

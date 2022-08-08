@@ -46,11 +46,13 @@ export function VaultChangesInformationItem({
       onClick={handleClick}
     >
       <Flex
-        sx={{ color: 'neutral80', justifyContent: 'flex-end' }}
+        sx={{ color: 'neutral80', justifyContent: 'flex-end', alignItems: 'center' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {label}
+        <Text variant="paragraph4" sx={{ lineHeight: '16px', color: 'inherit' }}>
+          {label}
+        </Text>
         {tooltip && <Icon name="question_o" size="20px" sx={{ ml: 1 }} />}
       </Flex>
       {tooltip && tooltipOpen && (
@@ -58,7 +60,11 @@ export function VaultChangesInformationItem({
           {tooltip}
         </Tooltip>
       )}
-      <Box sx={{ color: 'primary100' }}>{value}</Box>
+      <Box sx={{ color: 'primary100' }}>
+        <Text as="p" variant="paragraph4">
+          {value}
+        </Text>
+      </Box>
     </Flex>
   )
 }

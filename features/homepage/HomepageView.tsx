@@ -310,7 +310,7 @@ export function HomepageView() {
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         }}
       >
-        <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
+        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.have-some-questions')}
         </Text>
         <Grid
@@ -375,7 +375,7 @@ export function HomepageView() {
           animationTimingFunction: 'cubic-bezier(0.7, 0.01, 0.6, 1)',
         }}
       >
-        <Text variant="header2" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
+        <Text variant="header3" sx={{ textAlign: 'center', mt: 7, mb: 4 }}>
           {t('landing.info-cards.get-started')}
         </Text>
         <Grid

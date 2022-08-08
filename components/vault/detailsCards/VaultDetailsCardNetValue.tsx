@@ -66,12 +66,12 @@ export function VaultDetailsNetValueModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.net-value')}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2 }}>
+        <Text variant="paragraph3">
           {isCollateralLpToken
             ? t('manage-multiply-vault.card.based-on-price-lp')
             : t('manage-multiply-vault.card.based-on-price')}
         </Text>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2, fontWeight: 'bold' }}>
+        <Text variant="boldParagraph2" sx={{ pb: 2 }}>
           ${formatCryptoBalance(marketPrice || oraclePrice)}
         </Text>
       </Grid>
@@ -79,8 +79,8 @@ export function VaultDetailsNetValueModal({
       <Grid
         gap={2}
         columns={[1, 2, 3]}
-        variant="subheader"
-        sx={{ fontSize: 2, pb: 2, display: ['none', 'none', 'grid'] }}
+        variant="paragraph2"
+        sx={{ pb: 2, display: ['none', 'none', 'grid'] }}
       >
         <Box />
         {renderCollateralValue ? (
@@ -121,8 +121,8 @@ export function VaultDetailsNetValueModal({
       <Grid
         gap={2}
         columns={[2, 1]}
-        variant="subheader"
-        sx={{ fontSize: 2, pb: 2, display: ['grid', 'grid', 'none'] }}
+        variant="paragraph2"
+        sx={{ pb: 2, display: ['grid', 'grid', 'none'] }}
       >
         <Box sx={{ fontWeight: 'semiBold' }}>
           {t('manage-multiply-vault.card.collateral-value-in-vault')}
@@ -192,7 +192,7 @@ export function VaultDetailsNetValueModal({
         <Text>{formatPercent(currentPnL.times(100), { precision: 2 })}</Text>
       </Card>
       <Grid>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph2" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.formula')}
         </Text>
       </Grid>

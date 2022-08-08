@@ -13,13 +13,13 @@ function MinActiveColRatioModal({ close }: ModalProps<{}>) {
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">Minimum active collateralization ratio</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-insti-vault.card.min-active-coll-ratio.modal.para1')}
         </Text>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-insti-vault.card.min-active-coll-ratio.modal.para2')}
         </Text>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-insti-vault.card.min-active-coll-ratio.modal.para3')}
         </Text>
       </Grid>

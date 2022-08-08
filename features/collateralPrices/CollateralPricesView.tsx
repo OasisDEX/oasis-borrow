@@ -41,7 +41,7 @@ function CellOracleUpdate({ update }: { update?: Date }) {
 const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFiltersState>[] = [
   {
     headerLabel: 'oracles.token',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ token }) => <TokenSymbol token={token} displaySymbol />,
   },
   {
@@ -72,7 +72,7 @@ const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFilters
   },
   {
     headerLabel: 'oracles.change',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ percentageChange }) => (
       <Text
         sx={{
@@ -106,7 +106,7 @@ const COLLATERAL_COLUMNS: ColumnDef<CollateralPrice, CollateralPricesWithFilters
   },
   {
     headerLabel: 'oracles.oracle-type',
-    header: ({ label }) => <Text variant="tableHead">{label}</Text>,
+    header: ({ label }) => <Text variant="boldParagraph3">{label}</Text>,
     cell: ({ isStaticPrice }) => <Text>{isStaticPrice ? 'DSvalue' : 'OSM'}</Text>,
   },
 ]

@@ -16,7 +16,7 @@ export function VaultDetailsStopLossCollRatioModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{t('manage-multiply-vault.card.stop-loss-coll-ratio')}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph2" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.stop-loss-coll-ratio-desc')}
         </Text>
         <Text variant="header4" sx={{ fontWeight: 'semiBold' }}>

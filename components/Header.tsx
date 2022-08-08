@@ -45,6 +45,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
+        height: '22px',
         ...sx,
       }}
     >
@@ -638,7 +639,7 @@ function AssetsDropdown() {
           <AppLink
             href={asset.link}
             key={asset.label}
-            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular', fontSize: 3 }}
             variant="links.nav"
           >
             <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
@@ -863,7 +864,7 @@ function DisconnectedHeader() {
                 flexShrink: 0,
               }}
             >
-              <Text variant="strong">{t('connect-wallet-button')}</Text>
+              <Text variant="boldParagraph2">{t('connect-wallet-button')}</Text>
               <Icon
                 name="arrow_right"
                 size="15px"

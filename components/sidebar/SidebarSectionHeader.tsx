@@ -1,6 +1,6 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import React from 'react'
-import { Flex, Text } from 'theme-ui'
+import { Flex, Heading } from 'theme-ui'
 
 import {
   SidebarSectionHeaderSelect,
@@ -42,16 +42,9 @@ export function SidebarSectionHeader({
       }}
     >
       <Flex sx={{ minHeight: 40, alignItems: 'center' }}>
-        <Text
-          as="h2"
-          variant="headerSettings"
-          sx={{
-            fontSize: 3,
-            fontWeight: 600,
-          }}
-        >
+        <Heading as="p" variant="boldParagraph2">
           {title}
-        </Text>
+        </Heading>
       </Flex>
       {dropdown ? (
         <SidebarSectionHeaderSelect onSelect={onSelect} {...dropdown} />

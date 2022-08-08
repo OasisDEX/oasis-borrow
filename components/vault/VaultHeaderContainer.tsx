@@ -16,10 +16,9 @@ export function VaultHeaderContainer({
     <Grid mt={4}>
       <>
         <Heading
-          as="h1"
-          variant="heading1"
+          as="h4"
+          variant="header4"
           sx={{
-            fontWeight: 'semiBold',
             pb: 2,
           }}
         >

@@ -74,17 +74,14 @@ export const oasisBaseTheme = {
   //           0   1   2   3   4   5   6   7   8   9  10
   fontSizes: [10, 12, 14, 16, 18, 20, 24, 32, 52, 64, 96],
   fontWeights: {
-    body: 400,
-    heading: 500,
+    regular: 400,
     medium: 500,
     semiBold: 600,
     bold: 700,
-    heavy: 900,
   },
   lineHeights: {
     body: 1.5,
     bodyLoose: 1.7,
-    heading: 1.2,
     tight: 1.05,
     loose: 1.35,
     //
@@ -93,115 +90,91 @@ export const oasisBaseTheme = {
     smallButton: 1.9,
   },
   text: {
-    display: {
-      fontFamily: 'heading',
-      fontWeight: 'bold',
-      fontSize: [7, 8],
-    },
     header1: {
       fontFamily: 'heading',
-      fontWeight: 'heading',
-      lineHeight: 'heading',
+      fontWeight: 'medium',
+      lineHeight: '54px',
       fontSize: '52px',
+      letterSpacing: '-0.02em',
       color: 'primary100',
     },
     header2: {
       fontFamily: 'heading',
-      fontWeight: 'heading',
-      lineHeight: 'heading',
-      fontSize: 7,
+      fontWeight: 'medium',
+      lineHeight: '54px',
+      fontSize: '40px',
+      letterSpacing: '-0.02em',
       color: 'primary100',
     },
     header3: {
       fontFamily: 'heading',
-      fontWeight: 'bold',
-      lineHeight: 'heading',
-      fontSize: 5,
+      fontWeight: 'medium',
+      lineHeight: '42px',
+      fontSize: '32px',
       color: 'primary100',
     },
     header4: {
-      fontFamily: 'body',
+      fontFamily: 'heading',
       fontWeight: 'semiBold',
-      lineHeight: 'heading',
-      fontSize: 4,
+      lineHeight: '40px',
+      fontSize: '28px',
       color: 'primary100',
     },
-    headerSettings: {
-      // deprecated, use header4
-      variant: 'text.header4',
-    },
     header5: {
-      variant: 'text.header4',
-      fontSize: 3,
+      fontFamily: 'heading',
+      fontWeight: 'semiBold',
+      lineHeight: '32px',
+      fontSize: '20px',
+      color: 'primary100',
     },
     paragraph1: {
       fontFamily: 'body',
-      fontWeight: 'body',
-      lineHeight: 'body',
-      fontSize: 4, // 18px
+
+      lineHeight: '28px',
+      fontSize: '18px',
+      color: 'primary100',
+    },
+    boldParagraph1: {
+      fontFamily: 'body',
+      lineHeight: '28px',
+      fontWeight: 'semiBold',
+      fontSize: '18px',
       color: 'primary100',
     },
     paragraph2: {
       fontFamily: 'body',
-      fontWeight: 'body',
-      lineHeight: 'body',
-      fontSize: 3, // 16px
+
+      lineHeight: '24px',
+      fontSize: '16px',
+      color: 'primary100',
+    },
+    boldParagraph2: {
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: '24px',
+      fontSize: '16px',
       color: 'primary100',
     },
     paragraph3: {
       fontFamily: 'body',
-      fontWeight: 'body',
-      lineHeight: 'body',
-      fontSize: 2, // 14px
+
+      lineHeight: '22px',
+      fontSize: '14px',
+      color: 'primary100',
+    },
+    boldParagraph3: {
+      fontFamily: 'body',
+      fontWeight: 'semiBold',
+      lineHeight: '22px',
+      fontSize: '14px',
       color: 'primary100',
     },
     paragraph4: {
       fontFamily: 'body',
-      fontWeight: 'body',
-      lineHeight: 'body',
-      fontSize: 1, // 12px
+      fontWeight: 'semiBold',
+      lineHeight: '20px',
+      fontSize: '12px',
       color: 'primary100',
-    },
-    subheader: {
-      variant: 'text.paragraph2',
-      color: 'neutral80',
-    },
-    caption: {
-      variant: 'text.paragraph4',
-      fontWeight: 'heading',
-      textTransform: 'uppercase',
-      letterSpacing: '0.04em',
-      opacity: 0.7,
-    },
-    tableHead: {
-      variant: 'text.paragraph3',
-      color: 'neutral80',
-      fontWeight: 'semiBold',
-    },
-    strong: {
-      variant: 'text.paragraph2',
-      fontWeight: 'semiBold',
-    },
-    light: {
-      color: 'neutral80',
-      fontSize: 4,
-      lineHeight: 'bodyLoose',
-      a: {
-        variant: 'text.paragraph1',
-        color: 'primary100',
-      },
-    },
-    address: {
-      variant: 'paragraph3',
-      fontWeight: 'medium',
-      letterSpacing: '0.02em',
-    },
-    label: {
-      fontFamily: 'body',
-      fontWeight: 'semiBold',
-      lineHeight: 'body',
-      fontSize: 1,
-      color: 'neutral80',
     },
   },
   borders: {
@@ -876,7 +849,7 @@ export const oasisBaseTheme = {
       border: 'light',
       borderColor: 'neutral80',
       color: 'neutral80',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       fontFamily: 'body',
       p: 3,
       lineHeight: 'tight',
@@ -961,7 +934,7 @@ export const oasisBaseTheme = {
       bg: 'txManagerBg',
       color: 'primary100',
       borderRadius: 'large',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       px: 2,
       py: 3,
       lineHeight: 'loose',
@@ -1009,7 +982,7 @@ export const oasisBaseTheme = {
     root: {
       fontFamily: 'body',
       lineHeight: 'body',
-      fontWeight: 'body',
+      fontWeight: 'regular',
       fontSize: 3,
     },
     spinner: {

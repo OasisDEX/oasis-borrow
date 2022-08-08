@@ -10,7 +10,7 @@ export const reactSelectCustomComponents = <T extends object>(): Partial<SelectC
     <Flex
       sx={{
         color: 'primary100',
-        fontWeight: 'body',
+        fontWeight: 'regular',
         fontSize: '18px',
         backgroundColor: 'white',
       }}
