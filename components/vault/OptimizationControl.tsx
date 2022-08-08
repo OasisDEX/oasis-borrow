@@ -110,7 +110,10 @@ export function OptimizationControl({
   const readOnlyBasicBSEnabled = useFeatureToggle('ReadOnlyBasicBS')
 
   const basicBuyData = automationTriggersData
-    ? extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+    ? extractBasicBSData({
+        triggersData: automationTriggersData,
+        triggerType: TriggerType.BasicBuy,
+      })
     : undefined
 
   const vaultHasActiveTrigger = basicBuyData?.isTriggerEnabled

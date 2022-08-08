@@ -45,8 +45,14 @@ export function ProtectionFormControl({
   ethMarketPrice,
 }: ProtectionFormControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
-  const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
-  const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+  const autoBuyTriggerData = extractBasicBSData({
+    triggersData: automationTriggersData,
+    triggerType: TriggerType.BasicBuy,
+  })
+  const autoSellTriggerData = extractBasicBSData({
+    triggersData: automationTriggersData,
+    triggerType: TriggerType.BasicSell,
+  })
   const constantMultipleTriggerData = {} as any
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
