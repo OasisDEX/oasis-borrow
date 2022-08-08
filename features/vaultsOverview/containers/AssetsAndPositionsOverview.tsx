@@ -91,7 +91,7 @@ function LinkedRow(props: PositionView) {
 
   if (props.url) {
     return (
-      <AppLink href={props.url}>
+      <AppLink href={props.url} sx={{ fontWeight: 'unset' }}>
         <AssetRow {...props} />
       </AppLink>
     )
@@ -138,7 +138,7 @@ function MenuRowDisplay(props: AssetAction) {
 function MenuRow(props: AssetAction & { close: () => void }) {
   if (isUrlAction(props)) {
     return (
-      <AppLink href={props.path} hash={props.hash}>
+      <AppLink href={props.path} hash={props.hash} sx={{ fontWeight: 'unset' }}>
         <MenuRowDisplay {...props} />
       </AppLink>
     )
@@ -150,6 +150,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
           props.close()
           props.onClick()
         }}
+        sx={{ fontWeight: 'unset' }}
       >
         <MenuRowDisplay {...props} />
       </Link>
