@@ -120,13 +120,10 @@ export function extractGroupTriggersData(
 export function extractBasicBSData({
   triggersData,
   triggerType,
-  isInGroup,
+  isInGroup = false,
 }: ExtractBasicBSDataProps): BasicBSTriggerData {
   if (triggersData.triggers && triggersData.triggers.length > 0) {
-    let triggersList = triggersData.triggers
-
-    if (isInGroup) triggersList = triggersList.filter((item) => item.groupId !== null)
-
+    const triggersList = triggersData.triggers.filter((item) => !!item.groupId === isInGroup)
     const basicBSTriggers = getTriggersByType(triggersList, [triggerType])
 
     if (basicBSTriggers.length) {

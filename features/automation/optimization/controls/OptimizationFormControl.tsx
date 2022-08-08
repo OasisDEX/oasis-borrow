@@ -7,6 +7,7 @@ import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
 import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
+import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { AutoBuyFormControl } from 'features/automation/optimization/controls/AutoBuyFormControl'
 import { getActiveOptimizationFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -50,7 +51,13 @@ export function OptimizationFormControl({
     triggersData: automationTriggersData,
     triggerType: TriggerType.BasicSell,
   })
-  const constantMultipleTriggerData = {} as any
+  const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
+  console.log('autoBuyTriggerData')
+  console.log(autoBuyTriggerData)
+  console.log('autoSellTriggerData')
+  console.log(autoSellTriggerData)
+  console.log('constantMultipleTriggerData')
+  console.log(constantMultipleTriggerData)
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
