@@ -2,6 +2,7 @@ import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBuyDetailsControl } from 'features/automation/optimization/controls/BasicBuyDetailsControl'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
@@ -23,12 +24,12 @@ export function OptimizationDetailsControl({
   vaultHistory,
   tokenMarketPrice,
 }: OptimizationDetailsControlProps) {
+  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
   const basicBuyTriggerData = extractBasicBSData({
     triggersData: automationTriggersData,
     triggerType: TriggerType.BasicBuy,
   })
-  // TODO: PK initialize and get constantMultiplyTriggerData here
-  const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
+  const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
 
   return (
     <>
@@ -38,7 +39,7 @@ export function OptimizationDetailsControl({
           vault={vault}
           vaultHistory={vaultHistory}
           tokenMarketPrice={tokenMarketPrice}
-          // TODO: PK pass constantMultiplyTriggerData to component
+          constantMultipleTriggerData={constantMultipleTriggerData}
         />
       )}
     </>

@@ -42,6 +42,7 @@ export function OptimizationFormControl({
   balanceInfo,
   ethMarketPrice,
 }: OptimizationFormControlProps) {
+  console.log(automationTriggersData)
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoBuyTriggerData = extractBasicBSData({
     triggersData: automationTriggersData,
@@ -52,12 +53,6 @@ export function OptimizationFormControl({
     triggerType: TriggerType.BasicSell,
   })
   const constantMultipleTriggerData = extractConstantMultipleData(automationTriggersData)
-  console.log('autoBuyTriggerData')
-  console.log(autoBuyTriggerData)
-  console.log('autoSellTriggerData')
-  console.log(autoSellTriggerData)
-  console.log('constantMultipleTriggerData')
-  console.log(constantMultipleTriggerData)
   const { uiChanges } = useAppContext()
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
 
