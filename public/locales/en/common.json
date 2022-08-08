@@ -415,9 +415,9 @@
       "header3": "Net value",
       "rowlabel1": "Previous 30 days*",
       "rowlabel2": "Previous 90 days*",
-      "rowlabel3": "Previous 1 year**",
+      "rowlabel3": "Previous 1 year*",
       "footnote1": "*Past performance is not indicative of future results.",
-      "footnote2": "**Prior year estimates use the 90 day APY."
+      "footnote2": "**Breakeven is estimated using 30 day APY."
     }
   },
   "manage-insti-vault": {
