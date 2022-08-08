@@ -6,6 +6,7 @@ import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
 import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
@@ -185,6 +186,15 @@ export function ConstantMultipleEditingStage({
         ilkData={ilkData}
         isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
         isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
+      />
+      <MaxGasPriceSection
+        onChange={(maxBaseFeeInGwei) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'max-gas-fee-in-gwei',
+            maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
+          })
+        }}
+        value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
         <ConstantMultipleInfoSectionControl

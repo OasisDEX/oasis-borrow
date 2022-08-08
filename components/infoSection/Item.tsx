@@ -52,6 +52,7 @@ export function Item({
       <Flex
         sx={{
           cursor: !isLoading && dropdownValues?.length ? 'pointer' : 'auto',
+          justifyContent: 'space-between',
         }}
         onClick={() => {
           !isLoading && dropdownValues?.length && setOpen(!open)
@@ -118,6 +119,8 @@ export function Item({
               sx={{
                 fontWeight: 400,
                 color: 'neutral80',
+                fontSize: 2,
+                mt: 2,
               }}
             >
               {subLabel}

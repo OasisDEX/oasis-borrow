@@ -24,6 +24,7 @@ export function MaxGasPriceSection({ onChange, value }: MaxGasPriceSectionProps)
       label={t('basic-buy-sell-generic.max-gas-fee-trans-value')}
       labelColorPrimary
       dropDownElementType="element"
+      isHeading
       subLabel={t('basic-buy-sell-generic.max-gas-fee-trans-subheading')}
       dropdownValues={[
         {
