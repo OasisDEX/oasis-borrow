@@ -1,56 +1,46 @@
-import { BigNumber } from 'bignumber.js'
-import { AppLink } from 'components/Links'
-import { NotificationCard, NotificationCardProps } from 'components/notifications/NotificationCard'
-import { NotificationTypes } from 'features/notifications/types'
-import { Trans } from 'next-i18next'
-import React, { ReactNode } from 'react'
-
-function getNotificationTitle({
-  type,
-  title,
-  vaultId,
-}: {
-  type: NotificationTypes
-  title: ReactNode
-  vaultId: BigNumber
-}) {
-  const titleVariants = {
-    [NotificationTypes.CRITICAL]: <>{title}</>,
-    [NotificationTypes.NON_CRITICAL]: (
-      <>
-        {title}{' '}
-        <Trans
-          i18nKey="view-vault-link"
-          components={[
-            <AppLink
-              href={`/${vaultId}`}
-              sx={{ color: 'interactive100', fontWeight: 'inherit' }}
-            />,
-          ]}
-        />
-      </>
-    ),
-  }
-
-  return titleVariants[type]
-}
+import { NotificationCard } from 'components/notifications/NotificationCard'
+import { useNotificationSocket } from 'components/NotificationSocketProvider'
+import { getNotificationTitle } from 'features/notifications/helpers'
+import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
+import { useUIChanges } from 'helpers/uiChangesHook'
+import React from 'react'
 
 interface NotificationCardsWrapperProps {
-  notificationCards: NotificationCardProps[]
+  account: string
 }
 
-export function NotificationCardsWrapper({ notificationCards }: NotificationCardsWrapperProps) {
+export function NotificationCardsWrapper({ account }: NotificationCardsWrapperProps) {
+  const { socket } = useNotificationSocket()
+  const [notificationsState] = useUIChanges<NotificationChange>(NOTIFICATION_CHANGE)
+
+  function markReadHandler(notificationId: number) {
+    socket?.emit('markread', {
+      address: account,
+      notificationId,
+    })
+  }
+
+  function editHandler(notificationId: number) {
+    markReadHandler(notificationId)
+    socket?.emit('markread', {
+      address: account,
+      notificationId,
+    })
+  }
+
   return (
     <>
-      {notificationCards.map((item, idx) => (
+      {notificationsState.allNotifications.map((item) => (
         <NotificationCard
-          key={idx}
+          key={item.id}
           {...item}
           title={getNotificationTitle({
-            title: item.title,
-            type: item.type,
-            vaultId: item.vaultId,
+            type: item.notificationType,
+            lastModified: item.lastModified,
+            additionalData: item.additionalData,
           })}
+          markReadHandler={markReadHandler}
+          editHandler={editHandler}
         />
       ))}
     </>

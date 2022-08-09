@@ -22,8 +22,8 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
   switch (event.kind) {
     case 'basic-buy':
     case 'basic-sell': {
-      const basicBuyData = extractBasicBSData(
-        {
+      const basicBuyData = extractBasicBSData({
+        triggersData: {
           isAutomationEnabled: false,
           triggers: [
             {
@@ -33,8 +33,8 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
             },
           ],
         },
-        event.kind === 'basic-buy' ? TriggerType.BasicBuy : TriggerType.BasicSell,
-      )
+        triggerType: event.kind === 'basic-buy' ? TriggerType.BasicBuy : TriggerType.BasicSell,
+      })
 
       return {
         execCollRatio: basicBuyData.execCollRatio,

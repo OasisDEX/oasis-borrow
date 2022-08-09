@@ -130,7 +130,7 @@ function ProductCardBanner({ title, description }: ProductCardBannerProps) {
           <Text sx={{ color: 'neutral80' }} variant="paragraph2">
             {title}
           </Text>
-          <Text variant="paragraph1" sx={{ textAlign: 'center', fontWeight: 'semiBold' }}>
+          <Text variant="boldParagraph1" sx={{ textAlign: 'center' }}>
             {description}
           </Text>
         </Flex>
@@ -176,13 +176,10 @@ function ProductCardHeading({
         }}
       >
         <Flex sx={{ flexDirection: 'column', gap: 1 }} ref={dataContainer}>
-          <Heading variant="paragraph1" as="h3" sx={{ textAlign: 'left', fontWeight: 'semiBold' }}>
+          <Heading variant="boldParagraph1" as="p" sx={{ textAlign: 'left' }}>
             {title}
           </Heading>
-          <Text
-            sx={{ color: 'neutral80', pb: '12px', fontSize: '14px', textAlign: 'left' }}
-            variant="paragraph3"
-          >
+          <Text sx={{ color: 'neutral80', pb: '12px', textAlign: 'left' }} variant="paragraph3">
             {description}
           </Text>
         </Flex>
@@ -286,7 +283,7 @@ export function ProductCard({
                   <Text sx={{ color: 'neutral80', pb: 1 }} variant="paragraph3">
                     {title}
                   </Text>
-                  <Text sx={{ fontWeight: 'semiBold', color: 'neutral80' }}>{value}</Text>
+                  <Text variant="boldParagraph3">{value}</Text>
                 </Flex>
               )
             })}

@@ -7,27 +7,21 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
   vault: Vault
-  cancelTriggerGasEstimation: ReactNode
   basicSellState: BasicBSFormChange
 }
 
-function AutoSellInfoSectionControl({
-  vault,
-  cancelTriggerGasEstimation,
-  basicSellState,
-}: AutoSellInfoSectionControlProps) {
+function AutoSellInfoSectionControl({ vault, basicSellState }: AutoSellInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
     <CancelAutoBSInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
       debt={vault.debt}
-      estimatedTransactionCost={cancelTriggerGasEstimation}
       title={t('auto-sell.cancel-summary-title')}
       basicBSState={basicSellState}
     />
@@ -39,7 +33,6 @@ interface SidebarAutoSellCancelEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  cancelTriggerGasEstimation: ReactNode
   basicSellState: BasicBSFormChange
 }
 
@@ -48,7 +41,6 @@ export function SidebarAutoSellCancelEditingStage({
   ilkData,
   errors,
   warnings,
-  cancelTriggerGasEstimation,
   basicSellState,
 }: SidebarAutoSellCancelEditingStageProps) {
   const { t } = useTranslation()
@@ -60,11 +52,7 @@ export function SidebarAutoSellCancelEditingStage({
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <AutoSellInfoSectionControl
-        vault={vault}
-        cancelTriggerGasEstimation={cancelTriggerGasEstimation}
-        basicSellState={basicSellState}
-      />
+      <AutoSellInfoSectionControl vault={vault} basicSellState={basicSellState} />
     </>
   )
 }

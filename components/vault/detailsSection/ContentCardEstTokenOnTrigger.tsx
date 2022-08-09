@@ -37,7 +37,7 @@ function ContentCardEstTokenOnTriggerModal({
       <Heading variant="header3">
         {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger', { token })}
       </Heading>
-      <Text variant="subheader" sx={{ fontSize: 2, mt: 2 }}>
+      <Text variant="paragraph2" sx={{ mt: 2 }}>
         {t('manage-multiply-vault.card.max-token-on-stop-loss-trigger-desc', {
           token,
           liquidationPenalty: liquidationPenaltyFormatted,

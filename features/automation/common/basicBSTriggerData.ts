@@ -29,7 +29,17 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-type BasicBSTriggerTypes = TriggerType.BasicSell | TriggerType.BasicBuy
+type BasicBSTriggerTypes =
+  | TriggerType.BasicBuy
+  | TriggerType.BasicSell
+  | TriggerType.CMBasicBuy
+  | TriggerType.CMBasicSell
+
+interface ExtractBasicBSDataProps {
+  triggersData: TriggersData
+  triggerType: TriggerType
+  isInGroup?: boolean
+}
 
 function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
   return basicSellTriggers.map((trigger) => {
@@ -81,9 +91,40 @@ const defaultBasicSellData = {
   isTriggerEnabled: false,
 }
 
-export function extractBasicBSData(data: TriggersData, type: TriggerType): BasicBSTriggerData {
-  if (data.triggers && data.triggers.length > 0) {
-    const basicBSTriggers = getTriggersByType(data.triggers, [type])
+type ConstantMultipleTriggerPairData = {
+  [TriggerType.CMBasicBuy]: BasicBSTriggerData
+  [TriggerType.CMBasicSell]: BasicBSTriggerData
+}
+
+export function extractGroupTriggersData(
+  data: TriggersData,
+  triggerIds: number[] | undefined,
+): ConstantMultipleTriggerPairData {
+  const groupData: TriggersData = {
+    isAutomationEnabled: data.isAutomationEnabled,
+    triggers: data.triggers?.filter((trigger) => triggerIds?.includes(trigger.triggerId)),
+  }
+
+  return {
+    [TriggerType.CMBasicBuy]: extractBasicBSData({
+      triggersData: groupData,
+      triggerType: TriggerType.BasicBuy,
+    }),
+    [TriggerType.CMBasicSell]: extractBasicBSData({
+      triggersData: groupData,
+      triggerType: TriggerType.BasicSell,
+    }),
+  }
+}
+
+export function extractBasicBSData({
+  triggersData,
+  triggerType,
+  isInGroup = false,
+}: ExtractBasicBSDataProps): BasicBSTriggerData {
+  if (triggersData.triggers && triggersData.triggers.length > 0) {
+    const triggersList = triggersData.triggers.filter((item) => !!item.groupId === isInGroup)
+    const basicBSTriggers = getTriggersByType(triggersList, [triggerType])
 
     if (basicBSTriggers.length) {
       return mapBasicBSTriggerData(basicBSTriggers)[0]
@@ -128,6 +169,8 @@ export function prepareBasicBSTriggerData({
   const commands = {
     [TriggerType.BasicSell]: CommandContractType.BasicSellCommand,
     [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
+    [TriggerType.CMBasicBuy]: CommandContractType.CMBasicBuyCommand,
+    [TriggerType.CMBasicSell]: CommandContractType.CMBasicSellCommand,
   }
 
   return {
@@ -181,10 +224,12 @@ export function prepareRemoveBasicBSTriggerData({
   vaultData,
   triggerType,
   triggerId,
+  shouldRemoveAllowance,
 }: {
   vaultData: Vault
   triggerType: BasicBSTriggerTypes
   triggerId: BigNumber
+  shouldRemoveAllowance: boolean
 }): AutomationBotRemoveTriggerData {
   const baseTriggerData = prepareBasicBSTriggerData({
     vaultData,
@@ -201,6 +246,6 @@ export function prepareRemoveBasicBSTriggerData({
     ...baseTriggerData,
     kind: TxMetaKind.removeTrigger,
     triggerId: triggerId.toNumber(),
-    removeAllowance: false,
+    removeAllowance: shouldRemoveAllowance,
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Card, Flex } from 'theme-ui'
+import { Box, Card, Flex, Heading } from 'theme-ui'
 
 import { ButtonWithAction, ButtonWithActions, ExpandableButton } from './ExpandableButton'
 import { VaultTabTag } from './vault/VaultTabTag'
@@ -65,16 +65,14 @@ function TitleWrapper({ title, badge, buttons }: TitleWrapperProps) {
       }}
     >
       <Flex
-        as="h2"
-        variant="headerSettings"
         sx={{
           alignItems: 'center',
           height: '40px',
-          fontSize: 3,
-          fontWeight: 600,
         }}
       >
-        {title}
+        <Heading as="p" variant="boldParagraph2">
+          {title}
+        </Heading>
         {badge !== undefined && <VaultTabTag isEnabled={badge} />}
       </Flex>
       {buttons && (

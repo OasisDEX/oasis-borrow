@@ -39,7 +39,7 @@ function ContentCardCollateralLockedModal({
       <Card as="p" variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {lockedCollateralUSDFormatted}
       </Card>
-      <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
+      <Text as="p" variant="paragraph2">
         {t('manage-vault.card.collateral-locked-oracles')}
       </Text>
     </Grid>

@@ -11,7 +11,7 @@ interface FormHeaderProps {
 export function FormHeader({ header, description, withDivider = false }: FormHeaderProps) {
   return (
     <Box>
-      <Text variant="strong" mb={2}>
+      <Text variant="boldParagraph2" mb={2}>
         {header}
       </Text>
       <Text variant="paragraph3" sx={{ color: 'neutral80' }}>

@@ -54,10 +54,10 @@ export function VaultIlkDetailsItem({
         <Text as="span" sx={{ color: 'primary100', ml: 1, mr: 1 }}>
           {value}
         </Text>
-        <Flex sx={{ position: 'relative' }}>
-          <Box sx={{ fontSize: '0px' }}>
+        <Flex sx={{ position: 'relative', alignItems: 'center' }}>
+          <Flex sx={{ fontSize: '0px' }}>
             <Icon name="tooltip" color="primary100" size="auto" width="14px" height="14px" />
-          </Box>
+          </Flex>
           {tooltipOpen && (
             <Tooltip sx={{ variant: 'cards.tooltipVaultHeader', ...styles?.tooltip }}>
               <Box p={1} sx={{ fontWeight: 'semiBold', fontSize: 1 }}>

@@ -28,7 +28,7 @@ export function ContentCardDynamicStopPriceModal({
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('manage-multiply-vault.card.dynamic-stop-loss-price')}</Heading>
-      <Text as="p" variant="subheader" sx={{ fontSize: 2, mt: 2 }}>
+      <Text as="p" variant="paragraph2" sx={{ mt: 2 }}>
         {t('manage-multiply-vault.card.dynamic-stop-loss-price-desc')}
       </Text>
       <Text as="p" variant="header4" sx={{ mt: 3, fontWeight: 'semiBold' }}>

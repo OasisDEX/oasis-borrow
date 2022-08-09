@@ -3,7 +3,7 @@ import { AppLink } from 'components/Links'
 import { WithChildren } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Flex, Grid, Text } from 'theme-ui'
+import { Flex, Grid, Heading, Text } from 'theme-ui'
 
 import { fadeInAnimation } from '../../theme/animations'
 
@@ -25,8 +25,10 @@ export function ReferralLayout({ children }: WithChildren) {
               ...fadeInAnimation,
             }}
           >
-            <Text variant="text.header2">{t('ref.ref-a-friend')}</Text>
-            <Text variant="text.paragraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
+            <Heading as="h3" variant="header3">
+              {t('ref.ref-a-friend')}
+            </Heading>
+            <Text variant="paragraph2" sx={{ textAlign: 'center', color: 'neutral80' }}>
               {t('ref.intro-1')}{' '}
               <AppLink
                 href={`https://kb.oasis.app/help/a-step-by-step-guide-to-refer-a-friend`}
@@ -48,7 +50,7 @@ export function ReferralLayout({ children }: WithChildren) {
               </AppLink>
             </Text>
             {children}
-            <Text variant="text.headerSettings" pt="40px" sx={{ fontSize: 4 }}>
+            <Text variant="boldParagraph1" as="p" pt="40px">
               {t('ref.need-help')}
             </Text>
             <AppLink

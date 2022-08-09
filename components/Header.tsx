@@ -1,7 +1,15 @@
 import { Global } from '@emotion/core'
 import { Icon } from '@makerdao/dai-ui-icons'
 import { trackingEvents } from 'analytics/analytics'
+import { ContextConnected } from 'blockchain/network'
 import { AppLink } from 'components/Links'
+import { LANDING_PILLS } from 'content/landing'
+import {
+  SWAP_WIDGET_CHANGE_SUBJECT,
+  SwapWidgetChangeAction,
+  SwapWidgetState,
+} from 'features/automation/protection/common/UITypes/SwapWidgetChange'
+import { getUnreadNotificationCount } from 'features/notifications/helpers'
 import { NOTIFICATION_CHANGE, NotificationChange } from 'features/notifications/notificationChange'
 import { UserSettings, UserSettingsButtonContents } from 'features/userSettings/UserSettingsView'
 import { useObservable } from 'helpers/observableHook'
@@ -20,13 +28,6 @@ import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
-import { ContextConnected } from '../blockchain/network'
-import { LANDING_PILLS } from '../content/landing'
-import {
-  SWAP_WIDGET_CHANGE_SUBJECT,
-  SwapWidgetChangeAction,
-  SwapWidgetState,
-} from '../features/automation/protection/common/UITypes/SwapWidgetChange'
 import { useAppContext } from './AppContextProvider'
 import { MobileSidePanelPortal, ModalCloseIcon } from './Modal'
 import { NotificationsIconButton } from './notifications/NotificationsIconButton'
@@ -44,6 +45,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
         fontSize: '0px',
         cursor: 'pointer',
         zIndex: 1,
+        height: '22px',
         ...sx,
       }}
     >
@@ -267,6 +269,8 @@ function UserDesktopMenu() {
     !accountData ||
     web3Context?.status !== 'connected'
 
+  const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
+
   return (
     <Flex
       sx={{
@@ -348,8 +352,9 @@ function UserDesktopMenu() {
           <NotificationsIconButton
             notificationsRef={notificationsRef}
             onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-            notificationsCount={notificationsState?.numberOfNotifications}
+            notificationsCount={unreadNotificationCount}
             notificationsPanelOpen={notificationsPanelOpen}
+            disabled={!notificationsState}
           />
         )}
       </Flex>
@@ -466,8 +471,6 @@ function ConnectedHeader() {
   const [widgetUiChanges] = useObservable(
     uiChanges.subscribe<SwapWidgetState>(SWAP_WIDGET_CHANGE_SUBJECT),
   )
-  // socket instance that can be used to emit events
-  // const { socket } = useSocket()
 
   const widgetOpen = widgetUiChanges && widgetUiChanges.isOpen
 
@@ -636,7 +639,7 @@ function AssetsDropdown() {
           <AppLink
             href={asset.link}
             key={asset.label}
-            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'body', fontSize: 3 }}
+            sx={{ display: 'flex', alignItems: 'center', fontWeight: 'regular', fontSize: 3 }}
             variant="links.nav"
           >
             <Icon name={asset.icon} size={32} sx={{ mr: 2 }} />
@@ -707,6 +710,8 @@ export function MobileMenu() {
   ]
 
   const closeMenu = useCallback(() => setIsOpen(false), [])
+
+  const unreadNotificationCount = getUnreadNotificationCount(notificationsState?.allNotifications)
 
   return (
     <>
@@ -792,8 +797,9 @@ export function MobileMenu() {
         <NotificationsIconButton
           notificationsRef={notificationsRef}
           onButtonClick={() => setNotificationsPanelOpen(!notificationsPanelOpen)}
-          notificationsCount={notificationsState?.numberOfNotifications}
+          notificationsCount={unreadNotificationCount}
           notificationsPanelOpen={notificationsPanelOpen}
+          disabled={!notificationsState}
         />
       )}
       <Button variant="menuButtonRound">
@@ -858,7 +864,7 @@ function DisconnectedHeader() {
                 flexShrink: 0,
               }}
             >
-              <Text variant="strong">{t('connect-wallet-button')}</Text>
+              <Text variant="boldParagraph2">{t('connect-wallet-button')}</Text>
               <Icon
                 name="arrow_right"
                 size="15px"
