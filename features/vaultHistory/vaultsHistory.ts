@@ -1,5 +1,7 @@
 import { TriggerType } from '@oasisdex/automation'
 import BigNumber from 'bignumber.js'
+import { Context } from 'blockchain/network'
+import { VaultWithType, VaultWithValue } from 'blockchain/vaults'
 import {
   BasicBSTriggerData,
   extractBasicBSData,
@@ -10,8 +12,6 @@ import { combineLatest, from, Observable, timer } from 'rxjs'
 import { distinctUntilChanged, shareReplay } from 'rxjs/internal/operators'
 import { map, switchMap } from 'rxjs/operators'
 
-import { Context } from '../../blockchain/network'
-import { VaultWithType, VaultWithValue } from '../../blockchain/vaults'
 import {
   extractStopLossData,
   StopLossTriggerData,
@@ -57,6 +57,7 @@ const query = gql`
         eventType
         kind
         commandAddress
+        groupId
       }
     }
 
