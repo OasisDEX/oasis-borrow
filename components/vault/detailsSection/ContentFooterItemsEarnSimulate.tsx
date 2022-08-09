@@ -31,7 +31,7 @@ export function ContentFooterItemsEarnSimulate({
     <>
       <DetailsSectionFooterItem
         title={t('system.est-break-even')}
-        value={t('system.est-break-even-value', { days: formatted.breakeven })}
+        value={`${t('system.est-break-even-value', { days: formatted.breakeven })}**`}
       />
       <DetailsSectionFooterItem title={t('system.est-entry-fees')} value={formatted.entryFees} />
       <DetailsSectionFooterItem title={t('system.apy')} value={formatted.apy} />

@@ -15,7 +15,6 @@ import { PickCloseStateProps } from 'components/dumb/PickCloseState'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
 import { SliderValuePickerProps } from 'components/dumb/SliderValuePicker'
 import { VaultViewMode } from 'components/vault/GeneralManageTabBar'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { closeVaultOptions } from 'features/automation/protection/common/consts/closeTypeConfig'
 import { stopLossSliderBasicConfig } from 'features/automation/protection/common/consts/sliderConfig'
@@ -23,13 +22,16 @@ import {
   prepareAddStopLossTriggerData,
   StopLossTriggerData,
 } from 'features/automation/protection/common/stopLossTriggerData'
+import {
+  PROTECTION_MODE_CHANGE_SUBJECT,
+  ProtectionModeChange,
+} from 'features/automation/protection/common/UITypes/ProtectionFormModeChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { PriceInfo } from 'features/shared/priceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
 import { zero } from 'helpers/zero'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { failedStatuses, progressStatuses } from '../../common/txStatues'
 import { transactionStateHandler } from '../common/AutomationTransactionPlunger'
@@ -52,6 +54,8 @@ interface AdjustSlFormControlProps {
   triggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
+  // TODO best way to handle it would be to map this triggerData to the same key-value pairs as we have on ui
+  constantMultipleTriggerData: any
   ctx: Context
   accountIsController: boolean
   toggleForms: () => void
@@ -67,6 +71,7 @@ export function AdjustSlFormControl({
   triggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   ctx,
   accountIsController,
   toggleForms,
@@ -75,9 +80,10 @@ export function AdjustSlFormControl({
   balanceInfo,
 }: AdjustSlFormControlProps) {
   const { triggerId, stopLossLevel, isStopLossEnabled, isToCollateral } = triggerData
+  const [currentForm] = useUIChanges<ProtectionModeChange>(PROTECTION_MODE_CHANGE_SUBJECT)
 
   const isOwner = ctx.status === 'connected' && ctx.account === vault.controller
-  const { addGasEstimation$, uiChanges } = useAppContext()
+  const { uiChanges } = useAppContext()
 
   const [firstStopLossSetup, setFirstStopLossSetup] = useState(!isStopLossEnabled)
   // below useState has been added to handle button disable just after click
@@ -100,13 +106,6 @@ export function AdjustSlFormControl({
       ),
     [uiState.collateralActive, uiState.selectedSLValue, replacedTriggerId],
   )
-  /* This can be extracted to some reusable ReactHook useGasEstimate<TxDataType>(addAutomationBotTrigger,txData)*/
-  const gasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, txData),
-    )
-  }, [txData])
 
   const redirectToCloseVault = () => {
     uiChanges.publish(TAB_CHANGE_SUBJECT, {
@@ -120,8 +119,6 @@ export function AdjustSlFormControl({
     })
   }
 
-  const [gasEstimationData] = useObservable(gasEstimationData$)
-
   const isEditing = getIsEditingProtection({
     isStopLossEnabled,
     selectedSLValue: uiState.selectedSLValue,
@@ -129,6 +126,15 @@ export function AdjustSlFormControl({
     collateralActive: uiState.collateralActive,
     isToCollateral,
   })
+
+  useEffect(() => {
+    if (isEditing) {
+      uiChanges.publish(TX_DATA_CHANGE, {
+        type: 'add-trigger',
+        data: txData,
+      })
+    }
+  }, [txData, isEditing, currentForm])
 
   const liqRatio = ilkData.liquidationRatio
 
@@ -147,6 +153,8 @@ export function AdjustSlFormControl({
 
   const max = autoSellTriggerData.isTriggerEnabled
     ? autoSellTriggerData.execCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
+    : constantMultipleTriggerData.isTriggerEnabled
+    ? constantMultipleTriggerData.sellExecutionCollRatio.div(100).minus(DEFAULT_SL_SLIDER_BOUNDARY)
     : vault.collateralizationRatioAtNextPrice.minus(MAX_SL_SLIDER_VALUE_OFFSET)
 
   const sliderPercentageFill = getSliderPercentageFill({
@@ -295,10 +303,6 @@ export function AdjustSlFormControl({
   const txProgressing =
     !!uiState?.txDetails?.txStatus && progressStatuses.includes(uiState?.txDetails?.txStatus)
 
-  const gasEstimation = getEstimatedGasFeeText(gasEstimationData)
-  const gasEstimationUsd =
-    gasEstimationData && (gasEstimationData as HasGasEstimation).gasEstimationUsd
-
   const etherscan = ctx.etherscan.url
 
   const props: AdjustSlFormLayoutProps = {
@@ -311,8 +315,6 @@ export function AdjustSlFormControl({
     txCost: uiState?.txDetails?.txCost,
     txHash: uiState?.txDetails?.txHash,
     txError: uiState?.txDetails?.txError,
-    gasEstimation,
-    gasEstimationUsd,
     accountIsController,
     dynamicStopLossPrice,
     amountOnStopLossTrigger,
@@ -333,6 +335,7 @@ export function AdjustSlFormControl({
     currentCollateralRatio: vault.collateralizationRatio,
     isStopLossEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
+    isConstantMultipleEnabled: constantMultipleTriggerData.isTriggerEnabled,
     autoBuyTriggerData,
   }
 

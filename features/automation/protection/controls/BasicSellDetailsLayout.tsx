@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { DetailsSection } from 'components/DetailsSection'
 import { DetailsSectionContentCardWrapper } from 'components/DetailsSectionContentCard'
-import { ContentCardSellTriggerCollRatio } from 'components/vault/detailsSection/ContentCardSellTriggerCollRatio'
-import { ContentCardTargetSellColRatio } from 'components/vault/detailsSection/ContentCardTargetSellColRatio'
+import { ContentCardTargetColRatioAfterSell } from 'components/vault/detailsSection/ContentCardTargetColRatioAfterSell'
+import { ContentCardTriggerColRatioToSell } from 'components/vault/detailsSection/ContentCardTriggerColRatioToSell'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
   BASIC_SELL_FORM_CHANGE,
@@ -38,14 +38,14 @@ export function BasicSellDetailsLayout({
       badge={basicSellTriggerData.isTriggerEnabled}
       content={
         <DetailsSectionContentCardWrapper>
-          <ContentCardSellTriggerCollRatio
+          <ContentCardTriggerColRatioToSell
             token={token}
             triggerColRatio={triggerColRatio}
             afterTriggerColRatio={uiState.execCollRatio}
             nextSellPrice={nextSellPrice}
             changeVariant="positive"
           />
-          <ContentCardTargetSellColRatio
+          <ContentCardTargetColRatioAfterSell
             targetColRatio={targetColRatio}
             afterTargetColRatio={uiState.targetCollRatio}
             threshold={threshold}

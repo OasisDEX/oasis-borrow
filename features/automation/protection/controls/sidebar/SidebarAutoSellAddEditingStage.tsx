@@ -24,13 +24,12 @@ import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 interface AutoSellInfoSectionControlProps {
   vault: Vault
   basicSellState: BasicBSFormChange
-  addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
   executionPrice: BigNumber
@@ -39,7 +38,6 @@ interface AutoSellInfoSectionControlProps {
 function AutoSellInfoSectionControl({
   vault,
   basicSellState,
-  addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
   executionPrice,
@@ -68,7 +66,6 @@ function AutoSellInfoSectionControl({
         secondaryValue: vault.debt.plus(debtDelta),
       }}
       ethToBeSoldAtNextSell={collateralDelta.abs()}
-      estimatedTransactionCost={addTriggerGasEstimation}
       token={vault.token}
       targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
@@ -84,7 +81,6 @@ interface SidebarAutoSellAddEditingStageProps {
   autoSellTriggerData: BasicBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
   sliderMin: BigNumber
@@ -99,7 +95,6 @@ export function SidebarAutoSellAddEditingStage({
   autoSellTriggerData,
   errors,
   warnings,
-  addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
   sliderMin,
@@ -223,7 +218,7 @@ export function SidebarAutoSellAddEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Sell" />
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
@@ -248,7 +243,6 @@ export function SidebarAutoSellAddEditingStage({
         <AutoSellInfoSectionControl
           basicSellState={basicSellState}
           vault={vault}
-          addTriggerGasEstimation={addTriggerGasEstimation}
           debtDelta={debtDelta}
           collateralDelta={collateralDelta}
           executionPrice={executionPrice}

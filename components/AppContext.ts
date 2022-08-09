@@ -7,6 +7,7 @@ import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
+import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -40,7 +41,7 @@ import { vatGem, vatIlk, vatUrns } from 'blockchain/calls/vat'
 import { createVaultResolver$ } from 'blockchain/calls/vaultResolver'
 import { resolveENSName$ } from 'blockchain/ens'
 import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
-import { createIlkData$, createIlkDataList$, createIlks$ } from 'blockchain/ilks'
+import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
   coinbaseOrderBook$,
@@ -84,6 +85,11 @@ import {
   BasicBSChangeAction,
   basicBSFormChangeReducer,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleChangeAction,
+  constantMultipleFormChangeReducer,
+} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import {
   MULTIPLY_VAULT_PILL_CHANGE_SUBJECT,
   MultiplyPillChange,
@@ -151,6 +157,12 @@ import {
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import {
+  gasEstimationReducer,
+  TX_DATA_CHANGE,
+  TxPayloadChange,
+  TxPayloadChangeAction,
+} from 'helpers/gasEstimate'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
@@ -266,6 +278,7 @@ export type TxData =
   | CloseGuniMultiplyData
   | ClaimRewardData
   | ClaimMultipleData
+  | AutomationBotAddAggregatorTriggerData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
@@ -312,6 +325,7 @@ export type SupportedUIChangeType =
   | SwapWidgetState
   | AutomationChangeFeature
   | NotificationChange
+  | TxPayloadChange
 
 export type LegalUiChanges = {
   AddFormChange: AddFormChangeAction
@@ -322,7 +336,9 @@ export type LegalUiChanges = {
   MultiplyPillChange: MultiplyPillChangeAction
   SwapWidgetChange: SwapWidgetChangeAction
   AutomationChangeFeature: AutomationChangeFeatureAction
+  ConstantMultipleChangeAction: ConstantMultipleChangeAction
   NotificationChange: NotificationChangeAction
+  TxPayloadChange: TxPayloadChangeAction
 }
 
 export type UIChanges = {
@@ -412,7 +428,12 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(PROTECTION_MODE_CHANGE_SUBJECT, protectionModeChangeReducer)
   uiChangesSubject.configureSubject(SWAP_WIDGET_CHANGE_SUBJECT, swapWidgetChangeReducer)
   uiChangesSubject.configureSubject(AUTOMATION_CHANGE_FEATURE, automationChangeFeatureReducer)
+  uiChangesSubject.configureSubject(
+    CONSTANT_MULTIPLE_FORM_CHANGE,
+    constantMultipleFormChangeReducer,
+  )
   uiChangesSubject.configureSubject(NOTIFICATION_CHANGE, notificationReducer)
+  uiChangesSubject.configureSubject(TX_DATA_CHANGE, gasEstimationReducer)
 
   return uiChangesSubject
 }
@@ -491,6 +512,8 @@ export function setupAppContext() {
     return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
 
+  const once$ = of(undefined)
+
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
   const proxyOwner$ = memoize(curry(createProxyOwner$)(onEveryBlock$, context$))
@@ -500,11 +523,15 @@ export function setupAppContext() {
   const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
   const cdpRegistryCdps$ = observe(onEveryBlock$, context$, cdpRegistryCdps)
   const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
+  const vatIlksLean$ = observe(once$, context$, vatIlk)
   const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
   const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
   const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
+  const spotIlksLean$ = observe(once$, context$, spotIlk)
   const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
+  const jugIlksLean$ = observe(once$, context$, jugIlk)
   const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
+  const dogIlksLean$ = observe(once$, context$, dogIlk)
 
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
@@ -520,9 +547,13 @@ export function setupAppContext() {
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
   const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
+  const pipZzzLean$ = observe(once$, context$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
+  const pipHopLean$ = observe(once$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
+  const pipPeekLean$ = observe(once$, oracleContext$, pipPeek)
   const pipPeep$ = observe(onEveryBlock$, oracleContext$, pipPeep)
+  const pipPeepLean$ = observe(once$, oracleContext$, pipPeep)
 
   const unclaimedCrvLdoRewardsForIlk$ = observe(onEveryBlock$, context$, crvLdoRewardsEarned)
 
@@ -536,6 +567,13 @@ export function setupAppContext() {
 
   const oraclePriceData$ = memoize(
     curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    ({ token, requestedData }) => {
+      return `${token}-${requestedData.join(',')}`
+    },
+  )
+
+  const oraclePriceDataLean$ = memoize(
+    curry(createOraclePriceData$)(context$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
@@ -560,6 +598,10 @@ export function setupAppContext() {
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
+  )
+
+  const ilkDataLean$ = memoize(
+    curry(createIlkData$)(vatIlksLean$, spotIlksLean$, jugIlksLean$, dogIlksLean$, ilkToToken$),
   )
 
   const charterCdps$ = memoize(
@@ -665,9 +707,9 @@ export function setupAppContext() {
     ]),
   )
 
-  const ilks$ = createIlks$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
-  const collateralTokens$ = createCollateralTokens$(ilks$, ilkToToken$)
+  const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balance$,
@@ -675,7 +717,7 @@ export function setupAppContext() {
     oraclePriceData$,
   )
 
-  const ilkDataList$ = createIlkDataList$(ilkData$, ilks$)
+  const ilkDataList$ = createIlkDataList$(ilkData$, ilksSupportedOnNetwork$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
@@ -699,7 +741,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       ilkToToken$,
       addGasEstimation$,
@@ -744,7 +786,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       exchangeQuote$,
       addGasEstimation$,
@@ -886,7 +928,7 @@ export function setupAppContext() {
   const collateralPrices$ = createCollateralPrices$(collateralTokens$, oraclePriceData$)
 
   const productCardsData$ = memoize(
-    curry(createProductCardsData$)(ilkData$, oraclePriceData$),
+    curry(createProductCardsData$)(ilksSupportedOnNetwork$, ilkDataLean$, oraclePriceDataLean$),
     (ilks: string[]) => {
       return ilks.join(',')
     },
@@ -1001,7 +1043,7 @@ export function setupAppContext() {
       allowance$,
       priceInfo$,
       balanceInfo$,
-      ilks$,
+      ilksSupportedOnNetwork$,
       ilkData$,
       psmExchangeQuote$,
       onEveryBlock$,
@@ -1026,7 +1068,7 @@ export function setupAppContext() {
     proxyOwner$,
     vaults$,
     vault$,
-    ilks$,
+    ilks$: ilksSupportedOnNetwork$,
     openVault$,
     manageVault$,
     manageInstiVault$,

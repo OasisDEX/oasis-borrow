@@ -1,7 +1,6 @@
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-
-import { TxError } from '../../../../../helpers/types'
+import { TxError } from 'helpers/types'
 
 export const ADD_FORM_CHANGE = 'ADD_FORM_CHANGE'
 

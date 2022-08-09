@@ -1,21 +1,29 @@
-import React from 'react'
+import { Toggle } from 'components/Toggle'
+import { useTranslation } from 'next-i18next'
+import React, { useCallback } from 'react'
 import { Box, Card, Flex, Text } from 'theme-ui'
-import { Toggle } from 'ui'
 
 interface NotificationPrefrenceCardProps {
   heading: string
   description: string
   checked: boolean
-  // TODO: Make this required prop
-  onChangeHandler?: () => void
+  onChangeHandler: (isEnabled: boolean) => void
+  isLoading?: boolean
 }
 
-export function NotificationPrefrenceCard({
+export function NotificationPreferenceCard({
   heading,
   description,
   checked,
   onChangeHandler,
+  isLoading,
 }: NotificationPrefrenceCardProps) {
+  const handleToggle = useCallback((checked) => onChangeHandler(checked), [
+    onChangeHandler,
+    checked,
+  ])
+  const { t } = useTranslation()
+
   return (
     <Card
       sx={{
@@ -32,11 +40,12 @@ export function NotificationPrefrenceCard({
             fontSize: 2,
           }}
         >
-          {heading}
+          {t(heading)}
         </Text>
         <Toggle
           isChecked={checked}
-          onChangeHandler={onChangeHandler}
+          onChange={handleToggle}
+          isLoading={isLoading}
           sx={{
             transition: '0.4s',
           }}
@@ -53,7 +62,7 @@ export function NotificationPrefrenceCard({
             fontSize: 2,
           }}
         >
-          {description}
+          {t(description)}
         </Text>
       </Box>
     </Card>

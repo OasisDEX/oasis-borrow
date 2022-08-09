@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { Flex, Grid, Text } from '@theme-ui/components'
 import {
-  getEstimatedGasFeeText,
+  getEstimatedGasFeeTextOld,
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationEstimatedGasFee,
@@ -96,7 +96,7 @@ export function GuniOpenMultiplyVaultChangesInformation(props: OpenGuniVaultStat
             onClick={() => setShowFees(!showFees)}
           >
             {`${formatAmount(oazoFee, 'USD')} +`}
-            <Text ml={1}>{getEstimatedGasFeeText(props, true)}</Text>
+            <Text ml={1}>{getEstimatedGasFeeTextOld(props, true)}</Text>
             <Icon
               name={`chevron_${showFees ? 'up' : 'down'}`}
               size="auto"

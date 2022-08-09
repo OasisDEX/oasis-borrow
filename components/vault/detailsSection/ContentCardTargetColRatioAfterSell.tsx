@@ -4,26 +4,25 @@ import {
   ContentCardProps,
   DetailsSectionContentCard,
 } from 'components/DetailsSectionContentCard'
-import { maxUint256 } from 'features/automation/common/basicBSTriggerData'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 
-interface ContentCardTargetColRatioProps {
+interface ContentCardTargetColRatioAfterSellProps {
   targetColRatio?: BigNumber
   afterTargetColRatio?: BigNumber
-  threshold: BigNumber
+  threshold?: BigNumber
   changeVariant?: ChangeVariantType
   token: string
 }
 
-export function ContentCardTargetColRatio({
+export function ContentCardTargetColRatioAfterSell({
   targetColRatio,
   afterTargetColRatio,
   threshold,
   changeVariant,
   token,
-}: ContentCardTargetColRatioProps) {
+}: ContentCardTargetColRatioAfterSellProps) {
   const { t } = useTranslation()
 
   const formatted = {
@@ -39,13 +38,11 @@ export function ContentCardTargetColRatio({
         precision: 2,
         roundMode: BigNumber.ROUND_DOWN,
       }),
-    threshold: threshold.isEqualTo(maxUint256)
-      ? t('unlimited')
-      : `$${formatAmount(threshold, 'USD')}`,
+    threshold: threshold && `$${formatAmount(threshold, 'USD')}`,
   }
 
   const contentCardSettings: ContentCardProps = {
-    title: t('auto-buy.target-col-ratio-after-buying'),
+    title: t('auto-sell.target-col-ratio-after-selling'),
     value: formatted.targetColRatio,
   }
 
@@ -55,13 +52,13 @@ export function ContentCardTargetColRatio({
       variant: changeVariant,
     }
   if (threshold)
-    contentCardSettings.footnote = t('auto-buy.continual-buy-threshold', {
+    contentCardSettings.footnote = t('auto-sell.continual-sell-threshold', {
       amount: formatted.threshold,
       token,
     })
 
-  if (!threshold || threshold.isEqualTo(maxUint256) || threshold.isZero())
-    contentCardSettings.footnote = t('auto-buy.continual-buy-no-threshold')
+  if (!threshold || threshold?.isZero())
+    contentCardSettings.footnote = t('auto-sell.continual-sell-no-threshold')
 
   return <DetailsSectionContentCard {...contentCardSettings} />
 }

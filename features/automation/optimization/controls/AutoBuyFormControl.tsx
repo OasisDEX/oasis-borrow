@@ -1,14 +1,12 @@
 import { TriggerType } from '@oasisdex/automation'
 import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
-import { addAutomationBotTrigger, removeAutomationBotTrigger } from 'blockchain/calls/automationBot'
 import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
-import { getEstimatedGasFeeText } from 'components/vault/VaultChangesInformation'
 import {
   BasicBSTriggerData,
   maxUint256,
@@ -33,10 +31,9 @@ import {
   BasicBSFormChange,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
-import { GasEstimationStatus, HasGasEstimation } from 'helpers/form'
-import { useObservable } from 'helpers/observableHook'
+import { TX_DATA_CHANGE } from 'helpers/gasEstimate'
 import { useUIChanges } from 'helpers/uiChangesHook'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 interface AutoBuyFormControlProps {
   vault: Vault
@@ -45,10 +42,13 @@ interface AutoBuyFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber
+  shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
+  isAutoBuyActive: boolean
 }
 
 export function AutoBuyFormControl({
@@ -58,13 +58,16 @@ export function AutoBuyFormControl({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
   isAutoBuyOn,
   txHelpers,
   context,
   ethMarketPrice,
+  isAutoBuyActive,
+  shouldRemoveAllowance,
 }: AutoBuyFormControlProps) {
   const [basicBuyState] = useUIChanges<BasicBSFormChange>(BASIC_BUY_FORM_CHANGE)
-  const { uiChanges, addGasEstimation$ } = useAppContext()
+  const { uiChanges } = useAppContext()
 
   const isOwner = context?.status === 'connected' && context?.account === vault.controller
 
@@ -93,41 +96,16 @@ export function AutoBuyFormControl({
     ],
   )
 
-  const addTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(addAutomationBotTrigger, addTxData),
-    )
-  }, [addTxData])
-
-  const [addTriggerGasEstimationData] = useObservable(addTriggerGasEstimationData$)
-  const addTriggerGasEstimation = getEstimatedGasFeeText(addTriggerGasEstimationData)
-  const addTriggerGasEstimationUsd =
-    addTriggerGasEstimationData &&
-    (addTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
-
   const cancelTxData = useMemo(
     () =>
       prepareRemoveBasicBSTriggerData({
         vaultData: vault,
         triggerType: TriggerType.BasicBuy,
         triggerId: basicBuyState.triggerId,
+        shouldRemoveAllowance,
       }),
-    [basicBuyState.triggerId.toNumber()],
+    [basicBuyState.triggerId.toNumber(), shouldRemoveAllowance],
   )
-
-  const cancelTriggerGasEstimationData$ = useMemo(() => {
-    return addGasEstimation$(
-      { gasEstimationStatus: GasEstimationStatus.unset },
-      ({ estimateGas }) => estimateGas(removeAutomationBotTrigger, cancelTxData),
-    )
-  }, [cancelTxData])
-
-  const [cancelTriggerGasEstimationData] = useObservable(cancelTriggerGasEstimationData$)
-  const cancelTriggerGasEstimation = getEstimatedGasFeeText(cancelTriggerGasEstimationData)
-  const cancelTriggerGasEstimationUsd =
-    cancelTriggerGasEstimationData &&
-    (cancelTriggerGasEstimationData as HasGasEstimation).gasEstimationUsd
 
   const txStatus = basicBuyState?.txDetails?.txStatus
   const isFailureStage = txStatus && failedStatuses.includes(txStatus)
@@ -184,13 +162,28 @@ export function AutoBuyFormControl({
   const isAddForm = basicBuyState.currentForm === 'add'
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
-  const gasEstimationUsd = isAddForm ? addTriggerGasEstimationUsd : cancelTriggerGasEstimationUsd
-
   const isEditing = checkIfEditingBasicBS({
     basicBSTriggerData: autoBuyTriggerData,
     basicBSState: basicBuyState,
     isRemoveForm,
   })
+
+  useEffect(() => {
+    if (isEditing && isAutoBuyActive) {
+      if (isAddForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'add-trigger',
+          data: addTxData,
+        })
+      }
+      if (isRemoveForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'remove-trigger',
+          data: cancelTxData,
+        })
+      }
+    }
+  }, [addTxData, cancelTxData, isEditing, isAutoBuyActive])
 
   const isDisabled = checkIfDisabledBasicBS({
     isProgressStage,
@@ -210,9 +203,12 @@ export function AutoBuyFormControl({
   })
 
   const { debtDelta, collateralDelta } = getBasicBSVaultChange({
-    basicBSState: basicBuyState,
-    vault,
+    targetCollRatio: basicBuyState.targetCollRatio,
+    execCollRatio: basicBuyState.execCollRatio,
+    deviation: basicBuyState.deviation,
     executionPrice,
+    lockedCollateral: vault.lockedCollateral,
+    debt: vault.debt,
   })
 
   return (
@@ -223,6 +219,7 @@ export function AutoBuyFormControl({
       autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       isAutoBuyOn={isAutoBuyOn}
       context={context}
       ethMarketPrice={ethMarketPrice}
@@ -230,9 +227,6 @@ export function AutoBuyFormControl({
       txHandler={txHandler}
       textButtonHandler={textButtonHandler}
       stage={stage}
-      gasEstimationUsd={gasEstimationUsd}
-      addTriggerGasEstimation={addTriggerGasEstimation}
-      cancelTriggerGasEstimation={cancelTriggerGasEstimation}
       isAddForm={isAddForm}
       isRemoveForm={isRemoveForm}
       isEditing={isEditing}
@@ -240,6 +234,7 @@ export function AutoBuyFormControl({
       isFirstSetup={isFirstSetup}
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
+      isAutoBuyActive={isAutoBuyActive}
     />
   )
 }
