@@ -82,5 +82,3 @@ model WalletRisk {
   @@unique([address], name: "wallet_risk_unique_index")
   @@map("wallet_risk")
 }
-
-}
