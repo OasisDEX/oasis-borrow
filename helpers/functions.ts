@@ -10,9 +10,11 @@ export function isNullish(amount: BigNumber | undefined | null): boolean {
  * @param position
  * @returns boolean
  */
-export function checkIfVaultLiquidated(position: BorrowPositionVM | MultiplyPositionVM) {
+export function checkIfVaultEmptyAndProtectionActive(
+  position: BorrowPositionVM | MultiplyPositionVM,
+) {
   return (
-    position.type === 'borrow' &&
+    position.collateralLocked &&
     Number(position.collateralLocked.replace(/[^0-9]+/g, '')) === 0.0 &&
     position.protectionAmount &&
     Number(position.protectionAmount.replace(/[^0-9]+/g, '')) > 0
