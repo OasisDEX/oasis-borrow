@@ -24,13 +24,13 @@ import { Grid } from 'theme-ui'
 export interface ConstantMultipleDetailsLayoutProps {
   token: string
   isTriggerEnabled: boolean
-  targetMultiple: BigNumber
+  targetMultiple?: BigNumber
   targetColRatio?: BigNumber
-  totalCost: BigNumber
+  totalCost?: BigNumber
   PnLSinceEnabled?: BigNumber
-  triggerColRatioToBuy: BigNumber
+  triggerColRatioToBuy?: BigNumber
   nextBuyPrice?: BigNumber
-  triggerColRatioToSell: BigNumber
+  triggerColRatioToSell?: BigNumber
   nextSellPrice?: BigNumber
 }
 

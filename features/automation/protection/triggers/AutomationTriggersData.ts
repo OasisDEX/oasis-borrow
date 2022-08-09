@@ -34,6 +34,7 @@ async function loadTriggerDataFromCache(vaultId: number, cacheApi: string): Prom
 
 export interface TriggerRecord {
   triggerId: number
+  groupId?: number
   commandAddress: string
   executionParams: string // bytes triggerData from TriggerAdded event
 }
@@ -73,8 +74,14 @@ export function createAutomationTriggersChange$(
         map((triggers) => ({
           kind: 'automationTriggersData',
           stopLossData: extractStopLossData(triggers),
-          basicSellData: extractBasicBSData(triggers, TriggerType.BasicSell),
-          basicBuyData: extractBasicBSData(triggers, TriggerType.BasicBuy),
+          basicSellData: extractBasicBSData({
+            triggersData: triggers,
+            triggerType: TriggerType.BasicSell,
+          }),
+          basicBuyData: extractBasicBSData({
+            triggersData: triggers,
+            triggerType: TriggerType.BasicBuy,
+          }),
         })),
       )
     : []

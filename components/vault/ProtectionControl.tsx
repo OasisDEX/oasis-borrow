@@ -132,7 +132,10 @@ export function ProtectionControl({
     ? extractStopLossData(automationTriggersData)
     : undefined
   const basicSellData = automationTriggersData
-    ? extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+    ? extractBasicBSData({
+        triggersData: automationTriggersData,
+        triggerType: TriggerType.BasicSell,
+      })
     : undefined
   const vaultHasActiveTrigger = stopLossData?.isStopLossEnabled || basicSellData?.isTriggerEnabled
 

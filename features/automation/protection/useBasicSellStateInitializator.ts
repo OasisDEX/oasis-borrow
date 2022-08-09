@@ -31,7 +31,7 @@ export function useBasicBSstateInitialization(
     deviation,
     isTriggerEnabled,
     maxBaseFeeInGwei,
-  } = extractBasicBSData(autoTriggersData, type)
+  } = extractBasicBSData({ triggersData: autoTriggersData, triggerType: type })
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
 
   const publishKey = type === TriggerType.BasicBuy ? BASIC_BUY_FORM_CHANGE : BASIC_SELL_FORM_CHANGE

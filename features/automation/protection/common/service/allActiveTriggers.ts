@@ -6,6 +6,7 @@ const query = gql`
     allActiveTriggers(filter: { cdpId: { equalTo: $vaultId } }, orderBy: [BLOCK_ID_ASC]) {
       nodes {
         triggerId
+        groupId
         commandAddress
         triggerData
       }
@@ -15,6 +16,7 @@ const query = gql`
 
 interface ActiveTrigger {
   triggerId: number
+  groupId?: number
   commandAddress: string
   triggerData: string
 }
@@ -30,6 +32,7 @@ export async function getAllActiveTriggers(
 
   const returnedRecords = data.allActiveTriggers.nodes.map((record) => ({
     triggerId: record.triggerId,
+    groupId: record.groupId,
     commandAddress: record.commandAddress,
     executionParams: record.triggerData,
   }))

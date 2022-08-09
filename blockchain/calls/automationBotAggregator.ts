@@ -3,7 +3,7 @@ import { TransactionDef } from 'blockchain/calls/callsHelpers'
 import { contractDesc } from 'blockchain/config'
 import { ContextConnected } from 'blockchain/network'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
-import { DsProxy, DummyAutomationBotAggregator } from 'types/ethers-contracts'
+import { AutomationBotAggregator, DsProxy } from 'types/ethers-contracts'
 
 import { TxMetaKind } from './txMeta'
 
@@ -32,7 +32,7 @@ function getAddAutomationAggregatotTriggerCallData(
 ) {
   const { contract, automationBotAggregator } = context
 
-  return contract<DummyAutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
+  return contract<AutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
     CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
     [0, 0], // replacedTriggerId
     data.triggersData, // triggersData
