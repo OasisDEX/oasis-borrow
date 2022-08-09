@@ -43,9 +43,9 @@ export function ContentCardTriggerColRatioToSell({
 
   const contentCardSettings: ContentCardProps = {
     title: t('auto-sell.trigger-col-ratio-to-sell-token', { token }),
-    value: formatted.triggerColRatio,
   }
 
+  if (triggerColRatio) contentCardSettings.value = formatted.triggerColRatio
   if (afterTriggerColRatio && !triggerColRatio?.isEqualTo(afterTriggerColRatio) && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterTriggerColRatio} ${t('system.cards.common.after')}`,

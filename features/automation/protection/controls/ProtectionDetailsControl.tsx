@@ -30,7 +30,10 @@ export function ProtectionDetailsControl({
   ilkData,
 }: ProtectionDetailsControlProps) {
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
-  const basicSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
+  const basicSellTriggerData = extractBasicBSData({
+    triggersData: automationTriggersData,
+    triggerType: TriggerType.BasicSell,
+  })
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const basicBSEnabled = useFeatureToggle('BasicBS')
 
