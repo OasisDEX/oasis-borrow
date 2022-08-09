@@ -63,12 +63,12 @@ export function extractConstantMultipleData(triggersData: TriggersData) {
     const constantMultipleTriggers = {
       [TriggerType.BasicBuy]: extractBasicBSData({
         triggersData: triggersData,
-        triggerType: TriggerType.CMBasicBuy,
+        triggerType: TriggerType.BasicBuy,
         isInGroup: true,
       }),
       [TriggerType.BasicSell]: extractBasicBSData({
         triggersData: triggersData,
-        triggerType: TriggerType.CMBasicSell,
+        triggerType: TriggerType.BasicSell,
         isInGroup: true,
       }),
     }
