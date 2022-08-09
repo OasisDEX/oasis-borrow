@@ -3,6 +3,7 @@ import { IlkData } from 'blockchain/ilks'
 import { Context } from 'blockchain/network'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import {
@@ -22,9 +23,9 @@ import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { getSidebarTitle } from 'features/sidebar/getSidebarTitle'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
-import { extractCancelAutoSellErrors, extractCancelAutoSellWarnings } from 'helpers/messageMappers'
+import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Grid } from 'theme-ui'
 
 interface SidebarSetupAutoSellProps {
@@ -34,6 +35,7 @@ interface SidebarSetupAutoSellProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: any
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
@@ -41,9 +43,6 @@ interface SidebarSetupAutoSellProps {
   txHandler: () => void
   textButtonHandler: () => void
   stage: SidebarVaultStages
-  gasEstimationUsd?: BigNumber
-  addTriggerGasEstimation: ReactNode
-  cancelTriggerGasEstimation: ReactNode
   isAddForm: boolean
   isRemoveForm: boolean
   isEditing: boolean
@@ -63,16 +62,13 @@ export function SidebarSetupAutoSell({
   autoSellTriggerData,
   autoBuyTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
 
   isAutoSellActive,
   basicSellState,
   txHandler,
   textButtonHandler,
   stage,
-
-  gasEstimationUsd,
-  addTriggerGasEstimation,
-  cancelTriggerGasEstimation,
 
   isAddForm,
   isRemoveForm,
@@ -85,6 +81,8 @@ export function SidebarSetupAutoSell({
 }: SidebarSetupAutoSellProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
+
+  const gasEstimation = useGasEstimationContext()
 
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicSell'
@@ -108,6 +106,7 @@ export function SidebarSetupAutoSell({
     debtDelta,
     basicSellState,
     autoBuyTriggerData,
+    constantMultipleTriggerData,
     isRemoveForm,
   })
 
@@ -119,7 +118,7 @@ export function SidebarSetupAutoSell({
 
   const warnings = warningsBasicSellValidation({
     vault,
-    gasEstimationUsd,
+    gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
     minSellPrice: basicSellState.maxBuyOrMinSellPrice,
@@ -130,8 +129,8 @@ export function SidebarSetupAutoSell({
     sliderMax: max,
   })
 
-  const cancelAutoSellWarnings = extractCancelAutoSellWarnings(warnings)
-  const cancelAutoSellErrors = extractCancelAutoSellErrors(errors)
+  const cancelAutoSellWarnings = extractCancelBSWarnings(warnings)
+  const cancelAutoSellErrors = extractCancelBSErrors(errors)
 
   const validationErrors = isAddForm ? errors : cancelAutoSellErrors
 
@@ -156,7 +155,6 @@ export function SidebarSetupAutoSell({
                   autoSellTriggerData={autoSellTriggerData}
                   errors={errors}
                   warnings={warnings}
-                  addTriggerGasEstimation={addTriggerGasEstimation}
                   debtDelta={debtDelta}
                   collateralDelta={collateralDelta}
                   sliderMin={min}
@@ -169,7 +167,6 @@ export function SidebarSetupAutoSell({
                   ilkData={ilkData}
                   errors={cancelAutoSellErrors}
                   warnings={cancelAutoSellWarnings}
-                  cancelTriggerGasEstimation={cancelTriggerGasEstimation}
                   basicSellState={basicSellState}
                 />
               )}

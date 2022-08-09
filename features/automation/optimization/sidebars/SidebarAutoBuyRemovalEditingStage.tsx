@@ -7,7 +7,7 @@ import { BasicBSFormChange } from 'features/automation/protection/common/UITypes
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyRemovalEditingStageProps {
@@ -15,7 +15,6 @@ interface SidebarAutoBuyRemovalEditingStageProps {
   ilkData: IlkData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  cancelTriggerGasEstimation: ReactNode
   basicBuyState: BasicBSFormChange
 }
 
@@ -24,7 +23,6 @@ export function SidebarAutoBuyRemovalEditingStage({
   ilkData,
   errors,
   warnings,
-  cancelTriggerGasEstimation,
   basicBuyState,
 }: SidebarAutoBuyRemovalEditingStageProps) {
   return (
@@ -34,32 +32,22 @@ export function SidebarAutoBuyRemovalEditingStage({
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <AutoBuyInfoSectionControl
-        vault={vault}
-        cancelTriggerGasEstimation={cancelTriggerGasEstimation}
-        basicBuyState={basicBuyState}
-      />
+      <AutoBuyInfoSectionControl vault={vault} basicBuyState={basicBuyState} />
     </>
   )
 }
 
 interface AutoBuyInfoSectionControlProps {
   vault: Vault
-  cancelTriggerGasEstimation: ReactNode
   basicBuyState: BasicBSFormChange
 }
 
-function AutoBuyInfoSectionControl({
-  vault,
-  cancelTriggerGasEstimation,
-  basicBuyState,
-}: AutoBuyInfoSectionControlProps) {
+function AutoBuyInfoSectionControl({ vault, basicBuyState }: AutoBuyInfoSectionControlProps) {
   const { t } = useTranslation()
   return (
     <CancelAutoBSInfoSection
       collateralizationRatio={vault.collateralizationRatio}
       liquidationPrice={vault.liquidationPrice}
-      estimatedTransactionCost={cancelTriggerGasEstimation}
       title={t('auto-buy.cancel-summary-title')}
       basicBSState={basicBuyState}
       debt={vault.debt}

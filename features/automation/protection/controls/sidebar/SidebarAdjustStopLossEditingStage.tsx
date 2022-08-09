@@ -19,8 +19,6 @@ export type SidebarAdjustStopLossEditingStageProps = Pick<
   | 'currentCollateralRatio'
   | 'ethBalance'
   | 'ethPrice'
-  | 'gasEstimation'
-  | 'gasEstimationUsd'
   | 'ilkData'
   | 'isEditing'
   | 'selectedSLValue'
@@ -38,8 +36,6 @@ export function SidebarAdjustStopLossEditingStage({
   currentCollateralRatio,
   ethBalance,
   ethPrice,
-  gasEstimation,
-  gasEstimationUsd,
   ilkData,
   isEditing,
   selectedSLValue,
@@ -96,8 +92,6 @@ export function SidebarAdjustStopLossEditingStage({
             token={token}
             vault={vault}
             ilkData={ilkData}
-            gasEstimation={gasEstimation}
-            gasEstimationUsd={gasEstimationUsd}
             afterStopLossRatio={selectedSLValue}
             tokenPrice={tokenPrice}
             ethPrice={ethPrice}

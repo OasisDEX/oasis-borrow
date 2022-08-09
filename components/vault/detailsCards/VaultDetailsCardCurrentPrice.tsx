@@ -19,7 +19,7 @@ export function VaultDetailsCardCurrentPriceModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-multiply-vault.card.current-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-multiply-vault.card.current-price-description')}
         </Text>
         <Card variant="vaultDetailsCardModal">
@@ -28,13 +28,13 @@ export function VaultDetailsCardCurrentPriceModal({
       </Grid>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('manage-multiply-vault.card.next-price')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {`${t('manage-multiply-vault.card.next-price-description')}`}
         </Text>
         <Card variant="vaultDetailsCardModal">
           <Heading variant="header3">{nextPriceWithChange}</Heading>
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           <Trans
             i18nKey="manage-multiply-vault.card.more-info-oracles"
             components={[

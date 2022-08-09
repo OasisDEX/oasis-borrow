@@ -3,8 +3,11 @@ import React, { useCallback, useMemo } from 'react'
 import ReactSelect, { OptionProps, SingleValueProps, StylesConfig, ValueType } from 'react-select'
 import { Box, Flex } from 'theme-ui'
 
-import { ProductLandingPagesFilter, ProductLandingPagesFiltersKeys } from '../helpers/productCards'
-import { reactSelectCustomComponents } from './reactSelectCustomComponents'
+import {
+  ProductLandingPagesFilter,
+  ProductLandingPagesFiltersKeys,
+} from '../../helpers/productCards'
+import { reactSelectCustomComponents } from '../reactSelectCustomComponents'
 
 const customStyles: StylesConfig = {
   container: (styles) => ({ ...styles, maxWidth: '378px', flex: 1 }),

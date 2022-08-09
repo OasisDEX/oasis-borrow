@@ -153,7 +153,7 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
           </Flex>
           <Button
             variant="textual"
-            sx={{ fontWeight: 'body', pl: 0 }}
+            sx={{ fontWeight: 'regular', pl: 0 }}
             onClick={() => setShowSettings(!showSettings)}
           >
             {t('landing.cookie-banner.settings-toggle')}
@@ -168,10 +168,10 @@ export function CookieBanner({ value, setValue }: CookieBannerProps) {
                     onClick={() => toggleCookie(cookieName)}
                   />
                   <Grid sx={{ gap: 1 }}>
-                    <Text variant="paragraph3">
+                    <Text variant="boldParagraph3">
                       {t(`landing.cookie-banner.cookies.${cookieName}.title`)}
                     </Text>
-                    <Text variant="subheader" sx={{ fontSize: 2 }}>
+                    <Text variant="paragraph3" sx={{ color: 'neutral80' }}>
                       {t(`landing.cookie-banner.cookies.${cookieName}.description`)}
                     </Text>
                   </Grid>

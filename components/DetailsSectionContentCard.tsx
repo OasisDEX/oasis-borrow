@@ -1,7 +1,7 @@
 import { Icon } from '@makerdao/dai-ui-icons'
 import { ModalProps, useModal } from 'helpers/modalHook'
 import React, { ReactNode, useState } from 'react'
-import { Box, Flex, Grid, Heading, Text } from 'theme-ui'
+import { Box, Flex, Grid, Text } from 'theme-ui'
 
 import { AppLink } from './Links'
 import { CollRatioColor, VaultDetailsCardModal } from './vault/VaultDetails'
@@ -43,7 +43,7 @@ export function DetailsSectionContentCardChangePill({
   return (
     <Text
       as="p"
-      variant="label"
+      variant="paragraph4"
       sx={{
         px: 3,
         py: 1,
@@ -135,9 +135,9 @@ export function DetailsSectionContentCard({
         wordWrap: 'break-word',
       }}
     >
-      <Heading
-        as="h3"
-        variant="label"
+      <Text
+        variant="paragraph4"
+        color={isHighlighted ? 'primary100' : 'neutral80'}
         sx={{ cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >
@@ -152,10 +152,10 @@ export function DetailsSectionContentCard({
             sx={{ position: 'relative', top: '2px', ml: 1, transition: 'color 200ms' }}
           />
         )}
-      </Heading>
+      </Text>
       <Text
         as="p"
-        variant="header2"
+        variant="header3"
         sx={{ maxWidth: '100%', lineHeight: 'loose', cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >
@@ -177,7 +177,7 @@ export function DetailsSectionContentCard({
       {footnote && (
         <Text
           as="p"
-          variant="label"
+          variant="paragraph4"
           sx={{ maxWidth: '100%', pt: 2, cursor: modal ? 'pointer' : 'auto', fontSize: '12px' }}
           {...hightlightableItemEvents}
         >

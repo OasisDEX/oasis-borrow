@@ -28,7 +28,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
     <VaultDetailsCardModal close={close}>
       <Grid gap={2}>
         <Heading variant="header3">{`${t('system.collateralization-ratio')}`}</Heading>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateralization-ratio-calculated')}
         </Text>
         <Heading variant="header3">
@@ -40,7 +40,7 @@ export function VaultDetailsCardCollaterlizationRatioModal({
             roundMode: BigNumber.ROUND_DOWN,
           })}
         </Card>
-        <Text variant="subheader" sx={{ fontSize: 2, pb: 2 }}>
+        <Text variant="paragraph3" sx={{ pb: 2 }}>
           {t('manage-vault.card.collateralization-ratio-description')}
         </Text>
         <Heading variant="header3">

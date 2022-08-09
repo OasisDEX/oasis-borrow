@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react'
-import { Box, Grid } from 'theme-ui'
+import { Box, Flex, Grid } from 'theme-ui'
 
-import { fadeInAnimationDelay, slideInAnimation } from '../theme/animations'
-import { useTheme } from '../theme/useThemeUI'
+import { AppSpinner } from '../../helpers/AppSpinner'
+import { fadeInAnimationDelay, slideInAnimation } from '../../theme/animations'
+import { useTheme } from '../../theme/useThemeUI'
 
 interface ProductCardWrapperProps {
   children: Array<ReactNode>
@@ -31,5 +32,13 @@ export function ProductCardsWrapper({ children }: ProductCardWrapperProps) {
         </Box>
       ))}
     </Grid>
+  )
+}
+
+export function ProductCardsLoader() {
+  return (
+    <Flex sx={{ alignItems: 'flex-start', justifyContent: 'center', height: '500px' }}>
+      <AppSpinner sx={{ mt: 5 }} variant="styles.spinner.large" />
+    </Flex>
   )
 }

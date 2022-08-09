@@ -11,7 +11,7 @@ import { TxHelpers, UIChanges } from 'components/AppContext'
 import { zero } from 'helpers/zero'
 import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 
-const takeUntilTxState = [
+export const takeUntilTxState = [
   TxStatus.Success,
   TxStatus.Failure,
   TxStatus.Error,

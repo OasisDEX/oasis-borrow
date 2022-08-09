@@ -222,7 +222,7 @@ export function NewsletterSection({ small }: { small?: boolean }) {
       }}
     >
       <Grid sx={{ textAlign: small ? 'left' : 'center' }} gap={1} mb={small ? 3 : 4}>
-        <Heading variant="header2" sx={{ fontWeight: 'body', fontSize: small ? 4 : 7 }}>
+        <Heading as={small ? 'p' : 'h3'} variant={small ? 'boldParagraph1' : 'header3'}>
           {t('newsletter.title')}
         </Heading>
         {small && <Text sx={{ color: 'neutral80' }}>{t('newsletter.subtitle')}</Text>}

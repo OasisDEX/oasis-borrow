@@ -31,7 +31,7 @@ export function SliderValuePicker(props: SliderValuePickerProps) {
   const rightLabel = t(`slider.${props.sliderKey}.right-label`)
 
   const background = props.sliderPercentageFill
-    ? `linear-gradient(to right, ${colors?.sliderTrackFill} 0%, ${colors?.sliderTrackFill} ${
+    ? `linear-gradient(to right, ${colors?.interactive50} 0%, ${colors?.interactive50} ${
         props.sliderPercentageFill.toNumber() || 0
       }%, ${colors?.neutral60} ${props.sliderPercentageFill.toNumber() || 0}%, ${
         colors?.neutral60

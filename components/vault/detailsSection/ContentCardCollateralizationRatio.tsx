@@ -29,16 +29,14 @@ function ContentCardCollateralizationRatioModal({
   return (
     <Grid gap={2}>
       <Heading variant="header3">{t('system.collateralization-ratio')}</Heading>
-      <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
+      <Text as="p" variant="paragraph2" sx={{ mb: 2 }}>
         {t('manage-vault.card.collateralization-ratio-calculated')}
       </Text>
       <Heading variant="header3">{t('manage-vault.card.collateralization-ratio-header2')}</Heading>
       <Card variant="vaultDetailsCardModal" sx={{ my: 2 }}>
         {collateralizationRatioFormatted}
       </Card>
-      <Text variant="subheader" sx={{ fontSize: 2 }}>
-        {t('manage-vault.card.collateralization-ratio-description')}
-      </Text>
+      <Text variant="paragraph2">{t('manage-vault.card.collateralization-ratio-description')}</Text>
       {collateralizationRatioAtNextPriceFormated && (
         <>
           <Heading variant="header3" sx={{ mt: 2 }}>

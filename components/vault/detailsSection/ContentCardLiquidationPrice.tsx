@@ -48,7 +48,7 @@ function ContentCardLiquidationPriceModal({
   return (
     <Grid gap={2}>
       <Heading variant="header3">{`${t('system.liquidation-price')}`}</Heading>
-      <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
+      <Text as="p" variant="paragraph2">
         {!stopLossReadEnabled
           ? t('manage-multiply-vault.card.liquidation-price-description')
           : t('manage-multiply-vault.card.liquidation-price-description-AUTO')}
@@ -57,7 +57,7 @@ function ContentCardLiquidationPriceModal({
         {liquidationPriceFormatted}
       </Card>
       {liquidationPriceCurrentPriceDifference && (
-        <Text as="p" variant="subheader" sx={{ fontSize: 2 }}>
+        <Text as="p" variant="paragraph2">
           {t('system.cards.liquidation-price.modal.price-relation', {
             level: liquidationPriceCurrentPriceDifferenceLevel,
           })}
@@ -66,7 +66,7 @@ function ContentCardLiquidationPriceModal({
       {stopLossReadEnabled && isStopLossEnabled && vaultId && (
         <>
           <Heading variant="header3" sx={{ mt: 3 }}>{`${t('system.vault-protection')}`}</Heading>
-          <Text as="p" variant="subheader" sx={{ fontSize: 2, mb: 2 }}>
+          <Text as="p" variant="paragraph2" sx={{ mb: 2 }}>
             {t('protection.modal-description')}
           </Text>
           <StopLossBannerControl

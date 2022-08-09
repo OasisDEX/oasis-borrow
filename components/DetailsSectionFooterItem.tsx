@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import { Box, Flex, Heading, Text } from 'theme-ui'
+import { Box, Flex, Text } from 'theme-ui'
 
 import {
   DetailsSectionContentCardChangePill,
@@ -46,9 +46,9 @@ export function DetailsSectionFooterItem({ title, value, change }: DetailsSectio
         wordWrap: 'break-word',
       }}
     >
-      <Heading as="h3" variant="label" sx={{ mb: 1 }}>
+      <Text variant="paragraph4" color="neutral80" sx={{ mb: 1 }}>
         {title}
-      </Heading>
+      </Text>
       <Text as="p" variant="paragraph2" sx={{ fontWeight: 'semiBold' }}>
         {value}
       </Text>

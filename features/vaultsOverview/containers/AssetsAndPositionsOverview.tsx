@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { Trans, useTranslation } from 'next-i18next'
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import { Box, Card, Flex, Grid, Link, SxStyleProp, Text } from 'theme-ui'
+import { Box, Card, Flex, Grid, Heading, Link, SxStyleProp, Text } from 'theme-ui'
 
 import { getToken } from '../../../blockchain/tokensMetadata'
 import { PieChart } from '../../../components/dumb/PieChart'
@@ -91,7 +91,7 @@ function LinkedRow(props: PositionView) {
 
   if (props.url) {
     return (
-      <AppLink href={props.url}>
+      <AppLink href={props.url} sx={{ fontWeight: 'unset' }}>
         <AssetRow {...props} />
       </AppLink>
     )
@@ -138,7 +138,7 @@ function MenuRowDisplay(props: AssetAction) {
 function MenuRow(props: AssetAction & { close: () => void }) {
   if (isUrlAction(props)) {
     return (
-      <AppLink href={props.path} hash={props.hash}>
+      <AppLink href={props.path} hash={props.hash} sx={{ fontWeight: 'unset' }}>
         <MenuRowDisplay {...props} />
       </AppLink>
     )
@@ -150,6 +150,7 @@ function MenuRow(props: AssetAction & { close: () => void }) {
           props.close()
           props.onClick()
         }}
+        sx={{ fontWeight: 'unset' }}
       >
         <MenuRowDisplay {...props} />
       </Link>
@@ -205,14 +206,14 @@ function TotalAssetsContent(props: { totalValueUsd: BigNumber }) {
             <AppLink
               href="https://kb.oasis.app/help/curated-token-list"
               target="_blank"
-              sx={{ fontWeight: 'body', fontSize: 3 }}
+              sx={{ fontWeight: 'regular', fontSize: 3 }}
             />,
           ]}
         />
       </Text>
-      <Text sx={{ fontWeight: 'medium', fontSize: 7, mt: '4px' }}>
+      <Heading variant="header3" sx={{ mt: '4px' }}>
         ${formatAmount(props.totalValueUsd, 'USD')}
-      </Text>
+      </Heading>
     </Box>
   )
 }

@@ -11,7 +11,7 @@ export function SidebarFormInfo({ title, description }: SidebarFormInfoProps) {
     <>
       <Text
         as="h2"
-        variant="headerSettings"
+        variant="header4"
         sx={{
           fontSize: 3,
           fontWeight: 600,

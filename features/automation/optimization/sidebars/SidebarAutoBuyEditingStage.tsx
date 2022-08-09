@@ -24,7 +24,7 @@ import { handleNumericInput } from 'helpers/input'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Text } from 'theme-ui'
 
 interface SidebarAutoBuyEditingStageProps {
@@ -35,7 +35,6 @@ interface SidebarAutoBuyEditingStageProps {
   autoBuyTriggerData: BasicBSTriggerData
   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
   sliderMin: BigNumber
@@ -50,7 +49,6 @@ export function SidebarAutoBuyEditingStage({
   autoBuyTriggerData,
   errors,
   warnings,
-  addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
   sliderMin,
@@ -167,7 +165,7 @@ export function SidebarAutoBuyEditingStage({
       />
       {isEditing && (
         <>
-          <VaultErrors errorMessages={errors} ilkData={ilkData} />
+          <VaultErrors errorMessages={errors} ilkData={ilkData} autoType="Auto-Buy" />
           <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
         </>
       )}
@@ -193,7 +191,6 @@ export function SidebarAutoBuyEditingStage({
           executionPrice={executionPrice}
           basicBuyState={basicBuyState}
           vault={vault}
-          addTriggerGasEstimation={addTriggerGasEstimation}
           debtDelta={debtDelta}
           collateralDelta={collateralDelta}
         />
@@ -206,7 +203,6 @@ interface AutoBuyInfoSectionControlProps {
   executionPrice: BigNumber
   vault: Vault
   basicBuyState: BasicBSFormChange
-  addTriggerGasEstimation: ReactNode
   debtDelta: BigNumber
   collateralDelta: BigNumber
 }
@@ -215,7 +211,6 @@ function AutoBuyInfoSectionControl({
   executionPrice,
   vault,
   basicBuyState,
-  addTriggerGasEstimation,
   debtDelta,
   collateralDelta,
 }: AutoBuyInfoSectionControlProps) {
@@ -246,7 +241,6 @@ function AutoBuyInfoSectionControl({
       collateralToBePurchased={collateralDelta.abs()}
       targetRatioWithDeviationFloor={targetRatioWithDeviationFloor}
       targetRatioWithDeviationCeiling={targetRatioWithDeviationCeiling}
-      estimatedTransactionCost={addTriggerGasEstimation}
     />
   )
 }

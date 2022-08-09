@@ -6,6 +6,7 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import { getShouldRemoveAllowance } from 'features/automation/common/helpers'
 import { getActiveProtectionFeature } from 'features/automation/protection/common/helpers'
 import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -46,8 +47,11 @@ export function ProtectionFormControl({
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoSellTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicSell)
   const autoBuyTriggerData = extractBasicBSData(automationTriggersData, TriggerType.BasicBuy)
+  const constantMultipleTriggerData = {} as any
   const [activeAutomationFeature] = useUIChanges<AutomationChangeFeature>(AUTOMATION_CHANGE_FEATURE)
   const { uiChanges } = useAppContext()
+
+  const shouldRemoveAllowance = getShouldRemoveAllowance(automationTriggersData)
 
   const { isStopLossActive, isAutoSellActive } = getActiveProtectionFeature({
     currentProtectionFeature: activeAutomationFeature?.currentProtectionFeature,
@@ -72,6 +76,7 @@ export function ProtectionFormControl({
         stopLossTriggerData={stopLossTriggerData}
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         priceInfo={priceInfo}
         vault={vault}
         account={account}
@@ -80,6 +85,7 @@ export function ProtectionFormControl({
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
       />
       <AutoSellFormControl
         vault={vault}
@@ -88,10 +94,12 @@ export function ProtectionFormControl({
         autoSellTriggerData={autoSellTriggerData}
         autoBuyTriggerData={autoBuyTriggerData}
         stopLossTriggerData={stopLossTriggerData}
+        constantMultipleTriggerData={constantMultipleTriggerData}
         isAutoSellActive={isAutoSellActive}
         context={context}
         txHelpers={txHelpers}
         ethMarketPrice={ethMarketPrice}
+        shouldRemoveAllowance={shouldRemoveAllowance}
       />
     </>
   )

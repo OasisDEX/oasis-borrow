@@ -3,23 +3,22 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { RetryableLoadingButtonProps } from 'components/dumb/RetryableLoadingButton'
+import { GasEstimation } from 'components/GasEstimation'
 import { MessageCard } from 'components/MessageCard'
 import {
   VaultChangesInformationArrow,
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from 'components/vault/VaultChangesInformation'
-import { HasGasEstimation } from 'helpers/form'
 import { formatAmount, formatPercent } from 'helpers/formatters/format'
 import { TxError } from 'helpers/types'
 import { useTranslation } from 'next-i18next'
-import React, { ReactNode } from 'react'
+import React from 'react'
 import { Flex } from 'theme-ui'
 
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from '../../../form/commonValidators'
 
 interface CancelDownsideProtectionInformationProps {
-  gasEstimationText: ReactNode
   liquidationPrice: BigNumber
   ethPrice: BigNumber
   ethBalance: BigNumber
@@ -29,7 +28,6 @@ interface CancelDownsideProtectionInformationProps {
 }
 
 export function CancelDownsideProtectionInformation({
-  gasEstimationText,
   liquidationPrice,
   ethPrice,
   ethBalance,
@@ -67,7 +65,7 @@ export function CancelDownsideProtectionInformation({
       />
       <VaultChangesInformationItem
         label={`${t('protection.max-cost')}`}
-        value={gasEstimationText}
+        value={<GasEstimation />}
       />
       {potentialInsufficientEthFundsForTx && (
         <MessageCard
@@ -133,7 +131,6 @@ export interface CancelSlFormLayoutProps {
   tokenPrice: BigNumber
   removeTriggerConfig: RetryableLoadingButtonProps
   toggleForms: () => void
-  gasEstimation: HasGasEstimation
   accountIsController: boolean
   etherscan: string
   ethPrice: BigNumber
@@ -142,7 +139,6 @@ export interface CancelSlFormLayoutProps {
   actualCancelTxCost?: BigNumber
   txState?: TxStatus
   txHash?: string
-  gasEstimationUsd?: BigNumber
   stage: 'editing' | 'txInProgress' | 'txSuccess' | 'txFailure'
   isProgressDisabled: boolean
   token: string

@@ -62,7 +62,7 @@ export function VaultNotice({
                 {header}
               </Heading>
               {subheader && (
-                <Text variant="subheader" as="span" sx={{ wordBreak: 'normal' }}>
+                <Text variant="paragraph2" as="span" sx={{ wordBreak: 'normal' }}>
                   {subheader}
                 </Text>
               )}
