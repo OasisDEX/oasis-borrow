@@ -339,7 +339,7 @@ const goerli: NetworkConfig = {
   automationBot: contractDesc(automationBot, '0xabDB63B4b3BA9f960CF942800a6982F88e9b1A6b'),
   automationBotAggregator: contractDesc(
     dummyAutomationBotAggregator,
-    '0x776eAe37662b4D70472E0D917e5783ea58A73d95',
+    '0xeb3c922A805FAEEac8f311E1AdF34fBC518099ab',
   ),
   serviceRegistry: '0x5A5277B8c8a42e6d8Ab517483D7D59b4ca03dB7F',
   defaultExchange: contractDesc(exchange, '0x2b0b4c5c58fe3CF8863c4948887099A09b84A69c'),
