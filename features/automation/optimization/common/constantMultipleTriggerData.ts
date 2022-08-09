@@ -7,6 +7,9 @@ import {
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
 
+const DEFAULT_MAX_BASE_FEE_IN_GWEI = 300
+const DEFAULT_DEVIATION = 1
+
 interface ConstantMultipleAggregatedTriggers {
   [TriggerType.BasicBuy]: BasicBSTriggerData
   [TriggerType.BasicSell]: BasicBSTriggerData
@@ -33,8 +36,8 @@ const defaultConstantMultipleData: ConstantMultipleTriggerData = {
   maxBuyPrice: zero,
   minSellPrice: zero,
   continuous: false,
-  deviation: new BigNumber(1),
-  maxBaseFeeInGwei: new BigNumber(300),
+  deviation: new BigNumber(DEFAULT_DEVIATION),
+  maxBaseFeeInGwei: new BigNumber(DEFAULT_MAX_BASE_FEE_IN_GWEI),
   isTriggerEnabled: false,
 }
 

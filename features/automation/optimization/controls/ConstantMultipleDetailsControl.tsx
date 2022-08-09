@@ -25,9 +25,11 @@ export function ConstantMultipleDetailsControl({
 }: ConstantMultipleDetailsControlProps) {
   const { debt, lockedCollateral, token } = vault
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
-  const isTriggerEnabled = constantMultipleTriggerData.isTriggerEnabled
-  const triggerColRatioToBuy = constantMultipleTriggerData.buyExecutionCollRatio
-  const triggerColRatioToSell = constantMultipleTriggerData.sellExecutionCollRatio
+  const {
+    isTriggerEnabled,
+    buyExecutionCollRatio,
+    sellExecutionCollRatio,
+  } = constantMultipleTriggerData
 
   const constantMultipleDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
@@ -39,15 +41,15 @@ export function ConstantMultipleDetailsControl({
       totalCost: new BigNumber(3000),
       // TODO: PK vaultHistory should be cut down right after first found set up multiply event
       PnLSinceEnabled: calculatePNL(vaultHistory, netValueUSD),
-      triggerColRatioToBuy,
-      triggerColRatioToSell,
+      triggerColRatioToBuy: buyExecutionCollRatio,
+      triggerColRatioToSell: sellExecutionCollRatio,
       nextBuyPrice: collateralPriceAtRatio({
-        colRatio: triggerColRatioToBuy.div(100),
+        colRatio: buyExecutionCollRatio.div(100),
         collateral: lockedCollateral,
         vaultDebt: debt,
       }),
       nextSellPrice: collateralPriceAtRatio({
-        colRatio: triggerColRatioToSell.div(100),
+        colRatio: sellExecutionCollRatio.div(100),
         collateral: lockedCollateral,
         vaultDebt: debt,
       }),

@@ -42,7 +42,6 @@ export function OptimizationFormControl({
   balanceInfo,
   ethMarketPrice,
 }: OptimizationFormControlProps) {
-  console.log(automationTriggersData)
   const stopLossTriggerData = extractStopLossData(automationTriggersData)
   const autoBuyTriggerData = extractBasicBSData({
     triggersData: automationTriggersData,
