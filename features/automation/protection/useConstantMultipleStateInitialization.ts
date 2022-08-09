@@ -1,111 +1,132 @@
 import { TriggerType } from '@oasisdex/automation'
-import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { InstiVault } from 'blockchain/instiVault'
 import { Vault } from 'blockchain/vaults'
 import { useAppContext } from 'components/AppContextProvider'
+import { extractBasicBSData } from 'features/automation/common/basicBSTriggerData'
+import {
+  calculateCollRatioFromMultiple,
+  calculateMultipleFromTargetCollRatio,
+  resolveWithThreshold,
+} from 'features/automation/common/helpers'
+import { extractConstantMultipleData } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
+import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
+import { extractStopLossData } from 'features/automation/protection/common/stopLossTriggerData'
+import { zero } from 'helpers/zero'
 import { useEffect } from 'react'
 
-import { extractGroupTriggersData } from '../common/basicBSTriggerData'
-import { resolveMaxBuyOrMinSellPrice, resolveWithThreshold } from '../common/helpers'
 import { CONSTANT_MULTIPLE_FORM_CHANGE } from './common/UITypes/constantMultipleFormChange'
-import { AggregtedTriggersData } from './triggers/aggregatedTriggersData'
 import { TriggersData } from './triggers/AutomationTriggersData'
-export const INITIAL_MULTIPLIER_SELECTED = 2
-export const CONSTANT_MULTIPLE_GROUP_TYPE = 1 //TODO ŁW - if more groups will be added, create an enum
 
-export interface ConstantMultipleTriggerData {
-  groupTriggerId: BigNumber
-  // groupTypeId: BigNumber ŁW for now it's always 1
-  // group of triggers also will have some unique id
-  autoTriggersData: TriggersData
-  aggregatedTriggersData: AggregtedTriggersData
-}
+export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
+
+const DEFAULT_TARGET_OFFSET = 10
 
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
   vault: Vault | InstiVault,
   autoTriggersData: TriggersData,
-  aggregatedTriggersData: AggregtedTriggersData,
 ) {
   const { uiChanges } = useAppContext()
 
-  const constantMultipleTriggerIds = extractConstantMultipleIds(aggregatedTriggersData)
-  const constantMultipleTriggersData = extractGroupTriggersData(
-    autoTriggersData,
-    constantMultipleTriggerIds,
-  )
-  const buyTriggerData = constantMultipleTriggersData[TriggerType.CMBasicBuy]
-  const sellTriggerData = constantMultipleTriggersData[TriggerType.CMBasicSell]
-  const maxBuyPrice = buyTriggerData.maxBuyOrMinSellPrice
-  const buyWithThresholdResolved = resolveWithThreshold({
-    maxBuyOrMinSellPrice: maxBuyPrice,
-    triggerId: buyTriggerData.triggerId,
+  const stopLossTriggerData = extractStopLossData(autoTriggersData)
+  const autoBuyTriggerData = extractBasicBSData({
+    triggersData: autoTriggersData,
+    triggerType: TriggerType.BasicBuy,
   })
-  const minSellPrice = sellTriggerData.maxBuyOrMinSellPrice
-  const sellWithThresholdResolved = resolveWithThreshold({
-    maxBuyOrMinSellPrice: minSellPrice,
-    triggerId: sellTriggerData.triggerId,
-  })
-  const maxBuyPriceResolved = resolveMaxBuyOrMinSellPrice(maxBuyPrice)
-  const minSellPriceResolved = resolveMaxBuyOrMinSellPrice(minSellPrice)
-  const buyExecutionCollRatio = buyTriggerData.execCollRatio
-  const sellExecutionCollRatio = sellTriggerData.execCollRatio
-
+  const {
+    triggersId,
+    targetCollRatio,
+    buyExecutionCollRatio,
+    sellExecutionCollRatio,
+    maxBuyPrice,
+    minSellPrice,
+    continuous,
+    deviation,
+    maxBaseFeeInGwei,
+    isTriggerEnabled,
+  } = extractConstantMultipleData(autoTriggersData)
   const collateralizationRatio = vault.collateralizationRatio.toNumber()
-  const publishKey = CONSTANT_MULTIPLE_FORM_CHANGE
+
+  const { min, max } = getConstantMutliplyMinMaxValues({
+    autoBuyTriggerData,
+    stopLossTriggerData,
+    ilkData,
+    lockedCollateralUSD: vault.lockedCollateralUSD,
+  })
+
+  const acceptableMultipliers = getConstantMultipleMultipliers({
+    ilk: ilkData.ilk,
+    minColRatio: min,
+    maxColRatio: max,
+  })
+  const defaultMultiple = acceptableMultipliers[Math.floor(acceptableMultipliers.length / 2) - 1]
+  const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiple)
 
   useEffect(() => {
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'acceptable-multipliers',
+      acceptableMultipliers: acceptableMultipliers,
+    })
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'multiplier',
-      multiplier: INITIAL_MULTIPLIER_SELECTED, //TODO calculate initial multiplier if trigger exists
+      multiplier: targetCollRatio.gt(zero)
+        ? calculateMultipleFromTargetCollRatio(targetCollRatio).decimalPlaces(2).toNumber()
+        : defaultMultiple,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'buy-execution-coll-ratio',
-      buyExecutionCollRatio,
+      buyExecutionCollRatio: targetCollRatio.gt(zero)
+        ? buyExecutionCollRatio
+        : defaultCollRatio.plus(DEFAULT_TARGET_OFFSET),
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'sell-execution-coll-ratio',
-      sellExecutionCollRatio,
+      sellExecutionCollRatio: targetCollRatio.gt(zero)
+        ? sellExecutionCollRatio
+        : defaultCollRatio.minus(DEFAULT_TARGET_OFFSET),
     })
-    // uiChanges.publish(publishKey, {
-    //   type: 'target-coll-ratio',
-    //   targetCollRatio,
-    // })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'max-buy-price',
-      maxBuyPrice: maxBuyPriceResolved,
+      maxBuyPrice,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'min-sell-price',
-      minSellPrice: minSellPriceResolved,
+      minSellPrice,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'continuous',
-      continuous: buyTriggerData.continuous, //whatever it doesn't change
+      continuous,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'deviation',
-      deviation: buyTriggerData.deviation, //whatever it doesn't change
+      deviation,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'max-gas-fee-in-gwei',
-      maxBaseFeeInGwei: buyTriggerData.maxBaseFeeInGwei, // assumption it's the same for bot buy and sell
+      maxBaseFeeInGwei,
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'buy-with-threshold',
-      buyWithThreshold: buyWithThresholdResolved,
+      buyWithThreshold: resolveWithThreshold({
+        maxBuyOrMinSellPrice: maxBuyPrice,
+        triggerId: triggersId[0],
+      }),
     })
-    uiChanges.publish(publishKey, {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'sell-with-threshold',
-      sellWithThreshold: sellWithThresholdResolved,
+      sellWithThreshold: resolveWithThreshold({
+        maxBuyOrMinSellPrice: minSellPrice,
+        triggerId: triggersId[1],
+      }),
     })
-  }, [/*groupId,*/ collateralizationRatio])
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'target-ratio-ranges',
+      minTargetRatio: min,
+      maxTargetRatio: max,
+    })
+  }, [collateralizationRatio])
 
-  return false //TODO ŁW as trigger even if exist, wont be loaded from cache
-}
-function extractConstantMultipleIds(aggregatedTriggersData: AggregtedTriggersData) {
-  return aggregatedTriggersData
-    ? aggregatedTriggersData.triggers?.flatMap((trigger: any) => trigger.triggerIds)
-    : []
+  return isTriggerEnabled
 }

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { calculateCollRatioForMultiply } from 'features/automation/common/helpers'
+import { calculateCollRatioFromMultiple } from 'features/automation/common/helpers'
 
 import { AutomationChangeAction, AutomationFormChange } from './basicBSFormChange'
 
@@ -11,9 +11,11 @@ export type ConstantMultipleChangeAction =
   | { type: 'min-sell-price'; minSellPrice?: BigNumber }
   | { type: 'buy-with-threshold'; buyWithThreshold: boolean }
   | { type: 'sell-with-threshold'; sellWithThreshold: boolean }
+  | { type: 'acceptable-multipliers'; acceptableMultipliers: number[] }
   | { type: 'multiplier'; multiplier: number }
   | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
   | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
+  | { type: 'target-ratio-ranges'; minTargetRatio: BigNumber; maxTargetRatio: BigNumber }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
@@ -22,7 +24,10 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   sellExecutionCollRatio: BigNumber
   buyWithThreshold: boolean
   sellWithThreshold: boolean
-  multiplier: number // Multiplier is not used in Smart Contract, it specifies target coll ratio
+  acceptableMultipliers: number[]
+  multiplier: number
+  minTargetRatio: BigNumber
+  maxTargetRatio: BigNumber
 }
 
 export function constantMultipleFormChangeReducer(
@@ -56,11 +61,19 @@ export function constantMultipleFormChangeReducer(
       return { ...state, buyWithThreshold: action.buyWithThreshold }
     case 'sell-with-threshold':
       return { ...state, sellWithThreshold: action.sellWithThreshold }
+    case 'acceptable-multipliers':
+      return { ...state, acceptableMultipliers: action.acceptableMultipliers }
     case 'multiplier':
       return {
         ...state,
         multiplier: action.multiplier,
-        targetCollRatio: calculateCollRatioForMultiply(action.multiplier),
+        targetCollRatio: calculateCollRatioFromMultiple(action.multiplier),
+      }
+    case 'target-ratio-ranges':
+      return {
+        ...state,
+        minTargetRatio: action.minTargetRatio,
+        maxTargetRatio: action.maxTargetRatio,
       }
     default:
       return state

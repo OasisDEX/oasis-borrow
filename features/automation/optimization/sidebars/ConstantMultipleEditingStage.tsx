@@ -9,7 +9,6 @@ import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/In
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
-import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -31,8 +30,6 @@ interface SidebaConstantMultiplerEditingStageProps {
   autoBuyTriggerData: BasicBSTriggerData
   //   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  min: BigNumber
-  max: BigNumber
   token: string
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
@@ -51,8 +48,6 @@ export function ConstantMultipleEditingStage({
   autoBuyTriggerData,
   //   errors,
   warnings,
-  min,
-  max,
   token,
   constantMultipleState,
   autoSellTriggerData,
@@ -67,26 +62,13 @@ export function ConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
-  const acceptableMultipliers = getConstantMultipleMultipliers({
-    ilk: ilkData.ilk,
-    minColRatio: min,
-    maxColRatio: max,
-  })
-
-  if (!acceptableMultipliers.includes(constantMultipleState.multiplier)) {
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'multiplier',
-      multiplier: acceptableMultipliers[1],
-    })
-  }
-
   return (
     <>
       <Box sx={{ mb: 2 }}>
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
           variant="secondary"
-          items={acceptableMultipliers.map((multiplier) => ({
+          items={constantMultipleState.acceptableMultipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
             action: () => {
@@ -99,8 +81,8 @@ export function ConstantMultipleEditingStage({
         />
       </Box>
       <MultipleRangeSlider
-        min={min.toNumber()}
-        max={max.toNumber()}
+        min={constantMultipleState.minTargetRatio.toNumber()}
+        max={constantMultipleState.maxTargetRatio.toNumber()}
         onChange={(value) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-execution-coll-ratio',

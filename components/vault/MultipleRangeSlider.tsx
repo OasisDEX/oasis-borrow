@@ -106,6 +106,7 @@ export function MultipleRangeSlider({
   const sliderBoxRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
   const breakpoint = useBreakpointIndex()
+  const middleMarkDidMount = useRef(false)
 
   const { value0, value1 } = value
   const mobile = breakpoint === 0
@@ -125,13 +126,13 @@ export function MultipleRangeSlider({
   }, [])
 
   useEffect(() => {
-    if (middleMark) {
+    if (middleMark && middleMarkDidMount.current) {
       const newValue = {
         value0: middleMark.value - middleMarkOffset,
         value1: middleMark.value + middleMarkOffset,
       }
       onChange(newValue)
-    }
+    } else middleMarkDidMount.current = true
   }, [middleMark?.value])
 
   const dotsSpace = 5
