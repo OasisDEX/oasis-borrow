@@ -4,6 +4,8 @@ import {
   BasicBSTriggerData,
   extractBasicBSData,
 } from 'features/automation/common/basicBSTriggerData'
+import { resolveWithThreshold } from 'features/automation/common/helpers'
+import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
 
@@ -80,4 +82,31 @@ export function extractConstantMultipleData(triggersData: TriggersData) {
   }
 
   return defaultConstantMultipleData
+}
+
+export function prepareConstantMultipleResetData(
+  constantMultipleState: ConstantMultipleFormChange,
+  constantMultipleTriggerData: ConstantMultipleTriggerData,
+) {
+  // const defaultMultiple = constantMultipleState.acceptableMultipliers[Math.floor(constantMultipleState.acceptableMultipliers.length / 2) - 1]
+  // const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiple)
+
+  return {
+    multiplier: 0,
+    buyExecutionCollRatio: constantMultipleTriggerData.buyExecutionCollRatio,
+    sellExecutionCollRatio: constantMultipleTriggerData.sellExecutionCollRatio,
+    targetCollRatio: constantMultipleTriggerData.targetCollRatio,
+    maxBuyPrice: constantMultipleTriggerData.minSellPrice,
+    minSellPrice: constantMultipleTriggerData.maxBuyPrice,
+    maxBaseFeeInGwei: constantMultipleTriggerData.maxBaseFeeInGwei,
+    buyWithThreshold: resolveWithThreshold({
+      maxBuyOrMinSellPrice: constantMultipleTriggerData.maxBuyPrice,
+      triggerId: constantMultipleTriggerData.triggersId[0],
+    }),
+    sellWithThreshold: resolveWithThreshold({
+      maxBuyOrMinSellPrice: constantMultipleTriggerData.minSellPrice,
+      triggerId: constantMultipleTriggerData.triggersId[1],
+    }),
+    txDetails: {},
+  }
 }

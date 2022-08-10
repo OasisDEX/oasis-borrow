@@ -21,7 +21,7 @@ import { TriggersData } from './triggers/AutomationTriggersData'
 
 export const CONSTANT_MULTIPLE_GROUP_TYPE = 1
 
-const DEFAULT_TARGET_OFFSET = 10
+export const DEFAULT_TARGET_OFFSET = 10
 
 export function useConstantMultipleStateInitialization(
   ilkData: IlkData,
@@ -61,19 +61,23 @@ export function useConstantMultipleStateInitialization(
     minColRatio: min,
     maxColRatio: max,
   })
-  const defaultMultiple = acceptableMultipliers[Math.floor(acceptableMultipliers.length / 2) - 1]
-  const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiple)
+  const defaultMultiplier = acceptableMultipliers[Math.floor(acceptableMultipliers.length / 2) - 1]
+  const defaultCollRatio = calculateCollRatioFromMultiple(defaultMultiplier)
 
   useEffect(() => {
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'acceptable-multipliers',
-      acceptableMultipliers: acceptableMultipliers,
+      type: 'form-defaults',
+      acceptableMultipliers,
+      defaultMultiplier,
+      defaultCollRatio,
+      minTargetRatio: min,
+      maxTargetRatio: max,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'multiplier',
       multiplier: targetCollRatio.gt(zero)
         ? calculateMultipleFromTargetCollRatio(targetCollRatio).decimalPlaces(2).toNumber()
-        : defaultMultiple,
+        : defaultMultiplier,
     })
     uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
       type: 'buy-execution-coll-ratio',
@@ -120,11 +124,6 @@ export function useConstantMultipleStateInitialization(
         maxBuyOrMinSellPrice: minSellPrice,
         triggerId: triggersId[1],
       }),
-    })
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'target-ratio-ranges',
-      minTargetRatio: min,
-      maxTargetRatio: max,
     })
   }, [collateralizationRatio])
 

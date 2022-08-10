@@ -11,11 +11,17 @@ export type ConstantMultipleChangeAction =
   | { type: 'min-sell-price'; minSellPrice?: BigNumber }
   | { type: 'buy-with-threshold'; buyWithThreshold: boolean }
   | { type: 'sell-with-threshold'; sellWithThreshold: boolean }
-  | { type: 'acceptable-multipliers'; acceptableMultipliers: number[] }
   | { type: 'multiplier'; multiplier: number }
   | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
   | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
-  | { type: 'target-ratio-ranges'; minTargetRatio: BigNumber; maxTargetRatio: BigNumber }
+  | {
+      type: 'form-defaults'
+      acceptableMultipliers: number[]
+      defaultMultiplier: number
+      defaultCollRatio: BigNumber
+      minTargetRatio: BigNumber
+      maxTargetRatio: BigNumber
+    }
 
 export type ConstantMultipleFormChange = AutomationFormChange & {
   maxBuyPrice?: BigNumber
@@ -25,6 +31,8 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   buyWithThreshold: boolean
   sellWithThreshold: boolean
   acceptableMultipliers: number[]
+  defaultMultiplier: number
+  defaultCollRatio: BigNumber
   multiplier: number
   minTargetRatio: BigNumber
   maxTargetRatio: BigNumber
@@ -61,17 +69,18 @@ export function constantMultipleFormChangeReducer(
       return { ...state, buyWithThreshold: action.buyWithThreshold }
     case 'sell-with-threshold':
       return { ...state, sellWithThreshold: action.sellWithThreshold }
-    case 'acceptable-multipliers':
-      return { ...state, acceptableMultipliers: action.acceptableMultipliers }
     case 'multiplier':
       return {
         ...state,
         multiplier: action.multiplier,
         targetCollRatio: calculateCollRatioFromMultiple(action.multiplier),
       }
-    case 'target-ratio-ranges':
+    case 'form-defaults':
       return {
         ...state,
+        acceptableMultipliers: action.acceptableMultipliers,
+        defaultMultiplier: action.defaultMultiplier,
+        defaultCollRatio: action.defaultCollRatio,
         minTargetRatio: action.minTargetRatio,
         maxTargetRatio: action.maxTargetRatio,
       }

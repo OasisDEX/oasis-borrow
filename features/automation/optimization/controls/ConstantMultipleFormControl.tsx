@@ -11,6 +11,7 @@ import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basic
 import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
 import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -37,6 +38,7 @@ interface ConstantMultipleFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   balanceInfo: BalanceInfo
   shouldRemoveAllowance: boolean
 }
@@ -52,6 +54,7 @@ export function ConstantMultipleFormControl({
   stopLossTriggerData,
   autoSellTriggerData,
   autoBuyTriggerData,
+  constantMultipleTriggerData,
   // shouldRemoveAllowance, // TODO to be used in cancel trigger txData
   balanceInfo,
 }: ConstantMultipleFormControlProps) {
@@ -217,6 +220,7 @@ export function ConstantMultipleFormControl({
       autoBuyTriggerData={autoBuyTriggerData}
       autoSellTriggerData={autoSellTriggerData}
       stopLossTriggerData={stopLossTriggerData}
+      constantMultipleTriggerData={constantMultipleTriggerData}
       ethMarketPrice={ethMarketPrice}
       balanceInfo={balanceInfo}
       isEditing={isEditing}

@@ -3,12 +3,14 @@ import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
+import { ConstantMultipleTriggerData, prepareConstantMultipleResetData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -33,6 +35,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   token: string
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -51,6 +54,7 @@ export function ConstantMultipleEditingStage({
   token,
   constantMultipleState,
   autoSellTriggerData,
+  constantMultipleTriggerData,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -179,17 +183,31 @@ export function ConstantMultipleEditingStage({
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
-        <ConstantMultipleInfoSectionControl
-          token={token}
-          nextBuyPrice={nextBuyPrice}
-          nextSellPrice={nextSellPrice}
-          collateralToBePurchased={collateralToBePurchased}
-          collateralToBeSold={collateralToBeSold}
-          estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-          estimatedBuyFee={estimatedBuyFee}
-          estimatedSellFee={estimatedSellFee}
-          constantMultipleState={constantMultipleState}
-        />
+        <>
+          <SidebarResetButton
+            clear={() => {
+              console.log(constantMultipleTriggerData.buyExecutionCollRatio.toNumber())
+              console.log(constantMultipleTriggerData.sellExecutionCollRatio.toNumber())
+              console.log(prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData).buyExecutionCollRatio.toNumber())
+              console.log(prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData).sellExecutionCollRatio.toNumber())
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'reset',
+                resetData: prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData),
+              })
+            }}
+          />
+          <ConstantMultipleInfoSectionControl
+            token={token}
+            nextBuyPrice={nextBuyPrice}
+            nextSellPrice={nextSellPrice}
+            collateralToBePurchased={collateralToBePurchased}
+            collateralToBeSold={collateralToBeSold}
+            estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+            estimatedBuyFee={estimatedBuyFee}
+            estimatedSellFee={estimatedSellFee}
+            constantMultipleState={constantMultipleState}
+          />
+        </>
       )}
     </>
   )

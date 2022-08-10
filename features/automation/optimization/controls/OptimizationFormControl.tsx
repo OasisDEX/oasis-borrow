@@ -102,6 +102,7 @@ export function OptimizationFormControl({
           autoSellTriggerData={autoSellTriggerData}
           autoBuyTriggerData={autoBuyTriggerData}
           stopLossTriggerData={stopLossTriggerData}
+          constantMultipleTriggerData={constantMultipleTriggerData}
           balanceInfo={balanceInfo}
           shouldRemoveAllowance={shouldRemoveAllowance}
         />
