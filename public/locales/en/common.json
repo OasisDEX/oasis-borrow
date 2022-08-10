@@ -1620,5 +1620,15 @@
     "news-notifications": "Oasis.app news notifications",
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "service-not-available": "Notification service not available, please try again later."
+  },
+  "open-earn": {
+    "aave": {
+      "vault-form": {
+        "title": "Set up Earn strategy",
+        "open-btn": "Open Earn position",
+        "confirm-btn": "Confirm",
+        "retry-btn": "Retry"
+      }
+    }
   }
 }

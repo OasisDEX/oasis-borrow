@@ -1,12 +1,20 @@
 {
   "name": "oasis-borrow",
-  "version": "4.22.0",
+  "version": "4.22.2",
   "license": "Apache-2.0",
   "engines": {
     "node": ">=14.x <=16.x"
   },
+  "private": true,
+  "workspaces": [
+    "utils",
+    "utils/**",
+    "features/**",
+    "types"
+  ],
   "scripts": {
     "start": "next dev",
+    "start:debug": "NODE_OPTIONS='--inspect' next dev",
     "start:prod": "yarn migrate && next start",
     "migrate": "ts-node --project ./tsconfig.dev.json -T ./server/database/migrate.ts",
     "prisma:introspect": "prisma introspect --schema=./server/database/schema.prisma",
@@ -48,6 +56,7 @@
     "@oasisdex/automation": "1.1.10",
     "@oasisdex/connectors": "^0.1.0",
     "@oasisdex/multiply": "^0.2.11",
+    "@oasisdex/oasis-actions": "^0.0.3",
     "@oasisdex/transactions": "^0.1.0",
     "@oasisdex/utils": "^0.0.8",
     "@oasisdex/web3-context": "^0.1.0",
@@ -76,6 +85,7 @@
     "@web3-react/types": "^6.0.7",
     "@web3-react/walletconnect-connector": "^6.2.13",
     "@web3-react/walletlink-connector": "^6.2.13",
+    "@xstate/react": "^3.0.0",
     "@zeit/next-sass": "^1.0.1",
     "axios": "^0.22.0",
     "bignumber.js": "9.0.1",
@@ -144,6 +154,7 @@
     "web3": "1.5.3",
     "web3-eth-abi": "1.5.3",
     "whatwg-fetch": "2.0.3",
+    "xstate": "^4.32.1",
     "zod": "^1.5.0"
   },
   "resolutions": {
@@ -195,12 +206,14 @@
     "@types/react-text-mask": "^5.4.0",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
+    "@types/socket.io-client": "^3.0.0",
     "@types/supertest": "^2.0.9",
     "@types/theme-ui": "^0.3.1",
     "@types/uuid": "^7.0.3",
-    "@types/socket.io-client": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "@xstate/inspect": "^0.7.0",
+    "@xstate/test": "^0.5.1",
     "autoprefixer": "7.1.6",
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "10.0.0",
@@ -240,6 +253,7 @@
     "set-value": "^2.0.1",
     "sinon": "^9.0.2",
     "sinon-chai": "^3.5.0",
+    "storybook-xstate-addon": "^2.3.1",
     "stream-browserify": "^3.0.0",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
