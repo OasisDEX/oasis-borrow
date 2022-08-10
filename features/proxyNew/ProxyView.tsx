@@ -94,7 +94,6 @@ function ProxyRunningView() {
               }}
             />
           </Text>
-          (
           <Image
             src={staticFilesRuntimeUrl('/static/img/proxy_complete.gif')}
             sx={{ display: 'block', maxWidth: '210px', mx: 'auto' }}

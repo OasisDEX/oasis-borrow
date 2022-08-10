@@ -15,7 +15,10 @@ export function getGasEstimation$(
       const gasCost = amountFromWei(gasPrice.maxFeePerGas.times(estimatedGasCost))
       const gasEstimationUsd = ETHUsd ? gasCost.times(ETHUsd) : undefined
       const gasEstimationDai = gasEstimationUsd && DAIUsd ? gasEstimationUsd.div(DAIUsd) : undefined
-
+      console.log('estimated gas cost...',estimatedGasCost.toString() )
+      console.log('gas cost...',gasCost.toString() )
+      console.log('DAIUsd', DAIUsd.toString())
+      console.log('ETHUsd', ETHUsd.toString())
       return {
         gasEstimation: estimatedGasCost,
         gasEstimationUsd,
