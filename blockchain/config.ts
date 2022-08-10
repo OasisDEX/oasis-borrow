@@ -32,6 +32,7 @@ import * as mcdPot from './abi/mcd-pot.json'
 import * as mcdSpot from './abi/mcd-spot.json'
 import * as merkleRedeemer from './abi/merkle-redeemer.json'
 import * as dssMultiplyProxyActions from './abi/multiply-proxy-actions.json'
+import * as operationExecutor from './abi/operation-executor.json'
 import * as otcSupport from './abi/otc-support-methods.json'
 import * as vat from './abi/vat.json'
 import {
@@ -200,6 +201,7 @@ const protoMain = {
     // address from here: https://docs.lido.fi/deployed-contracts
     '0x99ac10631f69c753ddb595d074422a0922d9056b',
   ),
+  operationExecutor: contractDesc(operationExecutor, '0x0000000000000000000000000000000000000000'),
 }
 
 export type NetworkConfig = typeof protoMain
@@ -279,6 +281,7 @@ const kovan: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
+  operationExecutor: contractDesc(operationExecutor, '0xe70f935c32dA4dB13e7876795f1e175465e6458e'),
 }
 
 const goerli: NetworkConfig = {
@@ -362,6 +365,7 @@ const goerli: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
+  operationExecutor: contractDesc(operationExecutor, '0x0000000000000000000000000000000000000000'),
 }
 
 const hardhat: NetworkConfig = {

@@ -224,6 +224,7 @@ import {
   ManageInstiVaultState,
 } from '../features/borrow/manage/pipes/adapters/institutionalBorrowManageAdapter'
 import { StandardBorrowManageAdapter } from '../features/borrow/manage/pipes/adapters/standardBorrowManageAdapter'
+import { OpenAavePositionData } from '../features/earn/aave/open/pipelines/openAavePosition'
 import {
   getTotalSupply,
   getUnderlyingBalances,
@@ -277,6 +278,7 @@ export type TxData =
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
+  | OpenAavePositionData
 
 export interface TxHelpers {
   send: SendTransactionFunction<TxData>
