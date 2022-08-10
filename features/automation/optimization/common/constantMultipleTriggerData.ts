@@ -7,6 +7,7 @@ import {
 import {
   calculateCollRatioFromMultiple,
   calculateMultipleFromTargetCollRatio,
+  resolveMaxBuyOrMinSellPrice,
   resolveWithThreshold,
 } from 'features/automation/common/helpers'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
@@ -121,8 +122,8 @@ export function prepareConstantMultipleResetData({
     sellExecutionCollRatio: targetCollRatio.gt(zero)
       ? sellExecutionCollRatio
       : defaultCollRatio.minus(DEFAULT_TARGET_OFFSET),
-    minSellPrice,
-    maxBuyPrice,
+    minSellPrice: resolveMaxBuyOrMinSellPrice(minSellPrice),
+    maxBuyPrice: resolveMaxBuyOrMinSellPrice(maxBuyPrice),
     maxBaseFeeInGwei,
     buyWithThreshold: resolveWithThreshold({
       maxBuyOrMinSellPrice: maxBuyPrice,
