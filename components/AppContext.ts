@@ -1069,6 +1069,7 @@ export function setupAppContext() {
     vaults$,
     vault$,
     ilks$: ilksSupportedOnNetwork$,
+    accountBalances$,
     openVault$,
     manageVault$,
     manageInstiVault$,
