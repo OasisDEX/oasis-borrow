@@ -5445,6 +5445,15 @@
     "@types/mocha" "^9.0.0"
     bignumber.js "^9.0.1"
 
+"@oasisdex/oasis-actions@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@oasisdex/oasis-actions/-/oasis-actions-0.0.3.tgz#e6ce382621c4180c0df84cbd97a0d6dba1f2da00"
+  integrity sha512-fs1ifmMV1eDUcxnxOVu+WiSQ1Bg5aLkoCV6rglhDSCm0TV+UJiDMGIPStgs8jE2aLRN9T3Ob3sE8k3Tm33A72Q==
+  dependencies:
+    bignumber.js "^9.0.1"
+    ethers "^5.0.19"
+    lodash "^4.17.21"
+
 "@oasisdex/transactions@^0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@oasisdex/transactions/-/transactions-0.1.0.tgz#c8aebfe79ecc260d939c1091622ea55349621532"
@@ -21227,15 +21236,6 @@ nyc@^15.1.0:
     spawn-wrap "^2.0.0"
     test-exclude "^6.0.0"
     yargs "^15.0.2"
-
-oasis-actions@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/oasis-actions/-/oasis-actions-0.0.2.tgz#c56cd7b829e0dc6ca5acd0c99054199ea58c9ed8"
-  integrity sha512-YU8+Z4f3yo6Je0XglTV0RVc9SeHnL3tuiwUnnmshMHFtiD9OpHtF/qvxNALfF4L4DKhdgCJf86jVg0aHIjYkAg==
-  dependencies:
-    bignumber.js "^9.0.1"
-    ethers "^5.0.19"
-    lodash "^4.17.21"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
