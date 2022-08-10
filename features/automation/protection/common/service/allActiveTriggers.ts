@@ -6,7 +6,6 @@ const query = gql`
     allActiveTriggers(filter: { cdpId: { equalTo: $vaultId } }, orderBy: [BLOCK_ID_ASC]) {
       nodes {
         triggerId
-        groupId
         commandAddress
         triggerData
       }
