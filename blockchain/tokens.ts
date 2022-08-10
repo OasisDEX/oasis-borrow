@@ -9,7 +9,7 @@ import { Context } from './network'
 import { OraclePriceData, OraclePriceDataArgs } from './prices'
 
 export function createBalance$(
-  onEveryBlock$: Observable<number>,
+  updateInterval$: Observable<any>,
   context$: Observable<Context>,
   tokenBalance$: CallObservable<typeof tokenBalance>,
   token: string,
@@ -18,7 +18,7 @@ export function createBalance$(
   return context$.pipe(
     switchMap(({ web3 }) => {
       if (token === 'ETH') {
-        return onEveryBlock$.pipe(
+        return updateInterval$.pipe(
           switchMap(() => bindNodeCallback(web3.eth.getBalance)(address)),
           map((ethBalance: string) => amountFromWei(new BigNumber(ethBalance))),
           distinctUntilChanged((x: BigNumber, y: BigNumber) => x.eq(y)),

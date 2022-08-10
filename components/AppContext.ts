@@ -502,7 +502,7 @@ export function setupAppContext() {
     return doGasEstimation(gasPrice$, daiEthTokenPrice$, txHelpers$, state, call)
   }
 
-  const once$ = of(undefined)
+  const once$ = of(undefined).pipe(shareReplay(1))
 
   // base
   const proxyAddress$ = memoize(curry(createProxyAddress$)(onEveryBlock$, context$))
@@ -570,10 +570,18 @@ export function setupAppContext() {
   )
 
   const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
+  const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
+
   const balance$ = memoize(
     curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
     (token, address) => `${token}_${address}`,
   )
+
+  const balanceLean$ = memoize(
+    curry(createBalance$)(once$, context$, tokenBalanceLean$),
+    (token, address) => `${token}_${address}`,
+  )
+
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
@@ -702,12 +710,12 @@ export function setupAppContext() {
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
   const accountBalances$ = curry(createAccountBalance$)(
-    balance$,
+    balanceLean$,
     collateralTokens$,
-    oraclePriceData$,
+    oraclePriceDataLean$,
   )
 
-  const ilkDataList$ = createIlkDataList$(ilkData$, ilksSupportedOnNetwork$)
+  const ilkDataList$ = createIlkDataList$(ilkDataLean$, ilksSupportedOnNetwork$)
   const ilksWithBalance$ = createIlkDataListWithBalances$(context$, ilkDataList$, accountBalances$)
 
   const priceInfo$ = curry(createPriceInfo$)(oraclePriceData$)
@@ -926,7 +934,7 @@ export function setupAppContext() {
 
   const productCardsWithBalance$ = createProductCardsWithBalance$(
     ilksWithBalance$,
-    oraclePriceData$,
+    oraclePriceDataLean$,
   )
 
   const automationTriggersData$ = memoize(
@@ -957,7 +965,7 @@ export function setupAppContext() {
   )
 
   const positionsOverviewSummary$ = memoize(
-    curry(createPositionsOverviewSummary$)(balance$, tokenPriceUSD$, positions$, assetActions$),
+    curry(createPositionsOverviewSummary$)(balanceLean$, tokenPriceUSD$, positions$, assetActions$),
   )
 
   const termsAcceptance$ = createTermsAcceptance$(
@@ -1067,7 +1075,6 @@ export function setupAppContext() {
     vaultsOverview$,
     vaultBanners$,
     redirectState$,
-    accountBalances$,
     gasPrice$,
     automationTriggersData$,
     accountData$,
