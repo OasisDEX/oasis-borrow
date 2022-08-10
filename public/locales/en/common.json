@@ -1420,7 +1420,7 @@
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
   },
   "auto-sell": {
-    "sell-title": "Basic Auto Sell Summary",
+    "sell-title": "Basic Auto-Sell Summary",
     "cancel-summary-title": "Cancel Auto-Sell order summary",
     "cancel-summary-description": "To cancel the Auto-Sell you'll need to click the button below and confirm the transaction.",
     "target-col-ratio-each-sell": "Target Col. Ratio after each sell",
@@ -1440,9 +1440,9 @@
     "setting-form-title": "Setting Auto-Sell",
     "cancelling-form-title": "Cancelling Auto-Sell",
     "cancel-form-title": "Cancellation confirmation",
-    "trigger-added": "Basic-Sell Protection Enabled",
-    "trigger-cancelled": "Basic-Sell cancellation completed",
-    "trigger-updated": "Basic-Sell Protection Updated",
+    "trigger-added": "Auto-Sell Protection Enabled",
+    "trigger-cancelled": "Auto-Sell cancellation completed",
+    "trigger-updated": "Auto-Sell Protection Updated",
     "next-sell-price": "Next sell price: {{amount}}",
     "continual-sell-threshold": "Recurring sell order down to {{amount}}/{{token}}",
     "continual-sell-no-threshold": "Recurring sell order with no min",
