@@ -93,7 +93,7 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
-  middleMarkOffset = 5,
+  middleMarkOffset = 10,
   leftThumbColor = 'warning100',
   rightThumbColor = 'success100',
   leftDescription,
@@ -128,10 +128,10 @@ export function MultipleRangeSlider({
   useEffect(() => {
     if (middleMark && middleMarkDidMount.current) {
       const newValue = {
-        value0: middleMark.value - middleMarkOffset,
-        value1: middleMark.value + middleMarkOffset,
+        value0: Math.max(middleMark.value - middleMarkOffset, min),
+        value1: Math.min(middleMark.value + middleMarkOffset, max),
       }
-      onChange(newValue)
+      if (value0 !== newValue.value0 || value1 !== newValue.value1) onChange(newValue)
     } else middleMarkDidMount.current = true
   }, [middleMark?.value])
 

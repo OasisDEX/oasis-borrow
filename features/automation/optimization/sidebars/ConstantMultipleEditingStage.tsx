@@ -10,7 +10,10 @@ import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/In
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
-import { ConstantMultipleTriggerData, prepareConstantMultipleResetData } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import {
+  ConstantMultipleTriggerData,
+  prepareConstantMultipleResetData,
+} from 'features/automation/optimization/common/constantMultipleTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -77,6 +80,10 @@ export function ConstantMultipleEditingStage({
             label: `${multiplier}x`,
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-editing',
+                isEditing: true,
+              })
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'multiplier',
                 multiplier: multiplier,
               })
@@ -88,6 +95,10 @@ export function ConstantMultipleEditingStage({
         min={constantMultipleState.minTargetRatio.toNumber()}
         max={constantMultipleState.maxTargetRatio.toNumber()}
         onChange={(value) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-execution-coll-ratio',
             sellExecutionCollRatio: new BigNumber(value.value0),
@@ -127,11 +138,19 @@ export function ConstantMultipleEditingStage({
         currencyCode="USD"
         onChange={handleNumericInput((maxBuyPrice) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'max-buy-price',
             maxBuyPrice: maxBuyPrice,
           })
         })}
         onToggle={(toggleStatus) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'buy-with-threshold',
             buyWithThreshold: toggleStatus,
@@ -151,11 +170,19 @@ export function ConstantMultipleEditingStage({
         currencyCode="USD"
         onChange={handleNumericInput((minSellPrice) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'min-sell-price',
             minSellPrice,
           })
         })}
         onToggle={(toggleStatus) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-with-threshold',
             sellWithThreshold: toggleStatus,
@@ -176,6 +203,10 @@ export function ConstantMultipleEditingStage({
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'max-gas-fee-in-gwei',
             maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
@@ -186,13 +217,13 @@ export function ConstantMultipleEditingStage({
         <>
           <SidebarResetButton
             clear={() => {
-              console.log(constantMultipleTriggerData.buyExecutionCollRatio.toNumber())
-              console.log(constantMultipleTriggerData.sellExecutionCollRatio.toNumber())
-              console.log(prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData).buyExecutionCollRatio.toNumber())
-              console.log(prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData).sellExecutionCollRatio.toNumber())
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'reset',
-                resetData: prepareConstantMultipleResetData(constantMultipleState, constantMultipleTriggerData),
+                resetData: prepareConstantMultipleResetData({
+                  defaultMultiplier: constantMultipleState.defaultMultiplier,
+                  defaultCollRatio: constantMultipleState.defaultCollRatio,
+                  constantMultipleTriggerData,
+                }),
               })
             }}
           />

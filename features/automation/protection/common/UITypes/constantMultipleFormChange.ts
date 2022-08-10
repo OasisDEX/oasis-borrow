@@ -14,6 +14,7 @@ export type ConstantMultipleChangeAction =
   | { type: 'multiplier'; multiplier: number }
   | { type: 'buy-execution-coll-ratio'; buyExecutionCollRatio: BigNumber }
   | { type: 'sell-execution-coll-ratio'; sellExecutionCollRatio: BigNumber }
+  | { type: 'is-editing'; isEditing: boolean }
   | {
       type: 'form-defaults'
       acceptableMultipliers: number[]
@@ -36,6 +37,7 @@ export type ConstantMultipleFormChange = AutomationFormChange & {
   multiplier: number
   minTargetRatio: BigNumber
   maxTargetRatio: BigNumber
+  isEditing: boolean
 }
 
 export function constantMultipleFormChangeReducer(
@@ -84,6 +86,8 @@ export function constantMultipleFormChangeReducer(
         minTargetRatio: action.minTargetRatio,
         maxTargetRatio: action.maxTargetRatio,
       }
+    case 'is-editing':
+      return { ...state, isEditing: action.isEditing }
     default:
       return state
   }
