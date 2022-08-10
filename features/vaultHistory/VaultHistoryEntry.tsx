@@ -267,22 +267,22 @@ function GroupAutomationEntry({ event, isAddOrRemoveEvent, isUpdateEvent }: Auto
         'execCollRatio' in event.addTriggerData[1] && (
           <DefinitionList>
             <VaultHistoryEntryDetailsItem label={t('history.buy-trigger-col-ratio')}>
-              {formatPercent(event.addTriggerData[0].execCollRatio, {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.maximum-buy-price')}>
-              {resolveMaxBuyOrSellPrice(event.addTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
-            </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.sell-trigger-col-ratio')}>
               {formatPercent(event.addTriggerData[1].execCollRatio, {
                 precision: 2,
                 roundMode: BigNumber.ROUND_DOWN,
               })}
             </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.minimum-sell-price')}>
+            <VaultHistoryEntryDetailsItem label={t('history.maximum-buy-price')}>
               {resolveMaxBuyOrSellPrice(event.addTriggerData[1].maxBuyOrMinSellPrice, unlimited)}
+            </VaultHistoryEntryDetailsItem>
+            <VaultHistoryEntryDetailsItem label={t('history.sell-trigger-col-ratio')}>
+              {formatPercent(event.addTriggerData[0].execCollRatio, {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </VaultHistoryEntryDetailsItem>
+            <VaultHistoryEntryDetailsItem label={t('history.minimum-sell-price')}>
+              {resolveMaxBuyOrSellPrice(event.addTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
             </VaultHistoryEntryDetailsItem>
             <VaultHistoryEntryDetailsItem label={t('history.target-col-ratio')}>
               {formatPercent(event.addTriggerData[0].targetCollRatio, {
@@ -308,22 +308,6 @@ function GroupAutomationEntry({ event, isAddOrRemoveEvent, isUpdateEvent }: Auto
         'execCollRatio' in event.addTriggerData[1] && (
           <DefinitionList>
             <VaultHistoryEntryDetailsItem label={t('history.buy-trigger-col-ratio')}>
-              {formatPercent(event.removeTriggerData[0].execCollRatio, {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-              <VaultChangesInformationArrow />
-              {formatPercent(event.addTriggerData[0].execCollRatio, {
-                precision: 2,
-                roundMode: BigNumber.ROUND_DOWN,
-              })}
-            </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.maximum-buy-price')}>
-              {resolveMaxBuyOrSellPrice(event.removeTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
-              <VaultChangesInformationArrow />
-              {resolveMaxBuyOrSellPrice(event.addTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
-            </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.sell-trigger-col-ratio')}>
               {formatPercent(event.removeTriggerData[1].execCollRatio, {
                 precision: 2,
                 roundMode: BigNumber.ROUND_DOWN,
@@ -334,10 +318,26 @@ function GroupAutomationEntry({ event, isAddOrRemoveEvent, isUpdateEvent }: Auto
                 roundMode: BigNumber.ROUND_DOWN,
               })}
             </VaultHistoryEntryDetailsItem>
-            <VaultHistoryEntryDetailsItem label={t('history.minimum-sell-price')}>
+            <VaultHistoryEntryDetailsItem label={t('history.maximum-buy-price')}>
               {resolveMaxBuyOrSellPrice(event.removeTriggerData[1].maxBuyOrMinSellPrice, unlimited)}
               <VaultChangesInformationArrow />
               {resolveMaxBuyOrSellPrice(event.addTriggerData[1].maxBuyOrMinSellPrice, unlimited)}
+            </VaultHistoryEntryDetailsItem>
+            <VaultHistoryEntryDetailsItem label={t('history.sell-trigger-col-ratio')}>
+              {formatPercent(event.removeTriggerData[0].execCollRatio, {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+              <VaultChangesInformationArrow />
+              {formatPercent(event.addTriggerData[0].execCollRatio, {
+                precision: 2,
+                roundMode: BigNumber.ROUND_DOWN,
+              })}
+            </VaultHistoryEntryDetailsItem>
+            <VaultHistoryEntryDetailsItem label={t('history.minimum-sell-price')}>
+              {resolveMaxBuyOrSellPrice(event.removeTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
+              <VaultChangesInformationArrow />
+              {resolveMaxBuyOrSellPrice(event.addTriggerData[0].maxBuyOrMinSellPrice, unlimited)}
             </VaultHistoryEntryDetailsItem>
             <VaultHistoryEntryDetailsItem label={t('history.target-col-ratio')}>
               {formatPercent(event.removeTriggerData[0].targetCollRatio, {
