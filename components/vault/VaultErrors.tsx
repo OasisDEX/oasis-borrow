@@ -132,6 +132,10 @@ export function VaultErrors({
         return translate('after-coll-ratio-below-basic-sell-ratio')
       case 'afterCollRatioAboveBasicBuyRatio':
         return translate('after-coll-ratio-above-basic-buy-ratio')
+      case 'afterCollRatioBelowConstantMultipleSellRatio':
+        return translate('after-coll-ratio-below-constant-multiple-sell-ratio')
+      case 'afterCollRatioAboveConstantMultipleBuyRatio':
+        return translate('after-coll-ratio-above-constant-multiple-buy-ratio')
       case 'vaultWillBeTakenUnderMinActiveColRatio':
         return translate('vault-will-be-taken-under-min-active-col-ratio')
       case 'stopLossOnNearLiquidationRatio':

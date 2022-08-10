@@ -103,6 +103,7 @@ export const StandardBorrowManageAdapter: BorrowManageAdapterInterface<
       stopLossData: undefined,
       basicBuyData: undefined,
       basicSellData: undefined,
+      constantMultipleData: undefined,
       injectStateOverride,
     }
     return initialState

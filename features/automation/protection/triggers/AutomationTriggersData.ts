@@ -8,6 +8,10 @@ import {
   extractBasicBSData,
 } from 'features/automation/common/basicBSTriggerData'
 import {
+  ConstantMultipleTriggerData,
+  extractConstantMultipleData,
+} from 'features/automation/optimization/common/constantMultipleTriggerData'
+import {
   extractStopLossData,
   StopLossTriggerData,
 } from 'features/automation/protection/common/stopLossTriggerData'
@@ -82,6 +86,7 @@ export function createAutomationTriggersChange$(
             triggersData: triggers,
             triggerType: TriggerType.BasicBuy,
           }),
+          constantMultipleData: extractConstantMultipleData(triggers),
         })),
       )
     : []
@@ -92,4 +97,5 @@ export interface AutomationTriggersChange {
   stopLossData: StopLossTriggerData
   basicSellData: BasicBSTriggerData
   basicBuyData: BasicBSTriggerData
+  constantMultipleData: ConstantMultipleTriggerData
 }
