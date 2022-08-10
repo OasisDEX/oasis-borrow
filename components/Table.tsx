@@ -1,7 +1,7 @@
 import { Direction } from 'helpers/form'
 import { useTranslation } from 'next-i18next'
 import React, { HTMLProps, memo, ReactNode } from 'react'
-import { Box, Button, Container, SxStyleProp } from 'theme-ui'
+import { Box, Button, Container, SxStyleProp, Text } from 'theme-ui'
 
 import { ChevronUpDown } from './ChevronUpDown'
 
@@ -224,11 +224,13 @@ export function TableSortHeader<K extends string>({
         color: 'neutral80',
         ...sx,
       }}
-      variant="boldParagraph3"
+      variant="tableHeader"
       onClick={() => filters.change({ kind: 'sortBy', sortBy })}
     >
       <Box sx={{ whiteSpace: 'nowrap', color: isSelected ? 'primary100' : 'neutral80' }}>
-        {children}
+        <Text variant="boldParagraph3" color="inherit">
+          {children}
+        </Text>
       </Box>
       <Box>
         <ChevronUpDown
