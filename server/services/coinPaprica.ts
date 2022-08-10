@@ -1,10 +1,8 @@
 import axios from 'axios'
+import { tokens } from 'blockchain/tokensMetadata'
+import { PriceServiceResponse } from 'helpers/types'
 
-export interface CoinPapricaPriceResponse {
-  [id: string]: string
-}
-
-interface ApiResponse {
+interface CoinPaprikaApiResponse {
   id: string
   name: string
   symbol: string
@@ -42,38 +40,34 @@ export interface Quote {
   percent_from_price_ath: number
 }
 
-const supportedTickers = [
-  'usdp-paxos-standard-token',
-  'steth-lido-staked-ether',
-  'mkr-maker',
-  'weth-weth',
-  'eth-ethereum',
-  'wbtc-wrapped-bitcoin',
-  'renbtc-renbtc',
-  'gusd-gemini-dollar',
-  'usdc-usd-coin',
-  'dai-dai',
-]
+const requiredTickers = tokens
+  .filter((token) => token.coinpaprikaTicker)
+  .map((token) => token.coinpaprikaTicker) as string[]
 
-export async function getTickers(): Promise<CoinPapricaPriceResponse> {
-  const res = await axios({
+async function fetchTicker(id: string): Promise<{ data: CoinPaprikaApiResponse }> {
+  return axios({
     method: 'get',
     timeout: 1000,
-    url: 'https://api.coinpaprika.com/v1/tickers/',
+    url: `https://api.coinpaprika.com/v1/tickers/${id}`,
     responseType: 'json',
     headers: {
       Accept: 'application/json',
     },
   })
+}
 
-  const result: ApiResponse[] = res.data
+export async function getCoinPaprikaTickers(): Promise<PriceServiceResponse> {
+  const result = await Promise.allSettled(requiredTickers.map((ticker) => fetchTicker(ticker)))
 
-  return result
-    .filter((response) => supportedTickers.includes(response.id))
-    .reduce((acc, res) => {
-      return {
-        ...acc,
-        [res.id]: res.quotes.USD.price,
-      }
-    }, {})
+  const mappedResult = result
+    .filter((res) => res.status === 'fulfilled')
+    .map((res) => (res as PromiseFulfilledResult<{ data: CoinPaprikaApiResponse }>).value.data)
+    .map((res, idx) => ({ ...res, ticker: requiredTickers[idx] }))
+
+  return mappedResult.reduce((acc, res) => {
+    return {
+      ...acc,
+      [res.ticker]: res.quotes.USD.price,
+    }
+  }, {})
 }
