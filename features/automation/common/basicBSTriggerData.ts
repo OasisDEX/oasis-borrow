@@ -141,7 +141,6 @@ export function prepareBasicBSTriggerData({
     [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
   }
 
-  console.log(data)
   return {
     cdpId: vaultData.id,
     triggerType,

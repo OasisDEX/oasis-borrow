@@ -204,11 +204,9 @@ export function ConstantMultipleFormControl({
     }
   }
 
-  // const isEditing = true
   const isEditing = checkIfEditingConstantMultiple({
     triggerData: constantMultipleTriggerData,
     state: constantMultipleState,
-    isRemoveForm,
   })
 
   return (

@@ -46,7 +46,7 @@ export function ContentCardTriggerColRatioToBuy({
   }
 
   if (triggerColRatio) contentCardSettings.value = formatted.triggerColRatio
-  if (afterTriggerColRatio && !triggerColRatio?.isEqualTo(afterTriggerColRatio) && changeVariant)
+  if (afterTriggerColRatio && changeVariant)
     contentCardSettings.change = {
       value: `${formatted.afterTriggerColRatio} ${t('system.cards.common.after')}`,
       variant: changeVariant,
