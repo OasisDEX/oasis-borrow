@@ -12,6 +12,7 @@ import { addConstantMultipleTrigger } from 'features/automation/common/constanMu
 import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { checkIfEditingConstantMultiple } from 'features/automation/optimization/common/helpers'
 import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -203,8 +204,12 @@ export function ConstantMultipleFormControl({
     }
   }
 
-  // TODO: get this value based on something similar to checkIfEditingBasicBS
-  const isEditing = true
+  // const isEditing = true
+  const isEditing = checkIfEditingConstantMultiple({
+    triggerData: constantMultipleTriggerData,
+    state: constantMultipleState,
+    isRemoveForm,
+  })
 
   return (
     <SidebarSetupConstantMultiple

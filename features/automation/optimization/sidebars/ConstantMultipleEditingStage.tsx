@@ -71,6 +71,7 @@ export function ConstantMultipleEditingStage({
 
   return (
     <>
+      {`${isEditing}`}
       <Box sx={{ mb: 2 }}>
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
