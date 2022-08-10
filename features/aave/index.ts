@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { ADDRESSES } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import { makeOperation } from 'oasis-actions'
 
 import { zero } from '../../helpers/zero'
 import { amountToWei } from '@oasisdex/utils/lib/src/utils'
-import { ADDRESSES } from 'oasis-actions/src/helpers/addresses'
 
 export interface ActionCall {
   targetHash: string
@@ -74,17 +73,8 @@ export async function getOpenAaveParameters(
   const depositAmount = amountToWei(new BigNumber(200000))
   const borrowAmount = amountToWei(new BigNumber(5))
 
-  const operations = await makeOperation(registry, ADDRESSES.main)
+  const calls: any[] = []
 
-  const calls = await operations.openStEth({
-    account: address,
-    depositAmount,
-    flashloanAmount,
-    borrowAmount,
-    fee: 0,
-    swapData: 0,
-    receiveAtLeast: new BigNumber(1),
-  })
   return {
     calls: calls,
     operationName: 'CustomOperation',
