@@ -65,19 +65,24 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
 }
 
 export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
-  const addOrRemoveEvents = ['added', 'removed']
+  const addOrRemove = ['added', 'removed']
+  const addCombination = ['added', 'added']
 
-  const addOrRemoveEvent = events.find(
-    (item) => 'triggerId' in item && addOrRemoveEvents.includes(item.eventType),
-  ) as AutomationEvent
+  const eventTypes = events.reduce(
+    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
+    [] as string[],
+  )
 
-  if (addOrRemoveEvent && events.length === 1) {
-    const historyKey =
-      addOrRemoveEvent.eventType === 'added' ? 'addTriggerData' : 'removeTriggerData'
+  const addOrRemoveEvents = events.filter(
+    (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
+  ) as AutomationEvent[]
+
+  if (addOrRemoveEvents.length) {
+    const historyKey = equals(eventTypes, addCombination) ? 'addTriggerData' : 'removeTriggerData'
 
     return {
-      ...addOrRemoveEvent,
-      [historyKey]: unpackTriggerDataForHistory(addOrRemoveEvent),
+      ...addOrRemoveEvents[0],
+      [historyKey]: addOrRemoveEvents.map((item) => unpackTriggerDataForHistory(item)),
     } as VaultHistoryEvent
   }
 
@@ -86,6 +91,7 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
 
 export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   const updateCombination = ['added', 'removed']
+
   const eventTypes = events.reduce(
     (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
     [] as string[],
@@ -97,13 +103,18 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   ) as AutomationEvent
 
   if (autoEvent && isUpdateTriggerEvent) {
-    const addEvent = events[0] as AutomationEvent
-    const removeEvent = events[1] as AutomationEvent
+    const addEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'added',
+    ) as AutomationEvent[]
+
+    const removeEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'removed',
+    ) as AutomationEvent[]
 
     return {
       ...autoEvent,
-      addTriggerData: unpackTriggerDataForHistory(addEvent),
-      removeTriggerData: unpackTriggerDataForHistory(removeEvent),
+      addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
+      removeTriggerData: removeEvents.map((item) => unpackTriggerDataForHistory(item)),
       eventType: 'updated',
     } as VaultHistoryEvent
   }
@@ -127,6 +138,7 @@ export function getExecuteTrigger(events: VaultHistoryEvent[]) {
     return {
       ...postExecutionEvent,
       triggerId: autoEvent.triggerId,
+      groupId: 'groupId' in autoEvent && autoEvent.groupId,
       eventType: 'executed',
     } as VaultHistoryEvent
   }
@@ -313,6 +325,7 @@ const triggerEventsQuery = gql`
         timestamp
         triggerData
         commandAddress
+        groupId
       }
     }
   }

@@ -257,12 +257,18 @@
     "stop-loss": "Stop-Loss trigger",
     "basic-buy": "Auto-Buy trigger",
     "basic-sell": "Auto-Sell trigger",
+    "constant-multiple": "Constant-Multiple trigger",
+    "constant-multiple-buy": "Constant-Multiple Buy trigger",
+    "constant-multiple-sell": "Constant-Multiple Sell trigger",
     "close-to": "Close to",
     "trigger-col-ratio": "Trigger Col. Ratio",
+    "buy-trigger-col-ratio": "Buy Trigger Col. Ratio",
+    "sell-trigger-col-ratio": "Sell Trigger Col. Ratio",
     "target-col-ratio": "Target Col. Ratio",
     "max-gas-fee-in-gwei": "Max gas fee in Gwei",
     "minimum-sell-price": "Minimum sell price",
-    "maximum-buy-price": "Maximum buy price"
+    "maximum-buy-price": "Maximum buy price",
+    "target-multiple": "Target multiple"
   },
   "triggers": {
     "added": "added",
