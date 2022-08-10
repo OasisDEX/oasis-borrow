@@ -100,6 +100,7 @@ function mapToPositionVM(vaults: PositionDetails[]): PositionVM[] {
       fundingCost: formatPercent(fundingCost, {
         precision: 2,
       }),
+      collateralLocked: `${formatCryptoBalance(position.lockedCollateral)} ${position.token}`,
       automationEnabled: isAutomationEnabled(position),
       protectionAmount: getProtectionAmount(position),
       editLinkProps: {

@@ -44,13 +44,11 @@ import { createGetRegistryCdps$ } from 'blockchain/getRegistryCdps'
 import { createIlkData$, createIlkDataList$, createIlksSupportedOnNetwork$ } from 'blockchain/ilks'
 import { createInstiVault$, InstiVault } from 'blockchain/instiVault'
 import {
-  coinbaseOrderBook$,
-  coinGeckoTicker$,
-  coinPaprikaTicker$,
   createGasPrice$,
   createOraclePriceData$,
   createTokenPriceInUSD$,
   GasPriceParams,
+  tokenPrices$,
 } from 'blockchain/prices'
 import {
   createAccountBalance$,
@@ -491,16 +489,8 @@ export function setupAppContext() {
   const txHelpers$: TxHelpers$ = createTxHelpers$(connectedContext$, send, gasPrice$)
   const transactionManager$ = createTransactionManager(transactions$)
 
-  const coninbasePrices$ = memoize(coinbaseOrderBook$)
-  const coinGeckoPrices$ = memoize(coinGeckoTicker$)
-
   const tokenPriceUSD$ = memoize(
-    curry(createTokenPriceInUSD$)(
-      every10Seconds$,
-      coninbasePrices$,
-      coinPaprikaTicker$,
-      coinGeckoPrices$,
-    ),
+    curry(createTokenPriceInUSD$)(every10Seconds$, tokenPrices$),
     (tokens: string[]) => tokens.sort().join(','),
   )
 

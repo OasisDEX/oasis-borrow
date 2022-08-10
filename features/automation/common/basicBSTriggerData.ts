@@ -35,6 +35,12 @@ type BasicBSTriggerTypes =
   | TriggerType.CMBasicBuy
   | TriggerType.CMBasicSell
 
+interface ExtractBasicBSDataProps {
+  triggersData: TriggersData
+  triggerType: TriggerType
+  isInGroup?: boolean
+}
+
 function mapBasicBSTriggerData(basicSellTriggers: { triggerId: number; result: Result }[]) {
   return basicSellTriggers.map((trigger) => {
     const [
@@ -100,14 +106,25 @@ export function extractGroupTriggersData(
   }
 
   return {
-    [TriggerType.CMBasicBuy]: extractBasicBSData(groupData, TriggerType.BasicBuy),
-    [TriggerType.CMBasicSell]: extractBasicBSData(groupData, TriggerType.BasicSell),
+    [TriggerType.CMBasicBuy]: extractBasicBSData({
+      triggersData: groupData,
+      triggerType: TriggerType.BasicBuy,
+    }),
+    [TriggerType.CMBasicSell]: extractBasicBSData({
+      triggersData: groupData,
+      triggerType: TriggerType.BasicSell,
+    }),
   }
 }
 
-export function extractBasicBSData(data: TriggersData, type: TriggerType): BasicBSTriggerData {
-  if (data.triggers && data.triggers.length > 0) {
-    const basicBSTriggers = getTriggersByType(data.triggers, [type])
+export function extractBasicBSData({
+  triggersData,
+  triggerType,
+  isInGroup = false,
+}: ExtractBasicBSDataProps): BasicBSTriggerData {
+  if (triggersData.triggers && triggersData.triggers.length > 0) {
+    const triggersList = triggersData.triggers.filter((item) => !!item.groupId === isInGroup)
+    const basicBSTriggers = getTriggersByType(triggersList, [triggerType])
 
     if (basicBSTriggers.length) {
       return mapBasicBSTriggerData(basicBSTriggers)[0]

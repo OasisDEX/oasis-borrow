@@ -127,13 +127,13 @@ function mapToVaultWithHistory(
       isAutomationEnabled,
       triggers,
     })
-    const basicSellData = extractBasicBSData(
-      {
+    const basicSellData = extractBasicBSData({
+      triggersData: {
         isAutomationEnabled,
         triggers,
       },
-      TriggerType.BasicSell,
-    )
+      triggerType: TriggerType.BasicSell,
+    })
 
     return {
       ...vault,
