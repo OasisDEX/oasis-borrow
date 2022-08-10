@@ -330,7 +330,7 @@ export function applyManageVaultConditions<VaultState extends ManageStandardBorr
     basicBuyData,
     constantMultipleData,
   } = state
-  console.log('constantMultipleData', constantMultipleData)
+
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
     depositAmount,
     withdrawAmount,
