@@ -18,7 +18,7 @@ import {
   createTransactionServices,
   createTransactionStateMachine,
   TransactionStateMachine,
-} from "../../../../stateMachines/transaction";
+} from '../../../../stateMachines/transaction'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import { openAaveParametersStateMachine, OpenAaveParametersStateMachineType } from '../transaction'
 import { machineConfig } from '../transaction/openAaveParametersStateMachine'
