@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
 import { errorMessagesHandler } from 'features/form/errorMessagesHandler'
@@ -72,7 +73,7 @@ export function errorsBasicSellValidation({
   isRemoveForm: boolean
   basicSellState: BasicBSFormChange
   autoBuyTriggerData: BasicBSTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
 }) {
   const {
     execCollRatio,
