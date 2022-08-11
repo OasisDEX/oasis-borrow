@@ -155,6 +155,7 @@ import {
   saveUserSettingsLocalStorage$,
 } from 'features/userSettings/userSettingsLocal'
 import { createVaultsOverview$ } from 'features/vaultsOverview/vaultsOverview'
+import { createWalletAssociatedRisk$ } from 'features/walletAssociatedRisk/walletRisk'
 import {
   gasEstimationReducer,
   TX_DATA_CHANGE,
@@ -970,6 +971,8 @@ export function setupAppContext() {
     saveAcceptanceFromApi$,
   )
 
+  const walletAssociatedRisk$ = createWalletAssociatedRisk$(web3Context$, termsAcceptance$)
+
   const userReferral$ = createUserReferral$(
     web3Context$,
     txHelpers$,
@@ -1076,6 +1079,7 @@ export function setupAppContext() {
     vaultHistory$,
     collateralPrices$,
     termsAcceptance$,
+    walletAssociatedRisk$,
     reclaimCollateral$,
     openMultiplyVault$,
     generalManageVault$,

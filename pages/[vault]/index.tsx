@@ -12,6 +12,7 @@ import { GeneralManageControl } from '../../components/vault/GeneralManageContro
 import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
 import { VaultNoticesView } from '../../features/notices/VaultsNoticesView'
 import { WithTermsOfService } from '../../features/termsOfService/TermsOfService'
+import { WithWalletAssociatedRisk } from '../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { useFeatureToggle } from '../../helpers/useFeatureToggle'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -31,32 +32,34 @@ function Vault({ id }: { id: string }) {
   return (
     <WithConnection>
       <WithTermsOfService>
-        {stopLossReadEnabled ? (
-          <>
-            <BackgroundLight />
-            {isValidVaultId ? (
-              <GeneralManageControl id={vaultId} />
-            ) : (
-              <Box sx={{ position: 'relative', zIndex: 1 }}>
-                <NotFoundPage />
-              </Box>
-            )}
-          </>
-        ) : (
-          <Grid gap={0} sx={{ width: '100%' }}>
-            <BackgroundLight />
-            {isValidVaultId ? (
-              <>
-                <VaultNoticesView id={vaultId} />
-                <GeneralManageVaultView id={vaultId} />
-              </>
-            ) : (
-              <Box sx={{ position: 'relative', zIndex: 1 }}>
-                <NotFoundPage />
-              </Box>
-            )}
-          </Grid>
-        )}
+        <WithWalletAssociatedRisk>
+          {stopLossReadEnabled ? (
+            <>
+              <BackgroundLight />
+              {isValidVaultId ? (
+                <GeneralManageControl id={vaultId} />
+              ) : (
+                <Box sx={{ position: 'relative', zIndex: 1 }}>
+                  <NotFoundPage />
+                </Box>
+              )}
+            </>
+          ) : (
+            <Grid gap={0} sx={{ width: '100%' }}>
+              <BackgroundLight />
+              {isValidVaultId ? (
+                <>
+                  <VaultNoticesView id={vaultId} />
+                  <GeneralManageVaultView id={vaultId} />
+                </>
+              ) : (
+                <Box sx={{ position: 'relative', zIndex: 1 }}>
+                  <NotFoundPage />
+                </Box>
+              )}
+            </Grid>
+          )}
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>
   )

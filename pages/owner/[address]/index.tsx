@@ -7,6 +7,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
 import { BackgroundLight } from 'theme/BackgroundLight'
 
+import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
+
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
     props: {
@@ -20,8 +22,10 @@ function VaultsSummary({ address }: { address: string }) {
   return address ? (
     <WithConnection>
       <WithTermsOfService>
-        <BackgroundLight />
-        <VaultsOverviewView address={address} />
+        <WithWalletAssociatedRisk>
+          <BackgroundLight />
+          <VaultsOverviewView address={address} />
+        </WithWalletAssociatedRisk>
       </WithTermsOfService>
     </WithConnection>
   ) : null
