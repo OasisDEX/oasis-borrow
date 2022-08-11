@@ -29,8 +29,8 @@ export interface ConstantMultipleDetailsLayoutProps {
   triggerColRatioToSell?: BigNumber
   nextSellPrice?: BigNumber
   afterTargetMultiple?: number
-  buyExecutionCollRatio?: BigNumber
-  sellExecutionCollRatio?: BigNumber
+  triggerColRatioToBuyToBuy?: BigNumber
+  afterTriggerColRatioToSell?: BigNumber
 }
 
 export function ConstantMultipleDetailsLayout({
@@ -45,8 +45,8 @@ export function ConstantMultipleDetailsLayout({
   triggerColRatioToSell,
   nextSellPrice,
   afterTargetMultiple,
-  buyExecutionCollRatio,
-  sellExecutionCollRatio,
+  triggerColRatioToBuyToBuy,
+  afterTriggerColRatioToSell,
 }: ConstantMultipleDetailsLayoutProps) {
   const { t } = useTranslation()
   const { uiChanges } = useAppContext()
@@ -74,14 +74,14 @@ export function ConstantMultipleDetailsLayout({
               <ContentCardTriggerColRatioToBuy
                 token={token}
                 triggerColRatio={triggerColRatioToBuy}
-                afterTriggerColRatio={buyExecutionCollRatio}
+                afterTriggerColRatio={triggerColRatioToBuyToBuy}
                 nextBuyPrice={nextBuyPrice}
                 changeVariant="positive"
               />
               <ContentCardTriggerColRatioToSell
                 token={token}
                 triggerColRatio={triggerColRatioToSell}
-                afterTriggerColRatio={sellExecutionCollRatio}
+                afterTriggerColRatio={afterTriggerColRatioToSell}
                 nextSellPrice={nextSellPrice}
                 changeVariant="positive"
               />

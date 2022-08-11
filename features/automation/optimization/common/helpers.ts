@@ -43,6 +43,7 @@ export function checkIfEditingConstantMultiple({
 }) {
   const resolvedMaxBuyPrice = resolveMaxBuyOrMinSellPrice(triggerData.maxBuyPrice)
   const resolvedMinSellPrice = resolveMaxBuyOrMinSellPrice(triggerData.minSellPrice)
+
   return (
     (!triggerData.isTriggerEnabled && state.isEditing) ||
     (triggerData.isTriggerEnabled &&

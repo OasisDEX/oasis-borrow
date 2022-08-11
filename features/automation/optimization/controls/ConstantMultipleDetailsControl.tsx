@@ -68,9 +68,9 @@ export function ConstantMultipleDetailsControl({
     }),
     ...(isEditing && {
       afterTargetMultiple: constantMultipleState.multiplier,
-      buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio,
-      sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio,
-    })
+      triggerColRatioToBuyToBuy: constantMultipleState.buyExecutionCollRatio,
+      afterTriggerColRatioToSell: constantMultipleState.sellExecutionCollRatio,
+    }),
   }
 
   return (
