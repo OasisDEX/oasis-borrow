@@ -3,10 +3,11 @@ import BigNumber from 'bignumber.js'
 import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { prepareBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { prepareAddBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
 
 export function prepareAddConstantMultipleTriggerData({
+  triggersId,
   vaultData,
   maxBuyPrice,
   minSellPrice,
@@ -17,6 +18,7 @@ export function prepareAddConstantMultipleTriggerData({
   deviation,
   maxBaseFeeInGwei,
 }: {
+  triggersId: BigNumber[]
   vaultData: Vault
   maxBuyPrice: BigNumber
   minSellPrice: BigNumber
@@ -27,7 +29,7 @@ export function prepareAddConstantMultipleTriggerData({
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddAggregatorTriggerData {
-  const buyTriggerData = prepareBasicBSTriggerData({
+  const buyTriggerData = prepareAddBasicBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicBuy,
     execCollRatio: buyExecutionCollRatio,
@@ -35,10 +37,10 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: maxBuyPrice,
     continuous,
     deviation,
+    replacedTriggerId: triggersId[0],
     maxBaseFeeInGwei,
   })
-
-  const sellTriggerData = prepareBasicBSTriggerData({
+  const sellTriggerData = prepareAddBasicBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicSell,
     execCollRatio: sellExecutionCollRatio,
@@ -46,12 +48,13 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: minSellPrice,
     continuous,
     deviation,
+    replacedTriggerId: triggersId[1],
     maxBaseFeeInGwei,
   })
 
   return {
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
-    replacedTriggerIds: [0, 0],
+    replacedTriggerIds: [triggersId[0].toNumber(), triggersId[1].toNumber()],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
     proxyAddress: vaultData.owner,
     kind: TxMetaKind.addTriggerGroup,

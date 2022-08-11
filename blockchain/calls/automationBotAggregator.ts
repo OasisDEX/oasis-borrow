@@ -33,8 +33,8 @@ function getAddAutomationAggregatotTriggerCallData(
   const { contract, automationBotAggregator } = context
 
   return contract<AutomationBotAggregator>(automationBotAggregator).methods.addTriggerGroup(
-    CONSTANT_MULTIPLE_GROUP_TYPE, // groupTypeId
-    [0, 0], // replacedTriggerId
-    data.triggersData, // triggersData
+    CONSTANT_MULTIPLE_GROUP_TYPE,
+    data.replacedTriggerIds,
+    data.triggersData,
   )
 }

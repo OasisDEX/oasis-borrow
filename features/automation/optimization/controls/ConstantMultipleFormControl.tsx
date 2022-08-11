@@ -83,12 +83,10 @@ export function ConstantMultipleFormControl({
   const isAddForm = constantMultipleState.currentForm === 'add'
   const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
-  console.log(constantMultipleTriggerData.triggersId[0].toNumber())
-  console.log(constantMultipleTriggerData.triggersId[1].toNumber())
-
   const addTxData = useMemo(
     () =>
       prepareAddConstantMultipleTriggerData({
+        triggersId: constantMultipleTriggerData.triggersId,
         vaultData: vault,
         maxBuyPrice: constantMultipleState.buyWithThreshold
           ? constantMultipleState.maxBuyPrice || maxUint256

@@ -39,7 +39,6 @@ export async function getAllActiveTriggers(
   vaultId: string,
 ): Promise<TriggerRecord[]> {
   const constantMultipleEnabled = useFeatureToggle('ConstantMultiple')
-  console.log(`constantMultipleEnabled: ${constantMultipleEnabled}`)
   const data = await client.request<{ allActiveTriggers: { nodes: ActiveTrigger[] } }>(
     constantMultipleEnabled ? queryWithConstantMultiple : query,
     { vaultId },
