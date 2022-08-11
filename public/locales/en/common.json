@@ -795,7 +795,7 @@
   "tos-accept-message-updated": "Before you can continue, you’ll need to read and accept our updated terms of service.",
   "tos-acceptance-check-in-progress": "Acceptance check in progress...",
   "tos-desc": "By creating a Savings pot, I accept Oasis",
-  "tos-jwt-signature-message": "It looks like you're new to Oasis.app or are using a new device to connect. For added security, please sign a message with your wallet to continue.",
+  "tos-jwt-signature-message": "It looks like you're new to Oasis.app, are using a new device to connect or have not provided a signature in line with our compliance requirements. For security please accept our Terms of Service and sign a message with your wallet to continue.",
   "tos-read": "I have read and accept the Terms of Service.",
   "tos-view": "View Terms of Service",
   "tos-wallet-connection-in-progress": "Wallet connection in progress...",
