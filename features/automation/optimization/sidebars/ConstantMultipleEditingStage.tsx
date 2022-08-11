@@ -3,13 +3,17 @@ import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
+import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
-import { getConstantMultipleMultipliers } from 'features/automation/optimization/common/multipliers'
+import {
+  ConstantMultipleTriggerData,
+  prepareConstantMultipleResetData,
+} from 'features/automation/optimization/common/constantMultipleTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -31,11 +35,10 @@ interface SidebaConstantMultiplerEditingStageProps {
   autoBuyTriggerData: BasicBSTriggerData
   //   errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
-  min: BigNumber
-  max: BigNumber
   token: string
   constantMultipleState: ConstantMultipleFormChange
   autoSellTriggerData: BasicBSTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
@@ -51,11 +54,10 @@ export function ConstantMultipleEditingStage({
   autoBuyTriggerData,
   //   errors,
   warnings,
-  min,
-  max,
   token,
   constantMultipleState,
   autoSellTriggerData,
+  constantMultipleTriggerData,
   nextBuyPrice,
   nextSellPrice,
   collateralToBePurchased,
@@ -67,29 +69,20 @@ export function ConstantMultipleEditingStage({
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
 
-  const acceptableMultipliers = getConstantMultipleMultipliers({
-    ilk: ilkData.ilk,
-    minColRatio: min,
-    maxColRatio: max,
-  })
-
-  if (!acceptableMultipliers.includes(constantMultipleState.multiplier)) {
-    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-      type: 'multiplier',
-      multiplier: acceptableMultipliers[1],
-    })
-  }
-
   return (
     <>
       <Box sx={{ mb: 2 }}>
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
           variant="secondary"
-          items={acceptableMultipliers.map((multiplier) => ({
+          items={constantMultipleState.acceptableMultipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
             action: () => {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-editing',
+                isEditing: true,
+              })
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'multiplier',
                 multiplier: multiplier,
@@ -99,9 +92,13 @@ export function ConstantMultipleEditingStage({
         />
       </Box>
       <MultipleRangeSlider
-        min={min.toNumber()}
-        max={max.toNumber()}
+        min={constantMultipleState.minTargetRatio.toNumber()}
+        max={constantMultipleState.maxTargetRatio.toNumber()}
         onChange={(value) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-execution-coll-ratio',
             sellExecutionCollRatio: new BigNumber(value.value0),
@@ -141,11 +138,19 @@ export function ConstantMultipleEditingStage({
         currencyCode="USD"
         onChange={handleNumericInput((maxBuyPrice) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'max-buy-price',
             maxBuyPrice: maxBuyPrice,
           })
         })}
         onToggle={(toggleStatus) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'buy-with-threshold',
             buyWithThreshold: toggleStatus,
@@ -165,11 +170,19 @@ export function ConstantMultipleEditingStage({
         currencyCode="USD"
         onChange={handleNumericInput((minSellPrice) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'min-sell-price',
             minSellPrice,
           })
         })}
         onToggle={(toggleStatus) => {
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'sell-with-threshold',
             sellWithThreshold: toggleStatus,
@@ -190,6 +203,10 @@ export function ConstantMultipleEditingStage({
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+            type: 'is-editing',
+            isEditing: true,
+          })
+          uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
             type: 'max-gas-fee-in-gwei',
             maxBaseFeeInGwei: new BigNumber(maxBaseFeeInGwei),
           })
@@ -197,17 +214,31 @@ export function ConstantMultipleEditingStage({
         value={constantMultipleState.maxBaseFeeInGwei.toNumber()}
       />
       {isEditing && (
-        <ConstantMultipleInfoSectionControl
-          token={token}
-          nextBuyPrice={nextBuyPrice}
-          nextSellPrice={nextSellPrice}
-          collateralToBePurchased={collateralToBePurchased}
-          collateralToBeSold={collateralToBeSold}
-          estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
-          estimatedBuyFee={estimatedBuyFee}
-          estimatedSellFee={estimatedSellFee}
-          constantMultipleState={constantMultipleState}
-        />
+        <>
+          <SidebarResetButton
+            clear={() => {
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'reset',
+                resetData: prepareConstantMultipleResetData({
+                  defaultMultiplier: constantMultipleState.defaultMultiplier,
+                  defaultCollRatio: constantMultipleState.defaultCollRatio,
+                  constantMultipleTriggerData,
+                }),
+              })
+            }}
+          />
+          <ConstantMultipleInfoSectionControl
+            token={token}
+            nextBuyPrice={nextBuyPrice}
+            nextSellPrice={nextSellPrice}
+            collateralToBePurchased={collateralToBePurchased}
+            collateralToBeSold={collateralToBeSold}
+            estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+            estimatedBuyFee={estimatedBuyFee}
+            estimatedSellFee={estimatedSellFee}
+            constantMultipleState={constantMultipleState}
+          />
+        </>
       )}
     </>
   )

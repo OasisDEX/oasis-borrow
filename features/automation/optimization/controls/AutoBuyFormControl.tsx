@@ -24,6 +24,7 @@ import {
   prepareBasicBSResetData,
 } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { SidebarSetupAutoBuy } from 'features/automation/optimization/sidebars/SidebarSetupAutoBuy'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -42,7 +43,7 @@ interface AutoBuyFormControlProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber

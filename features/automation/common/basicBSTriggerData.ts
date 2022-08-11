@@ -29,11 +29,7 @@ export interface BasicBSTriggerData {
   isTriggerEnabled: boolean
 }
 
-type BasicBSTriggerTypes =
-  | TriggerType.BasicBuy
-  | TriggerType.BasicSell
-  | TriggerType.CMBasicBuy
-  | TriggerType.CMBasicSell
+type BasicBSTriggerTypes = TriggerType.BasicBuy | TriggerType.BasicSell
 
 interface ExtractBasicBSDataProps {
   triggersData: TriggersData
@@ -91,32 +87,6 @@ const defaultBasicSellData = {
   isTriggerEnabled: false,
 }
 
-type ConstantMultipleTriggerPairData = {
-  [TriggerType.CMBasicBuy]: BasicBSTriggerData
-  [TriggerType.CMBasicSell]: BasicBSTriggerData
-}
-
-export function extractGroupTriggersData(
-  data: TriggersData,
-  triggerIds: number[] | undefined,
-): ConstantMultipleTriggerPairData {
-  const groupData: TriggersData = {
-    isAutomationEnabled: data.isAutomationEnabled,
-    triggers: data.triggers?.filter((trigger) => triggerIds?.includes(trigger.triggerId)),
-  }
-
-  return {
-    [TriggerType.CMBasicBuy]: extractBasicBSData({
-      triggersData: groupData,
-      triggerType: TriggerType.BasicBuy,
-    }),
-    [TriggerType.CMBasicSell]: extractBasicBSData({
-      triggersData: groupData,
-      triggerType: TriggerType.BasicSell,
-    }),
-  }
-}
-
 export function extractBasicBSData({
   triggersData,
   triggerType,
@@ -169,8 +139,6 @@ export function prepareBasicBSTriggerData({
   const commands = {
     [TriggerType.BasicSell]: CommandContractType.BasicSellCommand,
     [TriggerType.BasicBuy]: CommandContractType.BasicBuyCommand,
-    [TriggerType.CMBasicBuy]: CommandContractType.CMBasicBuyCommand,
-    [TriggerType.CMBasicSell]: CommandContractType.CMBasicSellCommand,
   }
 
   return {

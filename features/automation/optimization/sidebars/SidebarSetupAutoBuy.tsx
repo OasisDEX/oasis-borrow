@@ -6,6 +6,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { getBasicBuyMinMaxValues } from 'features/automation/optimization/helpers'
 import {
@@ -36,7 +37,7 @@ interface SidebarSetupAutoBuyProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoBuyOn: boolean
   context: Context
   ethMarketPrice: BigNumber

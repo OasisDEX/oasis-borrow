@@ -136,8 +136,9 @@ export function DetailsSectionContentCard({
       }}
     >
       <Text
+        as="h3"
         variant="paragraph4"
-        color={isHighlighted ? 'primary100' : 'neutral80'}
+        color="neutral80"
         sx={{ cursor: modal ? 'pointer' : 'auto' }}
         {...hightlightableItemEvents}
       >

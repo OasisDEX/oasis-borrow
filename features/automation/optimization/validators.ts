@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Vault } from 'blockchain/vaults'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { ethFundsForTxValidator, notEnoughETHtoPayForTx } from 'features/form/commonValidators'
@@ -65,7 +66,7 @@ export function errorsBasicBuyValidation({
 }: {
   basicBuyState: BasicBSFormChange
   autoSellTriggerData: BasicBSTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   isRemoveForm: boolean
 }) {
   const { maxBuyOrMinSellPrice, txDetails, withThreshold, execCollRatio } = basicBuyState

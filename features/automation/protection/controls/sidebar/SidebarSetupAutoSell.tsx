@@ -10,6 +10,7 @@ import {
   errorsBasicSellValidation,
   warningsBasicSellValidation,
 } from 'features/automation/common/validators'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { commonProtectionDropdownItems } from 'features/automation/protection/common/dropdown'
 import { getBasicSellMinMaxValues } from 'features/automation/protection/common/helpers'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
@@ -35,7 +36,7 @@ interface SidebarSetupAutoSellProps {
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   isAutoSellActive: boolean
   context: Context
   ethMarketPrice: BigNumber
