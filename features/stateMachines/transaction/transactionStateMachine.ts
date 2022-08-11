@@ -182,6 +182,7 @@ export function createTransactionServices<T extends TxMeta>(
   ) => Observable<TransactionStateMachineEvents<T>>
 } {
   function startTransaction(context: TransactionStateMachineContext<T>) {
+    console.log('starting transaction...')
     return combineLatest(context$, txHelpers$).pipe(
       first(),
       switchMap(([{ safeConfirmations }, { sendWithGasEstimation }]) => {

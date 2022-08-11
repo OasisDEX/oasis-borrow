@@ -2,12 +2,12 @@ import { amountFromWei } from '@oasisdex/utils'
 import { combineLatest, Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
-import { GasPriceParams, Ticker } from '../../../blockchain/prices'
+import { GasPriceParams, Tickers } from '../../../blockchain/prices'
 import { GasEstimationStatus, HasGasEstimation } from '../../../helpers/form'
 
 export function getGasEstimation$(
   gasPrice$: Observable<GasPriceParams>,
-  tokenPriceInUSD$: Observable<Ticker>,
+  tokenPriceInUSD$: Observable<Tickers>,
   estimatedGasCost: number,
 ): Observable<HasGasEstimation> {
   return combineLatest(gasPrice$, tokenPriceInUSD$).pipe(

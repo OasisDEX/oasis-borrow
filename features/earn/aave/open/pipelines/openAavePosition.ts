@@ -25,6 +25,7 @@ export const openAavePosition: TransactionDef<OpenAavePositionData> = {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
   prepareArgs: (data, context) => {
+    console.log('encoded calldata: ', getCallData(data, context).encodeABI())
     return [context.operationExecutor.address, getCallData(data, context).encodeABI()]
   },
   options: ({ token, amount }) =>
@@ -35,10 +36,11 @@ function getCallData(data: OpenAavePositionData, context: ContextConnected) {
   return context
     .contract<OperationExecutor>(context.operationExecutor)
     .methods.executeOp(translateCalls(data.calls), data.operationName)
+
 }
 
 function translateCalls(calls: ActionCall[]): [string, string][] {
   return calls.map((call) => {
-    return [call.callData, call.targetHash]
+    return [call.targetHash, call.callData]
   })
 }

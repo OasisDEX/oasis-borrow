@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import BigNumber from 'bignumber.js'
-import { makeOperation } from 'oasis-actions'
 
-import { zero } from '../../helpers/zero'
+import { strategy } from '@oasisdex/oasis-actions'
+import BigNumber from 'bignumber.js'
+import {  providers } from 'ethers'
+
+import { ContextConnected } from "../../blockchain/network";
+import { ADDRESSES } from '@oasisdex/oasis-actions/src/helpers/addresses'
 import { amountToWei } from '@oasisdex/utils/lib/src/utils'
-import { ADDRESSES } from 'oasis-actions/src/helpers/addresses'
 
 export interface ActionCall {
   targetHash: string
@@ -12,7 +14,7 @@ export interface ActionCall {
 }
 
 export interface PositionInfo {
-  flashloanAmount: BigNumber
+  flashLoanAmount: BigNumber
   borrowedAmount: BigNumber
   fee: BigNumber
   depositedAmount: BigNumber
@@ -65,34 +67,119 @@ const registry: ServiceRegistry = {
 }
 
 export async function getOpenAaveParameters(
-  address: string,
+  context: ContextConnected,
   amount: BigNumber,
   multiply: number,
-  token: string = 'ETH',
+  slippage: BigNumber
 ): Promise<OpenPositionResult> {
-  const flashloanAmount = amountToWei(new BigNumber(1000000))
-  const depositAmount = amountToWei(new BigNumber(200000))
-  const borrowAmount = amountToWei(new BigNumber(5))
+  // TODO: Use service registry
 
-  const operations = await makeOperation(registry, ADDRESSES.main)
+  // const flashloanAmount = amountToWei(new BigNumber(1000000))
+  // const depositAmount = amountToWei(new BigNumber(200000))
+  // const borrowAmount = amountToWei(new BigNumber(5))
 
-  const calls = await operations.openStEth({
-    account: address,
-    depositAmount,
-    flashloanAmount,
-    borrowAmount,
-    fee: 0,
-    swapData: 0,
-    receiveAtLeast: new BigNumber(1),
-  })
+  // const operations = await makeOperation(registry, ADDRESSES.main)
+
+  const mainnetAddresses = {
+    DAI: ADDRESSES.main.DAI,
+    ETH: ADDRESSES.main.ETH,
+    WETH: ADDRESSES.main.WETH,
+    stETH: ADDRESSES.main.stETH,
+    chainlinkEthUsdPriceFeed: ADDRESSES.main.chainlinkEthUsdPriceFeed,
+    aavePriceOracle: ADDRESSES.main.aavePriceOracle,
+    aaveLendingPool: ADDRESSES.main.aave.MainnetLendingPool,
+  }
+
+  const addresses = {
+    ...mainnetAddresses,
+    operationExecutor: '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'
+  }
+
+  function formatOneInchSwapUrl(
+    fromToken: string,
+    toToken: string,
+    amount: string,
+    slippage: string,
+    recepient: string,
+    protocols: string[] = [],
+  ) {
+    const protocolsParam = !protocols?.length ? '' : `&protocols=${protocols.join(',')}`
+    return `https://oasis.api.enterprise.1inch.exchange/v4.0/1/swap?fromTokenAddress=${fromToken.toLowerCase()}&toTokenAddress=${toToken}&amount=${amount}&fromAddress=${recepient}&slippage=${slippage}${protocolsParam}&disableEstimate=true&allowPartialFill=false`
+  }
+
+  async function exchangeTokens(url: string): Promise<any> {
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`Error performing 1inch swap request ${url}: ${await response.text()}`)
+    }
+
+    return response.json() as Promise<any>
+  }
+
+  async function swapOneInchTokens(
+    fromTokenAddress: string,
+    toTokenAddress: string,
+    amount: string,
+    recipient: string,
+    slippage: string,
+    protocols: string[] = [],
+  ): Promise<any> {
+    const url = formatOneInchSwapUrl(
+      fromTokenAddress,
+      toTokenAddress,
+      amount,
+      slippage,
+      recipient,
+      protocols,
+    )
+
+    return exchangeTokens(url)
+  }
+
+  function getOneInchRealCall
+    (swapAddress: string) {
+      return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+        const response = await swapOneInchTokens(
+          from,
+          to,
+          amount.toString(),
+          swapAddress,
+          slippage.toString(),
+        )
+
+        return {
+          toTokenAddress: to,
+          fromTokenAddress: from,
+          minToTokenAmount: new BigNumber(0),
+          toTokenAmount: new BigNumber(response.toTokenAmount),
+          fromTokenAmount: new BigNumber(response.fromTokenAmount),
+          exchangeCalldata: response.tx.data,
+        }
+      }}
+
+  const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+  const strategyReturn = await strategy.openStEth(
+    {
+      depositAmount: amount,
+      slippage,
+      multiply: new BigNumber(multiply),
+    },
+    {
+      addresses,
+      provider: provider,
+      getSwapData: getOneInchRealCall('0x3C1Cb427D20F15563aDa8C249E71db76d7183B6c'),
+    },
+  )
+
   return {
-    calls: calls,
+    calls: strategyReturn.calls,
     operationName: 'CustomOperation',
     positionInfo: {
-      flashloanAmount: flashloanAmount,
-      borrowedAmount: borrowAmount,
-      fee: zero,
-      depositedAmount: depositAmount,
+      flashLoanAmount: strategyReturn.flashLoanAmount,
+      borrowedAmount: strategyReturn.borrowEthAmount,
+      fee: strategyReturn.feeAmount,
+      depositedAmount: amount,
     },
     isAllowanceNeeded: false,
   }
