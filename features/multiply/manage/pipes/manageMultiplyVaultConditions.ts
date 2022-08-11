@@ -234,6 +234,9 @@ export interface ManageVaultConditions {
   afterCollRatioBelowStopLossRatio: boolean
   afterCollRatioBelowBasicSellRatio: boolean
   afterCollRatioAboveBasicBuyRatio: boolean
+  afterCollRatioBelowConstantMultipleSellRatio: boolean
+  afterCollRatioAboveConstantMultipleBuyRatio: boolean
+
   potentialInsufficientEthFundsForTx: boolean
   insufficientEthFundsForTx: boolean
 }
@@ -301,6 +304,8 @@ export const defaultManageMultiplyVaultConditions: ManageVaultConditions = {
   afterCollRatioBelowStopLossRatio: false,
   afterCollRatioBelowBasicSellRatio: false,
   afterCollRatioAboveBasicBuyRatio: false,
+  afterCollRatioBelowConstantMultipleSellRatio: false,
+  afterCollRatioAboveConstantMultipleBuyRatio: false,
 
   potentialInsufficientEthFundsForTx: false,
   insufficientEthFundsForTx: false,
@@ -362,6 +367,7 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     stopLossData,
     basicSellData,
     basicBuyData,
+    constantMultipleData,
   } = state
 
   const depositAndWithdrawAmountsEmpty = depositAndWithdrawAmountsEmptyValidator({
@@ -603,6 +609,24 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       type: 'above',
     })
 
+  const afterCollRatioBelowConstantMultipleSellRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.sellExecutionCollRatio.div(100),
+      type: 'below',
+    })
+
+  const afterCollRatioAboveConstantMultipleBuyRatio =
+    !!constantMultipleData?.isTriggerEnabled &&
+    afterCollRatioThresholdRatioValidator({
+      afterCollateralizationRatio,
+      afterCollateralizationRatioAtNextPrice,
+      threshold: constantMultipleData.buyExecutionCollRatio.div(100),
+      type: 'above',
+    })
+
   const editingProgressionDisabled =
     isEditingStage &&
     (inputAmountsEmpty ||
@@ -627,7 +651,9 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
       invalidSlippage ||
       afterCollRatioBelowStopLossRatio ||
       afterCollRatioBelowBasicSellRatio ||
-      afterCollRatioAboveBasicBuyRatio)
+      afterCollRatioAboveBasicBuyRatio ||
+      afterCollRatioBelowConstantMultipleSellRatio ||
+      afterCollRatioAboveConstantMultipleBuyRatio)
 
   const editingProgressionDisabledForUncontrolled =
     !accountIsController &&
@@ -746,6 +772,8 @@ export function applyManageVaultConditions<VS extends ManageMultiplyVaultState>(
     afterCollRatioBelowStopLossRatio,
     afterCollRatioBelowBasicSellRatio,
     afterCollRatioAboveBasicBuyRatio,
+    afterCollRatioBelowConstantMultipleSellRatio,
+    afterCollRatioAboveConstantMultipleBuyRatio,
 
     insufficientEthFundsForTx,
   }
