@@ -18,6 +18,7 @@ interface BasicLayoutProps extends WithChildren {
   footer?: JSX.Element
   sx?: SxStyleProp
   variant?: string
+  bg: JSX.Element | null
 }
 
 interface WithAnnouncementLayoutProps extends BasicLayoutProps {
@@ -50,6 +51,7 @@ export function WithAnnouncementLayout({
   showAnnouncement,
   sx,
   variant,
+  bg,
 }: WithAnnouncementLayoutProps) {
   return (
     <Flex
@@ -60,6 +62,7 @@ export function WithAnnouncementLayout({
         ...sx,
       }}
     >
+      {bg}
       {header}
       {showAnnouncement && (
         <Container variant="announcement">
@@ -91,6 +94,7 @@ export function AppLayout({ children }: WithChildren) {
         showAnnouncement={false}
         footer={<Footer />}
         header={<AppHeader />}
+        bg={null}
       >
         {children}
         <ModalTrezorMetamaskEIP1559 />
@@ -113,13 +117,13 @@ export function LandingPageLayout({ children }: WithChildren) {
 
   return (
     <>
-      {marketingBackgrounds['default']}
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
+        bg={marketingBackgrounds['default']}
       >
         {children}
       </WithAnnouncementLayout>
@@ -134,13 +138,13 @@ export function ProductPagesLayout({ children }: WithChildren) {
 
   return (
     <>
-      <ProductBackground />
       <WithAnnouncementLayout
         header={<AppHeader />}
         footer={<Footer />}
         showAnnouncement={false}
         variant="landingContainer"
         sx={{ position: 'relative' }}
+        bg={<ProductBackground />}
       >
         {children}
       </WithAnnouncementLayout>
@@ -164,12 +168,12 @@ export function MarketingLayout({
 
   return (
     <>
-      {marketingBackgrounds[topBackground]}
       <BasicLayout
         header={<AppHeader />}
         footer={<Footer />}
         variant={variant || 'marketingContainer'}
         sx={{ position: 'relative' }}
+        bg={marketingBackgrounds[topBackground]}
       >
         {children}
       </BasicLayout>
@@ -181,5 +185,9 @@ export function ConnectPageLayout({ children }: WithChildren & { backLink: AppLi
   if (!isAppContextAvailable()) {
     return null
   }
-  return <BasicLayout header={<ConnectPageHeader />}>{children}</BasicLayout>
+  return (
+    <BasicLayout header={<ConnectPageHeader />} bg={null}>
+      {children}
+    </BasicLayout>
+  )
 }

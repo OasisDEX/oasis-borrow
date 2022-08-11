@@ -14,6 +14,7 @@ export function Background() {
         zIndex: -1,
         backgroundColor: 'white',
         overflow: 'hidden',
+        filter: 'blur(30px)',
         '&::after': {
           position: 'absolute',
           top: 0,
