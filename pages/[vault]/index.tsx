@@ -6,7 +6,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NotFoundPage from 'pages/404'
 import React from 'react'
 import { Box, Grid } from 'theme-ui'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { GeneralManageControl } from '../../components/vault/GeneralManageControl'
 import { GeneralManageVaultView } from '../../features/generalManageVault/GeneralManageVaultView'
@@ -35,7 +34,6 @@ function Vault({ id }: { id: string }) {
         <WithWalletAssociatedRisk>
           {stopLossReadEnabled ? (
             <>
-              <BackgroundLight />
               {isValidVaultId ? (
                 <GeneralManageControl id={vaultId} />
               ) : (
@@ -46,7 +44,6 @@ function Vault({ id }: { id: string }) {
             </>
           ) : (
             <Grid gap={0} sx={{ width: '100%' }}>
-              <BackgroundLight />
               {isValidVaultId ? (
                 <>
                   <VaultNoticesView id={vaultId} />

@@ -25,7 +25,7 @@ interface WithAnnouncementLayoutProps extends BasicLayoutProps {
   showAnnouncement: boolean
 }
 
-export function BasicLayout({ header, footer, children, sx, variant }: BasicLayoutProps) {
+export function BasicLayout({ header, footer, children, sx, variant, bg }: BasicLayoutProps) {
   return (
     <Flex
       sx={{
@@ -35,6 +35,7 @@ export function BasicLayout({ header, footer, children, sx, variant }: BasicLayo
         ...sx,
       }}
     >
+      {bg}
       {header}
       <Container variant={variant || 'appContainer'} sx={{ flex: 2, mb: 5 }} as="main">
         <Flex sx={{ width: '100%', height: '100%' }}>{children}</Flex>
@@ -90,11 +91,11 @@ export function AppLayout({ children }: WithChildren) {
   return (
     <>
       <WithAnnouncementLayout
-        sx={{ zIndex: 2 }}
+        sx={{ zIndex: 2, position: 'relative' }}
         showAnnouncement={false}
         footer={<Footer />}
         header={<AppHeader />}
-        bg={null}
+        bg={<BackgroundLight />}
       >
         {children}
         <ModalTrezorMetamaskEIP1559 />
