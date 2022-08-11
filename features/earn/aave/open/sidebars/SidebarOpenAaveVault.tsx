@@ -1,4 +1,4 @@
-import { ProxyView } from '@oasis-borrow/proxy'
+import { ProxyView } from '../../../../proxyNew'
 import { useMachine } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'

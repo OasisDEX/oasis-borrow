@@ -1,9 +1,9 @@
-import { createProxyStateMachine, ProxyEvent, ProxyStateMachine } from '@oasis-borrow/proxy/state'
+import { createProxyStateMachine, ProxyEvent, ProxyStateMachine } from '../../../../proxyNew/state'
 import {
   createTransactionServices,
   createTransactionStateMachine,
   TransactionStateMachine,
-} from '@oasis-borrow/state-machines/transaction'
+} from "../../../../stateMachines/transaction";
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
