@@ -7,28 +7,21 @@ import { prepareBasicBSTriggerData } from 'features/automation/common/basicBSTri
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
 
 export function prepareAddConstantMultipleTriggerData({
-  // groupId,
   vaultData,
   maxBuyPrice,
   minSellPrice,
   buyExecutionCollRatio,
   sellExecutionCollRatio,
-  // TODO ŁW - confused shall I pass threshold here or not?
-  // buyWithThreshold,
-  // sellWithThreshold,
   targetCollRatio,
   continuous,
   deviation,
   maxBaseFeeInGwei,
 }: {
-  groupId: BigNumber
   vaultData: Vault
   maxBuyPrice: BigNumber
   minSellPrice: BigNumber
   buyExecutionCollRatio: BigNumber
   sellExecutionCollRatio: BigNumber
-  buyWithThreshold: boolean
-  sellWithThreshold: boolean
   targetCollRatio: BigNumber
   continuous: boolean
   deviation: BigNumber
@@ -57,7 +50,6 @@ export function prepareAddConstantMultipleTriggerData({
   })
 
   return {
-    // groupId,
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
     replacedTriggerIds: [0, 0],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],

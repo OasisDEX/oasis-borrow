@@ -76,6 +76,10 @@ export function useConstantMultipleStateInitialization(
       type: 'deviation',
       deviation: constantMultipleTriggerData.deviation,
     })
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: 'add',
+    })
   }, [collateralizationRatio])
 
   return constantMultipleTriggerData.isTriggerEnabled
