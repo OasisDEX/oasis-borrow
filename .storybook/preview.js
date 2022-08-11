@@ -17,8 +17,8 @@ addDecorator((story, context) => <Suspense fallback="Loading...">{story(context)
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   options: {
-    showPanel: false,
-    panelPosition: 'right',
+    showPanel: true,
+    panelPosition: 'bottom',
   },
   nextRouter: {
     Provider: RouterContext.Provider,
