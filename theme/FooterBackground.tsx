@@ -14,7 +14,6 @@ export function FooterBackground() {
         backgroundColor: 'white',
         overflow: 'hidden',
         zIndex: '-1',
-        filter: 'blur(30px)',
       }}
     >
       <Flex
