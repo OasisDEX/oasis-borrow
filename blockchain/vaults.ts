@@ -60,13 +60,13 @@ interface CdpIdsResolver {
   (address: string): Observable<BigNumber[]>
 }
 export function createVaults$(
-  onEveryBlock$: Observable<number>,
+  refreshInterval: Observable<any>,
   vault$: (id: BigNumber, chainId: number) => Observable<Vault>,
   context$: Observable<Context>,
   cdpIdResolvers: CdpIdsResolver[],
   address: string,
 ): Observable<VaultWithType[]> {
-  return combineLatest(onEveryBlock$, context$).pipe(
+  return combineLatest(refreshInterval, context$).pipe(
     switchMap(([_, context]) =>
       combineLatest(cdpIdResolvers.map((resolver) => resolver(address))).pipe(
         map((nestedIds) => nestedIds.flat()),

@@ -335,7 +335,7 @@ export function AssetsAndPositionsOverview({ address }: { address: string }) {
   const [positionsOverviewSummary, positionOverviewSummaryError] = useObservable(
     positionsOverviewSummary$(checksumAddress),
   )
-  console.log('positionsOverviewSummary:', positionsOverviewSummary)
+
   return (
     <WithErrorHandler error={[positionOverviewSummaryError]}>
       <WithLoadingIndicator value={[positionsOverviewSummary]}>
