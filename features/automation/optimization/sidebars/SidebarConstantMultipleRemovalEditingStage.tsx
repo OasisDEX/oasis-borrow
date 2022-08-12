@@ -6,6 +6,7 @@ import { CancelConstantMultipleInfoSection } from 'features/automation/basicBuyS
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
+import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
@@ -24,14 +25,19 @@ export function SidebarConstantMultipleRemovalEditingStage({
   vault,
   warnings,
 }: SidebarConstantMultipleRemovalEditingStageProps) {
+  const { t } = useTranslation()
+
   return (
     <>
       <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-        To cancel the Auto-Buy you’ll need to click the button below and confirm the transaction.
+        {t('constant-multiple.cancel-instructions')}
       </Text>
       <VaultErrors errorMessages={errors} ilkData={ilkData} />
       <VaultWarnings warningMessages={warnings} ilkData={ilkData} />
-      <ConstantMultipleInfoSectionControl vault={vault} constantMultipleState={constantMultipleState} />
+      <ConstantMultipleInfoSectionControl
+        vault={vault}
+        constantMultipleState={constantMultipleState}
+      />
     </>
   )
 }

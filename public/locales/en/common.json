@@ -1523,6 +1523,7 @@
     "target-col-ratio": "Target Col. Ratio {{amount}}",
     "total-cost-of-feature": "Total cost of feature",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
+    "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set up Constant Multiple",
       "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
