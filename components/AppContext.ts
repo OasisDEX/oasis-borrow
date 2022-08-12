@@ -165,7 +165,7 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, first, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   cropperBonusTokenAddress,
@@ -189,9 +189,7 @@ import {
 import { jugIlk } from '../blockchain/calls/jug'
 import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
 import { observe } from '../blockchain/calls/observe'
-import {
-  CropjoinProxyActionsContractAdapter,
-} from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
+import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
   ClaimRewardData,
   DepositAndGenerateData,
@@ -350,8 +348,10 @@ export type UIChanges = {
   publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(sub: string, event: K) => void
   lastPayload: <T extends SupportedUIChangeType>(sub: string) => T
   clear: (sub: string) => void
-  configureSubject: <T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]>(
+  configureSubject: <
+    T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]
+  >(
     subject: string,
     reducer: (prev: T, event: K) => T,
   ) => void
@@ -403,8 +403,10 @@ function createUIChangesSubject(): UIChanges {
     delete latest[subject]
   }
 
-  function configureSubject<T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]>(subject: string, reducer: (prev: T, event: K) => T): void {
+  function configureSubject<
+    T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]
+  >(subject: string, reducer: (prev: T, event: K) => T): void {
     reducers[subject] = reducer
   }
 
@@ -457,7 +459,9 @@ export function setupAppContext() {
   const context$ = createContext$(web3ContextConnected$)
 
   const chainContext$ = context$.pipe(
-    distinctUntilChanged((previousContext, newContext) => previousContext.chainId === newContext.chainId),
+    distinctUntilChanged(
+      (previousContext, newContext) => previousContext.chainId === newContext.chainId,
+    ),
     shareReplay(1),
   )
 
@@ -572,7 +576,13 @@ export function setupAppContext() {
   )
 
   const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(chainContext$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
+    curry(createOraclePriceData$)(
+      chainContext$,
+      pipPeekLean$,
+      pipPeepLean$,
+      pipZzzLean$,
+      pipHopLean$,
+    ),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
