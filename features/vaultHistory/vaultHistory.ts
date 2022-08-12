@@ -132,6 +132,49 @@ export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   return undefined
 }
 
+export function getOverrideTriggers(events: VaultHistoryEvent[]) {
+  const overrideCombinationV1 = ['added', 'added', 'removed']
+  const overrideCombinationV2 = ['added', 'added', 'removed', 'removed']
+
+  const eventTypes = events
+    .reduce((acc, curr) => [...acc, (curr as AutomationEvent).eventType], [] as string[])
+    .sort()
+  const isOverrideTriggerEvent =
+    equals(eventTypes, overrideCombinationV1) || equals(eventTypes, overrideCombinationV2)
+
+  const standaloneEvents = events.filter(
+    (item) => 'triggerId' in item && !('groupId' in item),
+  ) as AutomationEvent[]
+
+  const groupEvent = events.find(
+    (item) => 'triggerId' in item && 'groupId' in item && item.groupId,
+  ) as AutomationEvent
+
+  if (standaloneEvents.length && groupEvent && isOverrideTriggerEvent) {
+    const addEvents = events.filter(
+      (item) => 'triggerId' in item && item.eventType === 'added',
+    ) as AutomationEvent[]
+
+    return [
+      {
+        ...groupEvent,
+        addTriggerData: addEvents.map((item) => unpackTriggerDataForHistory(item)),
+        eventType: 'added',
+      } as VaultHistoryEvent,
+      ...standaloneEvents.map(
+        (item) =>
+          ({
+            ...item,
+            removeTriggerData: [unpackTriggerDataForHistory(item)],
+            eventType: 'removed',
+          } as VaultHistoryEvent),
+      ),
+    ]
+  }
+
+  return undefined
+}
+
 export function getExecuteTrigger(events: VaultHistoryEvent[]) {
   const postExecutionEvents = [
     'DECREASE_MULTIPLE',
@@ -168,6 +211,11 @@ export function mapAutomationEvents(events: VaultHistoryEvent[]) {
     const updateTriggerEvent = getUpdateTrigger(groupedByHash[key])
     const executeTriggerEvent = getExecuteTrigger(groupedByHash[key])
     const addOrRemoveEvent = getAddOrRemoveTrigger(groupedByHash[key])
+    const overrideEvents = getOverrideTriggers(groupedByHash[key])
+
+    if (overrideEvents) {
+      return { ...acc, [key]: overrideEvents }
+    }
 
     if (updateTriggerEvent) {
       return { ...acc, [key]: [updateTriggerEvent] }
