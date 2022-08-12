@@ -31,6 +31,8 @@ export type VaultErrorMessage =
   | 'afterCollRatioBelowStopLossRatio'
   | 'afterCollRatioBelowBasicSellRatio'
   | 'afterCollRatioAboveBasicBuyRatio'
+  | 'afterCollRatioBelowConstantMultipleSellRatio'
+  | 'afterCollRatioAboveConstantMultipleBuyRatio'
   | 'vaultWillBeTakenUnderMinActiveColRatio'
   | 'stopLossOnNearLiquidationRatio'
   | 'stopLossHigherThanCurrentOrNext'
@@ -76,6 +78,8 @@ interface ErrorMessagesHandler {
   afterCollRatioBelowStopLossRatio?: boolean
   afterCollRatioBelowBasicSellRatio?: boolean
   afterCollRatioAboveBasicBuyRatio?: boolean
+  afterCollRatioBelowConstantMultipleSellRatio?: boolean
+  afterCollRatioAboveConstantMultipleBuyRatio?: boolean
   stopLossOnNearLiquidationRatio?: boolean
   stopLossHigherThanCurrentOrNext?: boolean
   maxDebtForSettingStopLoss?: boolean
@@ -121,6 +125,8 @@ export function errorMessagesHandler({
   afterCollRatioBelowStopLossRatio,
   afterCollRatioBelowBasicSellRatio,
   afterCollRatioAboveBasicBuyRatio,
+  afterCollRatioBelowConstantMultipleSellRatio,
+  afterCollRatioAboveConstantMultipleBuyRatio,
   stopLossOnNearLiquidationRatio,
   stopLossHigherThanCurrentOrNext,
   maxDebtForSettingStopLoss,
@@ -256,6 +262,14 @@ export function errorMessagesHandler({
 
   if (afterCollRatioAboveBasicBuyRatio) {
     errorMessages.push('afterCollRatioAboveBasicBuyRatio')
+  }
+
+  if (afterCollRatioBelowConstantMultipleSellRatio) {
+    errorMessages.push('afterCollRatioBelowConstantMultipleSellRatio')
+  }
+
+  if (afterCollRatioAboveConstantMultipleBuyRatio) {
+    errorMessages.push('afterCollRatioAboveConstantMultipleBuyRatio')
   }
 
   if (insufficientEthFundsForTx) {

@@ -53,6 +53,8 @@ const commonErrors = [
   'afterCollRatioBelowStopLossRatio',
   'afterCollRatioBelowBasicSellRatio',
   'afterCollRatioAboveBasicBuyRatio',
+  'afterCollRatioBelowConstantMultipleSellRatio',
+  'afterCollRatioAboveConstantMultipleBuyRatio',
   'vaultWillBeTakenUnderMinActiveColRatio',
   'stopLossOnNearLiquidationRatio',
 
