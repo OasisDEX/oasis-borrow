@@ -80,14 +80,15 @@ export function ConstantMultipleFormControl({
     ? 'txFailure'
     : 'editing'
 
-  const isAddForm = true // TODO ŁW , handle when implementing middle stages
-  // const isAddForm = constantMultipleState.currentForm === 'add'
+  const isAddForm = constantMultipleState.currentForm === 'add'
   const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
   const addTxData = useMemo(
     () =>
       prepareAddConstantMultipleTriggerData({
-        groupId: constantMultipleState.triggerId, // TODO ŁW - consider changing triggerId to groupId
+        triggersId: constantMultipleTriggerData.triggersId,
+        autoBuyTriggerId: autoBuyTriggerData.triggerId,
+        autoSellTriggerId: autoSellTriggerData.triggerId,
         vaultData: vault,
         maxBuyPrice: constantMultipleState.buyWithThreshold
           ? constantMultipleState.maxBuyPrice || maxUint256
@@ -97,15 +98,12 @@ export function ConstantMultipleFormControl({
           : zero,
         buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio,
         sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio,
-        buyWithThreshold: constantMultipleState.buyWithThreshold,
-        sellWithThreshold: constantMultipleState.sellWithThreshold,
         targetCollRatio: constantMultipleState.targetCollRatio, // TODO calculate using constantMultipleState.multiplier
         continuous: constantMultipleState.continuous,
         deviation: constantMultipleState.deviation,
         maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
       }),
     [
-      1, //triggerid
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),

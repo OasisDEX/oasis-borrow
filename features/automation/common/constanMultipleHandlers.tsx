@@ -13,13 +13,12 @@ import { CONSTANT_MULTIPLE_FORM_CHANGE } from '../protection/common/UITypes/cons
 import { takeUntilTxState } from './basicBStxHandlers'
 
 export function addConstantMultipleTrigger(
-  // { sendWithGasEstimation, send }: TxHelpers,
-  { send }: TxHelpers, // TODO ŁW use sendWithGasEstimation when it will be possible
+  { sendWithGasEstimation }: TxHelpers,
   txData: AutomationBotAddAggregatorTriggerData,
   uiChanges: UIChanges,
   ethPrice: BigNumber,
 ) {
-  send(addAutomationBotAggregatorTrigger, txData)
+  sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
 }

@@ -3,38 +3,39 @@ import BigNumber from 'bignumber.js'
 import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
 import { TxMetaKind } from 'blockchain/calls/txMeta'
 import { Vault } from 'blockchain/vaults'
-import { prepareBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { prepareAddBasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/useConstantMultipleStateInitialization'
 
 export function prepareAddConstantMultipleTriggerData({
-  // groupId,
+  triggersId,
+  autoBuyTriggerId,
+  autoSellTriggerId,
   vaultData,
   maxBuyPrice,
   minSellPrice,
   buyExecutionCollRatio,
   sellExecutionCollRatio,
-  // TODO ŁW - confused shall I pass threshold here or not?
-  // buyWithThreshold,
-  // sellWithThreshold,
   targetCollRatio,
   continuous,
   deviation,
   maxBaseFeeInGwei,
 }: {
-  groupId: BigNumber
+  triggersId: BigNumber[]
+  autoBuyTriggerId: BigNumber
+  autoSellTriggerId: BigNumber
   vaultData: Vault
   maxBuyPrice: BigNumber
   minSellPrice: BigNumber
   buyExecutionCollRatio: BigNumber
   sellExecutionCollRatio: BigNumber
-  buyWithThreshold: boolean
-  sellWithThreshold: boolean
   targetCollRatio: BigNumber
   continuous: boolean
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddAggregatorTriggerData {
-  const buyTriggerData = prepareBasicBSTriggerData({
+  const buyTriggerId = triggersId[0].isZero() ? autoBuyTriggerId : triggersId[0]
+  const sellTriggerId = triggersId[1].isZero() ? autoSellTriggerId : triggersId[1]
+  const buyTriggerData = prepareAddBasicBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicBuy,
     execCollRatio: buyExecutionCollRatio,
@@ -42,10 +43,10 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: maxBuyPrice,
     continuous,
     deviation,
+    replacedTriggerId: buyTriggerId,
     maxBaseFeeInGwei,
   })
-
-  const sellTriggerData = prepareBasicBSTriggerData({
+  const sellTriggerData = prepareAddBasicBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicSell,
     execCollRatio: sellExecutionCollRatio,
@@ -53,13 +54,13 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: minSellPrice,
     continuous,
     deviation,
+    replacedTriggerId: sellTriggerId,
     maxBaseFeeInGwei,
   })
 
   return {
-    // groupId,
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
-    replacedTriggerIds: [0, 0],
+    replacedTriggerIds: [buyTriggerId, sellTriggerId],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
     proxyAddress: vaultData.owner,
     kind: TxMetaKind.addTriggerGroup,
