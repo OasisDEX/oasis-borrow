@@ -93,7 +93,7 @@ export function MultipleRangeSlider({
   valueColors,
   middleMark,
   step = 5,
-  middleMarkOffset = 5,
+  middleMarkOffset = 10,
   leftThumbColor = 'warning100',
   rightThumbColor = 'success100',
   leftDescription,
@@ -106,6 +106,7 @@ export function MultipleRangeSlider({
   const sliderBoxRef = useRef<HTMLDivElement>(null)
   const { theme } = useTheme()
   const breakpoint = useBreakpointIndex()
+  const middleMarkDidMount = useRef(false)
 
   const { value0, value1 } = value
   const mobile = breakpoint === 0
@@ -125,13 +126,13 @@ export function MultipleRangeSlider({
   }, [])
 
   useEffect(() => {
-    if (middleMark) {
+    if (middleMark && middleMarkDidMount.current) {
       const newValue = {
-        value0: middleMark.value - middleMarkOffset,
-        value1: middleMark.value + middleMarkOffset,
+        value0: Math.max(middleMark.value - middleMarkOffset, min),
+        value1: Math.min(middleMark.value + middleMarkOffset, max),
       }
-      onChange(newValue)
-    }
+      if (value0 !== newValue.value0 || value1 !== newValue.value1) onChange(newValue)
+    } else middleMarkDidMount.current = true
   }, [middleMark?.value])
 
   const dotsSpace = 5

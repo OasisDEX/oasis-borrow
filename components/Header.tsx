@@ -24,7 +24,6 @@ import { useTranslation } from 'next-i18next'
 import getConfig from 'next/config'
 import { useRouter } from 'next/router'
 import React, { useCallback, useState } from 'react'
-import { TRANSITIONS } from 'theme'
 import { Box, Button, Card, Container, Flex, Grid, Image, SxStyleProp, Text } from 'theme-ui'
 import { useOnMobile } from 'theme/useBreakpointIndex'
 
@@ -34,7 +33,7 @@ import { NotificationsIconButton } from './notifications/NotificationsIconButton
 import { useSharedUI } from './SharedUIProvider'
 import { UniswapWidgetShowHide } from './uniswapWidget/UniswapWidget'
 
-export function Logo({ sx }: { sx?: SxStyleProp }) {
+function Logo({ sx }: { sx?: SxStyleProp }) {
   return (
     <AppLink
       withAccountPrefix={false}
@@ -54,7 +53,7 @@ export function Logo({ sx }: { sx?: SxStyleProp }) {
   )
 }
 
-export function BasicHeader({
+function BasicHeader({
   variant,
   children,
   sx,
@@ -76,24 +75,6 @@ export function BasicHeader({
       >
         {children}
       </Container>
-    </Box>
-  )
-}
-
-export function BackArrow() {
-  return (
-    <Box
-      sx={{
-        cursor: 'pointer',
-        color: 'neutral70',
-        fontSize: '0',
-        transition: TRANSITIONS.global,
-        '&:hover': {
-          color: 'neutral80',
-        },
-      }}
-    >
-      <Icon name="arrow_left" size="auto" width="32" height="47" />
     </Box>
   )
 }
@@ -692,7 +673,7 @@ function MobileMenuLink({ isActive, children }: { isActive: boolean } & WithChil
   )
 }
 
-export function MobileMenu() {
+function MobileMenu() {
   const { t } = useTranslation()
   const { pathname } = useRouter()
   const [isOpen, setIsOpen] = useState(false)

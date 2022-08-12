@@ -6,6 +6,7 @@ import { TxHelpers, UIChanges } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { useSharedUI } from 'components/SharedUIProvider'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { accountIsConnectedValidator } from 'features/form/commonValidators'
 import { BalanceInfo } from 'features/shared/balanceInfo'
@@ -34,7 +35,7 @@ interface StopLossFormsProps {
   stopLossTriggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   ethMarketPrice: BigNumber
   shouldRemoveAllowance: boolean
   txHelpers?: TxHelpers
@@ -105,7 +106,7 @@ interface StopLossFormControlProps {
   stopLossTriggerData: StopLossTriggerData
   autoSellTriggerData: BasicBSTriggerData
   autoBuyTriggerData: BasicBSTriggerData
-  constantMultipleTriggerData: any
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   priceInfo: PriceInfo
   vault: Vault
   balanceInfo: BalanceInfo

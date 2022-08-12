@@ -3,8 +3,14 @@ import { collateralPriceAtRatio } from 'blockchain/vault.maths'
 import { Vault } from 'blockchain/vaults'
 import { calculateMultipleFromTargetCollRatio } from 'features/automation/common/helpers'
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { checkIfEditingConstantMultiple } from 'features/automation/optimization/common/helpers'
+import {
+  CONSTANT_MULTIPLE_FORM_CHANGE,
+  ConstantMultipleFormChange,
+} from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { VaultHistoryEvent } from 'features/vaultHistory/vaultHistory'
 import { calculatePNL } from 'helpers/multiply/calculations'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
@@ -25,18 +31,24 @@ export function ConstantMultipleDetailsControl({
 }: ConstantMultipleDetailsControlProps) {
   const { debt, lockedCollateral, token } = vault
   const netValueUSD = lockedCollateral.times(tokenMarketPrice).minus(debt)
+  const [constantMultipleState] = useUIChanges<ConstantMultipleFormChange>(
+    CONSTANT_MULTIPLE_FORM_CHANGE,
+  )
+  const isEditing = checkIfEditingConstantMultiple({
+    triggerData: constantMultipleTriggerData,
+    state: constantMultipleState,
+  })
   const {
     isTriggerEnabled,
+    targetCollRatio,
     buyExecutionCollRatio,
     sellExecutionCollRatio,
   } = constantMultipleTriggerData
 
   const constantMultipleDetailsLayoutOptionalParams = {
     ...(isTriggerEnabled && {
-      targetMultiple: calculateMultipleFromTargetCollRatio(
-        constantMultipleTriggerData.targetCollRatio,
-      ),
-      targetColRatio: constantMultipleTriggerData.targetCollRatio,
+      targetMultiple: calculateMultipleFromTargetCollRatio(targetCollRatio),
+      targetColRatio: targetCollRatio,
       // TODO: PK calculate based on history entry
       totalCost: new BigNumber(3000),
       // TODO: PK vaultHistory should be cut down right after first found set up multiply event
@@ -53,6 +65,11 @@ export function ConstantMultipleDetailsControl({
         collateral: lockedCollateral,
         vaultDebt: debt,
       }),
+    }),
+    ...(isEditing && {
+      afterTargetMultiple: constantMultipleState.multiplier,
+      triggerColRatioToBuyToBuy: constantMultipleState.buyExecutionCollRatio,
+      afterTriggerColRatioToSell: constantMultipleState.sellExecutionCollRatio,
     }),
   }
 

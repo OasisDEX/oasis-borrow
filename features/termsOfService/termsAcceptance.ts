@@ -4,8 +4,8 @@ import { takeWhileInclusive } from 'rxjs-take-while-inclusive'
 import { catchError, map, repeat, shareReplay, startWith, switchMap } from 'rxjs/operators'
 import Web3 from 'web3'
 
+import { checkIfGnosisSafe } from '../../helpers/checkIfGnosisSafe'
 import { jwtAuthGetToken, JWToken } from './jwt'
-import { checkAcceptanceLocalStorage$, saveAcceptanceLocalStorage$ } from './termAcceptanceLocal'
 
 export type TermsAcceptanceStage =
   | 'walletConnectionInProgress'
@@ -51,7 +51,7 @@ function verifyAcceptance$(
     version: string,
   ) => Observable<{ acceptance: boolean; updated?: boolean }>,
   saveAcceptance$: (token: JWToken, version: string, email?: string) => Observable<void>,
-  jwtAuthSetupToken$: (web3: Web3, account: string) => Observable<JWToken>,
+  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
   version: string,
   web3Context: Web3ContextConnected,
 ): Observable<TermsAcceptanceState> {
@@ -89,56 +89,7 @@ function verifyAcceptance$(
     )
   }
 
-  function checkAcceptanceGnosis(token: JWToken, version: string) {
-    return checkAcceptanceLocalStorage$(token, version).pipe(
-      switchMap(({ acceptance, updated }) => {
-        if (acceptance) {
-          return of({ stage: 'acceptanceAccepted' } as TermsAcceptanceState)
-        }
-
-        const accept$ = new Subject<void>()
-        return accept$.pipe(
-          switchMap(() => {
-            return saveAcceptanceLocalStorage$(token, version).pipe(
-              map(() => ({ stage: 'acceptanceAccepted' })),
-              catchError((error) =>
-                of({ stage: 'acceptanceSaveFailed', error } as TermsAcceptanceState),
-              ),
-              startWith({ stage: 'acceptanceSaveInProgress' }),
-            )
-          }),
-          startWith({
-            stage: 'acceptanceWaiting4TOSAcceptance',
-            acceptTOS: () => accept$.next(),
-            updated,
-          }),
-        )
-      }),
-      catchError((error) => withClose({ stage: 'acceptanceCheckFailed', error })),
-      startWith({ stage: 'acceptanceCheckInProgress' } as TermsAcceptanceState),
-    )
-  }
-
-  let isGnosisSafe = false
-
-  // check if current provider is Gnosis connected by WalletConnect or by dedicated web3-react-connector
-  if (connectionKind === 'walletConnect') {
-    // @ts-ignore
-    if (web3.currentProvider.wc) {
-      // @ts-ignore
-      isGnosisSafe = web3.currentProvider.wc?._peerMeta?.name.includes('Gnosis')
-    }
-  }
-
-  if (connectionKind === 'gnosisSafe') {
-    isGnosisSafe = true
-  }
-
-  if (isGnosisSafe) {
-    // temporary ToS flow for Gnosis until they implement off chain signatures
-    // saving and checking from Local storage and skipping JWT token set up
-    return checkAcceptanceGnosis(`${account}-gnosis`, version)
-  }
+  const isGnosisSafe = checkIfGnosisSafe(connectionKind, web3)
 
   const token = jwtAuthGetToken(account)
 
@@ -153,7 +104,7 @@ function verifyAcceptance$(
 
       const jwtAuth$ = new Subject<boolean>()
       if (updated) {
-        return jwtAuthSetupToken$(web3, account).pipe(
+        return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
           switchMap((token) => {
             return checkAcceptance(token, version, magicLinkEmail)
           }),
@@ -170,7 +121,7 @@ function verifyAcceptance$(
           if (!jwtAuthAccepted) {
             return withClose({ stage: 'jwtAuthRejected' })
           }
-          return jwtAuthSetupToken$(web3, account).pipe(
+          return jwtAuthSetupToken$(web3, account, isGnosisSafe).pipe(
             switchMap((token) => {
               return checkAcceptance(token, version, magicLinkEmail)
             }),
@@ -201,7 +152,7 @@ function verifyAcceptance$(
 export function createTermsAcceptance$(
   web3Context$: Observable<Web3Context>,
   version: string,
-  jwtAuthSetupToken$: (web3: Web3, account: string) => Observable<JWToken>,
+  jwtAuthSetupToken$: (web3: Web3, account: string, isGnosisSafe: boolean) => Observable<JWToken>,
   checkAcceptance$: (
     token: JWToken,
     version: string,

@@ -1,9 +1,9 @@
-import { nameofFactory } from '@oasis-borrow/utils'
 import { Observable } from 'rxjs'
 import { Machine } from 'xstate'
 
 import { TxHelpers } from '../../../components/AppContext'
 import { HasGasEstimation } from '../../../helpers/form'
+import { nameofFactory } from '../../../utils/index'
 import { actions } from './actions'
 import { services } from './services'
 import { ProxyContext, ProxyEvent } from './types'

@@ -1,11 +1,11 @@
-import { OpenPositionResult } from '@oasis-borrow/aave'
-import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { ActorRefFrom, AnyStateMachine } from 'xstate'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { OpenPositionResult } from '../../../../aave/index'
+import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
 import { OpenAaveParametersStateMachineType } from '../transaction'

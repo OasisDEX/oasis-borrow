@@ -1,9 +1,3 @@
-import { createProxyStateMachine, ProxyEvent, ProxyStateMachine } from '@oasis-borrow/proxy/state'
-import {
-  createTransactionServices,
-  createTransactionStateMachine,
-  TransactionStateMachine,
-} from '@oasis-borrow/state-machines/transaction'
 import { TxMeta } from '@oasisdex/transactions'
 import { storiesOf } from '@storybook/react'
 import { useActor, useMachine } from '@xstate/react'
@@ -19,6 +13,12 @@ import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
 import { OpenPositionResult } from '../../../../aave'
+import { createProxyStateMachine, ProxyEvent, ProxyStateMachine } from '../../../../proxyNew/state'
+import {
+  createTransactionServices,
+  createTransactionStateMachine,
+  TransactionStateMachine,
+} from '../../../../stateMachines/transaction'
 import { openAavePosition, OpenAavePositionData } from '../pipelines/openAavePosition'
 import { openAaveParametersStateMachine, OpenAaveParametersStateMachineType } from '../transaction'
 import { machineConfig } from '../transaction/openAaveParametersStateMachine'

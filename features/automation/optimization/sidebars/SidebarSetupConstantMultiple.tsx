@@ -5,8 +5,8 @@ import { useAppContext } from 'components/AppContextProvider'
 import { useGasEstimationContext } from 'components/GasEstimationContextProvider'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
+import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
-import { getConstantMutliplyMinMaxValues } from 'features/automation/optimization/common/helpers'
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
@@ -40,6 +40,7 @@ interface SidebarSetupConstantMultipleProps {
   autoBuyTriggerData: BasicBSTriggerData
   autoSellTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   ethMarketPrice: BigNumber
   isEditing: boolean
   nextBuyPrice: BigNumber
@@ -65,6 +66,7 @@ export function SidebarSetupConstantMultiple({
   autoBuyTriggerData,
   autoSellTriggerData,
   stopLossTriggerData,
+  constantMultipleTriggerData,
   ethMarketPrice,
   isEditing,
   nextBuyPrice,
@@ -88,19 +90,12 @@ export function SidebarSetupConstantMultiple({
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
-  const { min, max } = getConstantMutliplyMinMaxValues({
-    autoBuyTriggerData,
-    stopLossTriggerData,
-    ilkData,
-    lockedCollateralUSD: vault.lockedCollateralUSD,
-  })
-
   const warnings = warningsConstantMultipleValidation({
     vault,
     gasEstimationUsd: gasEstimation?.usdValue,
     ethBalance: balanceInfo.ethBalance,
     ethPrice: ethMarketPrice,
-    sliderMin: min,
+    sliderMin: constantMultipleState.minTargetRatio,
     isStopLossEnabled: stopLossTriggerData.isStopLossEnabled,
     isAutoBuyEnabled: autoBuyTriggerData.isTriggerEnabled,
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
@@ -125,11 +120,10 @@ export function SidebarSetupConstantMultiple({
                 autoBuyTriggerData={autoBuyTriggerData}
                 // errors={[]}
                 warnings={warnings}
-                min={min}
-                max={max}
                 token={''}
                 constantMultipleState={constantMultipleState}
                 autoSellTriggerData={autoSellTriggerData}
+                constantMultipleTriggerData={constantMultipleTriggerData}
                 nextBuyPrice={nextBuyPrice}
                 nextSellPrice={nextSellPrice}
                 collateralToBePurchased={collateralToBePurchased}
