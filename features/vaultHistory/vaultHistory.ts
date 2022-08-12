@@ -67,12 +67,15 @@ export function unpackTriggerDataForHistory(event: AutomationEvent) {
 
 export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
   const addOrRemove = ['added', 'removed']
-  const addCombination = ['added', 'added']
+  const addCombination = ['added']
 
-  const eventTypes = events.reduce(
-    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
-    [] as string[],
-  )
+  const eventTypes = events.reduce((acc, curr) => {
+    if (acc.includes((curr as AutomationEvent).eventType)) {
+      return acc
+    }
+
+    return [...acc, (curr as AutomationEvent).eventType]
+  }, [] as string[])
 
   const addOrRemoveEvents = events.filter(
     (item) => 'triggerId' in item && addOrRemove.includes(item.eventType),
