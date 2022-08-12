@@ -18,7 +18,10 @@ import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { checkIfEditingConstantMultiple } from 'features/automation/optimization/common/helpers'
+import {
+  checkIfDisabledConstantMultiple,
+  checkIfEditingConstantMultiple,
+} from 'features/automation/optimization/common/helpers'
 import {
   prepareAddConstantMultipleTriggerData,
   prepareRemoveConstantMultipleTriggerData,
@@ -54,7 +57,7 @@ interface ConstantMultipleFormControlProps {
 }
 
 export function ConstantMultipleFormControl({
-  // context,
+  context,
   isConstantMultipleActive,
   txHelpers,
   vault,
@@ -73,8 +76,7 @@ export function ConstantMultipleFormControl({
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
-  // TODO: PK to be used in validations
-  // const isOwner = context?.status === 'connected' && context?.account === vault.controller
+  const isOwner = context?.status === 'connected' && context?.account === vault.controller
 
   const { debt, lockedCollateral } = vault
 
@@ -199,9 +201,17 @@ export function ConstantMultipleFormControl({
     }
   }, [addTxData, cancelTxData, isEditing, isConstantMultipleActive])
 
-  // PK: TODO replace later
-  const isDisabled = false
-  const isFirstSetup = true
+  const isDisabled = checkIfDisabledConstantMultiple({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    state: constantMultipleState,
+    stage,
+  })
+  const isFirstSetup =
+    constantMultipleTriggerData.triggersId[0].isZero() &&
+    constantMultipleTriggerData.triggersId[1].isZero()
 
   const nextBuyPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
@@ -250,21 +260,22 @@ export function ConstantMultipleFormControl({
   return (
     <SidebarSetupConstantMultiple
       vault={vault}
-      stage={stage}
-      constantMultipleState={constantMultipleState}
-      isAddForm={isAddForm}
-      isRemoveForm={isRemoveForm}
-      isDisabled={isDisabled}
-      isFirstSetup={isFirstSetup}
-      txHandler={txHandler}
       ilkData={ilkData}
-      autoBuyTriggerData={autoBuyTriggerData}
+      balanceInfo={balanceInfo}
       autoSellTriggerData={autoSellTriggerData}
+      autoBuyTriggerData={autoBuyTriggerData}
       stopLossTriggerData={stopLossTriggerData}
       constantMultipleTriggerData={constantMultipleTriggerData}
       ethMarketPrice={ethMarketPrice}
-      balanceInfo={balanceInfo}
+      constantMultipleState={constantMultipleState}
+      txHandler={txHandler}
+      textButtonHandler={textButtonHandler}
+      stage={stage}
+      isAddForm={isAddForm}
+      isRemoveForm={isRemoveForm}
       isEditing={isEditing}
+      isDisabled={isDisabled}
+      isFirstSetup={isFirstSetup}
       nextBuyPrice={nextBuyPrice}
       nextSellPrice={nextSellPrice}
       collateralToBePurchased={collateralToBePurchased}

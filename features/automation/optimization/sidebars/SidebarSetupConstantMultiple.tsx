@@ -27,22 +27,23 @@ import { ConstantMultipleEditingStage } from './ConstantMultipleEditingStage'
 
 interface SidebarSetupConstantMultipleProps {
   vault: Vault
-  balanceInfo: BalanceInfo
-  stage: SidebarVaultStages
-  constantMultipleState: ConstantMultipleFormChange
-  isAddForm: boolean
-  isRemoveForm: boolean
-  // isEditing: boolean //TODO ŁW, will be used in middle stages
-  isDisabled: boolean
-  isFirstSetup: boolean
-  txHandler: () => void
   ilkData: IlkData
+  balanceInfo: BalanceInfo
   autoBuyTriggerData: BasicBSTriggerData
   autoSellTriggerData: BasicBSTriggerData
   stopLossTriggerData: StopLossTriggerData
   constantMultipleTriggerData: ConstantMultipleTriggerData
   ethMarketPrice: BigNumber
+  constantMultipleState: ConstantMultipleFormChange
+  txHandler: () => void
+  textButtonHandler: () => void
+  stage: SidebarVaultStages
+  isAddForm: boolean
+  isRemoveForm: boolean
   isEditing: boolean
+  isDisabled: boolean
+  isFirstSetup: boolean
+
   nextBuyPrice: BigNumber
   nextSellPrice: BigNumber
   collateralToBePurchased: BigNumber
