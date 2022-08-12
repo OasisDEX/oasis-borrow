@@ -12,6 +12,7 @@ import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/
 import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -155,6 +156,14 @@ export function SidebarSetupConstantMultiple({
                 />
               )}
             </>
+          )}
+          {(stage === 'txSuccess' || stage === 'txInProgress') && (
+            <SidebarAutomationFeatureCreationStage
+              featureName="Constant Multiple"
+              stage={stage}
+              isAddForm={isAddForm}
+              isRemoveForm={isRemoveForm}
+            />
           )}
         </Grid>
       ),

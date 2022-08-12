@@ -7,17 +7,19 @@ import React from 'react'
 import { Box, Flex, Image, Text } from 'theme-ui'
 import { AddingStopLossAnimation } from 'theme/animations'
 
-interface AutoBuyCreationStageProps {
+interface SidebarAutomationFeatureCreationStageProps {
+  featureName: string
   stage: SidebarVaultStages
   isAddForm: boolean
   isRemoveForm: boolean
 }
 
-export function SidebarAutoBuyCreationStage({
+export function SidebarAutomationFeatureCreationStage({
+  featureName,
   stage,
   isAddForm,
   isRemoveForm,
-}: AutoBuyCreationStageProps) {
+}: SidebarAutomationFeatureCreationStageProps) {
   const { t } = useTranslation()
 
   switch (stage) {
@@ -26,8 +28,8 @@ export function SidebarAutoBuyCreationStage({
         <>
           <AddingStopLossAnimation />
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
-            {isAddForm && t('auto-buy.add-content')}
-            {isRemoveForm && t('auto-buy.remove-content')}
+            {isAddForm && t('automation-creation.add-content', { featureName })}
+            {isRemoveForm && t('automation-creation.remove-content', { featureName })}
           </Text>
         </>
       )
@@ -42,13 +44,13 @@ export function SidebarAutoBuyCreationStage({
           <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
             {isAddForm && (
               <>
-                {t('auto-buy.add-complete-content')}{' '}
+                {t('automation-creation.add-complete-content', { featureName })}{' '}
                 <AppLink href="https://kb.oasis.app/help" sx={{ fontSize: 2 }}>
                   {t('here')}.
                 </AppLink>
               </>
             )}
-            {isRemoveForm && t('auto-buy.remove-complete-content')}
+            {isRemoveForm && t('automation-creation.remove-complete-content', { featureName })}
           </Text>
           <Box>
             <VaultChangesWithADelayCard />

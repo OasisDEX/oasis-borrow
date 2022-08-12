@@ -1415,6 +1415,12 @@
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
+  "automation-creation": {
+    "add-content": "Your vault is currently being updated to add your {{featureName}}. {{featureName}} will not be active until this completes.",
+    "remove-content": "Your {{featureName}} cancellation is in progress. Once the transaction is complete. Your {{featureName}} trigger will be removed.",
+    "add-complete-content": "You have successfully set up an {{featureName}} on your vault. Find out more about how this works",
+    "remove-complete-content":  "Your {{featureName}} has been successfully cancelled."
+  },
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
