@@ -58,7 +58,7 @@ export function OptimizationFormControl({
   const { isConstantMultipleActive, isAutoBuyActive } = getActiveOptimizationFeature({
     currentOptimizationFeature: activeAutomationFeature?.currentOptimizationFeature,
     isAutoBuyOn: autoBuyTriggerData.isTriggerEnabled,
-    isConstantMultipleOn: false, //TODO ŁW for now it will be always false as cache is not implemented yet, cannot determine if trigger exist
+    isConstantMultipleOn: constantMultipleTriggerData.isTriggerEnabled,
     section: 'form',
   })
 
@@ -69,6 +69,12 @@ export function OptimizationFormControl({
       uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
         type: 'Optimization',
         currentOptimizationFeature: 'autoBuy',
+      })
+    }
+    if (constantMultipleTriggerData.isTriggerEnabled) {
+      uiChanges.publish(AUTOMATION_CHANGE_FEATURE, {
+        type: 'Optimization',
+        currentOptimizationFeature: 'constantMultiple',
       })
     }
   }, [])
