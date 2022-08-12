@@ -22,17 +22,13 @@ async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   const projectId = dsn.pathname.replace('/', '')
   const upstreamSentryUrl = `https://${SENTRY_HOST}/api/${projectId}/envelope/`
 
-  if (dsn.hostname !== SENTRY_HOST) {
-    return res.status(404).json({ error: `tunnel/invalid-host` })
-  }
-  if (SENTRY_PROJECT_IDS.includes(projectId)) {
-    return res.status(404).json({ error: `tunnel/invalid-project-id-${projectId}` })
-  }
-  const postRes = await axios.post(upstreamSentryUrl, envelope)
-  if (postRes.status === 200) {
-    return res.status(200).json('tunnel/ok')
-  } else {
-    return res.status(500).json({ error: `tunnel/error` })
+  if (dsn.hostname === SENTRY_HOST && SENTRY_PROJECT_IDS.includes(projectId)) {
+    const postRes = await axios.post(upstreamSentryUrl, envelope)
+    if (postRes.status === 200) {
+      return res.status(200).json('tunnel/ok')
+    } else {
+      return res.status(500).json({ error: `tunnel/error` })
+    }
   }
 }
 
