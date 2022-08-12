@@ -7,7 +7,10 @@ import {
   AutomationBotAddTriggerData,
   AutomationBotRemoveTriggerData,
 } from 'blockchain/calls/automationBot'
-import { AutomationBotAddAggregatorTriggerData } from 'blockchain/calls/automationBotAggregator'
+import {
+  AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
+} from 'blockchain/calls/automationBotAggregator'
 import {
   createSendTransaction,
   createSendWithGasConstraints,
@@ -279,6 +282,7 @@ export type TxData =
   | ClaimRewardData
   | ClaimMultipleData
   | AutomationBotAddAggregatorTriggerData
+  | AutomationBotRemoveTriggersData
   | OpenAavePositionData
 
 export interface TxHelpers {

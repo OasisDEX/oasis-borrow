@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js'
 import {
   addAutomationBotAggregatorTrigger,
   AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
+  removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TxHelpers, UIChanges } from 'components/AppContext'
 import { zero } from 'helpers/zero'
@@ -19,6 +21,17 @@ export function addConstantMultipleTrigger(
   ethPrice: BigNumber,
 ) {
   sendWithGasEstimation(addAutomationBotAggregatorTrigger, txData)
+    .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
+    .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
+}
+
+export function removeConstantMultipleTrigger(
+  { send }: TxHelpers,
+  txData: AutomationBotRemoveTriggersData,
+  uiChanges: UIChanges,
+  ethPrice: BigNumber,
+) {
+  send(removeAutomationBotAggregatorTriggers, txData)
     .pipe(takeWhileInclusive((txState) => !takeUntilTxState.includes(txState.status)))
     .subscribe((txState) => handleTriggerTx({ txState, ethPrice, uiChanges }))
 }
