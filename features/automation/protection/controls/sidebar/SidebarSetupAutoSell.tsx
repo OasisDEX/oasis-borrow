@@ -17,7 +17,7 @@ import { StopLossTriggerData } from 'features/automation/protection/common/stopL
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { SidebarAutoSellCancelEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAuteSellCancelEditingStage'
 import { SidebarAutoSellAddEditingStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellAddEditingStage'
-import { SidebarAutoSellCreationStage } from 'features/automation/protection/controls/sidebar/SidebarAutoSellCreationStage'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -174,7 +174,8 @@ export function SidebarSetupAutoSell({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoSellCreationStage
+            <SidebarAutomationFeatureCreationStage
+              featureName="Auto-Sell"
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}

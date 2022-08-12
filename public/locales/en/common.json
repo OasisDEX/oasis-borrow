@@ -1421,6 +1421,12 @@
     "learn-more-heading": "Want to know more?",
     "learn-more-body": "You can visit our <0>knowledge base</0> page to have a deep dive into this strategy. Or ask more questions to our community on <1>Discord →</1>"
   },
+  "automation-creation": {
+    "add-content": "Your vault is currently being updated to add your {{featureName}}. {{featureName}} will not be active until this completes.",
+    "remove-content": "Your {{featureName}} cancellation is in progress. Once the transaction is complete. Your {{featureName}} trigger will be removed.",
+    "add-complete-content": "You have successfully set up an {{featureName}} on your vault. Find out more about how this works",
+    "remove-complete-content":  "Your {{featureName}} has been successfully cancelled."
+  },
   "basic-buy-sell-generic": {
     "max-gas-fee-trans-value": "Max Gas Fee",
     "max-gas-fee-trans-subheading": "Select the maximum gas fee you are willing to spend in Gwei per transaction."
@@ -1529,13 +1535,15 @@
     "target-col-ratio": "Target Col. Ratio {{amount}}",
     "total-cost-of-feature": "Total cost of feature",
     "pnl-since-enabled": "P&L since enabled: {{amount}}",
+    "cancel-instructions": "To cancel the Constant Multiple you'll need to click the button below and confirm the transaction.",
     "banner": {
       "header": "Set up Constant Multiple",
       "content": "Set up Constant Multiple to keep your vault's collateralization ratio within a range that you select",
       "button": "Setup Constant Multiple"
     },
     "vault-changes": {
-      "general-summary": "General Summary",
+      "general-summary": "General summary",
+      "cancel-summary": "Cancel summary",
       "buy-sell-trigger-summary": "Buy and Sell Trigger Summary",
       "target-col-ratio-after-buy-sell": "Target Col. Ratio after each buy/sell",
       "target-multiple-ratio-after-buy-sell": "Target Multiple after each buy/sell",
@@ -1544,7 +1552,12 @@
       "max-price-sell": "Min price to perform auto sell",
       "estimated-oasis-fee": "Estimated Oasis fee",
       "estimated-max-gas-fee": "Estimated max gas fee"
-    }
+    },
+    "adding-constant-multiple": "adding Constant Multiple trigger",
+    "adjusting-constant-multiple": "Adjusting Constant Multiple trigger",
+    "removing-constant-multiple": "Removing Constant Multiple trigger",
+    "setting-constant-multiple": "Setting up your Constant Multiple",
+    "cancelling-constant-multiple": "Cancelling your Constant Multiple"
   },
   "ref": {
     "banner": "Refer a Friend. Earn DAI today",

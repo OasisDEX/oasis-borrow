@@ -7,6 +7,7 @@ import {
 import {
   addAutomationBotAggregatorTrigger,
   AutomationBotAddAggregatorTriggerData,
+  AutomationBotRemoveTriggersData,
 } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 
@@ -45,6 +46,10 @@ export type TxPayloadChangeAction =
   | {
       type: 'add-aggregator-trigger'
       data: AutomationBotAddAggregatorTriggerData
+    }
+  | {
+      type: 'remove-aggregator-trigger'
+      data: AutomationBotRemoveTriggersData
     }
   | { type: 'reset' }
 

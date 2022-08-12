@@ -6,7 +6,7 @@ import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
-import { ConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/ConstantMultipleInfoSection'
+import { AddConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/AddConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
 import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
@@ -48,7 +48,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   estimatedSellFee: BigNumber
 }
 
-export function ConstantMultipleEditingStage({
+export function SidebarConstantMultipleEditingStage({
   ilkData,
   isEditing,
   autoBuyTriggerData,
@@ -273,7 +273,7 @@ function ConstantMultipleInfoSectionControl({
     : [BigNumber.maximum(estimatedBuyFee, estimatedSellFee)]
 
   return (
-    <ConstantMultipleInfoSection
+    <AddConstantMultipleInfoSection
       token={token}
       targetColRatio={constantMultipleState.targetCollRatio}
       multiplier={constantMultipleState.multiplier}

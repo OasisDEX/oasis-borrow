@@ -8,12 +8,24 @@ import { Vault } from 'blockchain/vaults'
 import { TxHelpers } from 'components/AppContext'
 import { useAppContext } from 'components/AppContextProvider'
 import { BasicBSTriggerData, maxUint256 } from 'features/automation/common/basicBSTriggerData'
-import { addConstantMultipleTrigger } from 'features/automation/common/constanMultipleHandlers'
+import {
+  addConstantMultipleTrigger,
+  removeConstantMultipleTrigger,
+} from 'features/automation/common/constanMultipleHandlers'
 import { getBasicBSVaultChange } from 'features/automation/common/helpers'
 import { failedStatuses, progressStatuses } from 'features/automation/common/txStatues'
-import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
-import { checkIfEditingConstantMultiple } from 'features/automation/optimization/common/helpers'
-import { prepareAddConstantMultipleTriggerData } from 'features/automation/optimization/controls/constantMultipleTriggersData'
+import {
+  ConstantMultipleTriggerData,
+  prepareConstantMultipleResetData,
+} from 'features/automation/optimization/common/constantMultipleTriggerData'
+import {
+  checkIfDisabledConstantMultiple,
+  checkIfEditingConstantMultiple,
+} from 'features/automation/optimization/common/helpers'
+import {
+  prepareAddConstantMultipleTriggerData,
+  prepareRemoveConstantMultipleTriggerData,
+} from 'features/automation/optimization/controls/constantMultipleTriggersData'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -30,34 +42,33 @@ import React, { useEffect, useMemo } from 'react'
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 
 interface ConstantMultipleFormControlProps {
+  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: BasicBSTriggerData
+  balanceInfo: BalanceInfo
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
-  isConstantMultipleActive: boolean
-  txHelpers?: TxHelpers
-  vault: Vault
   ethMarketPrice: BigNumber
   ilkData: IlkData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  balanceInfo: BalanceInfo
+  isConstantMultipleActive: boolean
   shouldRemoveAllowance: boolean
+  stopLossTriggerData: StopLossTriggerData
+  txHelpers?: TxHelpers
+  vault: Vault
 }
 
 export function ConstantMultipleFormControl({
-  // TODO ŁW commented out values will probably be used in next stories
-  // context,
-  isConstantMultipleActive,
-  txHelpers,
-  vault,
+  autoBuyTriggerData,
+  autoSellTriggerData,
+  balanceInfo,
+  constantMultipleTriggerData,
+  context,
   ethMarketPrice,
   ilkData,
+  isConstantMultipleActive,
+  shouldRemoveAllowance,
   stopLossTriggerData,
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  constantMultipleTriggerData,
-  // shouldRemoveAllowance, // TODO to be used in cancel trigger txData
-  balanceInfo,
+  txHelpers,
+  vault,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges, gasPrice$ } = useAppContext()
   const [gasPrice] = useObservable(gasPrice$)
@@ -65,23 +76,9 @@ export function ConstantMultipleFormControl({
     CONSTANT_MULTIPLE_FORM_CHANGE,
   )
 
+  const isOwner = context?.status === 'connected' && context?.account === vault.controller
+
   const { debt, lockedCollateral } = vault
-
-  const txStatus = constantMultipleState?.txDetails?.txStatus
-  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
-  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
-  const isSuccessStage = txStatus === TxStatus.Success
-
-  const stage = isSuccessStage
-    ? 'txSuccess'
-    : isProgressStage
-    ? 'txInProgress'
-    : isFailureStage
-    ? 'txFailure'
-    : 'editing'
-
-  const isAddForm = constantMultipleState.currentForm === 'add'
-  const isRemoveForm = constantMultipleState.currentForm === 'remove'
 
   const addTxData = useMemo(
     () =>
@@ -104,6 +101,7 @@ export function ConstantMultipleFormControl({
         maxBaseFeeInGwei: constantMultipleState.maxBaseFeeInGwei,
       }),
     [
+      constantMultipleTriggerData.triggersId,
       vault.collateralizationRatio.toNumber(),
       constantMultipleState.maxBuyPrice?.toNumber(),
       constantMultipleState.minSellPrice?.toNumber(),
@@ -118,6 +116,75 @@ export function ConstantMultipleFormControl({
     ],
   )
 
+  const cancelTxData = useMemo(
+    () =>
+      prepareRemoveConstantMultipleTriggerData({
+        vaultData: vault,
+        triggersId: constantMultipleTriggerData.triggersId,
+        shouldRemoveAllowance,
+      }),
+    [constantMultipleTriggerData.triggersId, shouldRemoveAllowance],
+  )
+
+  const txStatus = constantMultipleState?.txDetails?.txStatus
+  const isFailureStage = txStatus && failedStatuses.includes(txStatus)
+  const isProgressStage = txStatus && progressStatuses.includes(txStatus)
+  const isSuccessStage = txStatus === TxStatus.Success
+
+  const stage = isSuccessStage
+    ? 'txSuccess'
+    : isProgressStage
+    ? 'txInProgress'
+    : isFailureStage
+    ? 'txFailure'
+    : 'editing'
+
+  function txHandler() {
+    if (txHelpers) {
+      if (stage === 'txSuccess') {
+        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+          type: 'tx-details',
+          txDetails: {},
+        })
+        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+          type: 'current-form',
+          currentForm: 'add',
+        })
+      } else {
+        if (isAddForm) {
+          addConstantMultipleTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice)
+        }
+        if (isRemoveForm) {
+          removeConstantMultipleTrigger(txHelpers, cancelTxData, uiChanges, ethMarketPrice)
+        }
+      }
+    }
+  }
+
+  function textButtonHandler() {
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'current-form',
+      currentForm: isAddForm ? 'remove' : 'add',
+    })
+    uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+      type: 'reset',
+      resetData: prepareConstantMultipleResetData({
+        defaultMultiplier: constantMultipleState.defaultMultiplier,
+        defaultCollRatio: constantMultipleState.defaultCollRatio,
+        constantMultipleTriggerData,
+      }),
+    })
+  }
+
+  const isAddForm = constantMultipleState.currentForm === 'add'
+  const isRemoveForm = constantMultipleState.currentForm === 'remove'
+
+  const isEditing = checkIfEditingConstantMultiple({
+    triggerData: constantMultipleTriggerData,
+    state: constantMultipleState,
+    isRemoveForm,
+  })
+
   useEffect(() => {
     if (isEditing && isConstantMultipleActive) {
       if (isAddForm) {
@@ -126,15 +193,26 @@ export function ConstantMultipleFormControl({
           data: addTxData,
         })
       }
-      // TODO uncomment when remove form will be ready
-      // if (isRemoveForm) {
-      //   uiChanges.publish(TX_DATA_CHANGE, {
-      //     type: 'remove-aggregator-trigger',
-      //     data: cancelTxData,
-      //   })
-      // }
+      if (isRemoveForm) {
+        uiChanges.publish(TX_DATA_CHANGE, {
+          type: 'remove-aggregator-trigger',
+          data: cancelTxData,
+        })
+      }
     }
-  }, [addTxData /* cancelTxData, isEditing */, isConstantMultipleActive])
+  }, [addTxData, cancelTxData, isEditing, isConstantMultipleActive])
+
+  const isDisabled = checkIfDisabledConstantMultiple({
+    isProgressStage,
+    isOwner,
+    isEditing,
+    isAddForm,
+    state: constantMultipleState,
+    stage,
+  })
+  const isFirstSetup =
+    constantMultipleTriggerData.triggersId[0].isZero() &&
+    constantMultipleTriggerData.triggersId[1].isZero()
 
   const nextBuyPrice = collateralPriceAtRatio({
     colRatio: constantMultipleState.buyExecutionCollRatio.div(100),
@@ -180,58 +258,34 @@ export function ConstantMultipleFormControl({
   const estimatedBuyFee = debtDeltaAfterBuy.abs().times(OAZO_FEE)
   const estimatedSellFee = debtDeltaAfterSell.abs().times(OAZO_FEE)
 
-  function txHandler() {
-    if (txHelpers) {
-      if (stage === 'txSuccess') {
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'tx-details',
-          txDetails: {},
-        })
-        uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
-          type: 'current-form',
-          currentForm: 'add',
-        })
-      } else {
-        if (isAddForm) {
-          addConstantMultipleTrigger(txHelpers, addTxData, uiChanges, ethMarketPrice)
-        }
-        if (isRemoveForm) {
-          // TODO ŁW can't remove for now as can't load from cache
-        }
-      }
-    }
-  }
-
-  const isEditing = checkIfEditingConstantMultiple({
-    triggerData: constantMultipleTriggerData,
-    state: constantMultipleState,
-  })
-
   return (
     <SidebarSetupConstantMultiple
-      vault={vault}
-      stage={'editing'}
-      constantMultipleState={constantMultipleState}
-      isAddForm={true}
-      isRemoveForm={false}
-      isDisabled={false}
-      isFirstSetup={true}
-      txHandler={txHandler}
-      ilkData={ilkData}
       autoBuyTriggerData={autoBuyTriggerData}
       autoSellTriggerData={autoSellTriggerData}
-      stopLossTriggerData={stopLossTriggerData}
-      constantMultipleTriggerData={constantMultipleTriggerData}
-      ethMarketPrice={ethMarketPrice}
       balanceInfo={balanceInfo}
-      isEditing={isEditing}
-      nextBuyPrice={nextBuyPrice}
-      nextSellPrice={nextSellPrice}
       collateralToBePurchased={collateralToBePurchased}
       collateralToBeSold={collateralToBeSold}
-      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+      constantMultipleState={constantMultipleState}
+      constantMultipleTriggerData={constantMultipleTriggerData}
+      context={context}
       estimatedBuyFee={estimatedBuyFee}
+      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
       estimatedSellFee={estimatedSellFee}
+      ethMarketPrice={ethMarketPrice}
+      ilkData={ilkData}
+      isAddForm={isAddForm}
+      isConstantMultipleActive={isConstantMultipleActive}
+      isDisabled={isDisabled}
+      isEditing={isEditing}
+      isFirstSetup={isFirstSetup}
+      isRemoveForm={isRemoveForm}
+      nextBuyPrice={nextBuyPrice}
+      nextSellPrice={nextSellPrice}
+      stage={stage}
+      stopLossTriggerData={stopLossTriggerData}
+      textButtonHandler={textButtonHandler}
+      txHandler={txHandler}
+      vault={vault}
     />
   )
 }

@@ -15,6 +15,7 @@ import {
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -26,7 +27,6 @@ import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
 
-import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
 
@@ -176,7 +176,8 @@ export function SidebarSetupAutoBuy({
             </>
           )}
           {(stage === 'txSuccess' || stage === 'txInProgress') && (
-            <SidebarAutoBuyCreationStage
+            <SidebarAutomationFeatureCreationStage
+              featureName="Auto-Buy"
               stage={stage}
               isAddForm={isAddForm}
               isRemoveForm={isRemoveForm}
