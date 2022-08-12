@@ -45,7 +45,7 @@ export enum Pages {
   CloseVault = 'CloseVault',
 }
 
-function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
+export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
   const distinctId = mixpanel.get_distinct_id()
 
   // eslint-disable-next-line
