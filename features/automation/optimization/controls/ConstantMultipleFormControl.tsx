@@ -42,33 +42,33 @@ import React, { useEffect, useMemo } from 'react'
 import { SidebarSetupConstantMultiple } from '../sidebars/SidebarSetupConstantMultiple'
 
 interface ConstantMultipleFormControlProps {
+  autoBuyTriggerData: BasicBSTriggerData
+  autoSellTriggerData: BasicBSTriggerData
+  balanceInfo: BalanceInfo
+  constantMultipleTriggerData: ConstantMultipleTriggerData
   context: Context
-  isConstantMultipleActive: boolean
-  txHelpers?: TxHelpers
-  vault: Vault
   ethMarketPrice: BigNumber
   ilkData: IlkData
-  autoSellTriggerData: BasicBSTriggerData
-  autoBuyTriggerData: BasicBSTriggerData
-  stopLossTriggerData: StopLossTriggerData
-  constantMultipleTriggerData: ConstantMultipleTriggerData
-  balanceInfo: BalanceInfo
+  isConstantMultipleActive: boolean
   shouldRemoveAllowance: boolean
+  stopLossTriggerData: StopLossTriggerData
+  txHelpers?: TxHelpers
+  vault: Vault
 }
 
 export function ConstantMultipleFormControl({
+  autoBuyTriggerData,
+  autoSellTriggerData,
+  balanceInfo,
+  constantMultipleTriggerData,
   context,
-  isConstantMultipleActive,
-  txHelpers,
-  vault,
   ethMarketPrice,
   ilkData,
-  stopLossTriggerData,
-  autoSellTriggerData,
-  autoBuyTriggerData,
-  constantMultipleTriggerData,
+  isConstantMultipleActive,
   shouldRemoveAllowance,
-  balanceInfo,
+  stopLossTriggerData,
+  txHelpers,
+  vault,
 }: ConstantMultipleFormControlProps) {
   const { uiChanges, gasPrice$ } = useAppContext()
   const [gasPrice] = useObservable(gasPrice$)
@@ -182,6 +182,7 @@ export function ConstantMultipleFormControl({
   const isEditing = checkIfEditingConstantMultiple({
     triggerData: constantMultipleTriggerData,
     state: constantMultipleState,
+    isRemoveForm,
   })
 
   useEffect(() => {
@@ -259,30 +260,32 @@ export function ConstantMultipleFormControl({
 
   return (
     <SidebarSetupConstantMultiple
-      vault={vault}
-      ilkData={ilkData}
-      balanceInfo={balanceInfo}
-      autoSellTriggerData={autoSellTriggerData}
       autoBuyTriggerData={autoBuyTriggerData}
-      stopLossTriggerData={stopLossTriggerData}
-      constantMultipleTriggerData={constantMultipleTriggerData}
-      ethMarketPrice={ethMarketPrice}
-      constantMultipleState={constantMultipleState}
-      txHandler={txHandler}
-      textButtonHandler={textButtonHandler}
-      stage={stage}
-      isAddForm={isAddForm}
-      isRemoveForm={isRemoveForm}
-      isEditing={isEditing}
-      isDisabled={isDisabled}
-      isFirstSetup={isFirstSetup}
-      nextBuyPrice={nextBuyPrice}
-      nextSellPrice={nextSellPrice}
+      autoSellTriggerData={autoSellTriggerData}
+      balanceInfo={balanceInfo}
       collateralToBePurchased={collateralToBePurchased}
       collateralToBeSold={collateralToBeSold}
-      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
+      constantMultipleState={constantMultipleState}
+      constantMultipleTriggerData={constantMultipleTriggerData}
+      context={context}
       estimatedBuyFee={estimatedBuyFee}
+      estimatedGasCostOnTrigger={estimatedGasCostOnTrigger}
       estimatedSellFee={estimatedSellFee}
+      ethMarketPrice={ethMarketPrice}
+      ilkData={ilkData}
+      isAddForm={isAddForm}
+      isConstantMultipleActive={isConstantMultipleActive}
+      isDisabled={isDisabled}
+      isEditing={isEditing}
+      isFirstSetup={isFirstSetup}
+      isRemoveForm={isRemoveForm}
+      nextBuyPrice={nextBuyPrice}
+      nextSellPrice={nextSellPrice}
+      stage={stage}
+      stopLossTriggerData={stopLossTriggerData}
+      textButtonHandler={textButtonHandler}
+      txHandler={txHandler}
+      vault={vault}
     />
   )
 }

@@ -38,9 +38,11 @@ export function getConstantMutliplyMinMaxValues({
 export function checkIfEditingConstantMultiple({
   triggerData,
   state,
+  isRemoveForm = false,
 }: {
   triggerData: ConstantMultipleTriggerData
   state: ConstantMultipleFormChange
+  isRemoveForm?: boolean
 }) {
   const resolvedMaxBuyPrice = resolveMaxBuyOrMinSellPrice(triggerData.maxBuyPrice)
   const resolvedMinSellPrice = resolveMaxBuyOrMinSellPrice(triggerData.minSellPrice)
@@ -53,7 +55,8 @@ export function checkIfEditingConstantMultiple({
         !triggerData.targetCollRatio.isEqualTo(state.targetCollRatio) ||
         !triggerData.maxBaseFeeInGwei.isEqualTo(state.maxBaseFeeInGwei) ||
         resolvedMaxBuyPrice?.toNumber() !== state.maxBuyPrice?.toNumber() ||
-        resolvedMinSellPrice?.toNumber() !== state.minSellPrice?.toNumber()))
+        resolvedMinSellPrice?.toNumber() !== state.minSellPrice?.toNumber())) ||
+    isRemoveForm
   )
 }
 
