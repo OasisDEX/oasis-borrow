@@ -165,7 +165,7 @@ import {
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
 import { combineLatest, Observable, of, Subject } from 'rxjs'
-import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
+import { distinctUntilChanged, filter, first, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
   cropperBonusTokenAddress,
@@ -189,7 +189,9 @@ import {
 import { jugIlk } from '../blockchain/calls/jug'
 import { crvLdoRewardsEarned } from '../blockchain/calls/lidoCrvRewards'
 import { observe } from '../blockchain/calls/observe'
-import { CropjoinProxyActionsContractAdapter } from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
+import {
+  CropjoinProxyActionsContractAdapter,
+} from '../blockchain/calls/proxyActions/adapters/CropjoinProxyActionsSmartContractAdapter'
 import {
   ClaimRewardData,
   DepositAndGenerateData,
@@ -260,6 +262,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -347,10 +350,8 @@ export type UIChanges = {
   publish: <K extends LegalUiChanges[keyof LegalUiChanges]>(sub: string, event: K) => void
   lastPayload: <T extends SupportedUIChangeType>(sub: string) => T
   clear: (sub: string) => void
-  configureSubject: <
-    T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
-  >(
+  configureSubject: <T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]>(
     subject: string,
     reducer: (prev: T, event: K) => T,
   ) => void
@@ -371,6 +372,7 @@ function createUIChangesSubject(): UIChanges {
     subjectName: string
     payload: SupportedUIChangeType
   }
+
   const commonSubject = new Subject<PublisherRecord>()
 
   function subscribe<T extends SupportedUIChangeType>(subjectName: string): Observable<T> {
@@ -401,10 +403,8 @@ function createUIChangesSubject(): UIChanges {
     delete latest[subject]
   }
 
-  function configureSubject<
-    T extends SupportedUIChangeType,
-    K extends LegalUiChanges[keyof LegalUiChanges]
-  >(subject: string, reducer: (prev: T, event: K) => T): void {
+  function configureSubject<T extends SupportedUIChangeType,
+    K extends LegalUiChanges[keyof LegalUiChanges]>(subject: string, reducer: (prev: T, event: K) => T): void {
     reducers[subject] = reducer
   }
 
@@ -456,6 +456,11 @@ export function setupAppContext() {
 
   const context$ = createContext$(web3ContextConnected$)
 
+  const chainContext$ = context$.pipe(
+    distinctUntilChanged((previousContext, newContext) => previousContext.chainId === newContext.chainId),
+    shareReplay(1),
+  )
+
   const connectedContext$ = createContextConnected$(context$)
 
   combineLatest(account$, connectedContext$)
@@ -498,6 +503,7 @@ export function setupAppContext() {
   )
 
   const daiEthTokenPrice$ = tokenPriceUSD$(['DAI', 'ETH'])
+
   function addGasEstimation$<S extends HasGasEstimation>(
     state: S,
     call: (send: TxHelpers, state: S) => Observable<number> | undefined,
@@ -515,16 +521,16 @@ export function setupAppContext() {
   const cdpManagerOwner$ = observe(onEveryBlock$, context$, cdpManagerOwner, bigNumberTostring)
   const cdpRegistryOwns$ = observe(onEveryBlock$, context$, cdpRegistryOwns)
   const cdpRegistryCdps$ = observe(onEveryBlock$, context$, cdpRegistryCdps)
-  const vatIlks$ = observe(onEveryBlock$, context$, vatIlk)
-  const vatIlksLean$ = observe(once$, context$, vatIlk)
-  const vatUrns$ = observe(onEveryBlock$, context$, vatUrns, ilkUrnAddressToString)
-  const vatGem$ = observe(onEveryBlock$, context$, vatGem, ilkUrnAddressToString)
-  const spotIlks$ = observe(onEveryBlock$, context$, spotIlk)
-  const spotIlksLean$ = observe(once$, context$, spotIlk)
-  const jugIlks$ = observe(onEveryBlock$, context$, jugIlk)
-  const jugIlksLean$ = observe(once$, context$, jugIlk)
-  const dogIlks$ = observe(onEveryBlock$, context$, dogIlk)
-  const dogIlksLean$ = observe(once$, context$, dogIlk)
+  const vatIlks$ = observe(onEveryBlock$, chainContext$, vatIlk)
+  const vatIlksLean$ = observe(once$, chainContext$, vatIlk)
+  const vatUrns$ = observe(onEveryBlock$, chainContext$, vatUrns, ilkUrnAddressToString)
+  const vatGem$ = observe(onEveryBlock$, chainContext$, vatGem, ilkUrnAddressToString)
+  const spotIlks$ = observe(onEveryBlock$, chainContext$, spotIlk)
+  const spotIlksLean$ = observe(once$, chainContext$, spotIlk)
+  const jugIlks$ = observe(onEveryBlock$, chainContext$, jugIlk)
+  const jugIlksLean$ = observe(once$, chainContext$, jugIlk)
+  const dogIlks$ = observe(onEveryBlock$, chainContext$, dogIlk)
+  const dogIlksLean$ = observe(once$, chainContext$, dogIlk)
 
   const charterNib$ = observe(onEveryBlock$, context$, charterNib)
   const charterPeace$ = observe(onEveryBlock$, context$, charterPeace)
@@ -539,8 +545,8 @@ export function setupAppContext() {
   const cropperCrops$ = observe(onEveryBlock$, context$, cropperCrops)
   const cropperBonusTokenAddress$ = observe(onEveryBlock$, context$, cropperBonusTokenAddress)
 
-  const pipZzz$ = observe(onEveryBlock$, context$, pipZzz)
-  const pipZzzLean$ = observe(once$, context$, pipZzz)
+  const pipZzz$ = observe(onEveryBlock$, chainContext$, pipZzz)
+  const pipZzzLean$ = observe(once$, chainContext$, pipZzz)
   const pipHop$ = observe(onEveryBlock$, context$, pipHop)
   const pipHopLean$ = observe(once$, context$, pipHop)
   const pipPeek$ = observe(onEveryBlock$, oracleContext$, pipPeek)
@@ -559,21 +565,21 @@ export function setupAppContext() {
   }
 
   const oraclePriceData$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
+    curry(createOraclePriceData$)(chainContext$, pipPeek$, pipPeep$, pipZzz$, pipHop$),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
   )
 
   const oraclePriceDataLean$ = memoize(
-    curry(createOraclePriceData$)(context$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
+    curry(createOraclePriceData$)(chainContext$, pipPeekLean$, pipPeepLean$, pipZzzLean$, pipHopLean$),
     ({ token, requestedData }) => {
       return `${token}-${requestedData.join(',')}`
     },
   )
 
-  const tokenBalance$ = observe(onEveryBlock$, context$, tokenBalance)
-  const tokenBalanceLean$ = observe(once$, context$, tokenBalance)
+  const tokenBalance$ = observe(onEveryBlock$, chainContext$, tokenBalance)
+  const tokenBalanceLean$ = observe(once$, chainContext$, tokenBalance)
 
   const balance$ = memoize(
     curry(createBalance$)(onEveryBlock$, context$, tokenBalance$),
@@ -588,14 +594,14 @@ export function setupAppContext() {
   const ensName$ = memoize(curry(resolveENSName$)(context$), (address) => address)
 
   const tokenAllowance$ = observe(onEveryBlock$, context$, tokenAllowance)
-  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, context$, tokenBalanceRawForJoin)
-  const tokenDecimals$ = observe(onEveryBlock$, context$, tokenDecimals)
-  const tokenSymbol$ = observe(onEveryBlock$, context$, tokenSymbol)
-  const tokenName$ = observe(onEveryBlock$, context$, tokenName)
+  const tokenBalanceRawForJoin$ = observe(onEveryBlock$, chainContext$, tokenBalanceRawForJoin)
+  const tokenDecimals$ = observe(onEveryBlock$, chainContext$, tokenDecimals)
+  const tokenSymbol$ = observe(onEveryBlock$, chainContext$, tokenSymbol)
+  const tokenName$ = observe(onEveryBlock$, chainContext$, tokenName)
 
-  const allowance$ = curry(createAllowance$)(context$, tokenAllowance$)
+  const allowance$ = curry(createAllowance$)(chainContext$, tokenAllowance$)
 
-  const ilkToToken$ = memoize(curry(createIlkToToken$)(context$))
+  const ilkToToken$ = memoize(curry(createIlkToToken$)(chainContext$))
 
   const ilkData$ = memoize(
     curry(createIlkData$)(vatIlks$, spotIlks$, jugIlks$, dogIlks$, ilkToToken$),
@@ -608,7 +614,7 @@ export function setupAppContext() {
   const charterCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       charterIlks,
@@ -617,7 +623,7 @@ export function setupAppContext() {
   const cropJoinCdps$ = memoize(
     curry(createGetRegistryCdps$)(
       onEveryBlock$,
-      context$,
+      chainContext$,
       cdpRegistryCdps$,
       proxyAddress$,
       cropJoinIlks,
@@ -677,7 +683,7 @@ export function setupAppContext() {
         ilkData$,
         oraclePriceData$,
         ilkToToken$,
-        context$,
+        chainContext$,
         id,
       ),
     bigNumberTostring,
@@ -696,19 +702,19 @@ export function setupAppContext() {
     ),
   )
 
-  const vaultHistory$ = memoize(curry(createVaultHistory$)(context$, onEveryBlock$, vault$))
+  const vaultHistory$ = memoize(curry(createVaultHistory$)(chainContext$, onEveryBlock$, vault$))
 
   pluginDevModeHelpers(txHelpers$, connectedContext$, proxyAddress$)
 
   const vaults$ = memoize(
-    curry(createVaults$)(onEveryBlock$, vault$, context$, [
+    curry(createVaults$)(onEveryBlock$, vault$, chainContext$, [
       charterCdps$,
       cropJoinCdps$,
       standardCdps$,
     ]),
   )
 
-  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
+  const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(chainContext$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
 
@@ -941,11 +947,11 @@ export function setupAppContext() {
   )
 
   const automationTriggersData$ = memoize(
-    curry(createAutomationTriggersData)(context$, onEveryBlock$, vault$),
+    curry(createAutomationTriggersData)(chainContext$, onEveryBlock$, vault$),
   )
 
   const vaultsHistoryAndValue$ = memoize(
-    curry(vaultsWithHistory$)(context$, vaultWithValue$, 1000 * 60),
+    curry(vaultsWithHistory$)(chainContext$, vaultWithValue$, 1000 * 60),
   )
 
   const positionsList$ = memoize(
@@ -1004,14 +1010,14 @@ export function setupAppContext() {
   const accountData$ = createAccountData(web3Context$, balance$, vaults$, ensName$)
 
   const makerOracleTokenPrices$ = memoize(
-    curry(createMakerOracleTokenPrices$)(context$),
+    curry(createMakerOracleTokenPrices$)(chainContext$),
     (token: string, timestamp: moment.Moment) => {
       return `${token}-${timestamp.format('YYYY-MM-DD HH:mm')}`
     },
   )
 
   const makerOracleTokenPricesForDates$ = memoize(
-    curry(createMakerOracleTokenPricesForDates$)(context$),
+    curry(createMakerOracleTokenPricesForDates$)(chainContext$),
     (token: string, timestamps: moment.Moment[]) => {
       return `${token}-${timestamps.map((t) => t.format('YYYY-MM-DD HH:mm')).join(' ')}`
     },
