@@ -93,10 +93,16 @@ export function getAddOrRemoveTrigger(events: VaultHistoryEvent[]) {
 export function getUpdateTrigger(events: VaultHistoryEvent[]) {
   const updateCombination = ['added', 'removed']
 
-  const eventTypes = events.reduce(
-    (acc, curr) => [...acc, (curr as AutomationEvent).eventType],
-    [] as string[],
-  )
+  const eventTypes = events
+    .reduce((acc, curr) => {
+      if (acc.includes((curr as AutomationEvent).eventType)) {
+        return acc
+      }
+
+      return [...acc, (curr as AutomationEvent).eventType]
+    }, [] as string[])
+    .sort()
+
   const isUpdateTriggerEvent = equals(eventTypes, updateCombination)
 
   const autoEvent = events.find(
