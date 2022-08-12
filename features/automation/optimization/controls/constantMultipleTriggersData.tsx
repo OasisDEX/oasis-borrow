@@ -8,6 +8,8 @@ import { CONSTANT_MULTIPLE_GROUP_TYPE } from 'features/automation/protection/use
 
 export function prepareAddConstantMultipleTriggerData({
   triggersId,
+  autoBuyTriggerId,
+  autoSellTriggerId,
   vaultData,
   maxBuyPrice,
   minSellPrice,
@@ -19,6 +21,8 @@ export function prepareAddConstantMultipleTriggerData({
   maxBaseFeeInGwei,
 }: {
   triggersId: BigNumber[]
+  autoBuyTriggerId: BigNumber
+  autoSellTriggerId: BigNumber
   vaultData: Vault
   maxBuyPrice: BigNumber
   minSellPrice: BigNumber
@@ -29,6 +33,8 @@ export function prepareAddConstantMultipleTriggerData({
   deviation: BigNumber
   maxBaseFeeInGwei: BigNumber
 }): AutomationBotAddAggregatorTriggerData {
+  const buyTriggerId = triggersId[0].isZero() ? autoBuyTriggerId : triggersId[0]
+  const sellTriggerId = triggersId[1].isZero() ? autoSellTriggerId : triggersId[1]
   const buyTriggerData = prepareAddBasicBSTriggerData({
     vaultData,
     triggerType: TriggerType.BasicBuy,
@@ -37,7 +43,7 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: maxBuyPrice,
     continuous,
     deviation,
-    replacedTriggerId: triggersId[0],
+    replacedTriggerId: buyTriggerId,
     maxBaseFeeInGwei,
   })
   const sellTriggerData = prepareAddBasicBSTriggerData({
@@ -48,13 +54,13 @@ export function prepareAddConstantMultipleTriggerData({
     maxBuyOrMinSellPrice: minSellPrice,
     continuous,
     deviation,
-    replacedTriggerId: triggersId[1],
+    replacedTriggerId: sellTriggerId,
     maxBaseFeeInGwei,
   })
 
   return {
     groupTypeId: CONSTANT_MULTIPLE_GROUP_TYPE,
-    replacedTriggerIds: [triggersId[0].toNumber(), triggersId[1].toNumber()],
+    replacedTriggerIds: [buyTriggerId, sellTriggerId],
     triggersData: [buyTriggerData.triggerData, sellTriggerData.triggerData],
     proxyAddress: vaultData.owner,
     kind: TxMetaKind.addTriggerGroup,

@@ -87,6 +87,8 @@ export function ConstantMultipleFormControl({
     () =>
       prepareAddConstantMultipleTriggerData({
         triggersId: constantMultipleTriggerData.triggersId,
+        autoBuyTriggerId: autoBuyTriggerData.triggerId,
+        autoSellTriggerId: autoSellTriggerData.triggerId,
         vaultData: vault,
         maxBuyPrice: constantMultipleState.buyWithThreshold
           ? constantMultipleState.maxBuyPrice || maxUint256
