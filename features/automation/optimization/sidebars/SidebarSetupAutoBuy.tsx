@@ -14,7 +14,7 @@ import {
   warningsBasicBuyValidation,
 } from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
-import { BasicBSFormChange } from 'features/automation/protection/common/UITypes/basicBSFormChange'
+import { AUTOMATION_FORM_FLOW_STATE, BasicBSFormChange, BASIC_BUY_FORM_CHANGE, BASIC_BUY_SELL_FLOW_STATE_CHANGE, BASIC_SELL_FORM_CHANGE } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import { BalanceInfo } from 'features/shared/balanceInfo'
 import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
@@ -23,12 +23,13 @@ import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLa
 import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { useTranslation } from 'next-i18next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Grid } from 'theme-ui'
 
 import { SidebarAutoBuyCreationStage } from './SidebarAutoBuyCreationStage'
 import { SidebarAutoBuyEditingStage } from './SidebarAutoBuyEditingStage'
 import { SidebarAutoBuyRemovalEditingStage } from './SidebarAutoBuyRemovalEditingStage'
+import { SidebarAutoBuyConfirmationStage } from './SidebarAutoBuyConfirmationStage';
 
 interface SidebarSetupAutoBuyProps {
   vault: Vault
@@ -53,6 +54,7 @@ interface SidebarSetupAutoBuyProps {
   debtDelta: BigNumber
   collateralDelta: BigNumber
   isAutoBuyActive: boolean
+  flowState: AUTOMATION_FORM_FLOW_STATE;
 }
 
 export function SidebarSetupAutoBuy({
@@ -81,8 +83,12 @@ export function SidebarSetupAutoBuy({
   debtDelta,
   collateralDelta,
   isAutoBuyActive,
+
+  flowState
 }: SidebarSetupAutoBuyProps) {
   const { t } = useTranslation()
+
+  const [showConfirmationScreen, setShowconfirmationScreen] = useState(false);
 
   const gasEstimation = useGasEstimationContext()
 
@@ -92,8 +98,8 @@ export function SidebarSetupAutoBuy({
   const flow: SidebarFlow = isRemoveForm
     ? 'cancelBasicBuy'
     : isFirstSetup
-    ? 'addBasicBuy'
-    : 'editBasicBuy'
+      ? 'addBasicBuy'
+      : 'editBasicBuy'
 
   const sidebarStatus = getSidebarStatus({
     stage,
@@ -101,6 +107,9 @@ export function SidebarSetupAutoBuy({
     flow,
     etherscan: context.etherscan.url,
   })
+
+  console.log(flowState, 'status');
+  console.log(stage, 'stage')
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
 
@@ -149,7 +158,7 @@ export function SidebarSetupAutoBuy({
         <Grid gap={3}>
           {(stage === 'editing' || stage === 'txFailure') && (
             <>
-              {isAddForm && (
+              {isAddForm && flowState !== 'confirmation' && (
                 <SidebarAutoBuyEditingStage
                   vault={vault}
                   ilkData={ilkData}
@@ -162,6 +171,14 @@ export function SidebarSetupAutoBuy({
                   collateralDelta={collateralDelta}
                   sliderMin={min}
                   sliderMax={max}
+                />
+              )}
+              {flowState === 'confirmation' && (
+                <SidebarAutoBuyConfirmationStage
+                  vault={vault}
+                  basicBuyState={basicBuyState}
+                  debtDelta={debtDelta}
+                  collateralDelta={collateralDelta}
                 />
               )}
               {isRemoveForm && (
@@ -188,7 +205,17 @@ export function SidebarSetupAutoBuy({
         label: primaryButtonLabel,
         disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
-        action: () => txHandler(),
+        action: () => {
+          if(flowState === 'editing') {
+            console.log('hello')
+            uiChanges.publish(BASIC_BUY_FORM_CHANGE, {
+              type: 'flow-state',
+              flowState: 'confirmation'
+            })
+          } else {
+            txHandler()
+          }
+        },
       },
       ...(stage !== 'txInProgress' && {
         textButton: {

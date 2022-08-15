@@ -160,6 +160,7 @@ export function AutoBuyFormControl({
     })
   }
 
+  console.log(basicBuyState, 'state in top')
   const isAddForm = basicBuyState.currentForm === 'add'
   const isRemoveForm = basicBuyState.currentForm === 'remove'
 
@@ -236,6 +237,7 @@ export function AutoBuyFormControl({
       debtDelta={debtDelta}
       collateralDelta={collateralDelta}
       isAutoBuyActive={isAutoBuyActive}
+      flowState={basicBuyState.flowState}
     />
   )
 }

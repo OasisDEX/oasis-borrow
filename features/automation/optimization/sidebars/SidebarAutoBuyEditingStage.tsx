@@ -21,13 +21,14 @@ import {
 import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
+import { useUIChanges } from 'helpers/uiChangesHook'
 import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { one, zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Text } from 'theme-ui'
 
-interface SidebarAutoBuyEditingStageProps {
+export interface SidebarAutoBuyEditingStageProps {
   vault: Vault
   ilkData: IlkData
   isEditing: boolean
@@ -186,6 +187,7 @@ export function SidebarAutoBuyEditingStage({
         }}
         value={basicBuyState.maxBaseFeeInGwei.toNumber()}
       />
+
       {isEditing && (
         <AutoBuyInfoSectionControl
           executionPrice={executionPrice}
@@ -207,7 +209,7 @@ interface AutoBuyInfoSectionControlProps {
   collateralDelta: BigNumber
 }
 
-function AutoBuyInfoSectionControl({
+export function AutoBuyInfoSectionControl({
   executionPrice,
   vault,
   basicBuyState,

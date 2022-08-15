@@ -11,6 +11,7 @@ import { Vault } from 'blockchain/vaults'
 import { getTriggersByType } from 'features/automation/common/filterTriggersByType'
 import { TriggersData } from 'features/automation/protection/triggers/AutomationTriggersData'
 import { zero } from 'helpers/zero'
+import { AUTOMATION_FORM_FLOW_STATE } from '../protection/common/UITypes/basicBSFormChange'
 
 export const maxUint32 = new BigNumber('0xFFFFFFFF')
 export const maxUint256 = new BigNumber(

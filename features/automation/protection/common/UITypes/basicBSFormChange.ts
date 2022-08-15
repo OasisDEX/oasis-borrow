@@ -2,8 +2,11 @@ import { TxStatus } from '@oasisdex/transactions'
 import BigNumber from 'bignumber.js'
 import { TxError } from 'helpers/types'
 
+export const BASIC_BUY_SELL_FLOW_STATE_CHANGE = 'BASIC_BUY_SELL_FLOW_STATE_CHANGE'
 export const BASIC_SELL_FORM_CHANGE = 'BASIC_SELL_FORM_CHANGE'
 export const BASIC_BUY_FORM_CHANGE = 'BASIC_BUY_FORM_CHANGE'
+
+export type AUTOMATION_FORM_FLOW_STATE = 'confirmation' | 'editing'
 
 export type CurrentBSForm = 'add' | 'remove'
 
@@ -22,14 +25,15 @@ export type AutomationChangeAction =
   | { type: 'current-form'; currentForm: CurrentBSForm }
   | { type: 'reset'; resetData: BasicBSTriggerResetData }
   | {
-      type: 'tx-details'
-      txDetails: {
-        txStatus?: TxStatus
-        txError?: TxError
-        txHash?: string
-        txCost?: BigNumber
-      }
+    type: 'tx-details'
+    txDetails: {
+      txStatus?: TxStatus
+      txError?: TxError
+      txHash?: string
+      txCost?: BigNumber
     }
+  }
+  | { type: 'flow-state'; flowState: AUTOMATION_FORM_FLOW_STATE }
 
 export type BasicBSChangeAction =
   | AutomationChangeAction
@@ -38,10 +42,13 @@ export type BasicBSChangeAction =
   | { type: 'with-threshold'; withThreshold: boolean }
   | { type: 'execution-coll-ratio'; execCollRatio: BigNumber }
 
+
 export function basicBSFormChangeReducer(
   state: BasicBSFormChange,
   action: BasicBSChangeAction,
 ): BasicBSFormChange {
+  console.log(state, 'state in reducer', state)
+  console.log(action, 'action')
   switch (action.type) {
     case 'trigger-id':
       return { ...state, triggerId: action.triggerId }
@@ -63,6 +70,8 @@ export function basicBSFormChangeReducer(
       return { ...state, withThreshold: action.withThreshold }
     case 'tx-details':
       return { ...state, txDetails: action.txDetails }
+    case 'flow-state':
+      return { ...state, flowState: action.flowState }
     case 'reset':
       return { ...state, ...action.resetData }
     default:
@@ -84,6 +93,7 @@ export type AutomationFormChange = {
     txHash?: string
     txCost?: BigNumber
   }
+  flowState: AUTOMATION_FORM_FLOW_STATE
 }
 
 export type BasicBSFormChange = AutomationFormChange & {

@@ -82,6 +82,7 @@ import {
   BASIC_SELL_FORM_CHANGE,
   BasicBSChangeAction,
   basicBSFormChangeReducer,
+  BASIC_BUY_SELL_FLOW_STATE_CHANGE,
 } from 'features/automation/protection/common/UITypes/basicBSFormChange'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
@@ -423,6 +424,7 @@ function initializeUIChanges() {
   uiChangesSubject.configureSubject(ADD_FORM_CHANGE, formChangeReducer)
   uiChangesSubject.configureSubject(BASIC_SELL_FORM_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(BASIC_BUY_FORM_CHANGE, basicBSFormChangeReducer)
+  uiChangesSubject.configureSubject(BASIC_BUY_SELL_FLOW_STATE_CHANGE, basicBSFormChangeReducer)
   uiChangesSubject.configureSubject(REMOVE_FORM_CHANGE, removeFormReducer)
   uiChangesSubject.configureSubject(TAB_CHANGE_SUBJECT, tabChangeReducer)
   uiChangesSubject.configureSubject(MULTIPLY_VAULT_PILL_CHANGE_SUBJECT, multiplyPillChangeReducer)

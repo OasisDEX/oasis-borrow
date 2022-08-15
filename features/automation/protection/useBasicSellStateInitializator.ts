@@ -44,6 +44,10 @@ export function useBasicBSstateInitialization(
       triggerId,
     })
     uiChanges.publish(publishKey, {
+      type: 'flow-state',
+      flowState: 'editing',
+    })
+    uiChanges.publish(publishKey, {
       type: 'execution-coll-ratio',
       execCollRatio,
     })
