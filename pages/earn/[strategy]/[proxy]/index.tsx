@@ -5,10 +5,10 @@ import { Grid } from 'theme-ui'
 
 import { WithConnection } from '../../../../components/connectWallet/ConnectWallet'
 import { AppLayout } from '../../../../components/Layouts'
+import { AaveContextProvider } from '../../../../features/earn/aave/AaveContextProvider'
 import { AaveManagePositionView } from '../../../../features/earn/aave/manage/containers/AaveManageView'
 import { WithTermsOfService } from '../../../../features/termsOfService/TermsOfService'
 import { BackgroundLight } from '../../../../theme/BackgroundLight'
-import { AaveContextProvider } from '../../../../features/earn/aave/AaveContextProvider'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -20,7 +20,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-function Position({ proxy, strategy }: { proxy: string; strategy: string }) {
+function Position({ proxy }: { proxy: string; strategy: string }) {
   return (
     <AaveContextProvider>
       <WithConnection>

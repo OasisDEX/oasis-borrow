@@ -2,11 +2,7 @@ import { Machine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 
 import { actions, manageAaveMachineActions } from './actions'
-import {
-  enoughBalance,
-  validCloseTransactionParameters,
-  validTransactionParameters,
-} from './guards'
+import { validCloseTransactionParameters, validTransactionParameters } from './guards'
 import { services } from './services'
 import { ManageAaveContext, ManageAaveEvent } from './types'
 
@@ -52,7 +48,7 @@ export const createManageAaveStateMachine = Machine<
               actions.sendUpdateToParametersMachine,
             ],
           },
-          CLOSE_POSITION: {
+          POSITION_CLOSED: {
             target: 'reviewing',
           },
           'xstate.update': {

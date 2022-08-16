@@ -5,6 +5,13 @@ import { distinctUntilKeyChanged, switchMap } from 'rxjs/operators'
 
 import { TokenBalances } from '../../../blockchain/tokens'
 import { AppContext } from '../../../components/AppContext'
+import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
+import { getManageAavePositionStateMachineServices } from './manage/state/services'
+import {
+  getManageAaveParametersStateMachine$,
+  getManageAaveParametersStateMachineServices$,
+} from './manage/transaction'
+import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
 import { getOpenAaveStateMachine$ } from './open/state/getOpenAaveStateMachine'
 import { getOpenAavePositionStateMachineServices } from './open/state/services'
 import {
@@ -12,13 +19,6 @@ import {
   getOpenAaveParametersStateMachineServices$,
 } from './open/transaction'
 import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
-import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
-import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
-import { getManageAavePositionStateMachineServices } from './manage/state/services'
-import {
-  getManageAaveParametersStateMachine$,
-  getManageAaveParametersStateMachineServices$,
-} from './manage/transaction'
 
 export function setupAaveContext({
   userSettings$,

@@ -1,6 +1,6 @@
 import { TxMeta, TxStatus } from '@oasisdex/transactions'
 import { combineLatest, Observable, of } from 'rxjs'
-import { first, switchMap, tap } from 'rxjs/operators'
+import { first, switchMap } from 'rxjs/operators'
 import { assign, Machine, StateMachine } from 'xstate'
 import { choose, escalate } from 'xstate/lib/actions'
 

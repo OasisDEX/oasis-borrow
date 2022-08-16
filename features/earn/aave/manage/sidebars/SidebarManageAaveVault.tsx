@@ -151,7 +151,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
       disabled: false,
       label: t('manage-earn.aave.vault-form.close'),
       action: () => {
-        send('CLOSE_POSITION')
+        send('POSITION_CLOSED')
       },
     },
   }
@@ -172,7 +172,7 @@ function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
   //     disabled: false,
   //     label: t('manage-earn.aave.vault-form.close'),
   //     action: () => {
-  //       send('CLOSE_POSITION')
+  //       send('POSITION_CLOSED')
   //     },
   //   },
   //   textButton: {

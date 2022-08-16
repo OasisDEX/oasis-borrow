@@ -2,7 +2,7 @@ import { useMachine } from '@xstate/react'
 import { SidebarSection, SidebarSectionProps } from 'components/sidebar/SidebarSection'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box, Flex, Grid, Image, Text } from 'theme-ui'
+import { Box, Flex, Grid, Image } from 'theme-ui'
 import { Sender } from 'xstate'
 
 import {
@@ -10,12 +10,11 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
+import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
+import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { ProxyView } from '../../../../proxyNew'
 import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
 import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
-import { extractSidebarTxData } from '../../../../../helpers/extractSidebarHelpers'
-import { OpenVaultAnimation } from '../../../../../theme/animations'
-import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 
 export interface OpenAaveVaultProps {
   readonly aaveStateMachine: OpenAaveStateMachine
