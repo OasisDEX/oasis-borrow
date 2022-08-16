@@ -128,6 +128,7 @@ export function SidebarConstantMultipleEditingStage({
           text: `${constantMultipleState.multiplier}x`,
           value: constantMultipleState.targetCollRatio.toNumber(),
         }}
+        isResetAction={constantMultipleState.isResetAction}
       />
       <VaultWarnings
         warningMessages={extractConstantMultipleSliderWarnings(warnings)}
@@ -236,6 +237,7 @@ export function SidebarConstantMultipleEditingStage({
                   defaultCollRatio: constantMultipleState.defaultCollRatio,
                   constantMultipleTriggerData,
                 }),
+                isResetAction: true,
               })
             }}
           />

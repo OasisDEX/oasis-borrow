@@ -83,6 +83,7 @@ interface MultipleRangeSliderProps {
   rightThumbColor?: string
   minDescription?: ReactNode
   maxDescription?: ReactNode
+  isResetAction?: boolean
 }
 
 export function MultipleRangeSlider({
@@ -100,6 +101,7 @@ export function MultipleRangeSlider({
   rightDescription,
   minDescription = '',
   maxDescription = '',
+  isResetAction = false,
 }: MultipleRangeSliderProps) {
   const [side, setSide] = useState('')
   const [sliderBoxBoundaries, setSliderBoxBoundaries] = useState(sliderDefaultBoundaries)
@@ -126,7 +128,7 @@ export function MultipleRangeSlider({
   }, [])
 
   useEffect(() => {
-    if (middleMark && middleMarkDidMount.current) {
+    if (middleMark && middleMarkDidMount.current && !isResetAction) {
       const newValue = {
         value0: Math.max(middleMark.value - middleMarkOffset, min),
         value1: Math.min(middleMark.value + middleMarkOffset, max),
