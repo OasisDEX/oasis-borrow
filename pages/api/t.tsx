@@ -18,7 +18,6 @@ const handler = async function (req: NextApiRequest, res: NextApiResponse<{ stat
       distinct_id: distinctId,
       current_url: currentUrl,
       referrer: referrer,
-      id: `be-${eventBody.id}`,
     })
 
     res.json({ status: 200 })
