@@ -5,7 +5,6 @@ import { WithTermsOfService } from 'features/termsOfService/TermsOfService'
 import { GetServerSidePropsContext, GetStaticPaths } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 import { WithWalletAssociatedRisk } from '../../../features/walletAssociatedRisk/WalletAssociatedRisk'
 import { supportedBorrowIlks } from '../../../helpers/productCards'
@@ -32,7 +31,6 @@ function OpenVault({ ilk }: { ilk: string }) {
     <WithWalletConnection>
       <WithTermsOfService>
         <WithWalletAssociatedRisk>
-          <BackgroundLight />
           <OpenVaultView ilk={ilk} />
         </WithWalletAssociatedRisk>
       </WithTermsOfService>

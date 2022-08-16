@@ -5,7 +5,6 @@ import { useFeatureToggle } from 'helpers/useFeatureToggle'
 import { GetServerSidePropsContext } from 'next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import React from 'react'
-import { BackgroundLight } from 'theme/BackgroundLight'
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   return {
@@ -20,7 +19,6 @@ export default function ReferralsPage({ address }: { address: string }) {
   const referralsEnabled = useFeatureToggle('Referrals')
   return address ? (
     <WithConnection>
-      <BackgroundLight />
       {referralsEnabled ? <ReferralsSummary address={address} /> : null}
     </WithConnection>
   ) : null
