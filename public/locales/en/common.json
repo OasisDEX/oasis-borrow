@@ -798,7 +798,7 @@
   "token-depositing": "{{token}} depositing {{amount}}",
   "tos": "Terms of Service",
   "tos-accept-message": "Before you can get started, you’ll need to read and accept our terms of service.",
-  "tos-accept-message-updated": "Before you can continue, you’ll need to read and accept our updated terms of service.",
+  "tos-accept-message-updated": "We have recently updated our Terms of Service. For security please accept our terms of service to continue.",
   "tos-acceptance-check-in-progress": "Acceptance check in progress...",
   "tos-desc": "By creating a Savings pot, I accept Oasis",
   "tos-jwt-signature-message": "It looks like you're new to Oasis.app or are using a new device to connect. For Security please accept our Terms of Service and sign a message with your wallet to continue.",
