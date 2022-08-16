@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { IlkData } from 'blockchain/ilks'
 import { ActionPills } from 'components/ActionPills'
 import { useAppContext } from 'components/AppContextProvider'
+import { AppLink } from 'components/Links'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
@@ -34,7 +35,7 @@ import {
 import { zero } from 'helpers/zero'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
-import { Box } from 'theme-ui'
+import { Box, Text } from 'theme-ui'
 
 interface SidebaConstantMultiplerEditingStageProps {
   ilkData: IlkData
@@ -84,6 +85,20 @@ export function SidebarConstantMultipleEditingStage({
 
   return (
     <>
+      <Text as="p" variant="paragraph3" sx={{ color: 'neutral80' }}>
+        {t('constant-multiple.set-trigger-description', {
+          token,
+          buyExecutionCollRatio: constantMultipleState.buyExecutionCollRatio.toNumber(),
+          sellExecutionCollRatio: constantMultipleState.sellExecutionCollRatio.toNumber(),
+          targetCollRatio: constantMultipleState.targetCollRatio.toNumber(),
+        })}
+      </Text>
+      <Text as="p" variant="boldParagraph3" sx={{ color: 'neutral80' }}>
+        {t('constant-multiple.set-trigger-risk')}
+        <AppLink href="https://kb.oasis.app/help/" sx={{ fontSize: 2 }}>
+          {t('here')}.
+        </AppLink>
+      </Text>
       <Box sx={{ mb: 2 }}>
         <ActionPills
           active={constantMultipleState.multiplier.toString()}
