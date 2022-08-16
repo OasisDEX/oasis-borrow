@@ -2,6 +2,7 @@ import { withSentry } from '@sentry/nextjs'
 import axios from 'axios'
 import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next'
 
+import { sentryBaseConfig } from './../../sentry.base.config'
 const handler: NextApiHandler = async (req, res) => {
   switch (req.method) {
     case 'POST':
@@ -11,8 +12,8 @@ const handler: NextApiHandler = async (req, res) => {
   }
 }
 
-const SENTRY_HOST = 'o1143494.ingest.sentry.io'
-const SENTRY_PROJECT_IDS = ['6204127']
+const SENTRY_HOST = sentryBaseConfig.host
+const SENTRY_PROJECT_IDS = [sentryBaseConfig.projectId]
 
 async function tunnel(req: NextApiRequest, res: NextApiResponse) {
   const envelope = req.body
