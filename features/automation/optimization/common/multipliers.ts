@@ -8,7 +8,7 @@ interface GetConstantMultipleMultipliersProps {
 }
 
 const AMOUNT_OF_MULTIPLIERS_TO_GENERATE = 5
-const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
+export const MIX_MAX_COL_RATIO_TRIGGER_OFFSET = 5
 
 const multipliersPresets = {
   '1.25-2': [1.25, 1.5, 1.75, 2],
