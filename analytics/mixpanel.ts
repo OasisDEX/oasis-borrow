@@ -6,8 +6,6 @@ import * as mixpanel from 'mixpanel-browser'
 import { Config, Mixpanel } from 'mixpanel-browser'
 import getConfig from 'next/config'
 
-import { mixpanelInternalAPI } from './analytics'
-
 const env =
   getConfig()?.publicRuntimeConfig.mixpanelEnv === 'production' ||
   process.env.MIXPANEL_ENV === 'production'
@@ -35,7 +33,8 @@ export function mixpanelInit() {
   if (config.mixpanel.config.debug) {
     console.debug(`[Mixpanel] Tracking initialized for ${env} env using ${config.mixpanel.token}`)
   }
-  mixpanelInternalAPI('Pageview', { product: 'borrow' })
+  mixpanel.init(config.mixpanel.token, config.mixpanel.config)
+  mixpanel.track('Pageview', { product: 'borrow' })
 }
 
 export function mixpanelIdentify(id: string, props: any) {
