@@ -5,6 +5,7 @@ import { useAppContext } from 'components/AppContextProvider'
 import { MultipleRangeSlider } from 'components/vault/MultipleRangeSlider'
 import { SidebarResetButton } from 'components/vault/sidebar/SidebarResetButton'
 import { VaultActionInput } from 'components/vault/VaultActionInput'
+import { VaultErrors } from 'components/vault/VaultErrors'
 import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/AddConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
@@ -18,9 +19,11 @@ import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
 } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
+import { VaultErrorMessage } from 'features/form/errorMessagesHandler'
 import { VaultWarningMessage } from 'features/form/warningMessagesHandler'
 import { handleNumericInput } from 'helpers/input'
 import {
+  extractConstantMultipleCommonErrors,
   extractConstantMultipleCommonWarnings,
   extractConstantMultipleSliderWarnings,
 } from 'helpers/messageMappers'
@@ -33,7 +36,7 @@ interface SidebaConstantMultiplerEditingStageProps {
   ilkData: IlkData
   isEditing: boolean
   autoBuyTriggerData: BasicBSTriggerData
-  //   errors: VaultErrorMessage[]
+  errors: VaultErrorMessage[]
   warnings: VaultWarningMessage[]
   token: string
   constantMultipleState: ConstantMultipleFormChange
@@ -52,7 +55,7 @@ export function SidebarConstantMultipleEditingStage({
   ilkData,
   isEditing,
   autoBuyTriggerData,
-  //   errors,
+  errors,
   warnings,
   token,
   constantMultipleState,
@@ -162,6 +165,10 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffPlaceholder={t('protection.no-threshold')}
         defaultToggle={constantMultipleState?.buyWithThreshold}
       />
+      <VaultErrors
+        errorMessages={errors.filter((item) => item === 'autoBuyMaxBuyPriceNotSpecified')}
+        ilkData={ilkData}
+      />
       <VaultActionInput
         action={t('auto-sell.set-min-sell-price')}
         amount={constantMultipleState?.minSellPrice}
@@ -194,12 +201,17 @@ export function SidebarConstantMultipleEditingStage({
         toggleOffLabel={t('protection.set-threshold')}
         toggleOffPlaceholder={t('protection.no-threshold')}
       />
+      <VaultErrors
+        errorMessages={errors.filter((item) => item === 'minimumSellPriceNotProvided')}
+        ilkData={ilkData}
+      />
       <VaultWarnings
         warningMessages={extractConstantMultipleCommonWarnings(warnings)}
         ilkData={ilkData}
         isAutoBuyEnabled={autoBuyTriggerData.isTriggerEnabled}
         isAutoSellEnabled={autoSellTriggerData.isTriggerEnabled}
       />
+      <VaultErrors errorMessages={extractConstantMultipleCommonErrors(errors)} ilkData={ilkData} />
       <MaxGasPriceSection
         onChange={(maxBaseFeeInGwei) => {
           uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
