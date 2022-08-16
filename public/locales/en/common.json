@@ -894,8 +894,8 @@
     "auto-buy-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Buy to execute immediately. If this not your intention, please increase your trigger ratio",
     "auto-sell-triggered-immediately": "Setting your trigger ratio at this level will cause your Auto-Sell to execute immediately. If this not your intention, please decrease your trigger ratio",
     "auto-sell-override": "Auto-Sell has been updated to override your Max gas fee if required to prevent vault liquidation. To make use of this protection, please remove your Auto-sell and create a new one. You are eligible for a gas cost refund, please contact <0>support@oasis.app</0>",
-    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "You cannot set your Constant Multiple Sell trigger below your stop loss trigger. Find out more about how this works <0>here</0>",
-    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "You cannot set your Stop Loss Trigger above the existing Constant Multiple Trigger. Find out more about how this works <0>here</0>",
+    "constant-multiple-sell-trigger-close-to-stop-loss-trigger": "Setting a lower Trigger Ratio would trigger your existing Stop-Loss. If you want to use a lower trigger ratio, please adjust your Stop-Loss trigger first",
+    "stop-loss-trigger-close-to-constant-multiple-sell-trigger": "Setting a higher Trigger Ratio would trigger your existing Constant-Multiple. If you want to use a higher trigger ratio, please adjust your Constant-Multiple Sell trigger first.",
     "adding-constant-multiple-when-auto-sell-or-buy-enabled": "Creating a Constant multiple will remove your existing {{enabledTriggers}}. Are you sure you want to continue?",
     "constant-multiple-auto-sell-triggered-immediately": "Setting your Sell Trigger at this ratio would result in it being executed immediately",
     "constant-multiple-auto-buy-triggered-immediately": "Setting your Buy Trigger at this ratio would result in it being executed immediately"

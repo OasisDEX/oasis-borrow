@@ -9,7 +9,10 @@ import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerDat
 import { ConstantMultipleTriggerData } from 'features/automation/optimization/common/constantMultipleTriggerData'
 import { commonOptimizationDropdownItems } from 'features/automation/optimization/common/dropdown'
 import { SidebarConstantMultipleRemovalEditingStage } from 'features/automation/optimization/sidebars/SidebarConstantMultipleRemovalEditingStage'
-import { warningsConstantMultipleValidation } from 'features/automation/optimization/validators'
+import {
+  errorsConstantMultipleValidation,
+  warningsConstantMultipleValidation,
+} from 'features/automation/optimization/validators'
 import { StopLossTriggerData } from 'features/automation/protection/common/stopLossTriggerData'
 import { ConstantMultipleFormChange } from 'features/automation/protection/common/UITypes/constantMultipleFormChange'
 import { SidebarAutomationFeatureCreationStage } from 'features/automation/sidebars/SidebarAutomationFeatureCreationStage'
@@ -18,6 +21,7 @@ import { getPrimaryButtonLabel } from 'features/sidebar/getPrimaryButtonLabel'
 import { getSidebarStatus } from 'features/sidebar/getSidebarStatus'
 import { isDropdownDisabled } from 'features/sidebar/isDropdownDisabled'
 import { SidebarFlow, SidebarVaultStages } from 'features/types/vaults/sidebarLabels'
+import { extractCancelBSErrors, extractCancelBSWarnings } from 'helpers/messageMappers'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
 import { Grid } from 'theme-ui'
@@ -101,7 +105,7 @@ export function SidebarSetupConstantMultiple({
   })
 
   const primaryButtonLabel = getPrimaryButtonLabel({ flow, stage })
-
+  const errors = errorsConstantMultipleValidation({ constantMultipleState, isRemoveForm })
   const warnings = warningsConstantMultipleValidation({
     vault,
     gasEstimationUsd: gasEstimation?.usdValue,
@@ -113,6 +117,10 @@ export function SidebarSetupConstantMultiple({
     isAutoSellEnabled: autoSellTriggerData.isTriggerEnabled,
     constantMultipleState,
   })
+
+  const cancelConstantMultipleErrors = extractCancelBSErrors(errors)
+  const cancelConstantMultipleWarnings = extractCancelBSWarnings(warnings)
+  const validationErrors = isAddForm ? errors : cancelConstantMultipleErrors
 
   if (isConstantMultipleActive) {
     const sidebarSectionProps: SidebarSectionProps = {
@@ -131,7 +139,7 @@ export function SidebarSetupConstantMultiple({
                   ilkData={ilkData}
                   isEditing={isEditing}
                   autoBuyTriggerData={autoBuyTriggerData}
-                  // errors={[]}
+                  errors={errors}
                   warnings={warnings}
                   token={vault.token}
                   constantMultipleState={constantMultipleState}
@@ -150,8 +158,8 @@ export function SidebarSetupConstantMultiple({
                 <SidebarConstantMultipleRemovalEditingStage
                   vault={vault}
                   ilkData={ilkData}
-                  errors={[]}
-                  warnings={[]}
+                  errors={cancelConstantMultipleErrors}
+                  warnings={cancelConstantMultipleWarnings}
                   constantMultipleState={constantMultipleState}
                 />
               )}
@@ -169,7 +177,7 @@ export function SidebarSetupConstantMultiple({
       ),
       primaryButton: {
         label: primaryButtonLabel,
-        disabled: isDisabled,
+        disabled: isDisabled || !!validationErrors.length,
         isLoading: stage === 'txInProgress',
         action: () => txHandler(),
       },

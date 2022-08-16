@@ -8,6 +8,7 @@ import {
   addAutomationBotAggregatorTrigger,
   AutomationBotAddAggregatorTriggerData,
   AutomationBotRemoveTriggersData,
+  removeAutomationBotAggregatorTriggers,
 } from 'blockchain/calls/automationBotAggregator'
 import { TransactionDef } from 'blockchain/calls/callsHelpers'
 
@@ -28,10 +29,16 @@ interface AutoAddAggregatorTriggerChange {
   transaction: TransactionDef<AutomationBotAddAggregatorTriggerData>
 }
 
+interface AutoRemoveAggregatorTriggerChange {
+  data: AutomationBotRemoveTriggersData
+  transaction: TransactionDef<AutomationBotRemoveTriggersData>
+}
+
 export type TxPayloadChange =
   | AutoAddTriggerChange
   | AutoRemoveTriggerChange
   | AutoAddAggregatorTriggerChange
+  | AutoRemoveAggregatorTriggerChange
   | undefined
 
 export type TxPayloadChangeAction =
@@ -64,6 +71,8 @@ export function gasEstimationReducer(
       return { data: action.data, transaction: removeAutomationBotTrigger }
     case 'add-aggregator-trigger':
       return { data: action.data, transaction: addAutomationBotAggregatorTrigger }
+    case 'remove-aggregator-trigger':
+      return { data: action.data, transaction: removeAutomationBotAggregatorTriggers }
     case 'reset':
       return undefined
     default:
