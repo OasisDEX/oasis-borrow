@@ -10,11 +10,15 @@ import { VaultWarnings } from 'components/vault/VaultWarnings'
 import { AddConstantMultipleInfoSection } from 'features/automation/basicBuySell/InfoSections/AddConstantMultipleInfoSection'
 import { MaxGasPriceSection } from 'features/automation/basicBuySell/MaxGasPriceSection/MaxGasPriceSection'
 import { BasicBSTriggerData } from 'features/automation/common/basicBSTriggerData'
-import { ACCEPTABLE_FEE_DIFF } from 'features/automation/common/helpers'
+import {
+  ACCEPTABLE_FEE_DIFF,
+  calculateMultipleFromTargetCollRatio,
+} from 'features/automation/common/helpers'
 import {
   ConstantMultipleTriggerData,
   prepareConstantMultipleResetData,
 } from 'features/automation/optimization/common/constantMultipleTriggerData'
+import { MIX_MAX_COL_RATIO_TRIGGER_OFFSET } from 'features/automation/optimization/common/multipliers'
 import {
   CONSTANT_MULTIPLE_FORM_CHANGE,
   ConstantMultipleFormChange,
@@ -71,6 +75,12 @@ export function SidebarConstantMultipleEditingStage({
 }: SidebaConstantMultiplerEditingStageProps) {
   const { uiChanges } = useAppContext()
   const { t } = useTranslation()
+  const maxMultiplier = calculateMultipleFromTargetCollRatio(
+    constantMultipleState.minTargetRatio.plus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
+  const minMultiplier = calculateMultipleFromTargetCollRatio(
+    constantMultipleState.maxTargetRatio.minus(MIX_MAX_COL_RATIO_TRIGGER_OFFSET),
+  ).toNumber()
 
   return (
     <>
@@ -81,6 +91,7 @@ export function SidebarConstantMultipleEditingStage({
           items={constantMultipleState.acceptableMultipliers.map((multiplier) => ({
             id: multiplier.toString(),
             label: `${multiplier}x`,
+            disabled: multiplier < minMultiplier || multiplier > maxMultiplier,
             action: () => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'is-editing',
