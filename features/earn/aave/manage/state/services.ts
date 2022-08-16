@@ -34,7 +34,9 @@ export function getManageAavePositionStateMachineServices(
   return {
     [services.getBalance]: (context, _): Observable<ManageAaveEvent> => {
       return tokenBalances$.pipe(
-        map((balances) => balances[context.token!]),
+        map((balances) => {
+          return balances[context.token!]
+        }),
         map(({ balance, price }) => ({
           type: 'SET_BALANCE',
           balance: balance,

@@ -1,11 +1,11 @@
-import { ManagePositionResult } from '@oasis-borrow/aave'
-import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
 import { Observable } from 'rxjs'
 import { ActorRefFrom, AnyStateMachine } from 'xstate'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
+import { OpenPositionResult } from '../../../../aave'
+import { ProxyStateMachine } from '../../../../proxyNew/state'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
 import { ManageAavePositionData } from '../pipelines/manageAavePosition'
 import { ManageAaveParametersStateMachineType } from '../transaction'
@@ -34,11 +34,14 @@ export interface ManageAaveContext {
   vaultNumber?: BigNumber
   strategyName?: string
 
-  transactionParameters?: ManagePositionResult
+  transactionParameters?: OpenPositionResult
   estimatedGasPrice?: HasGasEstimation
 }
 
 export type ManageAaveEvent =
+  | {
+      readonly type: 'CLOSE_POSITION'
+    }
   | {
       readonly type: 'CONFIRM_DEPOSIT'
     }
@@ -66,7 +69,10 @@ export type ManageAaveEvent =
       readonly type: 'POSITION_OPENED'
     }
   | {
-      readonly type: 'START_CREATING_POSITION'
+      readonly type: 'START_ADJUSTING_POSITION'
+    }
+  | {
+      readonly type: 'START_CLOSING_POSITION'
     }
   | {
       readonly type: 'TRANSACTION_WAITING_FOR_APPROVAL'
@@ -89,7 +95,7 @@ export type ManageAaveEvent =
     }
   | {
       readonly type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      readonly parameters: ManagePositionResult
+      readonly parameters: OpenPositionResult
     }
   | {
       readonly type: 'TRANSACTION_PARAMETERS_CHANGED'

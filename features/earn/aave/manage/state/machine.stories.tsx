@@ -18,7 +18,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { protoTxHelpers } from '../../../../../components/AppContext'
 import { GasEstimationStatus, HasGasEstimation } from '../../../../../helpers/form'
 import { mockTxState } from '../../../../../helpers/mocks/txHelpers.mock'
-import { ManagePositionResult } from '../../../../aave'
+import { OpenPositionResult } from '../../../../aave'
 import { manageAavePosition, ManageAavePositionData } from '../pipelines/manageAavePosition'
 import {
   manageAaveParametersStateMachine,
@@ -56,7 +56,7 @@ const parametersMachine = manageAaveParametersStateMachine.withConfig({
   services: {
     [machineConfig.services.getParameters]: async () => {
       await delay()
-      return {} as ManagePositionResult
+      return {} as OpenPositionResult
     },
     [machineConfig.services.estimateGas]: async () => {
       await delay()
@@ -193,9 +193,8 @@ const Machine = () => {
         />
         <ManageAaveButton type={'SET_AMOUNT'} amount={new BigNumber(100)} />
         <ManageAaveButton type={'PROXY_ADDRESS_RECEIVED'} proxyAddress={'0x00000'} />
-        <ManageAaveButton type={'CREATE_PROXY'} />
         <ManageAaveButton type={'CONFIRM_DEPOSIT'} />
-        <ManageAaveButton type={'START_CREATING_POSITION'} />
+        <ManageAaveButton type={'START_CLOSING_POSITION'} />
       </Grid>
       {state.context.refProxyStateMachine && (
         <ProxyView proxyStateMachine={state.context.refProxyStateMachine} />

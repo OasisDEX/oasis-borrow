@@ -9,9 +9,9 @@ import { ManageAaveParametersStateMachineEvents } from '../transaction/manageAav
 import { contextToTransactionParameters } from './services'
 import { ManageAaveContext, ManageAaveEvent } from './types'
 
-const initContextValues = assign<ManageAaveContext, ManageAaveEvent>((context) => ({
+const initContextValues = assign<ManageAaveContext, ManageAaveEvent>(() => ({
   currentStep: 1,
-  totalSteps: context.proxyAddress ? 2 : 3,
+  totalSteps: 2,
 }))
 
 const setTokenBalanceFromEvent = assign<ManageAaveContext, ManageAaveEvent>((_, event) => {

@@ -1,4 +1,4 @@
-import { ManagePositionResult } from '@oasis-borrow/aave'
+import { OpenPositionResult } from '@oasis-borrow/aave'
 import { assertErrorEvent, assertEventType } from '@oasis-borrow/xstate'
 import BigNumber from 'bignumber.js'
 import { assign, Machine, sendUpdate } from 'xstate'
@@ -18,7 +18,7 @@ type ManageAaveParametersStateMachineContext = {
   amount?: BigNumber
   multiply?: number
   proxyAddress?: string
-  transactionParameters?: ManagePositionResult
+  transactionParameters?: OpenPositionResult
   estimatedGas?: number
   gasPriceEstimation?: HasGasEstimation
 }
@@ -33,7 +33,7 @@ export type ManageAaveParametersStateMachineEvents =
     }
   | {
       type: 'done.invoke.getParameters'
-      data: ManagePositionResult
+      data: OpenPositionResult
     }
   | {
       type: 'done.invoke.estimateGas'
@@ -68,7 +68,7 @@ enum actions {
 }
 
 export interface PreTransactionSequenceMachineServices {
-  [services.getParameters]: PromiseService<ManagePositionResult>
+  [services.getParameters]: PromiseService<OpenPositionResult>
   [services.estimateGas]: PromiseService<number>
   [services.estimateGasPrice]: PromiseService<HasGasEstimation>
 }
@@ -90,7 +90,7 @@ export const manageAaveParametersStateMachine = Machine<
     schema: {
       services: {} as {
         [services.getParameters]: {
-          data: ManagePositionResult
+          data: OpenPositionResult
         }
         [services.estimateGas]: {
           data: number

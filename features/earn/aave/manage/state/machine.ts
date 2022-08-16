@@ -2,14 +2,17 @@ import { Machine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 
 import { actions, manageAaveMachineActions } from './actions'
-import { emptyProxyAddress, enoughBalance, validTransactionParameters } from './guards'
+import {
+  enoughBalance,
+  validCloseTransactionParameters,
+  validTransactionParameters,
+} from './guards'
 import { services } from './services'
 import { ManageAaveContext, ManageAaveEvent } from './types'
 
 export interface ManageAaveStateMachineSchema {
   states: {
     editing: {}
-    proxyCreating: {}
     reviewing: {}
     txInProgress: {}
     txFailure: {}
@@ -49,21 +52,8 @@ export const createManageAaveStateMachine = Machine<
               actions.sendUpdateToParametersMachine,
             ],
           },
-          SET_AMOUNT: {
-            actions: [
-              actions.setAmount,
-              actions.calculateAuxiliaryAmount,
-              actions.sendUpdateToParametersMachine,
-            ],
-          },
-          CREATE_PROXY: {
-            target: 'proxyCreating',
-            actions: [actions.spawnProxyMachine],
-            cond: emptyProxyAddress,
-          },
-          CONFIRM_DEPOSIT: {
+          CLOSE_POSITION: {
             target: 'reviewing',
-            cond: enoughBalance,
           },
           'xstate.update': {
             actions: [
@@ -73,27 +63,16 @@ export const createManageAaveStateMachine = Machine<
           },
         },
       },
-      proxyCreating: {
-        on: {
-          'done.invoke.proxy': {
-            target: 'editing',
-            actions: [actions.getProxyAddressFromProxyMachine],
-          },
-          'error.platform.proxy': {
-            target: 'editing',
-          },
-        },
-      },
       reviewing: {
-        entry: [
-          actions.setCurrentStepToTwo,
-          actions.sendUpdateToParametersMachine,
-          actions.spawnTransactionMachine,
-        ],
+        entry: [actions.sendUpdateToParametersMachine, actions.spawnTransactionMachine],
         on: {
-          START_CREATING_POSITION: {
+          START_ADJUSTING_POSITION: {
             target: 'txInProgress',
             cond: validTransactionParameters,
+          },
+          START_CLOSING_POSITION: {
+            target: 'txInProgress',
+            cond: validCloseTransactionParameters,
           },
           BACK_TO_EDITING: {
             target: 'editing',
@@ -107,7 +86,6 @@ export const createManageAaveStateMachine = Machine<
           },
         },
       },
-
       txInProgress: {
         entry: [actions.updateTransactionParameters, actions.startTransaction],
         on: {

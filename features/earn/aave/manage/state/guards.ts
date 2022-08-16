@@ -14,3 +14,10 @@ export function validTransactionParameters({
 }: ManageAaveContext) {
   return amount !== undefined && proxyAddress !== undefined && transactionParameters !== undefined
 }
+
+export function validCloseTransactionParameters({
+  proxyAddress,
+  transactionParameters,
+}: ManageAaveContext) {
+  return proxyAddress !== undefined && transactionParameters !== undefined
+}
