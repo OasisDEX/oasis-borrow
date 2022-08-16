@@ -6,6 +6,7 @@ import getConfig from 'next/config'
 export type MixpanelDevelopmentType = {
   track: (eventType: string, payload: any) => void
   get_distinct_id: () => string
+  has_opted_out_tracking: boolean
 }
 
 export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevelopmentType {
@@ -17,6 +18,7 @@ export function enableMixpanelDevelopmentMode<T>(mixpanel: T): T | MixpanelDevel
         console.info('Mixpanel Event: ', eventType, payload)
       },
       get_distinct_id: () => 'test_id',
+      has_opted_out_tracking: false,
     }
   }
 
@@ -27,6 +29,8 @@ type MixpanelType = MixpanelDevelopmentType | typeof mixpanelBrowser
 let mixpanel: MixpanelType = mixpanelBrowser
 
 mixpanel = enableMixpanelDevelopmentMode<MixpanelType>(mixpanel)
+
+const optedOut = mixpanel.has_opted_out_tracking
 
 const product = 'borrow'
 export const INPUT_DEBOUNCE_TIME = 800
@@ -94,7 +98,7 @@ export const trackingEvents = {
       id: location,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   accountChange: (account: string, network: string, walletType: string) => {
@@ -123,7 +127,7 @@ export const trackingEvents = {
       section: 'SelectCollateral',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   openVault: (page: Pages.LandingPage | Pages.OpenVaultOverview, ilk: string) => {
@@ -150,7 +154,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultGenerate: (firstCDP: boolean | undefined, amount: string) => {
@@ -164,7 +168,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultSetupProxy: (
@@ -183,7 +187,7 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createProxy: (firstCDP: boolean | undefined) => {
@@ -196,7 +200,7 @@ export const trackingEvents = {
       section: 'ProxyDeploy',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   pickAllowance: (firstCDP: boolean | undefined, type: string, amount: string) => {
@@ -211,7 +215,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   setTokenAllowance: (firstCDP: boolean | undefined) => {
@@ -224,7 +228,7 @@ export const trackingEvents = {
       section: 'Configure',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   approveAllowance: (firstCDP: boolean | undefined) => {
@@ -237,7 +241,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createVaultConfirm: (firstCDP: boolean | undefined) => {
@@ -250,7 +254,7 @@ export const trackingEvents = {
       section: 'CreateVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   confirmVaultConfirm: (
@@ -271,7 +275,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   confirmVaultConfirmTransaction: (
@@ -311,7 +315,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   overviewManage: (vaultId: string, ilk: string) => {
@@ -325,7 +329,7 @@ export const trackingEvents = {
       section: 'Table',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   createNewVault: (firstCDP: boolean | undefined) => {
@@ -337,7 +341,7 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   yourVaults: () => {
@@ -348,7 +352,7 @@ export const trackingEvents = {
       section: 'NavBar',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   switchToDai: (ControllerIsConnected: boolean) => {
@@ -361,7 +365,7 @@ export const trackingEvents = {
       section: 'Dai',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   switchToCollateral: (ControllerIsConnected: boolean) => {
@@ -374,7 +378,7 @@ export const trackingEvents = {
       section: 'Collateral',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultDepositAmount: (
@@ -391,7 +395,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultGenerateAmount: (
@@ -408,7 +412,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultWithdrawAmount: (
@@ -425,7 +429,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultPaybackAmount: (
@@ -442,7 +446,7 @@ export const trackingEvents = {
       setMax,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultConfirmVaultEdit: () => {
@@ -453,7 +457,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Can we distinguish if went through collateral/daiEditing?
@@ -474,7 +478,7 @@ export const trackingEvents = {
       section: 'ConfirmVault',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageVaultConfirmTransaction: (
@@ -514,7 +518,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageCollateralApproveAllowance: () => {
@@ -526,7 +530,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageDaiPickAllowance: (type: string, amount: string) => {
@@ -540,7 +544,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   manageDaiApproveAllowance: () => {
@@ -552,7 +556,7 @@ export const trackingEvents = {
       section: 'Allowance',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // First Confirm button when the user is on Collateral and type into Deposit
@@ -565,7 +569,7 @@ export const trackingEvents = {
       section: 'Deposit',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Confirm button when the user is on Collateral and type into Withdraw
@@ -578,7 +582,7 @@ export const trackingEvents = {
       section: 'Withdraw',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // First Confirm button when the user is on Dai and type into Generate
@@ -591,7 +595,7 @@ export const trackingEvents = {
       section: 'Generate',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   // Confirm button when the user is on Dai and type into Payback
@@ -604,7 +608,7 @@ export const trackingEvents = {
       section: 'Payback',
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   newsletterSubscribe: (section: 'Footer' | 'Homepage') => {
@@ -615,7 +619,7 @@ export const trackingEvents = {
       section,
     }
 
-    mixpanelInternalAPI(eventName, eventBody)
+    !optedOut && mixpanelInternalAPI(eventName, eventBody)
   },
 
   multiply: {
@@ -637,7 +641,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      !optedOut && mixpanelInternalAPI(eventName, eventBody)
     },
 
     confirmOpenMultiplyConfirmTransaction: (
@@ -678,7 +682,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      !optedOut && mixpanelInternalAPI(eventName, eventBody)
     },
 
     adjustPositionConfirmTransaction: (
@@ -716,7 +720,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      !optedOut && mixpanelInternalAPI(eventName, eventBody)
     },
 
     otherActionsConfirmTransaction: (
@@ -756,7 +760,7 @@ export const trackingEvents = {
         section: 'ConfirmVault',
       }
 
-      mixpanelInternalAPI(eventName, eventBody)
+      !optedOut && mixpanelInternalAPI(eventName, eventBody)
     },
 
     closeVaultConfirmTransaction: (
