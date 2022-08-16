@@ -231,13 +231,16 @@ export function SidebarConstantMultipleEditingStage({
           <SidebarResetButton
             clear={() => {
               uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
+                type: 'is-reset-action',
+                isResetAction: true,
+              })
+              uiChanges.publish(CONSTANT_MULTIPLE_FORM_CHANGE, {
                 type: 'reset',
                 resetData: prepareConstantMultipleResetData({
                   defaultMultiplier: constantMultipleState.defaultMultiplier,
                   defaultCollRatio: constantMultipleState.defaultCollRatio,
                   constantMultipleTriggerData,
                 }),
-                isResetAction: true,
               })
             }}
           />

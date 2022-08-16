@@ -89,7 +89,7 @@ export function constantMultipleFormChangeReducer(
         maxTargetRatio: action.maxTargetRatio,
       }
     case 'is-editing':
-      return { ...state, isEditing: action.isEditing }
+      return { ...state, isEditing: action.isEditing, isResetAction: false }
     case 'is-reset-action':
       return { ...state, isResetAction: action.isResetAction }
     default:
