@@ -44,10 +44,11 @@ export enum Pages {
   OtherActions = 'OtherActions',
   CloseVault = 'CloseVault',
 }
-
+// https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string]: any }) {
   const distinctId = mixpanel.get_distinct_id()
-
+  const currentUrl = window.location.href
+  const referrer = document.referrer
   // eslint-disable-next-line
   fetch('/api/t', {
     method: 'POST',
@@ -59,6 +60,8 @@ export function mixpanelInternalAPI(eventName: string, eventBody: { [key: string
       eventName,
       eventBody,
       distinctId,
+      currentUrl,
+      referrer,
     }),
   })
 }

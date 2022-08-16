@@ -11,11 +11,13 @@ mixpanel = enableMixpanelDevelopmentMode(mixpanel)
 
 const handler = async function (req: NextApiRequest, res: NextApiResponse<{ status: number }>) {
   try {
-    const { eventName, eventBody, distinctId } = req.body
+    const { eventName, eventBody, distinctId, currentUrl, referrer } = req.body
 
     mixpanel.track(`be-${eventName}`, {
       ...eventBody,
       distinct_id: distinctId,
+      current_url: currentUrl,
+      referrer: referrer,
       id: `be-${eventBody.id}`,
     })
 
