@@ -92,7 +92,7 @@ export async function getOpenAaveParameters(
   const strategyReturn = await strategy.openStEth(
     {
       depositAmount: amount,
-      slippage: new BigNumber(0.1),
+      slippage,
       multiply: new BigNumber(multiply),
     },
     {
@@ -102,7 +102,7 @@ export async function getOpenAaveParameters(
       // getSwapData: getOneInchRealCall('0x3C1Cb427D20F15563aDa8C249E71db76d7183B6c'),
     },
   )
-
+  console.log('strategyReturn:', strategyReturn)
   return {
     calls: strategyReturn.calls,
     operationName: 'CustomOperation',

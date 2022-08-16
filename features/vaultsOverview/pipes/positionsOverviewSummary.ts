@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { Tickers } from 'blockchain/prices'
 import { tokenList } from 'components/uniswapWidget/tokenList'
-import { zero } from 'helpers/zero'
+import { one, zero } from 'helpers/zero'
 import { isEqual, uniq } from 'lodash'
 import { combineLatest, Observable, of } from 'rxjs'
 import { debounceTime, distinctUntilChanged, map, shareReplay } from 'rxjs/operators'
@@ -85,8 +85,8 @@ export function createPositionsOverviewSummary$(
 
   // merge and sort
   const flattenedTokensAndPositions$ = combineLatest(tokenBalances$, positions$).pipe(
-    map(([tokensAndBalances, makerPositions]) =>
-      [...tokensAndBalances, ...makerPositions]
+    map(([tokensAndBalances, positions]) =>
+      [...tokensAndBalances, ...positions]
         .sort((tokenA, tokenB) => {
           const tokenAUsdAmount = getPositionOrAssetValue(tokenA)
           const tokenBUsdAmount = getPositionOrAssetValue(tokenB)
@@ -109,6 +109,7 @@ export function createPositionsOverviewSummary$(
   const assetsAndPositions$: Observable<Array<PositionView>> = flattenedTokensAndPositions$.pipe(
     map((flattenedTokenBalances) =>
       flattenedTokenBalances.map((assetOrPosition) => {
+        console.log('assetOrPosition:', assetOrPosition)
         if (isPosition(assetOrPosition)) {
           return {
             missingPriceData: false,

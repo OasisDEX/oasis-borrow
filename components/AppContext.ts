@@ -54,6 +54,7 @@ import {
   tokenPrices$,
 } from 'blockchain/prices'
 import {
+  createAaveCollateralTokens$,
   createAccountBalance$,
   createAllowance$,
   createBalance$,
@@ -167,7 +168,7 @@ import {
 } from 'helpers/gasEstimate'
 import { isEqual, mapValues, memoize } from 'lodash'
 import moment from 'moment'
-import { combineLatest, Observable, of, Subject } from 'rxjs'
+import { combineLatest, merge, Observable, of, Subject } from 'rxjs'
 import { distinctUntilChanged, filter, map, mergeMap, shareReplay, switchMap } from 'rxjs/operators'
 
 import {
@@ -250,9 +251,16 @@ import { createTermsAcceptance$ } from '../features/termsOfService/termsAcceptan
 import { createVaultHistory$ } from '../features/vaultHistory/vaultHistory'
 import { vaultsWithHistory$ } from '../features/vaultHistory/vaultsHistory'
 import { createAssetActions$ } from '../features/vaultsOverview/pipes/assetActions'
-import { createPositions$ } from '../features/vaultsOverview/pipes/positions'
+import {
+  createAavePositions$,
+  createMakerPositions$,
+  createPositions$,
+} from '../features/vaultsOverview/pipes/positions'
 import { createPositionsList$ } from '../features/vaultsOverview/pipes/positionsList'
-import { createPositionsOverviewSummary$ } from '../features/vaultsOverview/pipes/positionsOverviewSummary'
+import {
+  createPositionsOverviewSummary$,
+  Position,
+} from '../features/vaultsOverview/pipes/positionsOverviewSummary'
 import { getYieldChange$, getYields$ } from '../helpers/earn/calculations'
 import { doGasEstimation, HasGasEstimation } from '../helpers/form'
 import {
@@ -263,6 +271,7 @@ import {
   supportedMultiplyIlks,
 } from '../helpers/productCards'
 import curry from 'ramda/src/curry'
+import { getAaveUserReserveData } from '../blockchain/calls/aaveProtocolDataProvider'
 export type TxData =
   | OpenData
   | DepositAndGenerateData
@@ -715,6 +724,7 @@ export function setupAppContext() {
   const ilksSupportedOnNetwork$ = createIlksSupportedOnNetwork$(context$)
 
   const collateralTokens$ = createCollateralTokens$(ilksSupportedOnNetwork$, ilkToToken$)
+  const aaveCollateralTokens$ = createAaveCollateralTokens$(context$)
 
   const accountBalances$ = curry(createAccountBalance$)(
     balanceLean$,
@@ -781,7 +791,15 @@ export function setupAppContext() {
   const vaultWithValue$ = memoize(
     curry(decorateVaultsWithValue$)(vaults$, exchangeQuote$, userSettings$),
   )
-  const positions$ = memoize(curry(createPositions$)(vaultWithValue$))
+
+  const aaveUserReserveData$ = observe(onEveryBlock$, context$, getAaveUserReserveData)
+
+  const makerPositions$ = memoize(curry(createMakerPositions$)(vaultWithValue$))
+  const aavePositions$ = memoize(
+    curry(createAavePositions$)(aaveUserReserveData$, aaveCollateralTokens$, proxyAddress$),
+  )
+
+  const positions$ = memoize(curry(createPositions$)(makerPositions$, aavePositions$))
 
   const openMultiplyVault$ = memoize((ilk: string) =>
     createOpenMultiplyVault$(

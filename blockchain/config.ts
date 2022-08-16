@@ -4,6 +4,7 @@ import { keyBy } from 'lodash'
 import getConfig from 'next/config'
 import { Dictionary } from 'ts-essentials'
 
+import * as aaveProtocolDataProvider from './abi/aave-protocol-data-provider.json'
 import * as automationBotAggregator from './abi/automation-bot-aggregator.json'
 import * as automationBot from './abi/automation-bot.json'
 import * as cdpRegistry from './abi/cdp-registry.json'
@@ -201,6 +202,14 @@ const protoMain = {
     // address from here: https://docs.lido.fi/deployed-contracts
     '0x99ac10631f69c753ddb595d074422a0922d9056b',
   ),
+  aaveTokens: {
+    STETH: mainnetAddresses['STETH'],
+  },
+  aaveProtocolDataProvider: contractDesc(
+    aaveProtocolDataProvider,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0x057835Ad21a177dbdd3090bB1CAE03EaCF78Fc6d',
+  ),
   // TODO: Replace with mainnet address (current val has been used for testing only)
   operationExecutor: contractDesc(operationExecutor, '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'),
 }
@@ -282,6 +291,12 @@ const kovan: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-kovan-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
+  aaveTokens: {},
+  aaveProtocolDataProvider: contractDesc(
+    aaveProtocolDataProvider,
+    // address from here:https://docs.aave.com/developers/v/2.0/deployed-contracts/deployed-contracts
+    '0x3c73a5e5785cac854d468f727c606c07488a29d6',
+  ),
   operationExecutor: contractDesc(operationExecutor, '0xe70f935c32dA4dB13e7876795f1e175465e6458e'),
 }
 
@@ -359,6 +374,9 @@ const goerli: NetworkConfig = {
   ethtx: {
     url: 'https://ethtx.info/goerli',
   },
+  aaveTokens: {
+    STETH: goerliAddresses['STETH'],
+  },
   taxProxyRegistries: [goerliAddresses.PROXY_REGISTRY],
   dssProxyActionsDsr: contractDesc(dssProxyActionsDsr, goerliAddresses.PROXY_ACTIONS_DSR),
   magicLink: {
@@ -366,7 +384,9 @@ const goerli: NetworkConfig = {
   },
   cacheApi: 'https://oazo-bcache-goerli-staging.new.oasis.app/api/v1',
   lidoCrvLiquidityFarmingReward: contractDesc(lidoCrvLiquidityFarmingReward, '0x00'),
-  operationExecutor: contractDesc(operationExecutor, '0x0000000000000000000000000000000000000000'),
+
+  // TODO: Temporary local address until deployed
+  operationExecutor: contractDesc(operationExecutor, '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'),
 }
 
 const hardhat: NetworkConfig = {
