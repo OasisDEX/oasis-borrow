@@ -1,12 +1,12 @@
 import { Machine } from 'xstate'
 import { log } from 'xstate/lib/actions'
 
-import { actions, openAaveMachineActions } from './actions'
+import { actions, manageAaveMachineActions } from './actions'
 import { emptyProxyAddress, enoughBalance, validTransactionParameters } from './guards'
 import { services } from './services'
-import { OpenAaveContext, OpenAaveEvent } from './types'
+import { ManageAaveContext, ManageAaveEvent } from './types'
 
-export interface OpenAaveStateMachineSchema {
+export interface ManageAaveStateMachineSchema {
   states: {
     editing: {}
     proxyCreating: {}
@@ -17,13 +17,13 @@ export interface OpenAaveStateMachineSchema {
   }
 }
 
-export const createOpenAaveStateMachine = Machine<
-  OpenAaveContext,
-  OpenAaveStateMachineSchema,
-  OpenAaveEvent
+export const createManageAaveStateMachine = Machine<
+  ManageAaveContext,
+  ManageAaveStateMachineSchema,
+  ManageAaveEvent
 >(
   {
-    key: 'aaveOpen',
+    key: 'aaveManage',
     initial: 'editing',
     states: {
       editing: {
@@ -134,7 +134,7 @@ export const createOpenAaveStateMachine = Machine<
   {
     guards: {},
     actions: {
-      ...openAaveMachineActions,
+      ...manageAaveMachineActions,
     },
     services: {
       [services.getProxyAddress]: () => {

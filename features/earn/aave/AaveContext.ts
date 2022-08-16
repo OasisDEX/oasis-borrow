@@ -12,9 +12,16 @@ import {
   getOpenAaveParametersStateMachineServices$,
 } from './open/transaction'
 import { getOpenAaveTransactionMachine } from './open/transaction/getTransactionMachine'
+import { getManageAaveStateMachine$ } from './manage/state/getManageAaveStateMachine'
+import { getManageAaveTransactionMachine } from './manage/transaction/getTransactionMachine'
+import { getManageAavePositionStateMachineServices } from './manage/state/services'
+import {
+  getManageAaveParametersStateMachine$,
+  getManageAaveParametersStateMachineServices$,
+} from './manage/transaction'
 
 export function setupAaveContext({
-                                   userSettings$,
+  userSettings$,
   connectedContext$,
   proxyAddress$,
   txHelpers$,
@@ -36,11 +43,22 @@ export function setupAaveContext({
     contextForAddress$,
     txHelpers$,
     gasEstimation$,
-    userSettings$
+    userSettings$,
+  )
+
+  const manageAaveParametersStateMachineServices$ = getManageAaveParametersStateMachineServices$(
+    contextForAddress$,
+    txHelpers$,
+    gasEstimation$,
+    userSettings$,
   )
 
   const openAaveParametersStateMachine$ = getOpenAaveParametersStateMachine$(
     openAaveParametersStateMachineServices$,
+  )
+
+  const manageAaveParametersStateMachine$ = getManageAaveParametersStateMachine$(
+    manageAaveParametersStateMachineServices$,
   )
 
   const proxyStateMachine$ = getOpenProxyStateMachine$(
@@ -57,7 +75,15 @@ export function setupAaveContext({
     proxyForAccount$,
   )
 
+  const manageAaveStateMachineServices = getManageAavePositionStateMachineServices(
+    contextForAddress$,
+    txHelpers$,
+    tokenBalances$,
+    proxyForAccount$,
+  )
+
   const transactionMachine = getOpenAaveTransactionMachine(txHelpers$, contextForAddress$)
+  const manageTransactionMachine = getManageAaveTransactionMachine(txHelpers$, contextForAddress$)
 
   const aaveStateMachine$ = getOpenAaveStateMachine$(
     openAaveStateMachineServices,
@@ -66,8 +92,16 @@ export function setupAaveContext({
     transactionMachine,
   )
 
+  const aaveManageStateMachine$ = getManageAaveStateMachine$(
+    manageAaveStateMachineServices,
+    manageAaveParametersStateMachine$,
+    proxyStateMachine$,
+    manageTransactionMachine,
+  )
+
   return {
     aaveStateMachine$,
+    aaveManageStateMachine$,
   }
 }
 

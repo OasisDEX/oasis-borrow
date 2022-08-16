@@ -19,13 +19,16 @@ export async function getStaticProps(ctx: GetServerSidePropsContext) {
 }
 
 function OpenVault() {
+  // TODO: Move to dynamic props once earn paths agreed
+  const strategyName = 'aave-steth'
+
   return (
     <AaveContextProvider>
       <WithWalletConnection>
         <WithTermsOfService>
           <BackgroundLight />
 
-          <AaveOpenView />
+          <AaveOpenView strategyName={strategyName} />
 
           <Survey for="earn" />
         </WithTermsOfService>

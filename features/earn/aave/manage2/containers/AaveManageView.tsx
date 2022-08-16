@@ -1,31 +1,26 @@
-import { TabBar } from 'components/TabBar'
-import { aaveFaq } from 'features/content/faqs/aave'
-import { Survey } from 'features/survey'
-import { VaultContainerSpinner, WithLoadingIndicator } from 'helpers/AppSpinner'
-import { WithErrorHandler } from 'helpers/errorHandlers/WithErrorHandler'
 import { useTranslation } from 'next-i18next'
 import React from 'react'
+import { of } from 'rxjs'
 import { Box, Card, Container, Grid } from 'theme-ui'
 
+import { TabBar } from '../../../../../components/TabBar'
+import { VaultContainerSpinner, WithLoadingIndicator } from '../../../../../helpers/AppSpinner'
+import { WithErrorHandler } from '../../../../../helpers/errorHandlers/WithErrorHandler'
 import { useObservable } from '../../../../../helpers/observableHook'
+import { aaveFaq } from '../../../../content/faqs/aave'
+import { Survey } from '../../../../survey'
+import { SidebarManageAaveVault } from '../sidebars/SidebarManageAaveVault'
 import { useAaveContext } from '../../AaveContextProvider'
-import { SidebarOpenAaveVault } from '../sidebars/SidebarOpenAaveVault'
 
-interface Props {
-  strategyName: string
-}
-
-export function AaveOpenView({ strategyName }: Props) {
-  const { aaveStateMachine$ } = useAaveContext()
-  const [stateMachine, stateMachineError] = useObservable(aaveStateMachine$)
+export function AaveManagePositionView({ proxy }: { proxy: string }) {
+  const { aaveManageStateMachine$ } = useAaveContext()
+  const [stateMachine, stateMachineError] = useObservable(aaveManageStateMachine$)
 
   const { t } = useTranslation()
-
   return (
     <WithErrorHandler error={[stateMachineError]}>
       <WithLoadingIndicator value={[stateMachine]} customLoader={<VaultContainerSpinner />}>
         {([_stateMachine]) => {
-          _stateMachine.context.strategyName = strategyName
           return (
             <Container variant="vaultPageContainer">
               [HEADER]
@@ -33,12 +28,14 @@ export function AaveOpenView({ strategyName }: Props) {
                 variant="underline"
                 sections={[
                   {
-                    value: 'simulate',
-                    label: t('open-vault.simulate'),
+                    value: 'overview',
+                    label: t('system.overview'),
                     content: (
                       <Grid variant="vaultContainer">
-                        <Box>[OPEN AAVE DETAILS]</Box>
-                        <Box>{<SidebarOpenAaveVault aaveStateMachine={_stateMachine} />}</Box>
+                        <Box>[MANAGE AAVE DETAILS]</Box>
+                        <Box>
+                          {<SidebarManageAaveVault aaveManageStateMachine={_stateMachine} />}
+                        </Box>
                       </Grid>
                     ),
                   },

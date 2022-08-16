@@ -201,7 +201,8 @@ const protoMain = {
     // address from here: https://docs.lido.fi/deployed-contracts
     '0x99ac10631f69c753ddb595d074422a0922d9056b',
   ),
-  operationExecutor: contractDesc(operationExecutor, '0x0000000000000000000000000000000000000000'),
+  // TODO: Replace with mainnet address (current val has been used for testing only)
+  operationExecutor: contractDesc(operationExecutor, '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'),
 }
 
 export type NetworkConfig = typeof protoMain

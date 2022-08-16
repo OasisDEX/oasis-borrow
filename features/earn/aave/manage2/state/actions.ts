@@ -5,7 +5,7 @@ import { zero } from '../../../../../helpers/zero'
 import { assertErrorEvent } from '../../../../../utils/xstate'
 import { TransactionStateMachineEvents } from '../../../../stateMachines/transaction'
 import { OpenAavePositionData } from '../pipelines/openAavePosition'
-import { OpenAaveParametersStateMachineEvents } from '../transaction/openAaveParametersStateMachine'
+import { OpenAaveParametersStateMachineEvents } from '../transaction/manageAaveParametersStateMachine'
 import { contextToTransactionParameters } from './services'
 import { OpenAaveContext, OpenAaveEvent } from './types'
 

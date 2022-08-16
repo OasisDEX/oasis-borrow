@@ -11,23 +11,27 @@ import {
   VaultChangesInformationContainer,
   VaultChangesInformationItem,
 } from '../../../../../components/vault/VaultChangesInformation'
-import { OpenAaveEvent, OpenAaveStateMachine, OpenAaveStateMachineState } from '../state/types'
-import { SidebarOpenAaveVaultEditingState } from './SidebarOpenAaveVaultEditingState'
+import {
+  ManageAaveEvent,
+  ManageAaveStateMachine,
+  ManageAaveStateMachineState,
+} from '../state/types'
+import { SidebarManageAaveVaultEditingState } from './SidebarManageAaveVaultEditingState'
 import { extractSidebarTxData } from '../../../../../helpers/extractSidebarHelpers'
 import { OpenVaultAnimation } from '../../../../../theme/animations'
 import { staticFilesRuntimeUrl } from '../../../../../helpers/staticPaths'
 
-export interface OpenAaveVaultProps {
-  readonly aaveStateMachine: OpenAaveStateMachine
+export interface ManageAaveVaultProps {
+  readonly aaveStateMachine: ManageAaveStateMachine
 }
 
-interface OpenAaveStateProps {
-  readonly state: OpenAaveStateMachineState
-  readonly send: Sender<OpenAaveEvent>
+interface ManageAaveStateProps {
+  readonly state: ManageAaveStateMachineState
+  readonly send: Sender<ManageAaveEvent>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function OpenAaveInformationContainer({ state, send }: OpenAaveStateProps) {
+function ManageAaveInformationContainer({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
   return (
     <VaultChangesInformationContainer title="Order information">
@@ -39,43 +43,43 @@ function OpenAaveInformationContainer({ state, send }: OpenAaveStateProps) {
   )
 }
 
-function OpenAaveTransactionInProgressStateView({ state, send }: OpenAaveStateProps) {
+function ManageAaveTransactionInProgressStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
         <OpenVaultAnimation />
-        <OpenAaveInformationContainer state={state} send={send} />
+        <ManageAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: true,
       disabled: true,
-      label: t('open-earn.aave.vault-form.confirm-btn'),
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
     },
   }
 
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
+function ManageAaveReviewingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} send={send} />
+        <ManageAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
       disabled: !state.can('START_CREATING_POSITION'),
-      label: t('open-earn.aave.vault-form.confirm-btn'),
+      label: t('manage-earn.aave.vault-form.confirm-btn'),
       action: () => send('START_CREATING_POSITION'),
     },
   }
@@ -83,21 +87,21 @@ function OpenAaveReviewingStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
+function ManageAaveFailureStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <OpenAaveInformationContainer state={state} send={send} />
+        <ManageAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
       disabled: false,
-      label: t('open-earn.aave.vault-form.retry-btn'),
+      label: t('manage-earn.aave.vault-form.retry-btn'),
       action: () => send({ type: 'RETRY' }),
     },
   }
@@ -105,24 +109,24 @@ function OpenAaveFailureStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
+function ManageAaveEditingStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const canCreateProxy = state.can('CREATE_PROXY')
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.title'),
+    title: t('manage-earn.aave.vault-form.title'),
     content: (
       <Grid gap={3}>
-        <SidebarOpenAaveVaultEditingState state={state} send={send} />
-        <OpenAaveInformationContainer state={state} send={send} />
+        <SidebarManageAaveVaultEditingState state={state} send={send} />
+        <ManageAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
       steps: [1, state.context.totalSteps!],
       isLoading: false,
       disabled: false,
-      label: canCreateProxy ? t('create-proxy-btn') : t('open-earn.aave.vault-form.open-btn'),
+      label: canCreateProxy ? t('create-proxy-btn') : t('manage-earn.aave.vault-form.manage-btn'),
       action: () => {
         if (canCreateProxy) {
           send('CREATE_PROXY')
@@ -136,11 +140,11 @@ function OpenAaveEditingStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
+function ManageAaveSuccessStateView({ state, send }: ManageAaveStateProps) {
   const { t } = useTranslation()
 
   const sidebarSectionProps: SidebarSectionProps = {
-    title: t('open-earn.aave.vault-form.success-title'),
+    title: t('manage-earn.aave.vault-form.success-title'),
     content: (
       <Grid gap={3}>
         <Box>
@@ -148,11 +152,11 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
             <Image src={staticFilesRuntimeUrl('/static/img/protection_complete_v2.svg')} />
           </Flex>
         </Box>
-        <OpenAaveInformationContainer state={state} send={send} />
+        <ManageAaveInformationContainer state={state} send={send} />
       </Grid>
     ),
     primaryButton: {
-      label: t('open-earn.aave.vault-form.go-to-position'),
+      label: t('manage-earn.aave.vault-form.go-to-position'),
       url: `/earn/${state.context.strategyName}/${state.context.proxyAddress}`,
     },
   }
@@ -160,22 +164,22 @@ function OpenAaveSuccessStateView({ state, send }: OpenAaveStateProps) {
   return <SidebarSection {...sidebarSectionProps} />
 }
 
-export function SidebarOpenAaveVault({ aaveStateMachine }: OpenAaveVaultProps) {
+export function SidebarManageAaveVault({ aaveStateMachine }: ManageAaveVaultProps) {
   const [state, send] = useMachine(aaveStateMachine)
 
   switch (true) {
     case state.matches('editing'):
-      return <OpenAaveEditingStateView state={state} send={send} />
+      return <ManageAaveEditingStateView state={state} send={send} />
     case state.matches('proxyCreating'):
       return <ProxyView proxyMachine={state.context.refProxyStateMachine!} />
     case state.matches('reviewing'):
-      return <OpenAaveReviewingStateView state={state} send={send} />
+      return <ManageAaveReviewingStateView state={state} send={send} />
     case state.matches('txInProgress'):
-      return <OpenAaveTransactionInProgressStateView state={state} send={send} />
+      return <ManageAaveTransactionInProgressStateView state={state} send={send} />
     case state.matches('txFailure'):
-      return <OpenAaveFailureStateView state={state} send={send} />
+      return <ManageAaveFailureStateView state={state} send={send} />
     case state.matches('txSuccess'):
-      return <OpenAaveSuccessStateView state={state} send={send} />
+      return <ManageAaveSuccessStateView state={state} send={send} />
     default: {
       return <></>
     }

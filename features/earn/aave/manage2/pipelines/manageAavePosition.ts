@@ -11,7 +11,7 @@ import { ContextConnected } from '../../../../../blockchain/network'
 import { amountToWei } from '../../../../../blockchain/utils'
 import { ActionCall } from '../../../../aave'
 
-export interface OpenAavePositionData extends TxMeta {
+export interface ManageAavePositionData extends TxMeta {
   kind: TxMetaKind.operationExecutor
   calls: any // TODO: Should be ActionCall[] instead of any but it needs to update common lib.
   operationName: string
@@ -20,7 +20,7 @@ export interface OpenAavePositionData extends TxMeta {
   amount: BigNumber
 }
 
-export const openAavePosition: TransactionDef<OpenAavePositionData> = {
+export const manageAavePosition: TransactionDef<ManageAavePositionData> = {
   call: ({ proxyAddress }, { contract }) => {
     return contract<DsProxy>(contractDesc(dsProxy, proxyAddress)).methods['execute(address,bytes)']
   },
@@ -31,11 +31,10 @@ export const openAavePosition: TransactionDef<OpenAavePositionData> = {
     token === 'ETH' ? { value: amountToWei(amount, 'ETH').toFixed(0) } : {},
 }
 
-function getCallData(data: OpenAavePositionData, context: ContextConnected) {
+function getCallData(data: ManageAavePositionData, context: ContextConnected) {
   return context
     .contract<OperationExecutor>(context.operationExecutor)
     .methods.executeOp(translateCalls(data.calls), data.operationName)
-
 }
 
 function translateCalls(calls: ActionCall[]): [string, string][] {

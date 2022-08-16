@@ -1,20 +1,17 @@
-import { OpenPositionResult } from '@oasis-borrow/aave'
-import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
-import { useMachine } from '@xstate/react'
-import BigNumber from 'bignumber.js'
-import { Observable } from 'rxjs'
-import { ActorRefFrom, AnyStateMachine } from 'xstate'
-
-import { HasGasEstimation } from '../../../../../helpers/form'
+import { createManageAaveStateMachine } from '../state/machine'
+import { ProxyStateMachine } from '../../../../proxyNew/state'
+import { OpenAaveParametersStateMachineType } from '../../open/transaction'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { OpenAavePositionData } from '../pipelines/openAavePosition'
-import { OpenAaveParametersStateMachineType } from '../transaction'
-import { createOpenAaveStateMachine } from './machine'
+import { OpenAavePositionData } from '../../open/pipelines/openAavePosition'
+import { ActorRefFrom } from 'xstate'
+import BigNumber from 'bignumber.js'
+import { OpenPositionResult } from '../../../../aave'
+import { HasGasEstimation } from '../../../../../helpers/form'
+import { OpenAaveStateMachine } from '../../open/state/types'
 
-export interface OpenAaveContext {
+export interface ManageAaveContext {
   readonly dependencies: {
-    readonly proxyStateMachine: ProxyStateMachine
-    readonly parametersStateMachine: OpenAaveParametersStateMachineType
+    readonly parametersStateMachine: ManageAaveParametersStateMachineType
     readonly transactionStateMachine: TransactionStateMachine<OpenAavePositionData>
   }
   multiply: number
@@ -38,20 +35,9 @@ export interface OpenAaveContext {
   estimatedGasPrice?: HasGasEstimation
 }
 
-export type OpenAaveEvent =
+export type ManageAaveEvent =
   | {
       readonly type: 'CONFIRM_DEPOSIT'
-    }
-  | {
-      readonly type: 'PROXY_ADDRESS_RECEIVED'
-      readonly proxyAddress: string | undefined
-    }
-  | {
-      readonly type: 'CREATE_PROXY'
-    }
-  | {
-      readonly type: 'PROXY_CREATED'
-      readonly proxyAddress: string
     }
   | {
       readonly type: 'SET_AMOUNT'
@@ -123,17 +109,5 @@ export type OpenAaveEvent =
       readonly type: 'error.platform.proxy'
     }
 
-export type OpenAaveObservableService = (
-  context: OpenAaveContext,
-  event: OpenAaveEvent,
-) => Observable<OpenAaveEvent>
-
-export type OpenAaveInvokeMachineService = (context: OpenAaveContext) => AnyStateMachine
-
-function useOpenAaveStateMachine(machine: OpenAaveStateMachine) {
-  return useMachine(machine)
-}
-
-export type OpenAaveStateMachine = typeof createOpenAaveStateMachine
-export type OpenAaveStateMachineInstance = ReturnType<typeof useOpenAaveStateMachine>
-export type OpenAaveStateMachineState = OpenAaveStateMachine['initialState']
+export type ManageAaveStateMachine = typeof createManageAaveStateMachine
+export type ManageAaveStateMachineState = ManageAaveStateMachine['initialState']

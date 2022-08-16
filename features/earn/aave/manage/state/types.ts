@@ -1,4 +1,4 @@
-import { OpenPositionResult } from '@oasis-borrow/aave'
+import { ManagePositionResult } from '@oasis-borrow/aave'
 import { ProxyStateMachine } from '@oasis-borrow/proxy/state'
 import { useMachine } from '@xstate/react'
 import BigNumber from 'bignumber.js'
@@ -7,22 +7,22 @@ import { ActorRefFrom, AnyStateMachine } from 'xstate'
 
 import { HasGasEstimation } from '../../../../../helpers/form'
 import { TransactionStateMachine } from '../../../../stateMachines/transaction'
-import { OpenAavePositionData } from '../pipelines/openAavePosition'
-import { OpenAaveParametersStateMachineType } from '../transaction'
-import { createOpenAaveStateMachine } from './machine'
+import { ManageAavePositionData } from '../pipelines/manageAavePosition'
+import { ManageAaveParametersStateMachineType } from '../transaction'
+import { createManageAaveStateMachine } from './machine'
 
-export interface OpenAaveContext {
+export interface ManageAaveContext {
   readonly dependencies: {
     readonly proxyStateMachine: ProxyStateMachine
-    readonly parametersStateMachine: OpenAaveParametersStateMachineType
-    readonly transactionStateMachine: TransactionStateMachine<OpenAavePositionData>
+    readonly parametersStateMachine: ManageAaveParametersStateMachineType
+    readonly transactionStateMachine: TransactionStateMachine<ManageAavePositionData>
   }
   multiply: number
   token: string
 
   refProxyStateMachine?: ActorRefFrom<ProxyStateMachine>
-  refParametersStateMachine?: ActorRefFrom<OpenAaveParametersStateMachineType>
-  refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<OpenAavePositionData>>
+  refParametersStateMachine?: ActorRefFrom<ManageAaveParametersStateMachineType>
+  refTransactionStateMachine?: ActorRefFrom<TransactionStateMachine<ManageAavePositionData>>
 
   currentStep?: number
   totalSteps?: number
@@ -34,11 +34,11 @@ export interface OpenAaveContext {
   vaultNumber?: BigNumber
   strategyName?: string
 
-  transactionParameters?: OpenPositionResult
+  transactionParameters?: ManagePositionResult
   estimatedGasPrice?: HasGasEstimation
 }
 
-export type OpenAaveEvent =
+export type ManageAaveEvent =
   | {
       readonly type: 'CONFIRM_DEPOSIT'
     }
@@ -89,7 +89,7 @@ export type OpenAaveEvent =
     }
   | {
       readonly type: 'TRANSACTION_PARAMETERS_RECEIVED'
-      readonly parameters: OpenPositionResult
+      readonly parameters: ManagePositionResult
     }
   | {
       readonly type: 'TRANSACTION_PARAMETERS_CHANGED'
@@ -123,17 +123,17 @@ export type OpenAaveEvent =
       readonly type: 'error.platform.proxy'
     }
 
-export type OpenAaveObservableService = (
-  context: OpenAaveContext,
-  event: OpenAaveEvent,
-) => Observable<OpenAaveEvent>
+export type ManageAaveObservableService = (
+  context: ManageAaveContext,
+  event: ManageAaveEvent,
+) => Observable<ManageAaveEvent>
 
-export type OpenAaveInvokeMachineService = (context: OpenAaveContext) => AnyStateMachine
+export type ManageAaveInvokeMachineService = (context: ManageAaveContext) => AnyStateMachine
 
-function useOpenAaveStateMachine(machine: OpenAaveStateMachine) {
+function useManageAaveStateMachine(machine: ManageAaveStateMachine) {
   return useMachine(machine)
 }
 
-export type OpenAaveStateMachine = typeof createOpenAaveStateMachine
-export type OpenAaveStateMachineInstance = ReturnType<typeof useOpenAaveStateMachine>
-export type OpenAaveStateMachineState = OpenAaveStateMachine['initialState']
+export type ManageAaveStateMachine = typeof createManageAaveStateMachine
+export type ManageAaveStateMachineInstance = ReturnType<typeof useManageAaveStateMachine>
+export type ManageAaveStateMachineState = ManageAaveStateMachine['initialState']

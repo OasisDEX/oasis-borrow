@@ -2,9 +2,9 @@
 
 import { strategy } from '@oasisdex/oasis-actions'
 import BigNumber from 'bignumber.js'
-import {  providers } from 'ethers'
+import { providers } from 'ethers'
 
-import { ContextConnected } from "../../blockchain/network";
+import { ContextConnected } from '../../blockchain/network'
 import { ADDRESSES } from '@oasisdex/oasis-actions/src/helpers/addresses'
 import { amountToWei } from '@oasisdex/utils/lib/src/utils'
 
@@ -70,15 +70,9 @@ export async function getOpenAaveParameters(
   context: ContextConnected,
   amount: BigNumber,
   multiply: number,
-  slippage: BigNumber
+  slippage: BigNumber,
 ): Promise<OpenPositionResult> {
   // TODO: Use service registry
-
-  // const flashloanAmount = amountToWei(new BigNumber(1000000))
-  // const depositAmount = amountToWei(new BigNumber(200000))
-  // const borrowAmount = amountToWei(new BigNumber(5))
-
-  // const operations = await makeOperation(registry, ADDRESSES.main)
 
   const mainnetAddresses = {
     DAI: ADDRESSES.main.DAI,
@@ -92,7 +86,8 @@ export async function getOpenAaveParameters(
 
   const addresses = {
     ...mainnetAddresses,
-    operationExecutor: '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c'
+    operationExecutor: '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c',
+    OPERATION_EXECUTION: '0x71a0b8A2245A9770A4D887cE1E4eCc6C1d4FF28c',
   }
 
   function formatOneInchSwapUrl(
@@ -137,38 +132,55 @@ export async function getOpenAaveParameters(
     return exchangeTokens(url)
   }
 
-  function getOneInchRealCall
-    (swapAddress: string) {
-      return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
-        const response = await swapOneInchTokens(
-          from,
-          to,
-          amount.toString(),
-          swapAddress,
-          slippage.toString(),
-        )
+  function getOneInchRealCall(swapAddress: string) {
+    return async (from: string, to: string, amount: BigNumber, slippage: BigNumber) => {
+      const response = await swapOneInchTokens(
+        from,
+        to,
+        amount.toString(),
+        swapAddress,
+        slippage.toString(),
+      )
 
-        return {
-          toTokenAddress: to,
-          fromTokenAddress: from,
-          minToTokenAmount: new BigNumber(0),
-          toTokenAmount: new BigNumber(response.toTokenAmount),
-          fromTokenAmount: new BigNumber(response.fromTokenAmount),
-          exchangeCalldata: response.tx.data,
-        }
-      }}
+      return {
+        toTokenAddress: to,
+        fromTokenAddress: from,
+        minToTokenAmount: new BigNumber(0),
+        toTokenAmount: new BigNumber(response.toTokenAmount),
+        fromTokenAmount: new BigNumber(response.fromTokenAmount),
+        exchangeCalldata: response.tx.data,
+      }
+    }
+  }
 
   const provider = new providers.JsonRpcProvider(context.infuraUrl, context.chainId)
+
+  async function oneInchCallMock(from: string, to: string, amount: BigNumber, slippage: BigNumber) {
+    const marketPrice = 0.979
+    return {
+      fromTokenAddress: from,
+      toTokenAddress: to,
+      fromTokenAmount: amount,
+      toTokenAmount: amount.div(marketPrice),
+      minToTokenAmount: amount
+        .div(marketPrice)
+        .times(new BigNumber(1).minus(slippage))
+        .integerValue(BigNumber.ROUND_DOWN), // TODO: figure out slippage
+      exchangeCalldata: 0,
+    }
+  }
+
   const strategyReturn = await strategy.openStEth(
     {
       depositAmount: amount,
-      slippage,
+      slippage: new BigNumber(0.1),
       multiply: new BigNumber(multiply),
     },
     {
       addresses,
       provider: provider,
-      getSwapData: getOneInchRealCall('0x3C1Cb427D20F15563aDa8C249E71db76d7183B6c'),
+      getSwapData: oneInchCallMock,
+      // getSwapData: getOneInchRealCall('0x3C1Cb427D20F15563aDa8C249E71db76d7183B6c'),
     },
   )
 
@@ -178,7 +190,8 @@ export async function getOpenAaveParameters(
     positionInfo: {
       flashLoanAmount: strategyReturn.flashLoanAmount,
       borrowedAmount: strategyReturn.borrowEthAmount,
-      fee: strategyReturn.feeAmount,
+      // fee: strategyReturn.feeAmount,
+      fee: new BigNumber(0),
       depositedAmount: amount,
     },
     isAllowanceNeeded: false,

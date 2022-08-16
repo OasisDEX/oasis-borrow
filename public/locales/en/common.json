@@ -1621,13 +1621,24 @@
     "news-notifications-description": "Something explains users will get the latest updates if they turn on notifications",
     "service-not-available": "Notification service not available, please try again later."
   },
+  "manage-earn": {
+    "aave": {
+      "vault-form": {
+        "deposit": "Deposit ETH",
+        "title": "Your Earn position",
+        "close": "Close vault"
+      }
+    }
+  },
   "open-earn": {
     "aave": {
       "vault-form": {
         "title": "Set up Earn strategy",
         "open-btn": "Open Earn position",
         "confirm-btn": "Confirm",
-        "retry-btn": "Retry"
+        "retry-btn": "Retry",
+        "success-title": "All done! You've opened a position",
+        "go-to-position": "Go to position"
       }
     }
   }

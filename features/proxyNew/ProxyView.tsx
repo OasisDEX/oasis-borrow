@@ -103,7 +103,7 @@ function ProxyRunningView() {
     ),
     primaryButton: {
       isLoading: true,
-      disabled: false,
+      disabled: true,
       label: t('creating-proxy'),
     },
   }
